@@ -21,7 +21,7 @@ export async function GET() {
     console.log(`✅ Found ${workflows.length} workflows for Ben`);
     
     // Filter and format workflows
-    const formattedWorkflows = workflows.map((workflow: any) => ({
+    const formattedWorkflows = workflows.map((workflow: { id: string; name: string; active: boolean; createdAt: string; updatedAt: string; tags?: string[]; description?: string }) => ({
       id: workflow.id,
       name: workflow.name,
       active: workflow.active,
@@ -35,16 +35,17 @@ export async function GET() {
       success: true,
       workflows: formattedWorkflows,
       total: formattedWorkflows.length,
-      active: formattedWorkflows.filter((w: any) => w.active).length
+      active: formattedWorkflows.filter((w: { active: boolean }) => w.active).length
     });
 
-  } catch (error: any) {
-    console.error('❌ Failed to fetch Ben\'s workflows:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to fetch Ben\'s workflows:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to fetch workflows',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
@@ -70,13 +71,14 @@ export async function POST(request: NextRequest) {
       message: 'Workflow created successfully'
     });
 
-  } catch (error: any) {
-    console.error('❌ Failed to create workflow:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to create workflow:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to create workflow',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }

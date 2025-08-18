@@ -270,7 +270,7 @@ export default function ProcessPage() {
             Ready to Start Your Automation Journey?
           </h2>
           <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-            Let's discuss your project and get you started with our proven process.
+            Let&apos;s discuss your project and get you started with our proven process.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/offers" className="btn-primary text-lg px-8 py-4">

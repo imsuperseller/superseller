@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // Update credential
     const credentialIndex = config.n8n.credentials.required.findIndex(
-      (c: any) => c.name === credentialName
+      (c: { name: string }) => c.name === credentialName
     );
 
     if (credentialIndex !== -1) {

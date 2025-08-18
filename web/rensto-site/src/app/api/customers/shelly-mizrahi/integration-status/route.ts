@@ -14,7 +14,7 @@ export async function GET() {
     const n8nApiKey = config.n8n.apiKey;
 
     let workflowStatus = 'unknown';
-    let credentials = config.n8n.credentials.required;
+    const credentials = config.n8n.credentials.required;
 
     try {
       // Check if n8n is running and workflow exists
@@ -26,7 +26,7 @@ export async function GET() {
 
       if (workflowResponse.ok) {
         const workflows = await workflowResponse.json();
-        const shellyWorkflow = workflows.data.find((w: any) => 
+        const shellyWorkflow = workflows.data.find((w: { name: string }) => 
           w.name === 'Shelly Excel Family Profile Processor - Production'
         );
 
@@ -46,7 +46,7 @@ export async function GET() {
     if (workflowStatus === 'missing' || workflowStatus === 'error') {
       missingComponents.push('n8n_workflow');
     }
-    if (credentials.some((c: any) => c.missing)) {
+    if (credentials.some((c: { missing: boolean }) => c.missing)) {
       missingComponents.push('n8n_credentials');
     }
 

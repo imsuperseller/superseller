@@ -34,7 +34,7 @@ export async function GET() {
 
       const workflows = workflowsResponse.data.data || workflowsResponse.data || [];
       workflowsCount = workflows.length;
-      activeWorkflows = workflows.filter((w: any) => w.active).length;
+      activeWorkflows = workflows.filter((w: { active: boolean }) => w.active).length;
     } catch (error) {
       console.log('⚠️ Could not fetch workflows');
     }
@@ -96,13 +96,14 @@ export async function GET() {
       ...integrationStatus
     });
 
-  } catch (error: any) {
-    console.error('❌ Failed to check integration status:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to check integration status:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to check integration status',
-      details: error.message,
+      details: errorMessage,
       n8n_cloud: {
         status: 'error',
         url: BEN_N8N_CONFIG.url,
