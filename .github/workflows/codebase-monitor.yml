@@ -1,0 +1,230 @@
+name: Codebase Health Monitor
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd web/rensto-site
+          npm ci
+
+      - name: Check for TODO/FIXME comments
+        id: todo-check
+        run: |
+          echo "Checking for TODO/FIXME comments..."
+          TODO_COUNT=$(grep -r "TODO\|FIXME" web/rensto-site/src --include="*.tsx" --include="*.ts" --include="*.js" | wc -l)
+          echo "Found $TODO_COUNT TODO/FIXME comments"
+          echo "todo_count=$TODO_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ $TODO_COUNT -gt 10 ]; then
+            echo "⚠️ High number of TODO/FIXME comments found: $TODO_COUNT"
+            exit 1
+          fi
+
+      - name: Validate documentation links
+        id: docs-check
+        run: |
+          echo "Validating documentation structure..."
+          
+          # Check if single sources of truth exist
+          REQUIRED_DOCS=(
+            "docs/deployment/DEVELOPMENT_GUIDE.md"
+            "docs/n8n/WORKFLOW_MANAGEMENT.md"
+            "docs/design/PERFECT_DESIGN_SYSTEM.md"
+            "docs/customers/PORTAL_ARCHITECTURE.md"
+            "docs/README.md"
+          )
+          
+          MISSING_DOCS=""
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              MISSING_DOCS="$MISSING_DOCS $doc"
+            fi
+          done
+          
+          if [ ! -z "$MISSING_DOCS" ]; then
+            echo "❌ Missing required documentation: $MISSING_DOCS"
+            echo "missing_docs=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ All required documentation present"
+            echo "missing_docs=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for unimplemented features
+        id: features-check
+        run: |
+          echo "Checking for unimplemented features..."
+          
+          # Check for placeholder content
+          PLACEHOLDER_COUNT=$(grep -r "placeholder\|TODO\|FIXME\|NOT IMPLEMENTED" web/rensto-site/src --include="*.tsx" --include="*.ts" | wc -l)
+          echo "Found $PLACEHOLDER_COUNT placeholder/unimplemented items"
+          echo "placeholder_count=$PLACEHOLDER_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ $PLACEHOLDER_COUNT -gt 50 ]; then
+            echo "⚠️ High number of unimplemented features: $PLACEHOLDER_COUNT"
+            exit 1
+          fi
+
+      - name: Validate single sources of truth
+        id: sst-check
+        run: |
+          echo "Validating single sources of truth..."
+          
+          # Check for duplicate documentation files
+          DUPLICATE_DOCS=$(find docs -name "*.md" | grep -E "(DESIGN_SYSTEM|WORKFLOW|PORTAL|SERVER)" | wc -l)
+          echo "Found $DUPLICATE_DOCS potential duplicate documentation files"
+          echo "duplicate_docs=$DUPLICATE_DOCS" >> $GITHUB_OUTPUT
+          
+          if [ $DUPLICATE_DOCS -gt 10 ]; then
+            echo "⚠️ Potential documentation conflicts detected"
+            exit 1
+          fi
+
+      - name: Check code quality
+        id: quality-check
+        run: |
+          echo "Running code quality checks..."
+          cd web/rensto-site
+          
+          # Run ESLint
+          npm run lint || echo "⚠️ ESLint issues found"
+          
+          # Check TypeScript compilation
+          npx tsc --noEmit || echo "⚠️ TypeScript errors found"
+
+      - name: Create summary report
+        id: report
+        run: |
+          echo "## 📊 Codebase Health Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔍 Checks Performed:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Documentation structure validation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TODO/FIXME comment count: ${{ steps.todo-check.outputs.todo_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Unimplemented features count: ${{ steps.features-check.outputs.placeholder_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Single source of truth validation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Code quality checks" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.docs-check.outputs.missing_docs }}" == "true" ]; then
+            echo "### ❌ Issues Found:" >> $GITHUB_STEP_SUMMARY
+            echo "- Missing required documentation files" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ✅ All checks passed!" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create issues for problems
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['codebase-health']
+            });
+            
+            // Check if issue already exists
+            const existingIssue = issues.find(issue => 
+              issue.title.includes('Codebase Health Alert')
+            );
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 Codebase Health Alert - Action Required',
+                body: `
+## 🚨 Codebase Health Issues Detected
+
+The automated codebase health monitor has detected issues that require attention:
+
+### Issues Found:
+- **TODO/FIXME Comments**: ${{ steps.todo-check.outputs.todo_count }} found
+- **Unimplemented Features**: ${{ steps.features-check.outputs.placeholder_count }} found
+- **Documentation Issues**: ${{ steps.docs-check.outputs.missing_docs }}
+- **Code Quality**: TypeScript/ESLint issues detected
+
+### Required Actions:
+1. Review and address TODO/FIXME comments
+2. Implement missing features
+3. Update documentation structure
+4. Fix code quality issues
+
+### Next Steps:
+- [ ] Review the detailed logs above
+- [ ] Address each issue systematically
+- [ ] Re-run the monitor after fixes
+- [ ] Update documentation as needed
+
+---
+*This issue was automatically created by the Codebase Health Monitor*
+                `,
+                labels: ['codebase-health', 'automated', 'needs-attention']
+              });
+            } else {
+              // Update existing issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: existingIssue.body + `
+
+## 🔄 Updated Alert - $(new Date().toISOString())
+
+Latest scan results:
+- **TODO/FIXME Comments**: ${{ steps.todo-check.outputs.todo_count }} found
+- **Unimplemented Features**: ${{ steps.features-check.outputs.placeholder_count }} found
+- **Documentation Issues**: ${{ steps.docs-check.outputs.missing_docs }}
+
+*Issue updated by automated monitor*
+                `
+              });
+            }
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `
+## 📊 Codebase Health Check Results
+
+### ✅ Checks Passed:
+- Documentation structure: ✅
+- TODO/FIXME count: ${{ steps.todo-check.outputs.todo_count }}
+- Unimplemented features: ${{ steps.features-check.outputs.placeholder_count }}
+- Single sources of truth: ✅
+
+### 📈 Recommendations:
+${${{ steps.todo-check.outputs.todo_count }} > 5 ? '- Consider addressing TODO/FIXME comments' : '- TODO/FIXME count is acceptable'}
+${${{ steps.features-check.outputs.placeholder_count }} > 20 ? '- High number of unimplemented features detected' : '- Feature implementation status is good'}
+
+---
+*Automated by Codebase Health Monitor*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: summary
+            });

@@ -1,917 +1,471 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
+import { useState, useEffect, useRef } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input-enhanced';
-import { } from '@/components/ui/textarea';
+import { RenstoProgress } from '@/components/ui/rensto-progress';
+import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
+import { gsap } from 'gsap';
 import { 
-  MessageSquare, 
-  Phone, 
   Bot, 
+  Play, 
+  StopCircle, 
   Settings, 
-  Plus, 
-  CheckCircle, 
-  Clock,
-  DollarSign,
-  Zap,
-  Users,
-  FileText,
-  Database,
-  TrendingUp,
   Activity,
-  Mic,
-  MicOff,
-  Send,
-  Volume2,
-  VolumeX
+  Zap,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  TrendingUp,
+  DollarSign,
+  Users,
+  BarChart3,
+  Bell,
+  RefreshCw
 } from 'lucide-react';
 
-interface SuggestedAgent {
-  id: string;
+interface Agent {
+  _id: string;
   name: string;
   description: string;
-  category: string;
-  price: number;
-  status: 'inactive' | 'pending' | 'active' | 'custom';
-  features: string[];
-  estimatedROI: string;
-  setupTime: string;
-  dependencies: string[];
+  status: 'active' | 'inactive' | 'running' | 'error';
+  lastRun?: Date;
+  nextRun?: Date;
+  successRate: number;
+  totalRuns: number;
+  averageExecutionTime: number;
+  cost: number;
 }
 
-interface Conversation {
-  id: string;
-  type: 'chat' | 'voice';
-  messages: Array<{
+interface CustomerAgentSystemProps {
+  customerId: string;
+  agents: Agent[];
+  onAgentToggle: (agentId: string, action: 'activate' | 'deactivate') => void;
+  onAgentRun: (agentId: string) => void;
+}
+
+export default function CustomerAgentSystem({ 
+  customerId, 
+  agents, 
+  onAgentToggle, 
+  onAgentRun 
+}: CustomerAgentSystemProps) {
+  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
+  const [realTimeData, setRealTimeData] = useState<{[key: string]: any}>({});
+  const [notifications, setNotifications] = useState<Array<{
     id: string;
-    role: 'user' | 'assistant' | 'system';
-    content: string;
+    type: 'success' | 'error' | 'info';
+    message: string;
     timestamp: Date;
-  }>;
-  status: 'active' | 'completed' | 'archived';
-  createdAt: Date;
-  updatedAt: Date;
-}
+  }>>([]);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const agentsRef = useRef<HTMLDivElement>(null);
 
-interface ProjectMilestone {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  dueDate: Date;
-  completedAt?: Date;
-  agents: string[];
-}
-
-export default function CustomerAgentSystem() {
-  const [activeTab, setActiveTab] = useState<'agents' | 'chat' | 'voice' | 'progress'>('agents');
-  const [isVoiceActive, setIsVoiceActive] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [chatMessage, setChatMessage] = useState('');
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
-  const [suggestedAgents, setSuggestedAgents] = useState<SuggestedAgent[]>([]);
-  const [activeAgents, setActiveAgents] = useState<SuggestedAgent[]>([]);
-  const [milestones, setMilestones] = useState<ProjectMilestone[]>([]);
-
+  // GSAP Animations
   useEffect(() => {
-    // Load suggested agents
-    // Load active agents (already paid for and deployed)
-    setActiveAgents([
-      {
-        id: 'shelly-excel',
-        name: 'Excel Family Profile Processor',
-        description: 'Automated Excel processing for family insurance profiles with Hebrew text support',
-        category: 'Insurance',
-        price: 250,
-        status: 'active',
-        features: ['Excel file processing', 'Hebrew text support', 'Data validation', 'Family profile combination', 'Automated output generation'],
-        estimatedROI: '85% efficiency improvement',
-        setupTime: '1-2 weeks',
-        dependencies: ['Excel files', 'Output templates']
-      }
-    ]);
+    if (!containerRef.current) return;
 
-    // Load suggested agents (available for purchase)
-    setSuggestedAgents([
-      {
-        id: '1',
-        name: 'AI Content Generator',
-        description: 'Automated content creation for blogs, social media, and marketing materials',
-        category: 'Content Marketing',
-        price: 299,
-        status: 'inactive',
-        features: ['Blog post generation', 'Social media content', 'SEO optimization', 'Brand voice consistency'],
-        estimatedROI: '40% increase in content output',
-        setupTime: '2-3 days',
-        dependencies: ['OpenAI API', 'Content calendar']
-      },
-      {
-        id: '2',
-        name: 'Customer Support Bot',
-        description: '24/7 automated customer support with intelligent response handling',
-        category: 'Customer Service',
-        price: 199,
-        status: 'inactive',
-        features: ['FAQ handling', 'Ticket routing', 'Multi-language support', 'Escalation management'],
-        estimatedROI: '60% reduction in support tickets',
-        setupTime: '1-2 days',
-        dependencies: ['Knowledge base', 'Support system']
-      },
-      {
-        id: '3',
-        name: 'Data Analysis Agent',
-        description: 'Automated data processing, analysis, and reporting for business insights',
-        category: 'Analytics',
-        price: 399,
-        status: 'inactive',
-        features: ['Data visualization', 'Trend analysis', 'Automated reporting', 'Alert system'],
-        estimatedROI: '50% faster insights delivery',
-        setupTime: '3-4 days',
-        dependencies: ['Data sources', 'Analytics tools']
-      },
-      {
-        id: '4',
-        name: 'Email Marketing Automation',
-        description: 'Intelligent email campaigns with personalization and A/B testing',
-        category: 'Marketing',
-        price: 249,
-        status: 'inactive',
-        features: ['Segmentation', 'Personalization', 'A/B testing', 'Performance tracking'],
-        estimatedROI: '35% increase in email engagement',
-        setupTime: '2-3 days',
-        dependencies: ['Email service', 'Customer database']
-      },
-      {
-        id: '5',
-        name: 'Social Media Manager',
-        description: 'Automated social media posting, engagement, and analytics',
-        category: 'Social Media',
-        price: 179,
-        status: 'inactive',
-        features: ['Scheduled posting', 'Engagement monitoring', 'Hashtag optimization', 'Performance analytics'],
-        estimatedROI: '45% increase in social engagement',
-        setupTime: '1-2 days',
-        dependencies: ['Social media accounts', 'Content calendar']
-      },
-      {
-        id: '6',
-        name: 'Custom Workflow Agent',
-        description: 'Fully customized automation agent tailored to your specific business needs',
-        category: 'Custom',
-        price: 599,
-        status: 'inactive',
-        features: ['Custom development', 'Integration support', 'Dedicated support', 'Performance optimization'],
-        estimatedROI: 'Variable based on requirements',
-        setupTime: '5-10 days',
-        dependencies: ['Business requirements', 'System specifications']
-      }
-    ]);
+    const tl = gsap.timeline();
+    
+    tl.fromTo(
+      containerRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
+    )
+    .fromTo(
+      agentsRef.current,
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' },
+      '-=0.4'
+    );
 
-    // Load project milestones
-    setMilestones([
-      {
-        id: '1',
-        title: 'Project Discovery & Requirements',
-        description: 'Initial consultation and requirements gathering',
-        status: 'completed',
-        dueDate: new Date('2024-01-10'),
-        completedAt: new Date('2024-01-12'),
-        agents: []
-      },
-      {
-        id: '2',
-        title: 'Agent Selection & Configuration',
-        description: 'Choose and configure automation agents',
-        status: 'completed',
-        dueDate: new Date('2024-01-20'),
-        completedAt: new Date('2024-01-15'),
-        agents: ['Excel Family Profile Processor']
-      },
-      {
-        id: '3',
-        title: 'Integration & Testing',
-        description: 'Integrate agents with existing systems and test functionality',
-        status: 'pending',
-        dueDate: new Date('2024-01-25'),
-        agents: []
-      },
-      {
-        id: '4',
-        title: 'Training & Optimization',
-        description: 'Train agents and optimize performance',
-        status: 'pending',
-        dueDate: new Date('2024-01-30'),
-        agents: []
-      },
-      {
-        id: '5',
-        title: 'Deployment & Monitoring',
-        description: 'Deploy agents and set up monitoring',
-        status: 'pending',
-        dueDate: new Date('2024-02-05'),
-        agents: []
-      }
-    ]);
-
-    // Load conversations
-    setConversations([
-      {
-        id: '1',
-        type: 'chat',
-        messages: [
-          {
-            id: '1',
-            role: 'assistant',
-            content: 'Hello! I\'m your AI assistant. I can help you choose and configure automation agents for your business. What would you like to know?',
-            timestamp: new Date('2024-01-15T10:00:00')
-          },
-          {
-            id: '2',
-            role: 'user',
-            content: 'I need help with content marketing automation',
-            timestamp: new Date('2024-01-15T10:01:00')
-          },
-          {
-            id: '3',
-            role: 'assistant',
-            content: 'Great! I can recommend the AI Content Generator agent. It can create blog posts, social media content, and marketing materials automatically. Would you like me to show you the details?',
-            timestamp: new Date('2024-01-15T10:01:30')
-          }
-        ],
-        status: 'active',
-        createdAt: new Date('2024-01-15T10:00:00'),
-        updatedAt: new Date('2024-01-15T10:01:30')
-      }
-    ]);
-
-    setCurrentConversation(conversations[0]);
+    return () => tl.kill();
   }, []);
 
-  const handleSendMessage = async () => {
-    if (!chatMessage.trim() || !currentConversation) return;
+  // Real-time monitoring simulation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newData: {[key: string]: any} = {};
+      agents.forEach(agent => {
+        if (agent.status === 'running') {
+          newData[agent._id] = {
+            progress: Math.random() * 100,
+            currentStep: `Processing ${Math.floor(Math.random() * 100)} items`,
+            memoryUsage: Math.random() * 80 + 20,
+            cpuUsage: Math.random() * 60 + 20
+          };
+        }
+      });
+      setRealTimeData(newData);
+    }, 2000);
 
-    const userMessage = {
+    return () => clearInterval(interval);
+  }, [agents]);
+
+  const handleAgentToggle = (agentId: string, action: 'activate' | 'deactivate') => {
+    onAgentToggle(agentId, action);
+    
+    // Add notification
+    const notification = {
       id: Date.now().toString(),
-      role: 'user' as const,
-      content: chatMessage,
+      type: action === 'activate' ? 'success' : 'info' as const,
+      message: `Agent ${action === 'activate' ? 'activated' : 'deactivated'} successfully`,
       timestamp: new Date()
     };
-
-    // Add user message
-    const updatedConversation = {
-      ...currentConversation,
-      messages: [...currentConversation.messages, userMessage],
-      updatedAt: new Date()
-    };
-
-    setCurrentConversation(updatedConversation);
-    setChatMessage('');
-
-    // Simulate AI response
+    
+    setNotifications(prev => [notification, ...prev.slice(0, 4)]);
+    
+    // Auto-remove notification after 5 seconds
     setTimeout(() => {
-      const aiResponse = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant' as const,
-        content: generateAIResponse(chatMessage),
-        timestamp: new Date()
-      };
-
-      const finalConversation = {
-        ...updatedConversation,
-        messages: [...updatedConversation.messages, aiResponse],
-        updatedAt: new Date()
-      };
-
-      setCurrentConversation(finalConversation);
-      
-      // Update conversations list
-      setConversations(prev => 
-        prev.map(conv => 
-          conv.id === currentConversation.id ? finalConversation : conv
-        )
-      );
-    }, 1000);
+      setNotifications(prev => prev.filter(n => n.id !== notification.id));
+    }, 5000);
   };
 
-  const generateAIResponse = (message: string): string => {
-    const lowerMessage = message.toLowerCase();
+  const handleAgentRun = (agentId: string) => {
+    onAgentRun(agentId);
     
-    if (lowerMessage.includes('content') || lowerMessage.includes('blog') || lowerMessage.includes('social')) {
-      return 'I recommend the AI Content Generator agent for your content marketing needs. It can create blog posts, social media content, and marketing materials automatically. The agent costs $299/month and typically provides a 40% increase in content output. Would you like me to activate it for you?';
-    }
+    const notification = {
+      id: Date.now().toString(),
+      type: 'info' as const,
+      message: 'Agent execution started',
+      timestamp: new Date()
+    };
     
-    if (lowerMessage.includes('support') || lowerMessage.includes('customer') || lowerMessage.includes('help')) {
-      return 'The Customer Support Bot would be perfect for your needs! It provides 24/7 automated support, handles FAQs, routes tickets, and supports multiple languages. It costs $199/month and typically reduces support tickets by 60%. Should I set this up for you?';
-    }
-    
-    if (lowerMessage.includes('data') || lowerMessage.includes('analytics') || lowerMessage.includes('report')) {
-      return 'The Data Analysis Agent can help you with automated data processing, analysis, and reporting. It provides data visualization, trend analysis, and automated reporting. It costs $399/month and delivers insights 50% faster. Would you like to learn more?';
-    }
-    
-    if (lowerMessage.includes('email') || lowerMessage.includes('marketing')) {
-      return 'The Email Marketing Automation agent is ideal for intelligent email campaigns. It includes segmentation, personalization, A/B testing, and performance tracking. It costs $249/month and typically increases email engagement by 35%. Should I configure this for you?';
-    }
-    
-    if (lowerMessage.includes('custom') || lowerMessage.includes('specific') || lowerMessage.includes('unique')) {
-      return 'For custom requirements, I recommend the Custom Workflow Agent. It\'s fully tailored to your specific business needs with custom development, integration support, and dedicated assistance. It costs $599/month and takes 5-10 days to set up. Would you like to discuss your specific requirements?';
-    }
-    
-    return 'I can help you with various automation agents including content generation, customer support, data analysis, email marketing, social media management, and custom workflows. What specific area would you like to automate?';
-  };
-
-  const handleActivateAgent = (agentId: string) => {
-    setSuggestedAgents(prev => 
-      prev.map(agent => 
-        agent.id === agentId 
-          ? { ...agent, status: 'pending' as const }
-          : agent
-      )
-    );
-  };
-
-  const handleCustomAgent = () => {
-    // Start custom agent conversation
-    const customMessage = "I'd like to create a custom automation agent. Can you help me understand my options and requirements?";
-    setChatMessage(customMessage);
-    handleSendMessage();
-  };
-
-  const toggleVoice = () => {
-    setIsVoiceActive(!isVoiceActive);
-    if (!isVoiceActive) {
-      // Start voice recognition
-      setIsListening(true);
-      // Simulate voice processing
-      setTimeout(() => {
-        setIsListening(false);
-        setChatMessage('I would like to activate the AI Content Generator agent');
-      }, 2000);
-    }
+    setNotifications(prev => [notification, ...prev.slice(0, 4)]);
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in-progress': return 'bg-blue-100 style={{ color: 'var(--rensto-blue)' }}';
-      case 'pending': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-green-500';
+      case 'running': return 'bg-blue-500';
+      case 'error': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-4 w-4" />;
-      case 'in-progress': return <Activity className="h-4 w-4" />;
-      case 'pending': return <Clock className="h-4 w-4" />;
-      default: return <Clock className="h-4 w-4" />;
+      case 'active': return <CheckCircle className="w-4 h-4" />;
+      case 'running': return <Activity className="w-4 h-4 animate-pulse" />;
+      case 'error': return <AlertCircle className="w-4 h-4" />;
+      default: return <Clock className="w-4 h-4" />;
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">AI Agent System</h1>
-          <p className="text-gray-600 mt-2">Choose, configure, and manage your automation agents</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Settings
-          </Button>
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            New Agent
-          </Button>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-        <Button
-          variant={activeTab === 'agents' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('agents')}
-          className="flex items-center gap-2"
-        >
-          <Bot className="h-4 w-4" />
-          Suggested Agents
-        </Button>
-        <Button
-          variant={activeTab === 'chat' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('chat')}
-          className="flex items-center gap-2"
-        >
-          <MessageSquare className="h-4 w-4" />
-          AI Chat
-        </Button>
-        <Button
-          variant={activeTab === 'voice' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('voice')}
-          className="flex items-center gap-2"
-        >
-          <Phone className="h-4 w-4" />
-          Voice Assistant
-        </Button>
-        <Button
-          variant={activeTab === 'progress' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('progress')}
-          className="flex items-center gap-2"
-        >
-          <TrendingUp className="h-4 w-4" />
-          Project Progress
-        </Button>
-      </div>
-
-      {/* Content based on active tab */}
-      {activeTab === 'agents' && (
-        <div className="space-y-6">
-          {/* Active Agents (Already Paid For) */}
-          {activeAgents.length > 0 && (
-            <div className="space-y-4">
+    <div ref={containerRef} className="space-y-6">
+      {/* Header with Real-time Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card variant="renstoNeon" className="backdrop-blur-sm bg-rensto-bg-card/50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Bot className="w-5 h-5 text-rensto-cyan" />
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Your Active Agents</h2>
-                <p className="text-gray-600">Agents you've purchased and are currently deployed</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {activeAgents.map((agent) => (
-                  <Card key={agent.id} className="border-green-200 bg-green-50 hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-lg text-green-900">{agent.name}</CardTitle>
-                          <p className="text-sm text-green-700 mt-1">{agent.category}</p>
-                        </div>
-                        <Badge variant="default" className="bg-green-600">
-                          Active
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-green-800">{agent.description}</p>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-green-700">Price:</span>
-                          <span className="font-semibold text-green-900">${agent.price} (Paid)</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-green-700">ROI:</span>
-                          <span className="text-green-600">{agent.estimatedROI}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-green-800">Features:</p>
-                        <div className="space-y-1">
-                          {agent.features.slice(0, 3).map((feature, index) => (
-                            <div key={index} className="flex items-center gap-2 text-xs text-green-700">
-                              <CheckCircle className="h-3 w-3 text-green-600" />
-                              {feature}
-                            </div>
-                          ))}
-                          {agent.features.length > 3 && (
-                            <div className="text-xs text-green-600">
-                              +{agent.features.length - 3} more features
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Button variant="outline" className="flex-1 border-green-300 text-green-700 hover:bg-green-100">
-                          Manage Agent
-                        </Button>
-                        <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-100">
-                          View Analytics
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                <p className="text-sm text-rensto-text-secondary">Total Agents</p>
+                <p className="text-2xl font-bold text-rensto-text-primary">{agents.length}</p>
               </div>
             </div>
-          )}
+          </CardContent>
+        </Card>
 
-          {/* Suggested Agents (Available for Purchase) */}
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Available Agents</h2>
-              <p className="text-gray-600">Choose from our pre-built automation agents</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {suggestedAgents.map((agent) => (
-              <Card key={agent.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg">{agent.name}</CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">{agent.category}</p>
-                    </div>
-                    <Badge 
-                      variant={agent.status === 'active' ? 'default' : 'secondary'}
-                      className="capitalize"
-                    >
-                      {agent.status}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-gray-600">{agent.description}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Price:</span>
-                      <span className="font-semibold">${agent.price}/month</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">ROI:</span>
-                      <span className="text-green-600">{agent.estimatedROI}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Setup:</span>
-                      <span>{agent.setupTime}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-700">Features:</p>
-                    <div className="space-y-1">
-                      {agent.features.slice(0, 3).map((feature, index) => (
-                        <div key={index} className="flex items-center gap-2 text-xs text-gray-600">
-                          <CheckCircle className="h-3 w-3 text-green-500" />
-                          {feature}
-                        </div>
-                      ))}
-                      {agent.features.length > 3 && (
-                        <div className="text-xs style={{ color: 'var(--rensto-blue)' }}">
-                          +{agent.features.length - 3} more features
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    {agent.status === 'inactive' && (
-                      <Button 
-                        onClick={() => handleActivateAgent(agent.id)}
-                        className="flex-1"
-                      >
-                        Activate Agent
-                      </Button>
-                    )}
-                    {agent.status === 'pending' && (
-                      <Button variant="outline" className="flex-1" disabled>
-                        Configuring...
-                      </Button>
-                    )}
-                    {agent.status === 'active' && (
-                      <Button variant="outline" className="flex-1">
-                        Manage
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Custom Agent CTA */}
-          <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-            <CardContent className="p-6">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                  <Zap className="h-8 w-8 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">Need Something Custom?</h3>
-                  <p className="text-gray-600 mt-2">
-                    Can't find the right agent? Let me create a custom automation solution tailored to your specific business needs.
-                  </p>
-                </div>
-                <Button onClick={handleCustomAgent} className="bg-purple-600 hover:bg-purple-700">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Start Custom Agent Conversation
-                </Button>
+        <Card variant="renstoNeon" className="backdrop-blur-sm bg-rensto-bg-card/50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Activity className="w-5 h-5 text-rensto-blue" />
+              <div>
+                <p className="text-sm text-rensto-text-secondary">Active</p>
+                <p className="text-2xl font-bold text-rensto-text-primary">
+                  {agents.filter(a => a.status === 'active' || a.status === 'running').length}
+                </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card variant="renstoNeon" className="backdrop-blur-sm bg-rensto-bg-card/50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-rensto-orange" />
+              <div>
+                <p className="text-sm text-rensto-text-secondary">Success Rate</p>
+                <p className="text-2xl font-bold text-rensto-text-primary">
+                  {agents.length > 0 
+                    ? Math.round(agents.reduce((acc, agent) => acc + agent.successRate, 0) / agents.length)
+                    : 0}%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card variant="renstoNeon" className="backdrop-blur-sm bg-rensto-bg-card/50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <DollarSign className="w-5 h-5 text-rensto-red" />
+              <div>
+                <p className="text-sm text-rensto-text-secondary">Total Cost</p>
+                <p className="text-2xl font-bold text-rensto-text-primary">
+                  ${agents.reduce((acc, agent) => acc + agent.cost, 0).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Notifications */}
+      {notifications.length > 0 && (
+        <div className="space-y-2">
+          {notifications.map(notification => (
+            <div
+              key={notification.id}
+              className={`p-3 rounded-lg border ${
+                notification.type === 'success' 
+                  ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                  : notification.type === 'error'
+                  ? 'bg-red-500/10 border-red-500/20 text-red-400'
+                  : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Bell className="w-4 h-4" />
+                <span className="text-sm">{notification.message}</span>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {activeTab === 'chat' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Chat Interface */}
-          <div className="lg:col-span-2">
-            <Card className="h-[600px] flex flex-col">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5" />
-                  AI Assistant Chat
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col">
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-                  {currentConversation?.messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[80%] p-3 rounded-lg ${
-                          message.role === 'user'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-900'
-                        }`}
-                      >
-                        <p className="text-sm">{message.content}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+      {/* Agents Grid */}
+      <div ref={agentsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {agents.map(agent => (
+          <Card 
+            key={agent._id}
+            variant="renstoNeon" 
+            className={`backdrop-blur-sm bg-rensto-bg-card/50 border border-rensto-text-muted/20 hover:shadow-rensto-glow-primary transition-all duration-300 cursor-pointer ${
+              selectedAgent === agent._id ? 'ring-2 ring-rensto-cyan' : ''
+            }`}
+            onClick={() => setSelectedAgent(agent._id)}
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Bot className="w-5 h-5 text-rensto-cyan" />
+                  <CardTitle className="text-lg text-rensto-text-primary">{agent.name}</CardTitle>
                 </div>
+                <Badge 
+                  variant={agent.status === 'active' ? 'renstoSuccess' : agent.status === 'running' ? 'renstoInfo' : 'renstoWarning'}
+                  className="flex items-center space-x-1"
+                >
+                  {getStatusIcon(agent.status)}
+                  <span className="capitalize">{agent.status}</span>
+                </Badge>
+              </div>
+              <CardDescription className="text-rensto-text-secondary">
+                {agent.description}
+              </CardDescription>
+            </CardHeader>
 
-                {/* Input */}
-                <div className="flex gap-2">
-                  <Input
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    className="flex-1"
+            <CardContent className="space-y-4">
+              {/* Real-time Progress for Running Agents */}
+              {agent.status === 'running' && realTimeData[agent._id] && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-rensto-text-secondary">Progress</span>
+                    <span className="text-rensto-text-primary">
+                      {Math.round(realTimeData[agent._id].progress)}%
+                    </span>
+                  </div>
+                  <RenstoProgress 
+                    value={realTimeData[agent._id].progress} 
+                    fillAnimate={true}
+                    className="h-2"
                   />
-                  <Button onClick={handleSendMessage}>
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => setChatMessage('Show me the AI Content Generator details')}
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Content Agent
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => setChatMessage('I need customer support automation')}
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  Support Bot
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => setChatMessage('Show me data analysis options')}
-                >
-                  <Database className="h-4 w-4 mr-2" />
-                  Data Analysis
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => setChatMessage('I want to create a custom agent')}
-                >
-                  <Zap className="h-4 w-4 mr-2" />
-                  Custom Agent
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Conversation History</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {conversations.map((conv) => (
-                  <div
-                    key={conv.id}
-                    className="p-2 rounded border cursor-pointer hover:bg-gray-50"
-                    onClick={() => setCurrentConversation(conv)}
-                  >
-                    <p className="text-sm font-medium">
-                      {conv.type === 'chat' ? 'Chat' : 'Voice'} Conversation
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {conv.updatedAt.toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'voice' && (
-        <div className="text-center space-y-8">
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                  {isVoiceActive ? (
-                    <Volume2 className="h-12 w-12 style={{ color: 'var(--rensto-blue)' }}" />
-                  ) : (
-                    <VolumeX className="h-12 w-12 text-gray-400" />
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {isVoiceActive ? 'Voice Assistant Active' : 'Voice Assistant'}
-                  </h3>
-                  <p className="text-gray-600 mt-2">
-                    {isVoiceActive 
-                      ? 'Speak clearly to interact with your AI assistant'
-                      : 'Click the button below to start voice interaction'
-                    }
+                  <p className="text-xs text-rensto-text-secondary">
+                    {realTimeData[agent._id].currentStep}
                   </p>
                 </div>
+              )}
 
-                <Button
-                  onClick={toggleVoice}
-                  size="lg"
-                  className={`w-20 h-20 rounded-full ${
-                    isVoiceActive ? 'style={{ backgroundColor: 'var(--rensto-bg-primary)' }} hover:style={{ backgroundColor: 'var(--rensto-bg-primary)' }}' : 'bg-blue-600 hover:bg-blue-700'
-                  }`}
-                >
-                  {isListening ? (
-                    <div className="rensto-animate-pulse">
-                      <Mic className="h-8 w-8" />
-                    </div>
-                  ) : isVoiceActive ? (
-                    <MicOff className="h-8 w-8" />
-                  ) : (
-                    <Mic className="h-8 w-8" />
+              {/* Agent Stats */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-rensto-text-secondary">Success Rate</p>
+                  <p className="text-rensto-text-primary font-semibold">{agent.successRate}%</p>
+                </div>
+                <div>
+                  <p className="text-rensto-text-secondary">Total Runs</p>
+                  <p className="text-rensto-text-primary font-semibold">{agent.totalRuns}</p>
+                </div>
+                <div>
+                  <p className="text-rensto-text-secondary">Avg Time</p>
+                  <p className="text-rensto-text-primary font-semibold">{agent.averageExecutionTime}s</p>
+                </div>
+                <div>
+                  <p className="text-rensto-text-secondary">Cost</p>
+                  <p className="text-rensto-text-primary font-semibold">${agent.cost.toFixed(2)}</p>
+                </div>
+              </div>
+
+              {/* Last Run Info */}
+              {agent.lastRun && (
+                <div className="text-xs text-rensto-text-secondary">
+                  <p>Last run: {agent.lastRun.toLocaleString()}</p>
+                  {agent.nextRun && (
+                    <p>Next run: {agent.nextRun.toLocaleString()}</p>
                   )}
-                </Button>
+                </div>
+              )}
 
-                {isListening && (
-                  <div className="text-sm text-gray-500">
-                    Listening... Speak now
-                  </div>
+              {/* Action Buttons */}
+              <div className="flex space-x-2">
+                {agent.status === 'inactive' ? (
+                  <Button
+                    variant="renstoPrimary"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAgentToggle(agent._id, 'activate');
+                    }}
+                  >
+                    <Play className="w-4 h-4 mr-1" />
+                    Activate
+                  </Button>
+                ) : agent.status === 'active' ? (
+                  <>
+                    <Button
+                      variant="renstoPrimary"
+                      size="sm"
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAgentRun(agent._id);
+                      }}
+                    >
+                      <Zap className="w-4 h-4 mr-1" />
+                      Run Now
+                    </Button>
+                    <Button
+                      variant="renstoSecondary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAgentToggle(agent._id, 'deactivate');
+                      }}
+                    >
+                      <StopCircle className="w-4 h-4" />
+                    </Button>
+                  </>
+                ) : agent.status === 'running' ? (
+                  <Button
+                    variant="renstoWarning"
+                    size="sm"
+                    className="flex-1"
+                    disabled
+                  >
+                    <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                    Running...
+                  </Button>
+                ) : (
+                  <Button
+                    variant="renstoDanger"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAgentToggle(agent._id, 'activate');
+                    }}
+                  >
+                    <Settings className="w-4 h-4 mr-1" />
+                    Fix & Activate
+                  </Button>
                 )}
               </div>
             </CardContent>
           </Card>
+        ))}
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Phone className="h-8 w-8 style={{ color: 'var(--rensto-blue)' }} mx-auto mb-3" />
-                <h4 className="font-semibold mb-2">Voice Commands</h4>
-                <p className="text-sm text-gray-600">
-                  "Activate content agent"<br/>
-                  "Show me support options"<br/>
-                  "Create custom workflow"
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <MessageSquare className="h-8 w-8 text-green-600 mx-auto mb-3" />
-                <h4 className="font-semibold mb-2">Natural Language</h4>
-                <p className="text-sm text-gray-600">
-                  Ask questions naturally<br/>
-                  Describe your needs<br/>
-                  Get instant responses
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Activity className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                <h4 className="font-semibold mb-2">Real-time Processing</h4>
-                <p className="text-sm text-gray-600">
-                  Instant voice recognition<br/>
-                  Live conversation<br/>
-                  Seamless interaction
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'progress' && (
-        <div className="space-y-6">
-          {/* Progress Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                         <Card>
-               <CardContent className="p-6">
-                 <div className="flex items-center justify-between">
-                   <div>
-                     <p className="text-sm font-medium text-gray-600">Project Progress</p>
-                     <p className="text-2xl font-bold">60%</p>
-                   </div>
-                   <TrendingUp className="h-8 w-8 text-green-600" />
-                 </div>
-               </CardContent>
-             </Card>
-
-                         <Card>
-               <CardContent className="p-6">
-                 <div className="flex items-center justify-between">
-                   <div>
-                     <p className="text-sm font-medium text-gray-600">Active Agents</p>
-                     <p className="text-2xl font-bold">3</p>
-                   </div>
-                   <Bot className="h-8 w-8 style={{ color: 'var(--rensto-blue)' }}" />
-                 </div>
-               </CardContent>
-             </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Days Remaining</p>
-                    <p className="text-2xl font-bold">15</p>
+      {/* Selected Agent Details */}
+      {selectedAgent && (
+        <Card variant="renstoNeon" className="backdrop-blur-sm bg-rensto-bg-card/50">
+          <CardHeader>
+            <CardTitle className="text-rensto-text-primary">
+              Agent Details: {agents.find(a => a._id === selectedAgent)?.name}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <h4 className="font-semibold text-rensto-text-primary mb-2">Performance</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-rensto-text-secondary">Success Rate</span>
+                    <span className="text-rensto-text-primary">
+                      {agents.find(a => a._id === selectedAgent)?.successRate}%
+                    </span>
                   </div>
-                  <Clock className="h-8 w-8 text-orange-600" />
+                  <div className="flex justify-between">
+                    <span className="text-rensto-text-secondary">Total Runs</span>
+                    <span className="text-rensto-text-primary">
+                      {agents.find(a => a._id === selectedAgent)?.totalRuns}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-rensto-text-secondary">Avg Execution</span>
+                    <span className="text-rensto-text-primary">
+                      {agents.find(a => a._id === selectedAgent)?.averageExecutionTime}s
+                    </span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-
-                         <Card>
-               <CardContent className="p-6">
-                 <div className="flex items-center justify-between">
-                   <div>
-                     <p className="text-sm font-medium text-gray-600">Investment</p>
-                     <p className="text-2xl font-bold">$1,497</p>
-                   </div>
-                   <DollarSign className="h-8 w-8 text-green-600" />
-                 </div>
-               </CardContent>
-             </Card>
-          </div>
-
-          {/* Milestones */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Project Milestones
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {milestones.map((milestone) => (
-                  <div key={milestone.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-full ${getStatusColor(milestone.status)}`}>
-                        {getStatusIcon(milestone.status)}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold">{milestone.title}</h4>
-                        <p className="text-sm text-gray-600">{milestone.description}</p>
-                        {milestone.agents.length > 0 && (
-                          <div className="flex gap-2 mt-2">
-                            {milestone.agents.map((agent, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {agent}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">
-                        Due: {milestone.dueDate.toLocaleDateString()}
-                      </p>
-                      {milestone.completedAt && (
-                        <p className="text-xs text-green-600">
-                          Completed: {milestone.completedAt.toLocaleDateString()}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              
+              <div>
+                <h4 className="font-semibold text-rensto-text-primary mb-2">Cost Analysis</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-rensto-text-secondary">Total Cost</span>
+                    <span className="text-rensto-text-primary">
+                      ${agents.find(a => a._id === selectedAgent)?.cost.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-rensto-text-secondary">Cost per Run</span>
+                    <span className="text-rensto-text-primary">
+                      ${(agents.find(a => a._id === selectedAgent)?.cost || 0) / 
+                        (agents.find(a => a._id === selectedAgent)?.totalRuns || 1)}.toFixed(2)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold text-rensto-text-primary mb-2">Schedule</h4>
+                <div className="space-y-2 text-sm">
+                  {agents.find(a => a._id === selectedAgent)?.lastRun && (
+                    <div>
+                      <span className="text-rensto-text-secondary">Last Run:</span>
+                      <p className="text-rensto-text-primary">
+                        {agents.find(a => a._id === selectedAgent)?.lastRun?.toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                  {agents.find(a => a._id === selectedAgent)?.nextRun && (
+                    <div>
+                      <span className="text-rensto-text-secondary">Next Run:</span>
+                      <p className="text-rensto-text-primary">
+                        {agents.find(a => a._id === selectedAgent)?.nextRun?.toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
