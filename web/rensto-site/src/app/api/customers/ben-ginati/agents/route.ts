@@ -97,7 +97,7 @@ export async function GET() {
       Object.values(BEN_AGENTS).map(async (agent) => {
         try {
           // Get workflow details
-          const workflow = workflows.find((w: any) => w.id === agent.n8nWorkflowId);
+          const workflow = workflows.find((w: { id: string; active?: boolean }) => w.id === agent.n8nWorkflowId);
           
           // Get recent executions
           const executionsResponse = await axios.get(
@@ -115,14 +115,14 @@ export async function GET() {
           
           // Calculate metrics
           const totalExecutions = executions.length;
-          const successfulExecutions = executions.filter((e: any) => e.status === 'success').length;
+          const successfulExecutions = executions.filter((e: { status: string }) => e.status === 'success').length;
           const successRate = totalExecutions > 0 ? (successfulExecutions / totalExecutions) * 100 : 0;
           const lastRun = executions.length > 0 ? executions[0].startedAt : null;
           
           // Calculate average duration
-          const completedExecutions = executions.filter((e: any) => e.stoppedAt && e.startedAt);
+          const completedExecutions = executions.filter((e: { stoppedAt?: string; startedAt?: string }) => e.stoppedAt && e.startedAt);
           const avgDuration = completedExecutions.length > 0 
-            ? completedExecutions.reduce((sum: number, e: any) => {
+            ? completedExecutions.reduce((sum: number, e: { stoppedAt: string; startedAt: string }) => {
                 const duration = new Date(e.stoppedAt) - new Date(e.startedAt);
                 return sum + duration;
               }, 0) / completedExecutions.length / 1000 // Convert to seconds
@@ -171,7 +171,7 @@ export async function GET() {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Failed to fetch Ben\'s agents:', error.message);
     
     return NextResponse.json({
@@ -224,18 +224,26 @@ export async function POST(request: NextRequest) {
         }, { status: 400 });
     }
 
-  } catch (error: any) {
-    console.error('❌ Agent action failed:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Agent action failed:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to execute agent action',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
 
-async function runAgent(agent: any, data: any) {
+interface AgentData {
+  topic?: string;
+  language?: string;
+  tone?: string;
+  [key: string]: unknown;
+}
+
+async function runAgent(agent: { name: string; webhookUrl: string }, data?: AgentData) {
   try {
     console.log(`🚀 Running agent: ${agent.name}`);
     
@@ -262,18 +270,19 @@ async function runAgent(agent: any, data: any) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error: any) {
-    console.error(`❌ Failed to run agent ${agent.name}:`, error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`❌ Failed to run agent ${agent.name}:`, errorMessage);
     
     return NextResponse.json({
       success: false,
       error: `Failed to run ${agent.name}`,
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
 
-async function activateAgent(agent: any) {
+async function activateAgent(agent: { name: string; n8nWorkflowId: string }) {
   try {
     console.log(`🔄 Activating agent: ${agent.name}`);
     
@@ -292,18 +301,19 @@ async function activateAgent(agent: any) {
       status: 'active'
     });
 
-  } catch (error: any) {
-    console.error(`❌ Failed to activate agent ${agent.name}:`, error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`❌ Failed to activate agent ${agent.name}:`, errorMessage);
     
     return NextResponse.json({
       success: false,
       error: `Failed to activate ${agent.name}`,
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
 
-async function deactivateAgent(agent: any) {
+async function deactivateAgent(agent: { name: string; n8nWorkflowId: string }) {
   try {
     console.log(`⏸️ Deactivating agent: ${agent.name}`);
     
@@ -322,18 +332,19 @@ async function deactivateAgent(agent: any) {
       status: 'inactive'
     });
 
-  } catch (error: any) {
-    console.error(`❌ Failed to deactivate agent ${agent.name}:`, error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`❌ Failed to deactivate agent ${agent.name}:`, errorMessage);
     
     return NextResponse.json({
       success: false,
       error: `Failed to deactivate ${agent.name}`,
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
 
-async function getAgentMetrics(agent: any) {
+async function getAgentMetrics(agent: { name: string; n8nWorkflowId: string }) {
   try {
     console.log(`📊 Getting metrics for agent: ${agent.name}`);
     
@@ -352,19 +363,19 @@ async function getAgentMetrics(agent: any) {
     
     const metrics = {
       totalExecutions: executions.length,
-      successfulExecutions: executions.filter((e: any) => e.status === 'success').length,
-      failedExecutions: executions.filter((e: any) => e.status === 'error').length,
+      successfulExecutions: executions.filter((e: { status: string }) => e.status === 'success').length,
+      failedExecutions: executions.filter((e: { status: string }) => e.status === 'error').length,
       successRate: executions.length > 0 
-        ? (executions.filter((e: any) => e.status === 'success').length / executions.length) * 100 
+        ? (executions.filter((e: { status: string }) => e.status === 'success').length / executions.length) * 100 
         : 0,
       lastRun: executions.length > 0 ? executions[0].startedAt : null,
       averageExecutionTime: 0
     };
 
     // Calculate average execution time
-    const completedExecutions = executions.filter((e: any) => e.stoppedAt && e.startedAt);
+    const completedExecutions = executions.filter((e: { stoppedAt?: string; startedAt?: string }) => e.stoppedAt && e.startedAt);
     if (completedExecutions.length > 0) {
-      const totalTime = completedExecutions.reduce((sum: number, e: any) => {
+      const totalTime = completedExecutions.reduce((sum: number, e: { stoppedAt: string; startedAt: string }) => {
         return sum + (new Date(e.stoppedAt) - new Date(e.startedAt));
       }, 0);
       metrics.averageExecutionTime = totalTime / completedExecutions.length / 1000; // Convert to seconds
@@ -376,13 +387,14 @@ async function getAgentMetrics(agent: any) {
       metrics
     });
 
-  } catch (error: any) {
-    console.error(`❌ Failed to get metrics for ${agent.name}:`, error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`❌ Failed to get metrics for ${agent.name}:`, errorMessage);
     
     return NextResponse.json({
       success: false,
       error: `Failed to get metrics for ${agent.name}`,
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }

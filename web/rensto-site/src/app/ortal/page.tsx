@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { RenstoProgress } from '@/components/ui/rensto-progress';
 import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
+import { AIAnalysisEngine, RealTimeAnalytics } from '@/lib/real-time-analytics';
 import {
   BarChart3,
   Bot,
@@ -288,7 +289,6 @@ export default function OrtalPortal() {
           setAiInsights(data.insights || []);
         } else {
           // Generate insights based on current analytics data
-          const { AIAnalysisEngine } = require('@/lib/real-time-analytics');
           const insights = await AIAnalysisEngine.generateInsights(
             facebookAnalytics
           );
@@ -318,7 +318,6 @@ export default function OrtalPortal() {
   // Real-time analytics
   const [realTimeAnalytics] = useState(() => {
     if (typeof window !== 'undefined') {
-      const { RealTimeAnalytics } = require('@/lib/real-time-analytics');
       return new RealTimeAnalytics();
     }
     return null;
@@ -408,7 +407,7 @@ export default function OrtalPortal() {
         setAgents(prev =>
           prev.map(agent =>
             agent._id === agentId
-              ? { ...agent, schedule: schedule as any }
+              ? { ...agent, schedule: schedule as Agent['schedule'] }
               : agent
           )
         );
