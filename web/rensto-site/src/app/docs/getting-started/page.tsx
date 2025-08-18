@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { CheckCircle, ArrowRight, Play, Users, Settings, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Getting Started - Rensto Business System',
@@ -128,13 +129,13 @@ export default function GettingStartedPage() {
           </div>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <a
+            <Link
               href="/portal"
               className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Get Started Now
               <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -163,35 +164,35 @@ export default function GettingStartedPage() {
 
         {/* Next Steps */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">What's Next?</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">What&apos;s Next?</h2>
           <p className="text-gray-600 mb-6">
-            Now that you're familiar with the basics, explore these resources to get the most out of Rensto:
+            Now that you&apos;re familiar with the basics, explore these resources to get the most out of Rensto:
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a
+            <Link
               href="/docs/agents"
               className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <h3 className="font-semibold text-gray-900 mb-2">Agent Management</h3>
               <p className="text-sm text-gray-600">Learn how to create and manage automation agents</p>
-            </a>
+            </Link>
             
-            <a
+            <Link
               href="/docs/analytics"
               className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <h3 className="font-semibold text-gray-900 mb-2">Analytics Guide</h3>
               <p className="text-sm text-gray-600">Understand your data and get actionable insights</p>
-            </a>
+            </Link>
             
-            <a
+            <Link
               href="/docs/api-reference"
               className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <h3 className="font-semibold text-gray-900 mb-2">API Reference</h3>
               <p className="text-sm text-gray-600">Integrate Rensto with your existing systems</p>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -204,19 +205,19 @@ export default function GettingStartedPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/docs/support"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
               >
                 Contact Support
-              </a>
+              </Link>
               
-              <a
+              <Link
                 href="/docs/troubleshooting"
                 className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Troubleshooting Guide
-              </a>
+              </Link>
             </div>
           </div>
         </div>

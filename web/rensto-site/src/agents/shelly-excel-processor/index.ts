@@ -15,7 +15,7 @@ export interface Policy {
   id: string;
   type: string;
   premium: number;
-  details: Record<string, any>;
+  details: Record<string, string | number | boolean>;
 }
 
 export interface FamilyProfile {

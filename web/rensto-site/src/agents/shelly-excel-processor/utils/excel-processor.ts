@@ -35,7 +35,7 @@ async function processSingleFile(file: File): Promise<FamilyMember> {
   
   // Process each row starting from row 5 (where actual data begins)
   for (let i = 5; i < data.length; i++) {
-    const row = data[i] as any[];
+    const row = data[i] as (string | number | boolean | null)[];
     
     // Skip empty rows
     if (!row || !row[0] || String(row[0]).trim() === '') {
@@ -66,7 +66,7 @@ function extractMemberName(filename: string): string {
   return nameMatch ? nameMatch[1].trim() : 'Unknown Member';
 }
 
-function extractPolicyData(row: any[]): Policy | null {
+function extractPolicyData(row: (string | number | boolean | null)[]): Policy | null {
   try {
     const id = String(row[0] || '').trim();
     if (!id) return null;
@@ -86,7 +86,7 @@ function extractPolicyData(row: any[]): Policy | null {
     }
     
     // Extract additional details
-    const details: Record<string, any> = {};
+    const details: Record<string, string | number | boolean> = {};
     if (row[3]) details.company = String(row[3]);
     if (row[4]) details.policyNumber = String(row[4]);
     if (row[5]) details.startDate = String(row[5]);

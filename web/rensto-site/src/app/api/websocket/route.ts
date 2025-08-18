@@ -62,8 +62,9 @@ export async function GET(req: NextRequest) {
 }
 
 // Generate WebSocket accept key
+import crypto from 'crypto';
+
 function generateWebSocketAccept(key: string): string {
-  const crypto = require('crypto');
   const magic = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
   const hash = crypto.createHash('sha1').update(key + magic).digest('base64');
   return hash;

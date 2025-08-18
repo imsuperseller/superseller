@@ -24,7 +24,7 @@ async function getReports(req: NextRequest, context: unknown) {
 
     const collection = getCollection(COLLECTIONS.reports);
 
-    let query: unknown = {};
+    const query: unknown = {};
     if (type) {
       query.type = type;
     }

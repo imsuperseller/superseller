@@ -167,7 +167,7 @@ export default function AgentCatalogPage() {
     });
   };
 
-  const formatSchema = (schema: any) => {
+  const formatSchema = (schema: Record<string, unknown> | null | undefined) => {
     if (typeof schema === 'object') {
       return Object.keys(schema).length + ' fields';
     }
