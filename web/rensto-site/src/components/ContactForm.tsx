@@ -103,7 +103,7 @@ export function ContactForm() {
         </div>
         <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
         <p className="text-muted mb-6">
-          Thank you for reaching out. We'll get back to you within 24 hours.
+          Thank you for reaching out. We&apos;ll get back to you within 24 hours.
         </p>
         <button
           onClick={() => setSubmitStatus('idle')}
@@ -118,10 +118,10 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {submitStatus === 'error' && (
-        <div className="card style={{ backgroundColor: 'var(--rensto-bg-primary)' }}/10 border-red-500/20">
+        <div className="card bg-red-50 border-red-500/20">
           <div className="flex items-center space-x-3">
-            <AlertCircle className="w-5 h-5 style={{ color: 'var(--rensto-red)' }} flex-shrink-0" />
-            <p className="style={{ color: 'var(--rensto-red)' }}">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-red-600">
               Something went wrong. Please try again or email us directly.
             </p>
           </div>
@@ -144,7 +144,7 @@ export function ContactForm() {
             placeholder="Your full name"
           />
           {errors.name && (
-            <p className="style={{ color: 'var(--rensto-red)' }} text-sm mt-1">{errors.name}</p>
+            <p className="text-red-600 text-sm mt-1">{errors.name}</p>
           )}
         </div>
 
@@ -163,7 +163,7 @@ export function ContactForm() {
             placeholder="your@email.com"
           />
           {errors.email && (
-            <p className="style={{ color: 'var(--rensto-red)' }} text-sm mt-1">{errors.email}</p>
+            <p className="text-red-600 text-sm mt-1">{errors.email}</p>
           )}
         </div>
       </div>

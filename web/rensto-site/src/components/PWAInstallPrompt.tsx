@@ -79,7 +79,7 @@ export default function PWAInstallPrompt() {
         <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm z-50">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-3">
-              <Download className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }}" />
+              <Download className="h-5 w-5 text-blue-600" />
               <div>
                 <h3 className="text-sm font-medium text-gray-900">
                   Install Rensto
@@ -161,7 +161,7 @@ export default function PWAInstallPrompt() {
         <div className="fixed top-4 right-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3 z-50">
           <div className="flex items-center space-x-2">
             <WifiOff className="h-4 w-4 text-yellow-600" />
-            <span className="text-sm text-yellow-800">You're offline</span>
+            <span className="text-sm text-yellow-800">You&apos;re offline</span>
           </div>
         </div>
       )}

@@ -66,9 +66,9 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
 
         <div className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium style={{ color: 'var(--rensto-blue)' }}">What's Next?</h3>
-            <ul className="mt-2 text-sm style={{ color: 'var(--rensto-blue)' }} space-y-1">
-              <li>• You'll receive a confirmation email shortly</li>
+            <h3 className="text-sm font-medium text-blue-600">What&apos;s Next?</h3>
+            <ul className="mt-2 text-sm text-blue-600 space-y-1">
+              <li>• You&apos;ll receive a confirmation email shortly</li>
               <li>• Your product will be available in your dashboard</li>
               <li>• Our team will reach out if setup is required</li>
             </ul>
@@ -94,7 +94,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
         <div className="text-center">
           <p className="text-xs text-gray-500">
             Need help? Contact us at{' '}
-            <a href="mailto:support@rensto.com" className="style={{ color: 'var(--rensto-blue)' }} hover:style={{ color: 'var(--rensto-blue)' }}">
+            <a href="mailto:support@rensto.com" className="text-blue-600 hover:text-blue-700">
               support@rensto.com
             </a>
           </p>

@@ -79,7 +79,7 @@ export function Features() {
             Why Choose Rensto?
           </h2>
           <p className="text-xl text-muted max-w-2xl mx-auto">
-            We deliver automations that actually work, with a process that's transparent and results you can measure.
+            We deliver automations that actually work, with a process that&apos;s transparent and results you can measure.
           </p>
         </div>
 

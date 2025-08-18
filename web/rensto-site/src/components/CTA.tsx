@@ -35,7 +35,7 @@ export function CTA() {
           Ready to Automate Your Business?
         </h2>
         <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-          Stop wasting time on manual tasks. Let's build automations that work for your business, not against it.
+          Stop wasting time on manual tasks. Let&apos;s build automations that work for your business, not against it.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">

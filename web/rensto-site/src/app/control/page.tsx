@@ -197,7 +197,7 @@ export default function AdminDashboard() {
                 Dashboard Overview
               </h2>
               <p className="text-slate-600">
-                Welcome back! Here's what's happening with your
+                Welcome back! Here&apos;s what&apos;s happening with your
                 business.
               </p>
             </div>
@@ -239,7 +239,7 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <FolderOpen className="w-6 h-6 style={{ color: 'var(--rensto-blue)' }}" />
+                    <FolderOpen className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
               </div>
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
                     <p className="text-2xl font-bold text-slate-900">
                       {stats.invoices.pending}
                     </p>
-                    <p className="text-sm style={{ color: 'var(--rensto-red)' }} flex items-center mt-1">
+                    <p className="text-sm text-red-600 flex items-center mt-1">
                       <AlertCircle className="w-4 h-4 mr-1" />
                       {stats.invoices.overdue} overdue
                     </p>

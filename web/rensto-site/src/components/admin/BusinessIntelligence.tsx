@@ -473,7 +473,7 @@ export default function BusinessIntelligence({
                         variant={alert.enabled ? 'default' : 'secondary'}
                         className={
                           alert.severity === 'critical'
-                            ? 'style={{ backgroundColor: 'var(--rensto-bg-primary)' }} style={{ color: 'var(--rensto-red)' }}'
+                            ? 'bg-red-100 text-red-800'
                             : ''
                         }
                       >

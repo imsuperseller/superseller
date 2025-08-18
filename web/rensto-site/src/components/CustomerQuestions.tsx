@@ -229,7 +229,7 @@ export function CustomerQuestions({ customerId, questions, onQuestionUpdate, onA
                   <h4 className="font-semibold mb-2">Assigned To</h4>
                   <div className="flex items-center space-x-2">
                     {selectedQuestion.assignedTo === 'customer' ? (
-                      <span className="px-3 py-1 bg-blue-100 style={{ color: 'var(--rensto-blue)' }} rounded-full text-sm">
+                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                         Your Action Required
                       </span>
                     ) : (
