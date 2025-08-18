@@ -41,7 +41,7 @@ export default function OrtalDashboard() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white rensto-animate-fadeIn">
-                  Ortal's Facebook Leads Dashboard
+                  Ortal&apos;s Facebook Leads Dashboard
                 </h1>
                 <p className="mt-1" style={{ color: 'var(--rensto-cyan)' }}>
                   5,548 Qualified Leads from Facebook Groups

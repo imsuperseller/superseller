@@ -190,7 +190,6 @@ export default function ProjectsPage() {
   ];
 
   const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-  const totalSpent = projects.reduce((sum, p) => sum + p.spent, 0);
   const activeProjects = projects.filter(p => p.status === 'active').length;
   const overdueProjects = projects.filter(
     p => getDaysUntilDue(p.dueDate) < 0 && p.status !== 'complete'

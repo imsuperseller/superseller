@@ -18,7 +18,6 @@ import {
   Tag,
   Eye,
   Edit,
-  Trash2,
   Download,
 } from 'lucide-react';
 

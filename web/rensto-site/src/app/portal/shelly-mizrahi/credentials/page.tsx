@@ -20,7 +20,13 @@ export default function ShellyCredentialsPage() {
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [chatAgent, setChatAgent] = useState<any>(null);
+  const [chatAgent, setChatAgent] = useState<{
+    helpWithCredentials: (credentialName: string) => Promise<{
+      title: string;
+      steps: string[];
+      example: Record<string, unknown>;
+    }>;
+  } | null>(null);
 
   useEffect(() => {
     loadIntegrationStatus();
@@ -102,7 +108,7 @@ export default function ShellyCredentialsPage() {
     setChatAgent(agent);
   };
 
-  const handleCredentialSubmit = async (credentialName: string, values: any) => {
+  const handleCredentialSubmit = async (credentialName: string, values: Record<string, unknown>) => {
     try {
       const response = await fetch('/api/customers/shelly-mizrahi/credentials', {
         method: 'POST',
@@ -266,10 +272,28 @@ export default function ShellyCredentialsPage() {
 }
 
 // Credential Form Component
-function CredentialForm({ credential, onSubmit, chatAgent }: any) {
+function CredentialForm({ 
+  credential, 
+  onSubmit, 
+  chatAgent 
+}: {
+  credential: Credential;
+  onSubmit: (credentialName: string, values: Record<string, unknown>) => void;
+  chatAgent: {
+    helpWithCredentials: (credentialName: string) => Promise<{
+      title: string;
+      steps: string[];
+      example: Record<string, unknown>;
+    }>;
+  } | null;
+}) {
   const [showHelp, setShowHelp] = useState(false);
-  const [helpInfo, setHelpInfo] = useState<any>(null);
-  const [formData, setFormData] = useState<any>({});
+  const [helpInfo, setHelpInfo] = useState<{
+    title: string;
+    steps: string[];
+    example: Record<string, unknown>;
+  } | null>(null);
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
 
   const handleHelpClick = async () => {
     if (chatAgent) {

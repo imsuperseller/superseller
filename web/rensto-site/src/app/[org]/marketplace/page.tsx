@@ -151,7 +151,6 @@ const categories = [
 const complexities = ['All Levels', 'Beginner', 'Intermediate', 'Advanced'];
 
 export default function MarketplacePage({
-  params: _params,
 }: MarketplacePageProps) {
   const [selectedProduct, setSelectedProduct] = useState<typeof mockProducts[0] | null>(null);
 
