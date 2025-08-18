@@ -8,7 +8,7 @@ const API_CONFIG = {
 };
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -117,7 +117,7 @@ class ApiClient {
   }
 
   // Generic HTTP methods
-  async get<T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, params?: Record<string, string | number | boolean>): Promise<ApiResponse<T>> {
     const url = params ? `${endpoint}?${new URLSearchParams(params)}` : endpoint;
     return this.makeRequest<T>(url, { method: 'GET' });
   }

@@ -7,7 +7,7 @@ export interface WorkflowTrigger {
   config: {
     cron?: string;
     eventType?: string;
-    conditions?: Record<string, any>;
+    conditions?: Record<string, string | number | boolean>;
     webhookUrl?: string;
   };
 }
@@ -55,7 +55,7 @@ export interface Workflow {
   status: 'draft' | 'active' | 'paused' | 'archived';
   trigger: WorkflowTrigger;
   steps: WorkflowStep[];
-  variables: Record<string, any>;
+  variables: Record<string, string | number | boolean>;
   metadata: {
     version: number;
     createdAt: Date;
@@ -73,8 +73,8 @@ export interface WorkflowExecution {
   orgId: string;
   status: 'running' | 'completed' | 'failed' | 'cancelled';
   currentStep?: string;
-  stepResults: Record<string, any>;
-  variables: Record<string, any>;
+  stepResults: Record<string, unknown>;
+  variables: Record<string, string | number | boolean>;
   startedAt: Date;
   completedAt?: Date;
   error?: {

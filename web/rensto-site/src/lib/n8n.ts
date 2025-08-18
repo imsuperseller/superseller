@@ -37,8 +37,8 @@ export interface N8nWorkflow {
   name: string;
   active: boolean;
   nodes: N8nNode[];
-  connections: Record<string, any>;
-  settings: Record<string, any>;
+  connections: Record<string, unknown>;
+  settings: Record<string, string | number | boolean>;
   tags: string[];
   versionId: string;
   createdAt: string;
@@ -52,9 +52,9 @@ export interface N8nNode {
   type: string;
   typeVersion: number;
   position: [number, number];
-  parameters: Record<string, any>;
+  parameters: Record<string, string | number | boolean>;
   webhookId?: string;
-  credentials?: Record<string, any>;
+  credentials?: Record<string, string | number | boolean>;
 }
 
 // n8n execution interface
@@ -64,7 +64,7 @@ export interface N8nExecution {
   status: ExecutionStatus;
   startedAt: string;
   stoppedAt?: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   error?: {
     message: string;
     stack?: string;

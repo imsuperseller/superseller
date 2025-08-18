@@ -22,7 +22,7 @@ export interface MetricValue {
   metricId: string;
   value: number;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean>;
 }
 
 export interface ReportDefinition {
@@ -49,7 +49,7 @@ export interface ReportFilter {
 
 export interface VisualizationConfig {
   type: 'line' | 'bar' | 'pie' | 'table' | 'gauge' | 'heatmap';
-  options: Record<string, any>;
+  options: Record<string, string | number | boolean>;
   layout?: {
     width: number;
     height: number;
@@ -90,7 +90,7 @@ export interface ForecastModel {
   description: string;
   metricId: string;
   algorithm: 'linear' | 'exponential' | 'arima' | 'prophet' | 'neural';
-  parameters: Record<string, any>;
+  parameters: Record<string, string | number | boolean>;
   trainingData: {
     startDate: Date;
     endDate: Date;
@@ -448,7 +448,7 @@ export class BusinessIntelligenceService {
   async generateReport(
     reportId: string,
     filters?: ReportFilter[]
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const report = await this.getReport(reportId);
     if (!report) throw new Error('Report not found');
 
@@ -500,7 +500,7 @@ export class BusinessIntelligenceService {
     return this.dashboards.delete(id);
   }
 
-  async getDashboardData(dashboardId: string): Promise<any> {
+  async getDashboardData(dashboardId: string): Promise<Record<string, unknown>> {
     const dashboard = await this.getDashboard(dashboardId);
     if (!dashboard) throw new Error('Dashboard not found');
 

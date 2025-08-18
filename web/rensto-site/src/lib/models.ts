@@ -75,7 +75,7 @@ export interface Agent extends BaseDocument {
     n8nWebhookUrl?: string;
     triggers: string[];
     dataSources: string[];
-    settings: Record<string, any>;
+    settings: Record<string, string | number | boolean>;
   };
   metrics: {
     totalRuns: number;
@@ -98,8 +98,8 @@ export interface AgentRun extends BaseDocument {
   startedAt: Date;
   endedAt?: Date;
   durationMs: number;
-  input: Record<string, any>;
-  output?: Record<string, any>;
+  input: Record<string, string | number | boolean>;
+  output?: Record<string, string | number | boolean>;
   error?: {
     message: string;
     stack?: string;
@@ -120,8 +120,8 @@ export interface DataSource extends BaseDocument {
   type: 'stripe' | 'typeform' | 'webhook' | 'mongodb' | 'api';
   status: 'connected' | 'disconnected' | 'error';
   config: {
-    credentials: Record<string, any>;
-    settings: Record<string, any>;
+    credentials: Record<string, string | number | boolean>;
+    settings: Record<string, string | number | boolean>;
     webhookUrl?: string;
   };
   lastSyncAt?: Date;
@@ -140,7 +140,7 @@ export interface Event extends BaseDocument {
   action: string;
   resource: string;
   resourceId?: ObjectId;
-  metadata: Record<string, any>;
+  metadata: Record<string, string | number | boolean>;
   ipAddress?: string;
   userAgent?: string;
 }
@@ -167,7 +167,7 @@ export interface Subscription extends BaseDocument {
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
   cancelAtPeriodEnd: boolean;
-  metadata: Record<string, any>;
+  metadata: Record<string, string | number | boolean>;
 }
 
 // Collection names

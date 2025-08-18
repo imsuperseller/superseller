@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 // Real-time Analytics System
 export class RealTimeAnalytics {
   private socket: Socket | null = null;
-  private callbacks: Map<string, Function[]> = new Map();
+  private callbacks: Map<string, ((data: unknown) => void)[]> = new Map();
 
   constructor() {
     this.initializeWebSocket();
@@ -41,14 +41,14 @@ export class RealTimeAnalytics {
     callbacks.forEach(callback => callback(data));
   }
 
-  public on(event: string, callback: Function) {
+  public on(event: string, callback: (data: unknown) => void) {
     if (!this.callbacks.has(event)) {
       this.callbacks.set(event, []);
     }
     this.callbacks.get(event)!.push(callback);
   }
 
-  public off(event: string, callback: Function) {
+  public off(event: string, callback: (data: unknown) => void) {
     const callbacks = this.callbacks.get(event) || [];
     const index = callbacks.indexOf(callback);
     if (index > -1) {
