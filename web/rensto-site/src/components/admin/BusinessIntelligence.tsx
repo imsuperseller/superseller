@@ -104,7 +104,7 @@ export default function BusinessIntelligence({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'critical':
-        return 'style={{ color: 'var(--rensto-red)' }} style={{ backgroundColor: 'var(--rensto-bg-primary)' }}';
+        return 'text-red-600 bg-red-100';
       case 'warning':
         return 'text-yellow-600 bg-yellow-100';
       case 'normal':

@@ -77,9 +77,9 @@ export default function DataPopulation({ className = '' }: DataPopulationProps) 
       case 'success':
         return 'text-green-600 bg-green-100';
       case 'error':
-        return 'style={{ color: 'var(--rensto-red)' }} style={{ backgroundColor: 'var(--rensto-bg-primary)' }}';
+        return 'text-red-600 bg-red-100';
       case 'loading':
-        return 'style={{ color: 'var(--rensto-blue)' }} bg-blue-100';
+        return 'text-blue-600 bg-blue-100';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -108,8 +108,8 @@ export default function DataPopulation({ className = '' }: DataPopulationProps) 
       {message && (
         <div className={`p-4 rounded-lg ${
           status === 'success' ? 'bg-green-50 text-green-800' :
-          status === 'error' ? 'style={{ backgroundColor: 'var(--rensto-bg-primary)' }} style={{ color: 'var(--rensto-red)' }}' :
-          'bg-blue-50 style={{ color: 'var(--rensto-blue)' }}'
+          status === 'error' ? 'bg-red-50 text-red-800' :
+          'bg-blue-50 text-blue-800'
         }`}>
           {message}
         </div>
@@ -119,7 +119,7 @@ export default function DataPopulation({ className = '' }: DataPopulationProps) 
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Database className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }}" />
+              <Database className="h-5 w-5 text-blue-600" />
               <CardTitle className="text-lg">Organizations</CardTitle>
             </div>
           </CardHeader>

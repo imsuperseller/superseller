@@ -1,7 +1,6 @@
 import { Plus, Play, Pause, Settings, Trash2, Copy, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 import { Agent } from '@/types/agent';
-import { RenstoProgress } from '@/components/ui/rensto-progress';
-import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
 
 interface AgentsPageProps {
   params: Promise<{ org: string }>;

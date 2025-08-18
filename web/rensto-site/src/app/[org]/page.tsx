@@ -80,7 +80,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Welcome back!</h1>
           <p className="text-slate-600 mt-1">
-            Here's what's happening with your automation today.
+            Here&apos;s what&apos;s happening with your automation today.
           </p>
         </div>
         <div className="flex items-center space-x-4">

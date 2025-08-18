@@ -77,7 +77,7 @@ export default function SearchBar({ placeholder = "Search...", onSearch, classNa
   const getResultColor = (type: string) => {
     switch (type) {
       case 'agent':
-        return 'style={{ color: 'var(--rensto-blue)' }} bg-blue-100';
+        return 'text-blue-600 bg-blue-100';
       case 'customer':
         return 'text-green-600 bg-green-100';
       case 'organization':

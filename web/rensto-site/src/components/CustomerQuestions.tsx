@@ -50,7 +50,7 @@ export function CustomerQuestions({ customerId, questions, onQuestionUpdate, onA
   const getPriorityColor = (priority: Question['priority']) => {
     switch (priority) {
       case 'urgent':
-        return 'border-red-500 style={{ backgroundColor: 'var(--rensto-bg-primary)' }}';
+        return 'border-red-500 bg-red-50';
       case 'high':
         return 'border-orange-500 bg-orange-50';
       case 'medium':
@@ -114,7 +114,7 @@ export function CustomerQuestions({ customerId, questions, onQuestionUpdate, onA
             onClick={() => setFilter(filterOption)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               filter === filterOption
-                ? 'bg-blue-100 style={{ color: 'var(--rensto-blue)' }}'
+                ? 'bg-blue-100 text-blue-700'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -144,7 +144,7 @@ export function CustomerQuestions({ customerId, questions, onQuestionUpdate, onA
                   <div className="flex items-center space-x-3 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">{question.title}</h3>
                     {question.assignedTo === 'customer' && (
-                      <span className="px-2 py-1 text-xs bg-blue-100 style={{ color: 'var(--rensto-blue)' }} rounded-full">
+                      <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
                         Your Action
                       </span>
                     )}

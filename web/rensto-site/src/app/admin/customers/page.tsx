@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge';
-import { RenstoProgress } from '@/components/ui/rensto-progress';
-import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
 import { 
   Users, 
   ExternalLink, 
