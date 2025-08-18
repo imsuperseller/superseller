@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-08-17T18:49:08.211Z",
+  "activationResults": [
+    {
+      "name": "Customer Onboarding Automation",
+      "status": "activation_failed",
+      "success": false,
+      "requiredCredentials": [
+        "airtableApi",
+        "smtp"
+      ]
+    },
+    {
+      "name": "Lead-to-Customer Pipeline",
+      "status": "activation_failed",
+      "success": false,
+      "requiredCredentials": [
+        "smtp",
+        "airtableApi"
+      ]
+    },
+    {
+      "name": "Finance Unpaid Invoices",
+      "status": "activation_failed",
+      "success": false,
+      "requiredCredentials": [
+        "airtableApi",
+        "slackApi",
+        "smtp"
+      ]
+    },
+    {
+      "name": "Assets Renewals < 30d",
+      "status": "activation_failed",
+      "success": false,
+      "requiredCredentials": [
+        "airtableApi",
+        "slackApi",
+        "smtp"
+      ]
+    },
+    {
+      "name": "Projects — In Progress Digest (uses 🔨 In Progress view)",
+      "status": "activation_failed",
+      "success": false,
+      "requiredCredentials": [
+        "airtableApi",
+        "slackApi",
+        "smtp"
+      ]
+    }
+  ],
+  "finalVerification": {
+    "totalCritical": 8,
+    "activeCritical": 0,
+    "activeWorkflows": []
+  }
+}

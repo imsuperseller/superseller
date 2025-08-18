@@ -1,50 +1,48 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { env } from "@/lib/env";
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Providers from '@/components/Providers';
+import { RouteAwareLayout } from '@/components/RouteAwareLayout';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: {
-    default: env.NEXT_PUBLIC_SITE_NAME,
-    template: `%s | ${env.NEXT_PUBLIC_SITE_NAME}`,
-  },
-  description: "Automations that ship in days — not months. Transform your manual processes into intelligent workflows.",
-  keywords: ["automation", "n8n", "workflows", "business process", "SMB", "Amazon sellers"],
-  authors: [{ name: "Shai Friedman" }],
-  creator: "Shai Friedman",
-  publisher: "Rensto LLC",
+  title: 'Rensto - Business Automation & AI Agents',
+  description:
+    'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+  keywords:
+    'business automation, AI agents, workflow automation, n8n, artificial intelligence',
+  authors: [{ name: 'Rensto' }],
+  creator: 'Rensto',
+  publisher: 'Rensto',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://rensto.com'),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
+    title: 'Rensto - Business Automation & AI Agents',
+    description:
+      'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
     url: 'https://rensto.com',
-    title: env.NEXT_PUBLIC_SITE_NAME,
-    description: "Automations that ship in days — not months. Transform your manual processes into intelligent workflows.",
-    siteName: env.NEXT_PUBLIC_SITE_NAME,
+    siteName: 'Rensto',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Rensto - Automations that ship in days',
+        alt: 'Rensto - Business Automation & AI Agents',
       },
     ],
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: env.NEXT_PUBLIC_SITE_NAME,
-    description: "Automations that ship in days — not months. Transform your manual processes into intelligent workflows.",
-    images: ['/opengraph-image.png'],
+    title: 'Rensto - Business Automation & AI Agents',
+    description:
+      'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -62,25 +60,28 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#110d28' },
+  ],
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="dark">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#0B1318" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
+    <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
-        <div className="min-h-screen bg-background text-text">
-          {children}
-        </div>
+        <Providers>
+          <RouteAwareLayout>{children}</RouteAwareLayout>
+        </Providers>
       </body>
     </html>
   );

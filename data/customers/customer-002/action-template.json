@@ -1,0 +1,54 @@
+{
+  "actionId": "action-002",
+  "customer": "David Levy",
+  "customerId": "customer-002",
+  "priority": 2,
+  "type": "cold-outreach",
+  "status": "pending",
+  "createdAt": "2025-08-17T17:54:12.944Z",
+  "updatedAt": "2025-08-17T17:54:12.944Z",
+  "emailTemplates": {
+    "subject": "AI-Powered Automation for David Levy - 50% Time Savings",
+    "body": "Hi David,\n\nI hope this email finds you well. I'm reaching out regarding AI-powered business automation for Levy.\n\nI noticed your business could benefit from automated property listing management and lead generation. Our AI agents can handle repetitive tasks while you focus on closing deals.\n\nOur platform has helped businesses like Tax4Us achieve:\n• 50% reduction in manual tasks\n• 3x faster content creation\n• Automated customer communication\n• Real-time analytics and reporting\n\nWould you be interested in a 15-minute demo to see how we can automate your cold outreach for real estate automation needs?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation\n",
+    "followUp": "Hi David,\n\nI wanted to follow up on my previous email about AI automation for Levy.\n\nIf you haven't had a chance to review our proposal yet, I'd be happy to:\n• Schedule a personalized demo\n• Provide case studies from similar businesses\n• Discuss your specific automation needs\n\nWhat would work best for you?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation"
+  },
+  "meetingTemplates": {
+    "agenda": [
+      "Introduction and company overview (5 min)",
+      "Current business challenges discussion (10 min)",
+      "AI automation demo - relevant agents (15 min)",
+      "Implementation timeline and process (10 min)",
+      "Pricing and ROI discussion (10 min)",
+      "Next steps and follow-up (5 min)"
+    ],
+    "demoScript": {
+      "introduction": "Welcome David Levy! Today I'll show you how our AI agents can automate your cold outreach for real estate automation needs.",
+      "painPoints": "Let's start by understanding your current challenges with cold outreach for real estate automation needs.",
+      "solution": "Here's how our AI agents can solve these problems:",
+      "agents": [
+        "• Property Listing Agent: [Demo specific functionality]",
+        "• Lead Generation Agent: [Demo specific functionality]",
+        "• Social Media Agent: [Demo specific functionality]",
+        "• Email Marketing Agent: [Demo specific functionality]"
+      ],
+      "results": "Businesses using our platform typically see 50% time savings and 3x productivity improvements.",
+      "nextSteps": "Based on what we've discussed, here's our recommended implementation plan."
+    },
+    "proposalOutline": {
+      "executiveSummary": "AI automation solution for David Levy",
+      "currentState": "Analysis of current cold outreach for real estate automation needs",
+      "proposedSolution": "Custom AI agents for Property Listing Agent, Lead Generation Agent, Social Media Agent, Email Marketing Agent",
+      "implementation": "3-phase rollout over 2 weeks",
+      "investment": "Total investment: $4000",
+      "roi": "Expected ROI: 300% within 6 months",
+      "timeline": "Project timeline: 2 weeks",
+      "nextSteps": "Immediate next steps to get started"
+    }
+  },
+  "successMetrics": {
+    "targetOutcome": "Demo scheduled and proposal sent",
+    "timeline": "2 weeks",
+    "budget": "$4000",
+    "conversionProbability": 0.3
+  }
+}

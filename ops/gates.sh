@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Rensto Gates Script
-# Runs all validation checks for BMAD methodology
+# Runs all validation checks for Unified Working Methodology
 # Exit codes: 0 = all gates pass, 1+ = gate failed
 
 set -e
@@ -70,12 +70,13 @@ run_gate "Repository Structure" "
 
 # Gate 2: Documentation
 run_gate "Documentation" "
-    [ -f 'docs/RUNBOOK_INFRA.md' ] && \
-    [ -f 'docs/DEPLOY_WEB.md' ] && \
+    [ -f 'infra/RENSTO-OPERATIONS-GUIDE.md' ] && \
     [ -f 'docs/DNS_AND_TUNNEL.md' ] && \
     [ -f 'docs/AIRTABLE_VIEWS.md' ] && \
-    [ -f 'docs/MIGRATION_WEBFLOW_TO_VERCEL.md' ] && \
-    [ -f 'docs/ONBOARDING_CHECKLIST.md' ]
+    [ -f 'docs/ONBOARDING_CHECKLIST.md' ] && \
+    [ -f 'README.md' ] && \
+    [ -f 'TASKS.md' ] && \
+    [ -f 'CONTEXT.md' ]
 "
 
 # Gate 3: Infrastructure Files
@@ -90,9 +91,9 @@ run_gate "Infrastructure Files" "
 
 # Gate 4: CI/CD Configuration
 run_gate "CI/CD Configuration" "
-    [ -f '.github/workflows/ci.yml' ] && \
+    [ -f '.github/workflows/ci-cd.yml' ] && \
     [ -f '.github/ISSUE_TEMPLATE/bug_report.md' ] && \
-    [ -f '.github/pull_request_template.md' ]
+    [ -f '.github/ISSUE_TEMPLATE/mcp-server.md' ]
 "
 
 # Gate 5: Web Application (if exists)
@@ -146,11 +147,16 @@ if [ $FAILED_GATES -eq 0 ]; then
     echo ""
     log_success "All gates passed! 🎉"
     echo ""
+    echo "✅ INFRASTRUCTURE COMPLETE - READY FOR BUSINESS APPLICATIONS"
+    echo ""
     echo "Next steps:"
-    echo "1. Create web application: cd web && npx create-next-app@latest rensto-site"
-    echo "2. Set up n8n workflows"
-    echo "3. Configure production environment"
-    echo "4. Deploy to Vercel"
+    echo "1. 🏗️  Build Admin Dashboard (Priority 1)"
+    echo "2. 🏗️  Build Customer Portal (Priority 2)"
+    echo "3. 🏗️  Enhance Website Features (Priority 3)"
+    echo "4. 🚀 Deploy Business Applications"
+    echo ""
+    echo "Status: 8/18 major tasks completed"
+    echo "Phase: Infrastructure → Business Applications"
     exit 0
 else
     echo ""

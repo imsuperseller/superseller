@@ -1,0 +1,30 @@
+{
+  "id": "customer-003",
+  "name": "Rachel Green",
+  "company": "Green Marketing Solutions",
+  "industry": "marketing",
+  "website": "https://greenmarketing.co.il",
+  "email": "rachel@greenmarketing.co.il",
+  "businessSize": "small",
+  "primaryUseCase": "Content creation and social media management",
+  "currentAutomationLevel": "basic",
+  "budget": "$2500",
+  "timeline": "1 month",
+  "priorityAgents": [
+    "Content Creation Agent",
+    "Social Media Agent",
+    "Analytics Agent"
+  ],
+  "painPoints": [
+    "Content creation is manual and slow",
+    "Social media posting is inconsistent",
+    "No data-driven insights"
+  ],
+  "successMetrics": [
+    "content-quality",
+    "customer-engagement"
+  ],
+  "status": "prospect",
+  "source": "website-inquiry",
+  "notes": "Submitted inquiry through website. Manages 10+ client accounts."
+}

@@ -1,0 +1,119 @@
+{
+  "id": "tf_1755455445991",
+  "title": "Custom AI Agent Request",
+  "description": "Tell us about your business needs and we'll create a custom AI agent for you",
+  "customerId": "customer-1755455121176",
+  "url": "https://form.typeform.com/to/1755455445991",
+  "fields": [
+    {
+      "id": "business_name",
+      "type": "short_text",
+      "title": "What is your business name?",
+      "required": true
+    },
+    {
+      "id": "industry",
+      "type": "multiple_choice",
+      "title": "What industry are you in?",
+      "choices": [
+        "Technology",
+        "Healthcare",
+        "Finance",
+        "Education",
+        "Marketing",
+        "E-commerce",
+        "Consulting",
+        "Real Estate",
+        "Manufacturing",
+        "Other"
+      ],
+      "required": true
+    },
+    {
+      "id": "business_size",
+      "type": "multiple_choice",
+      "title": "How many employees do you have?",
+      "choices": [
+        "1-10 (Startup)",
+        "11-50 (Small Business)",
+        "51-200 (Medium Business)",
+        "201-1000 (Large Business)",
+        "1000+ (Enterprise)"
+      ],
+      "required": true
+    },
+    {
+      "id": "primary_goal",
+      "type": "long_text",
+      "title": "What is your primary business goal that you want to automate?",
+      "required": true
+    },
+    {
+      "id": "current_processes",
+      "type": "long_text",
+      "title": "Describe your current manual processes that you want to automate",
+      "required": true
+    },
+    {
+      "id": "integrations_needed",
+      "type": "multiple_choice",
+      "title": "What tools do you currently use? (Select all that apply)",
+      "choices": [
+        "WordPress",
+        "Shopify",
+        "Mailchimp",
+        "HubSpot",
+        "Salesforce",
+        "Google Workspace",
+        "Microsoft 365",
+        "Slack",
+        "Trello",
+        "Asana",
+        "Zapier",
+        "None of the above"
+      ],
+      "required": true
+    },
+    {
+      "id": "budget_range",
+      "type": "multiple_choice",
+      "title": "What is your budget range for this automation?",
+      "choices": [
+        "$500 - $1,000",
+        "$1,000 - $2,500",
+        "$2,500 - $5,000",
+        "$5,000 - $10,000",
+        "$10,000+",
+        "Not sure yet"
+      ],
+      "required": true
+    },
+    {
+      "id": "timeline",
+      "type": "multiple_choice",
+      "title": "When do you need this automation ready?",
+      "choices": [
+        "ASAP (1-2 weeks)",
+        "Within a month",
+        "Within 3 months",
+        "No specific timeline",
+        "Just exploring options"
+      ],
+      "required": true
+    },
+    {
+      "id": "contact_info",
+      "type": "short_text",
+      "title": "What is your email address?",
+      "required": true
+    },
+    {
+      "id": "additional_notes",
+      "type": "long_text",
+      "title": "Any additional information or specific requirements?",
+      "required": false
+    }
+  ],
+  "status": "active",
+  "createdAt": "2025-08-17T18:30:45.991Z"
+}

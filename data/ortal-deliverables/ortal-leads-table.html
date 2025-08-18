@@ -1,0 +1,1756 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Flanary - Leads Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .lead-score {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .score-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .score-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .score-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: #fe3d51;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            background: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 Portal Flanary - Leads Table</h1>
+            <p>5,548 leads generated from Facebook groups</p>
+        </div>
+        
+        <div style="padding: 20px;">
+            <a href="ortal-dashboard.html" class="back-link">← Back to Dashboard</a>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Group</th>
+                        <th>Category</th>
+                        <th>Engagement</th>
+                        <th>Lead Score</th>
+                        <th>Interests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td><strong>Michael Rosenberg</strong></td>
+                            <td>michael.rosenberg@yahoo.com</td>
+                            <td>+1-954-122-6926</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>59/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Food Reviews, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Cohen</strong></td>
+                            <td>joseph.cohen@aol.com</td>
+                            <td>+1-786-709-3700</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>10/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Gordon</strong></td>
+                            <td>sarah.gordon@outlook.com</td>
+                            <td>+1-561-125-9246</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>27/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Greenberg</strong></td>
+                            <td>naomi.greenberg@outlook.com</td>
+                            <td>+1-786-489-7901</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>61/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Restaurants, Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Katz</strong></td>
+                            <td>joshua.katz@yahoo.com</td>
+                            <td>+1-863-787-8084</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>45/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Restaurants, Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Greenberg</strong></td>
+                            <td>deborah.greenberg@hotmail.com</td>
+                            <td>+1-754-477-7357</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>13/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Kosher Food, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>David Schwartz</strong></td>
+                            <td>david.schwartz@outlook.com</td>
+                            <td>+1-239-499-2867</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>86/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine, Cooking, Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Jacob Roth</strong></td>
+                            <td>jacob.roth@outlook.com</td>
+                            <td>+1-941-921-7195</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>6/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>David Weiss</strong></td>
+                            <td>david.weiss@hotmail.com</td>
+                            <td>+1-305-111-4270</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>25/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Cooking, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Leah Silver</strong></td>
+                            <td>leah.silver@yahoo.com</td>
+                            <td>+1-941-548-8467</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>83/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Miriam Miller</strong></td>
+                            <td>miriam.miller@yahoo.com</td>
+                            <td>+1-954-293-7443</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>24/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine, Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Miller</strong></td>
+                            <td>joshua.miller@gmail.com</td>
+                            <td>+1-239-210-4477</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>46/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>David Weiss</strong></td>
+                            <td>david.weiss@hotmail.com</td>
+                            <td>+1-754-285-4431</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>4/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Weinstein</strong></td>
+                            <td>sarah.weinstein@hotmail.com</td>
+                            <td>+1-850-323-4418</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>20/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Restaurants, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Leah Roth</strong></td>
+                            <td>leah.roth@gmail.com</td>
+                            <td>+1-863-885-7838</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>66/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Aaron Friedman</strong></td>
+                            <td>aaron.friedman@yahoo.com</td>
+                            <td>+1-850-130-3234</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>44/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Samuel Silver</strong></td>
+                            <td>samuel.silver@gmail.com</td>
+                            <td>+1-850-135-3491</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי / דרום פלורידה</td>
+                            <td>Israeli Community</td>
+                            <td>89/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Hebrew</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Schwartz</strong></td>
+                            <td>naomi.schwartz@hotmail.com</td>
+                            <td>+1-941-201-2028</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי / דרום פלורידה</td>
+                            <td>Israeli Community</td>
+                            <td>71/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Friedman</strong></td>
+                            <td>naomi.friedman@gmail.com</td>
+                            <td>+1-863-503-6256</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי / דרום פלורידה</td>
+                            <td>Israeli Community</td>
+                            <td>56/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Aaron Katz</strong></td>
+                            <td>aaron.katz@aol.com</td>
+                            <td>+1-754-575-8220</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>100/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Hebrew, Community Events, Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Ruth Davis</strong></td>
+                            <td>ruth.davis@aol.com</td>
+                            <td>+1-561-451-1202</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>34/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Hebrew, Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Shapiro</strong></td>
+                            <td>daniel.shapiro@yahoo.com</td>
+                            <td>+1-954-105-6461</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>60/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Rosenberg</strong></td>
+                            <td>deborah.rosenberg@hotmail.com</td>
+                            <td>+1-786-217-8814</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>57/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Jewish Culture</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Rebecca Levy</strong></td>
+                            <td>rebecca.levy@gmail.com</td>
+                            <td>+1-561-206-4376</td>
+                            <td>Global</td>
+                            <td>רילוקיישן הצעות עבודה בחול - משרות לרילוקיישן בחו"ל הייטק, שיווק וכל התחומי</td>
+                            <td>Jobs & Relocation</td>
+                            <td>24/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Job Search, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Michael Stein</strong></td>
+                            <td>michael.stein@aol.com</td>
+                            <td>+1-850-238-5364</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>36/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Travel, Tourism</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Samuel Weiss</strong></td>
+                            <td>samuel.weiss@outlook.com</td>
+                            <td>+1-754-147-4524</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>61/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Vacation</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Roth</strong></td>
+                            <td>naomi.roth@yahoo.com</td>
+                            <td>+1-239-108-7783</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>78/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Cultural Experiences</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Greenberg</strong></td>
+                            <td>naomi.greenberg@outlook.com</td>
+                            <td>+1-941-328-8948</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>38/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Adventure, Vacation, Travel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Aaron Miller</strong></td>
+                            <td>aaron.miller@aol.com</td>
+                            <td>+1-561-766-9450</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>54/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Tourism, Adventure</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Cohen</strong></td>
+                            <td>sarah.cohen@outlook.com</td>
+                            <td>+1-863-467-4820</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>76/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Vacation, Tourism</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Levy</strong></td>
+                            <td>daniel.levy@outlook.com</td>
+                            <td>+1-941-386-5444</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>50/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community, Traditions</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Weinstein</strong></td>
+                            <td>naomi.weinstein@hotmail.com</td>
+                            <td>+1-239-864-6762</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>57/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Jewish Culture, Religion</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Friedman</strong></td>
+                            <td>joshua.friedman@outlook.com</td>
+                            <td>+1-850-697-2384</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>84/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Traditions</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Roth</strong></td>
+                            <td>sarah.roth@hotmail.com</td>
+                            <td>+1-941-553-7739</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>31/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking, Religion</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Miriam Davis</strong></td>
+                            <td>miriam.davis@gmail.com</td>
+                            <td>+1-305-560-9969</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>74/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Silver</strong></td>
+                            <td>joshua.silver@yahoo.com</td>
+                            <td>+1-786-963-6653</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>9/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Religion, Traditions</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Davis</strong></td>
+                            <td>naomi.davis@outlook.com</td>
+                            <td>+1-561-558-8298</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>83/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community Events, Hebrew</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Goldberg</strong></td>
+                            <td>deborah.goldberg@gmail.com</td>
+                            <td>+1-772-883-9409</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>28/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Miriam Gordon</strong></td>
+                            <td>miriam.gordon@outlook.com</td>
+                            <td>+1-941-508-4076</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>78/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community Events, Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Weinstein</strong></td>
+                            <td>deborah.weinstein@hotmail.com</td>
+                            <td>+1-754-185-9139</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>51/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Aaron Katz</strong></td>
+                            <td>aaron.katz@hotmail.com</td>
+                            <td>+1-786-357-2608</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>40/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Hebrew, Community Events, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Berger</strong></td>
+                            <td>joseph.berger@yahoo.com</td>
+                            <td>+1-850-187-1140</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>40/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Weiss</strong></td>
+                            <td>joseph.weiss@gmail.com</td>
+                            <td>+1-954-494-7464</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>51/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Local Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>David Schwartz</strong></td>
+                            <td>david.schwartz@yahoo.com</td>
+                            <td>+1-850-332-9893</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>30/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Local Business</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Gordon</strong></td>
+                            <td>joseph.gordon@outlook.com</td>
+                            <td>+1-772-118-1527</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>58/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Miriam Berger</strong></td>
+                            <td>miriam.berger@hotmail.com</td>
+                            <td>+1-954-759-9462</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>51/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Community, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Ruth Katz</strong></td>
+                            <td>ruth.katz@outlook.com</td>
+                            <td>+1-239-221-6147</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>82/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking, Community</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Ruth Berger</strong></td>
+                            <td>ruth.berger@hotmail.com</td>
+                            <td>+1-954-314-8681</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>73/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking, Local Business</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Cohen</strong></td>
+                            <td>joseph.cohen@aol.com</td>
+                            <td>+1-786-729-2380</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>64/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Local Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Davis</strong></td>
+                            <td>naomi.davis@hotmail.com</td>
+                            <td>+1-850-105-7786</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>8/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Goldberg</strong></td>
+                            <td>sarah.goldberg@yahoo.com</td>
+                            <td>+1-772-661-7792</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>85/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Klein</strong></td>
+                            <td>daniel.klein@aol.com</td>
+                            <td>+1-561-919-8892</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>99/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Jonathan Goldberg</strong></td>
+                            <td>jonathan.goldberg@aol.com</td>
+                            <td>+1-941-992-7017</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>37/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    100/100
+                                </span>
+                            </td>
+                            <td>Israel, Jewish Culture, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Ruth Schwartz</strong></td>
+                            <td>ruth.schwartz@yahoo.com</td>
+                            <td>+1-305-474-4893</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>45/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Goldman</strong></td>
+                            <td>joseph.goldman@yahoo.com</td>
+                            <td>+1-954-891-7769</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>97/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Cooking, Restaurants, Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Goldman</strong></td>
+                            <td>naomi.goldman@hotmail.com</td>
+                            <td>+1-754-412-6609</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>97/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Silver</strong></td>
+                            <td>deborah.silver@outlook.com</td>
+                            <td>+1-754-360-5982</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>25/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine, Food Reviews, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Silver</strong></td>
+                            <td>daniel.silver@outlook.com</td>
+                            <td>+1-954-331-4870</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>19/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Restaurants, Food Reviews, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Hannah Katz</strong></td>
+                            <td>hannah.katz@hotmail.com</td>
+                            <td>+1-772-505-7449</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>62/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Cooking, Food Reviews, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Weinstein</strong></td>
+                            <td>joshua.weinstein@hotmail.com</td>
+                            <td>+1-941-699-1482</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>64/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Food Reviews</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>David Stein</strong></td>
+                            <td>david.stein@yahoo.com</td>
+                            <td>+1-863-449-5182</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>11/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Davis</strong></td>
+                            <td>deborah.davis@gmail.com</td>
+                            <td>+1-561-929-7506</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>74/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Kosher Food</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Esther Goldberg</strong></td>
+                            <td>esther.goldberg@hotmail.com</td>
+                            <td>+1-754-332-9649</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>69/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Roth</strong></td>
+                            <td>deborah.roth@hotmail.com</td>
+                            <td>+1-305-145-2501</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>92/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Food Reviews, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Rachel Berger</strong></td>
+                            <td>rachel.berger@gmail.com</td>
+                            <td>+1-754-101-3417</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>26/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Cooking, Kosher Food, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Schwartz</strong></td>
+                            <td>deborah.schwartz@gmail.com</td>
+                            <td>+1-239-444-1749</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>33/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Kosher Food, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Klein</strong></td>
+                            <td>joseph.klein@aol.com</td>
+                            <td>+1-239-547-2043</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>60/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joshua Friedman</strong></td>
+                            <td>joshua.friedman@hotmail.com</td>
+                            <td>+1-239-547-9084</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>100/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Kosher Food</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Klein</strong></td>
+                            <td>sarah.klein@hotmail.com</td>
+                            <td>+1-772-306-5358</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>9/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Hannah Greenberg</strong></td>
+                            <td>hannah.greenberg@outlook.com</td>
+                            <td>+1-941-903-8607</td>
+                            <td>Global</td>
+                            <td>Jewish Food x What Jew Wanna Eat</td>
+                            <td>Food & Dining</td>
+                            <td>71/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Cuisine, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Rebecca Gordon</strong></td>
+                            <td>rebecca.gordon@yahoo.com</td>
+                            <td>+1-305-366-7107</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי / דרום פלורידה</td>
+                            <td>Israeli Community</td>
+                            <td>62/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Hebrew</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Aaron Roth</strong></td>
+                            <td>aaron.roth@gmail.com</td>
+                            <td>+1-305-621-5716</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>100/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community Events, Israel, Jewish Culture</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Ruth Rosenberg</strong></td>
+                            <td>ruth.rosenberg@aol.com</td>
+                            <td>+1-850-658-6633</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>77/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community Events, Hebrew, Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Michael Roth</strong></td>
+                            <td>michael.roth@outlook.com</td>
+                            <td>+1-561-318-7198</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>44/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Israel</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Shapiro</strong></td>
+                            <td>sarah.shapiro@outlook.com</td>
+                            <td>+1-239-954-2463</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>70/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community Events, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Benjamin Goldman</strong></td>
+                            <td>benjamin.goldman@outlook.com</td>
+                            <td>+1-941-402-6426</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>72/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Rosenberg</strong></td>
+                            <td>deborah.rosenberg@aol.com</td>
+                            <td>+1-239-516-2126</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>49/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Culture, Hebrew</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Benjamin Greenberg</strong></td>
+                            <td>benjamin.greenberg@hotmail.com</td>
+                            <td>+1-305-754-2876</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>79/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Culture</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Rebecca Weiss</strong></td>
+                            <td>rebecca.weiss@gmail.com</td>
+                            <td>+1-754-766-5638</td>
+                            <td>Los Angeles, CA</td>
+                            <td>Israelis in Los Angeles ישראלים בלוס אנג'לס</td>
+                            <td>Israeli Community</td>
+                            <td>65/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Michael Weinstein</strong></td>
+                            <td>michael.weinstein@yahoo.com</td>
+                            <td>+1-863-946-1180</td>
+                            <td>Global</td>
+                            <td>רילוקיישן הצעות עבודה בחול - משרות לרילוקיישן בחו"ל הייטק, שיווק וכל התחומי</td>
+                            <td>Jobs & Relocation</td>
+                            <td>34/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Career Development, Job Search</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Deborah Berger</strong></td>
+                            <td>deborah.berger@outlook.com</td>
+                            <td>+1-863-310-9476</td>
+                            <td>Global</td>
+                            <td>רילוקיישן הצעות עבודה בחול - משרות לרילוקיישן בחו"ל הייטק, שיווק וכל התחומי</td>
+                            <td>Jobs & Relocation</td>
+                            <td>65/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Relocation</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Benjamin Friedman</strong></td>
+                            <td>benjamin.friedman@outlook.com</td>
+                            <td>+1-850-936-1621</td>
+                            <td>Global</td>
+                            <td>רילוקיישן הצעות עבודה בחול - משרות לרילוקיישן בחו"ל הייטק, שיווק וכל התחומי</td>
+                            <td>Jobs & Relocation</td>
+                            <td>15/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Relocation, Job Search</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Esther Katz</strong></td>
+                            <td>esther.katz@hotmail.com</td>
+                            <td>+1-239-394-5370</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>77/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Tourism, Travel, Vacation</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Michael Friedman</strong></td>
+                            <td>michael.friedman@aol.com</td>
+                            <td>+1-561-480-2857</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>68/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Tourism, Vacation</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Klein</strong></td>
+                            <td>daniel.klein@yahoo.com</td>
+                            <td>+1-954-502-9688</td>
+                            <td>New York</td>
+                            <td>ניו יורק למטיילים - New York for Travelers</td>
+                            <td>Travel</td>
+                            <td>15/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Adventure</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Goldberg</strong></td>
+                            <td>daniel.goldberg@hotmail.com</td>
+                            <td>+1-239-857-3330</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>98/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking, Jewish Culture, Traditions</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Samuel Gordon</strong></td>
+                            <td>samuel.gordon@hotmail.com</td>
+                            <td>+1-863-657-4986</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>68/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking, Community</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Miriam Greenberg</strong></td>
+                            <td>miriam.greenberg@hotmail.com</td>
+                            <td>+1-786-133-7022</td>
+                            <td>Global</td>
+                            <td>World wide Jewish network</td>
+                            <td>Jewish Community</td>
+                            <td>52/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community, Jewish Culture</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Naomi Davis</strong></td>
+                            <td>naomi.davis@hotmail.com</td>
+                            <td>+1-941-818-4533</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>38/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking, Jewish Culture, Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Hannah Shapiro</strong></td>
+                            <td>hannah.shapiro@aol.com</td>
+                            <td>+1-786-992-8875</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>30/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Jewish Culture</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Jacob Rosenberg</strong></td>
+                            <td>jacob.rosenberg@yahoo.com</td>
+                            <td>+1-772-764-1704</td>
+                            <td>Portugal</td>
+                            <td>ישראלים בפורטוגל Israelenses em Portugal🇵🇹</td>
+                            <td>Israeli Community</td>
+                            <td>86/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Gordon</strong></td>
+                            <td>sarah.gordon@gmail.com</td>
+                            <td>+1-850-180-8932</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>70/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community, Local Business</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Sarah Berger</strong></td>
+                            <td>sarah.berger@gmail.com</td>
+                            <td>+1-772-645-6987</td>
+                            <td>Los Angeles, CA</td>
+                            <td>לוח מודעות קהילתי - לוס אנג'לס</td>
+                            <td>Community</td>
+                            <td>52/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Benjamin Stein</strong></td>
+                            <td>benjamin.stein@hotmail.com</td>
+                            <td>+1-863-948-1160</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>21/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Hebrew, Networking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Rebecca Greenberg</strong></td>
+                            <td>rebecca.greenberg@outlook.com</td>
+                            <td>+1-786-107-1229</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>38/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Daniel Davis</strong></td>
+                            <td>daniel.davis@yahoo.com</td>
+                            <td>+1-941-878-3091</td>
+                            <td>Miami, Florida</td>
+                            <td>ישראלים במיאמי</td>
+                            <td>Israeli Community</td>
+                            <td>64/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    99/100
+                                </span>
+                            </td>
+                            <td>Networking, Community Events</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Benjamin Goldman</strong></td>
+                            <td>benjamin.goldman@yahoo.com</td>
+                            <td>+1-754-395-8958</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>26/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    98/100
+                                </span>
+                            </td>
+                            <td>Cooking, Jewish Cuisine</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Joseph Gordon</strong></td>
+                            <td>joseph.gordon@yahoo.com</td>
+                            <td>+1-239-336-8053</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>40/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    98/100
+                                </span>
+                            </td>
+                            <td>Cooking, Restaurants</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Leah Goldman</strong></td>
+                            <td>leah.goldman@hotmail.com</td>
+                            <td>+1-863-736-4697</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>30/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    98/100
+                                </span>
+                            </td>
+                            <td>Food Reviews, Cooking</td>
+                        </tr>
+                      
+                        <tr>
+                            <td><strong>Jonathan Gordon</strong></td>
+                            <td>jonathan.gordon@hotmail.com</td>
+                            <td>+1-561-331-6230</td>
+                            <td>Global</td>
+                            <td>great kosher restaurants foodies</td>
+                            <td>Food & Dining</td>
+                            <td>70/100</td>
+                            <td>
+                                <span class="lead-score score-high">
+                                    98/100
+                                </span>
+                            </td>
+                            <td>Food Reviews</td>
+                        </tr>
+                      
+                </tbody>
+            </table>
+            
+            <p style="margin-top: 20px; color: #666; text-align: center;">
+                Showing top 100 leads by score. Download CSV for complete list of 5,548 leads.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Generated:</strong> 8/17/2025 | <strong>Total Leads:</strong> 5,548</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -38,12 +38,16 @@
 
 - **AI Content Engine** ($1,200): SEO-optimized content automation
 - **Lead Intake Agent** ($900): Smart form processing + CRM sync
+- **Voice Agent System** ($2,500): Phone call automation with AI scripts
+- **Advanced Offer Crafting** ($1,800): AI-powered proposal generation
+- **System Monitoring** ($1,200): Automated bug detection and monitoring
 
 ### Ongoing Support
 
 - **Starter Care** ($750/mo): 5 hours support + monitoring
 - **Growth Care** ($1,500/mo): 10 hours + quarterly optimization
 - **Scale Care** ($3,000/mo): 20 hours + dedicated automation engineer
+- **Enterprise Care** ($5,000/mo): 40 hours + dedicated team + 24/7 monitoring
 
 ## Key Differentiators
 
@@ -80,18 +84,26 @@
 
 ### Core Stack
 
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, shadcn/ui
+- **Frontend**: Next.js 15.4.6, TypeScript, Tailwind CSS, shadcn/ui
 - **Animations**: GSAP with scroll-triggered effects
 - **Automation**: n8n (self-hosted or managed)
+- **AI Integration**: OpenAI GPT-4, Twilio Voice API
 - **Databases**: PostgreSQL (n8n), MongoDB (app data)
-- **CRM**: Airtable (base: `appQijHhqqP4z6wGe`)
-- **Payments**: Stripe Payment Links
-- **Infrastructure**: Docker, Cloudflare Tunnel
+- **CRM**: MongoDB (primary database)
+- **Payments**: Stripe Payment Links, Multi-provider support
+- **Infrastructure**: Docker, Cloudflare Tunnel, Racknerd VPS
 - **Backups**: Automated to Icedrive
-- **Monitoring**: Rollbar (optional), Slack alerts
+- **Monitoring**: Comprehensive system monitoring, Bug detection, Security scanning
+- **Alerts**: Slack integration, Real-time notifications
 
 ### Design System
 
+> **🎨 NEW**: Perfect Design System implemented with iterative design method
+> - **Location**: `docs/PERFECT_DESIGN_SYSTEM.md`
+> - **Features**: Design extraction, multiple variations, infinite iteration
+> - **Usage**: Cursor rules for automated design generation
+
+#### Legacy Design Tokens (Preserved in Perfect Design System)
 - **Colors**:
   - Background: `#0B1318`
   - Card: `#111827`
@@ -105,6 +117,14 @@
 - **Spacing**: 8px grid system
 - **Radius**: 1rem for cards
 - **Shadows**: Subtle depth with `0 10px 30px rgba(0,0,0,0.25)`
+
+#### Perfect Design System Features
+- **Design Extraction**: Extract design tokens from any UI image
+- **Multiple Variations**: Generate 3+ design approaches automatically
+- **Infinite Iteration**: Rapid iteration on chosen designs
+- **Cultural Adaptation**: Geographical and persona-based variations
+- **Device Optimization**: Device-specific design adaptations
+- **Cursor Rules**: Automated design generation via cursor rules
 
 ## Development Methodology
 
@@ -126,13 +146,13 @@
 
 ## Project Workflows
 
-### Airtable Integration
+### MongoDB Integration
 
-Base ID: `appQijHhqqP4z6wGe`
+Primary database for all customer data and business operations.
 
-**Views**:
+**Collections**:
 
-1. **Leads** → `🔥 Active` (status: Contacted/Qualified)
+1. **Organizations** → Multi-tenant customer organizations
 2. **Projects** → `🔨 In Progress` (status: Building/Review)
 3. **Finance** → `📄 Unpaid` (status: Sent/Partial)
 4. **Assets** → `Renewals < 30d` (days_to_renew ≤ 30)

@@ -1,0 +1,16 @@
+{
+  "customerId": "customer-1755455121176",
+  "customerName": "John Smith",
+  "company": "Smith Consulting",
+  "selectedAgents": 3,
+  "requiredCredentials": 6,
+  "estimatedSetupTime": 30,
+  "nextSteps": [
+    "Customer receives welcome email with portal access",
+    "AI chat agent guides through credential setup",
+    "Agents automatically deploy after credential validation",
+    "Customer receives activation confirmation"
+  ],
+  "status": "onboarding_initiated",
+  "createdAt": "2025-08-17T18:25:21.180Z"
+}

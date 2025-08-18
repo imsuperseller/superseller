@@ -1,0 +1,60 @@
+{
+  "customer": {
+    "name": "Shelly Mizrahi Consulting",
+    "email": "shellypensia@gmail.com",
+    "industry": "Insurance Services",
+    "location": "Afula, Israel",
+    "payment": {
+      "amount": 250,
+      "currency": "USD",
+      "status": "PAID",
+      "date": "2025-01-15",
+      "method": "QuickBooks"
+    }
+  },
+  "n8n": {
+    "url": "http://localhost:5678",
+    "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE",
+    "workflows": {
+      "shelly-excel-processor": {
+        "name": "Shelly Excel Family Profile Processor - Production",
+        "webhookPath": "shelly-excel-processor",
+        "active": true,
+        "description": "Processes Hebrew Excel files and generates family insurance profiles"
+      }
+    },
+    "credentials": {
+      "required": [
+        {
+          "name": "excel-processing-api",
+          "type": "genericApi",
+          "description": "API credentials for Excel processing service",
+          "required": true,
+          "missing": true
+        },
+        {
+          "name": "file-storage-service",
+          "type": "awsS3",
+          "description": "AWS S3 credentials for file storage",
+          "required": true,
+          "missing": true
+        },
+        {
+          "name": "email-service",
+          "type": "smtp",
+          "description": "SMTP credentials for sending reports",
+          "required": false,
+          "missing": true
+        }
+      ]
+    }
+  },
+  "integration": {
+    "status": "setup_required",
+    "missing_components": [
+      "n8n_credentials",
+      "customer_app_section",
+      "chat_agent_integration"
+    ]
+  }
+}

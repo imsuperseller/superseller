@@ -1,0 +1,102 @@
+{
+  "customerId": "customer-1755455121176",
+  "analysisDate": "2025-08-17T18:30:45.994Z",
+  "businessContext": {
+    "industry": "Technology",
+    "businessSize": "11-50 (Small Business)",
+    "primaryGoal": "Automate customer support and content creation",
+    "currentProcesses": "Manual email responses, manual blog post creation, manual social media posting",
+    "automationOpportunity": "High - multiple manual processes identified",
+    "businessImpact": "Significant time and cost savings potential"
+  },
+  "recommendedAgents": [
+    {
+      "name": "Content Automation Agent",
+      "description": "Automates content creation and publishing",
+      "priority": "high",
+      "complexity": "medium",
+      "integrations": [
+        "wordpress",
+        "openai",
+        "google-drive"
+      ],
+      "estimatedHours": 20
+    },
+    {
+      "name": "Customer Communication Agent",
+      "description": "Handles customer inquiries and follow-ups",
+      "priority": "high",
+      "complexity": "medium",
+      "integrations": [
+        "mailchimp",
+        "slack",
+        "openai"
+      ],
+      "estimatedHours": 25
+    },
+    {
+      "name": "Data Processing Agent",
+      "description": "Automates data entry and processing",
+      "priority": "medium",
+      "complexity": "low",
+      "integrations": [
+        "google-drive",
+        "excel",
+        "openai"
+      ],
+      "estimatedHours": 15
+    }
+  ],
+  "technicalRequirements": {
+    "platforms": [
+      "WordPress",
+      "Mailchimp",
+      "Slack"
+    ],
+    "apiIntegrations": 3,
+    "dataProcessing": "Required",
+    "securityLevel": "Standard",
+    "scalability": "High"
+  },
+  "integrationNeeds": [
+    "WordPress",
+    "Mailchimp",
+    "Slack"
+  ],
+  "researchFindings": {
+    "industryTrends": [
+      "Technology automation trends 2024",
+      "AI adoption in similar businesses",
+      "ROI of automation in this sector"
+    ],
+    "competitorAnalysis": [
+      "How competitors are using automation",
+      "Best practices in the industry",
+      "Common automation pitfalls to avoid"
+    ],
+    "technologyInsights": [
+      "Latest AI tools for this use case",
+      "Integration best practices",
+      "Security considerations"
+    ],
+    "caseStudies": [
+      "Similar business automation success stories",
+      "Implementation timelines and costs",
+      "Measurable outcomes and ROI"
+    ]
+  },
+  "estimatedComplexity": "Medium",
+  "estimatedTimeline": "Within a month",
+  "estimatedCost": 4000,
+  "riskAssessment": [
+    "Integration complexity with existing systems",
+    "Data migration requirements",
+    "User adoption challenges"
+  ],
+  "successMetrics": [
+    "Time savings per process",
+    "Error reduction percentage",
+    "Cost savings per month",
+    "Customer satisfaction improvement"
+  ]
+}

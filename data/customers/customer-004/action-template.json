@@ -1,0 +1,53 @@
+{
+  "actionId": "action-004",
+  "customer": "Michael Rosenberg",
+  "customerId": "customer-004",
+  "priority": 4,
+  "type": "partnership",
+  "status": "pending",
+  "createdAt": "2025-08-17T17:54:12.945Z",
+  "updatedAt": "2025-08-17T17:54:12.945Z",
+  "emailTemplates": {
+    "subject": "Healthcare Automation Partnership - Michael Rosenberg",
+    "body": "Hi Michael,\n\nI hope this email finds you well. I'm reaching out regarding AI-powered business automation for Rosenberg.\n\nI'm excited about the potential partnership for healthcare automation. Our platform can significantly improve patient communication and appointment management.\n\nOur platform has helped businesses like Tax4Us achieve:\n• 50% reduction in manual tasks\n• 3x faster content creation\n• Automated customer communication\n• Real-time analytics and reporting\n\nWould you be interested in a 15-minute demo to see how we can automate your healthcare automation partnership meeting?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation\n",
+    "followUp": "Hi Michael,\n\nI wanted to follow up on my previous email about AI automation for Rosenberg.\n\nIf you haven't had a chance to review our proposal yet, I'd be happy to:\n• Schedule a personalized demo\n• Provide case studies from similar businesses\n• Discuss your specific automation needs\n\nWhat would work best for you?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation"
+  },
+  "meetingTemplates": {
+    "agenda": [
+      "Introduction and company overview (5 min)",
+      "Current business challenges discussion (10 min)",
+      "AI automation demo - relevant agents (15 min)",
+      "Implementation timeline and process (10 min)",
+      "Pricing and ROI discussion (10 min)",
+      "Next steps and follow-up (5 min)"
+    ],
+    "demoScript": {
+      "introduction": "Welcome Michael Rosenberg! Today I'll show you how our AI agents can automate your healthcare automation partnership meeting.",
+      "painPoints": "Let's start by understanding your current challenges with healthcare automation partnership meeting.",
+      "solution": "Here's how our AI agents can solve these problems:",
+      "agents": [
+        "• Patient Communication Agent: [Demo specific functionality]",
+        "• Appointment Scheduling Agent: [Demo specific functionality]",
+        "• Medical Records Agent: [Demo specific functionality]"
+      ],
+      "results": "Businesses using our platform typically see 50% time savings and 3x productivity improvements.",
+      "nextSteps": "Based on what we've discussed, here's our recommended implementation plan."
+    },
+    "proposalOutline": {
+      "executiveSummary": "AI automation solution for Michael Rosenberg",
+      "currentState": "Analysis of current healthcare automation partnership meeting",
+      "proposedSolution": "Custom AI agents for Patient Communication Agent, Appointment Scheduling Agent, Medical Records Agent",
+      "implementation": "3-phase rollout over 3 weeks",
+      "investment": "Total investment: $5000",
+      "roi": "Expected ROI: 300% within 6 months",
+      "timeline": "Project timeline: 3 weeks",
+      "nextSteps": "Immediate next steps to get started"
+    }
+  },
+  "successMetrics": {
+    "targetOutcome": "Partnership agreement and project scope",
+    "timeline": "3 weeks",
+    "budget": "$5000",
+    "conversionProbability": 0.7
+  }
+}

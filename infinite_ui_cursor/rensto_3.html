@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Cyberpunk - Branded Design</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #4a5568;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 65, 0.7); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .rensto-card {
+            background: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rensto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .logo-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: #a0aec0;
+            font-family: JetBrains Mono, 'Courier New', monospace;
+        }
+        
+        .card-content {
+            font-size: 1rem;
+            color: #e2e8f0;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .metric {
+            text-align: center;
+            padding: 1rem;
+            background: #2d3748;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            transition: all 0.3s ease;
+        }
+        
+        .metric:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 0.25rem;
+            font-family: JetBrains Mono, 'Courier New', monospace;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 100%);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #00bfff 0%, #00ffff 100%);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        .btn-ghost:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .rensto-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #00ff41 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #2d3748;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
+            border-radius: 4px;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rensto-card">
+        <div class="rensto-badge">Rensto</div>
+        
+        <div class="card-header">
+            <div class="logo-placeholder">R</div>
+            <div>
+                <h2 class="card-title">Analytics Dashboard</h2>
+                <p class="card-subtitle">Cyberpunk Design • Powered by Rensto</p>
+            </div>
+        </div>
+        
+        <div class="card-content">
+            <p>Track your key performance indicators with our comprehensive analytics dashboard. Monitor trends, identify opportunities, and make data-driven decisions with the power of Rensto's intelligent systems.</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%"></div>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric">
+                <div class="metric-value">$45,230</div>
+                <div class="metric-label">Revenue</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">3.2%</div>
+                <div class="metric-label">Conversion</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">1,847</div>
+                <div class="metric-label">Users</div>
+            </div>
+        </div>
+        
+        <div class="card-actions">
+            <button class="btn btn-primary">View Details</button>
+            <button class="btn btn-secondary">Export Data</button>
+            <button class="btn btn-ghost">Settings</button>
+        </div>
+    </div>
+</body>
+</html>

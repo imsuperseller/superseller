@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-08-17T23:27:18.109Z",
+  "customer": "Ortal Flanary",
+  "apifyUserId": "wjz2NfU1Y0MdMxeey",
+  "apifyToken": "apify_api_QfRR0XzZtbGi14p8xaTMc2Fg44a9aW0W5CQM",
+  "actorId": "dzDJGPwFlFXgDrzYh",
+  "groups": [
+    {
+      "name": "great kosher restaurants foodies",
+      "url": "https://www.facebook.com/groups/320656708120313",
+      "category": "Food & Dining"
+    },
+    {
+      "name": "Jewish Food x What Jew Wanna Eat",
+      "url": "https://www.facebook.com/groups/123456789",
+      "category": "Food & Dining"
+    },
+    {
+      "name": "ישראלים במיאמי / דרום פלורידה",
+      "url": "https://www.facebook.com/groups/987654321",
+      "category": "Israeli Community"
+    },
+    {
+      "name": "Israelis in Los Angeles ישראלים בלוס אנג'לס",
+      "url": "https://www.facebook.com/groups/456789123",
+      "category": "Israeli Community"
+    },
+    {
+      "name": "רילוקיישן הצעות עבודה בחול",
+      "url": "https://www.facebook.com/groups/789123456",
+      "category": "Jobs & Relocation"
+    }
+  ],
+  "leads": [],
+  "customAudiences": [],
+  "analytics": {
+    "totalLeads": 0,
+    "groupsScraped": 5,
+    "averageLeadsPerGroup": 0,
+    "highValueLeads": 0,
+    "mediumValueLeads": 0,
+    "lowValueLeads": 0,
+    "timestamp": "2025-08-17T23:27:18.656Z"
+  }
+}

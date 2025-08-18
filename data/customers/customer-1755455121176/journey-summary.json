@@ -1,0 +1,32 @@
+{
+  "customerId": "customer-1755455121176",
+  "journeyId": "journey_1755455445996",
+  "completedAt": "2025-08-17T18:30:45.996Z",
+  "steps": [
+    "agent-request",
+    "typeform-submission",
+    "agent-analysis",
+    "offer-generation",
+    "agreement-creation",
+    "customer-review",
+    "esignature",
+    "payment-processing"
+  ],
+  "remainingSteps": [
+    "plan-creation",
+    "agent-development",
+    "testing-iteration",
+    "approval-workflow",
+    "customer-notification",
+    "credential-setup",
+    "agent-activation"
+  ],
+  "status": "payment_completed",
+  "nextAction": "Begin agent development",
+  "typeformId": "tf_1755455445991",
+  "analysisId": "customer-1755455121176",
+  "offerId": "offer_1755455445994",
+  "agreementId": "agreement_1755455445995",
+  "paymentId": "pi_1755455445995",
+  "planId": "plan_1755455445996"
+}

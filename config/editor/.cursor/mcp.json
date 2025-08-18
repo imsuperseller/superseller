@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "npx",
+      "args": ["@n8n/mcp-server@latest"]
+    },
+    "ai-workflow-generator": {
+      "command": "npx",
+      "args": ["@n8n/ai-workflow-generator@latest"]
+    },
+    "vercel": {
+      "command": "npx",
+      "args": ["@vercel/mcp-server@latest"]
+    },
+    "gsap-master": {
+      "command": "npx",
+      "args": ["bruzethegreat-gsap-master-mcp-server@latest"]
+    },
+    "reactbits": {
+      "command": "npx",
+      "args": ["@reactbits/mcp-server@latest"]
+    },
+    "mui-mcp": {
+      "command": "npx",
+      "args": ["-y", "@mui/mcp@latest"]
+    }
+  }
+}

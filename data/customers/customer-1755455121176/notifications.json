@@ -1,0 +1,44 @@
+[
+  {
+    "customerId": "customer-1755455121176",
+    "agentName": "Content Automation Agent",
+    "notificationId": "notif_1755455515098",
+    "sentAt": "2025-08-17T18:31:55.098Z",
+    "type": "agent_status_update",
+    "status": "approved",
+    "message": "🎉 Your Content Automation Agent has been approved and is ready for activation!",
+    "actions": [
+      "Set Up Credentials",
+      "Activate Agent"
+    ],
+    "read": false
+  },
+  {
+    "customerId": "customer-1755455121176",
+    "agentName": "Customer Communication Agent",
+    "notificationId": "notif_1755455525111",
+    "sentAt": "2025-08-17T18:32:05.111Z",
+    "type": "agent_status_update",
+    "status": "approved",
+    "message": "🎉 Your Customer Communication Agent has been approved and is ready for activation!",
+    "actions": [
+      "Set Up Credentials",
+      "Activate Agent"
+    ],
+    "read": false
+  },
+  {
+    "customerId": "customer-1755455121176",
+    "agentName": "Data Processing Agent",
+    "notificationId": "notif_1755455535124",
+    "sentAt": "2025-08-17T18:32:15.124Z",
+    "type": "agent_status_update",
+    "status": "approved",
+    "message": "🎉 Your Data Processing Agent has been approved and is ready for activation!",
+    "actions": [
+      "Set Up Credentials",
+      "Activate Agent"
+    ],
+    "read": false
+  }
+]

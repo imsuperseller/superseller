@@ -98,10 +98,8 @@ n8n:latest:
   - Volume: ./data/n8n
   - Requires: N8N_ENCRYPTION_KEY
 
-mongo:7:
-  - Port: internal only
-  - Volume: ./data/mongo
-  - Auth: root user required
+# MongoDB is now running on Racknerd server at 173.254.201.134:27017
+# No local MongoDB container needed
 ```
 
 ### Cloudflare Tunnel
@@ -116,7 +114,7 @@ ingress:
 1. Export n8n workflows → JSON
 2. Export n8n credentials → encrypted
 3. pg_dump postgres → SQL
-4. mongodump → BSON
+4. mongodump from Racknerd → BSON
 5. tar.gz all → timestamped
 6. rclone sync → Icedrive
 

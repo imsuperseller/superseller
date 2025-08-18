@@ -1,0 +1,31 @@
+{
+  "id": "customer-002",
+  "name": "David Levy",
+  "company": "Levy Real Estate",
+  "industry": "real-estate",
+  "website": "https://levyrealestate.co.il",
+  "email": "david@levyrealestate.co.il",
+  "businessSize": "medium",
+  "primaryUseCase": "Property listing management and lead generation",
+  "currentAutomationLevel": "none",
+  "budget": "$4000",
+  "timeline": "2-3 months",
+  "priorityAgents": [
+    "Property Listing Agent",
+    "Lead Generation Agent",
+    "Social Media Agent",
+    "Email Marketing Agent"
+  ],
+  "painPoints": [
+    "Manual property listings are time-consuming",
+    "Lead follow-up is inconsistent",
+    "Social media presence is minimal"
+  ],
+  "successMetrics": [
+    "lead-generation",
+    "time-savings"
+  ],
+  "status": "prospect",
+  "source": "cold-outreach",
+  "notes": "Found through LinkedIn. Has 50+ properties to manage."
+}

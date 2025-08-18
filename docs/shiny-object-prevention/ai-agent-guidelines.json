@@ -1,0 +1,55 @@
+{
+  "title": "AI Agent Usage Guidelines",
+  "description": "Prevent overuse of AI agents based on transcript insights",
+  "rules": [
+    {
+      "rule": "DONT_USE_FOR_SIMPLE_LOGIC",
+      "description": "Don't use AI agents for simple if/else or switch statements",
+      "examples": [
+        "❌ Bad: AI agent to route PDF vs Image processing",
+        "✅ Good: Simple switch node based on file extension"
+      ],
+      "validation": {
+        "check": "workflow.hasAIAgent && workflow.logicComplexity === \"simple\"",
+        "recommendation": "Replace with standard n8n nodes"
+      }
+    },
+    {
+      "rule": "DONT_USE_FOR_SCHEDULING",
+      "description": "Don't use AI agents for scheduling or triggering workflows",
+      "examples": [
+        "❌ Bad: AI agent that waits for manual \"scrape leads\" command",
+        "✅ Good: Scheduler node that runs daily automatically"
+      ],
+      "validation": {
+        "check": "workflow.trigger === \"ai_agent\" && workflow.frequency === \"manual\"",
+        "recommendation": "Use scheduler or webhook triggers"
+      }
+    },
+    {
+      "rule": "USE_FOR_COMPLEX_REASONING",
+      "description": "Use AI agents only when complex reasoning or infinite possibilities exist",
+      "examples": [
+        "✅ Good: Chatbot with dynamic conversation flow",
+        "✅ Good: Content analysis with multiple possible responses",
+        "✅ Good: Dynamic decision making based on context"
+      ],
+      "validation": {
+        "check": "workflow.requiresReasoning || workflow.hasInfinitePossibilities",
+        "recommendation": "AI agent is appropriate here"
+      }
+    }
+  ],
+  "implementation": {
+    "validationFunction": "\nfunction shouldUseAIAgent(useCase) {\n  const simpleLogicPatterns = [\n    'if/else', 'switch', 'routing', 'filtering', 'scheduling'\n  ];\n  \n  const complexPatterns = [\n    'reasoning', 'analysis', 'conversation', 'dynamic_decision',\n    'infinite_possibilities', 'context_aware'\n  ];\n  \n  const hasSimpleLogic = simpleLogicPatterns.some(pattern => \n    useCase.description.toLowerCase().includes(pattern)\n  );\n  \n  const hasComplexLogic = complexPatterns.some(pattern => \n    useCase.description.toLowerCase().includes(pattern)\n  );\n  \n  if (hasSimpleLogic && !hasComplexLogic) {\n    return {\n      shouldUse: false,\n      reason: 'Simple logic detected - use standard n8n nodes',\n      alternative: 'Replace with switch, filter, or router nodes'\n    };\n  }\n  \n  if (hasComplexLogic) {\n    return {\n      shouldUse: true,\n      reason: 'Complex reasoning required - AI agent appropriate',\n      recommendation: 'Ensure proper error handling and fallbacks'\n    };\n  }\n  \n  return {\n    shouldUse: false,\n    reason: 'No clear complex reasoning requirement',\n    recommendation: 'Start with simple nodes, add AI only if needed'\n  };\n}\n        ",
+    "n8nIntegration": {
+      "nodeType": "ai_agent_validator",
+      "description": "Validates if AI agent usage is appropriate",
+      "parameters": {
+        "useCase": "string",
+        "complexity": "string",
+        "alternatives": "array"
+      }
+    }
+  }
+}

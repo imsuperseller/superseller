@@ -1,0 +1,174 @@
+{
+  "brand": {
+    "name": "Rensto",
+    "logo": {
+      "colors": {
+        "upperGradient": {
+          "start": "#ff0000",
+          "end": "#ff6b35"
+        },
+        "lowerGradient": {
+          "start": "#00bfff",
+          "end": "#00ffff"
+        }
+      },
+      "style": "neon-glow",
+      "background": "#4a5568"
+    }
+  },
+  "colors": {
+    "primary": {
+      "50": "#fff5f5",
+      "100": "#fed7d7",
+      "200": "#feb2b2",
+      "300": "#fc8181",
+      "400": "#f56565",
+      "500": "#ff0000",
+      "600": "#e53e3e",
+      "700": "#c53030",
+      "800": "#9b2c2c",
+      "900": "#742a2a"
+    },
+    "secondary": {
+      "50": "#f0f9ff",
+      "100": "#e0f2fe",
+      "200": "#bae6fd",
+      "300": "#7dd3fc",
+      "400": "#38bdf8",
+      "500": "#00bfff",
+      "600": "#0284c7",
+      "700": "#0369a1",
+      "800": "#075985",
+      "900": "#0c4a6e"
+    },
+    "accent": {
+      "orange": "#ff6b35",
+      "cyan": "#00ffff",
+      "neon": "#00ff41",
+      "glow": "#ff0080"
+    },
+    "background": {
+      "primary": "#4a5568",
+      "secondary": "#2d3748",
+      "card": "#1a202c",
+      "surface": "#2d3748"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#e2e8f0",
+      "muted": "#a0aec0",
+      "accent": "#00ffff"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "secondary": "JetBrains Mono, 'Courier New', monospace",
+      "display": "Inter, system-ui, sans-serif"
+    },
+    "fontSize": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem"
+    },
+    "fontWeight": {
+      "light": "300",
+      "normal": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700",
+      "extrabold": "800"
+    }
+  },
+  "spacing": {
+    "xs": "0.25rem",
+    "sm": "0.5rem",
+    "md": "1rem",
+    "lg": "1.5rem",
+    "xl": "2rem",
+    "2xl": "3rem",
+    "3xl": "4rem",
+    "4xl": "6rem"
+  },
+  "effects": {
+    "glow": {
+      "primary": "0 0 20px rgba(255, 0, 0, 0.5)",
+      "secondary": "0 0 20px rgba(0, 191, 255, 0.5)",
+      "accent": "0 0 20px rgba(0, 255, 255, 0.5)",
+      "neon": "0 0 30px rgba(0, 255, 65, 0.7)"
+    },
+    "shadow": {
+      "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+      "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+      "neon": "0 0 20px rgba(0, 255, 255, 0.3)"
+    }
+  },
+  "components": {
+    "button": {
+      "height": "2.75rem",
+      "padding": "0.75rem 1.5rem",
+      "borderRadius": "0.5rem",
+      "fontWeight": "600",
+      "primary": {
+        "background": "linear-gradient(135deg, #ff0000 0%, #ff6b35 100%)",
+        "color": "#ffffff",
+        "glow": "0 0 15px rgba(255, 0, 0, 0.4)"
+      },
+      "secondary": {
+        "background": "linear-gradient(135deg, #00bfff 0%, #00ffff 100%)",
+        "color": "#ffffff",
+        "glow": "0 0 15px rgba(0, 191, 255, 0.4)"
+      },
+      "ghost": {
+        "background": "transparent",
+        "color": "#00ffff",
+        "border": "2px solid #00ffff",
+        "glow": "0 0 10px rgba(0, 255, 255, 0.3)"
+      }
+    },
+    "card": {
+      "padding": "1.5rem",
+      "borderRadius": "1rem",
+      "background": "#1a202c",
+      "border": "1px solid #2d3748",
+      "shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      "glow": "0 0 20px rgba(0, 255, 255, 0.1)"
+    },
+    "input": {
+      "height": "2.75rem",
+      "padding": "0.75rem 1rem",
+      "borderRadius": "0.5rem",
+      "borderWidth": "2px",
+      "background": "#2d3748",
+      "borderColor": "#4a5568",
+      "focusBorderColor": "#00ffff",
+      "focusGlow": "0 0 10px rgba(0, 255, 255, 0.3)"
+    },
+    "navigation": {
+      "background": "#1a202c",
+      "borderBottom": "1px solid #2d3748",
+      "glow": "0 0 20px rgba(0, 255, 255, 0.1)"
+    }
+  },
+  "gradients": {
+    "primary": "linear-gradient(135deg, #ff0000 0%, #ff6b35 100%)",
+    "secondary": "linear-gradient(135deg, #00bfff 0%, #00ffff 100%)",
+    "brand": "linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%)",
+    "neon": "linear-gradient(135deg, #00ffff 0%, #00ff41 100%)"
+  },
+  "animations": {
+    "glow": "glow 2s ease-in-out infinite alternate",
+    "pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+    "fadeIn": "fadeIn 0.5s ease-in-out",
+    "slideUp": "slideUp 0.3s ease-out"
+  }
+}

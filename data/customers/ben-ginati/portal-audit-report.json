@@ -1,0 +1,271 @@
+{
+  "customer": "Ben Ginati",
+  "auditDate": "2025-08-17T18:11:38.532Z",
+  "profile": {
+    "customer": {
+      "name": "Ben Ginati",
+      "email": "ai@tax4us.co.il",
+      "company": "Tax4Us",
+      "website": "https://tax4us.co.il",
+      "industry": "Tax Services",
+      "businessSize": "small",
+      "primaryUseCase": "Content automation for tax services website and podcast",
+      "currentAutomationLevel": "none",
+      "plan": "enterprise",
+      "status": "partially_active",
+      "billingCycle": "project",
+      "projectTimeline": "2-3 months",
+      "budget": "$5000",
+      "successMetrics": "Content automation, podcast production, social media engagement",
+      "notes": "Needs 4 agents: WordPress content, WordPress blog/posts, podcast, social media. Payment: $5000 in 2 installments (start + completion). Not paid yet.",
+      "wordpressCredentials": {
+        "username": "Shai ai",
+        "password": "JNmxDaaN1X0yJ1CGRGD9Hc5S",
+        "siteUrl": "https://tax4us.co.il"
+      },
+      "socialMedia": {
+        "facebook": "Facebook page (to be confirmed)",
+        "linkedin": "LinkedIn page (to be confirmed)"
+      },
+      "podcastPlatform": {
+        "suggested": "Captivate (personal plan)",
+        "status": "pending decision"
+      },
+      "paymentStatus": {
+        "firstPayment": {
+          "amount": 2500,
+          "status": "paid",
+          "dueDate": "2025-01-20",
+          "paidDate": "2025-08-17"
+        },
+        "secondPayment": {
+          "amount": 2500,
+          "status": "pending",
+          "dueDate": "2025-03-20"
+        }
+      },
+      "createdAt": "2025-01-15T00:00:00.000Z",
+      "updatedAt": "2025-08-17T17:48:43.699Z"
+    },
+    "organization": {
+      "name": "Tax4Us",
+      "slug": "tax4us",
+      "domain": "tax4us.co.il",
+      "industry": "tax-services",
+      "businessSize": "small",
+      "subscription": "enterprise",
+      "brandTheme": "professional",
+      "status": "active"
+    },
+    "agents": [
+      {
+        "name": "WordPress Content Agent",
+        "description": "Automated content creation and management for Tax4Us website",
+        "status": "failed",
+        "priority": "high",
+        "integrations": [
+          "wordpress",
+          "openai"
+        ],
+        "requirements": [
+          "WordPress admin access",
+          "Content templates",
+          "SEO optimization"
+        ],
+        "updatedAt": "2025-08-17T17:47:07.352Z",
+        "activatedAt": null,
+        "webhookTest": false
+      },
+      {
+        "name": "WordPress Blog & Posts Agent",
+        "description": "Automated blog post creation and publishing",
+        "status": "failed",
+        "priority": "high",
+        "integrations": [
+          "wordpress",
+          "openai"
+        ],
+        "requirements": [
+          "Blog post templates",
+          "Publishing schedule",
+          "Content calendar"
+        ],
+        "updatedAt": "2025-08-17T17:47:07.352Z",
+        "activatedAt": null,
+        "webhookTest": false
+      },
+      {
+        "name": "Podcast Complete Agent",
+        "description": "Podcast production and distribution automation",
+        "status": "failed",
+        "priority": "medium",
+        "integrations": [
+          "captivate",
+          "spotify",
+          "apple-podcasts"
+        ],
+        "requirements": [
+          "Podcast platform decision",
+          "Episode templates",
+          "Distribution channels"
+        ],
+        "updatedAt": "2025-08-17T17:47:07.352Z",
+        "activatedAt": null,
+        "webhookTest": false
+      },
+      {
+        "name": "Social Media Agent",
+        "description": "Social media content creation and posting automation",
+        "status": "failed",
+        "priority": "medium",
+        "integrations": [
+          "facebook",
+          "linkedin"
+        ],
+        "requirements": [
+          "Social media credentials",
+          "Content templates",
+          "Posting schedule"
+        ],
+        "updatedAt": "2025-08-17T17:47:07.352Z",
+        "activatedAt": null,
+        "webhookTest": false
+      }
+    ],
+    "questions": [
+      {
+        "id": "ben-001",
+        "title": "Confirm WordPress Access",
+        "description": "Verify WordPress admin access with provided credentials",
+        "status": "pending",
+        "priority": "urgent",
+        "category": "setup",
+        "assignedTo": "customer",
+        "dueDate": "2025-01-17"
+      },
+      {
+        "id": "ben-002",
+        "title": "Podcast Platform Decision",
+        "description": "Choose between Captivate (personal plan) or alternative platform",
+        "status": "pending",
+        "priority": "high",
+        "category": "setup",
+        "assignedTo": "customer",
+        "dueDate": "2025-01-18"
+      },
+      {
+        "id": "ben-003",
+        "title": "Social Media Credentials",
+        "description": "Provide Facebook and LinkedIn page access credentials",
+        "status": "pending",
+        "priority": "high",
+        "category": "integration",
+        "assignedTo": "customer",
+        "dueDate": "2025-01-19"
+      },
+      {
+        "id": "ben-004",
+        "title": "First Payment Processing",
+        "description": "Process first payment of $2,500 to begin project",
+        "status": "completed",
+        "priority": "urgent",
+        "category": "payment",
+        "assignedTo": "customer",
+        "dueDate": "2025-01-20",
+        "completedAt": "2025-08-17T17:47:07.352Z"
+      },
+      {
+        "id": "ben-005",
+        "title": "Content Strategy Review",
+        "description": "Review and approve content strategy for website and blog",
+        "status": "pending",
+        "priority": "medium",
+        "category": "content",
+        "assignedTo": "both",
+        "dueDate": "2025-01-22"
+      }
+    ],
+    "portal": {
+      "url": "http://173.254.201.134/ben-ginati-portal.html",
+      "username": "ben-ginati",
+      "password": "ebe07d899d7e5548",
+      "features": [
+        "Project Questions & Tasks",
+        "Payment Management",
+        "Agent Status",
+        "Progress Tracking"
+      ]
+    }
+  },
+  "auditResults": {
+    "payment-status": {
+      "implemented": true,
+      "status": "Basic payment status shown",
+      "notes": "Payment processed but needs invoice integration",
+      "priority": "medium"
+    },
+    "invoice-management": {
+      "implemented": false,
+      "status": "Not implemented",
+      "notes": "Need invoice generation and management system",
+      "priority": "high"
+    },
+    "ai-chat-agent": {
+      "implemented": false,
+      "status": "Not implemented",
+      "notes": "Need AI chat agent for credential guidance",
+      "priority": "high"
+    },
+    "credential-setup": {
+      "implemented": true,
+      "status": "Basic credential form exists",
+      "notes": "Needs AI-guided setup process",
+      "priority": "high"
+    },
+    "agent-activation": {
+      "implemented": true,
+      "status": "Basic agent controls exist",
+      "notes": "Needs automated activation workflow",
+      "priority": "medium"
+    },
+    "agent-management": {
+      "implemented": true,
+      "status": "Agent management interface exists",
+      "notes": "Needs real-time status updates",
+      "priority": "low"
+    },
+    "billing-integration": {
+      "implemented": false,
+      "status": "Not implemented",
+      "notes": "Need Stripe/Payment integration",
+      "priority": "high"
+    }
+  },
+  "recommendations": {
+    "high": [
+      {
+        "title": "Implement Invoice Management System",
+        "description": "Create automated invoice generation, payment tracking, and billing history for Ben",
+        "implementation": "Create invoice API endpoints and UI components"
+      },
+      {
+        "title": "Deploy AI Chat Agent for Credential Setup",
+        "description": "Implement conversational AI to guide Ben through credential setup process",
+        "implementation": "Integrate AI chat component with credential management system"
+      },
+      {
+        "title": "Integrate Payment Processing System",
+        "description": "Connect Stripe or payment provider for automated billing and subscription management",
+        "implementation": "Set up Stripe webhooks and payment processing endpoints"
+      }
+    ],
+    "medium": [],
+    "low": []
+  },
+  "summary": {
+    "totalComponents": 7,
+    "implemented": 4,
+    "notImplemented": 3,
+    "highPriorityItems": 3
+  }
+}

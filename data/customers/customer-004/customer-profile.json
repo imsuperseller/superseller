@@ -1,0 +1,30 @@
+{
+  "id": "customer-004",
+  "name": "Michael Rosenberg",
+  "company": "Rosenberg Healthcare",
+  "industry": "healthcare",
+  "website": "https://rosenberghealthcare.co.il",
+  "email": "michael@rosenberghealthcare.co.il",
+  "businessSize": "medium",
+  "primaryUseCase": "Patient communication and appointment management",
+  "currentAutomationLevel": "none",
+  "budget": "$5000",
+  "timeline": "3 months",
+  "priorityAgents": [
+    "Patient Communication Agent",
+    "Appointment Scheduling Agent",
+    "Medical Records Agent"
+  ],
+  "painPoints": [
+    "Patient reminders are manual",
+    "Appointment scheduling is chaotic",
+    "Medical records are disorganized"
+  ],
+  "successMetrics": [
+    "operational-efficiency",
+    "patient-satisfaction"
+  ],
+  "status": "prospect",
+  "source": "industry-partnership",
+  "notes": "Partnership with healthcare software provider. 3 clinics to automate."
+}

@@ -1,0 +1,80 @@
+{
+  "title": "Proactive vs Reactive Automation Guidelines",
+  "description": "Ensure automations run automatically without human intervention",
+  "principles": [
+    {
+      "principle": "SCHEDULER_FIRST",
+      "description": "Always prefer schedulers over manual triggers",
+      "implementation": "Use cron triggers or interval nodes as primary triggers"
+    },
+    {
+      "principle": "ELIMINATE_HUMAN_DEPENDENCY",
+      "description": "Remove human intervention from routine tasks",
+      "implementation": "Automate decision points and approval workflows"
+    },
+    {
+      "principle": "FAILSAFE_MECHANISMS",
+      "description": "Include error handling and retry mechanisms",
+      "implementation": "Add error handling nodes and retry logic"
+    }
+  ],
+  "patterns": {
+    "reactive": {
+      "description": "Manual trigger required",
+      "examples": [
+        "❌ Manual Telegram command to scrape leads",
+        "❌ Human approval for every content post",
+        "❌ Manual button click to start workflow"
+      ],
+      "problems": [
+        "Human dependency creates bottlenecks",
+        "Inconsistent execution timing",
+        "Missed opportunities when humans forget"
+      ]
+    },
+    "proactive": {
+      "description": "Automatic execution",
+      "examples": [
+        "✅ Daily scheduler for lead scraping",
+        "✅ Automated content posting with human review queue",
+        "✅ Automatic data processing on file upload"
+      ],
+      "benefits": [
+        "Consistent execution",
+        "No human dependency",
+        "Scalable operations"
+      ]
+    }
+  },
+  "implementation": {
+    "schedulerTemplates": [
+      {
+        "name": "daily_automation",
+        "cron": "0 9 * * *",
+        "description": "Runs daily at 9 AM"
+      },
+      {
+        "name": "hourly_check",
+        "cron": "0 * * * *",
+        "description": "Runs every hour"
+      },
+      {
+        "name": "weekly_report",
+        "cron": "0 10 * * 1",
+        "description": "Runs every Monday at 10 AM"
+      }
+    ],
+    "webhookTemplates": [
+      {
+        "name": "file_upload_trigger",
+        "description": "Triggers on file upload to specific folder",
+        "implementation": "Use webhook node with file monitoring"
+      },
+      {
+        "name": "database_change_trigger",
+        "description": "Triggers on database record changes",
+        "implementation": "Use database trigger or polling"
+      }
+    ]
+  }
+}

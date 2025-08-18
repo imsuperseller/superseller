@@ -1,0 +1,149 @@
+{
+  "customer": {
+    "id": "customer-1755455121176",
+    "name": "John Smith",
+    "email": "john@example.com",
+    "company": "Smith Consulting",
+    "website": "https://smithconsulting.com",
+    "industry": "consulting",
+    "businessSize": "small",
+    "primaryUseCase": "Content automation and social media management",
+    "currentAutomationLevel": "none",
+    "plan": "standard",
+    "status": "onboarding",
+    "billingCycle": "monthly",
+    "budget": "$3000",
+    "successMetrics": "Time savings, content quality, social engagement",
+    "createdAt": "2025-08-17T18:25:21.176Z",
+    "updatedAt": "2025-08-17T18:25:21.177Z",
+    "agentRequest": {
+      "submittedAt": "2025-08-17T18:30:45.993Z",
+      "status": "analyzing",
+      "responses": {
+        "business_name": "TechCorp Solutions",
+        "industry": "Technology",
+        "business_size": "11-50 (Small Business)",
+        "primary_goal": "Automate customer support and content creation",
+        "current_processes": "Manual email responses, manual blog post creation, manual social media posting",
+        "integrations_needed": [
+          "WordPress",
+          "Mailchimp",
+          "Slack"
+        ],
+        "budget_range": "$2,500 - $5,000",
+        "timeline": "Within a month",
+        "contact_info": "john@techcorp.com",
+        "additional_notes": "Need to handle customer inquiries 24/7"
+      }
+    },
+    "paymentStatus": {
+      "firstPayment": {
+        "status": "paid",
+        "amount": 2500,
+        "date": "2025-08-17T18:30:45.995Z"
+      },
+      "secondPayment": {
+        "status": "pending",
+        "amount": 2500,
+        "dueDate": "2025-09-16T18:30:45.996Z"
+      }
+    }
+  },
+  "organization": {
+    "name": "Smith Consulting",
+    "slug": "smith-consulting",
+    "domain": "https://smithconsulting.com",
+    "industry": "consulting",
+    "businessSize": "small",
+    "subscription": "standard",
+    "brandTheme": "professional",
+    "status": "active"
+  },
+  "agents": [
+    {
+      "name": "WordPress Content Agent",
+      "description": "Automated content creation and management",
+      "status": "pending",
+      "priority": "high",
+      "integrations": [
+        "wordpress",
+        "openai"
+      ],
+      "requirements": [
+        "wordpress credentials",
+        "openai credentials"
+      ],
+      "setupTime": "5 minutes",
+      "templateFile": "workflows/wordpress-content-agent.json",
+      "agentKey": "wordpress-content"
+    },
+    {
+      "name": "Social Media Agent",
+      "description": "Social media content creation and posting",
+      "status": "pending",
+      "priority": "high",
+      "integrations": [
+        "facebook",
+        "linkedin",
+        "twitter",
+        "openai"
+      ],
+      "requirements": [
+        "facebook credentials",
+        "linkedin credentials",
+        "twitter credentials",
+        "openai credentials"
+      ],
+      "setupTime": "10 minutes",
+      "templateFile": "workflows/social-media-agent.json",
+      "agentKey": "social-media"
+    },
+    {
+      "name": "Email Marketing Agent",
+      "description": "Automated email campaigns and sequences",
+      "status": "pending",
+      "priority": "high",
+      "integrations": [
+        "mailchimp",
+        "openai"
+      ],
+      "requirements": [
+        "mailchimp credentials",
+        "openai credentials"
+      ],
+      "setupTime": "8 minutes",
+      "templateFile": "workflows/email-marketing-agent.json",
+      "agentKey": "email-marketing"
+    }
+  ],
+  "questions": [],
+  "portal": {
+    "url": "http://173.254.201.134/customer-1755455121176-portal.html",
+    "username": "customer-1755455121176",
+    "password": "mmtbfilh82an43ek9vzfsq",
+    "features": [
+      "Project Questions & Tasks",
+      "Payment Management",
+      "Agent Status",
+      "Progress Tracking",
+      "AI Chat Assistant"
+    ]
+  },
+  "onboarding": {
+    "step": "plan-creation",
+    "status": "in_progress",
+    "progress": 30,
+    "steps": [
+      "customer-profile-creation",
+      "agent-selection",
+      "credential-setup",
+      "payment-processing",
+      "agent-deployment",
+      "activation-testing",
+      "welcome-sequence"
+    ],
+    "startedAt": "2025-08-17T18:25:21.177Z",
+    "estimatedCompletion": "2025-08-18T18:25:21.177Z"
+  },
+  "updatedAt": "2025-08-17T18:25:21.179Z"
+}

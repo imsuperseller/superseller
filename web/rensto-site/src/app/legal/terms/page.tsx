@@ -25,8 +25,8 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">1. Agreement to Terms</h2>
               <p className="text-muted mb-4">
-                By accessing and using the services provided by Rensto LLC (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;), 
-                you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these terms, 
+                By accessing and using the services provided by Rensto LLC ("we," "our," or "us"), 
+                you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, 
                 you may not access our services.
               </p>
             </section>

@@ -1,0 +1,72 @@
+{
+  "agentName": "Data Processing Agent",
+  "customerId": "customer-1755455121176",
+  "testId": "test_1755455525113",
+  "startedAt": "2025-08-17T18:32:05.113Z",
+  "status": "passed",
+  "cycles": [
+    {
+      "name": "unit-testing",
+      "status": "in_progress",
+      "results": {
+        "score": 95,
+        "issue": null,
+        "severity": null
+      },
+      "startedAt": "2025-08-17T18:32:05.113Z",
+      "completedAt": "2025-08-17T18:32:07.114Z",
+      "passed": true
+    },
+    {
+      "name": "integration-testing",
+      "status": "in_progress",
+      "results": {
+        "score": 88,
+        "issue": "API rate limiting",
+        "severity": "medium"
+      },
+      "startedAt": "2025-08-17T18:32:07.114Z",
+      "completedAt": "2025-08-17T18:32:09.115Z",
+      "passed": true
+    },
+    {
+      "name": "user-acceptance-testing",
+      "status": "in_progress",
+      "results": {
+        "score": 90,
+        "issue": null,
+        "severity": null
+      },
+      "startedAt": "2025-08-17T18:32:09.116Z",
+      "completedAt": "2025-08-17T18:32:11.117Z",
+      "passed": true
+    },
+    {
+      "name": "performance-testing",
+      "status": "in_progress",
+      "results": {
+        "score": 85,
+        "issue": "Response time > 2s",
+        "severity": "low"
+      },
+      "startedAt": "2025-08-17T18:32:11.117Z",
+      "completedAt": "2025-08-17T18:32:13.118Z",
+      "passed": true
+    },
+    {
+      "name": "security-testing",
+      "status": "in_progress",
+      "results": {
+        "score": 98,
+        "issue": null,
+        "severity": null
+      },
+      "startedAt": "2025-08-17T18:32:13.118Z",
+      "completedAt": "2025-08-17T18:32:15.119Z",
+      "passed": true
+    }
+  ],
+  "overallScore": 91,
+  "issues": [],
+  "recommendations": []
+}

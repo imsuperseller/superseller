@@ -1,0 +1,30 @@
+{
+  "storage": {
+    "current": "326M",
+    "available": "266GB",
+    "utilization": "0.12%",
+    "status": "excellent"
+  },
+  "collections": {
+    "count": 44,
+    "types": [
+      "customer",
+      "agent",
+      "workflow",
+      "analytics"
+    ],
+    "status": "healthy"
+  },
+  "performance": {
+    "indexes": "optimized",
+    "queries": "fast",
+    "connections": "stable",
+    "status": "good"
+  },
+  "scalability": {
+    "horizontal": "supported",
+    "vertical": "supported",
+    "sharding": "available",
+    "status": "excellent"
+  }
+}

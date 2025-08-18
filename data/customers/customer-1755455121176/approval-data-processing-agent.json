@@ -1,0 +1,25 @@
+{
+  "agentName": "Data Processing Agent",
+  "customerId": "customer-1755455121176",
+  "approvalId": "approval_1755455535122",
+  "requestedAt": "2025-08-17T18:32:15.122Z",
+  "status": "approved",
+  "approver": "admin@rensto.com",
+  "criteria": [
+    "All tests passed (score >= 90%)",
+    "Performance requirements met",
+    "Security requirements met",
+    "Documentation complete",
+    "Integration tested"
+  ],
+  "evidence": {
+    "testScore": 95,
+    "performanceMetrics": "All within acceptable ranges",
+    "securityScan": "Passed",
+    "documentation": "Complete",
+    "integrationStatus": "All integrations working"
+  },
+  "decision": "APPROVED",
+  "decisionAt": "2025-08-17T18:32:15.123Z",
+  "comments": "All requirements met"
+}

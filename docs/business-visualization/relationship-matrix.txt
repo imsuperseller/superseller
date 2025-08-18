@@ -1,0 +1,37 @@
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                        RENSTO RELATIONSHIP MATRIX                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  COMPONENT RELATIONSHIPS:                                                    ║
+║                                                                              ║
+║  ┌─────────────────┬─────────┬─────────┬─────────┬─────────┬─────────┐     ║
+║  │   COMPONENT     │  ADMIN  │CUSTOMER │ MCP     │  N8N    │ DATABASE│     ║
+║  │                 │  DASH   │ PORTAL  │ SERVERS │INSTANCES│         │     ║
+║  ├─────────────────┼─────────┼─────────┼─────────┼─────────┼─────────┤     ║
+║  │ Admin Dashboard │    ✓    │    ✓    │    ✓    │    ✓    │    ✓    │     ║
+║  │ Customer Portal │    ✓    │    ✓    │    ✓    │    ✓    │    ✓    │     ║
+║  │ MCP Servers     │    ✓    │    ✓    │    ✓    │    ✓    │    ✓    │     ║
+║  │ n8n Instances   │    ✓    │    ✓    │    ✓    │    ✓    │    ✓    │     ║
+║  │ Database        │    ✓    │    ✓    │    ✓    │    ✓    │    ✓    │     ║
+║  └─────────────────┴─────────┴─────────┴─────────┴─────────┴─────────┘     ║
+║                                                                              ║
+║  DATA FLOW RELATIONSHIPS:                                                    ║
+║                                                                              ║
+║  Customer Portal → MCP Servers → n8n Instances → Database                   ║
+║         ↓              ↓              ↓              ↓                      ║
+║  Admin Dashboard ← MCP Servers ← n8n Instances ← Database                   ║
+║                                                                              ║
+║  BUSINESS RELATIONSHIPS:                                                     ║
+║                                                                              ║
+║  • Customers → Agents → Workflows → Results → Analytics                     ║
+║  • Admin → Customers → Billing → Revenue → Growth                          ║
+║  • BMAD → Development → Deployment → Monitoring → Optimization             ║
+║                                                                              ║
+║  INTEGRATION RELATIONSHIPS:                                                  ║
+║                                                                              ║
+║  • MCP Protocol → n8n API → Database → Cache → Frontend                    ║
+║  • WebSocket → Real-time → Notifications → User Interface                  ║
+║  • REST API → External → Third-party → Integrations                        ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝

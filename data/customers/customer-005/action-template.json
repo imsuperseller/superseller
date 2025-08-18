@@ -1,0 +1,53 @@
+{
+  "actionId": "action-005",
+  "customer": "Lisa Feldman",
+  "customerId": "customer-005",
+  "priority": 5,
+  "type": "referral",
+  "status": "pending",
+  "createdAt": "2025-08-17T17:54:12.945Z",
+  "updatedAt": "2025-08-17T17:54:12.945Z",
+  "emailTemplates": {
+    "subject": "Industry Referral - AI Consulting Automation for Lisa Feldman",
+    "body": "Hi Lisa,\n\nI hope this email finds you well. I'm reaching out regarding AI-powered business automation for Feldman.\n\nA mutual industry contact mentioned your consulting business and the challenges with manual report generation. Our AI agents can automate this process entirely.\n\nOur platform has helped businesses like Tax4Us achieve:\n• 50% reduction in manual tasks\n• 3x faster content creation\n• Automated customer communication\n• Real-time analytics and reporting\n\nWould you be interested in a 15-minute demo to see how we can automate your industry contact referral for consulting automation?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation\n",
+    "followUp": "Hi Lisa,\n\nI wanted to follow up on my previous email about AI automation for Feldman.\n\nIf you haven't had a chance to review our proposal yet, I'd be happy to:\n• Schedule a personalized demo\n• Provide case studies from similar businesses\n• Discuss your specific automation needs\n\nWhat would work best for you?\n\nBest regards,\nShai Friedman\nRensto - AI Business Automation"
+  },
+  "meetingTemplates": {
+    "agenda": [
+      "Introduction and company overview (5 min)",
+      "Current business challenges discussion (10 min)",
+      "AI automation demo - relevant agents (15 min)",
+      "Implementation timeline and process (10 min)",
+      "Pricing and ROI discussion (10 min)",
+      "Next steps and follow-up (5 min)"
+    ],
+    "demoScript": {
+      "introduction": "Welcome Lisa Feldman! Today I'll show you how our AI agents can automate your industry contact referral for consulting automation.",
+      "painPoints": "Let's start by understanding your current challenges with industry contact referral for consulting automation.",
+      "solution": "Here's how our AI agents can solve these problems:",
+      "agents": [
+        "• Data Analysis Agent: [Demo specific functionality]",
+        "• Report Generation Agent: [Demo specific functionality]",
+        "• Client Communication Agent: [Demo specific functionality]"
+      ],
+      "results": "Businesses using our platform typically see 50% time savings and 3x productivity improvements.",
+      "nextSteps": "Based on what we've discussed, here's our recommended implementation plan."
+    },
+    "proposalOutline": {
+      "executiveSummary": "AI automation solution for Lisa Feldman",
+      "currentState": "Analysis of current industry contact referral for consulting automation",
+      "proposedSolution": "Custom AI agents for Data Analysis Agent, Report Generation Agent, Client Communication Agent",
+      "implementation": "3-phase rollout over 2 weeks",
+      "investment": "Total investment: $3500",
+      "roi": "Expected ROI: 300% within 6 months",
+      "timeline": "Project timeline: 2 weeks",
+      "nextSteps": "Immediate next steps to get started"
+    }
+  },
+  "successMetrics": {
+    "targetOutcome": "Introduction and initial meeting",
+    "timeline": "2 weeks",
+    "budget": "$3500",
+    "conversionProbability": 0.75
+  }
+}

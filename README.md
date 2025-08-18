@@ -1,199 +1,206 @@
-# 🚀 Rensto - Business Automation Platform
+# 🚀 RENSTO - AI-Powered Business Automation Platform
 
-**Automations that ship in days — not months**
+## 📊 **SYSTEM OVERVIEW**
 
-Rensto is a comprehensive business automation platform that saves businesses 5-10 hours per week through intelligent workflow automation, AI-powered content generation, and seamless integrations.
+Rensto is a comprehensive AI-powered business automation platform that provides customers with intelligent agents, automated workflows, and seamless integrations. Built with modern technologies and optimized for scalability.
 
-## 🎯 **What Rensto Does**
+## 🎯 **CORE FEATURES**
 
-- **🤖 AI-Powered Workflow Generation** - Create complex automations from natural language
-- **📊 Business Intelligence** - Real-time analytics and reporting
-- **💰 Financial Automation** - Invoice processing, payment tracking, expense management
-- **📧 Communication Automation** - Email campaigns, lead nurturing, customer engagement
-- **🔧 Infrastructure Management** - Docker-based deployment with full automation
+### **🤖 AI Agents**
+- **WordPress Content Agents**: Automated content creation and publishing
+- **Social Media Agents**: Multi-platform content management
+- **Podcast Agents**: Complete podcast production automation
+- **Excel Processing Agents**: Data extraction and analysis
+- **Custom Agents**: Tailored to specific business needs
 
-## 🏗️ **Architecture**
+### **🔧 Workflow Automation**
+- **n8n Integration**: Native workflow automation
+- **Multi-Platform Support**: WordPress, social media, podcast platforms
+- **Real-time Monitoring**: Performance tracking and optimization
+- **Error Handling**: Robust error management and recovery
 
-```
-Rensto/
-├── infra/                    # 🐳 Infrastructure & Automation
-│   ├── mcp-servers/         # 🤖 MCP Server Ecosystem
-│   ├── n8n-workflows/       # 🔄 Workflow Definitions
-│   ├── docker-compose.yml   # 🐳 Infrastructure Services
-│   └── RENSTO-OPERATIONS-GUIDE.md  # 📋 Complete Operations Guide
-├── web/                     # 🌐 Web Application
-│   └── rensto-site/        # Next.js Marketing Site
-├── docs/                    # 📚 Documentation
-└── ops/                     # 🔧 Operations & Planning
-```
+### **👥 Customer Portal**
+- **Unified Interface**: Single portal for all customers
+- **AI Chat Agent**: Intelligent credential setup guidance
+- **Payment Processing**: Integrated billing and subscription management
+- **Real-time Status**: Live agent and workflow monitoring
 
-## 🚀 **Quick Start**
+### **🏢 Admin Dashboard**
+- **Customer Management**: Complete customer lifecycle management
+- **Agent Monitoring**: Real-time performance tracking
+- **Revenue Analytics**: Comprehensive financial reporting
+- **System Health**: Infrastructure monitoring and alerts
 
-### **1. Infrastructure Setup**
+## 🏗️ **ARCHITECTURE**
+
+### **📱 Frontend**
+- **Next.js 14**: Modern React framework
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first styling
+- **GSAP**: Advanced animations
+
+### **🔧 Backend**
+- **Node.js**: Server-side JavaScript
+- **MongoDB**: NoSQL database
+- **n8n**: Workflow automation engine
+- **Redis**: Caching and session management
+
+### **☁️ Infrastructure**
+- **VPS Hosting**: Scalable cloud infrastructure
+- **Docker**: Containerized deployment
+- **Nginx**: Reverse proxy and load balancing
+- **SSL/TLS**: Secure communication
+
+## 🚀 **QUICK START**
+
+### **Prerequisites**
+- Node.js 18+
+- MongoDB 6+
+- n8n instance
+- Docker (optional)
+
+### **Installation**
 ```bash
-cd infra
-docker-compose up -d
+# Clone repository
+git clone https://github.com/your-org/rensto.git
+cd rensto
+
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your configuration
+
+# Start development server
+npm run dev
 ```
 
-### **2. MCP Servers (AI Workflow Generation)**
+### **Production Deployment**
 ```bash
-cd infra
-./start-mcp-servers.sh
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-### **3. Import Workflows**
-```bash
-cd infra
-./import-remaining-workflows-v3.sh
+## 📁 **PROJECT STRUCTURE**
+
+```
+📁 Rensto/
+├── 📄 README.md (This file)
+├── 📄 DOCUMENTATION_INDEX.md (Complete documentation navigation)
+├── 📄 ONE_SOURCE_OF_TRUTH.md (System overview and integration)
+├── 📄 SYSTEM_STATUS.md (Current system status)
+├── 📄 IMPLEMENTATION_PLAN.md (Comprehensive implementation plan)
+├── 📄 IMPLEMENTATION_ROADMAP.md (Detailed roadmap)
+├── 📁 web/rensto-site/ (Next.js application)
+├── 📁 workflows/ (n8n workflow definitions)
+├── 📁 scripts/ (Automation scripts)
+├── 📁 docs/ (Complete documentation)
+├── 📁 cursor-rules/ (Design generation rules)
+├── 📁 designs/ (Design tokens and examples)
+└── 📁 data/ (Customer data and backups)
 ```
 
-### **4. Test Integrations**
-```bash
-cd infra
-./test-integrations.sh
-```
+**📚 For complete documentation navigation, see [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)**
 
-## 🤖 **MCP Server Ecosystem**
+## 🎯 **CURRENT CUSTOMERS**
 
-**200+ Business Automation Tools Available:**
+### **👤 Ben Ginati (Tax4Us)**
+- **Status**: Active (Payment pending)
+- **Agents**: 4 optimized agents deployed
+- **Services**: WordPress content, blog, podcast, social media
+- **Payment**: $5,000 (2 installments)
 
-- 💰 **Financial & Billing MCP** - 26 tools (invoicing, payments, reporting)
-- 📧 **Email & Communication MCP** - 28 tools (campaigns, analytics, automation)
-- 📊 **Analytics & Reporting MCP** - 33 tools (BI, dashboards, forecasting)
-- 🤖 **n8n MCP Server** - 100+ tools (workflow management)
-- 🎯 **AI Workflow Generator** - Natural language to workflow conversion
+### **👤 Shelly Mizrahi**
+- **Status**: Active (Paid)
+- **Agents**: Excel processing agent
+- **Services**: Insurance data analysis
+- **Payment**: Completed
 
-## 🔧 **Technology Stack**
+## 🔐 **CREDENTIAL MANAGEMENT**
 
-### **Infrastructure**
-- **Docker** - Containerized services
-- **n8n** - Workflow automation platform
-- **PostgreSQL** - Primary database
-- **MongoDB** - Document storage
-- **Cloudflare Tunnel** - Secure external access
+### **One Source of Truth**
+- **Customer Portal**: Agent selection and payment
+- **AI Chat Agent**: Step-by-step credential guidance
+- **n8n Cloud**: Manual credential configuration
+- **Agent Activation**: Automatic after credential setup
 
-### **Web Application**
-- **Next.js 14** - React framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **shadcn/ui** - Component library
-- **GSAP** - Animations
+### **Supported Integrations**
+- **OpenAI API**: Content generation
+- **WordPress API**: Content publishing
+- **Social Media APIs**: Facebook, LinkedIn, Twitter
+- **Podcast Platforms**: Captivate, Spotify, Apple Podcasts
+- **Google Drive**: File storage and management
 
-### **Integrations**
-- **Airtable** - CRM and project management
-- **OpenAI** - AI-powered automation
-- **Microsoft Outlook** - Email automation
-- **Stripe** - Payment processing
+## 🚀 **WORKFLOW MANAGEMENT**
 
-## 📊 **Production Status**
+### **Current Standard**
+- **Optimized Agents**: Built and tested in Cursor
+- **Native n8n Nodes**: No generic code nodes
+- **Customer n8n Cloud**: Individual instances
+- **API Deployment**: Automated workflow deployment
 
-**✅ 100% OPERATIONAL**
+### **Deployment Process**
+1. **Agent Development**: Build optimized agents
+2. **Customer Selection**: Choose agents in portal
+3. **Payment Processing**: Handle billing
+4. **Credential Setup**: AI-guided configuration
+5. **Agent Activation**: Deploy and monitor
 
-- ✅ **Web Application**: https://rensto-site.vercel.app
-- ✅ **n8n Platform**: http://173.254.201.134:5678
-- ✅ **All Workflows**: Imported and operational
-- ✅ **Airtable Integration**: All tables operational
-- ✅ **MCP Servers**: 200+ automation tools available
-- ✅ **Databases**: PostgreSQL and MongoDB running
+## 📊 **SYSTEM STATUS**
 
-## 🎯 **Business Automation Capabilities**
+### **✅ COMPLETED**
+- **Admin Dashboard**: 100% functional
+- **Customer Portal**: Unified interface
+- **Agent Infrastructure**: 33+ agents available
+- **Payment Processing**: Multi-provider support
+- **Documentation**: Consolidated and organized
 
-### **Lead Management**
-- Automated lead intake and qualification
-- Smart follow-up scheduling
-- CRM integration and sync
+### **🔄 IN PROGRESS**
+- **Ben Ginati Setup**: 4 agents deployed, credentials pending
+- **Documentation Cleanup**: 60% reduction completed
+- **Performance Optimization**: Ongoing improvements
 
-### **Project Management**
-- Automated project tracking
-- Deadline monitoring and alerts
-- Client communication automation
+### **📋 PLANNED**
+- **Additional Customers**: Scale to more clients
+- **Advanced Agents**: Enhanced AI capabilities
+- **Mobile App**: Customer mobile interface
 
-### **Financial Operations**
-- Invoice generation and tracking
-- Payment reminder automation
-- Expense categorization and reporting
+## 🤝 **CONTRIBUTING**
 
-### **Content Generation**
-- AI-powered content creation
-- SEO optimization automation
-- Social media content scheduling
+### **Development Process**
+1. **BMAD Methodology**: Build, Measure, Analyze, Deploy
+2. **Code Quality**: Automated testing and linting
+3. **Documentation**: Keep docs updated
+4. **Security**: Follow security best practices
 
-## 📚 **Documentation**
+### **Code Standards**
+- **TypeScript**: Strict type checking
+- **ESLint**: Code quality enforcement
+- **Prettier**: Consistent formatting
+- **Testing**: Comprehensive test coverage
 
-- **[Operations Guide](infra/RENSTO-OPERATIONS-GUIDE.md)** - Complete operations and deployment guide
-- **[Airtable Views](docs/AIRTABLE_VIEWS.md)** - Database schema and views
-- **[DNS & Tunnel Setup](docs/DNS_AND_TUNNEL.md)** - Infrastructure configuration
-- **[Onboarding Checklist](docs/ONBOARDING_CHECKLIST.md)** - New client setup
+## 📞 **SUPPORT**
 
-## 🔄 **Development Workflow**
+### **Contact Information**
+- **Email**: support@rensto.com
+- **Documentation**: [docs.rensto.com](https://docs.rensto.com)
+- **Issues**: [GitHub Issues](https://github.com/your-org/rensto/issues)
 
-### **BMAD Methodology**
-1. **Build** - Sprint-based development with clear deliverables
-2. **Measure** - Automated testing and performance metrics
-3. **Adjust** - Data-driven optimization
-4. **Document** - Comprehensive documentation and runbooks
+### **Customer Support**
+- **Portal**: [portal.rensto.com](https://portal.rensto.com)
+- **AI Chat**: Available in customer portal
+- **Phone**: +1-555-RENSTO
 
-### **Quality Gates**
-- Automated testing on every commit
-- Type safety validation
-- Performance monitoring
-- Security scanning
+## 📄 **LICENSE**
 
-## 🚀 **Deployment**
-
-### **Infrastructure**
-```bash
-# Start all services
-docker-compose up -d
-
-# Deploy web application
-cd web/rensto-site
-npm run deploy
-```
-
-### **MCP Servers**
-```bash
-# Start AI workflow generation system
-cd infra
-./start-mcp-servers.sh
-```
-
-## 📈 **Monitoring & Maintenance**
-
-### **Health Checks**
-- Automated system monitoring
-- Performance metrics tracking
-- Error alerting and logging
-- Database backup automation
-
-### **Updates**
-- Automated dependency updates
-- Security patch management
-- Feature deployment automation
-
-## 🤝 **Contributing**
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests and documentation
-5. Submit a pull request
-
-## 📄 **License**
-
-This project is proprietary software. All rights reserved.
-
-## 📞 **Support**
-
-- **Email**: service@rensto.com
-- **Documentation**: [Operations Guide](infra/RENSTO-OPERATIONS-GUIDE.md)
-- **Issues**: GitHub Issues for bug reports and feature requests
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with ❤️ by the Rensto Team**
+**🚀 Built with ❤️ by the Rensto Team**
 
-*Automations that ship in days — not months*
-
-## 🧪 **Latest Test Deployment**
-Automated deployment pipeline tested on Thu Aug 14 16:45:25 CDT 2025
+*Last updated: August 17, 2025*

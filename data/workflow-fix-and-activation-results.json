@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-08-17T18:51:59.043Z",
+  "results": [
+    {
+      "name": "Customer Onboarding Automation",
+      "status": "update_failed",
+      "success": false
+    },
+    {
+      "name": "Lead-to-Customer Pipeline",
+      "status": "update_failed",
+      "success": false
+    },
+    {
+      "name": "Finance Unpaid Invoices",
+      "status": "update_failed",
+      "success": false
+    },
+    {
+      "name": "Assets Renewals < 30d",
+      "status": "update_failed",
+      "success": false
+    },
+    {
+      "name": "Projects — In Progress Digest (uses 🔨 In Progress view)",
+      "status": "update_failed",
+      "success": false
+    }
+  ],
+  "finalVerification": {
+    "totalCritical": 8,
+    "activeCritical": 0,
+    "activeWorkflows": []
+  }
+}

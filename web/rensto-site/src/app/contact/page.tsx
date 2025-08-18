@@ -74,10 +74,10 @@ export default function ContactPage() {
       <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Let&apos;s Build Something Amazing
+            Let's Build Something Amazing
           </h1>
           <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
-            Ready to automate your business processes? Get in touch and let&apos;s discuss how we can help you save time and scale efficiently.
+            Ready to automate your business processes? Get in touch and let's discuss how we can help you save time and scale efficiently.
           </p>
         </div>
       </section>

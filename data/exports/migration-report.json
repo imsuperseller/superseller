@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-08-15T20:50:29.024Z",
+  "status": "completed",
+  "collections": {
+    "organizations": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "users": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "agents": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "agent_runs": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "credentials": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "datasources": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "events": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    },
+    "app_spaces": {
+      "exists": false,
+      "documentCount": 0,
+      "status": "missing",
+      "exported": false
+    }
+  },
+  "indexes": {},
+  "errors": [
+    "Index analysis failed for organizations: ns does not exist: rensto.organizations",
+    "Index analysis failed for users: ns does not exist: rensto.users",
+    "Index analysis failed for agents: ns does not exist: rensto.agents",
+    "Index analysis failed for agent_runs: ns does not exist: rensto.agent_runs",
+    "Index analysis failed for credentials: ns does not exist: rensto.credentials",
+    "Index analysis failed for datasources: ns does not exist: rensto.datasources",
+    "Index analysis failed for events: ns does not exist: rensto.events",
+    "Index analysis failed for app_spaces: ns does not exist: rensto.app_spaces"
+  ],
+  "warnings": [
+    "Collection organizations does not exist",
+    "Collection users does not exist",
+    "Collection agents does not exist",
+    "Collection agent_runs does not exist",
+    "Collection credentials does not exist",
+    "Collection datasources does not exist",
+    "Collection events does not exist",
+    "Collection app_spaces does not exist"
+  ],
+  "completedAt": "2025-08-15T20:50:30.171Z"
+}

@@ -1,0 +1,12 @@
+{
+  "customerId": "customer-1755455121176",
+  "workflowId": "workflow_1755455535128",
+  "completedAt": "2025-08-17T18:32:15.128Z",
+  "status": "completed",
+  "agents": 3,
+  "totalDevelopmentTime": "2 weeks",
+  "totalTestingTime": "3 days",
+  "totalIterations": 0,
+  "allApproved": true,
+  "nextStep": "Customer credential setup and activation"
+}

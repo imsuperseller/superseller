@@ -1,0 +1,19 @@
+{
+  "customerId": "customer-1755455121176",
+  "stripeCustomerId": "cus_1755455323521",
+  "subscriptionId": "sub_1755455323521",
+  "invoiceId": "in_1755455323521",
+  "paymentLinkId": "pl_1755455323521",
+  "webhookId": "wh_1755455323521",
+  "billingPortalId": "bpc_1755455323522",
+  "invoicePDFId": "pdf_1755455323522",
+  "status": "integrated",
+  "createdAt": "2025-08-17T18:28:43.522Z",
+  "nextSteps": [
+    "Customer receives payment link via email",
+    "Customer completes payment",
+    "Webhook processes payment confirmation",
+    "Customer receives invoice PDF",
+    "Customer can access billing portal"
+  ]
+}

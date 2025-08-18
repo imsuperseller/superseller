@@ -259,7 +259,7 @@ export default function OffersPage() {
             Not Sure Which Option is Right?
           </h2>
           <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-            Let&apos;s discuss your specific needs and find the perfect automation solution for your business.
+            Let's discuss your specific needs and find the perfect automation solution for your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact" className="btn-primary text-lg px-8 py-4">

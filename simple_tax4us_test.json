@@ -1,0 +1,49 @@
+{
+  "name": "Tax4Us Test Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tax4us-test",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple Tax4Us test\nconst input = $input.first().json;\nreturn {\n  json: {\n    message: 'Tax4Us Enhanced WordPress Content Agent is ready!',\n    input: input,\n    timestamp: new Date().toISOString(),\n    status: 'success'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ],
+      "id": "test-node",
+      "name": "Test Node"
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Test Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

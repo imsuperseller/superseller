@@ -1,0 +1,572 @@
+{
+  "name": "Tax4Us - WordPress Content Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Tax4Us WordPress Content Agent\nComplete AI-powered content creation workflow for Tax4Us blog posts with SEO optimization and automated publishing.",
+        "width": 420,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        340
+      ],
+      "id": "ebd65983-b0a5-4d8c-a533-904bf0c8dc6e",
+      "name": "Tax4Us Agent Note"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tax4us-content-trigger",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1500,
+        820
+      ],
+      "id": "8b99236c-979e-47ad-a817-87f6d384e30a",
+      "name": "Tax4Us Webhook",
+      "webhookId": "tax4us-content-trigger"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Tavily SERP Results Tool for Tax4Us SEO Research",
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendBody": true,
+        "parametersBody": {
+          "values": [
+            {
+              "name": "api_key",
+              "valueProvider": "fieldValue",
+              "value": "{{ $credentials.tavilyApi.apiKey }}"
+            },
+            {
+              "name": "query",
+              "valueProvider": "fieldValue",
+              "value": "={{ $json.Keyword }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        -620,
+        1040
+      ],
+      "id": "3dfdc4d1-d253-46a0-aad8-d41376b0089c",
+      "name": "Tax4Us SEO Research"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-11-20",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -840,
+        1040
+      ],
+      "id": "257dc9fc-c709-4a6b-a1e7-2cd5e9900eb5",
+      "name": "OpenAI Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "tax4us-content-base",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tax4us-articles",
+          "mode": "list"
+        },
+        "id": "={{ $json.query.recordID }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1280,
+        820
+      ],
+      "id": "313e4aa3-8166-431a-b32c-badb53c2e9b9",
+      "name": "Get Tax4Us Article Data",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-credentials",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3cc01dbf-7718-49ae-a463-c0e848a78cc6",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7dbd7d60-2454-47ee-b02a-3ffddd588009",
+              "name": "Title",
+              "value": "={{ $json.Title }}",
+              "type": "string"
+            },
+            {
+              "id": "bf205dfc-ce10-40fe-b868-0bebd4de3d33",
+              "name": "Description",
+              "value": "={{ $json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "ccce37af-f230-4d5d-bf74-9e69d965be08",
+              "name": "Keyword",
+              "value": "={{ $json.Keyword }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1060,
+        820
+      ],
+      "id": "0e677926-b650-4333-b4fb-7a4a751472ed",
+      "name": "Set Tax4Us Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following Tax4Us content request and generate optimized writing guidelines:\n\nTitle: {{ $json.Title }}\nDescription: {{ $json.Description }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\n\nGenerate JSON output with:\n- search_intent (informational/transactional/navigational/commercial)\n- writing_style (professional and authoritative for tax/accounting)\n- writing_tone (trustworthy and helpful for tax clients)\n- target_audience (small business owners, individuals, tax professionals)\n- goal_of_article (educate on tax topics, provide guidance, build trust)\n- semantic_analysis (common tax subtopics and related questions)\n- keywords (primary, secondary, semantic, long-tail)\n\nFocus on Tax4Us brand voice: professional, trustworthy, helpful for tax and accounting needs.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content strategist specializing in tax and accounting content. Generate writing guidelines that align with Tax4Us brand: professional, trustworthy, and helpful for tax clients and small business owners."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -820,
+        820
+      ],
+      "id": "2c810545-6dcf-415b-ae6b-c602e00f9cfc",
+      "name": "Tax4Us Content Analysis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create an SEO-optimized title for Tax4Us content:\n\nWorking Title: {{ $('Set Tax4Us Fields').item.json.Title }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\nSearch Intent: {{ $json.search_intent }}\nWriting Style: {{ $json.writing_style }}\n\nGenerate a title that:\n- Is professional and trustworthy (Tax4Us brand)\n- Includes the primary keyword naturally\n- Appeals to tax clients and small business owners\n- Is 50-60 characters for SEO\n- Uses power words when appropriate\n\nOutput only the refined title as JSON: {\"refined_title\": \"Your Title Here\"}",
+        "options": {
+          "systemMessage": "You are an expert in crafting SEO-optimized titles for Tax4Us content. Focus on professional, trustworthy titles that appeal to tax clients and small business owners."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        60,
+        820
+      ],
+      "id": "836f4803-ea29-4974-bcd9-ecc8b4095236",
+      "name": "Tax4Us Title Refinement"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create key takeaways for Tax4Us content:\n\nTitle: {{ $json.new_title }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\nTarget Audience: {{ $('Tax4Us Content Analysis').item.json.target_audience }}\n\nGenerate key takeaways that:\n- Provide valuable tax insights\n- Help small business owners and individuals\n- Build trust in Tax4Us expertise\n- Are actionable and practical\n- Use professional but accessible language\n\nFormat as markdown with intro, bullet points, and outro.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content expert. Create key takeaways that provide valuable tax insights while building trust and demonstrating expertise."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        860,
+        820
+      ],
+      "id": "561d232e-b25b-46e0-90a8-064dcedd87f7",
+      "name": "Tax4Us Key Takeaways"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write an engaging introduction for Tax4Us content:\n\nTitle: {{ $json.new_title }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\nKey Takeaways: {{ $json.key_takeaways }}\n\nCreate an introduction that:\n- Hooks tax clients and small business owners\n- Establishes Tax4Us expertise\n- Explains why the topic matters\n- Uses professional but accessible language\n- Transitions smoothly to the main content\n\nKeep it concise (2-3 paragraphs) and avoid generic phrases.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Create introductions that hook readers while establishing Tax4Us as a trusted tax expert."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1480,
+        820
+      ],
+      "id": "0e637526-8ead-41ff-a174-3600a4c90572",
+      "name": "Tax4Us Introduction"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a detailed outline for Tax4Us content:\n\nTitle: {{ $json.new_title }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\nKey Takeaways: {{ $json.key_takeaways }}\nIntroduction: {{ $json.introduction }}\n\nCreate an outline that:\n- Covers key tax concepts thoroughly\n- Addresses common client questions\n- Provides practical guidance\n- Uses clear, professional headings\n- Follows logical progression\n- Incorporates SEO best practices\n\nFormat in Markdown with ## for main sections and ### for subsections.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content strategist. Create outlines that thoroughly cover tax topics while providing practical value to clients."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1480,
+        1420
+      ],
+      "id": "cc241cb4-5fb1-4e9a-beae-d5fa3e78b376",
+      "name": "Tax4Us Content Outline"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write the main body content for Tax4Us:\n\nTitle: {{ $json.new_title }}\nKeyword: {{ $('Set Tax4Us Fields').item.json.Keyword }}\nOutline: {{ $json.outline }}\nWriting Style: {{ $('Tax4Us Content Analysis').item.json.writing_style }}\nWriting Tone: {{ $('Tax4Us Content Analysis').item.json.writing_tone }}\n\nWrite content that:\n- Follows the provided outline\n- Uses professional, trustworthy language\n- Provides practical tax guidance\n- Incorporates keywords naturally\n- Includes real-world examples\n- Addresses client concerns\n- Demonstrates Tax4Us expertise\n\nFormat in Markdown with proper headings and structure.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Write professional, trustworthy content that provides practical tax guidance while demonstrating expertise."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -480,
+        1420
+      ],
+      "id": "53b747ef-a4c4-488a-ac98-a25fa8b8c4a0",
+      "name": "Tax4Us Content Writer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a conclusion for Tax4Us content:\n\nMain Body: {{ $json['main body'] }}\nTitle: {{ $json.new_title }}\n\nCreate a conclusion that:\n- Summarizes key tax insights\n- Reinforces Tax4Us value\n- Provides a clear next step\n- Maintains professional tone\n- Encourages engagement\n- Ends with a compelling thought\n\nKeep it concise (100-150 words) and avoid generic phrases.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Write conclusions that summarize key insights while reinforcing Tax4Us as a trusted tax partner."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        160,
+        1420
+      ],
+      "id": "868aa636-e196-48ee-92b6-33917a074616",
+      "name": "Tax4Us Conclusion"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Assemble the complete Tax4Us article:\n\nKey Takeaways: {{ $json.key_takeaways }}\nIntroduction: {{ $json.introduction }}\nMain Content: {{ $json['main body'] }}\nConclusion: {{ $json.conclusion }}\n\nAssemble into a single cohesive article with:\n- ## Key Takeaways section\n- ## Introduction section\n- Main content with ## and ### headings\n- ## Conclusion section\n- Proper Markdown formatting\n- Clean structure without extra spacing\n\nEnsure professional Tax4Us brand voice throughout.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content assembler. Create cohesive articles that maintain professional, trustworthy Tax4Us brand voice."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        740,
+        1420
+      ],
+      "id": "804f0afa-d416-4a34-8a25-d75a3607f026",
+      "name": "Tax4Us Article Assembly"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Perform final edit on Tax4Us content:\n\n{{ $json.output }}\n\nEnhance the article to near-perfect quality while:\n- Maintaining Tax4Us professional brand voice\n- Expanding depth where needed\n- Strengthening transitions\n- Adding industry-specific examples\n- Ensuring logical flow\n- Optimizing for tax clients and small business owners\n- Keeping content trustworthy and helpful\n\nOutput the refined article without commentary.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content editor. Enhance articles to near-perfect quality while maintaining professional, trustworthy Tax4Us brand voice."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1100,
+        1420
+      ],
+      "id": "e9ec3e51-352c-43da-88c6-c095b8208af6",
+      "name": "Tax4Us Final Edit"
+    },
+    {
+      "parameters": {
+        "folderId": "tax4us-content-folder",
+        "title": "={{ $json.new_title }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -1320,
+        1880
+      ],
+      "id": "16979476-3157-4130-8482-acbd1d254256",
+      "name": "Create Tax4Us Google Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "google-docs-credentials",
+          "name": "Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Tax4Us Final Edit').item.json.final_article }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -1100,
+        1880
+      ],
+      "id": "90dfe4d8-8c02-447c-9c77-6817e7ff8e8d",
+      "name": "Add Tax4Us Content",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "google-docs-credentials",
+          "name": "Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "tax4us-content-base",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tax4us-articles",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Tax4Us Article Data').item.json.id }}",
+            "Google Doc URL": "=https://docs.google.com/document/d/{{ $('Add Tax4Us Content').item.json.documentId }}/edit",
+            "Status": "Completed",
+            "Final Title": "={{ $json.new_title }}"
+          },
+          "matchingColumns": [
+            "id"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        760,
+        1880
+      ],
+      "id": "c1ff5c27-5af3-4180-a47d-ed0293896e12",
+      "name": "Update Tax4Us Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "airtable-credentials",
+          "name": "Airtable API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Tax4Us Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Tax4Us Article Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tax4Us Article Data": {
+      "main": [
+        [
+          {
+            "node": "Set Tax4Us Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Tax4Us Fields": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Content Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Content Analysis": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Title Refinement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Title Refinement": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Key Takeaways",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Key Takeaways": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Introduction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Introduction": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Content Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Content Outline": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Content Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Content Writer": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Conclusion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Conclusion": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Article Assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Article Assembly": {
+      "main": [
+        [
+          {
+            "node": "Tax4Us Final Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tax4Us Final Edit": {
+      "main": [
+        [
+          {
+            "node": "Create Tax4Us Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Tax4Us Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Add Tax4Us Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Tax4Us Content": {
+      "main": [
+        [
+          {
+            "node": "Update Tax4Us Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-18T06:30:00.000Z",
+      "updatedAt": "2025-01-18T06:30:00.000Z",
+      "id": "tax4us-content-agent",
+      "name": "Tax4Us Content Agent"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-18T06:30:00.000Z",
+  "versionId": "1"
+}

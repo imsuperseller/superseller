@@ -120,10 +120,9 @@ jobs:
       - name: Deploy to Vercel
         run: |
           cd web/rensto-site
-          vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_TEAM_ID }}
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --scope shais-projects-f9b9e359
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
 
   deploy-infrastructure:
     name: Deploy Infrastructure

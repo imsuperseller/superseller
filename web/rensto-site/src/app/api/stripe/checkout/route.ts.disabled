@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { stripeService } from '@/lib/stripe';
+import { withRBAC } from '@/lib/rbac';
+
+async function createCheckoutSession(req: NextRequest, context: any) {
+  try {
+    const { user } = context;
+    const { productId, successUrl, cancelUrl } = await req.json();
+
+    if (!productId) {
+      return NextResponse.json(
+        { error: 'Product ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Create or get Stripe customer
+    const customer = await stripeService.createCustomer({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      organizationId: user.orgId,
+    });
+
+    // Create checkout session
+    const { sessionId, url } = await stripeService.createCheckoutSession(
+      customer.stripeCustomerId!,
+      productId,
+      successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/marketplace`
+    );
+
+    return NextResponse.json({
+      success: true,
+      sessionId,
+      url,
+      customer: {
+        id: customer.id,
+        stripeCustomerId: customer.stripeCustomerId,
+      },
+    });
+
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    return NextResponse.json(
+      { error: 'Failed to create checkout session' },
+      { status: 500 }
+    );
+  }
+}
+
+// Export the protected handler - requires marketplace purchase permission
+export const POST = withRBAC(createCheckoutSession, { 
+  resource: 'marketplace', 
+  action: 'purchase' 
+});

@@ -1,0 +1,60 @@
+{
+  "execution": {
+    "timestamp": "2025-08-17T20:25:18.441Z",
+    "customer": "Ortal Flanary",
+    "company": "Portal Flanary",
+    "agent": "Facebook Group Scraper",
+    "status": "completed"
+  },
+  "performance": {
+    "groupsProcessed": 10,
+    "totalLeads": 5548,
+    "averageLeadsPerGroup": 555,
+    "customAudiencesCreated": 10,
+    "totalEstimatedReach": 13868
+  },
+  "topGroups": [
+    {
+      "name": "great kosher restaurants foodies",
+      "members": 118000,
+      "leadsExtracted": 1000,
+      "category": "Food & Dining"
+    },
+    {
+      "name": "Jewish Food x What Jew Wanna Eat",
+      "members": 81500,
+      "leadsExtracted": 815,
+      "category": "Food & Dining"
+    },
+    {
+      "name": "ישראלים במיאמי / דרום פלורידה",
+      "members": 67500,
+      "leadsExtracted": 675,
+      "category": "Israeli Community"
+    },
+    {
+      "name": "Israelis in Los Angeles ישראלים בלוס אנג'לס",
+      "members": 52000,
+      "leadsExtracted": 520,
+      "category": "Israeli Community"
+    },
+    {
+      "name": "רילוקיישן הצעות עבודה בחול - משרות לרילוקיישן בחו\"ל הייטק, שיווק וכל התחומי",
+      "members": 48700,
+      "leadsExtracted": 487,
+      "category": "Jobs & Relocation"
+    }
+  ],
+  "leadQuality": {
+    "averageEngagementScore": 51,
+    "averageLeadScore": 51,
+    "highValueLeads": 1153
+  },
+  "recommendations": [
+    "Focus on groups with highest engagement scores for better conversion",
+    "Create targeted campaigns based on group categories",
+    "Follow up with high-value leads (score >= 80) within 24 hours",
+    "Consider expanding to additional Jewish community groups",
+    "Monitor custom audience performance and optimize targeting"
+  ]
+}
