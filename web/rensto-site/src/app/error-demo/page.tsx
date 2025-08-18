@@ -17,7 +17,7 @@ export default function ErrorDemo() {
             Connection Temporarily Unavailable
           </h1>
           <p className="text-xl text-rensto-text-secondary max-w-2xl mx-auto">
-            The Ortal dashboard is currently offline, but we've created a beautiful demonstration 
+            The Ortal dashboard is currently offline, but we&apos;ve created a beautiful demonstration 
             of our enhanced Rensto design system using shadcn/ui components.
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function ErrorDemo() {
                 <strong>Error Code:</strong> ERR_NGROK_3200<br/>
                 <strong>Status:</strong> Endpoint offline<br/>
                 <strong>Service:</strong> Ngrok tunnel<br/>
-                <strong>Dashboard:</strong> Ortal's Facebook Leads
+                <strong>Dashboard:</strong> Ortal&apos;s Facebook Leads
               </p>
             </div>
             <p className="text-rensto-text-secondary text-center">

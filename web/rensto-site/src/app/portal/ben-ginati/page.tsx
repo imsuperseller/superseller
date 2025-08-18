@@ -52,7 +52,7 @@ const ShinyText = ({ children, className = '' }: { children: React.ReactNode; cl
   </div>
 );
 
-const GlassCard = ({ children, className = '', ...props }: { children: React.ReactNode; className?: string; [key: string]: any }) => (
+const GlassCard = ({ children, className = '', ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) => (
   <Card 
     variant="renstoNeon" 
     className={`backdrop-blur-sm bg-rensto-bg-card/50 border border-rensto-text-muted/20 hover:shadow-rensto-glow-primary transition-all duration-300 ${className}`}
@@ -62,7 +62,7 @@ const GlassCard = ({ children, className = '', ...props }: { children: React.Rea
   </Card>
 );
 
-const GradientButton = ({ children, className = '', ...props }: { children: React.ReactNode; className?: string; [key: string]: any }) => (
+const GradientButton = ({ children, className = '', ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) => (
   <Button 
     variant="renstoPrimary" 
     className={`bg-gradient-to-r from-rensto-red to-rensto-orange hover:from-rensto-orange hover:to-rensto-red transition-all duration-300 ${className}`}
@@ -74,7 +74,6 @@ const GradientButton = ({ children, className = '', ...props }: { children: Reac
 
 export default function BenGinatiPortal() {
   const { 
-    customer, 
     agents, 
     isLoading, 
     error, 
@@ -83,7 +82,7 @@ export default function BenGinatiPortal() {
   
   const [activeTab, setActiveTab] = useState('dashboard');
   const [runningAgent, setRunningAgent] = useState<string | null>(null);
-  const [agentResults, setAgentResults] = useState<Record<string, any>>({});
+  const [agentResults, setAgentResults] = useState<Record<string, unknown>>({});
   
   // GSAP refs
   const containerRef = useRef<HTMLDivElement>(null);

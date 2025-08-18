@@ -220,13 +220,14 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error: any) {
-    console.error('❌ Chat agent error:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Chat agent error:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to process message',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }

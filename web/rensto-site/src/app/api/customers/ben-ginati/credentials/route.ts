@@ -130,7 +130,7 @@ export async function GET() {
     });
 
     const workflows = workflowsResponse.data.data || [];
-    const activeWorkflows = workflows.filter((w: any) => w.active);
+    const activeWorkflows = workflows.filter((w: { active: boolean }) => w.active);
 
     // Map active workflows to agents
     const activeAgents = Object.keys(ESSENTIAL_AGENTS).filter(agentKey => {
@@ -183,13 +183,14 @@ export async function GET() {
 
     return NextResponse.json(response);
 
-  } catch (error: any) {
-    console.error('❌ Failed to get credential requirements:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to get credential requirements:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to get credential requirements',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }
@@ -243,13 +244,14 @@ export async function POST(request: NextRequest) {
       n8n_cloud_url: BEN_N8N_CONFIG.url
     });
 
-  } catch (error: any) {
-    console.error('❌ Failed to generate credential instructions:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to generate credential instructions:', errorMessage);
     
     return NextResponse.json({
       success: false,
       error: 'Failed to generate credential instructions',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 }

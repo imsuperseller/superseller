@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { Book, Code, Users, Settings, Zap, Shield, FileText, HelpCircle, ArrowRight, ExternalLink } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -137,7 +138,7 @@ export default function DocumentationPage() {
               
               <div className="space-y-3">
                 {section.items.map((item) => (
-                  <a
+                  <Link
                     key={item.title}
                     href={item.href}
                     className="block p-3 rounded-lg hover:bg-gray-50 transition-colors group"
@@ -151,7 +152,7 @@ export default function DocumentationPage() {
                       </div>
                       <ArrowRight className="h-4 w-4 text-gray-400 group-hover:style={{ color: 'var(--rensto-blue)' }} transition-colors" />
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -163,37 +164,37 @@ export default function DocumentationPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Links</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a
+            <Link
               href="/docs/getting-started"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <Book className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
               <span className="font-medium text-gray-900">Quick Start</span>
-            </a>
+            </Link>
             
-            <a
+            <Link
               href="/docs/api-reference"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <Code className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
               <span className="font-medium text-gray-900">API Reference</span>
-            </a>
+            </Link>
             
-            <a
+            <Link
               href="/docs/troubleshooting"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <HelpCircle className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
               <span className="font-medium text-gray-900">Troubleshooting</span>
-            </a>
+            </Link>
             
-            <a
+            <Link
               href="/docs/support"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <Users className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
               <span className="font-medium text-gray-900">Support</span>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -202,17 +203,17 @@ export default function DocumentationPage() {
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
             <p className="text-gray-600 mb-6">
-              Can't find what you're looking for? Our support team is here to help.
+              Can&apos;t find what you&apos;re looking for? Our support team is here to help.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/docs/support"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
               >
                 <HelpCircle className="h-5 w-5 mr-2" />
                 Contact Support
-              </a>
+              </Link>
               
               <a
                 href="https://github.com/rensto/docs/issues"
