@@ -1,0 +1,26 @@
+{
+  "customerId": "ben-ginati",
+  "timestamp": "2025-08-18T20:58:33.425Z",
+  "usage": {
+    "totalAgents": 0,
+    "activeAgents": 0,
+    "totalRuns": 0,
+    "averageSuccessRate": 0
+  },
+  "performance": {
+    "averageExecutionTime": 0,
+    "errorRate": 0,
+    "uptime": null
+  },
+  "engagement": {
+    "level": "low",
+    "frequency": "unknown",
+    "satisfaction": 0,
+    "supportTickets": 0
+  },
+  "business": {
+    "totalValue": 0,
+    "retentionRisk": "high",
+    "growthPotential": "low"
+  }
+}

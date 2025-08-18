@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RenstoLogo } from '@/components/ui/rensto-logo';
 import { RenstoProgress } from '@/components/ui/rensto-progress';
 import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
+import IntelligentOnboardingAgent from '@/components/IntelligentOnboardingAgent';
 import { gsap } from 'gsap';
 import { 
   Activity, 
@@ -76,6 +77,7 @@ export default function BenGinatiPortal() {
   const { customer, agents, dataSources, paymentStatus, insights, loading, error } = useBenCustomerPortal();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [runningAgents, setRunningAgents] = useState<Set<string>>(new Set());
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   // GSAP refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -239,7 +241,7 @@ export default function BenGinatiPortal() {
         {/* Tabs */}
         <div ref={tabsRef}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 bg-rensto-card/50 backdrop-blur-sm border border-rensto-border/20">
+            <TabsList className="grid w-full grid-cols-7 bg-rensto-card/50 backdrop-blur-sm border border-rensto-border/20">
               <TabsTrigger value="dashboard" className="rensto-tab">
                 <Activity className="w-4 h-4 mr-2" />
                 Dashboard
@@ -255,6 +257,10 @@ export default function BenGinatiPortal() {
               <TabsTrigger value="analytics" className="rensto-tab">
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Analytics
+              </TabsTrigger>
+              <TabsTrigger value="onboarding" className="rensto-tab">
+                <Settings className="w-4 h-4 mr-2" />
+                Onboarding
               </TabsTrigger>
               <TabsTrigger value="billing" className="rensto-tab">
                 <DollarSign className="w-4 h-4 mr-2" />
@@ -447,6 +453,19 @@ export default function BenGinatiPortal() {
                   <p className="text-rensto-text/70">Analytics dashboard coming soon...</p>
                 </CardContent>
               </GlassCard>
+            </TabsContent>
+
+            <TabsContent value="onboarding" className="space-y-6">
+              <IntelligentOnboardingAgent 
+                customerId="ben-ginati"
+                onComplete={(state) => {
+                  console.log('Onboarding completed:', state);
+                  setShowOnboarding(false);
+                }}
+                onUpdate={(state) => {
+                  console.log('Onboarding updated:', state);
+                }}
+              />
             </TabsContent>
 
             <TabsContent value="billing" className="space-y-6">

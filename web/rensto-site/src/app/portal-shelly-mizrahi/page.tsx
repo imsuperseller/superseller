@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RenstoLogo } from '@/components/ui/rensto-logo';
 import { RenstoProgress } from '@/components/ui/rensto-progress';
 import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
+import IntelligentOnboardingAgent from '@/components/IntelligentOnboardingAgent';
 import { gsap } from 'gsap';
 import { 
   Activity, 

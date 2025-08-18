@@ -235,3 +235,32 @@ infra/backups/
 *.temp
 temp/
 tmp/
+
+
+# Codebase Cleanup Prevention
+# ===========================
+
+# Archive directories
+data/archived-files/
+data/backups/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Test files (unless in testing directory)
+test-*.js
+demo-*.js
+example-*.js
+
+# Old/legacy files
+*-old.*
+*-legacy.*
+*-deprecated.*
+
+# Duplicate files
+README-*.md
+package-*.json
+tsconfig-*.json

@@ -1,0 +1,282 @@
+{
+  "timestamp": "2025-08-18T21:05:31.047Z",
+  "summary": {
+    "totalDuplicates": 3,
+    "totalOldFiles": 29,
+    "totalConflicts": 3,
+    "totalRecommendations": 5
+  },
+  "issues": {
+    "duplicates": [
+      {
+        "pattern": "/README\\.md$/",
+        "files": [
+          "docs/README.md",
+          "config/README.md"
+        ],
+        "severity": "high"
+      },
+      {
+        "pattern": "/package\\.json$/",
+        "files": [
+          "package.json",
+          "web/rensto-site/package.json"
+        ],
+        "severity": "high"
+      },
+      {
+        "pattern": "/\\.env/",
+        "files": [
+          "infra/.env",
+          "infra/.env.dev",
+          "infra/.env.example",
+          "infra/.n8n-auth.env"
+        ],
+        "severity": "high"
+      }
+    ],
+    "oldFiles": [
+      {
+        "path": "scripts/comprehensive-n8n-testing.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/demo-perfect-design-system.js",
+        "pattern": "/demo/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/demo-shiny-object-prevention.js",
+        "pattern": "/demo/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/duplicate-wordpress-post-for-testing.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/integration-tests.sh",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/portal-template.sh",
+        "pattern": "/temp/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/shadcn-ui-integration-demo.js",
+        "pattern": "/demo/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/system-backup.sh",
+        "pattern": "/backup/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-ben-n8n-api.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-ben-n8n-cloud.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-ben-workflow-on-page.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-blog-agent-on-duplicated-page.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-blog-agent-on-homepage.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-blog-agent-webhook-directly.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-blog-agent-with-existing-post.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-customer-portals.sh",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-n8n-api-corrected.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-n8n-api-structure.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-n8n-nodes-availability.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-onboarding-agent.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-ortal-pricing-agent.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/test-shadcn-mcp-connectivity.js",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "scripts/testing",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "docs/backup",
+        "pattern": "/backup/i",
+        "severity": "medium"
+      },
+      {
+        "path": "data/backups",
+        "pattern": "/backup/i",
+        "severity": "medium"
+      },
+      {
+        "path": "data/comprehensive-n8n-testing-results.json",
+        "pattern": "/test/i",
+        "severity": "medium"
+      },
+      {
+        "path": "data/mongo-backups",
+        "pattern": "/backup/i",
+        "severity": "medium"
+      },
+      {
+        "path": "infra/.env.example",
+        "pattern": "/example/i",
+        "severity": "medium"
+      },
+      {
+        "path": "infra/rclone.conf.example",
+        "pattern": "/example/i",
+        "severity": "medium"
+      }
+    ],
+    "conflicts": [
+      {
+        "type": "config_duplicate",
+        "file": "package.json",
+        "locations": [
+          "",
+          "web/rensto-site/"
+        ],
+        "severity": "high",
+        "description": "Multiple package.json files found in different locations"
+      },
+      {
+        "type": "config_duplicate",
+        "file": "package-lock.json",
+        "locations": [
+          "",
+          "web/rensto-site/"
+        ],
+        "severity": "high",
+        "description": "Multiple package-lock.json files found in different locations"
+      },
+      {
+        "type": "doc_duplicate",
+        "files": [
+          "README.md",
+          "docs/README.md"
+        ],
+        "issue": "Multiple README files",
+        "severity": "medium"
+      }
+    ],
+    "confusion": [],
+    "recommendations": [
+      {
+        "priority": "high",
+        "action": "resolve_duplicates",
+        "description": "Resolve 3 duplicate file conflicts",
+        "impact": "Prevents confusion and ensures single source of truth"
+      },
+      {
+        "priority": "high",
+        "action": "resolve_config_conflicts",
+        "description": "Resolve 3 configuration conflicts",
+        "impact": "Ensures consistent configuration across the project"
+      },
+      {
+        "priority": "medium",
+        "action": "archive_old_files",
+        "description": "Archive 29 old/backup files",
+        "impact": "Reduces clutter and improves organization"
+      },
+      {
+        "priority": "medium",
+        "action": "standardize_structure",
+        "description": "Standardize file organization structure",
+        "impact": "Improves maintainability and developer experience"
+      },
+      {
+        "priority": "low",
+        "action": "update_documentation",
+        "description": "Update documentation to reflect current structure",
+        "impact": "Improves onboarding and reduces confusion"
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "action": "resolve_duplicates",
+      "description": "Resolve 3 duplicate file conflicts",
+      "impact": "Prevents confusion and ensures single source of truth"
+    },
+    {
+      "priority": "high",
+      "action": "resolve_config_conflicts",
+      "description": "Resolve 3 configuration conflicts",
+      "impact": "Ensures consistent configuration across the project"
+    },
+    {
+      "priority": "medium",
+      "action": "archive_old_files",
+      "description": "Archive 29 old/backup files",
+      "impact": "Reduces clutter and improves organization"
+    },
+    {
+      "priority": "medium",
+      "action": "standardize_structure",
+      "description": "Standardize file organization structure",
+      "impact": "Improves maintainability and developer experience"
+    },
+    {
+      "priority": "low",
+      "action": "update_documentation",
+      "description": "Update documentation to reflect current structure",
+      "impact": "Improves onboarding and reduces confusion"
+    }
+  ]
+}

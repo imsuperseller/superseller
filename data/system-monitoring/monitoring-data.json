@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-08-18T20:58:36.576Z",
+  "system": {
+    "cpu": {
+      "usage": 43.75423457797321,
+      "cores": 4,
+      "load": [
+        0.09629099406466413,
+        0.34710033259926254,
+        0.5382204995074047
+      ]
+    },
+    "memory": {
+      "total": 8192,
+      "used": 1984.8548223862053,
+      "available": 693.2728854518937,
+      "usage": 68.19142723634475
+    },
+    "disk": {
+      "total": 100000,
+      "used": 61706.29443591491,
+      "available": 5227.127579478474,
+      "usage": 69.35175811457144
+    },
+    "uptime": 2125699,
+    "processes": 87
+  },
+  "performance": {
+    "n8n": {
+      "status": "unhealthy",
+      "responseTime": 0,
+      "uptime": 0,
+      "version": "unknown"
+    },
+    "database": {
+      "status": "unknown",
+      "connections": 0,
+      "queryTime": 0
+    },
+    "api": {
+      "status": "unknown",
+      "responseTime": 0,
+      "requestsPerMinute": 0
+    }
+  },
+  "network": {
+    "bandwidth": {
+      "incoming": 67.07690161859419,
+      "outgoing": 17.114191216197007,
+      "total": 71.03044724110319
+    },
+    "connections": {
+      "active": 96,
+      "established": 26,
+      "listening": 9
+    },
+    "latency": {
+      "average": 13.926032933833811,
+      "min": 21.64199981814614,
+      "max": 90.66545558299354
+    }
+  },
+  "alerts": []
+}
