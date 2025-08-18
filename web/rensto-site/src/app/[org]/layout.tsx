@@ -27,7 +27,16 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
     }
 
     // Check if user has access to this organization
-    // TODO: Implement proper RBAC check
+    // Implement proper RBAC check
+    const userHasAccess = organization.members?.some(
+      (member: { userId: string; role: string }) => 
+        member.userId === session.user?.id
+    ) || organization.ownerId === session.user?.id;
+    
+    if (!userHasAccess) {
+      console.error('User does not have access to organization:', org);
+      redirect('/unauthorized');
+    }
     
     return (
       <div className="min-h-screen bg-slate-50">

@@ -30,9 +30,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  // Handle client-side mounting
+  // Handle client-side mounting and theme initialization
   useEffect(() => {
     setMounted(true);
+    
+    // Initialize theme from localStorage
+    try {
+      const savedTheme = localStorage.getItem('admin-theme') as 'light' | 'dark' | null;
+      if (savedTheme) {
+        setTheme(savedTheme);
+        
+        // Apply theme to document
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load theme from localStorage:', error);
+    }
   }, []);
 
   // Show loading while checking authentication
@@ -52,8 +69,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // }
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-    // TODO: Implement theme persistence
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    
+    // Implement theme persistence
+    try {
+      localStorage.setItem('admin-theme', newTheme);
+      
+      // Also update document class for immediate effect
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (error) {
+      console.error('Failed to persist theme:', error);
+    }
   };
 
   return (

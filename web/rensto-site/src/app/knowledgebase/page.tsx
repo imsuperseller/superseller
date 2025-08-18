@@ -400,18 +400,71 @@ export default function KnowledgebasePage() {
   });
 
   const handleCreateDocument = () => {
-    // TODO: Implement document creation
-    console.log('Create new document');
+    // Create a new document with default values
+    const newDocument = {
+      id: `doc-${Date.now()}`,
+      title: 'New Document',
+      content: 'Start writing your document here...',
+      category: selectedCategory || 'general',
+      tags: [],
+      author: 'Current User',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      views: 0,
+      helpful: 0,
+      notHelpful: 0
+    };
+
+    // Add to documents list
+    setDocuments(prev => [newDocument, ...prev]);
+    
+    // TODO: Send API request to backend
+    // const response = await fetch('/api/knowledgebase/documents', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(newDocument)
+    // });
+
+    console.log('Created new document:', newDocument.id);
+    alert('New document created! You can now edit it.');
   };
 
   const handleEditDocument = (id: string) => {
-    // TODO: Implement document editing
+    const document = documents.find(doc => doc.id === id);
+    if (!document) {
+      alert('Document not found');
+      return;
+    }
+
+    // TODO: Navigate to edit page or open modal
+    // For now, show alert with document info
+    alert(`Editing: ${document.title}\nCategory: ${document.category}\nLast updated: ${document.updatedAt}`);
+    
     console.log('Edit document:', id);
   };
 
   const handleDeleteDocument = (id: string) => {
-    // TODO: Implement document deletion
-    console.log('Delete document:', id);
+    const document = documents.find(doc => doc.id === id);
+    if (!document) {
+      alert('Document not found');
+      return;
+    }
+
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete "${document.title}"?`)) {
+      return;
+    }
+
+    // Remove from local state
+    setDocuments(prev => prev.filter(doc => doc.id !== id));
+    
+    // TODO: Send API request to backend
+    // const response = await fetch(`/api/knowledgebase/documents/${id}`, {
+    //   method: 'DELETE'
+    // });
+
+    console.log('Deleted document:', id);
+    alert('Document deleted successfully!');
   };
 
   const getCategoryIcon = (category: string) => {

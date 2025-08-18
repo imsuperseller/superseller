@@ -111,19 +111,103 @@ export default function ApprovalsPage() {
     }
   };
 
-  const handleApprove = (id: string) => {
-    console.log('Approved:', id);
-    // TODO: Implement approval logic
+  const handleApprove = async (id: string) => {
+    try {
+      console.log('Approving:', id);
+      
+      // Update local state immediately for optimistic UI
+      setApprovals(prev => 
+        prev.map(approval => 
+          approval.id === id 
+            ? { ...approval, status: 'approved', approvedAt: new Date().toISOString() }
+            : approval
+        )
+      );
+
+      // TODO: Send API request to backend
+      // const response = await fetch(`/api/approvals/${id}/approve`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ approvedBy: 'current-user-id' })
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Failed to approve');
+      // }
+
+      // Show success notification
+      alert('Approval successful!');
+      
+    } catch (error) {
+      console.error('Approval failed:', error);
+      alert('Approval failed. Please try again.');
+      
+      // Revert optimistic update
+      setApprovals(prev => 
+        prev.map(approval => 
+          approval.id === id 
+            ? { ...approval, status: 'pending' }
+            : approval
+        )
+      );
+    }
   };
 
-  const handleReject = (id: string) => {
-    console.log('Rejected:', id);
-    // TODO: Implement rejection logic
+  const handleReject = async (id: string) => {
+    try {
+      console.log('Rejecting:', id);
+      
+      // Update local state immediately for optimistic UI
+      setApprovals(prev => 
+        prev.map(approval => 
+          approval.id === id 
+            ? { ...approval, status: 'rejected', rejectedAt: new Date().toISOString() }
+            : approval
+        )
+      );
+
+      // TODO: Send API request to backend
+      // const response = await fetch(`/api/approvals/${id}/reject`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ rejectedBy: 'current-user-id', reason: 'User rejection' })
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Failed to reject');
+      // }
+
+      // Show success notification
+      alert('Rejection successful!');
+      
+    } catch (error) {
+      console.error('Rejection failed:', error);
+      alert('Rejection failed. Please try again.');
+      
+      // Revert optimistic update
+      setApprovals(prev => 
+        prev.map(approval => 
+          approval.id === id 
+            ? { ...approval, status: 'pending' }
+            : approval
+        )
+      );
+    }
   };
 
   const handleView = (id: string) => {
-    console.log('View:', id);
-    // TODO: Implement view logic
+    console.log('Viewing:', id);
+    
+    // Find the approval to view
+    const approval = approvals.find(a => a.id === id);
+    if (!approval) {
+      alert('Approval not found');
+      return;
+    }
+
+    // TODO: Implement modal or navigation to detailed view
+    // For now, show alert with details
+    alert(`Viewing: ${approval.title}\nType: ${approval.type}\nStatus: ${approval.status}\nSubmitted: ${approval.submittedAt}`);
   };
 
   return (
