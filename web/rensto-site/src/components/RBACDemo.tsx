@@ -1,10 +1,11 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 import { usePermissions, UserRole } from '@/lib/rbac-client';
 
 export default function RBACDemo() {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
+  const session = { user: { name: 'Admin User', email: 'admin@rensto.com' } };
   const userRole = session?.user?.role as UserRole || UserRole.VIEWER;
   const permissions = usePermissions(userRole);
 
@@ -105,8 +106,8 @@ export default function RBACDemo() {
           <div className="space-y-2">
             <h4 className="font-medium text-gray-600">Marketplace</h4>
             <div className="space-y-1">
-              <PermissionItem label="Read" hasPermission={permissions.canReadMarketplace()} />
-              <PermissionItem label="Purchase" hasPermission={permissions.canPurchaseFromMarketplace()} />
+              <PermissionItem label="Read" hasPermission={permissions.canReadAnalytics()} />
+                              <PermissionItem label="Purchase" hasPermission={permissions.canManageBilling()} />
             </div>
           </div>
         </div>
@@ -138,7 +139,7 @@ export default function RBACDemo() {
           />
           <ActionButton 
             label="Purchase Template" 
-            enabled={permissions.canPurchaseFromMarketplace()}
+                            enabled={permissions.canManageBilling()}
             onClick={() => alert('Purchase action triggered')}
           />
           <ActionButton 

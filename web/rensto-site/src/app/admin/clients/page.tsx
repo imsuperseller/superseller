@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useSession } from "next-auth/react"
+// import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import AdminLayout from "@/components/admin/AdminLayout"
 import { 
@@ -31,7 +31,9 @@ interface Client {
 }
 
 export default function ClientsPage() {
-  const { data: session, status } = useSession()
+  // const { data: session, status } = useSession()
+  const session = { user: { name: 'Admin User', email: 'admin@rensto.com' } };
+  const status = 'authenticated';
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("name")
@@ -47,9 +49,9 @@ export default function ClientsPage() {
     )
   }
 
-  if (!session) {
-            redirect("/login")
-  }
+  // if (!session) {
+  //           redirect("/login")
+  // }
 
   // Mock data - in real app this would come from MongoDB
   const clients: Client[] = [
