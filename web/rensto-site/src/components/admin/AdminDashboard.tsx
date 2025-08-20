@@ -5,6 +5,7 @@ import AIAgentManagement from './AIAgentManagement';
 import CustomerManagement from './CustomerManagement';
 import WorkflowManagement from './WorkflowManagement';
 import SystemMonitoring from './SystemMonitoring';
+import QuickBooksDashboard from './QuickBooksDashboard';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('ai-agents');
@@ -19,11 +20,12 @@ export default function AdminDashboard() {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="ai-agents">AI Agents</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="workflows">Workflows</TabsTrigger>
           <TabsTrigger value="system">System</TabsTrigger>
+          <TabsTrigger value="quickbooks">QuickBooks</TabsTrigger>
         </TabsList>
         
         <TabsContent value="ai-agents" className="space-y-6">
@@ -40,6 +42,10 @@ export default function AdminDashboard() {
         
         <TabsContent value="system" className="space-y-6">
           <SystemMonitoring />
+        </TabsContent>
+        
+        <TabsContent value="quickbooks" className="space-y-6">
+          <QuickBooksDashboard />
         </TabsContent>
       </Tabs>
     </div>

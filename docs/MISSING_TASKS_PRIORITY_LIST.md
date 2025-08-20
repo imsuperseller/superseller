@@ -232,7 +232,7 @@
 2. **Use BMAD methodology** - Apply proper planning and execution
 3. **Implement incrementally** - Test each improvement thoroughly
 4. **Monitor progress** - Track completion and impact
-5. **Update documentation** - Keep ONE_SOURCE_OF_TRUTH.md current
+5. **Update documentation** - Keep README.md current as single source of truth
 
 ---
 

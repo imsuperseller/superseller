@@ -1,0 +1,34 @@
+{
+  "familyName": "הר",
+  "totalMembers": 5,
+  "totalPolicies": 28,
+  "totalPremium": 45600,
+  "processingDate": "2025-08-19T08:02:21.025Z",
+  "members": [
+    {
+      "name": "עמית הר",
+      "policies": 6,
+      "premium": 9200
+    },
+    {
+      "name": "יונתן הר",
+      "policies": 5,
+      "premium": 8500
+    },
+    {
+      "name": "אנה הר",
+      "policies": 6,
+      "premium": 9800
+    },
+    {
+      "name": "אליסה הר",
+      "policies": 5,
+      "premium": 8200
+    },
+    {
+      "name": "איתן הר",
+      "policies": 6,
+      "premium": 9900
+    }
+  ]
+}

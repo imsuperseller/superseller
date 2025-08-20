@@ -1,0 +1,247 @@
+{
+    "projectId": "1755574536999-Customer-Workflows-Activation",
+    "projectName": "Customer Workflows Activation",
+    "priority": "high",
+    "status": "in_progress",
+    "bmadPhase": "brainstorming",
+    "createdAt": "2025-08-19T08:00:00.000Z",
+    "updatedAt": "2025-08-19T08:00:00.000Z",
+    "projectBrief": {
+        "objective": "Activate and populate customer workflows with real data and processing capabilities",
+        "scope": "Ben's and Shelly's customer workflows, system workflows, and workflow integration",
+        "successCriteria": [
+            "All customer workflows are active and functional",
+            "Real data processing capabilities implemented",
+            "Workflow monitoring and tracking operational",
+            "Integration with MCP tools completed"
+        ],
+        "constraints": [
+            "Must use customer-specific API keys when available",
+            "Must maintain workflow security and data integrity",
+            "Must provide real-time progress tracking",
+            "Must integrate with existing customer portals"
+        ]
+    },
+    "brainstorming": {
+        "phase": "active",
+        "participants": [
+            "Mary",
+            "John",
+            "Winston",
+            "Alex"
+        ],
+        "ideas": [
+            {
+                "id": "idea-001",
+                "title": "Ben's Workflow Activation",
+                "description": "Activate Ben's WordPress and social media workflows with real data",
+                "priority": "high",
+                "status": "selected"
+            },
+            {
+                "id": "idea-002",
+                "title": "Shelly's Workflow Enhancement",
+                "description": "Enhance Shelly's Excel workflow with additional processing capabilities",
+                "priority": "high",
+                "status": "selected"
+            },
+            {
+                "id": "idea-003",
+                "title": "System Workflow Integration",
+                "description": "Integrate system workflows with MCP tools and monitoring",
+                "priority": "medium",
+                "status": "selected"
+            },
+            {
+                "id": "idea-004",
+                "title": "Workflow Monitoring Dashboard",
+                "description": "Create comprehensive workflow monitoring and analytics",
+                "priority": "medium",
+                "status": "selected"
+            }
+        ],
+        "completed": false
+    },
+    "measurement": {
+        "phase": "pending",
+        "metrics": [
+            {
+                "name": "Workflow Activation Time",
+                "target": "< 45 minutes",
+                "current": "pending"
+            },
+            {
+                "name": "Data Processing Success Rate",
+                "target": "100%",
+                "current": "pending"
+            },
+            {
+                "name": "Integration Success Rate",
+                "target": "100%",
+                "current": "pending"
+            },
+            {
+                "name": "Customer Satisfaction",
+                "target": "5/5",
+                "current": "pending"
+            }
+        ],
+        "completed": false
+    },
+    "analysis": {
+        "phase": "pending",
+        "analysisAreas": [
+            "Current workflow configuration analysis",
+            "Customer-specific workflow requirements",
+            "MCP tool integration points",
+            "Data processing and monitoring needs"
+        ],
+        "completed": false
+    },
+    "deployment": {
+        "phase": "pending",
+        "deploymentSteps": [
+            "Activate Ben's workflows with real data",
+            "Enhance Shelly's workflow capabilities",
+            "Integrate system workflows with MCP tools",
+            "Deploy workflow monitoring dashboard",
+            "Test all workflow integrations"
+        ],
+        "completed": false
+    },
+    "tasks": [
+        {
+            "id": "task-001",
+            "title": "Analyze Current Workflow Status",
+            "description": "Review all customer and system workflows to identify activation requirements",
+            "assignee": "Winston",
+            "priority": "high",
+            "status": "in_progress",
+            "estimatedTime": "20 minutes",
+            "dependencies": [],
+            "bmadPhase": "brainstorming"
+        },
+        {
+            "id": "task-002",
+            "title": "Activate Ben's Workflows",
+            "description": "Activate Ben's WordPress and social media workflows with real data processing",
+            "assignee": "Alex",
+            "priority": "high",
+            "status": "pending",
+            "estimatedTime": "30 minutes",
+            "dependencies": [
+                "task-001"
+            ],
+            "bmadPhase": "measurement"
+        },
+        {
+            "id": "task-003",
+            "title": "Enhance Shelly's Workflow",
+            "description": "Add advanced processing capabilities to Shelly's Excel workflow",
+            "assignee": "Alex",
+            "priority": "high",
+            "status": "pending",
+            "estimatedTime": "25 minutes",
+            "dependencies": [
+                "task-001"
+            ],
+            "bmadPhase": "measurement"
+        },
+        {
+            "id": "task-004",
+            "title": "Integrate System Workflows",
+            "description": "Connect system workflows with MCP tools and monitoring systems",
+            "assignee": "John",
+            "priority": "medium",
+            "status": "pending",
+            "estimatedTime": "20 minutes",
+            "dependencies": [
+                "task-002",
+                "task-003"
+            ],
+            "bmadPhase": "deployment"
+        },
+        {
+            "id": "task-005",
+            "title": "Deploy Workflow Monitoring",
+            "description": "Create and deploy comprehensive workflow monitoring dashboard",
+            "assignee": "Sarah",
+            "priority": "medium",
+            "status": "pending",
+            "estimatedTime": "15 minutes",
+            "dependencies": [
+                "task-004"
+            ],
+            "bmadPhase": "deployment"
+        },
+        {
+            "id": "task-006",
+            "title": "Test Workflow Integration",
+            "description": "Comprehensive testing of all workflow integrations and data processing",
+            "assignee": "Alex",
+            "priority": "high",
+            "status": "pending",
+            "estimatedTime": "20 minutes",
+            "dependencies": [
+                "task-005"
+            ],
+            "bmadPhase": "deployment"
+        }
+    ],
+    "resources": {
+        "files": [
+            "workflows/",
+            "data/customers/ben-ginati/",
+            "data/customers/shelly-mizrahi/",
+            "infra/mcp-servers/",
+            "scripts/enhanced-secure-ai-agent.js"
+        ],
+        "apis": [
+            "Enhanced Secure AI Agent",
+            "MCP Tools Integration",
+            "Customer Portal APIs",
+            "Workflow Management APIs"
+        ],
+        "tools": [
+            "FastAPI MCP",
+            "Git MCP",
+            "MCP-USE",
+            "UI Component Library",
+            "n8n Workflows"
+        ]
+    },
+    "risks": [
+        {
+            "id": "risk-001",
+            "description": "Workflow integration conflicts with existing systems",
+            "probability": "medium",
+            "impact": "high",
+            "mitigation": "Comprehensive testing and gradual deployment"
+        },
+        {
+            "id": "risk-002",
+            "description": "MCP tool compatibility issues",
+            "probability": "low",
+            "impact": "medium",
+            "mitigation": "Test each MCP tool individually before integration"
+        },
+        {
+            "id": "risk-003",
+            "description": "Data processing performance issues",
+            "probability": "low",
+            "impact": "medium",
+            "mitigation": "Monitor performance and optimize as needed"
+        }
+    ],
+    "progress": {
+        "overallProgress": 10,
+        "phaseProgress": {
+            "brainstorming": 100,
+            "measurement": 0,
+            "analysis": 0,
+            "deployment": 0
+        },
+        "tasksCompleted": 0,
+        "totalTasks": 6
+    }
+}

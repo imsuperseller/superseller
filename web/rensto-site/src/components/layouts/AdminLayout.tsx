@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// import { useSession } from 'next-auth/react';
+// Authentication temporarily disabled for development
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -24,7 +24,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  // const { data: session, status } = useSession();
+  // Mock session for development - replace with proper auth later
   const session = { user: { name: 'Admin User', email: 'admin@rensto.com' } };
   const status = 'authenticated';
   const router = useRouter();

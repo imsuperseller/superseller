@@ -1,0 +1,7 @@
+{
+  "rlsPolicies": {
+    "customers": "\n        CREATE POLICY \"users_can_view_own_customer_data\" ON customers\n        FOR SELECT USING (customer_id = current_setting('app.customer_id')::text);\n      ",
+    "orders": "\n        CREATE POLICY \"users_can_view_own_orders\" ON orders\n        FOR SELECT USING (customer_id = current_setting('app.customer_id')::text);\n      ",
+    "chat_histories": "\n        CREATE POLICY \"users_can_view_own_chat_history\" ON chat_histories\n        FOR ALL USING (customer_id = current_setting('app.customer_id')::text);\n      "
+  }
+}

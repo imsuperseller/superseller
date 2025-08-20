@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-08-19T21:40:22.129Z",
+  "customers": {
+    "ben-ginati": {
+      "name": "Ben Ginati",
+      "company": "Tax4Us",
+      "subdomain": "ben-ginati.rensto.com",
+      "portalUrl": "https://ben-ginati.rensto.com"
+    },
+    "shelly-mizrahi": {
+      "name": "Shelly Mizrahi",
+      "company": "Insurance Services",
+      "subdomain": "shelly-mizrahi.rensto.com",
+      "portalUrl": "https://shelly-mizrahi.rensto.com"
+    }
+  },
+  "migrationSteps": [
+    {
+      "step": 1,
+      "action": "Notify customers of migration",
+      "description": "Send email notifications about new portal URLs",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "action": "Test customer portals",
+      "description": "Verify all customer portals are working correctly",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "action": "Migrate customer data",
+      "description": "Transfer customer data to new system",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "action": "Update customer credentials",
+      "description": "Provide new login credentials to customers",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "action": "Monitor post-migration",
+      "description": "Monitor system performance and customer feedback",
+      "status": "pending"
+    }
+  ],
+  "rollbackPlan": {
+    "description": "Rollback to previous system if issues arise",
+    "steps": [
+      "Revert DNS changes",
+      "Switch back to previous application",
+      "Notify customers of temporary issues",
+      "Investigate and fix problems"
+    ]
+  }
+}

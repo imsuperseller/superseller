@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-08-20T00:15:08.932Z",
+  "domain": "rensto.com",
+  "correctTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+  "updates": [
+    {
+      "name": "ben-ginati.rensto.com",
+      "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+      "success": true,
+      "recordId": "3c603e578359e18142b37f130b71439b"
+    },
+    {
+      "name": "shelly-mizrahi.rensto.com",
+      "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+      "success": true,
+      "recordId": "f3bbb5ea3e5d77ebdf2db278ab13ab9a"
+    },
+    {
+      "name": "test-customer.rensto.com",
+      "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+      "success": true,
+      "recordId": "87ccb4dc6a188537f7afa472a57bdf28"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "successful": 3,
+    "failed": 0
+  }
+}

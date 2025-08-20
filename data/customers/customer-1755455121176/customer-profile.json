@@ -17,7 +17,7 @@
     "createdAt": "2025-08-17T18:25:21.176Z",
     "updatedAt": "2025-08-17T18:25:21.177Z",
     "agentRequest": {
-      "submittedAt": "2025-08-17T18:30:45.993Z",
+      "submittedAt": "2025-08-19T20:52:17.941Z",
       "status": "analyzing",
       "responses": {
         "business_name": "TechCorp Solutions",
@@ -40,12 +40,12 @@
       "firstPayment": {
         "status": "paid",
         "amount": 2500,
-        "date": "2025-08-17T18:30:45.995Z"
+        "date": "2025-08-19T20:52:17.943Z"
       },
       "secondPayment": {
         "status": "pending",
         "amount": 2500,
-        "dueDate": "2025-09-16T18:30:45.996Z"
+        "dueDate": "2025-09-18T20:52:17.943Z"
       }
     }
   },

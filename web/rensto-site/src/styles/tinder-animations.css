@@ -1,0 +1,134 @@
+
+/* Tinder-style Swipe Animations */
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(300px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-300px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes cardHover {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+@keyframes cardTap {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes progressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes xShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+/* RTL Support for Hebrew */
+.hebrew-rtl .swipe-card {
+  direction: rtl;
+}
+
+.hebrew-rtl .swipe-indicators {
+  flex-direction: row-reverse;
+}
+
+.hebrew-rtl .card-content {
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tinder-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .swipe-card {
+    margin: 0 1rem;
+  }
+}
+
+/* Accessibility */
+.swipe-card:focus {
+  outline: 2px solid #1eaef7;
+  outline-offset: 2px;
+}
+
+.swipe-card:focus-visible {
+  outline: 2px solid #1eaef7;
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .swipe-card {
+    border: 2px solid #ffffff;
+  }
+  
+  .swipe-indicators {
+    border: 1px solid #ffffff;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .swipe-card {
+    transition: none;
+  }
+  
+  .swipe-animation {
+    animation: none;
+  }
+}

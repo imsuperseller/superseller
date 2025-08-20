@@ -1,0 +1,130 @@
+{
+  "customers": {
+    "ben": {
+      "totalCost": 0.3,
+      "totalRequests": 2,
+      "successfulRequests": 2,
+      "failedRequests": 0,
+      "useCases": {
+        "wordpress": {
+          "count": 2,
+          "cost": 0.3,
+          "lastUsed": "2025-08-19T07:09:19.119Z"
+        }
+      },
+      "models": {
+        "gpt-4": {
+          "count": 2,
+          "cost": 0.3,
+          "lastUsed": "2025-08-19T07:09:19.119Z"
+        }
+      },
+      "dailyUsage": {
+        "2025-08-19": {
+          "requests": 2,
+          "cost": 0.3,
+          "useCases": {
+            "wordpress": 2
+          }
+        }
+      },
+      "monthlyUsage": {
+        "2025-08": {
+          "requests": 2,
+          "cost": 0.3,
+          "useCases": {
+            "wordpress": 2
+          }
+        }
+      },
+      "lastActivity": "2025-08-19T07:09:19.119Z"
+    },
+    "shelly": {
+      "totalCost": 0.1,
+      "totalRequests": 2,
+      "successfulRequests": 2,
+      "failedRequests": 0,
+      "useCases": {
+        "excel": {
+          "count": 2,
+          "cost": 0.1,
+          "lastUsed": "2025-08-19T07:09:19.121Z"
+        }
+      },
+      "models": {
+        "gpt-3.5-turbo": {
+          "count": 2,
+          "cost": 0.1,
+          "lastUsed": "2025-08-19T07:09:19.121Z"
+        }
+      },
+      "dailyUsage": {
+        "2025-08-19": {
+          "requests": 2,
+          "cost": 0.1,
+          "useCases": {
+            "excel": 2
+          }
+        }
+      },
+      "monthlyUsage": {
+        "2025-08": {
+          "requests": 2,
+          "cost": 0.1,
+          "useCases": {
+            "excel": 2
+          }
+        }
+      },
+      "lastActivity": "2025-08-19T07:09:19.121Z"
+    }
+  },
+  "rensto": {
+    "rensto": {
+      "totalCost": 0.04,
+      "totalRequests": 2,
+      "successfulRequests": 2,
+      "failedRequests": 0,
+      "useCases": {
+        "admin": {
+          "count": 2,
+          "cost": 0.04,
+          "lastUsed": "2025-08-19T07:09:19.121Z"
+        }
+      },
+      "models": {
+        "gpt-3.5-turbo": {
+          "count": 2,
+          "cost": 0.04,
+          "lastUsed": "2025-08-19T07:09:19.121Z"
+        }
+      },
+      "dailyUsage": {
+        "2025-08-19": {
+          "requests": 2,
+          "cost": 0.04,
+          "useCases": {
+            "admin": 2
+          }
+        }
+      },
+      "monthlyUsage": {
+        "2025-08": {
+          "requests": 2,
+          "cost": 0.04,
+          "useCases": {
+            "admin": 2
+          }
+        }
+      },
+      "lastActivity": "2025-08-19T07:09:19.121Z"
+    }
+  },
+  "alerts": [],
+  "summary": {
+    "totalCost": 0.43999999999999995,
+    "totalRequests": 6,
+    "activeCustomers": 2,
+    "lastUpdated": "2025-08-19T07:09:19.121Z"
+  }
+}

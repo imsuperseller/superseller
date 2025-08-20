@@ -217,6 +217,12 @@ infra/logs/
 mcp-servers/*/logs/
 mcp-servers/*/*.log
 
+# Enhanced MCP tools
+infra/mcp-servers/*/node_modules/
+infra/mcp-servers/*/dist/
+infra/mcp-servers/*/.env
+infra/mcp-servers/*/package-lock.json
+
 # n8n data
 infra/n8n-data/
 infra/n8n-workflows/backup/

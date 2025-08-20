@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react';
+// import { getSession } from 'next-auth/react';
 
 // API Configuration
 const API_CONFIG = {

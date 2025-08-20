@@ -1,97 +1,38 @@
-import { MongoClient, Db } from 'mongodb';
+import mongoose from 'mongoose';
 
-// MongoDB configuration
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-const MONGODB_DB = process.env.MONGODB_DB || 'rensto';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/rensto';
 
-// Global variables for connection caching
-let client: MongoClient | null = null;
-let db: Db | null = null;
-
-/**
- * Connect to MongoDB
- */
-export async function connectToDatabase(): Promise<Db> {
-  if (db) {
-    return db;
-  }
-
-  if (!client) {
-    client = new MongoClient(MONGODB_URI);
-    await client.connect();
-  }
-
-  db = client.db(MONGODB_DB);
-  return db;
+if (!MONGODB_URI) {
+  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
-/**
- * Get database instance
- */
-export async function getDatabase(): Promise<Db> {
-  return connectToDatabase();
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
-/**
- * Close database connection
- */
-export async function closeDatabase(): Promise<void> {
-  if (client) {
-    await client.close();
-    client = null;
-    db = null;
+export async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
   }
-}
 
-/**
- * Get collection with organization context
- */
-export async function getCollection(collectionName: string, orgId?: string) {
-  const db = await getDatabase();
-  const collection = db.collection(collectionName);
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
 
-  // Add organization filter if orgId is provided
-  if (orgId) {
-    return collection.withOptions({
-      readPreference: 'primary',
-      writeConcern: { w: 'majority' },
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose;
     });
   }
 
-  return collection;
-}
-
-/**
- * Health check for MongoDB connection
- */
-export async function healthCheck(): Promise<{
-  status: 'healthy' | 'unhealthy';
-  message: string;
-  details?: unknown;
-}> {
   try {
-    const db = await getDatabase();
-    await db.admin().ping();
-
-    return {
-      status: 'healthy',
-      message: 'MongoDB connection is operational',
-      details: {
-        database: db.databaseName,
-        collections: await db.listCollections().toArray(),
-      },
-    };
-  } catch (error) {
-    console.error('MongoDB health check failed:', error);
-    return {
-      status: 'unhealthy',
-      message: 'MongoDB connection failed',
-      details: {
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
-    };
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
   }
-}
 
-// Default export for backward compatibility
-export default connectToDatabase;
+  return cached.conn;
+}

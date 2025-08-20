@@ -1,53 +1,38 @@
 {
   "customerId": "customer-1755455121176",
-  "planId": "plan_1755455445996",
-  "createdAt": "2025-08-17T18:30:45.996Z",
-  "status": "development_completed",
+  "planId": "plan_1755636737943",
+  "createdAt": "2025-08-19T20:52:17.943Z",
+  "status": "in_development",
   "agents": [
     {
       "name": "Content Automation Agent",
       "description": "Automates content creation and publishing",
       "status": "planned",
-      "developmentPhase": "completed",
+      "developmentPhase": "not_started",
       "testingPhase": "not_started",
       "deploymentPhase": "not_started",
       "estimatedCompletion": null,
-      "actualCompletion": null,
-      "developmentStartedAt": "2025-08-17T18:31:45.089Z",
-      "testingResults": [],
-      "iterations": [],
-      "approvalStatus": "approved",
-      "readyForActivation": true
+      "actualCompletion": null
     },
     {
       "name": "Customer Communication Agent",
       "description": "Handles customer inquiries and follow-ups",
       "status": "planned",
-      "developmentPhase": "completed",
+      "developmentPhase": "not_started",
       "testingPhase": "not_started",
       "deploymentPhase": "not_started",
       "estimatedCompletion": null,
-      "actualCompletion": null,
-      "developmentStartedAt": "2025-08-17T18:31:45.089Z",
-      "testingResults": [],
-      "iterations": [],
-      "approvalStatus": "approved",
-      "readyForActivation": true
+      "actualCompletion": null
     },
     {
       "name": "Data Processing Agent",
       "description": "Automates data entry and processing",
       "status": "planned",
-      "developmentPhase": "completed",
+      "developmentPhase": "not_started",
       "testingPhase": "not_started",
       "deploymentPhase": "not_started",
       "estimatedCompletion": null,
-      "actualCompletion": null,
-      "developmentStartedAt": "2025-08-17T18:31:45.089Z",
-      "testingResults": [],
-      "iterations": [],
-      "approvalStatus": "approved",
-      "readyForActivation": true
+      "actualCompletion": null
     }
   ],
   "timeline": {
@@ -61,24 +46,22 @@
     {
       "name": "Requirements Finalization",
       "status": "completed",
-      "completedAt": "2025-08-17T18:30:45.996Z"
+      "completedAt": "2025-08-19T20:52:17.943Z"
     },
     {
       "name": "Agent Development",
       "status": "in_progress",
-      "estimatedCompletion": "2025-08-24T18:30:45.996Z"
+      "estimatedCompletion": "2025-08-26T20:52:17.943Z"
     },
     {
       "name": "Testing & Validation",
       "status": "pending",
-      "estimatedCompletion": "2025-08-27T18:30:45.996Z"
+      "estimatedCompletion": "2025-08-29T20:52:17.943Z"
     },
     {
       "name": "Deployment & Activation",
       "status": "pending",
-      "estimatedCompletion": "2025-08-29T18:30:45.996Z"
+      "estimatedCompletion": "2025-08-31T20:52:17.943Z"
     }
-  ],
-  "developmentStartedAt": "2025-08-17T18:31:45.088Z",
-  "developmentCompletedAt": "2025-08-17T18:32:15.126Z"
+  ]
 }

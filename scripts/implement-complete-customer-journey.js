@@ -113,6 +113,72 @@ class CompleteCustomerJourneySystem {
             required: true
           },
           {
+            id: 'customer_app_language',
+            type: 'multiple_choice',
+            title: 'What language would you prefer for your customer app interface?',
+            description: 'This will be the language used in your customer portal and dashboard',
+            choices: [
+              'English',
+              'Hebrew (עברית)',
+              'Spanish (Español)',
+              'French (Français)',
+              'German (Deutsch)',
+              'Arabic (العربية)',
+              'Chinese (中文)',
+              'Japanese (日本語)',
+              'Korean (한국어)',
+              'Russian (Русский)',
+              'Portuguese (Português)',
+              'Italian (Italiano)',
+              'Dutch (Nederlands)',
+              'Other (Please specify)'
+            ],
+            required: true
+          },
+          {
+            id: 'agent_interface_language',
+            type: 'multiple_choice',
+            title: 'What language would you prefer for your AI agent interface?',
+            description: 'This will be the language your AI agents communicate in',
+            choices: [
+              'English',
+              'Hebrew (עברית)',
+              'Spanish (Español)',
+              'French (Français)',
+              'German (Deutsch)',
+              'Arabic (العربية)',
+              'Chinese (中文)',
+              'Japanese (日本語)',
+              'Korean (한국어)',
+              'Russian (Русский)',
+              'Portuguese (Português)',
+              'Italian (Italiano)',
+              'Dutch (Nederlands)',
+              'Same as customer app',
+              'Other (Please specify)'
+            ],
+            required: true
+          },
+          {
+            id: 'rtl_support_needed',
+            type: 'multiple_choice',
+            title: 'Do you need Right-to-Left (RTL) text support?',
+            description: 'Required for languages like Hebrew, Arabic, and other RTL languages',
+            choices: [
+              'Yes, I need RTL support',
+              'No, I don\'t need RTL support',
+              'I\'m not sure'
+            ],
+            required: true
+          },
+          {
+            id: 'localization_preferences',
+            type: 'long_text',
+            title: 'Any specific localization preferences?',
+            description: 'For example: date formats, currency, number formats, cultural considerations',
+            required: false
+          },
+          {
             id: 'budget_range',
             type: 'multiple_choice',
             title: 'What is your budget range for this automation?',
@@ -160,14 +226,12 @@ class CompleteCustomerJourneySystem {
       const typeformPath = `data/customers/${customerId}/typeform-config.json`;
       await fs.writeFile(typeformPath, JSON.stringify(typeform, null, 2));
       
-      console.log(`✅ TypeForm created: ${typeform.id}`);
-      console.log(`🔗 URL: ${typeform.url}`);
-      console.log(`📊 Fields: ${typeform.fields.length} questions`);
+      console.log('✅ TypeForm created successfully');
+      console.log(`📁 Saved to: ${typeformPath}`);
       
       return typeform;
-      
     } catch (error) {
-      console.error('❌ Failed to create TypeForm:', error.message);
+      console.error('❌ Error creating TypeForm:', error);
       throw error;
     }
   }

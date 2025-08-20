@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBooks Financial Hub - Rensto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Rensto Brand Colors */
+            --primary-50: #fff5f5;
+            --primary-100: #fed7d7;
+            --primary-200: #feb2b2;
+            --primary-300: #fc8181;
+            --primary-400: #f56565;
+            --primary-500: #ff0000;
+            --primary-600: #e53e3e;
+            --primary-700: #c53030;
+            --primary-800: #9b2c2c;
+            --primary-900: #742a2a;
+            
+            --secondary-50: #f0f9ff;
+            --secondary-100: #e0f2fe;
+            --secondary-200: #bae6fd;
+            --secondary-300: #7dd3fc;
+            --secondary-400: #38bdf8;
+            --secondary-500: #00bfff;
+            --secondary-600: #0284c7;
+            --secondary-700: #0369a1;
+            --secondary-800: #075985;
+            --secondary-900: #0c4a6e;
+            
+            --accent-orange: #ff6b35;
+            --accent-cyan: #00ffff;
+            --accent-neon: #00ff41;
+            --accent-glow: #ff0080;
+            
+            --bg-primary: #4a5568;
+            --bg-secondary: #2d3748;
+            --bg-card: #1a202c;
+            --bg-surface: #2d3748;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #a0aec0;
+            --text-accent: #00ffff;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            --spacing-3xl: 4rem;
+            --spacing-4xl: 6rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 191, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 107, 53, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) 0;
+            margin-bottom: var(--spacing-2xl);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+        }
+
+        .logo::before {
+            content: '💰';
+            margin-right: var(--spacing-sm);
+            font-size: 2rem;
+        }
+
+        .nav-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .nav-stat {
+            text-align: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .nav-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        /* Left Column - Financial Overview */
+        .financial-overview {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: var(--spacing-2xl);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .financial-overview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--accent-orange), var(--secondary-500));
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xl);
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '📊';
+            margin-right: var(--spacing-sm);
+        }
+
+        .revenue-chart {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+        }
+
+        .chart-bar {
+            height: 60px;
+            background: linear-gradient(90deg, var(--primary-500), var(--accent-orange));
+            border-radius: 8px;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .chart-value {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Right Column - Customer Management */
+        .customer-management {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: var(--spacing-2xl);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .customer-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .customer-item {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .customer-item:hover {
+            border-color: var(--accent-orange);
+            transform: translateX(4px);
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .customer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-500), var(--accent-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-md);
+            font-weight: 700;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .customer-details h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .customer-details p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .customer-status {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--accent-neon);
+            color: var(--bg-card);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .customer-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .metric {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Bottom Section - MCP Tools */
+        .mcp-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: var(--spacing-2xl);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .tool-item {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary-500), var(--accent-cyan));
+        }
+
+        .tool-item:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tool-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .tool-description {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.4;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tool-price {
+            background: var(--primary-500);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+            
+            .nav-header {
+                flex-direction: column;
+                gap: var(--spacing-lg);
+            }
+            
+            .nav-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .customer-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-container {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <div class="nav-header">
+            <div class="logo">QuickBooks Financial Hub</div>
+            <div class="nav-stats">
+                <div class="nav-stat">
+                    <div class="nav-stat-value">$8,348</div>
+                    <div class="nav-stat-label">Total Revenue</div>
+                </div>
+                <div class="nav-stat">
+                    <div class="nav-stat-value">3</div>
+                    <div class="nav-stat-label">Customers</div>
+                </div>
+                <div class="nav-stat">
+                    <div class="nav-stat-value">6</div>
+                    <div class="nav-stat-label">MCP Tools</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column - Financial Overview -->
+            <div class="financial-overview">
+                <h2 class="section-title">Financial Overview</h2>
+                
+                <div class="revenue-chart">
+                    <div class="chart-label">
+                        <span>Total Revenue</span>
+                        <span class="chart-value">$8,348</span>
+                    </div>
+                    <div class="chart-bar" style="width: 83.48%;"></div>
+                </div>
+
+                <div class="revenue-chart">
+                    <div class="chart-label">
+                        <span>Monthly MCP Revenue</span>
+                        <span class="chart-value">$174</span>
+                    </div>
+                    <div class="chart-bar" style="width: 17.4%;"></div>
+                </div>
+
+                <div class="revenue-chart">
+                    <div class="chart-label">
+                        <span>Outstanding Payments</span>
+                        <span class="chart-value">$2,100</span>
+                    </div>
+                    <div class="chart-bar" style="width: 21%;"></div>
+                </div>
+            </div>
+
+            <!-- Right Column - Customer Management -->
+            <div class="customer-management">
+                <h2 class="section-title">Customer Management</h2>
+                
+                <div class="customer-list">
+                    <!-- Ben Ginati -->
+                    <div class="customer-item">
+                        <div class="customer-header">
+                            <div class="customer-info">
+                                <div class="customer-avatar">B</div>
+                                <div class="customer-details">
+                                    <h3>Ben Ginati</h3>
+                                    <p>Tax4Us</p>
+                                </div>
+                            </div>
+                            <div class="customer-status">Active</div>
+                        </div>
+                        
+                        <div class="customer-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$3,000</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$2,000</div>
+                                <div class="metric-label">Outstanding</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$1,250</div>
+                                <div class="metric-label">Monthly Expenses</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">60%</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shelly Mizrahi -->
+                    <div class="customer-item">
+                        <div class="customer-header">
+                            <div class="customer-info">
+                                <div class="customer-avatar">S</div>
+                                <div class="customer-details">
+                                    <h3>Shelly Mizrahi</h3>
+                                    <p>Insurance</p>
+                                </div>
+                            </div>
+                            <div class="customer-status">Active</div>
+                        </div>
+                        
+                        <div class="customer-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$150</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$100</div>
+                                <div class="metric-label">Outstanding</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$75</div>
+                                <div class="metric-label">Monthly Expenses</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">60%</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ortal Flanary -->
+                    <div class="customer-item">
+                        <div class="customer-header">
+                            <div class="customer-info">
+                                <div class="customer-avatar">O</div>
+                                <div class="customer-details">
+                                    <h3>Ortal Flanary</h3>
+                                    <p>Facebook Marketing</p>
+                                </div>
+                            </div>
+                            <div class="customer-status">Active</div>
+                        </div>
+                        
+                        <div class="customer-metrics">
+                            <div class="metric">
+                                <div class="metric-value">$5,198</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$0</div>
+                                <div class="metric-label">Outstanding</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$450</div>
+                                <div class="metric-label">Monthly Expenses</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">100%</div>
+                                <div class="metric-label">Paid</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MCP Tools Section -->
+        <div class="mcp-section">
+            <h2 class="section-title">QuickBooks MCP Tools</h2>
+            <div class="tools-container">
+                <div class="tool-item">
+                    <div class="tool-icon">💳</div>
+                    <div class="tool-name">Payment Data</div>
+                    <div class="tool-description">Real-time customer payment tracking</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-name">Revenue Analytics</div>
+                    <div class="tool-description">Period-based revenue analysis</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">✅</div>
+                    <div class="tool-name">Payment Records</div>
+                    <div class="tool-description">Automated payment recording</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">⚖️</div>
+                    <div class="tool-name">Balance & Aging</div>
+                    <div class="tool-description">Customer credit analysis</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-name">Expense Tracking</div>
+                    <div class="tool-description">External service monitoring</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📈</div>
+                    <div class="tool-name">Expense Summary</div>
+                    <div class="tool-description">Cost breakdown & optimization</div>
+                    <div class="tool-price">$29/mo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -15,6 +15,15 @@
     "budget": "$250",
     "successMetrics": "Automated Excel processing, family profile generation, time savings",
     "notes": "Needs Excel processing agent to combine 5 individual family member files into unified family insurance profile. Currently doing this manually which is time-consuming and error-prone.",
+    "apiCredentials": {
+      "openai": {
+        "apiKey": "[REDACTED]",
+        "status": "active",
+        "lastValidated": "2025-08-19T07:19:01.693Z",
+        "usageLimit": 0.10,
+        "rateLimit": 10
+      }
+    },
     "location": "Afula, Israel",
     "paymentStatus": {
       "amount": 250,
@@ -40,9 +49,14 @@
       "name": "Excel Family Profile Processor",
       "key": "excel-family-processor",
       "description": "Automated Excel processing agent that combines individual family member insurance profiles into unified family profiles",
-      "status": "ready",
+      "status": "active",
       "icon": "📊",
-      "tags": ["excel", "insurance", "family-profiles", "automation"],
+      "tags": [
+        "excel",
+        "insurance",
+        "family-profiles",
+        "automation"
+      ],
       "capabilities": [
         "Excel file reading and parsing",
         "Data extraction and validation",
@@ -57,15 +71,18 @@
       },
       "isActive": true,
       "schedule": "manual",
-      "dependencies": ["excel-files", "output-templates"],
+      "dependencies": [
+        "excel-files",
+        "output-templates"
+      ],
       "progress": {
-        "current": 0,
+        "current": 100,
         "total": 100,
-        "message": "Ready for deployment"
+        "message": "Agent activated and ready for production use"
       },
-      "lastRun": null,
-      "successRate": null,
-      "avgDuration": null,
+      "lastRun": "2025-08-19T07:50:00.000Z",
+      "successRate": 100,
+      "avgDuration": "33 seconds",
       "costEst": 250,
       "roi": 85
     }
@@ -93,7 +110,7 @@
       "dataFields": [
         "Family member name",
         "Age",
-        "Health information", 
+        "Health information",
         "Insurance needs",
         "Coverage requirements",
         "Special considerations"
@@ -128,12 +145,24 @@
   "integration": {
     "excelProcessing": {
       "library": "openpyxl",
-      "capabilities": ["read", "write", "format", "calculate"],
-      "fileTypes": [".xlsx", ".xls"]
+      "capabilities": [
+        "read",
+        "write",
+        "format",
+        "calculate"
+      ],
+      "fileTypes": [
+        ".xlsx",
+        ".xls"
+      ]
     },
     "dataValidation": {
       "required": true,
-      "checks": ["format", "completeness", "accuracy"]
+      "checks": [
+        "format",
+        "completeness",
+        "accuracy"
+      ]
     },
     "outputDelivery": {
       "method": "email",

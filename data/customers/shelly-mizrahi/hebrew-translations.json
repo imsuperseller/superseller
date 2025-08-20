@@ -1,0 +1,139 @@
+{
+  "portal": {
+    "dashboard": {
+      "title": "לוח בקרה",
+      "welcome": "ברוכים הבאים, שלי!",
+      "profilesProcessed": "פרופילים שעובדו",
+      "timeSaved": "זמן שנחסך",
+      "filesUploaded": "קבצים שהועלו",
+      "revenueImpact": "השפעה על הכנסות",
+      "recentActivity": "פעילות אחרונה",
+      "quickActions": "פעולות מהירות",
+      "uploadExcelFiles": "העלאת קבצי אקסל",
+      "processProfiles": "עיבוד פרופילים",
+      "configureProcessor": "הגדרת מעבד"
+    },
+    "processor": {
+      "title": "מעבד קבצי אקסל",
+      "description": "העלו קבצי אקסל של חברי משפחה לעיבוד",
+      "uploadFiles": "העלאת קבצים",
+      "dropFilesHere": "גררו קבצים לכאן או לחצו לדפדוף",
+      "browseFiles": "דפדוף בקבצים",
+      "processingStatus": "סטטוס עיבוד",
+      "uptime": "זמן פעילות",
+      "processingSpeed": "מהירות עיבוד",
+      "accuracyRate": "דיוק",
+      "configureProcessor": "הגדרת מעבד"
+    },
+    "profiles": {
+      "title": "פרופיל משפחתי: ביטוח",
+      "familyMembers": "חברי משפחה",
+      "totalPolicies": "סה\"כ פוליסות",
+      "annualPremium": "פרמיה שנתית",
+      "policies": "פוליסות"
+    },
+    "analytics": {
+      "title": "ניתוח נתונים",
+      "processingStatistics": "סטטיסטיקות עיבוד",
+      "filesProcessed": "קבצים שעובדו",
+      "processingTime": "זמן עיבוד",
+      "dataIntegrity": "יושרת נתונים"
+    },
+    "billing": {
+      "title": "חשבוניות",
+      "paymentStatus": "סטטוס תשלום",
+      "invoiceHistory": "היסטוריית חשבוניות",
+      "costTracking": "מעקב עלויות",
+      "financialReports": "דוחות פיננסיים"
+    },
+    "support": {
+      "title": "תמיכה",
+      "helpResources": "משאבי עזרה",
+      "contactInformation": "פרטי קשר",
+      "faqSection": "שאלות נפוצות",
+      "supportTickets": "כרטיסי תמיכה"
+    }
+  },
+  "typeform": {
+    "automationType": {
+      "question": "איזה סוג אוטומציה אתה צריך?",
+      "placeholder": "תאר את האוטומציה הנדרשת"
+    },
+    "currentProcess": {
+      "question": "תאר את התהליך הנוכחי שלך",
+      "placeholder": "איך אתה עושה את זה עכשיו?"
+    },
+    "weeklyHours": {
+      "question": "כמה שעות בשבוע זה לוקח כרגע?",
+      "placeholder": "מספר שעות"
+    },
+    "businessValue": {
+      "question": "מה תהיה הערך העסקי של אוטומציה?",
+      "placeholder": "תאר את התועלת העסקית"
+    },
+    "timeline": {
+      "question": "מה לוח הזמנים שלך?",
+      "options": [
+        "1-2 שבועות",
+        "חודש",
+        "2-3 חודשים",
+        "אין דחיפות"
+      ]
+    }
+  },
+  "ai": {
+    "planning": {
+      "analyzing": "מנתח את הבקשה שלך...",
+      "generatingPlan": "יוצר תוכנית מפורטת...",
+      "estimatingCost": "מעריך עלויות...",
+      "creatingProposal": "יוצר הצעה מקצועית...",
+      "planReady": "התוכנית מוכנה לבדיקה"
+    },
+    "pricing": {
+      "calculating": "מחשב עלויות פיתוח...",
+      "generatingContract": "יוצר חוזה...",
+      "contractReady": "החוזה מוכן לחתימה",
+      "paymentProcessing": "מעבד תשלום...",
+      "projectInitiated": "הפרויקט התחיל"
+    }
+  },
+  "futureAgents": {
+    "insuranceQuoteGenerator": {
+      "name": "מחולל הצעות ביטוח",
+      "description": "יצירת הצעות ביטוח אוטומטיות מנתוני לקוחות",
+      "price": "₪1,750"
+    },
+    "clientCommunicationManager": {
+      "name": "מנהל תקשורת לקוחות",
+      "description": "מעקב אוטומטי ותקשורת עם לקוחות",
+      "price": "₪1,050"
+    },
+    "policyRenewalTracker": {
+      "name": "מעקב חידוש פוליסות",
+      "description": "מעקב וניהול חידושי פוליסות אוטומטית",
+      "price": "₪1,400"
+    },
+    "claimsProcessingAssistant": {
+      "name": "עוזר עיבוד תביעות",
+      "description": "ייעול עיבוד תביעות ותיעוד",
+      "price": "₪2,100"
+    },
+    "financialReportGenerator": {
+      "name": "מחולל דוחות פיננסיים",
+      "description": "יצירת דוחות פיננסיים מקיפים",
+      "price": "₪1,225"
+    }
+  },
+  "contracts": {
+    "agentDevelopment": {
+      "title": "הסכם פיתוח סוכן אוטומציה",
+      "customerName": "שם הלקוח",
+      "agentDescription": "תיאור הסוכן",
+      "developmentCost": "עלות פיתוח",
+      "timeline": "לוח זמנים",
+      "deliverables": "תוצרים",
+      "terms": "תנאים",
+      "signature": "חתימה"
+    }
+  }
+}

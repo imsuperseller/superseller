@@ -15,6 +15,15 @@
     "budget": "$5000",
     "successMetrics": "Content automation, podcast production, social media engagement",
     "notes": "Needs 4 agents: WordPress content, WordPress blog/posts, podcast, social media. Payment: $5000 in 2 installments (start + completion). Not paid yet.",
+    "apiCredentials": {
+      "openai": {
+        "apiKey": "[REDACTED]",
+        "status": "active",
+        "lastValidated": "2025-08-19T07:19:01.693Z",
+        "usageLimit": 0.50,
+        "rateLimit": 30
+      }
+    },
     "wordpressCredentials": {
       "username": "Shai ai",
       "password": "JNmxDaaN1X0yJ1CGRGD9Hc5S",

@@ -1,0 +1,390 @@
+{
+  "profileId": "family-1755590793701",
+  "familyName": "ביטוח",
+  "generatedAt": "2025-08-19T08:06:33.701Z",
+  "summary": {
+    "totalMembers": 5,
+    "totalPolicies": 30,
+    "totalPremium": 90097,
+    "insuranceTypes": 6
+  },
+  "members": [
+    {
+      "name": "עמית הר ביטוח",
+      "policies": [
+        {
+          "id": "POL-עמ-1",
+          "type": "ביטוח דירה",
+          "premium": 3276,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-2",
+          "type": "ביטוח חיים",
+          "premium": 4696,
+          "company": "מגדל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-3",
+          "type": "כתב שירות",
+          "premium": 4638,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-4",
+          "type": "ביטוח דירה",
+          "premium": 418,
+          "company": "אינטרפקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-5",
+          "type": "ביטוח רכב",
+          "premium": 2738,
+          "company": "הפניקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-6",
+          "type": "ביטוח רכב",
+          "premium": 4470,
+          "company": "מנורה",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-7",
+          "type": "ביטוח סיעודי",
+          "premium": 4364,
+          "company": "מנורה",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-עמ-8",
+          "type": "ביטוח סיעודי",
+          "premium": 4750,
+          "company": "מנורה",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        }
+      ],
+      "totalPremium": 29350,
+      "insuranceTypes": [
+        "ביטוח דירה",
+        "ביטוח חיים",
+        "כתב שירות",
+        "ביטוח רכב",
+        "ביטוח סיעודי"
+      ],
+      "policyCount": 8
+    },
+    {
+      "name": "יונתן הר ביטוח",
+      "policies": [
+        {
+          "id": "POL-יו-1",
+          "type": "כתב שירות",
+          "premium": 149,
+          "company": "אינטרפקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-יו-2",
+          "type": "ביטוח סיעודי",
+          "premium": 2029,
+          "company": "הראל ביטוח",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-יו-3",
+          "type": "ביטוח סיעודי",
+          "premium": 2073,
+          "company": "מגדל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        }
+      ],
+      "totalPremium": 4251,
+      "insuranceTypes": [
+        "כתב שירות",
+        "ביטוח סיעודי"
+      ],
+      "policyCount": 3
+    },
+    {
+      "name": "אנה הר ביטוח",
+      "policies": [
+        {
+          "id": "POL-אנ-1",
+          "type": "ביטוח בריאות",
+          "premium": 2886,
+          "company": "מנורה",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אנ-2",
+          "type": "ביטוח חיים",
+          "premium": 4733,
+          "company": "הפניקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אנ-3",
+          "type": "ביטוח בריאות",
+          "premium": 4962,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אנ-4",
+          "type": "ביטוח חיים",
+          "premium": 1769,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אנ-5",
+          "type": "ביטוח בריאות",
+          "premium": 86,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        }
+      ],
+      "totalPremium": 14436,
+      "insuranceTypes": [
+        "ביטוח בריאות",
+        "ביטוח חיים"
+      ],
+      "policyCount": 5
+    },
+    {
+      "name": "אליסה הר ביטוח",
+      "policies": [
+        {
+          "id": "POL-אל-1",
+          "type": "ביטוח בריאות",
+          "premium": 423,
+          "company": "מנורה",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-2",
+          "type": "ביטוח בריאות",
+          "premium": 2725,
+          "company": "מגדל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-3",
+          "type": "ביטוח חיים",
+          "premium": 2764,
+          "company": "הראל ביטוח",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-4",
+          "type": "ביטוח דירה",
+          "premium": 607,
+          "company": "הפניקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-5",
+          "type": "כתב שירות",
+          "premium": 1878,
+          "company": "אינטרפקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-6",
+          "type": "ביטוח רכב",
+          "premium": 4612,
+          "company": "הראל ביטוח",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-7",
+          "type": "ביטוח דירה",
+          "premium": 3851,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-8",
+          "type": "ביטוח דירה",
+          "premium": 5008,
+          "company": "הראל ביטוח",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-9",
+          "type": "ביטוח סיעודי",
+          "premium": 3904,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אל-10",
+          "type": "ביטוח רכב",
+          "premium": 4039,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        }
+      ],
+      "totalPremium": 29811,
+      "insuranceTypes": [
+        "ביטוח בריאות",
+        "ביטוח חיים",
+        "ביטוח דירה",
+        "כתב שירות",
+        "ביטוח רכב",
+        "ביטוח סיעודי"
+      ],
+      "policyCount": 10
+    },
+    {
+      "name": "איתן הר ביטוח",
+      "policies": [
+        {
+          "id": "POL-אי-1",
+          "type": "כתב שירות",
+          "premium": 3547,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אי-2",
+          "type": "ביטוח רכב",
+          "premium": 3838,
+          "company": "הפניקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אי-3",
+          "type": "ביטוח סיעודי",
+          "premium": 3644,
+          "company": "הראל",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        },
+        {
+          "id": "POL-אי-4",
+          "type": "ביטוח רכב",
+          "premium": 1220,
+          "company": "הפניקס",
+          "startDate": "2024-01-01",
+          "endDate": "2024-12-31",
+          "coverage": "Standard Coverage",
+          "notes": ""
+        }
+      ],
+      "totalPremium": 12249,
+      "insuranceTypes": [
+        "כתב שירות",
+        "ביטוח רכב",
+        "ביטוח סיעודי"
+      ],
+      "policyCount": 4
+    }
+  ],
+  "allInsuranceTypes": [
+    "ביטוח דירה",
+    "ביטוח חיים",
+    "כתב שירות",
+    "ביטוח רכב",
+    "ביטוח סיעודי",
+    "ביטוח בריאות"
+  ],
+  "processingMetadata": {
+    "filesProcessed": 5,
+    "processingTime": "33 seconds",
+    "dataIntegrity": "verified",
+    "hebrewSupport": "enabled"
+  }
+}

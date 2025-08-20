@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import 'dotenv/config';
 import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';

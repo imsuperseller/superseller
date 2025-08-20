@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+// // import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 // User roles enum

@@ -1,0 +1,108 @@
+
+/* Hebrew RTL Support for Tinder Typeform */
+
+.hebrew-rtl {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hebrew-rtl .tinder-grid {
+  direction: rtl;
+}
+
+.hebrew-rtl .swipe-card {
+  direction: rtl;
+  text-align: right;
+}
+
+.hebrew-rtl .card-header {
+  flex-direction: row-reverse;
+}
+
+.hebrew-rtl .card-icon {
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+.hebrew-rtl .swipe-indicators {
+  flex-direction: row-reverse;
+}
+
+.hebrew-rtl .navigation-buttons {
+  flex-direction: row-reverse;
+}
+
+.hebrew-rtl .progress-bar {
+  direction: ltr; /* Keep progress bar left-to-right */
+}
+
+.hebrew-rtl .swipe-history {
+  direction: rtl;
+}
+
+.hebrew-rtl .history-item {
+  flex-direction: row-reverse;
+}
+
+/* Hebrew-specific animations */
+.hebrew-rtl .swipe-right {
+  animation: swipeRightRTL 0.3s ease-out;
+}
+
+.hebrew-rtl .swipe-left {
+  animation: swipeLeftRTL 0.3s ease-out;
+}
+
+@keyframes swipeRightRTL {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-300px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeLeftRTL {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(300px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+/* Hebrew text styling */
+.hebrew-rtl .hebrew-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+}
+
+.hebrew-rtl .hebrew-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.hebrew-rtl .hebrew-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Hebrew number formatting */
+.hebrew-rtl .hebrew-number {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hebrew date formatting */
+.hebrew-rtl .hebrew-date {
+  direction: rtl;
+  unicode-bidi: embed;
+}

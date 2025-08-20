@@ -5,8 +5,9 @@
 /* shadcn/ui CSS Variables */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    /* Rensto brand default (dark-first) */
+    --background: 266 47% 10%; /* #110d28 */
+    --foreground: 210 40% 98%; /* near white */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
@@ -31,42 +32,42 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Rensto Brand Colors */
-    --rensto-red: #ff0000;
-    --rensto-orange: #ff6b35;
-    --rensto-blue: #00bfff;
-    --rensto-cyan: #00ffff;
-    --rensto-neon: #00ff41;
-    --rensto-glow: #ff0080;
+    /* Rensto Brand Colors (authoritative) */
+    --rensto-red: #fe3d51;
+    --rensto-orange: #bf5700;
+    --rensto-blue: #1eaef7;
+    --rensto-cyan: #5ffbfd;
+    --rensto-neon: #5ffbfd;
+    --rensto-glow: #1eaef7;
     
     /* Rensto Background Colors */
-    --rensto-bg-primary: #4a5568;
-    --rensto-bg-secondary: #2d3748;
-    --rensto-bg-card: #1a202c;
-    --rensto-bg-surface: #2d3748;
+    --rensto-bg-primary: #110d28; /* app background */
+    --rensto-bg-secondary: #17123a; /* panels, surfaces */
+    --rensto-bg-card: #1a153f; /* cards */
+    --rensto-bg-surface: #17123a;
     
     /* Rensto Text Colors */
     --rensto-text-primary: #ffffff;
-    --rensto-text-secondary: #e2e8f0;
-    --rensto-text-muted: #a0aec0;
-    --rensto-text-accent: #00ffff;
+    --rensto-text-secondary: #d1d5db;
+    --rensto-text-muted: #94a3b8;
+    --rensto-text-accent: #5ffbfd;
     
     /* Rensto Gradients */
-    --rensto-gradient-primary: linear-gradient(135deg, #ff0000 0%, #ff6b35 100%);
-    --rensto-gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00ffff 100%);
-    --rensto-gradient-brand: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
-    --rensto-gradient-neon: linear-gradient(135deg, #00ffff 0%, #00ff41 100%);
+    --rensto-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+    --rensto-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+    --rensto-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
+    --rensto-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
     
     /* Rensto Glow Effects */
-    --rensto-glow-primary: 0 0 20px rgba(255, 0, 0, 0.5);
-    --rensto-glow-secondary: 0 0 20px rgba(0, 191, 255, 0.5);
-    --rensto-glow-accent: 0 0 20px rgba(0, 255, 255, 0.5);
-    --rensto-glow-neon: 0 0 30px rgba(0, 255, 65, 0.7);
+    --rensto-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
+    --rensto-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
+    --rensto-glow-accent: 0 0 20px rgba(95, 251, 253, 0.45);
+    --rensto-glow-neon: 0 0 30px rgba(95, 251, 253, 0.7);
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 266 47% 10%;
+    --foreground: 210 40% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
@@ -91,36 +92,36 @@
     --chart-5: 340 75% 55%;
 
     /* Rensto Brand Colors (Dark Mode) */
-    --rensto-red: #ff0000;
-    --rensto-orange: #ff6b35;
-    --rensto-blue: #00bfff;
-    --rensto-cyan: #00ffff;
-    --rensto-neon: #00ff41;
-    --rensto-glow: #ff0080;
+    --rensto-red: #fe3d51;
+    --rensto-orange: #bf5700;
+    --rensto-blue: #1eaef7;
+    --rensto-cyan: #5ffbfd;
+    --rensto-neon: #5ffbfd;
+    --rensto-glow: #1eaef7;
     
     /* Rensto Background Colors (Dark Mode) */
-    --rensto-bg-primary: #4a5568;
-    --rensto-bg-secondary: #2d3748;
-    --rensto-bg-card: #1a202c;
-    --rensto-bg-surface: #2d3748;
+    --rensto-bg-primary: #110d28;
+    --rensto-bg-secondary: #17123a;
+    --rensto-bg-card: #1a153f;
+    --rensto-bg-surface: #17123a;
     
     /* Rensto Text Colors (Dark Mode) */
     --rensto-text-primary: #ffffff;
-    --rensto-text-secondary: #e2e8f0;
-    --rensto-text-muted: #a0aec0;
-    --rensto-text-accent: #00ffff;
+    --rensto-text-secondary: #d1d5db;
+    --rensto-text-muted: #94a3b8;
+    --rensto-text-accent: #5ffbfd;
     
     /* Rensto Gradients (Dark Mode) */
-    --rensto-gradient-primary: linear-gradient(135deg, #ff0000 0%, #ff6b35 100%);
-    --rensto-gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00ffff 100%);
-    --rensto-gradient-brand: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
-    --rensto-gradient-neon: linear-gradient(135deg, #00ffff 0%, #00ff41 100%);
+    --rensto-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+    --rensto-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+    --rensto-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
+    --rensto-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
     
     /* Rensto Glow Effects (Dark Mode) */
-    --rensto-glow-primary: 0 0 20px rgba(255, 0, 0, 0.5);
-    --rensto-glow-secondary: 0 0 20px rgba(0, 191, 255, 0.5);
-    --rensto-glow-accent: 0 0 20px rgba(0, 255, 255, 0.5);
-    --rensto-glow-neon: 0 0 30px rgba(0, 255, 65, 0.7);
+    --rensto-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
+    --rensto-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
+    --rensto-glow-accent: 0 0 20px rgba(95, 251, 253, 0.45);
+    --rensto-glow-neon: 0 0 30px rgba(95, 251, 253, 0.7);
   }
 }
 

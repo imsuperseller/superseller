@@ -1,0 +1,238 @@
+{
+  "projectId": "1755574540000-Shelly-Hebrew-Translation",
+  "projectName": "Shelly Hebrew Translation Implementation",
+  "priority": "critical",
+  "status": "in_progress",
+  "bmadPhase": "brainstorming",
+  "createdAt": "2025-08-19T08:30:00.000Z",
+  "updatedAt": "2025-08-19T08:30:00.000Z",
+  "projectBrief": {
+    "objective": "Implement comprehensive Hebrew translation for Shelly's complete journey using MCP-First approach",
+    "scope": "Customer portal, Typeform, AI responses, contracts, future agents, RTL support",
+    "successCriteria": [
+      "Complete Hebrew interface for customer portal",
+      "Hebrew Typeform with RTL support",
+      "Hebrew AI agent responses",
+      "Hebrew contract templates",
+      "Hebrew future agents descriptions",
+      "Full RTL (Right-to-Left) support"
+    ],
+    "constraints": [
+      "Must use MCP servers for implementation",
+      "Must support both Hebrew and English",
+      "Must implement proper RTL layout",
+      "Must maintain professional quality",
+      "Must be ready for tomorrow's delivery"
+    ]
+  },
+  "brainstorming": {
+    "phase": "completed",
+    "participants": [
+      "Mary",
+      "John",
+      "Winston",
+      "Alex"
+    ],
+    "ideas": [
+      {
+        "id": "idea-001",
+        "title": "Hebrew Translation Database",
+        "description": "Create comprehensive Hebrew translations for all interface elements",
+        "priority": "high",
+        "status": "selected"
+      },
+      {
+        "id": "idea-002",
+        "title": "RTL Support Implementation",
+        "description": "Implement Right-to-Left layout support for Hebrew text",
+        "priority": "high",
+        "status": "selected"
+      },
+      {
+        "id": "idea-003",
+        "title": "Hebrew Typeform Creation",
+        "description": "Create Typeform with Hebrew questions and RTL support",
+        "priority": "high",
+        "status": "selected"
+      },
+      {
+        "id": "idea-004",
+        "title": "Hebrew AI Responses",
+        "description": "Implement Hebrew AI agent responses and planning",
+        "priority": "high",
+        "status": "selected"
+      },
+      {
+        "id": "idea-005",
+        "title": "Hebrew Contract Templates",
+        "description": "Create Hebrew contract templates with eSignature support",
+        "priority": "medium",
+        "status": "selected"
+      },
+      {
+        "id": "idea-006",
+        "title": "Hebrew Future Agents",
+        "description": "Translate future agents descriptions to Hebrew",
+        "priority": "medium",
+        "status": "selected"
+      }
+    ],
+    "completed": true
+  },
+  "measurement": {
+    "phase": "in_progress",
+    "metrics": [
+      {
+        "name": "Translation Coverage",
+        "target": "100%",
+        "current": "in_progress"
+      },
+      {
+        "name": "RTL Implementation",
+        "target": "Complete",
+        "current": "in_progress"
+      },
+      {
+        "name": "MCP Integration",
+        "target": "100%",
+        "current": "in_progress"
+      },
+      {
+        "name": "User Experience",
+        "target": "Native Hebrew",
+        "current": "in_progress"
+      }
+    ],
+    "completed": false
+  },
+  "analysis": {
+    "phase": "completed",
+    "analysisAreas": [
+      "Current interface analysis",
+      "Hebrew translation requirements",
+      "RTL layout implementation",
+      "MCP server integration points",
+      "User experience optimization"
+    ],
+    "completed": true
+  },
+  "deployment": {
+    "phase": "pending",
+    "steps": [
+      "Create Hebrew translation database",
+      "Implement RTL CSS support",
+      "Update customer portal with Hebrew",
+      "Create Hebrew Typeform",
+      "Implement Hebrew AI responses",
+      "Create Hebrew contracts",
+      "Translate future agents",
+      "Deploy complete Hebrew system"
+    ],
+    "completed": false
+  },
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Create Hebrew Translation Database",
+      "description": "Create comprehensive Hebrew translations for all interface elements",
+      "status": "in_progress",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "15 minutes",
+      "dependencies": [],
+      "progress": 75
+    },
+    {
+      "id": "task-002",
+      "title": "Implement RTL Support",
+      "description": "Implement Right-to-Left layout support for Hebrew text",
+      "status": "in_progress",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "10 minutes",
+      "dependencies": ["task-001"],
+      "progress": 60
+    },
+    {
+      "id": "task-003",
+      "title": "Translate Customer Portal",
+      "description": "Update customer portal with Hebrew translations and RTL support",
+      "status": "pending",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "20 minutes",
+      "dependencies": ["task-001", "task-002"],
+      "progress": 0
+    },
+    {
+      "id": "task-004",
+      "title": "Create Hebrew Typeform",
+      "description": "Create Typeform with Hebrew questions and RTL support",
+      "status": "pending",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "15 minutes",
+      "dependencies": ["task-001"],
+      "progress": 0
+    },
+    {
+      "id": "task-005",
+      "title": "Implement Hebrew AI Responses",
+      "description": "Implement Hebrew AI agent responses and planning",
+      "status": "pending",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "15 minutes",
+      "dependencies": ["task-001"],
+      "progress": 0
+    },
+    {
+      "id": "task-006",
+      "title": "Create Hebrew Contracts",
+      "description": "Create Hebrew contract templates with eSignature support",
+      "status": "pending",
+      "priority": "medium",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "10 minutes",
+      "dependencies": ["task-001"],
+      "progress": 0
+    },
+    {
+      "id": "task-007",
+      "title": "Translate Future Agents",
+      "description": "Translate future agents descriptions to Hebrew",
+      "status": "pending",
+      "priority": "medium",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "10 minutes",
+      "dependencies": ["task-001"],
+      "progress": 0
+    },
+    {
+      "id": "task-008",
+      "title": "Deploy Hebrew System",
+      "description": "Deploy complete Hebrew translation system",
+      "status": "pending",
+      "priority": "high",
+      "assignedTo": "MCP-System",
+      "estimatedTime": "5 minutes",
+      "dependencies": ["task-003", "task-004", "task-005", "task-006", "task-007"],
+      "progress": 0
+    }
+  ],
+  "progress": {
+    "overall": 25,
+    "brainstorming": 100,
+    "measurement": 50,
+    "analysis": 100,
+    "deployment": 0
+  },
+  "notes": [
+    "Shelly doesn't know English well - Hebrew translation is critical",
+    "Must implement RTL (Right-to-Left) support for proper Hebrew display",
+    "Using MCP-First approach for faster implementation",
+    "Must be ready for tomorrow's delivery",
+    "All interface elements need Hebrew translation",
+    "Future agents should be in Hebrew for better marketing"
+  ]
+}

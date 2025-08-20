@@ -3,17 +3,19 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IOrganization extends Document {
   name: string;
   slug: string;
-  brandTheme: {
-    primaryColor: string;
-    secondaryColor: string;
-    logo?: string;
-    favicon?: string;
+  domain?: string;
+  settings: {
+    timezone: string;
+    currency: string;
+    language: string;
+    features: string[];
   };
-  stripeCustomerId?: string;
-  qbCompanyId?: string;
-  features: string[];
-  status: 'active' | 'suspended' | 'cancelled';
-  subscriptionTier: 'free' | 'starter' | 'growth' | 'scale';
+  billing: {
+    plan: 'basic' | 'premium' | 'enterprise';
+    status: 'active' | 'suspended' | 'cancelled';
+    nextBillingDate?: Date;
+    totalSpent: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,53 +29,60 @@ const OrganizationSchema = new Schema<IOrganization>({
   slug: {
     type: String,
     required: true,
+    unique: true,
     lowercase: true,
     trim: true,
   },
-  brandTheme: {
-    primaryColor: {
-      type: String,
-      default: '#2F6A92',
-    },
-    secondaryColor: {
-      type: String,
-      default: '#FF6536',
-    },
-    logo: String,
-    favicon: String,
+  domain: {
+    type: String,
+    trim: true,
   },
-  stripeCustomerId: String,
-  qbCompanyId: String,
-  features: [{
-    type: String,
-    enum: [
-      'basic_automation',
-      'advanced_automation',
-      'ai_insights',
-      'white_label',
-      'api_access',
-      'priority_support',
-      'custom_integrations',
-    ],
-  }],
-  status: {
-    type: String,
-    enum: ['active', 'suspended', 'cancelled'],
-    default: 'active',
+  settings: {
+    timezone: {
+      type: String,
+      default: 'UTC',
+    },
+    currency: {
+      type: String,
+      default: 'USD',
+    },
+    language: {
+      type: String,
+      default: 'en',
+    },
+    features: [{
+      type: String,
+      trim: true,
+    }],
   },
-  subscriptionTier: {
-    type: String,
-    enum: ['free', 'starter', 'growth', 'scale'],
-    default: 'free',
+  billing: {
+    plan: {
+      type: String,
+      enum: ['basic', 'premium', 'enterprise'],
+      default: 'basic',
+    },
+    status: {
+      type: String,
+      enum: ['active', 'suspended', 'cancelled'],
+      default: 'active',
+    },
+    nextBillingDate: {
+      type: Date,
+    },
+    totalSpent: {
+      type: Number,
+      default: 0,
+    },
   },
 }, {
   timestamps: true,
 });
 
-// Indexes for performance
-OrganizationSchema.index({ slug: 1 });
-OrganizationSchema.index({ stripeCustomerId: 1 });
-OrganizationSchema.index({ status: 1 });
-OrganizationSchema.index({ subscriptionTier: 1 });
+// Indexes
+OrganizationSchema.index({ slug: 1 }, { unique: true });
+OrganizationSchema.index({ domain: 1 });
+OrganizationSchema.index({ 'billing.status': 1 });
+OrganizationSchema.index({ 'billing.plan': 1 });
+OrganizationSchema.index({ createdAt: 1 });
 
-export default mongoose.models.Organization || mongoose.model<IOrganization>('Organization', OrganizationSchema);
+export const Organization = mongoose.models.Organization || mongoose.model<IOrganization>('Organization', OrganizationSchema);
