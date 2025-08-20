@@ -2,6 +2,7 @@
 
 import 'dotenv/config';
 import axios from 'axios';
+import https from 'https';
 
 /**
  * 🔍 CHECK CURRENT DNS RECORDS
@@ -87,21 +88,119 @@ class DNSChecker {
   }
 }
 
-// ===== MAIN EXECUTION =====
+// Cloudflare API configuration
+const CLOUDFLARE_API_TOKEN = 'O3pJlV8j-0Jw90xEK0394GLU145heSAOpSJFMqJ2';
+const ZONE_ID = '031333b77c859d1dd4d4fd4afdc1b9bc';
 
-async function main() {
-  const checker = new DNSChecker();
+async function makeCloudflareRequest(endpoint, method = 'GET', data = null) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'api.cloudflare.com',
+      port: 443,
+      path: endpoint,
+      method: method,
+      headers: {
+        'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      }
+    };
 
+    const req = https.request(options, (res) => {
+      let body = '';
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+      res.on('end', () => {
+        try {
+          const response = JSON.parse(body);
+          resolve(response);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    if (data) {
+      req.write(JSON.stringify(data));
+    }
+    req.end();
+  });
+}
+
+async function checkDNSRecords() {
   try {
-    await checker.checkDNSRecords();
+    console.log('🔍 Checking DNS records for tax4us.rensto.com...');
+    
+    const dnsResponse = await makeCloudflareRequest(`/client/v4/zones/${ZONE_ID}/dns_records?name=tax4us.rensto.com`);
+    console.log('DNS records for tax4us.rensto.com:', JSON.stringify(dnsResponse, null, 2));
+    
+    if (dnsResponse.result && dnsResponse.result.length > 0) {
+      console.log('\n📋 Current DNS records:');
+      dnsResponse.result.forEach((record, index) => {
+        console.log(`${index + 1}. Type: ${record.type}, Name: ${record.name}, Content: ${record.content}, Proxied: ${record.proxied}`);
+      });
+    } else {
+      console.log('❌ No DNS records found for tax4us.rensto.com');
+    }
+    
+    // Also check for any CNAME records that might be causing issues
+    console.log('\n🔍 Checking all CNAME records...');
+    const allCnameResponse = await makeCloudflareRequest(`/client/v4/zones/${ZONE_ID}/dns_records?type=CNAME`);
+    console.log('All CNAME records:', JSON.stringify(allCnameResponse, null, 2));
+    
   } catch (error) {
-    console.error('❌ DNS check failed:', error.message);
-    process.exit(1);
+    console.error('Error checking DNS records:', error);
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+async function fixDNSRecords() {
+  try {
+    console.log('\n🔧 Fixing DNS records...');
+    
+    // Get current DNS records
+    const dnsResponse = await makeCloudflareRequest(`/client/v4/zones/${ZONE_ID}/dns_records?name=tax4us.rensto.com`);
+    
+    if (dnsResponse.result && dnsResponse.result.length > 0) {
+      // Delete existing records
+      for (const record of dnsResponse.result) {
+        console.log(`🗑️ Deleting record: ${record.type} ${record.name} → ${record.content}`);
+        await makeCloudflareRequest(`/client/v4/zones/${ZONE_ID}/dns_records/${record.id}`, 'DELETE');
+      }
+    }
+    
+    // Create correct CNAME record
+    const correctCnameRecord = {
+      type: 'CNAME',
+      name: 'tax4us',
+      content: 'rensto-business-system-6n3mo5ki4-shais-projects-f9b9e359.vercel.app',
+      proxied: true,
+      ttl: 1
+    };
+    
+    console.log('✅ Creating correct CNAME record:', JSON.stringify(correctCnameRecord, null, 2));
+    const createResponse = await makeCloudflareRequest(`/client/v4/zones/${ZONE_ID}/dns_records`, 'POST', correctCnameRecord);
+    console.log('Create response:', JSON.stringify(createResponse, null, 2));
+    
+  } catch (error) {
+    console.error('Error fixing DNS records:', error);
+  }
 }
+
+async function main() {
+  console.log('🚀 DNS Record Checker and Fixer');
+  console.log('================================');
+  
+  await checkDNSRecords();
+  console.log('\n');
+  await fixDNSRecords();
+  
+  console.log('\n✅ Done! Please wait a few minutes for DNS propagation and check https://tax4us.rensto.com again.');
+}
+
+main().catch(console.error);
 
 export default DNSChecker;

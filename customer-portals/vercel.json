@@ -1,0 +1,18 @@
+
+# Customer Portal Project Configuration
+# This project handles all customer subdomains (*.rensto.com)
+
+export default {
+  name: "customer-portals",
+  domains: ["*.rensto.com"],
+  build: {
+    command: "npm run build",
+    output: "dist"
+  },
+  routes: [
+    {
+      src: "/(.*)",
+      dest: "/portal/[slug]"
+    }
+  ]
+}

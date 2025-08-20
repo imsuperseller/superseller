@@ -15,6 +15,30 @@
         "N8N_URL": "http://173.254.201.134:5678",
         "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
       }
+    },
+    "github": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/github-mcp-server/server.py"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "your-github-token"
+      }
+    },
+    "vercel": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/vercel-mcp-server/server.py"
+      ]
+    },
+    "mongodb": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/mongodb-mcp-server/server.py"
+      ],
+      "env": {
+        "MONGODB_URI": "your-mongodb-uri"
+      }
     }
   }
 }

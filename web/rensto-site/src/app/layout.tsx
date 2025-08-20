@@ -1,8 +1,3 @@
-// Global polyfill for server-side rendering
-if (typeof globalThis !== 'undefined' && typeof globalThis.self === 'undefined') {
-  globalThis.self = globalThis;
-}
-
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -12,12 +7,10 @@ import { RouteAwareLayout } from '@/components/RouteAwareLayout';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Rensto - Business Automation & AI Agents',
-  description:
-    'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
-  keywords:
-    'business automation, AI agents, workflow automation, n8n, artificial intelligence',
-  authors: [{ name: 'Rensto' }],
+  title: 'Rensto - Business Automation Platform',
+  description: 'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+  keywords: ['business automation', 'AI agents', 'workflow automation', 'digital transformation'],
+  authors: [{ name: 'Rensto Team' }],
   creator: 'Rensto',
   publisher: 'Rensto',
   formatDetection: {
@@ -25,10 +18,13 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  metadataBase: new URL('https://rensto.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'Rensto - Business Automation & AI Agents',
-    description:
-      'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+    title: 'Rensto - Business Automation Platform',
+    description: 'Transform your business with AI-powered automation agents.',
     url: 'https://rensto.com',
     siteName: 'Rensto',
     images: [
@@ -36,7 +32,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Rensto - Business Automation & AI Agents',
+        alt: 'Rensto Business Automation Platform',
       },
     ],
     locale: 'en_US',
@@ -44,10 +40,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rensto - Business Automation & AI Agents',
-    description:
-      'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+    title: 'Rensto - Business Automation Platform',
+    description: 'Transform your business with AI-powered automation agents.',
     images: ['/og-image.jpg'],
+    creator: '@rensto',
   },
   robots: {
     index: true,
@@ -62,18 +58,21 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
   },
 };
 
 export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#110d28' },
-  ],
+  colorScheme: 'light dark',
 };
 
 export default function RootLayout({
@@ -82,10 +81,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <Providers>
-          <RouteAwareLayout>{children}</RouteAwareLayout>
+          <RouteAwareLayout>
+            {children}
+          </RouteAwareLayout>
         </Providers>
       </body>
     </html>
