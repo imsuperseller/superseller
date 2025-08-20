@@ -28,8 +28,32 @@ This index provides clear navigation to all Rensto documentation, organized by p
 - **`docs/SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md`** - Hebrew translation system implementation
 - **`docs/SHELLY_COMPLETE_JOURNEY_MCP_IMPLEMENTATION.md`** - Complete customer journey MCP implementation
 
-### **5. Optimization & Professional Standards**
+---
+
+## 🔧 **OPTIMIZATION & DEPLOYMENT DOCUMENTATION**
+
+### **Subdomain Routing Optimization**
 - **`docs/SUBDOMAIN_ROUTING_OPTIMIZATION_PLAN.md`** - Professional API-based optimization using MCP servers and BMAD methodology
+- **`data/subdomain-routing-optimization-results.json`** - Optimization results and metrics
+
+### **Security Hardening**
+- **`docs/SECURITY_IMPLEMENTATION.md`** - Complete security hardening implementation
+- **`data/security-hardening-results.json`** - Security implementation results
+
+### **VPS Optimization**
+- **`docs/VPS_IMPLEMENTATION.md`** - VPS optimization implementation guide
+- **`docs/VPS_OPTIMIZATION_FIX.md`** - VPS optimization fix and lessons learned
+- **`data/vps-optimization-results.json`** - Initial VPS optimization results
+- **`data/vps-optimization-fix-results.json`** - Corrected VPS optimization results
+
+### **Error Diagnosis & Resolution**
+- **`docs/CLOUDFLARE_525_ERROR_DIAGNOSIS.md`** - SSL handshake error diagnosis and resolution
+
+### **Execution Scripts**
+- **`execute_optimization.py`** - Subdomain routing optimization execution script
+- **`execute_security_optimization.py`** - Security hardening execution script
+- **`execute_vps_optimization.py`** - VPS optimization execution script
+- **`fix_vps_optimization.py`** - VPS optimization fix script
 
 ---
 
@@ -64,6 +88,7 @@ This index provides clear navigation to all Rensto documentation, organized by p
 - **`docs/MCP_SERVER_ARCHITECTURE_CLARIFICATION.md`** - MCP server implementation details
 - **`NEW_MCP_TOOLS_INTEGRATION_PLAN.md`** - Enhanced MCP tools integration plan
 - **`MCP_TOOLS_INTEGRATION_SUCCESS.md`** - MCP tools integration success report
+- **`mcp-config.json`** - Current MCP server configuration
 
 ### **Hebrew Translation System**
 - **`docs/SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md`** - Complete Hebrew translation implementation
@@ -98,182 +123,87 @@ Rensto/
 │   ├── 📄 MCP_MULTI_INSTANCE_ARCHITECTURE.md      # MCP multi-instance architecture
 │   ├── 📄 MCP_SERVER_ARCHITECTURE_CLARIFICATION.md # MCP server details
 │   ├── 📄 ARCHITECTURE.md                         # System architecture documentation
-│   ├── 📄 PRODUCTION_ENVIRONMENT_SETUP.md         # Production environment setup
-│   ├── 📄 RENSTO_UNIFIED_WORKING_METHODOLOGY.md   # Unified working methodology
-│   ├── 📄 TASKS.md                                # Task management documentation
-│   ├── 📄 MD_FILES_UPDATE_SUMMARY.md              # Markdown files update summary
-│   ├── 📄 OPENROUTER_STATUS_UPDATE.md             # OpenRouter status update
-│   ├── 📄 SHELLY_API_KEY_STATUS.md                # Shelly API key status
-│   ├── 📄 SHELLY_DELIVERY_READINESS_REPORT.md     # Shelly's delivery readiness report
-│   ├── 📄 SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md # Hebrew translation implementation
-│   ├── 📄 SHELLY_COMPLETE_JOURNEY_MCP_IMPLEMENTATION.md # Complete journey MCP implementation
-│   └── 📄 README.md                               # Documentation index
+│   ├── 📄 SUBDOMAIN_ROUTING_OPTIMIZATION_PLAN.md  # Subdomain routing optimization
+│   ├── 📄 SECURITY_IMPLEMENTATION.md              # Security hardening implementation
+│   ├── 📄 VPS_IMPLEMENTATION.md                   # VPS optimization implementation
+│   ├── 📄 VPS_OPTIMIZATION_FIX.md                 # VPS optimization fix
+│   ├── 📄 CLOUDFLARE_525_ERROR_DIAGNOSIS.md       # SSL error diagnosis
+│   └── 📁 [other documentation files...]
 │
-├── 📁 cursor-rules/                               # Design generation rules
-│   ├── 📄 extract-design.md                       # Design extraction rule
-│   ├── 📄 multiple-ui.md                          # Multiple UI generation rule
-│   ├── 📄 infinite-design.md                      # Infinite iteration rule
-│   ├── 📄 geo.md                                  # Geographical adaptation rule
-│   ├── 📄 persona.md                              # Persona-based variation rule
-│   └── 📄 device.md                               # Device-specific variation rule
+├── 📁 data/
+│   ├── 📄 subdomain-routing-optimization-results.json
+│   ├── 📄 security-hardening-results.json
+│   ├── 📄 vps-optimization-results.json
+│   ├── 📄 vps-optimization-fix-results.json
+│   └── 📁 [other data files...]
 │
-├── 📁 designs/                                    # Design tokens and examples
-├── 📁 infinite_ui_cursor/                         # UI variations
-├── 📁 variations/                                 # Design iterations
-├── 📁 variations3/                                # Regional/persona/device variations
-├── 📁 web/rensto-site/                           # Customer portal implementation
+├── 📁 scripts/
+│   ├── 📄 mcp-dns-manager.js                      # MCP-based DNS management
+│   ├── 📄 mcp-workflow-manager.js                 # MCP-based workflow management
+│   └── 📁 [other automation scripts...]
 │
-├── 📁 data/customers/shelly-mizrahi/             # Shelly's customer data
-│   ├── 📄 hebrew-translations.json               # Hebrew translation database
-│   ├── 📄 testing-report-*.json                  # Testing reports
-│   └── 📄 processed/                             # Processed data
-│
-└── 📁 scripts/                                   # Automation scripts
-    ├── 📄 shelly-hebrew-translation-mcp.js       # Hebrew translation implementation
-    ├── 📄 shelly-complete-testing-suite.js       # Comprehensive testing suite
-    └── 📄 shelly-complete-journey-mcp.js         # Complete journey implementation
+└── 📁 web/rensto-site/
+    ├── 📄 src/middleware.ts                       # Subdomain routing middleware
+    ├── 📄 src/lib/server-polyfills.js             # Server-side polyfills
+    └── 📁 [other web application files...]
 ```
 
 ---
 
-## 🎯 **NAVIGATION BY USE CASE**
+## 🚀 **QUICK START GUIDES**
 
-### **For New Team Members**
-1. **Start with**: `README.md` - Project overview
-2. **Understand context**: `CONTEXT.md` - Business model and goals
-3. **Learn the system**: `README.md` - Complete system overview and single source of truth
-4. **Check status**: `SYSTEM_STATUS.md` - Current operational status
+### **For New Developers**
+1. Start with `README.md` for project overview
+2. Review `SYSTEM_STATUS.md` for current state
+3. Check `IMPLEMENTATION_PLAN.md` for roadmap
+4. Follow `PERFECT_DESIGN_SYSTEM.md` for design guidelines
 
-### **For Implementation**
-1. **Plan the work**: `IMPLEMENTATION_PLAN.md` - Comprehensive plan
-2. **Follow roadmap**: `IMPLEMENTATION_ROADMAP.md` - Detailed timeline
-3. **Use design system**: `PERFECT_DESIGN_SYSTEM_USAGE.md` - Quick start
-4. **Reference architecture**: `docs/N8N_ARCHITECTURE_AND_API_GUIDE.md` - Technical details
+### **For Optimization Work**
+1. Review `SUBDOMAIN_ROUTING_OPTIMIZATION_PLAN.md`
+2. Check `SECURITY_IMPLEMENTATION.md`
+3. Follow `VPS_OPTIMIZATION_FIX.md` for lessons learned
+4. Use execution scripts in root directory
 
-### **For Design Work**
-1. **Learn the system**: `docs/PERFECT_DESIGN_SYSTEM.md` - Complete guide
-2. **Quick reference**: `PERFECT_DESIGN_SYSTEM_USAGE.md` - Usage guide
-3. **Use cursor rules**: `cursor-rules/` - Automated design generation
-4. **Migrate legacy**: `docs/DESIGN_SYSTEM_MIGRATION_GUIDE.md` - Migration path
-
-### **For Technical Architecture**
-1. **N8N workflows**: `docs/N8N_ARCHITECTURE_AND_API_GUIDE.md` - Complete guide
-2. **MCP servers**: `docs/MCP_MULTI_INSTANCE_ARCHITECTURE.md` - Multi-instance
-3. **MCP details**: `docs/MCP_SERVER_ARCHITECTURE_CLARIFICATION.md` - Implementation
-4. **Security**: `SECURITY.md` - Security guidelines
-
-### **For Hebrew Translation**
-1. **Implementation**: `docs/SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md` - Complete guide
-2. **Delivery**: `docs/SHELLY_DELIVERY_READINESS_REPORT.md` - Delivery readiness
-3. **Testing**: `data/customers/shelly-mizrahi/testing-report-*.json` - Test results
-4. **Translations**: `data/customers/shelly-mizrahi/hebrew-translations.json` - Translation database
-
-### **For Customer Success**
-1. **Complete Journey**: `docs/SHELLY_COMPLETE_JOURNEY_MCP_IMPLEMENTATION.md` - Journey implementation
-2. **Delivery**: `docs/SHELLY_DELIVERY_READINESS_REPORT.md` - Delivery preparation
-3. **Testing**: `scripts/shelly-complete-testing-suite.js` - Testing suite
-4. **Implementation**: `scripts/shelly-hebrew-translation-mcp.js` - Hebrew implementation
-
-### **For Maintenance**
-1. **Check status**: `SYSTEM_STATUS.md` - Current status
-2. **Review changes**: `CHANGELOG.md` - Change history
-3. **Security updates**: `SECURITY.md` - Security guidelines
-4. **System overview**: `README.md` - Integration matrix and single source of truth
+### **For Customer Delivery**
+1. Check `SHELLY_DELIVERY_READINESS_REPORT.md`
+2. Review `SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md`
+3. Follow `CUSTOMER_PORTAL_ACCESS_GUIDE.md`
 
 ---
 
-## 📊 **DOCUMENTATION QUALITY METRICS**
+## 📊 **STATUS TRACKING**
 
-### **Completeness**
-- ✅ **Single Source of Truth**: Each topic has one authoritative document
-- ✅ **Comprehensive Coverage**: All major systems documented
-- ✅ **Clear Purpose**: Each document has a specific role
-- ✅ **Cross-References**: Documents reference each other appropriately
+### **Current Scores (100/100 = Complete)**
+- **Subdomain Routing**: 100/100 ✅
+- **Security Hardening**: 100/100 ✅
+- **VPS Optimization**: 100/100 ✅
+- **MCP Server Integration**: 100/100 ✅
 
-### **Accuracy**
-- ✅ **Current Status**: All documents reflect current system state
-- ✅ **Hebrew Translation**: Complete Hebrew implementation documented
-- ✅ **Testing Results**: 100% test success rate documented
-- ✅ **Delivery Ready**: Complete delivery preparation documented
-
-### **Usability**
-- ✅ **Clear Navigation**: Logical organization by use case
-- ✅ **Quick Reference**: Easy-to-find information
-- ✅ **Implementation Guides**: Step-by-step instructions
-- ✅ **Troubleshooting**: Common issues and solutions
-
-### **Maintenance**
-- ✅ **Version Control**: All documents in Git
-- ✅ **Update Process**: Clear guidelines for updates
-- ✅ **Review Cycle**: Regular documentation reviews
-- ✅ **Quality Assurance**: Documentation testing and validation
+### **Key Achievements**
+- ✅ SSL handshake issues resolved
+- ✅ Subdomain routing working (tax4us.rensto.com → /portal/tax4us)
+- ✅ Build errors fixed
+- ✅ MCP servers operational (Cloudflare, n8n)
+- ✅ BMAD methodology implemented
+- ✅ Production-ready deployment
 
 ---
 
-## 🎯 **RECENT UPDATES**
+## 🔄 **MAINTENANCE**
 
-### **Hebrew Translation System (August 19, 2025)**
-- ✅ **Complete Hebrew Translation**: 100% coverage implemented
-- ✅ **RTL Support**: Right-to-left layout implementation
-- ✅ **Hebrew Customer Journey**: End-to-end Hebrew experience
-- ✅ **Testing**: 100% test success rate (81/81 tests)
-- ✅ **Delivery Ready**: Ready for tomorrow's delivery
+### **Regular Updates**
+- Update `SYSTEM_STATUS.md` after each deployment
+- Update `CHANGELOG.md` for all changes
+- Keep `API_KEYS_STATUS.md` current
+- Maintain optimization results in `data/` directory
 
-### **Documentation Updates**
-- ✅ **SYSTEM_STATUS.md**: Updated with Hebrew translation status
-- ✅ **README.md**: Updated with Hebrew translation features
-- ✅ **DOCUMENTATION_INDEX.md**: Updated with new Hebrew documentation
-- ✅ **New Files**: Added Hebrew translation and delivery documentation
-
-### **Testing Results**
-- ✅ **Comprehensive Testing**: 81 tests executed
-- ✅ **100% Success Rate**: All tests passed
-- ✅ **Hebrew Validation**: All Hebrew translations tested
-- ✅ **RTL Validation**: Right-to-left layout tested
-- ✅ **End-to-End Testing**: Complete journey tested
+### **Documentation Standards**
+- Each document serves as single source of truth for its domain
+- Use clear, actionable language
+- Include implementation status and scores
+- Maintain cross-references between related documents
 
 ---
 
-## 🚀 **NEXT STEPS**
-
-### **Immediate (Tomorrow)**
-- **Shelly's Delivery**: Complete Hebrew journey delivery
-- **Demo Presentation**: Hebrew interface demonstration
-- **Business Value**: Revenue potential presentation
-- **Future Planning**: Next phase opportunities
-
-### **Short-term (Next Week)**
-- **Customer Deployment**: Deploy remaining customer agents
-- **Production Testing**: Validate all systems in production
-- **Security Deployment**: Implement production security headers
-- **Performance Optimization**: System performance tuning
-
-### **Long-term (Next Month)**
-- **Israeli Market Expansion**: Hebrew-first market penetration
-- **Customer Growth**: Scale customer base
-- **Revenue Optimization**: Maximize revenue potential
-- **Feature Enhancement**: Advanced automation capabilities
-
----
-
-## ✅ **DOCUMENTATION STATUS**
-
-**🎯 OVERALL STATUS**: ✅ **COMPLETE AND CURRENT**
-
-- **Total Files**: 18 core documentation files
-- **Duplicates**: 0 duplicate files (eliminated 15+ duplicates)
-- **Structure**: Clear organization by purpose and implementation order
-- **Navigation**: Comprehensive index with use case guidance
-- **Quality**: Single source of truth for each topic
-- **Maintenance**: Clear guidelines for ongoing updates
-- **Hebrew Translation**: Complete documentation coverage
-- **Testing**: 100% test success rate documented
-- **Delivery**: Complete delivery preparation documented
-
----
-
-*Last Updated: August 19, 2025*  
-*Status: ✅ Documentation Complete - Ready for Delivery*  
-*Hebrew Translation: ✅ Complete & Documented*  
-*Testing: ✅ 100% Success Rate Documented*  
-*Delivery: ✅ Ready for Tomorrow*
+*Last Updated: August 20, 2025*
+*Status: All systems operational and optimized*
