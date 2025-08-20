@@ -1,112 +1,219 @@
-import { io, Socket } from 'socket.io-client';
+// Simple real-time analytics for client-side only
+export interface AnalyticsEvent {
+  type: string;
+  data: any;
+  timestamp: number;
+  userId?: string;
+  organizationId?: string;
+}
 
-// Real-time Analytics System
+// Simple analytics client
 export class RealTimeAnalytics {
-  private socket: Socket | null = null;
-  private callbacks: Map<string, ((data: unknown) => void)[]> = new Map();
+  private ws: WebSocket | null = null;
+  private url: string;
+  private token: string;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
 
-  constructor() {
-    this.initializeWebSocket();
+  constructor(url: string, token: string) {
+    this.url = url;
+    this.token = token;
   }
 
-  private initializeWebSocket() {
-    // Connect to WebSocket server for real-time updates
-    this.socket = io(
-      process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:3001'
-    );
+  connect(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.ws = new WebSocket(`${this.url}?token=${this.token}`);
 
-    this.socket.on('connect', () => {
-      console.log('🔌 Connected to real-time analytics');
-    });
+        this.ws.onopen = () => {
+          console.log('Analytics WebSocket connected');
+          this.reconnectAttempts = 0;
+          resolve();
+        };
 
-    this.socket.on('facebook-scraping-progress', data => {
-      this.triggerCallbacks('scraping-progress', data);
-    });
+        this.ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            this.handleAnalyticsEvent(data);
+          } catch (error) {
+            console.error('Failed to parse analytics event:', error);
+          }
+        };
 
-    this.socket.on('custom-audience-created', data => {
-      this.triggerCallbacks('audience-created', data);
-    });
+        this.ws.onclose = () => {
+          console.log('Analytics WebSocket disconnected');
+          if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.scheduleReconnect();
+          }
+        };
 
-    this.socket.on('lead-extracted', data => {
-      this.triggerCallbacks('lead-extracted', data);
-    });
-
-    this.socket.on('agent-status-update', data => {
-      this.triggerCallbacks('agent-status', data);
+        this.ws.onerror = (error) => {
+          console.error('Analytics WebSocket error:', error);
+          reject(error);
+        };
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
-  private triggerCallbacks(event: string, data: unknown) {
-    const callbacks = this.callbacks.get(event) || [];
-    callbacks.forEach(callback => callback(data));
-  }
-
-  public on(event: string, callback: (data: unknown) => void) {
-    if (!this.callbacks.has(event)) {
-      this.callbacks.set(event, []);
+  private handleAnalyticsEvent(event: AnalyticsEvent) {
+    console.log('Analytics event received:', event);
+    // Handle different event types
+    switch (event.type) {
+      case 'page_view':
+        this.trackPageView(event.data);
+        break;
+      case 'user_action':
+        this.trackUserAction(event.data);
+        break;
+      case 'system_event':
+        this.trackSystemEvent(event.data);
+        break;
+      default:
+        console.log('Unknown analytics event type:', event.type);
     }
-    this.callbacks.get(event)!.push(callback);
   }
 
-  public off(event: string, callback: (data: unknown) => void) {
-    const callbacks = this.callbacks.get(event) || [];
-    const index = callbacks.indexOf(callback);
-    if (index > -1) {
-      callbacks.splice(index, 1);
+  private trackPageView(data: any) {
+    // Track page view analytics
+    console.log('Page view tracked:', data);
+  }
+
+  private trackUserAction(data: any) {
+    // Track user action analytics
+    console.log('User action tracked:', data);
+  }
+
+  private trackSystemEvent(data: any) {
+    // Track system event analytics
+    console.log('System event tracked:', data);
+  }
+
+  private scheduleReconnect() {
+    setTimeout(() => {
+      this.reconnectAttempts++;
+      console.log(`Attempting to reconnect analytics (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      this.connect().catch(error => {
+        console.error('Analytics reconnection failed:', error);
+      });
+    }, 1000 * Math.pow(2, this.reconnectAttempts));
+  }
+
+  sendEvent(type: string, data: any) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      const event: AnalyticsEvent = {
+        type,
+        data,
+        timestamp: Date.now()
+      };
+      this.ws.send(JSON.stringify(event));
+    } else {
+      console.warn('Analytics WebSocket is not connected');
     }
   }
 
-  public disconnect() {
-    if (this.socket) {
-      this.socket.disconnect();
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
     }
+  }
+
+  isConnected(): boolean {
+    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
   }
 }
 
-// Real API Integration Functions
-export class FacebookAnalyticsAPI {
-  private static async makeRequest(
-    endpoint: string,
-    options: RequestInit = {}
-  ) {
-    const response = await fetch(`/api/analytics/${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
+// AI Analysis Engine
+export class AIAnalysisEngine {
+  static async analyzeLeadQuality(leads: any[]) {
+    // Analyze lead quality based on profile completeness, engagement, etc.
+    const qualityScores = leads.map(lead => {
+      let score = 0;
+
+      // Profile completeness (30% weight)
+      if (lead.email) score += 0.3;
+      if (lead.phone) score += 0.2;
+      if (lead.location) score += 0.1;
+
+      // Engagement indicators (40% weight)
+      if (lead.postsCount > 10) score += 0.2;
+      if (lead.friendsCount > 100) score += 0.1;
+      if (lead.lastActive < 30) score += 0.1; // Active in last 30 days
+
+      // Relevance indicators (30% weight)
+      if (lead.interests?.includes('jewish')) score += 0.15;
+      if (lead.interests?.includes('food')) score += 0.15;
+
+      return {
+        ...lead,
+        qualityScore: Math.round(score * 100) / 100,
+        qualityLevel: score > 0.7 ? 'high' : score > 0.4 ? 'medium' : 'low',
+      };
     });
 
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`);
+    return qualityScores;
+  }
+
+  static async predictROI(customAudience: any, historicalData: any[]) {
+    // Predict ROI based on historical performance
+    const avgEngagementRate = 0.08; // 8% average engagement
+    const avgConversionRate = 0.02; // 2% average conversion
+    const avgCustomerValue = 150; // $150 average customer value
+
+    const predictedEngagements = customAudience.size * avgEngagementRate;
+    const predictedConversions = predictedEngagements * avgConversionRate;
+    const predictedRevenue = predictedConversions * avgCustomerValue;
+
+    return {
+      predictedEngagements: Math.round(predictedEngagements),
+      predictedConversions: Math.round(predictedConversions),
+      predictedRevenue: Math.round(predictedRevenue),
+      roi: Math.round((predictedRevenue / customAudience.cost) * 100) / 100,
+    };
+  }
+
+  static async generateInsights(analyticsData: any) {
+    // Generate AI-powered insights
+    const insights = [];
+
+    // Performance insights
+    if (analyticsData.successRate < 0.9) {
+      insights.push({
+        type: 'performance',
+        title: 'Low Success Rate Detected',
+        description: `Your scraping success rate is ${(
+          analyticsData.successRate * 100
+        ).toFixed(1)}%. Consider optimizing group selection or timing.`,
+        impact: 'high',
+        action: 'Optimize Scraping',
+      });
     }
 
-    return response.json();
-  }
+    // Cost optimization insights
+    if (analyticsData.costPerLead > 0.15) {
+      insights.push({
+        type: 'cost',
+        title: 'High Cost per Lead',
+        description: `Your cost per lead is $${analyticsData.costPerLead}. Consider targeting smaller, more focused groups.`,
+        impact: 'medium',
+        action: 'Review Targeting',
+      });
+    }
 
-  // Get real Facebook scraping analytics
-  static async getScrapingAnalytics(organizationId: string) {
-    return this.makeRequest(`facebook-scraping/${organizationId}`);
-  }
+    // ROI insights
+    if (analyticsData.roi < 2) {
+      insights.push({
+        type: 'roi',
+        title: 'Low ROI Detected',
+        description: `Your ROI is ${analyticsData.roi}x. Consider improving lead quality or audience targeting.`,
+        impact: 'high',
+        action: 'Improve Targeting',
+      });
+    }
 
-  // Get real custom audience data
-  static async getCustomAudiences(organizationId: string) {
-    return this.makeRequest(`custom-audiences/${organizationId}`);
-  }
-
-  // Get real lead quality metrics
-  static async getLeadQualityMetrics(organizationId: string) {
-    return this.makeRequest(`lead-quality/${organizationId}`);
-  }
-
-  // Get real performance metrics
-  static async getPerformanceMetrics(organizationId: string) {
-    return this.makeRequest(`performance/${organizationId}`);
-  }
-
-  // Get real AI insights
-  static async getAIInsights(organizationId: string) {
-    return this.makeRequest(`ai-insights/${organizationId}`);
+    return insights;
   }
 }
 
@@ -171,146 +278,54 @@ export class SmartPricingAgent {
   }
 }
 
-// AI/ML Analysis Models
-export class AIAnalysisEngine {
-  static async analyzeLeadQuality(leads: unknown[]) {
-    // Analyze lead quality based on profile completeness, engagement, etc.
-    const qualityScores = leads.map(lead => {
-      let score = 0;
-
-      // Profile completeness (30% weight)
-      if (lead.email) score += 0.3;
-      if (lead.phone) score += 0.2;
-      if (lead.location) score += 0.1;
-
-      // Engagement indicators (40% weight)
-      if (lead.postsCount > 10) score += 0.2;
-      if (lead.friendsCount > 100) score += 0.1;
-      if (lead.lastActive < 30) score += 0.1; // Active in last 30 days
-
-      // Relevance indicators (30% weight)
-      if (lead.interests?.includes('jewish')) score += 0.15;
-      if (lead.interests?.includes('food')) score += 0.15;
-
-      return {
-        ...lead,
-        qualityScore: Math.round(score * 100) / 100,
-        qualityLevel: score > 0.7 ? 'high' : score > 0.4 ? 'medium' : 'low',
-      };
+// Facebook Analytics API
+export class FacebookAnalyticsAPI {
+  private static async makeRequest(
+    endpoint: string,
+    options: RequestInit = {}
+  ) {
+    const response = await fetch(`/api/analytics/${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
     });
 
-    return qualityScores;
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.statusText}`);
+    }
+
+    return response.json();
   }
 
-  static async predictROI(customAudience: unknown, historicalData: unknown[]) {
-    // Predict ROI based on historical performance
-    const avgEngagementRate = 0.08; // 8% average engagement
-    const avgConversionRate = 0.02; // 2% average conversion
-    const avgCustomerValue = 150; // $150 average customer value
-
-    const predictedEngagements = customAudience.size * avgEngagementRate;
-    const predictedConversions = predictedEngagements * avgConversionRate;
-    const predictedRevenue = predictedConversions * avgCustomerValue;
-
-    return {
-      predictedEngagements: Math.round(predictedEngagements),
-      predictedConversions: Math.round(predictedConversions),
-      predictedRevenue: Math.round(predictedRevenue),
-      roi: Math.round((predictedRevenue / customAudience.cost) * 100) / 100,
-    };
+  // Get real Facebook scraping analytics
+  static async getScrapingAnalytics(organizationId: string) {
+    return this.makeRequest(`facebook-scraping/${organizationId}`);
   }
 
-  static async generateInsights(analyticsData: unknown) {
-    // Generate AI-powered insights
-    const insights = [];
+  // Get real custom audience data
+  static async getCustomAudiences(organizationId: string) {
+    return this.makeRequest(`custom-audiences/${organizationId}`);
+  }
 
-    // Performance insights
-    if (analyticsData.successRate < 0.9) {
-      insights.push({
-        type: 'performance',
-        title: 'Low Success Rate Detected',
-        description: `Your scraping success rate is ${(
-          analyticsData.successRate * 100
-        ).toFixed(1)}%. Consider optimizing group selection or timing.`,
-        impact: 'high',
-        action: 'Optimize Scraping',
-      });
-    }
+  // Get real lead quality metrics
+  static async getLeadQualityMetrics(organizationId: string) {
+    return this.makeRequest(`lead-quality/${organizationId}`);
+  }
 
-    // Cost optimization insights
-    if (analyticsData.costPerLead > 0.15) {
-      insights.push({
-        type: 'cost',
-        title: 'High Cost per Lead',
-        description: `Your cost per lead is $${analyticsData.costPerLead}. Consider targeting smaller, more focused groups.`,
-        impact: 'medium',
-        action: 'Review Targeting',
-      });
-    }
+  // Get real performance metrics
+  static async getPerformanceMetrics(organizationId: string) {
+    return this.makeRequest(`performance/${organizationId}`);
+  }
 
-    // ROI insights
-    if (analyticsData.roi < 2) {
-      insights.push({
-        type: 'roi',
-        title: 'Low ROI Detected',
-        description: `Your ROI is ${analyticsData.roi}x. Consider improving lead quality or audience targeting.`,
-        impact: 'high',
-        action: 'Improve Targeting',
-      });
-    }
-
-    return insights;
+  // Get real AI insights
+  static async getAIInsights(organizationId: string) {
+    return this.makeRequest(`ai-insights/${organizationId}`);
   }
 }
 
-// Data Storage and Retention
-export class DataRetentionManager {
-  private static readonly RETENTION_POLICIES = {
-    leads: 90, // Keep leads for 90 days
-    analytics: 365, // Keep analytics for 1 year
-    customAudiences: 730, // Keep audience data for 2 years
-    logs: 30, // Keep logs for 30 days
-  };
-
-  static async cleanupOldData() {
-    const now = new Date();
-
-    // Clean up old leads
-    const leadsCutoff = new Date(
-      now.getTime() - this.RETENTION_POLICIES.leads * 24 * 60 * 60 * 1000
-    );
-    // Implementation would delete old leads from database
-
-    // Clean up old analytics
-    const analyticsCutoff = new Date(
-      now.getTime() - this.RETENTION_POLICIES.analytics * 24 * 60 * 60 * 1000
-    );
-    // Implementation would archive old analytics
-
-    console.log('🧹 Data cleanup completed');
-  }
-
-  static async storeAnalyticsData(
-    data: unknown,
-    type: 'platform' | 'customer',
-    organizationId?: string
-  ) {
-    const storageData = {
-      ...data,
-      type,
-      organizationId,
-      timestamp: new Date(),
-    };
-
-    // Store in appropriate database collection
-    if (type === 'platform') {
-      // Store in platform analytics collection
-      console.log('📊 Storing platform analytics data');
-    } else {
-      // Store in customer-specific collection
-      console.log(`📊 Storing customer analytics data for ${organizationId}`);
-    }
-
-    return storageData;
-  }
-}
+// Export analytics client factory
+export const createAnalyticsClient = (url: string, token: string) => {
+  return new RealTimeAnalytics(url, token);
+};

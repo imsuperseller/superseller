@@ -19,8 +19,8 @@ class ProductionDeployment {
                 'ben-ginati': {
                     name: 'Ben Ginati',
                     company: 'Tax4Us',
-                    subdomain: 'ben-ginati.rensto.com',
-                    portalUrl: 'https://ben-ginati.rensto.com'
+                    subdomain: 'tax4us.rensto.com',
+                    portalUrl: 'https://tax4us.rensto.com'
                 },
                 'shelly-mizrahi': {
                     name: 'Shelly Mizrahi',
@@ -68,7 +68,7 @@ class ProductionDeployment {
             customDomains: [
                 'rensto.com',
                 'www.rensto.com',
-                'ben-ginati.rensto.com',
+                'tax4us.rensto.com',
                 'shelly-mizrahi.rensto.com'
             ]
         };
@@ -330,7 +330,7 @@ class ProductionDeployment {
             ],
             urls: {
                 'main-domain': 'https://rensto.com',
-                'ben-ginati': 'https://ben-ginati.rensto.com',
+                'tax4us': 'https://tax4us.rensto.com',
                 'shelly-mizrahi': 'https://shelly-mizrahi.rensto.com'
             },
             support: {

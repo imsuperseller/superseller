@@ -28,7 +28,7 @@ class DNSChecker {
 
   async checkDNSRecords() {
     console.log('🔍 Checking current DNS records...\n');
-    
+
     try {
       const response = await axios.get(`${this.config.baseUrl}/zones/${this.config.zoneId}/dns_records`, {
         headers: this.getHeaders()
@@ -36,11 +36,12 @@ class DNSChecker {
 
       if (response.data.success) {
         const allRecords = response.data.result;
-        
+
         // Filter for customer and relevant records
-        const relevantRecords = allRecords.filter(record => 
-          record.name === 'ben-ginati.rensto.com' || 
-          record.name === 'shelly-mizrahi.rensto.com' || 
+        const relevantRecords = allRecords.filter(record =>
+
+          record.name === 'shelly-mizrahi.rensto.com' ||
+          record.name === 'tax4us.rensto.com' ||
           record.name === 'www.rensto.com' ||
           record.name === 'test-customer.rensto.com' ||
           record.name === 'rensto.com'
@@ -48,7 +49,7 @@ class DNSChecker {
 
         console.log('📋 Current DNS Records:');
         console.log('========================');
-        
+
         relevantRecords.forEach(record => {
           console.log(`\n📝 ${record.name}`);
           console.log(`   Type: ${record.type}`);
@@ -59,17 +60,18 @@ class DNSChecker {
         });
 
         console.log(`\n✅ Found ${relevantRecords.length} relevant DNS records`);
-        
+
         // Check if records are pointing to correct targets
         console.log('\n🎯 Verification:');
-        const customerRecords = relevantRecords.filter(r => 
-          r.name.includes('ben-ginati') || 
-          r.name.includes('shelly-mizrahi') || 
+        const customerRecords = relevantRecords.filter(r =>
+          r.name.includes('ben-ginati') ||
+          r.name.includes('shelly-mizrahi') ||
+          r.name.includes('tax4us') ||
           r.name.includes('test-customer')
         );
-        
+
         customerRecords.forEach(record => {
-          const isCorrect = record.content === 'my-website-shais-projects-f9b9e359.vercel.app';
+          const isCorrect = record.content === 'rensto-business-system-jj6yl2a9v-shais-projects-f9b9e359.vercel.app';
           const status = isCorrect ? '✅' : '❌';
           console.log(`   ${status} ${record.name} → ${record.content}`);
         });
@@ -89,7 +91,7 @@ class DNSChecker {
 
 async function main() {
   const checker = new DNSChecker();
-  
+
   try {
     await checker.checkDNSRecords();
   } catch (error) {

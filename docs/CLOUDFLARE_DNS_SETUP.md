@@ -62,7 +62,7 @@ After adding these DNS records, you'll have:
 |-----------|-----|---------|--------|
 | **Main Domain** | `https://rensto.com` | Main website | ✅ Ready |
 | **WWW** | `https://www.rensto.com` | Main website | ✅ Ready |
-| **Ben's Portal** | `https://ben-ginati.rensto.com` | Customer portal | ⏳ Add DNS |
+| **Tax4Us Portal** | `https://tax4us.rensto.com` | Customer portal | ⏳ Add DNS |
 | **Shelly's Portal** | `https://shelly-mizrahi.rensto.com` | Customer portal | ⏳ Add DNS |
 | **n8n Interface** | `https://n8n.rensto.com` | n8n admin | ✅ Already working |
 | **API** | `https://api.rensto.com` | API endpoints | ✅ Already working |
@@ -99,18 +99,18 @@ After adding these DNS records, you'll have:
 ### **Test DNS Resolution**
 ```bash
 # Test from your computer
-nslookup ben-ginati.rensto.com
+nslookup tax4us.rensto.com
 nslookup shelly-mizrahi.rensto.com
 
 # Test from external service
-dig ben-ginati.rensto.com
+dig tax4us.rensto.com
 dig shelly-mizrahi.rensto.com
 ```
 
 ### **Test Website Access**
 ```bash
 # Test customer portals
-curl -I https://ben-ginati.rensto.com
+curl -I https://tax4us.rensto.com
 curl -I https://shelly-mizrahi.rensto.com
 
 # Test main website

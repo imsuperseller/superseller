@@ -24,7 +24,7 @@ class GoDaddyDNSConfiguration {
       'ben-ginati': {
         name: 'Ben Ginati',
         company: 'Tax4Us',
-        subdomain: 'ben-ginati.rensto.com',
+        subdomain: 'tax4us.rensto.com',
         description: 'Tax services automation portal'
       },
       'shelly-mizrahi': {
@@ -350,7 +350,7 @@ class GoDaddyDNSConfiguration {
         'Set up monitoring and alerting'
       ],
       urls: {
-        'ben-ginati': 'https://ben-ginati.rensto.com',
+        'tax4us': 'https://tax4us.rensto.com',
         'shelly-mizrahi': 'https://shelly-mizrahi.rensto.com'
       }
     };
@@ -387,7 +387,7 @@ async function main() {
       
       console.log('\n🎉 GoDaddy DNS configuration completed!');
       console.log('📋 Customer portal URLs:');
-      console.log('   - Ben Ginati: https://ben-ginati.rensto.com');
+              console.log('   - Tax4Us: https://tax4us.rensto.com');
       console.log('   - Shelly Mizrahi: https://shelly-mizrahi.rensto.com');
       console.log('📊 Deployment report: data/dns-configuration/deployment-report.json');
       

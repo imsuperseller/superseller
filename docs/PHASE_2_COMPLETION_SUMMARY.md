@@ -120,7 +120,7 @@ docs/
    - Subdomain creation permissions
 
 2. **Customer Subdomain Setup**
-   - `ben-ginati.rensto.com`
+   - `tax4us.rensto.com`
    - `shelly-mizrahi.rensto.com`
    - Wildcard SSL certificate (*.rensto.com)
 

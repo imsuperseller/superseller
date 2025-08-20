@@ -270,3 +270,4 @@ example-*.js
 README-*.md
 package-*.json
 tsconfig-*.json
+.vercel

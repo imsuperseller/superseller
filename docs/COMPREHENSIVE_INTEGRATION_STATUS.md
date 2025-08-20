@@ -89,7 +89,7 @@ Based on our comprehensive analysis, here's the complete status of all integrati
 ```javascript
 // Automatic subdomain creation for each customer
 const customerSubdomains = {
-  'ben-ginati': 'ben-ginati.rensto.com',
+  'tax4us': 'tax4us.rensto.com',
   'shelly-mizrahi': 'shelly-mizrahi.rensto.com',
   'new-customer': 'new-customer.rensto.com'
 };

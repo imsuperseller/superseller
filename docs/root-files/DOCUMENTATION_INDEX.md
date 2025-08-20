@@ -28,6 +28,9 @@ This index provides clear navigation to all Rensto documentation, organized by p
 - **`docs/SHELLY_HEBREW_TRANSLATION_SYSTEM_IMPLEMENTATION.md`** - Hebrew translation system implementation
 - **`docs/SHELLY_COMPLETE_JOURNEY_MCP_IMPLEMENTATION.md`** - Complete customer journey MCP implementation
 
+### **5. Optimization & Professional Standards**
+- **`docs/SUBDOMAIN_ROUTING_OPTIMIZATION_PLAN.md`** - Professional API-based optimization using MCP servers and BMAD methodology
+
 ---
 
 ## 🎨 **DESIGN SYSTEM DOCUMENTATION**

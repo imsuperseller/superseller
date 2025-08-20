@@ -34,7 +34,7 @@ Phase 3 deployment preparation is **complete**! We've successfully prepared all 
 - **Custom Domains**: All subdomains configured
 
 #### **✅ Customer Portal URLs**
-- **Ben Ginati**: `https://ben-ginati.rensto.com`
+- **Tax4Us**: `https://tax4us.rensto.com`
 - **Shelly Mizrahi**: `https://shelly-mizrahi.rensto.com`
 - **Main Domain**: `https://rensto.com`
 
@@ -192,7 +192,7 @@ data/dns-configuration/
 ### **✅ Ready for Production**
 | Customer | Subdomain | Portal URL | Status |
 |----------|-----------|------------|--------|
-| **Ben Ginati** | ben-ginati.rensto.com | https://ben-ginati.rensto.com | Ready |
+| **Tax4Us** | tax4us.rensto.com | https://tax4us.rensto.com | Ready |
 | **Shelly Mizrahi** | shelly-mizrahi.rensto.com | https://shelly-mizrahi.rensto.com | Ready |
 
 ### **✅ Features Available**
@@ -209,7 +209,7 @@ data/dns-configuration/
 ### **✅ CNAME Records**
 ```bash
 # Customer Subdomains
-ben-ginati.rensto.com → rensto-business-system.vercel.app
+tax4us.rensto.com → rensto-business-system.vercel.app
 shelly-mizrahi.rensto.com → rensto-business-system.vercel.app
 
 # Main Domain

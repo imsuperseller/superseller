@@ -6,7 +6,7 @@
     "ben-ginati": {
       "name": "Ben Ginati",
       "company": "Tax4Us",
-      "subdomain": "ben-ginati.rensto.com",
+      "subdomain": "tax4us.rensto.com",
       "description": "Tax services automation portal"
     },
     "shelly-mizrahi": {
@@ -38,7 +38,7 @@
   "urls": {
     "main-domain": "https://rensto.com",
     "www": "https://www.rensto.com",
-    "ben-ginati": "https://ben-ginati.rensto.com",
+    "tax4us": "https://tax4us.rensto.com",
     "shelly-mizrahi": "https://shelly-mizrahi.rensto.com"
   },
   "automation": {

@@ -1,5 +1,3 @@
-import { EventEmitter } from 'events';
-
 // WebSocket message types
 export interface WebSocketMessage {
   type: string;
@@ -33,13 +31,37 @@ export interface WebSocketEvent {
   };
 }
 
+// Simple event emitter for client-side only
+class SimpleEventEmitter {
+  private events: { [key: string]: Function[] } = {};
+
+  on(event: string, listener: Function) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(listener);
+  }
+
+  emit(event: string, ...args: any[]) {
+    if (this.events[event]) {
+      this.events[event].forEach(listener => listener(...args));
+    }
+  }
+
+  off(event: string, listener: Function) {
+    if (this.events[event]) {
+      this.events[event] = this.events[event].filter(l => l !== listener);
+    }
+  }
+}
+
 // WebSocket client class
-export class WebSocketClient extends EventEmitter {
+export class WebSocketClient extends SimpleEventEmitter {
   private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private heartbeatInterval: number | null = null;
   private url: string;
   private token: string;
 
@@ -75,7 +97,7 @@ export class WebSocketClient extends EventEmitter {
           console.log('WebSocket disconnected:', event.code, event.reason);
           this.stopHeartbeat();
           this.emit('disconnected', event);
-          
+
           if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect();
           }
@@ -86,7 +108,6 @@ export class WebSocketClient extends EventEmitter {
           this.emit('error', error);
           reject(error);
         };
-
       } catch (error) {
         reject(error);
       }
@@ -94,28 +115,17 @@ export class WebSocketClient extends EventEmitter {
   }
 
   private handleMessage(message: WebSocketMessage) {
+    console.log('Received WebSocket message:', message);
     this.emit('message', message);
     this.emit(message.type, message.data);
   }
 
-  send(type: string, data: unknown): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      const message: WebSocketMessage = {
-        type,
-        data,
-        timestamp: Date.now(),
-        id: Math.random().toString(36).substr(2, 9),
-      };
-      this.ws.send(JSON.stringify(message));
-    } else {
-      console.warn('WebSocket not connected, message not sent:', type);
-    }
-  }
-
   private startHeartbeat() {
-    this.heartbeatInterval = setInterval(() => {
-      this.send('ping', { timestamp: Date.now() });
-    }, 30000); // Send ping every 30 seconds
+    this.heartbeatInterval = window.setInterval(() => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
+      }
+    }, 30000); // 30 seconds
   }
 
   private stopHeartbeat() {
@@ -126,156 +136,42 @@ export class WebSocketClient extends EventEmitter {
   }
 
   private scheduleReconnect() {
-    this.reconnectAttempts++;
-    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
-    
-    console.log(`Scheduling WebSocket reconnect in ${delay}ms (attempt ${this.reconnectAttempts})`);
-    
     setTimeout(() => {
-      this.connect().catch((error) => {
-        console.error('WebSocket reconnect failed:', error);
+      this.reconnectAttempts++;
+      console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      this.connect().catch(error => {
+        console.error('Reconnection failed:', error);
       });
-    }, delay);
+    }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts));
   }
 
-  disconnect(): void {
-    this.stopHeartbeat();
+  send(data: unknown) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      const message: WebSocketMessage = {
+        type: 'message',
+        data,
+        timestamp: Date.now()
+      };
+      this.ws.send(JSON.stringify(message));
+    } else {
+      console.warn('WebSocket is not connected');
+    }
+  }
+
+  disconnect() {
     if (this.ws) {
-      this.ws.close(1000, 'Client disconnect');
+      this.ws.close();
       this.ws = null;
     }
+    this.stopHeartbeat();
   }
 
-  // Subscribe to specific events
-  subscribe(eventType: string, callback: (data: unknown) => void): void {
-    this.on(eventType, callback);
-  }
-
-  unsubscribe(eventType: string, callback: (data: unknown) => void): void {
-    this.off(eventType, callback);
-  }
-
-  // Get connection status
   isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
+    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
   }
 }
 
-// WebSocket server utilities (for API routes)
-export class WebSocketServer {
-  private clients = new Map<string, WebSocket>();
-  private eventEmitter = new EventEmitter();
-
-  addClient(id: string, ws: WebSocket): void {
-    this.clients.set(id, ws);
-    
-    ws.on('close', () => {
-      this.clients.delete(id);
-      this.eventEmitter.emit('clientDisconnected', id);
-    });
-
-    ws.on('error', (error) => {
-      console.error(`WebSocket client ${id} error:`, error);
-      this.clients.delete(id);
-    });
-
-    this.eventEmitter.emit('clientConnected', id);
-  }
-
-  broadcast(type: string, data: unknown, excludeId?: string): void {
-    const message: WebSocketMessage = {
-      type,
-      data,
-      timestamp: Date.now(),
-    };
-
-    const messageStr = JSON.stringify(message);
-
-    this.clients.forEach((client, id) => {
-      if (id !== excludeId && client.readyState === WebSocket.OPEN) {
-        client.send(messageStr);
-      }
-    });
-  }
-
-  sendToClient(clientId: string, type: string, data: unknown): boolean {
-    const client = this.clients.get(clientId);
-    if (client && client.readyState === WebSocket.OPEN) {
-      const message: WebSocketMessage = {
-        type,
-        data,
-        timestamp: Date.now(),
-      };
-      client.send(JSON.stringify(message));
-      return true;
-    }
-    return false;
-  }
-
-  getClientCount(): number {
-    return this.clients.size;
-  }
-
-  getConnectedClients(): string[] {
-    return Array.from(this.clients.keys());
-  }
-
-  on(event: string, callback: (...args: unknown[]) => void): void {
-    this.eventEmitter.on(event, callback);
-  }
-
-  off(event: string, callback: (...args: unknown[]) => void): void {
-    this.eventEmitter.off(event, callback);
-  }
-}
-
-// Global WebSocket server instance
-export const wsServer = new WebSocketServer();
-
-// WebSocket hook for React components
-export function useWebSocket(url: string, token: string) {
-  const [client, setClient] = React.useState<WebSocketClient | null>(null);
-  const [isConnected, setIsConnected] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    const wsClient = new WebSocketClient(url, token);
-    
-    wsClient.on('connected', () => {
-      setIsConnected(true);
-      setError(null);
-    });
-
-    wsClient.on('disconnected', () => {
-      setIsConnected(false);
-    });
-
-    wsClient.on('error', (err) => {
-      setError(err.message);
-      setIsConnected(false);
-    });
-
-    setClient(wsClient);
-
-    wsClient.connect().catch((err) => {
-      setError(err.message);
-    });
-
-    return () => {
-      wsClient.disconnect();
-    };
-  }, [url, token]);
-
-  return {
-    client,
-    isConnected,
-    error,
-    send: (type: string, data: unknown) => client?.send(type, data),
-    subscribe: (eventType: string, callback: (data: unknown) => void) => {
-      client?.subscribe(eventType, callback);
-    },
-    unsubscribe: (eventType: string, callback: (data: unknown) => void) => {
-      client?.unsubscribe(eventType, callback);
-    },
-  };
-}
+// Export a simple client instance for easy use
+export const createWebSocketClient = (url: string, token: string) => {
+  return new WebSocketClient(url, token);
+};

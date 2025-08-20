@@ -21,13 +21,30 @@ const CUSTOMER_CONFIGS = {
   },
   'shelly-mizrahi': {
     name: 'Shelly Mizrahi',
-    company: 'Insurance Services', 
+    company: 'Insurance Services',
     industry: 'insurance',
     language: {
       customerApp: 'Hebrew',
       agentInterface: 'Hebrew',
       rtlSupport: true,
       locale: 'he-IL'
+    },
+    tabs: [
+      { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+      { id: 'tasks', label: 'Tasks', icon: '📋' },
+      { id: 'agents', label: 'Agents', icon: '🤖' },
+      { id: 'analytics', label: 'Analytics', icon: '📈' }
+    ]
+  },
+  'test-customer': {
+    name: 'Test Customer',
+    company: 'Demo Company',
+    industry: 'technology',
+    language: {
+      customerApp: 'English',
+      agentInterface: 'English',
+      rtlSupport: false,
+      locale: 'en-US'
     },
     tabs: [
       { id: 'dashboard', label: 'Dashboard', icon: '📊' },
@@ -45,7 +62,7 @@ export async function GET(
   try {
     const slug = params.slug;
     const config = CUSTOMER_CONFIGS[slug as keyof typeof CUSTOMER_CONFIGS];
-    
+
     if (!config) {
       return NextResponse.json(
         { error: 'Customer not found' },

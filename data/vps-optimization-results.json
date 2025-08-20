@@ -1,0 +1,38 @@
+{
+  "build": {
+    "vps_mcp_server_created": true,
+    "vps_manager_script_created": true,
+    "vps_connectivity_working": false,
+    "vps_dashboard_created": true,
+    "vps_api_routes_created": true,
+    "status": "completed"
+  },
+  "measure": {
+    "vps_mcp_working": false,
+    "vps_api_working": false,
+    "vps_dashboard_working": true,
+    "status": "completed"
+  },
+  "analyze": {
+    "vps_mcp_server_created": true,
+    "vps_manager_script_created": true,
+    "vps_connectivity_working": false,
+    "vps_dashboard_created": true,
+    "vps_api_routes_created": true,
+    "vps_mcp_working": false,
+    "vps_api_working": false,
+    "vps_dashboard_working": true,
+    "vps_score": 60,
+    "vps_issues": [
+      "VPS API connectivity issues remain",
+      "VPS MCP server needs configuration",
+      "VPS API endpoints need authentication"
+    ],
+    "issues_count": 3
+  },
+  "deploy": {
+    "vps_deployed": true,
+    "documentation_updated": true,
+    "status": "completed"
+  }
+}

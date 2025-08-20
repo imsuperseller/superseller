@@ -11,10 +11,6 @@ const nextConfig = {
   // Optimize for production
   compress: true,
   poweredByHeader: false,
-  // Performance optimizations
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
   // Security headers
   async headers() {
     return [
@@ -72,7 +68,19 @@ const nextConfig = {
   },
   // Webpack configuration for optimization
   webpack: (config, { isServer, dev }) => {
-    if (!isServer) {
+    // Handle browser-only packages on server side
+    if (isServer) {
+      // Provide empty modules for browser-only packages on server side
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'gsap': false,
+        'socket.io-client': false,
+        'framer-motion': false,
+        'recharts': false,
+        '@stripe/stripe-js': false,
+      };
+    } else {
+      // Client-side fallbacks
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
@@ -96,6 +104,8 @@ const nextConfig = {
         https: false,
         zlib: false,
         'mongodb-client-encryption': false,
+        'global': false,
+        'process': false,
       };
     }
 
