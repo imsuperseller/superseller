@@ -21,7 +21,7 @@ class CloudflareDNSUpdater {
     };
 
     // Correct Vercel URL from our investigation
-    this.correctTarget = 'rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app';
+    this.correctTarget = 'rensto-business-system-jj6yl2a9v-shais-projects-f9b9e359.vercel.app';
   }
 
   getHeaders() {
