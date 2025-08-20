@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Simple customer configuration without database dependencies
 const CUSTOMER_CONFIGS = {
-  'ben-ginati': {
+  'tax4us': {
     name: 'Ben Ginati',
     company: 'Tax4Us',
     industry: 'tax-services',

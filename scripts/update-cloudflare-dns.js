@@ -21,7 +21,7 @@ class CloudflareDNSUpdater {
     };
 
     // Correct Vercel URL from our investigation
-    this.correctTarget = 'my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app';
+    this.correctTarget = 'rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app';
   }
 
   getHeaders() {
@@ -33,7 +33,7 @@ class CloudflareDNSUpdater {
 
   async getAllDNSRecords() {
     console.log('📋 Fetching all DNS records...');
-    
+
     try {
       const response = await axios.get(`${this.config.baseUrl}/zones/${this.config.zoneId}/dns_records`, {
         headers: this.getHeaders()
@@ -53,7 +53,7 @@ class CloudflareDNSUpdater {
 
   async updateDNSRecord(recordId, recordName, newTarget) {
     console.log(`🔄 Updating DNS record: ${recordName}.${this.config.domain} → ${newTarget}`);
-    
+
     try {
       const dnsRecord = {
         type: 'CNAME',
@@ -81,16 +81,16 @@ class CloudflareDNSUpdater {
 
   async updateCustomerRecords() {
     console.log('🔍 Finding customer DNS records to update...');
-    
+
     try {
       const allRecords = await this.getAllDNSRecords();
-      
+
       // Find records that need updating
-      const recordsToUpdate = allRecords.filter(record => 
-        record.type === 'CNAME' && 
-        (record.name === 'ben-ginati.rensto.com' || 
-         record.name === 'shelly-mizrahi.rensto.com' || 
-         record.name === 'test-customer.rensto.com') &&
+      const recordsToUpdate = allRecords.filter(record =>
+        record.type === 'CNAME' &&
+        (record.name === 'tax4us.rensto.com' ||
+          record.name === 'shelly-mizrahi.rensto.com' ||
+          record.name === 'test-customer.rensto.com') &&
         record.content !== this.correctTarget
       );
 
@@ -101,7 +101,7 @@ class CloudflareDNSUpdater {
         try {
           console.log(`\n📝 Current: ${record.name} → ${record.content}`);
           console.log(`📝 New: ${record.name} → ${this.correctTarget}`);
-          
+
           const updated = await this.updateDNSRecord(record.id, record.name, this.correctTarget);
           results.push({
             name: record.name,
@@ -130,7 +130,7 @@ class CloudflareDNSUpdater {
 
   async generateReport(results) {
     console.log('📊 Generating DNS update report...');
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       domain: this.config.domain,
@@ -147,7 +147,7 @@ class CloudflareDNSUpdater {
     await fs.mkdir(configDir, { recursive: true });
     const filepath = path.join(configDir, 'dns-update-report.json');
     await fs.writeFile(filepath, JSON.stringify(report, null, 2));
-    
+
     console.log(`💾 Update report saved: ${filepath}`);
     return report;
   }
@@ -157,13 +157,13 @@ class CloudflareDNSUpdater {
 
 async function main() {
   const updater = new CloudflareDNSUpdater();
-  
+
   try {
     console.log('🔄 Starting Cloudflare DNS update process...\n');
-    
+
     const results = await updater.updateCustomerRecords();
     const report = await updater.generateReport(results);
-    
+
     console.log('\n🎉 DNS update process completed!');
     console.log('📋 Results:');
     results.forEach(result => {
@@ -173,10 +173,10 @@ async function main() {
         console.log(`      Error: ${result.error}`);
       }
     });
-    
+
     console.log(`\n📊 Summary: ${report.summary.successful}/${report.summary.total} successful`);
     console.log('🔧 DNS records now pointing to correct Vercel deployment');
-    
+
   } catch (error) {
     console.error('❌ DNS update process failed:', error.message);
     process.exit(1);

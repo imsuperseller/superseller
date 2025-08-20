@@ -1,26 +1,26 @@
 {
-  "timestamp": "2025-08-20T00:15:08.932Z",
+  "timestamp": "2025-08-20T00:36:57.402Z",
   "domain": "rensto.com",
-  "correctTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+  "correctTarget": "rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app",
   "updates": [
     {
-      "name": "ben-ginati.rensto.com",
-      "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
-      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
-      "success": true,
-      "recordId": "3c603e578359e18142b37f130b71439b"
-    },
-    {
       "name": "shelly-mizrahi.rensto.com",
-      "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
-      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+      "oldTarget": "rensto-business-system-kdp2193kh-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app",
       "success": true,
       "recordId": "f3bbb5ea3e5d77ebdf2db278ab13ab9a"
     },
     {
-      "name": "test-customer.rensto.com",
+      "name": "tax4us.rensto.com",
       "oldTarget": "my-website-shais-projects-f9b9e359.vercel.app",
-      "newTarget": "my-website-loc54ui0j-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app",
+      "success": true,
+      "recordId": "821873e663a5ece42012c60c4eac0758"
+    },
+    {
+      "name": "test-customer.rensto.com",
+      "oldTarget": "rensto-business-system-kdp2193kh-shais-projects-f9b9e359.vercel.app",
+      "newTarget": "rensto-business-system-e2ly3qr3z-shais-projects-f9b9e359.vercel.app",
       "success": true,
       "recordId": "87ccb4dc6a188537f7afa472a57bdf28"
     }
