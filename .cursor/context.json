@@ -1,0 +1,25 @@
+{
+  "canonical": ["apps", "packages", "services", "infra", "scripts", "docs", "tests"],
+  "sinks": ["examples", "assets"],
+  "experimental": ["experiments"],
+  "prohibited": ["variations", "variations3", "infinite_ui_cursor", "customer-portals", "data"],
+  "migration": {
+    "web": "apps/web",
+    "mcp-servers": "services/mcp-servers",
+    "variations": "experiments/variations",
+    "variations3": "experiments/variations3",
+    "infinite_ui_cursor": "experiments/infinite-ui-cursor",
+    "customer-portals": "archived/customer-portals",
+    "data": "archived/data",
+    "Examples/Shelly Mizrahi": "examples/shelly-mizrahi"
+  },
+  "bmad": {
+    "projects": "data/bmad-projects",
+    "optimization": "data/bmad-optimization-plans",
+    "results": "data/*-results.json"
+  },
+  "mcp": {
+    "servers": "services/mcp-servers",
+    "config": "mcp-config.json"
+  }
+}

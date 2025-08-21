@@ -1,0 +1,54 @@
+name: Duplicate Scanner
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run duplicate scanner
+        run: node scripts/ci/scan-dupes.mjs
+        
+      - name: Check for whitespace in paths
+        run: |
+          if find . -name "* *" -type f | grep -q .; then
+            echo "❌ Files with spaces found:"
+            find . -name "* *" -type f
+            exit 1
+          fi
+          
+      - name: Validate directory structure
+        run: |
+          # Check for prohibited directories
+          for dir in variations variations3 infinite_ui_cursor customer-portals; do
+            if [ -d "$dir" ]; then
+              echo "❌ Prohibited directory found: $dir"
+              exit 1
+            fi
+          done
+          
+          # Check for required directories
+          for dir in apps packages services; do
+            if [ ! -d "$dir" ]; then
+              echo "❌ Required directory missing: $dir"
+              exit 1
+            fi
+          done
+          
+          echo "✅ Directory structure validation passed"
