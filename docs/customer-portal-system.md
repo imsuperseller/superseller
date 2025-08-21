@@ -12,6 +12,31 @@ The Rensto Customer Portal is an AI-powered, personalized business automation pl
 - **Management**: Centralized workflow management through Rensto's MCP servers
 - **Customization**: Each workflow is customized per customer's business needs
 
+### **Single Account Multi-tenant Setup**
+```
+Your Vercel Domain: rensto-business-system.vercel.app
+
+Customer Access:
+├── Admin Dashboard: /admin
+│   ├── Login: admin@rensto.com / admin123
+│   ├── Customer Management
+│   ├── Agent Control
+│   ├── Analytics & Reporting
+│   └── System Monitoring
+│
+├── Customer Portals:
+│   ├── /portal/shelly-mizrahi
+│   ├── /portal/ben-ginati
+│   ├── /portal/[any-customer-slug]
+│   └── Dynamic customer portals
+│
+└── Public Pages:
+    ├── / (landing page)
+    ├── /contact
+    ├── /offers
+    └── /knowledgebase
+```
+
 ### **Customer Journey Flow**
 
 ```
@@ -72,6 +97,84 @@ Typeform Submission → AI Analysis Agent → Market Research Agent → Plan Gen
 - **Workflow Status**: Creation progress, deployment status
 - **Credential Status**: Setup completion, validation status
 
+## 🎯 **Customer-Specific Features System**
+
+### **Dynamic Feature Toggles**
+Each customer sees only features relevant to their business type and industry:
+
+#### **🎙️ Tax Services (Ben Ginati)**
+```javascript
+{
+  industry: 'tax-services',
+  features: {
+    podcastManagement: true,      // 🎙️ Podcast automation
+    wordpressAutomation: true,    // 🌐 Website content
+    socialMediaAutomation: true,  // 📱 Social media
+    contentGeneration: true,      // 📝 Content creation
+    excelProcessing: false,       // ❌ Not relevant
+    dataAnalysis: false           // ❌ Not relevant
+  },
+  agents: [
+    'WordPress Content Agent',    // 📝 Website content
+    'Blog Posts Agent',          // 📝 SEO blog posts
+    'Podcast Agent',             // 🎙️ Podcast production
+    'Social Media Agent'          // 📱 Social management
+  ]
+}
+```
+
+#### **📊 Insurance Services (Shelly Mizrahi)**
+```javascript
+{
+  industry: 'insurance',
+  features: {
+    podcastManagement: false,     // ❌ Not relevant
+    wordpressAutomation: false,   // ❌ Not relevant
+    socialMediaAutomation: false, // ❌ Not relevant
+    contentGeneration: false,     // ❌ Not relevant
+    excelProcessing: true,        // 📊 Excel automation
+    dataAnalysis: true,           // 📈 Data analysis
+    documentManagement: true,     // 📄 Document handling
+    clientManagement: true        // 👥 Client profiles
+  },
+  agents: [
+    'Excel Processing Agent',     // 📊 File processing
+    'Family Profile Generator'    // 👨‍👩‍👧‍👦 Profile creation
+  ]
+}
+```
+
+### **Dynamic Tab System**
+```typescript
+interface CustomerTab {
+  id: string;
+  label: string;
+  icon: string;
+  visible: boolean;
+  content: React.ComponentType;
+}
+
+// Tabs are dynamically rendered based on customer features
+const getCustomerTabs = (features: CustomerFeatures): CustomerTab[] => {
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊', visible: true },
+    { id: 'tasks', label: 'Tasks', icon: '📋', visible: true },
+    { id: 'agents', label: 'Agents', icon: '🤖', visible: true }
+  ];
+  
+  // Add feature-specific tabs
+  if (features.podcastManagement) {
+    tabs.push({ id: 'podcasts', label: 'Podcasts', icon: '🎙️', visible: true });
+  }
+  
+  if (features.excelProcessing) {
+    tabs.push({ id: 'excel', label: 'Excel Processing', icon: '📊', visible: true });
+  }
+  
+  return tabs;
+};
+```
+
 ## 💰 **Affiliate Integration System**
 
 ### **Automatic Affiliate Detection**
@@ -91,6 +194,31 @@ Typeform Submission → AI Analysis Agent → Market Research Agent → Plan Gen
 - **Responsive Design**: Works on all devices
 - **Dark Theme**: Primary interface with brand colors
 - **Smooth Animations**: GSAP-powered interactions
+
+### **Portal-Specific Components**
+```typescript
+// Customer Portal Header
+<PortalHeader 
+  customer={customer}
+  logo={<RenstoLogo size="md" variant="gradient" />}
+  status={<RenstoStatusIndicator status="online" />}
+/>
+
+// Agent Management Card
+<AgentCard 
+  agent={agent}
+  onActivate={handleActivate}
+  onDeactivate={handleDeactivate}
+  status={<RenstoProgress value={agent.progress} />}
+/>
+
+// Analytics Dashboard
+<AnalyticsDashboard 
+  metrics={metrics}
+  charts={<PerformanceCharts data={chartData} />}
+  actions={<QuickActions />}
+/>
+```
 
 ### **Personalization Features**
 - **Weather Integration**: Local weather affects interface
@@ -112,10 +240,11 @@ Typeform Submission → AI Analysis Agent → Market Research Agent → Plan Gen
 CREATE TABLE customer_portals (
   rgid TEXT PRIMARY KEY,
   customer_rgid TEXT REFERENCES customers(rgid),
-  portal_url TEXT UNIQUE,
+  portal_url TEXT UNIQUE NOT NULL,
   interface_language TEXT DEFAULT 'en',
-  theme_preferences JSONB,
-  created_at TIMESTAMPTZ DEFAULT now()
+  theme_preferences JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- Agent (workflow) assignments
@@ -123,22 +252,86 @@ CREATE TABLE customer_agents (
   rgid TEXT PRIMARY KEY,
   customer_rgid TEXT REFERENCES customers(rgid),
   agent_type TEXT NOT NULL,
+  agent_name TEXT NOT NULL,
   n8n_workflow_id TEXT,
+  n8n_workflow_url TEXT,
   status TEXT DEFAULT 'pending',
   credentials_status TEXT DEFAULT 'incomplete',
-  created_at TIMESTAMPTZ DEFAULT now()
+  configuration JSONB DEFAULT '{}',
+  performance_metrics JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- Typeform responses
 CREATE TABLE customer_assessments (
   rgid TEXT PRIMARY KEY,
   customer_rgid TEXT REFERENCES customers(rgid),
-  typeform_response JSONB,
+  typeform_response JSONB NOT NULL,
   ai_analysis JSONB,
   market_research JSONB,
   generated_plan JSONB,
-  status TEXT DEFAULT 'pending'
+  status TEXT DEFAULT 'pending',
+  assessment_date TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
+```
+
+### **Data Models**
+```typescript
+interface Customer {
+  _id: string;
+  slug: string;
+  name: string;
+  email: string;
+  organization: string;
+  plan: 'basic' | 'pro' | 'enterprise';
+  status: 'active' | 'inactive' | 'suspended';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Agent {
+  _id: string;
+  customerId: string;
+  name: string;
+  type: string;
+  status: 'active' | 'inactive' | 'error';
+  lastRun?: Date;
+  tasksCompleted: number;
+  description: string;
+}
+
+interface AgentRun {
+  _id: string;
+  agentId: string;
+  customerId: string;
+  status: 'running' | 'completed' | 'failed';
+  startTime: Date;
+  endTime?: Date;
+  result?: any;
+  error?: string;
+}
+```
+
+### **API Endpoints**
+```typescript
+// Customer Management
+GET    /api/customers                    # List customers (admin)
+POST   /api/customers                    # Create customer (admin)
+GET    /api/customers/[slug]             # Get customer data
+PUT    /api/customers/[slug]             # Update customer
+
+// Agent Management
+GET    /api/customers/[slug]/agents      # List customer agents
+POST   /api/customers/[slug]/agents      # Create agent
+PUT    /api/customers/[slug]/agents/[id] # Update agent
+DELETE /api/customers/[slug]/agents/[id] # Delete agent
+
+// Agent Execution
+POST   /api/customers/[slug]/agents/[id]/run    # Run agent
+GET    /api/customers/[slug]/agents/[id]/runs   # Get execution history
 ```
 
 ### **AI Agent Workflow**
@@ -169,6 +362,30 @@ Add Agent Button → Tinder Typeform → AI Analysis → Workflow Creation → n
 ```
 Real-time Monitoring → Status Updates → Customer Notifications → Slack Alerts → Portal Refresh
 ```
+
+## 🔐 **Access Control & Security**
+
+### **Role-Based Permissions**
+
+#### **Admin Role (Full Access)**
+- ✅ **Customer Management**: Add, edit, delete customers
+- ✅ **System Monitoring**: Monitor all customer instances
+- ✅ **Agent Deployment**: Deploy workflows to any customer
+- ✅ **Analytics Access**: View system-wide analytics
+- ✅ **Billing Management**: Manage all customer billing
+
+#### **Customer Role (Limited Access)**
+- ✅ **Own Portal**: Access only their own portal
+- ✅ **Agent Management**: Activate/deactivate own agents
+- ✅ **Execution Monitoring**: Monitor own workflow executions
+- ✅ **Billing Access**: View own billing information
+- ❌ **Other Customers**: No access to other customer data
+
+### **Data Isolation**
+- **Collection-level isolation**: Each customer has separate data collections
+- **Customer ID filtering**: All queries filtered by customer_id
+- **Row-level security**: Database-level access control
+- **Encrypted storage**: Sensitive data encrypted at rest
 
 ## 🛡️ **Security & Compliance**
 
@@ -245,6 +462,29 @@ Real-time Monitoring → Status Updates → Customer Notifications → Slack Ale
 - [ ] Analytics dashboard
 - [ ] Security implementation
 - [ ] Testing and validation
+
+## 🎯 **BEST PRACTICES**
+
+### **Development Guidelines**
+1. **Always use customer isolation**: Filter all data by customer_id
+2. **Implement proper error handling**: Graceful error handling for all operations
+3. **Use Rensto design system**: Consistent branding across all portals
+4. **Optimize for performance**: Fast loading times and smooth interactions
+5. **Test thoroughly**: Comprehensive testing for all customer scenarios
+
+### **Security Guidelines**
+1. **Validate all inputs**: Sanitize and validate all user inputs
+2. **Implement rate limiting**: Prevent abuse and ensure fair usage
+3. **Use secure authentication**: Proper session management and authentication
+4. **Encrypt sensitive data**: Encrypt all sensitive customer data
+5. **Regular security audits**: Periodic security reviews and updates
+
+### **Maintenance Guidelines**
+1. **Monitor system health**: Regular health checks and monitoring
+2. **Update dependencies**: Keep all dependencies up to date
+3. **Backup data regularly**: Automated backups for all customer data
+4. **Document changes**: Maintain clear documentation of all changes
+5. **Test deployments**: Thorough testing before production deployments
 
 ---
 
