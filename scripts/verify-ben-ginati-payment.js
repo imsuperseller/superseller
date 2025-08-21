@@ -6,16 +6,27 @@
 const axios = require('axios');
 
 class QuickBooksPaymentVerifier {
-    constructor() {
-        this.quickbooksConfig = {
-            appId: 'ad9e9fe8-0977-4ece-a2d3-292ab583359f',
-            clientId: 'ABCqMFH2hc4AoEbcx9UzJBSruOKTKtLeosq4XZIqxm3Af9uV0f',
-            clientSecret: 'Cf2WeEhdIZLoJCKs60YrR17yMeqLJmth2WaSuK3j',
-            realmId: '9341454031329905',
-            accessToken: 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwieC5vcmciOiJIMCJ9..r_0S72OaED8qOuTsyfaprg.J-oQTAwkRmUMtB1Rsutjp1pC-a66-uwlkLo47nuBqo3snX5yBDbl8PsmcPELWcD8fDeTW9Z3MaM9gg-uvVNFF5xx3Llqw04mOHsYEOPfWTAU-SC8Ma07w28MiYkiSNQmBsIplzfkMSyTXW5FfzA7hCyqvz1834FPmxmikpnw2Ugxep4n3I3rXqEBN0M0eNZG2MDQ6_2y51H1WRgiEvpf-FpdQZwEqdDbHMTSMnSKY-WmO4VaDya0QDMm9AdjHF3CuXFO6eHkqOHjZrcgKmUvGM3pqtDdPJgHZTbcLSr1jBhgNTwfV7oQ5LngTQFHFrMcYKH6opIyINMssPfAKGGyebikV2u8rW6opfxqvO5qJoiSuz41ac6XvR2AkoHLEeTusUjQV65U52kQcqPzjv9Ag2dJg9lLsR_zJfoeg3beCu2FmJlC_8PGGdVo6OrItBvRHOH06Mzr72APxP4_FRg0pcJEPaK9Hkoikop_zGBf_FyFrXIQ-ygbiIfry1rX2pX1vZPRqNu-N4KkYrN17op09DcO6tanYVsn2VRYOhM8qI3Mq7KMX5SKC7wAdmKhOEgMq2i_2dHOxEuN2Fh7VWIAsNcienmGksyf8i-PHQl8P3g5nJzVCQU_YftOfEy_B30G.KaNRlBMwRJd92fCDzz1HEw',
-            refreshToken: 'RT1-221-H0-1763094209oksbcubkf2wk7bfh6ll6',
-            baseUrl: 'https://quickbooks.api.intuit.com/v3/company'
-        };
+      constructor() {
+    // Load fresh credentials from file
+    const fs = require('fs');
+    let freshCreds = {};
+    try {
+      const credsData = fs.readFileSync('./quickbooks-fresh-credentials.json', 'utf8');
+      freshCreds = JSON.parse(credsData);
+      console.log('✅ Using fresh QuickBooks credentials');
+    } catch (error) {
+      console.log('⚠️ Could not load fresh credentials, using defaults');
+    }
+
+    this.quickbooksConfig = {
+      appId: 'ad9e9fe8-0977-4ece-a2d3-292ab583359f',
+      clientId: freshCreds.clientId || 'ABCqMFH2hc4AoEbcx9UzJBSruOKTKtLeosq4XZIqxm3Af9uV0f',
+      clientSecret: freshCreds.clientSecret || 'Cf2WeEhdIZLoJCKs60YrR17yMeqLJmth2WaSuK3j',
+      realmId: freshCreds.realmId || '9341454031329905',
+      accessToken: freshCreds.accessToken || 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwieC5vcmciOiJIMCJ9..r_0S72OaED8qOuTsyfaprg.J-oQTAwkRmUMtB1Rsutjp1pC-a66-uwlkLo47nuBqo3snX5yBDbl8PsmcPELWcD8fDeTW9Z3MaM9gg-uvVNFF5xx3Llqw04mOHsYEOPfWTAU-SC8Ma07w28MiYkiSNQmBsIplzfkMSyTXW5FfzA7hCyqvz1834FPmxmikpnw2Ugxep4n3I3rXqEBN0M0eNZG2MDQ6_2y51H1WRgiEvpf-FpdQZwEqdDbHMTSMnSKY-WmO4VaDya0QDMm9AdjHF3CuXFO6eHkqOHjZrcgKmUvGM3pqtDdPJgHZTbcLSr1jBhgNTwfV7oQ5LngTQFHFrMcYKH6opIyINMssPfAKGGyebikV2u8rW6opfxqvO5qJoiSuz41ac6XvR2AkoHLEeTusUjQV65U52kQcqPzjv9Ag2dJg9lLsR_zJfoeg3beCu2FmJlC_8PGGdVo6OrItBvRHOH06Mzr72APxP4_FRg0pcJEPaK9Hkoikop_zGBf_FyFrXIQ-ygbiIfry1rX2pX1vZPRqNu-N4KkYrN17op09DcO6tanYVsn2VRYOhM8qI3Mq7KMX5SKC7wAdmKhOEgMq2i_2dHOxEuN2Fh7VWIAsNcienmGksyf8i-PHQl8P3g5nJzVCQU_YftOfEy_B30G.KaNRlBMwRJd92fCDzz1HEw',
+      refreshToken: freshCreds.refreshToken || 'RT1-221-H0-1763094209oksbcubkf2wk7bfh6ll6',
+      baseUrl: 'https://quickbooks.api.intuit.com/v3/company'
+    };
     }
 
     async verifyBenGinatiPayment() {
