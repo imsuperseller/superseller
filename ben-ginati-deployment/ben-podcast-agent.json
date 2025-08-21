@@ -1,0 +1,347 @@
+{
+  "name": "Podcast Complete Agent - Tax4Us (Optimized)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ben-podcast",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Podcast Agent Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "ben-podcast"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "prompt": "Research market and competitors for fresh podcast content in the tax services industry. Focus on current tax laws, financial planning tips, and business insights. Generate 3 episode ideas with titles, outlines, and target audience. Format as JSON array with title, outline, target_audience, estimated_duration, and key_points.",
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 1500
+        }
+      },
+      "id": "research-content",
+      "name": "Research Podcast Content",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        460,
+        200
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ben-openai-api",
+          "name": "Ben OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "prompt": "Generate a detailed podcast episode script for a tax services podcast. Topic: {{ $json.topic }}. Include introduction, main segments, transitions, and conclusion. Format as JSON with title, script, intro_music_suggestion, outro_music_suggestion, episode_number, and estimated_duration.",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 4000
+        }
+      },
+      "id": "generate-script",
+      "name": "Generate Episode Script",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ben-openai-api",
+          "name": "Ben OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "tts-1",
+        "input": "={{ $json.script }}",
+        "voice": "alloy",
+        "responseFormat": "mp3",
+        "speed": 1
+      },
+      "id": "generate-audio",
+      "name": "Generate Audio Recording",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        900,
+        200
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ben-openai-api",
+          "name": "Ben OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "file": "={{ $json.audio_file }}",
+        "fileName": "={{ $json.title.replace(/[^a-zA-Z0-9]/g, '_') }}.mp3",
+        "folderId": "podcast-episodes"
+      },
+      "id": "upload-to-drive",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 4,
+      "position": [
+        1120,
+        200
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ben-google-drive",
+          "name": "Ben Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "episode",
+        "title": "={{ $json.title }}",
+        "description": "={{ $json.description }}",
+        "audioFile": "={{ $json.audio_file_url }}",
+        "duration": "={{ $json.estimated_duration }}",
+        "episodeNumber": "={{ $json.episode_number }}",
+        "publishDate": "={{ $json.publish_date }}"
+      },
+      "id": "upload-to-captivate",
+      "name": "Upload to Captivate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1340,
+        200
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "ben-captivate-api",
+          "name": "Ben Captivate API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "episode",
+        "title": "={{ $json.title }}",
+        "description": "={{ $json.description }}",
+        "audioFile": "={{ $json.audio_file_url }}",
+        "duration": "={{ $json.estimated_duration }}",
+        "episodeNumber": "={{ $json.episode_number }}",
+        "publishDate": "={{ $json.publish_date }}"
+      },
+      "id": "upload-to-spotify",
+      "name": "Upload to Spotify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1340,
+        400
+      ],
+      "credentials": {
+        "oAuth2": {
+          "id": "ben-spotify-api",
+          "name": "Ben Spotify API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "episode",
+        "title": "={{ $json.title }}",
+        "description": "={{ $json.description }}",
+        "audioFile": "={{ $json.audio_file_url }}",
+        "duration": "={{ $json.estimated_duration }}",
+        "episodeNumber": "={{ $json.episode_number }}",
+        "publishDate": "={{ $json.publish_date }}"
+      },
+      "id": "upload-to-apple",
+      "name": "Upload to Apple Podcasts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1340,
+        600
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "ben-apple-podcasts-api",
+          "name": "Ben Apple Podcasts API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Podcast episode created and uploaded successfully\",\n  \"data\": {\n    \"episode_title\": \"{{ $json.title }}\",\n    \"episode_number\": \"{{ $json.episode_number }}\",\n    \"duration\": \"{{ $json.estimated_duration }}\",\n    \"audio_file\": \"{{ $json.audio_file_url }}\",\n    \"platforms\": [\"Captivate\", \"Spotify\", \"Apple Podcasts\"],\n    \"created_at\": \"{{ new Date().toISOString() }}\"\n  }\n}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Podcast Agent Webhook": {
+      "main": [
+        [
+          {
+            "node": "Research Podcast Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Podcast Content": {
+      "main": [
+        [
+          {
+            "node": "Generate Episode Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Episode Script": {
+      "main": [
+        [
+          {
+            "node": "Generate Audio Recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Audio Recording": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Upload to Captivate",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload to Spotify",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload to Apple Podcasts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Captivate": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Spotify": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Apple Podcasts": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "podcast-agent-optimized",
+  "tags": [
+    {
+      "id": "podcast",
+      "name": "Podcast"
+    },
+    {
+      "id": "audio",
+      "name": "Audio"
+    },
+    {
+      "id": "content",
+      "name": "Content"
+    },
+    {
+      "id": "tax-services",
+      "name": "Tax Services"
+    }
+  ]
+}
