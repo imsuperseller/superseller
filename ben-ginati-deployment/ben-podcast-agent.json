@@ -57,6 +57,38 @@
     },
     {
       "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "validate-research",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "validate-research",
+      "name": "Validate Research Content",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        460,
+        400
+      ]
+    },
+    {
+      "parameters": {
         "model": "gpt-4",
         "prompt": "Generate a detailed podcast episode script for a tax services podcast. Topic: {{ $json.topic }}. Include introduction, main segments, transitions, and conclusion. Format as JSON with title, script, intro_music_suggestion, outro_music_suggestion, episode_number, and estimated_duration.",
         "options": {
