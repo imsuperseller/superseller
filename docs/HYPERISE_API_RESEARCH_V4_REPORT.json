@@ -1,0 +1,145 @@
+{
+  "discovery": {
+    "pipedream_integration": true,
+    "comprehensive_api": true,
+    "documented_endpoints": [
+      "Image Views API",
+      "Image Personalization API",
+      "Short Links API"
+    ]
+  },
+  "endpoints": [
+    {
+      "endpoint": "/image-views",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/image-views/analytics",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/personalized-images",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/short-links",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/templates",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/campaigns",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/analytics",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/webhooks",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/integrations",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/billing",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/usage",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/account",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/users/current",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    },
+    {
+      "endpoint": "/users/profile",
+      "status": "unavailable",
+      "method": "GET",
+      "error": "404 Not Found"
+    }
+  ],
+  "features": [
+    {
+      "feature": "image_personalization",
+      "status": "requires_setup",
+      "error": "404 Not Found"
+    },
+    {
+      "feature": "short_links",
+      "status": "requires_setup",
+      "error": "404 Not Found"
+    },
+    {
+      "feature": "image_views_analytics",
+      "status": "requires_setup",
+      "error": "404 Not Found"
+    }
+  ],
+  "authentication": {},
+  "integration": {},
+  "pipedream_insights": {
+    "integration_available": true,
+    "documented_apis": {
+      "image_views": {
+        "endpoint": "Image Views API",
+        "documentation": "https://support.hyperise.com/en/api/Image-Views-API",
+        "trigger": "New Image Impression",
+        "description": "Emit new event when a new personalised image is viewed"
+      },
+      "image_personalization": {
+        "description": "Dynamically personalize images with user-specific data",
+        "use_cases": [
+          "Marketing campaigns",
+          "Sales outreach",
+          "Social media engagement",
+          "Personalized visual content"
+        ]
+      },
+      "short_links": {
+        "action": "Create Personalised Short Link",
+        "description": "Creates a personalised short URL from provided inputs"
+      }
+    },
+    "authentication": "API keys from Settings > API",
+    "platform_integration": "Pipedream supports 2,800+ apps",
+    "pricing": "Free for developers with good limits"
+  },
+  "errors": [],
+  "recommendations": []
+}

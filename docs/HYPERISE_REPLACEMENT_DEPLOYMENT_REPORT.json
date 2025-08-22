@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-08-22T18:30:31.830Z",
+  "steps": [
+    {
+      "step": "prerequisites",
+      "name": "Node.js",
+      "status": "success",
+      "version": "22.12.0"
+    },
+    {
+      "step": "prerequisites",
+      "name": "npm",
+      "status": "success",
+      "version": "10.9.0"
+    },
+    {
+      "step": "prerequisites",
+      "name": "Docker",
+      "status": "success",
+      "version": "28.3.2"
+    },
+    {
+      "step": "prerequisites",
+      "name": "Docker Compose",
+      "status": "success",
+      "version": "2.39.1"
+    },
+    {
+      "step": "environment",
+      "name": "Environment Setup",
+      "status": "success"
+    },
+    {
+      "step": "dependencies",
+      "name": "NPM Dependencies",
+      "status": "success"
+    },
+    {
+      "step": "database",
+      "name": "Database Setup",
+      "status": "success"
+    },
+    {
+      "step": "services",
+      "name": "Service Startup",
+      "status": "failed",
+      "error": "Services not ready after 30 attempts"
+    }
+  ],
+  "errors": [
+    "Services not ready after 30 attempts"
+  ],
+  "success": false
+}

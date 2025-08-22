@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Hyperise Replacement API
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - BASE_URL=http://localhost:3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=hyperise_replacement
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=dev-jwt-secret-change-in-production
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - hyperise-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=hyperise_replacement
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    restart: unless-stopped
+    networks:
+      - hyperise-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - hyperise-network
+
+  # Adminer (Database management)
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - hyperise-network
+
+  # Redis Commander (Redis management)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - hyperise-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  hyperise-network:
+    driver: bridge
