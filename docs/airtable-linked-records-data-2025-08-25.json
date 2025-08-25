@@ -1,0 +1,67 @@
+{
+  "relationships": {
+    "appQijHhqqP4z6wGe": {
+      "name": "Rensto",
+      "tables": {},
+      "linkedFields": [],
+      "errors": [
+        "Table Customers: Request failed with status code 404",
+        "Table Projects: Request failed with status code 404",
+        "Table Invoices: Request failed with status code 404",
+        "Table Tasks: Request failed with status code 404",
+        "Table Leads: Request failed with status code 404"
+      ]
+    },
+    "app4nJpP1ytGukXQT": {
+      "name": "Core Business Operations",
+      "tables": {},
+      "linkedFields": [],
+      "errors": [
+        "Table Companies: Request failed with status code 404",
+        "Table Contacts: Request failed with status code 404",
+        "Table Projects: Request failed with status code 404",
+        "Table Tasks: Request failed with status code 404",
+        "Table Time Tracking: Request failed with status code 404",
+        "Table Documents: Request failed with status code 404"
+      ]
+    },
+    "app6yzlm67lRNuQZD": {
+      "name": "Financial Management",
+      "tables": {},
+      "linkedFields": [],
+      "errors": [
+        "Table Invoices: Request failed with status code 404",
+        "Table Payments: Request failed with status code 404",
+        "Table Expenses: Request failed with status code 404",
+        "Table Revenue: Request failed with status code 404",
+        "Table Budgets: Request failed with status code 404",
+        "Table Tax Records: Request failed with status code 404"
+      ]
+    }
+  },
+  "errors": [
+    "Relationship Link customers to core companies: Request failed with status code 422",
+    "Relationship Link customers to core contacts: Request failed with status code 422",
+    "Relationship Link customers to core projects: Request failed with status code 422",
+    "Relationship Link projects to core companies: Request failed with status code 422",
+    "Relationship Link projects to core tasks: Request failed with status code 422",
+    "Relationship Link projects to financial invoices: Request failed with status code 422",
+    "Relationship Link invoices to core companies: Request failed with status code 422",
+    "Relationship Link invoices to core projects: Request failed with status code 422",
+    "Relationship Link invoices to financial payments: Request failed with status code 422",
+    "Relationship Link tasks to core projects: Request failed with status code 422",
+    "Relationship Link tasks to core contacts: Request failed with status code 422",
+    "Relationship Link tasks to time tracking: Request failed with status code 422",
+    "Relationship Link contacts to companies within core base: Request failed with status code 422",
+    "Relationship Link projects to companies within core base: Request failed with status code 422",
+    "Relationship Link tasks to projects within core base: Request failed with status code 422",
+    "Relationship Link time tracking to projects within core base: Request failed with status code 422",
+    "Relationship Link documents to projects within core base: Request failed with status code 422",
+    "Relationship Link financial invoices to core companies: Request failed with status code 422",
+    "Relationship Link payments to invoices within financial base: Request failed with status code 404",
+    "Relationship Link expenses to core projects: Request failed with status code 404",
+    "Relationship Link revenue to core projects: Request failed with status code 404",
+    "Relationship Link budgets to core projects: Request failed with status code 404"
+  ],
+  "summary": {}
+}

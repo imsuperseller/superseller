@@ -1,0 +1,44 @@
+{
+  "bases": {
+    "app4nJpP1ytGukXQT": {
+      "name": "Core Business Operations",
+      "tables": {},
+      "linkedFields": [],
+      "errors": [
+        "Table Companies: Request failed with status code 404",
+        "Table Contacts: Request failed with status code 404",
+        "Table Projects: Request failed with status code 404",
+        "Table Tasks: Request failed with status code 404",
+        "Table Time Tracking: Request failed with status code 404",
+        "Table Documents: Request failed with status code 404",
+        "Relationship Link contacts to companies: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link projects to companies: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link tasks to projects: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link tasks to assigned contacts: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link time tracking to projects: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link time tracking to contacts: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link documents to projects: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link documents to companies: Cannot read properties of undefined (reading 'linkedFields')"
+      ]
+    },
+    "appQijHhqqP4z6wGe": {
+      "name": "Rensto",
+      "tables": {},
+      "linkedFields": [],
+      "errors": [
+        "Table Customers: Request failed with status code 404",
+        "Table Projects: Request failed with status code 404",
+        "Table Invoices: Request failed with status code 404",
+        "Table Tasks: Request failed with status code 404",
+        "Table Leads: Request failed with status code 404",
+        "Relationship Link projects to customers: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link invoices to customers: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link invoices to projects: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link tasks to projects: Cannot read properties of undefined (reading 'linkedFields')",
+        "Relationship Link tasks to customers: Cannot read properties of undefined (reading 'linkedFields')"
+      ]
+    }
+  },
+  "errors": [],
+  "summary": {}
+}
