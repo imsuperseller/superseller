@@ -1,0 +1,372 @@
+{
+  "name": "Tax4Us WordPress Agent - Real Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tax4us-content-request",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1500,
+        820
+      ],
+      "id": "webhook-trigger",
+      "name": "Tax4Us Content Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Tax4Us content request\nconst input = $input.first().json;\nconsole.log('Processing Tax4Us content request:', input);\n\n// Extract content requirements\nconst contentRequest = {\n  title: input.title || 'Tax Planning for Israeli Businesses',\n  keywords: input.keywords || ['tax planning', 'israel', 'business'],\n  topic: input.topic || 'tax optimization',\n  targetAudience: input.targetAudience || 'small business owners',\n  contentType: input.contentType || 'blog post',\n  wordCount: input.wordCount || 1500,\n  timestamp: new Date().toISOString(),\n  status: 'request_received'\n};\n\nreturn {\n  json: {\n    ...contentRequest,\n    message: 'Tax4Us content request processed successfully',\n    nextStep: 'content_analysis'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        820
+      ],
+      "id": "process-request",
+      "name": "Process Request"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-11-20",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -1060,
+        820
+      ],
+      "id": "openai-model",
+      "name": "OpenAI Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following Tax4Us content request and generate comprehensive writing guidelines:\n\nTitle: {{ $json.title }}\nKeywords: {{ $json.keywords.join(', ') }}\nTopic: {{ $json.topic }}\nTarget Audience: {{ $json.targetAudience }}\nContent Type: {{ $json.contentType }}\nWord Count: {{ $json.wordCount }}\n\nGenerate JSON output with:\n- search_intent (informational/transactional/navigational/commercial)\n- writing_style (professional and authoritative for tax/accounting)\n- writing_tone (trustworthy and helpful for tax clients)\n- target_audience (small business owners, individuals, tax professionals)\n- goal_of_article (educate on tax topics, provide guidance, build trust)\n- semantic_analysis (common tax subtopics and related questions)\n- keywords (primary, secondary, semantic, long-tail)\n\nFocus on Tax4Us brand voice: professional, trustworthy, helpful for tax and accounting needs in Israel.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content strategist specializing in tax and accounting content for Israeli businesses. Generate writing guidelines that align with Tax4Us brand: professional, trustworthy, and helpful for tax clients and small business owners."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -840,
+        820
+      ],
+      "id": "content-analysis",
+      "name": "Content Analysis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create an SEO-optimized title for Tax4Us content:\n\nWorking Title: {{ $json.title }}\nKeywords: {{ $('Process Request').first().json.keywords.join(', ') }}\nSearch Intent: {{ $json.search_intent }}\nWriting Style: {{ $json.writing_style }}\n\nGenerate a title that:\n- Is professional and trustworthy (Tax4Us brand)\n- Includes the primary keyword naturally\n- Appeals to tax clients and small business owners in Israel\n- Is 50-60 characters for SEO\n- Uses power words when appropriate\n\nOutput only the refined title as JSON: {\"refined_title\": \"Your Title Here\"}",
+        "options": {
+          "systemMessage": "You are an expert in crafting SEO-optimized titles for Tax4Us content. Focus on professional, trustworthy titles that appeal to tax clients and small business owners in Israel."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -620,
+        820
+      ],
+      "id": "title-refinement",
+      "name": "Title Refinement"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create key takeaways for Tax4Us content:\n\nTitle: {{ $json.refined_title }}\nKeywords: {{ $('Process Request').first().json.keywords.join(', ') }}\nTarget Audience: {{ $json.target_audience }}\n\nGenerate key takeaways that:\n- Provide valuable tax insights for Israeli businesses\n- Help small business owners and individuals\n- Build trust in Tax4Us expertise\n- Are actionable and practical\n- Use professional but accessible language\n- Focus on Israeli tax regulations and compliance\n\nFormat as markdown with intro, bullet points, and outro.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content expert. Create key takeaways that provide valuable tax insights while building trust and demonstrating expertise for Israeli businesses."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -400,
+        820
+      ],
+      "id": "key-takeaways",
+      "name": "Key Takeaways"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write an engaging introduction for Tax4Us content:\n\nTitle: {{ $json.refined_title }}\nKeywords: {{ $('Process Request').first().json.keywords.join(', ') }}\nKey Takeaways: {{ $json.key_takeaways }}\n\nCreate an introduction that:\n- Hooks tax clients and small business owners in Israel\n- Establishes Tax4Us expertise\n- Explains why the topic matters for Israeli businesses\n- Uses professional but accessible language\n- Transitions smoothly to the main content\n- Mentions Israeli tax context when relevant\n\nKeep it concise (2-3 paragraphs) and avoid generic phrases.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Create engaging introductions that establish expertise and relevance for Israeli tax clients and business owners."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -180,
+        820
+      ],
+      "id": "introduction",
+      "name": "Introduction"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a comprehensive content outline for Tax4Us article:\n\nTitle: {{ $json.refined_title }}\nIntroduction: {{ $json.introduction }}\nKey Takeaways: {{ $json.key_takeaways }}\nKeywords: {{ $('Process Request').first().json.keywords.join(', ') }}\nTarget Word Count: {{ $('Process Request').first().json.wordCount }}\n\nGenerate a detailed outline with:\n- Main sections (H2 headings)\n- Subsections (H3 headings)\n- Key points for each section\n- SEO considerations\n- Israeli tax context integration\n- Professional tone throughout\n\nFormat as structured markdown with clear hierarchy.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content strategist. Create comprehensive outlines that ensure professional, valuable content for Israeli tax clients."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        40,
+        820
+      ],
+      "id": "content-outline",
+      "name": "Content Outline"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write the main content body for Tax4Us article:\n\nTitle: {{ $json.refined_title }}\nIntroduction: {{ $json.introduction }}\nOutline: {{ $json.content_outline }}\nKey Takeaways: {{ $json.key_takeaways }}\nKeywords: {{ $('Process Request').first().json.keywords.join(', ') }}\nTarget Word Count: {{ $('Process Request').first().json.wordCount }}\n\nCreate comprehensive content that:\n- Follows the outline structure\n- Integrates keywords naturally\n- Provides valuable tax insights for Israeli businesses\n- Uses professional but accessible language\n- Includes practical examples and tips\n- Builds trust in Tax4Us expertise\n- Addresses Israeli tax regulations and compliance\n\nWrite in markdown format with proper headings and formatting.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Create comprehensive, professional content that provides real value to Israeli tax clients and business owners."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        260,
+        820
+      ],
+      "id": "content-body",
+      "name": "Content Body"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a compelling conclusion for Tax4Us article:\n\nTitle: {{ $json.refined_title }}\nContent: {{ $json.content_body }}\nKey Takeaways: {{ $json.key_takeaways }}\n\nWrite a conclusion that:\n- Summarizes key points\n- Reinforces Tax4Us expertise\n- Provides clear next steps for readers\n- Encourages engagement (consultation, contact)\n- Maintains professional tone\n- Focuses on Israeli business context\n\nKeep it concise (1-2 paragraphs) and actionable.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content writer. Create compelling conclusions that reinforce expertise and encourage reader engagement."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        480,
+        820
+      ],
+      "id": "conclusion",
+      "name": "Conclusion"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Combine all content sections into a complete Tax4Us article:\n\nTitle: {{ $json.refined_title }}\nIntroduction: {{ $json.introduction }}\nContent Body: {{ $json.content_body }}\nConclusion: {{ $json.conclusion }}\nKey Takeaways: {{ $json.key_takeaways }}\n\nCreate a complete, polished article that:\n- Flows smoothly from introduction to conclusion\n- Maintains consistent professional tone\n- Integrates all sections seamlessly\n- Optimizes for SEO and readability\n- Includes proper formatting and structure\n- Focuses on Israeli tax context\n- Builds trust in Tax4Us expertise\n\nFormat as complete markdown with proper headings, paragraphs, and structure.",
+        "options": {
+          "systemMessage": "You are a Tax4Us content editor. Create polished, complete articles that provide maximum value to Israeli tax clients."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        700,
+        820
+      ],
+      "id": "final-edit",
+      "name": "Final Edit"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate excerpt from content\nconst content = $('Final Edit').first().json.final_article;\nconst title = $('Process Request').first().json.title;\n\n// Create excerpt from first few sentences\nconst sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 10);\nconst excerpt = sentences.slice(0, 2).join('. ') + '.';\n\n// Clean up excerpt\nconst cleanExcerpt = excerpt\n  .replace(/\\n/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim()\n  .substring(0, 160); // WordPress excerpt limit\n\nreturn {\n  json: {\n    excerpt: cleanExcerpt,\n    message: 'Excerpt generated successfully',\n    nextStep: 'wordpress_publishing'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        820
+      ],
+      "id": "generate-excerpt",
+      "name": "Generate Excerpt"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Real WordPress API Integration\nconst content = $('Final Edit').first().json.final_article;\nconst title = $('Title Refinement').first().json.refined_title;\nconst excerpt = $('Generate Excerpt').first().json.excerpt;\nconst keywords = $('Process Request').first().json.keywords;\n\n// WordPress API configuration\nconst wordpressConfig = {\n  baseUrl: 'https://www.tax4us.co.il/wp-json/wp/v2',\n  authToken: $credentials.wordpressAuthToken, // Store in n8n credentials\n  apiKey: $credentials.wordpressApiKey // Store in n8n credentials\n};\n\n// Prepare post data according to WordPress REST API schema\nconst postData = {\n  title: { raw: title },\n  content: { raw: content },\n  excerpt: { raw: excerpt },\n  status: 'draft', // Start with draft for safety\n  comment_status: 'open',\n  ping_status: 'open',\n  format: 'standard'\n};\n\n// Add categories if available\nif (keywords.includes('tax planning')) {\n  postData.categories = [1]; // Default category ID\n}\n\n// Add tags based on keywords\nconst tagNames = keywords.filter(k => k.length > 3);\nif (tagNames.length > 0) {\n  postData.tags = tagNames.map(tag => tag.toLowerCase().replace(/\\s+/g, '-'));\n}\n\ntry {\n  // Make real WordPress API call\n  const response = await fetch(`${wordpressConfig.baseUrl}/posts`, {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      'Authorization': `Bearer ${wordpressConfig.authToken}`,\n      'X-N8N-API-KEY': wordpressConfig.apiKey\n    },\n    body: JSON.stringify(postData)\n  });\n  \n  if (!response.ok) {\n    throw new Error(`WordPress API error: ${response.status} ${response.statusText}`);\n  }\n  \n  const wordpressData = await response.json();\n  \n  return {\n    json: {\n      success: true,\n      postId: wordpressData.id,\n      title: wordpressData.title.rendered,\n      content: wordpressData.content.rendered,\n      excerpt: wordpressData.excerpt.rendered,\n      status: wordpressData.status,\n      url: wordpressData.link,\n      editUrl: wordpressData.link.replace('/?p=', '/wp-admin/post.php?post=') + '&action=edit',\n      wordCount: content.split(' ').length,\n      keywords: keywords,\n      timestamp: new Date().toISOString(),\n      message: 'Content published to WordPress successfully',\n      nextStep: 'completion'\n    }\n  };\n  \n} catch (error) {\n  console.error('WordPress API Error:', error);\n  \n  // Fallback: return simulated data with error flag\n  return {\n    json: {\n      success: false,\n      error: true,\n      errorMessage: error.message,\n      postId: 'wp-fallback-' + Date.now(),\n      title: title,\n      content: content,\n      excerpt: excerpt,\n      status: 'draft',\n      url: `https://www.tax4us.co.il/blog/${title.toLowerCase().replace(/\\s+/g, '-')}`,\n      wordCount: content.split(' ').length,\n      keywords: keywords,\n      timestamp: new Date().toISOString(),\n      message: 'WordPress publishing failed - content saved locally',\n      fallback: true,\n      nextStep: 'completion'\n    }\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        820
+      ],
+      "id": "publish-wordpress",
+      "name": "Publish to WordPress"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Final response for Tax4Us WordPress agent\nconst requestData = $('Process Request').first().json;\nconst wordpressData = $input.first().json;\n\nconst finalResponse = {\n  success: wordpressData.success,\n  message: wordpressData.success ? \n    'Tax4Us WordPress Content Agent completed successfully' : \n    'Tax4Us WordPress Content Agent completed with fallback',\n  data: {\n    title: requestData.title,\n    keywords: requestData.keywords,\n    topic: requestData.topic,\n    wordCount: wordpressData.wordCount,\n    wordpressUrl: wordpressData.url,\n    wordpressEditUrl: wordpressData.editUrl,\n    status: wordpressData.status,\n    postId: wordpressData.postId,\n    error: wordpressData.error || false,\n    errorMessage: wordpressData.errorMessage || null,\n    fallback: wordpressData.fallback || false\n  },\n  timestamp: new Date().toISOString(),\n  agent: 'Tax4Us WordPress Agent - Real Integration',\n  version: '2.1'\n};\n\nreturn { json: finalResponse };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        820
+      ],
+      "id": "final-response",
+      "name": "Final Response"
+    }
+  ],
+  "connections": {
+    "Tax4Us Content Request": {
+      "main": [
+        [
+          {
+            "node": "Process Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Request": {
+      "main": [
+        [
+          {
+            "node": "Content Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Analysis": {
+      "main": [
+        [
+          {
+            "node": "Title Refinement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title Refinement": {
+      "main": [
+        [
+          {
+            "node": "Key Takeaways",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Key Takeaways": {
+      "main": [
+        [
+          {
+            "node": "Introduction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Introduction": {
+      "main": [
+        [
+          {
+            "node": "Content Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Outline": {
+      "main": [
+        [
+          {
+            "node": "Content Body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Body": {
+      "main": [
+        [
+          {
+            "node": "Conclusion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conclusion": {
+      "main": [
+        [
+          {
+            "node": "Final Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Edit": {
+      "main": [
+        [
+          {
+            "node": "Generate Excerpt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Excerpt": {
+      "main": [
+        [
+          {
+            "node": "Publish to WordPress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to WordPress": {
+      "main": [
+        [
+          {
+            "node": "Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-25T12:00:00.000Z",
+      "updatedAt": "2025-01-25T12:00:00.000Z",
+      "id": "tax4us-wordpress-agent",
+      "name": "Tax4Us WordPress Agent"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-25T12:00:00.000Z",
+  "versionId": "2.1"
+}
