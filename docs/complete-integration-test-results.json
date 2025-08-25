@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-08-25T05:02:31.179Z",
+  "tests": {
+    "n8n": {
+      "status": "working",
+      "url": "http://173.254.201.134:5678",
+      "workflows": 0,
+      "health": 200,
+      "apiKey": "valid"
+    },
+    "webflow": {
+      "status": "working",
+      "sites": 1,
+      "siteId": "66c7e551a317e0e9c9f906d8",
+      "apiKey": "valid"
+    },
+    "lightrag": {
+      "status": "not_found",
+      "error": "404 - Endpoint not found",
+      "action": "Check Lightrag API endpoints"
+    },
+    "workflowDeployment": {
+      "status": "deployed",
+      "total": 5,
+      "deployed": 0,
+      "failed": 5
+    }
+  },
+  "summary": {
+    "working": 2,
+    "needsAction": 1,
+    "errors": 0
+  }
+}

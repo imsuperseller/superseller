@@ -1,0 +1,366 @@
+{
+  "boostSpace": {
+    "platform": "https://superseller.boost.space",
+    "apiKey": "88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba",
+    "apiBaseUrl": "https://superseller.boost.space/api",
+    "authentication": {
+      "method": "Bearer Token",
+      "token": "88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+    },
+    "endpoints": {
+      "projects": "https://superseller.boost.space/api/projects",
+      "contacts": "https://superseller.boost.space/contacts",
+      "calendar": "https://superseller.boost.space/api/calendar",
+      "tasks": "https://superseller.boost.space/api/tasks",
+      "contracts": "https://superseller.boost.space/api/contracts",
+      "businessCase": "https://superseller.boost.space/api/business-case",
+      "businessContract": "https://superseller.boost.space/api/business-contract",
+      "invoice": "https://superseller.boost.space/api/invoice",
+      "workHours": "https://superseller.boost.space/api/work-hours",
+      "offers": "https://superseller.boost.space/api/offers",
+      "submissions": "https://superseller.boost.space/api/submissions",
+      "orders": "https://superseller.boost.space/api/orders",
+      "docs": "https://superseller.boost.space/api/docs",
+      "forms": "https://superseller.boost.space/api/forms",
+      "products": "https://superseller.boost.space/products",
+      "usageCost": "https://superseller.boost.space/api/usage-cost",
+      "event": "https://superseller.boost.space/api/event",
+      "note": "https://superseller.boost.space/api/note"
+    },
+    "status": "operational",
+    "lastTested": "2025-08-24T15:13:12.868Z"
+  },
+  "modules": {
+    "projects": {
+      "name": "Projects",
+      "description": "Project management and tracking",
+      "icon": "📁",
+      "status": "inactive",
+      "endpoint": "/api/projects",
+      "fields": [
+        "name",
+        "status",
+        "customer",
+        "budget",
+        "timeline",
+        "milestones"
+      ]
+    },
+    "contacts": {
+      "name": "Contacts",
+      "description": "Customer relationship management",
+      "icon": "👥",
+      "status": "active",
+      "endpoint": "/contacts",
+      "populated": true,
+      "fields": [
+        "name",
+        "email",
+        "phone",
+        "company",
+        "status",
+        "notes"
+      ]
+    },
+    "calendar": {
+      "name": "Calendar",
+      "description": "Calendar and scheduling",
+      "icon": "📅",
+      "status": "inactive",
+      "endpoint": "/api/calendar",
+      "fields": [
+        "title",
+        "startDate",
+        "endDate",
+        "attendees",
+        "location",
+        "description"
+      ]
+    },
+    "tasks": {
+      "name": "Tasks",
+      "description": "Task management and tracking",
+      "icon": "✅",
+      "status": "inactive",
+      "endpoint": "/api/tasks",
+      "fields": [
+        "title",
+        "assignee",
+        "priority",
+        "status",
+        "dueDate",
+        "project"
+      ]
+    },
+    "contracts": {
+      "name": "Contracts",
+      "description": "Contract management",
+      "icon": "📋",
+      "status": "inactive",
+      "endpoint": "/api/contracts",
+      "fields": [
+        "name",
+        "parties",
+        "terms",
+        "status",
+        "startDate",
+        "endDate"
+      ]
+    },
+    "businessCase": {
+      "name": "Business Cases",
+      "description": "Business case management",
+      "icon": "💰",
+      "status": "active",
+      "endpoint": "/api/business-case",
+      "fields": [
+        "name",
+        "status",
+        "customer",
+        "budget",
+        "timeline",
+        "milestones"
+      ]
+    },
+    "businessContract": {
+      "name": "Business Contracts",
+      "description": "Business contract management",
+      "icon": "📄",
+      "status": "active",
+      "endpoint": "/api/business-contract",
+      "fields": [
+        "name",
+        "parties",
+        "terms",
+        "status",
+        "startDate",
+        "endDate"
+      ]
+    },
+    "invoice": {
+      "name": "Invoices",
+      "description": "Invoice management",
+      "icon": "🧾",
+      "status": "active",
+      "endpoint": "/api/invoice",
+      "fields": [
+        "number",
+        "customer",
+        "amount",
+        "status",
+        "dueDate",
+        "paidDate"
+      ]
+    },
+    "workHours": {
+      "name": "Work Hours",
+      "description": "Time tracking and work hours",
+      "icon": "⏱️",
+      "status": "inactive",
+      "endpoint": "/api/work-hours",
+      "fields": [
+        "employee",
+        "project",
+        "hours",
+        "date",
+        "description",
+        "status"
+      ]
+    },
+    "offers": {
+      "name": "Offers",
+      "description": "Offer and proposal management",
+      "icon": "📄",
+      "status": "inactive",
+      "endpoint": "/api/offers",
+      "fields": [
+        "name",
+        "customer",
+        "value",
+        "status",
+        "validUntil",
+        "terms"
+      ]
+    },
+    "submissions": {
+      "name": "Submissions",
+      "description": "Document submissions",
+      "icon": "📝",
+      "status": "inactive",
+      "endpoint": "/api/submissions",
+      "fields": [
+        "name",
+        "customer",
+        "status",
+        "submissionDate",
+        "content"
+      ]
+    },
+    "orders": {
+      "name": "Orders",
+      "description": "Order management",
+      "icon": "📦",
+      "status": "inactive",
+      "endpoint": "/api/orders",
+      "fields": [
+        "number",
+        "customer",
+        "items",
+        "total",
+        "status",
+        "deliveryDate"
+      ]
+    },
+    "docs": {
+      "name": "Docs",
+      "description": "Document management",
+      "icon": "📚",
+      "status": "inactive",
+      "endpoint": "/api/docs",
+      "fields": [
+        "title",
+        "category",
+        "status",
+        "createdDate",
+        "content"
+      ]
+    },
+    "forms": {
+      "name": "Forms",
+      "description": "Form management",
+      "icon": "📋",
+      "status": "inactive",
+      "endpoint": "/api/forms",
+      "fields": [
+        "name",
+        "fields",
+        "responses",
+        "status",
+        "createdDate"
+      ]
+    },
+    "products": {
+      "name": "Products",
+      "description": "Product catalog",
+      "icon": "📦",
+      "status": "active",
+      "endpoint": "/products",
+      "populated": true,
+      "fields": [
+        "name",
+        "sku",
+        "price",
+        "category",
+        "status",
+        "description"
+      ]
+    },
+    "usageCost": {
+      "name": "Usage & Cost",
+      "description": "Usage and cost tracking",
+      "icon": "🧮",
+      "status": "inactive",
+      "endpoint": "/api/usage-cost",
+      "fields": [
+        "metric",
+        "usage",
+        "cost",
+        "period"
+      ]
+    },
+    "event": {
+      "name": "Events",
+      "description": "Event management",
+      "icon": "🎯",
+      "status": "active",
+      "endpoint": "/api/event",
+      "fields": [
+        "title",
+        "startDate",
+        "endDate",
+        "attendees",
+        "location",
+        "description"
+      ]
+    },
+    "note": {
+      "name": "Notes",
+      "description": "Note taking and documentation",
+      "icon": "📝",
+      "status": "active",
+      "endpoint": "/api/note",
+      "fields": [
+        "title",
+        "content",
+        "author",
+        "category",
+        "tags",
+        "createdDate"
+      ]
+    }
+  },
+  "integration": {
+    "n8n": {
+      "webhooks": [
+        "https://superseller.boost.space/api/contacts",
+        "https://superseller.boost.space/api/invoice",
+        "https://superseller.boost.space/api/business-contract",
+        "https://superseller.boost.space/api/todo",
+        "https://superseller.boost.space/api/event"
+      ],
+      "authentication": {
+        "method": "Bearer Token",
+        "token": "88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+      }
+    },
+    "mcp": {
+      "server": "https://mcp.boost.space/v1/superseller/sse",
+      "deployment": "Racknerd VPS",
+      "capabilities": [
+        "Data querying and analysis",
+        "Automated reporting",
+        "Business intelligence",
+        "Predictive analytics",
+        "Natural language queries"
+      ]
+    },
+    "calendar": {
+      "url": "https://superseller.boost.space/api/calendar-user/4/0b9b38ef38cca2180117c0d56c0a2582",
+      "sync": "Apple Calendar",
+      "format": "iCal"
+    }
+  },
+  "automation": {
+    "scenarios": [
+      "Customer data synchronization",
+      "Invoice generation automation",
+      "Contract status updates",
+      "Task assignment automation",
+      "Calendar event synchronization",
+      "Payment tracking automation"
+    ],
+    "alerts": [
+      "Low inventory levels",
+      "Overdue invoices",
+      "Project delays",
+      "Customer churn risk",
+      "System performance issues"
+    ]
+  },
+  "monitoring": {
+    "dashboards": [
+      "Revenue tracking",
+      "Customer acquisition",
+      "Project performance",
+      "Task completion rates",
+      "Invoice status"
+    ],
+    "kpis": [
+      "Monthly Recurring Revenue (MRR)",
+      "Customer Lifetime Value (CLV)",
+      "Project completion time",
+      "Customer satisfaction scores",
+      "Payment collection rates"
+    ]
+  }
+}

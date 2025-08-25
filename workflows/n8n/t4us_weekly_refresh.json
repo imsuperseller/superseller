@@ -1,0 +1,323 @@
+{
+    "name": "T4US — Weekly Refresh (Links + FAQ Plan)",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "30 7 * * 1"
+                        }
+                    ]
+                }
+            },
+            "id": "cron-trigger",
+            "name": "Cron Trigger",
+            "type": "n8n-nodes-base.cron",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://tax4us.co.il/wp-json/wp/v2/pages?per_page=100&_fields=id,slug,title,link,modified&lang=he",
+                "options": {}
+            },
+            "id": "get-hebrew-pages",
+            "name": "Get Hebrew Pages",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                460,
+                200
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "url": "https://tax4us.co.il/wp-json/wp/v2/pages?per_page=100&_fields=id,slug,title,link,modified&lang=en",
+                "options": {}
+            },
+            "id": "get-english-pages",
+            "name": "Get English Pages",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                460,
+                400
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Combine Hebrew and English pages\nconst hePages = $('Get Hebrew Pages').item.json;\nconst enPages = $('Get English Pages').item.json;\n\n// Combine all pages\nconst allPages = [...hePages, ...enPages];\n\n// Create analysis data\nconst analysisData = {\n  total_pages: allPages.length,\n  hebrew_pages: hePages.length,\n  english_pages: enPages.length,\n  pages: allPages.map(page => ({\n    id: page.id,\n    slug: page.slug,\n    title: page.title.rendered || page.title,\n    link: page.link,\n    modified: page.modified,\n    language: hePages.find(p => p.id === page.id) ? 'he' : 'en'\n  })),\n  last_modified: allPages.reduce((latest, page) => {\n    return new Date(page.modified) > new Date(latest) ? page.modified : latest;\n  }, '1970-01-01T00:00:00Z')\n};\n\nreturn [{\n  json: analysisData\n}];"
+            },
+            "id": "combine-pages",
+            "name": "Combine Pages",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "You are a senior content strategist for tax4us.co.il (Israeli tax advisory).\nAnalyze the provided pages and suggest internal link opportunities and FAQ additions.\n\nReturn STRICT JSON array with this structure:\n[\n  {\n    \"slug\": \"page-slug\",\n    \"suggested_links\": [\n      {\"anchor\": \"relevant text\", \"to_slug\": \"target-page-slug\"}\n    ],\n    \"faq_additions\": [\n      {\"q\": \"Question text\", \"a_html\": \"<p>Answer text</p>\"}\n    ]\n  }\n]\n\nGuidelines:\n- Suggest natural, contextual internal links\n- Focus on tax-related topics and services\n- Ensure anchor text is relevant and descriptive\n- FAQ questions should address common tax concerns\n- Keep suggestions practical and actionable"
+                        },
+                        {
+                            "role": "user",
+                            "content": "=Analyze these pages for internal link opportunities and FAQ additions: {{ JSON.stringify($json) }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 3000
+                }
+            },
+            "id": "openai-analysis",
+            "name": "OpenAI Analysis",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ],
+            "notes": "Credential: OpenAi account"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Parse OpenAI response and prepare weekly report\nconst pagesData = $('Combine Pages').item.json;\nconst suggestions = JSON.parse($json.choices[0].message.content);\n\n// Calculate statistics\nconst totalSuggestions = suggestions.reduce((sum, item) => {\n  return sum + (item.suggested_links?.length || 0) + (item.faq_additions?.length || 0);\n}, 0);\n\nconst reportData = {\n  date: new Date().toISOString().split('T')[0],\n  total_pages_analyzed: pagesData.total_pages,\n  hebrew_pages: pagesData.hebrew_pages,\n  english_pages: pagesData.english_pages,\n  total_suggestions: totalSuggestions,\n  link_suggestions: suggestions.reduce((sum, item) => sum + (item.suggested_links?.length || 0), 0),\n  faq_suggestions: suggestions.reduce((sum, item) => sum + (item.faq_additions?.length || 0), 0),\n  suggestions: suggestions,\n  last_modified: pagesData.last_modified\n};\n\nreturn [{\n  json: reportData\n}];"
+            },
+            "id": "prepare-report",
+            "name": "Prepare Report",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "apply-links-check",
+                            "leftValue": "={{ $env.APPLY_MINOR_LINKS }}",
+                            "rightValue": "true",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equal"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "check-apply-links",
+            "name": "Check Apply Links",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Apply limited safe content patches\nconst report = $('Prepare Report').item.json;\nconst suggestions = report.suggestions;\n\nconst appliedPatches = [];\n\nfor (const suggestion of suggestions) {\n  // Only apply if there are 3 or fewer suggestions (safe limit)\n  if (suggestion.suggested_links && suggestion.suggested_links.length <= 3) {\n    for (const link of suggestion.suggested_links) {\n      // Apply the internal link\n      const patchResult = {\n        slug: suggestion.slug,\n        anchor: link.anchor,\n        to_slug: link.to_slug,\n        applied: true,\n        timestamp: new Date().toISOString()\n      };\n      \n      appliedPatches.push(patchResult);\n    }\n  }\n}\n\nreturn [{\n  json: {\n    ...report,\n    applied_patches: appliedPatches,\n    auto_applied: appliedPatches.length\n  }\n}];"
+            },
+            "id": "apply-minor-links",
+            "name": "Apply Minor Links",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "toEmail": "=content@tax4us.co.il",
+                "subject": "=Tax4Us Weekly Content Refresh Report - {{ $('Prepare Report').item.json.date }}",
+                "emailType": "html",
+                "message": "=<h2>Tax4Us Weekly Content Refresh Report</h2>\n<p><strong>Date:</strong> {{ $('Prepare Report').item.json.date }}</p>\n<p><strong>Pages Analyzed:</strong> {{ $('Prepare Report').item.json.total_pages_analyzed }} ({{ $('Prepare Report').item.json.hebrew_pages }} Hebrew, {{ $('Prepare Report').item.json.english_pages }} English)</p>\n<p><strong>Total Suggestions:</strong> {{ $('Prepare Report').item.json.total_suggestions }}</p>\n<ul>\n  <li>Internal Links: {{ $('Prepare Report').item.json.link_suggestions }}</li>\n  <li>FAQ Additions: {{ $('Prepare Report').item.json.faq_suggestions }}</li>\n</ul>\n\n<h3>Detailed Suggestions:</h3>\n{{ $('Prepare Report').item.json.suggestions.map(suggestion => {\n  return `<h4>Page: ${suggestion.slug}</h4>` +\n    (suggestion.suggested_links ? `<p><strong>Link Suggestions:</strong></p><ul>${suggestion.suggested_links.map(link => `<li>\"${link.anchor}\" → ${link.to_slug}</li>`).join('')}</ul>` : '') +\n    (suggestion.faq_additions ? `<p><strong>FAQ Suggestions:</strong></p><ul>${suggestion.faq_additions.map(faq => `<li><strong>Q:</strong> ${faq.q}<br><strong>A:</strong> ${faq.a_html}</li>`).join('')}</ul>` : '');\n}).join('') }}\n\n<p><strong>Last Modified:</strong> {{ $('Prepare Report').item.json.last_modified }}</p>\n\n<p>This report is generated automatically every Monday at 7:30 AM Chicago time.</p>\n\n<p>Best regards,<br>Tax4Us Content System</p>",
+                "options": {}
+            },
+            "id": "email-weekly-report",
+            "name": "Email Weekly Report",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                1780,
+                300
+            ],
+            "notes": "Credential: Gmail OAuth2 API"
+        },
+        {
+            "parameters": {
+                "operation": "append",
+                "sheetId": "tax4us_content_specs",
+                "range": "weekly_reports!A:Z",
+                "options": {}
+            },
+            "id": "log-weekly-report",
+            "name": "Log Weekly Report",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4,
+            "position": [
+                2000,
+                300
+            ],
+            "notes": "Credential: Google Sheets account"
+        }
+    ],
+    "connections": {
+        "Cron Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Get Hebrew Pages",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Get English Pages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Hebrew Pages": {
+            "main": [
+                [
+                    {
+                        "node": "Combine Pages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get English Pages": {
+            "main": [
+                [
+                    {
+                        "node": "Combine Pages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Combine Pages": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Report",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Report": {
+            "main": [
+                [
+                    {
+                        "node": "Check Apply Links",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check Apply Links": {
+            "main": [
+                [
+                    {
+                        "node": "Apply Minor Links",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Email Weekly Report",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Apply Minor Links": {
+            "main": [
+                [
+                    {
+                        "node": "Email Weekly Report",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Email Weekly Report": {
+            "main": [
+                [
+                    {
+                        "node": "Log Weekly Report",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [
+        {
+            "createdAt": "2025-08-25T06:00:00.000Z",
+            "updatedAt": "2025-08-25T06:00:00.000Z",
+            "id": "tax4us-content",
+            "name": "tax4us-content"
+        }
+    ],
+    "triggerCount": 1,
+    "updatedAt": "2025-08-25T06:00:00.000Z",
+    "versionId": "1",
+    "meta": {
+        "instanceId": "tax4us-content-system"
+    }
+}

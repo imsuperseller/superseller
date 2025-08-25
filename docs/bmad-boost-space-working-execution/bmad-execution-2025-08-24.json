@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-08-24T18:40:37.929Z",
+  "bmadPhase": "MARY",
+  "status": "failed",
+  "phases": {},
+  "finalResults": {},
+  "summary": {
+    "totalModules": 0,
+    "workingModules": 0,
+    "failedModules": 0
+  },
+  "error": "Cannot set properties of undefined (setting 'currentState')"
+}

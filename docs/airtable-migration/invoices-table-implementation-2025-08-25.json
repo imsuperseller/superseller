@@ -1,0 +1,378 @@
+{
+  "timestamp": "2025-08-25T02:54:34.673Z",
+  "status": "completed",
+  "fieldsAdded": [
+    {
+      "name": "Invoice Number",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Invoice Status",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Invoice Date",
+      "type": "date",
+      "success": true
+    },
+    {
+      "name": "Currency",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Exchange Rate",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Client Company",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Client Company Name",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Client Contact",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Client Contact Name",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Client Email",
+      "type": "email",
+      "success": true
+    },
+    {
+      "name": "Client Phone",
+      "type": "phoneNumber",
+      "success": true
+    },
+    {
+      "name": "Project Name",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Service Description",
+      "type": "richText",
+      "success": true
+    },
+    {
+      "name": "Service Category",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Hours Billed",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Hourly Rate",
+      "type": "currency",
+      "success": true
+    },
+    {
+      "name": "Discount Rate",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Discount Amount",
+      "type": "currency",
+      "success": true
+    },
+    {
+      "name": "Payment Status",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Payment Reference",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Late Fee",
+      "type": "currency",
+      "success": true
+    },
+    {
+      "name": "Interest Rate",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Billing Address",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Shipping Address",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Billing Contact",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Billing Email",
+      "type": "email",
+      "success": true
+    },
+    {
+      "name": "Billing Phone",
+      "type": "phoneNumber",
+      "success": true
+    },
+    {
+      "name": "Purchase Order",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Invoice Notes",
+      "type": "richText",
+      "success": true
+    },
+    {
+      "name": "Terms & Conditions",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Internal Notes",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Invoice Template",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Invoice Language",
+      "type": "singleSelect",
+      "success": true
+    },
+    {
+      "name": "Invoice URL",
+      "type": "url",
+      "success": true
+    },
+    {
+      "name": "Linked Company",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Linked Contact",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Linked Project",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Linked Payments",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Linked Documents",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Linked Time Tracking",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Days Outstanding",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Days Overdue",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Payment Probability",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Collection Score",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Customer Rating",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Invoice Score",
+      "type": "number",
+      "success": true
+    },
+    {
+      "name": "Follow-up Date",
+      "type": "date",
+      "success": true
+    },
+    {
+      "name": "Follow-up Notes",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Dispute Reason",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Resolution Notes",
+      "type": "multilineText",
+      "success": true
+    },
+    {
+      "name": "Last Activity",
+      "type": "dateTime",
+      "success": true
+    },
+    {
+      "name": "Sent Date",
+      "type": "date",
+      "success": true
+    },
+    {
+      "name": "Viewed Date",
+      "type": "date",
+      "success": true
+    },
+    {
+      "name": "Reminder Date",
+      "type": "date",
+      "success": true
+    },
+    {
+      "name": "Created By",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Last Modified By",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Record ID",
+      "type": "singleLineText",
+      "success": true
+    },
+    {
+      "name": "Data Quality Score",
+      "type": "number",
+      "success": true
+    }
+  ],
+  "errors": [
+    {
+      "step": "addField",
+      "field": "Invoice Type",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Due Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Payment Terms",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Project",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Subtotal",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Tax Rate",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Tax Amount",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Total Amount",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Amount Paid",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Balance Due",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Payment Method",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Payment Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Tags",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Notes",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Created Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Last Updated",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

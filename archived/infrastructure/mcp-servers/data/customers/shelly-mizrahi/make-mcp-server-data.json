@@ -1,0 +1,107 @@
+{
+  "timestamp": "2025-08-21T20:09:59.227Z",
+  "source": "Make MCP Server Integration",
+  "apiConfig": {
+    "zone": "us2.make.com",
+    "baseUrl": "https://us2.make.com/api/v2",
+    "permissions": [
+      "admin:read",
+      "admin:write",
+      "agents:read",
+      "agents:write",
+      "ai-agents:read",
+      "ai-agents:write",
+      "analytics:read",
+      "analytics:write",
+      "apps:read",
+      "apps:write",
+      "connections:read",
+      "connections:write",
+      "credential-requests:read",
+      "credential-requests:write",
+      "custom-property-structures:read",
+      "custom-property-structures:write",
+      "datastores:read",
+      "datastores:write",
+      "devices:read",
+      "devices:write",
+      "dlqs:read",
+      "dlqs:write",
+      "functions:read",
+      "functions:write",
+      "hitl:read",
+      "hitl:write",
+      "hooks:read",
+      "hooks:write",
+      "imt-forms:read",
+      "instances:read",
+      "instances:write",
+      "keys:read",
+      "keys:write",
+      "notifications:read",
+      "notifications:write",
+      "organizations:read",
+      "organizations:write",
+      "organization-variables:read",
+      "organization-variables:write",
+      "portal:read",
+      "portal:write",
+      "scenarios:read",
+      "scenarios:run",
+      "scenarios:write",
+      "sdk-apps:read",
+      "sdk-apps:write",
+      "system:read",
+      "system:write",
+      "teams:read",
+      "teams:write",
+      "team-variables:read",
+      "team-variables:write",
+      "templates:read",
+      "templates:write",
+      "udts:read",
+      "udts:write",
+      "user:read",
+      "user:write"
+    ]
+  },
+  "mcpToken": "7cca707a-9429-4997-8ba9-fc67fc7e4b29",
+  "scenarios": [
+    {
+      "id": "shelly-family-research",
+      "name": "Shelly Family Research & Profile Generator",
+      "description": "AI-powered family research and insurance profile generation",
+      "scheduling": "On demand",
+      "status": "active"
+    }
+  ],
+  "scenarioDetails": [
+    {
+      "id": "shelly-family-research",
+      "name": "Shelly Family Research & Profile Generator",
+      "description": "AI-powered family research and insurance profile generation",
+      "status": "details_unavailable"
+    }
+  ],
+  "technicalInstructions": "# Make MCP Server Technical Instructions\n\n## 📋 COMPLETE MCP SERVER INTEGRATION FOR SHELLY'S FAMILY RESEARCH WORKFLOW\n\n*Generated from Make MCP Server on 2025-08-21T20:09:59.234Z*\n\n---\n\n## **🔗 MCP SERVER CONFIGURATION**\n\n### **MCP Server URL:**\n```\nhttps://us2.make.com/mcp/api/v1/u/7cca707a-9429-4997-8ba9-fc67fc7e4b29/sse\n```\n\n### **MCP Configuration:**\n```json\n{\n  \"mcpServers\": {\n    \"make\": {\n      \"url\": \"https://us2.make.com/mcp/api/v1/u/7cca707a-9429-4997-8ba9-fc67fc7e4b29/sse\"\n    }\n  }\n}\n```\n\n---\n\n## **📊 AVAILABLE SCENARIOS**\n\n### **Found 1 scenarios:**\n\n\n#### **Shelly Family Research & Profile Generator**\n- **ID:** shelly-family-research\n- **Description:** AI-powered family research and insurance profile generation\n- **Scheduling:** On demand\n- **Status:** active\n\n\n---\n\n## **🔧 SCENARIO CREATION VIA MCP**\n\n### **Step 1: Create Shelly's Family Research Scenario**\n```javascript\n// Using MCP tools\nawait mcp.make.create_scenario({\n  name: \"Shelly Family Research & Profile Generator\",\n  description: \"AI-powered family research and insurance profile generation\",\n  scheduling: \"On demand\",\n  modules: [\n    {\n      name: \"Manual Trigger\",\n      type: \"trigger\",\n      config: {\n        inputFields: [\n          { name: \"client_id\", type: \"text\", required: true },\n          { name: \"family_member_ids\", type: \"text\", required: true },\n          { name: \"research_depth\", type: \"select\", options: [\"basic\", \"comprehensive\", \"deep\"] }\n        ]\n      }\n    }\n  ]\n});\n```\n\n### **Step 2: Execute Scenario via MCP**\n```javascript\n// Execute family research\nawait mcp.make.execute_scenario({\n  scenarioId: \"shelly-family-research\",\n  input: {\n    client_id: \"CLIENT123\",\n    family_member_ids: \"MEMBER1,MEMBER2,MEMBER3\",\n    research_depth: \"comprehensive\"\n  }\n});\n```\n\n### **Step 3: Monitor Execution**\n```javascript\n// Check execution status\nawait mcp.make.get_execution_status({\n  executionId: \"execution_id_from_step_2\"\n});\n```\n\n---\n\n## **🎯 MCP TOOLS FOR SHELLY**\n\n### **Available MCP Tools:**\n1. **list_scenarios** - List all available scenarios\n2. **get_scenario** - Get specific scenario details\n3. **create_scenario** - Create new scenario\n4. **execute_scenario** - Execute scenario with input\n5. **get_execution_status** - Check execution status\n6. **update_scenario** - Update existing scenario\n7. **delete_scenario** - Delete scenario\n\n### **Shelly's Custom Tools:**\n1. **create_shelly_family_research** - Create family research scenario\n2. **execute_family_research** - Execute family research workflow\n3. **get_family_profile** - Get generated family profile\n4. **upload_to_surense** - Upload profile to Surense\n\n---\n\n## **🚀 IMMEDIATE USAGE**\n\n### **Create Shelly's Workflow:**\n```javascript\n// Create the complete family research workflow\nawait mcp.make.create_shelly_family_research({\n  name: \"Shelly Family Research & Profile Generator\",\n  description: \"AI-powered family research and insurance profile generation\",\n  modules: [\n    \"Manual Trigger\",\n    \"OpenAI Research Agent\", \n    \"OpenAI Document Generator\",\n    \"Surense Lead Creator\",\n    \"Surense Document Upload\",\n    \"Customer Portal Webhook\"\n  ]\n});\n```\n\n### **Execute Family Research:**\n```javascript\n// Execute with test data\nawait mcp.make.execute_family_research({\n  client_id: \"TEST123\",\n  family_member_ids: \"MEMBER1,MEMBER2,MEMBER3\",\n  research_depth: \"comprehensive\"\n});\n```\n\n---\n\n## **📊 API ENDPOINTS**\n\n### **Scenarios:**\n- **GET** `/api/v2/scenarios` - List all scenarios\n- **GET** `/api/v2/scenarios/{id}` - Get scenario details\n- **POST** `/api/v2/scenarios` - Create new scenario\n- **PUT** `/api/v2/scenarios/{id}` - Update scenario\n- **DELETE** `/api/v2/scenarios/{id}` - Delete scenario\n\n### **Executions:**\n- **POST** `/api/v2/scenarios/{id}/executions` - Execute scenario\n- **GET** `/api/v2/scenarios/{id}/executions/{executionId}` - Get execution status\n\n### **MCP:**\n- **SSE** `/mcp/api/v1/u/{token}/sse` - MCP Server endpoint\n\n---\n\n## **🔐 AUTHENTICATION**\n\n### **API Key:**\n```\n7cca707a-9429-4997-8ba9-fc67fc7e4b29\n```\n\n### **Permissions:**\n- admin:read\n- admin:write\n- agents:read\n- agents:write\n- ai-agents:read\n- ai-agents:write\n- analytics:read\n- analytics:write\n- apps:read\n- apps:write\n- connections:read\n- connections:write\n- credential-requests:read\n- credential-requests:write\n- custom-property-structures:read\n- custom-property-structures:write\n- datastores:read\n- datastores:write\n- devices:read\n- devices:write\n- dlqs:read\n- dlqs:write\n- functions:read\n- functions:write\n- hitl:read\n- hitl:write\n- hooks:read\n- hooks:write\n- imt-forms:read\n- instances:read\n- instances:write\n- keys:read\n- keys:write\n- notifications:read\n- notifications:write\n- organizations:read\n- organizations:write\n- organization-variables:read\n- organization-variables:write\n- portal:read\n- portal:write\n- scenarios:read\n- scenarios:run\n- scenarios:write\n- sdk-apps:read\n- sdk-apps:write\n- system:read\n- system:write\n- teams:read\n- teams:write\n- team-variables:read\n- team-variables:write\n- templates:read\n- templates:write\n- udts:read\n- udts:write\n- user:read\n- user:write\n\n---\n\n## **📋 NEXT STEPS**\n\n1. **Configure MCP Client** with the provided configuration\n2. **Test MCP Connection** using the tools\n3. **Create Shelly's Scenario** via MCP\n4. **Execute Test Run** with sample data\n5. **Monitor Results** and optimize\n6. **Deploy to Production** for Shelly\n\n---\n\n*Generated from Make MCP Server integration with full API access*\n",
+  "mcpConfiguration": {
+    "mcpServers": {
+      "make": {
+        "url": "https://us2.make.com/mcp/api/v1/u/7cca707a-9429-4997-8ba9-fc67fc7e4b29/sse"
+      },
+      "makeLegacy": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "https://us2.make.com/mcp/api/v1/u/7cca707a-9429-4997-8ba9-fc67fc7e4b29/sse"
+        ]
+      }
+    },
+    "apiConfig": {
+      "apiKey": "7cca707a-9429-4997-8ba9-fc67fc7e4b29",
+      "zone": "us2.make.com",
+      "baseUrl": "https://us2.make.com/api/v2"
+    }
+  }
+}

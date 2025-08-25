@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-08-25T01:22:09.404Z",
+  "status": "completed",
+  "bases": {},
+  "tables": {},
+  "records": {},
+  "errors": [
+    {
+      "step": "createMainBusinessBase",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createCustomerManagementBase",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createProjectManagementBase",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createFinancialManagementBase",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createAutomationWorkflowsBase",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

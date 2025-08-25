@@ -1,0 +1,17 @@
+[Unit]
+Description=Webflow MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mcp-servers/webflow-mcp-server
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+Environment=WEBFLOW_API_TOKEN=90b67c9892c0067fde5f716f9a95f2e0b863cbbf496465cdeef5ddc817e4124b
+Environment=WEBFLOW_SITE_ID=66c7e551a317e0e9c9f906d8
+
+[Install]
+WantedBy=multi-user.target

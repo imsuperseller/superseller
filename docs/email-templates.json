@@ -1,0 +1,26 @@
+{
+  "customerOnboarding": {
+    "subject": "Welcome to Rensto - Your Success Journey Begins!",
+    "body": "Hi [CUSTOMER_NAME]! 👋\n\nWelcome to Rensto! I'm excited to be your Customer Success Manager and help you achieve your business goals.\n\n**Your Onboarding Plan:**\n✅ Account setup complete\n📅 Onboarding call scheduled for [DATE]\n📚 Resource access granted\n🎯 Success metrics defined\n\n**Next Steps:**\n1. Complete your onboarding call\n2. Explore our platform features\n3. Set up your first automation\n4. Schedule your success review\n\n**Resources:**\n• Knowledge Base: https://help.rensto.com\n• Video Tutorials: https://tutorials.rensto.com\n• Community Forum: https://community.rensto.com\n\n**Support:**\n• Email: mary@rensto.com\n• Phone: +1 (555) 123-4567\n• Live Chat: Available 24/7\n\nI'm here to ensure your success with Rensto!\n\nBest regards,\nMary Johnson\nCustomer Success Manager\nRensto Business Solutions"
+  },
+  "technicalSupport": {
+    "subject": "Technical Support Request - Ticket #[TICKET_ID]",
+    "body": "Hi [CUSTOMER_NAME]! 🔧\n\nI've received your technical support request and created ticket #[TICKET_ID].\n\n**Issue Details:**\n• Description: [ISSUE_DESCRIPTION]\n• Priority: [PRIORITY_LEVEL]\n• Category: [CATEGORY]\n\n**Expected Resolution:**\n• Investigation: [TIMEFRAME]\n• Resolution: [TIMEFRAME]\n• Follow-up: [TIMEFRAME]\n\n**Tracking:**\n• Ticket URL: https://support.rensto.com/ticket/[TICKET_ID]\n• Status updates: You'll receive email notifications\n\n**Immediate Actions:**\n1. [ACTION_1]\n2. [ACTION_2]\n3. [ACTION_3]\n\nIf this is urgent, please call: +1 (555) 123-4567\n\nI'll keep you updated on the progress.\n\nBest regards,\nJohn Smith\nTechnical Support Engineer\nRensto Business Solutions"
+  },
+  "businessDevelopment": {
+    "subject": "Partnership Opportunity - Rensto Business Solutions",
+    "body": "Hi [CONTACT_NAME]! 🚀\n\nThank you for your interest in partnering with Rensto! I'm excited about the potential collaboration.\n\n**Partnership Opportunity:**\n• Type: [PARTNERSHIP_TYPE]\n• Value Proposition: [VALUE_PROP]\n• Market Opportunity: [MARKET_SIZE]\n\n**Next Steps:**\n1. Partnership discussion call\n2. Proposal development\n3. Agreement finalization\n4. Launch planning\n\n**Proposed Timeline:**\n• Week 1: Partnership discussion\n• Week 2: Proposal review\n• Week 3: Agreement signing\n• Week 4: Launch preparation\n\n**Schedule a Call:**\nhttps://calendly.com/rensto/winston\n\nI look forward to exploring this opportunity with you!\n\nBest regards,\nWinston Chen\nBusiness Development Manager\nRensto Business Solutions"
+  },
+  "marketingCampaign": {
+    "subject": "Exciting News from Rensto - [CAMPAIGN_NAME]",
+    "body": "Hi [RECIPIENT_NAME]! 📢\n\nExciting news from Rensto! We're launching [CAMPAIGN_NAME] and wanted to share it with you first.\n\n**Campaign Highlights:**\n🎯 [KEY_FEATURE_1]\n🚀 [KEY_FEATURE_2]\n💡 [KEY_FEATURE_3]\n\n**Special Offer:**\n[OFFER_DETAILS]\n\n**Campaign Timeline:**\n• Launch: [LAUNCH_DATE]\n• Duration: [DURATION]\n• Early Access: [EARLY_ACCESS_DATE]\n\n**Get Involved:**\n• Share on social media\n• Refer friends and colleagues\n• Join our community\n\n**Stay Connected:**\n• LinkedIn: https://linkedin.com/company/rensto\n• Twitter: https://twitter.com/rensto\n• Blog: https://rensto.com/blog\n\nThank you for being part of our community!\n\nBest regards,\nSarah Rodriguez\nMarketing Specialist\nRensto Business Solutions"
+  },
+  "operationsUpdate": {
+    "subject": "Operations Update - [UPDATE_TYPE]",
+    "body": "Hi [STAKEHOLDER_NAME]! ⚙️\n\nI wanted to update you on our latest operations improvements and upcoming changes.\n\n**Recent Updates:**\n✅ [UPDATE_1]\n✅ [UPDATE_2]\n✅ [UPDATE_3]\n\n**Performance Metrics:**\n• Efficiency: [METRIC_1]\n• Quality: [METRIC_2]\n• Cost: [METRIC_3]\n\n**Upcoming Changes:**\n📅 [CHANGE_1] - [DATE]\n📅 [CHANGE_2] - [DATE]\n📅 [CHANGE_3] - [DATE]\n\n**Impact:**\n• [IMPACT_1]\n• [IMPACT_2]\n• [IMPACT_3]\n\n**Questions or Concerns:**\nPlease reach out if you have any questions about these changes.\n\nBest regards,\nAlex Thompson\nOperations Manager\nRensto Business Solutions"
+  },
+  "financialReport": {
+    "subject": "Financial Report - [REPORT_PERIOD]",
+    "body": "Hi [STAKEHOLDER_NAME]! 📊\n\nPlease find attached the [REPORT_PERIOD] financial report for Rensto.\n\n**Key Highlights:**\n💰 Revenue: [REVENUE]\n📈 Growth: [GROWTH_RATE]\n💵 Profitability: [PROFIT_MARGIN]\n🎯 Performance: [PERFORMANCE_METRIC]\n\n**Financial Summary:**\n• Revenue: [REVENUE_DETAILS]\n• Expenses: [EXPENSE_DETAILS]\n• Profit: [PROFIT_DETAILS]\n• Cash Flow: [CASH_FLOW_DETAILS]\n\n**Key Insights:**\n• [INSIGHT_1]\n• [INSIGHT_2]\n• [INSIGHT_3]\n\n**Next Quarter Forecast:**\n• Revenue Projection: [PROJECTION]\n• Growth Opportunities: [OPPORTUNITIES]\n• Risk Factors: [RISKS]\n\n**Questions:**\nPlease schedule a call if you'd like to discuss any aspect of this report.\n\nBest regards,\nQuinn Williams\nFinance & Analytics Manager\nRensto Business Solutions"
+  }
+}

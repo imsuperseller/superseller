@@ -1,0 +1,461 @@
+{
+    "name": "T4US — Spec → Draft (WP + ACF)",
+    "nodes": [
+        {
+            "parameters": {
+                "sheetId": "tax4us_content_specs",
+                "range": "pages!A:O",
+                "options": {
+                    "pollingInterval": 300
+                }
+            },
+            "id": "google-sheets-trigger",
+            "name": "Google Sheets Trigger",
+            "type": "n8n-nodes-base.googleSheetsTrigger",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ],
+            "notes": "Credential: Google Sheets account"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Normalize spec and filter for new items\nconst items = $input.all();\nconst newItems = [];\n\nfor (const item of items) {\n  const spec = item.json;\n  \n  // Filter for status 'New'\n  if (spec.status === 'New') {\n    // Normalize spec\n    const normalizedSpec = {\n      id: spec.id,\n      type: spec.type || 'page',\n      language: spec.language || 'he',\n      slug: spec.language === 'he' ? spec.slug_he : spec.slug_en,\n      title: spec.title,\n      persona: spec.persona,\n      keywords: spec.keywords,\n      outline: spec.outline,\n      cta_text: spec.cta_text,\n      target_url: spec.target_url,\n      internal_targets: spec.internal_targets,\n      media_brief: spec.media_brief,\n      group_id: spec.group_id\n    };\n    \n    newItems.push({\n      json: normalizedSpec\n    });\n  }\n}\n\nreturn newItems;"
+            },
+            "id": "normalize-spec",
+            "name": "Normalize Spec",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "=https://tax4us.co.il/wp-json/wp/v2/{{ $json.type === 'page' ? 'pages' : $json.type }}?slug={{ $json.slug }}&lang={{ $json.language }}",
+                "options": {}
+            },
+            "id": "slug-collision-check",
+            "name": "Slug Collision Check",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "collision-check",
+                            "leftValue": "={{ $json.length }}",
+                            "rightValue": 0,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "check-collision",
+            "name": "Check Collision",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Handle slug collision\nconst spec = $('Normalize Spec').item.json;\nconst collision = $json;\n\n// Generate new slug with timestamp\nconst timestamp = Date.now();\nconst newSlug = `${spec.slug}-${timestamp}`;\n\nreturn [{\n  json: {\n    ...spec,\n    slug: newSlug,\n    collision_resolved: true,\n    original_slug: spec.slug\n  }\n}];"
+            },
+            "id": "resolve-collision",
+            "name": "Resolve Collision",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "You are a senior content engineer for tax4us.co.il (Israeli tax advisory).\nReturn STRICT JSON matching the provided Draft JSON contract (no prose).\nConstraints:\n- Language from spec.language (default he).\n- type=faq → fill faqs; type=service → outcomes + clear CTA.\n- sections[].body_html: semantic HTML only (no inline CSS).\n- Provide valid schema_jsonld (Service or FAQPage).\n- Use internal_targets to propose internal_links (natural anchors).\n- OG concise.\n\nDraft JSON contract:\n{\n  \"id\": \"<spec.id>\",\n  \"type\": \"page|service|faq|glossary|case_study\",\n  \"language\": \"he|en\",\n  \"slug\": \"slug-for-current-language\",\n  \"title\": \"H1\",\n  \"subtitle\": \"optional hero subtitle\",\n  \"sections\": [{\"heading\": \"string\", \"body_html\": \"<p>…</p>\"}],\n  \"faqs\": [{\"q\": \"…\", \"a_html\": \"<p>…</p>\"}],\n  \"schema_jsonld\": {\"@context\": \"https://schema.org\", \"@type\": \"Service\", \"name\": \"…\", \"description\": \"…\"},\n  \"og\": {\"title\": \"…\", \"description\": \"…\", \"image_url\": \"…\"},\n  \"internal_links\": [{\"anchor\": \"…\", \"to_slug\": \"existing-page-slug\"}],\n  \"cta\": {\"label\": \"Book a consult\", \"href\": \"/contact\"}\n}"
+                        },
+                        {
+                            "role": "user",
+                            "content": "=Generate content for this spec: {{ JSON.stringify($('Normalize Spec').item.json) }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 4000
+                }
+            },
+            "id": "openai-content-generator",
+            "name": "OpenAI Content Generator",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ],
+            "notes": "Credential: OpenAi account"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Parse OpenAI response and compose WordPress payload\nconst spec = $('Normalize Spec').item.json;\nconst draft = JSON.parse($json.choices[0].message.content);\n\n// Compose WordPress content\nconst sectionsHtml = draft.sections.map(section => \n  `<section><h2>${section.heading}</h2>${section.body_html}</section>`\n).join('\\n');\n\nconst schemaScript = `<script type=\"application/ld+json\">${JSON.stringify(draft.schema_jsonld)}</script>`;\n\nconst content = `<main>${sectionsHtml}</main>${schemaScript}`;\n\n// Determine endpoint based on type\nconst endpoint = spec.type === 'page' ? 'pages' : spec.type;\n\nreturn [{\n  json: {\n    spec: spec,\n    draft: draft,\n    wp_payload: {\n      title: draft.title,\n      slug: draft.slug,\n      status: 'draft',\n      content: content,\n      excerpt: draft.og.description\n    },\n    endpoint: endpoint\n  }\n}];"
+            },
+            "id": "compose-wp-payload",
+            "name": "Compose WP Payload",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "=https://tax4us.co.il/wp-json/wp/v2/{{ $json.endpoint }}?lang={{ $json.spec.language }}",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ $json.wp_payload }}",
+                "options": {}
+            },
+            "id": "wordpress-create-draft",
+            "name": "WordPress Create Draft",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1780,
+                300
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "url": "=https://tax4us.co.il/wp-json/acf/v3/{{ $json.spec.endpoint }}/{{ $json.id }}",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"fields\": {\n    \"hero_subtitle\": \"{{ $('Compose WP Payload').item.json.draft.subtitle }}\",\n    \"faq_items\": {{ JSON.stringify($('Compose WP Payload').item.json.draft.faqs) }},\n    \"og_title\": \"{{ $('Compose WP Payload').item.json.draft.og.title }}\",\n    \"og_description\": \"{{ $('Compose WP Payload').item.json.draft.og.description }}\",\n    \"og_image_url\": \"{{ $('Compose WP Payload').item.json.draft.og.image_url }}\",\n    \"schema_json\": {{ JSON.stringify($('Compose WP Payload').item.json.draft.schema_jsonld) }}\n  }\n}",
+                "options": {}
+            },
+            "id": "acf-write-fields",
+            "name": "ACF Write Fields",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2000,
+                300
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "url": "=https://tax4us.co.il/wp-json/wp/v2/{{ $('Compose WP Payload').item.json.endpoint }}/{{ $('WordPress Create Draft').item.json.id }}?lang={{ $('Compose WP Payload').item.json.spec.language }}&_fields=meta",
+                "options": {}
+            },
+            "id": "check-rankmath",
+            "name": "Check RankMath",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2220,
+                300
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "rankmath-check",
+                            "leftValue": "={{ $json.meta && $json.meta.rank_math_title }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equal"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "has-rankmath",
+            "name": "Has RankMath",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                2440,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "=https://tax4us.co.il/wp-json/wp/v2/{{ $('Compose WP Payload').item.json.endpoint }}/{{ $('WordPress Create Draft').item.json.id }}?lang={{ $('Compose WP Payload').item.json.spec.language }}",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"meta\": {\n    \"rank_math_title\": \"{{ $('Compose WP Payload').item.json.draft.og.title }}\",\n    \"rank_math_description\": \"{{ $('Compose WP Payload').item.json.draft.og.description }}\"\n  }\n}",
+                "options": {
+                    "method": "PUT"
+                }
+            },
+            "id": "update-rankmath",
+            "name": "Update RankMath",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2660,
+                300
+            ],
+            "notes": "Credential: Wordpress account"
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "sheetId": "tax4us_content_specs",
+                "range": "pages!A:O",
+                "columnToMatch": "id",
+                "valueToMatchOn": "={{ $('Compose WP Payload').item.json.spec.id }}",
+                "fieldsToSend": {
+                    "status": "Drafted",
+                    "wp_id": "={{ $('WordPress Create Draft').item.json.id }}",
+                    "preview_url": "=https://tax4us.co.il/wp-admin/post.php?post={{ $('WordPress Create Draft').item.json.id }}&action=edit",
+                    "acf_ready": true
+                }
+            },
+            "id": "update-sheets",
+            "name": "Update Sheets",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4,
+            "position": [
+                2880,
+                300
+            ],
+            "notes": "Credential: Google Sheets account"
+        },
+        {
+            "parameters": {
+                "toEmail": "=reviewer@tax4us.co.il",
+                "subject": "=Draft ready: {{ $('Compose WP Payload').item.json.spec.title }} ({{ $('Compose WP Payload').item.json.spec.id }})",
+                "emailType": "html",
+                "message": "=<h2>New Draft Ready for Review</h2>\n<p><strong>Title:</strong> {{ $('Compose WP Payload').item.json.spec.title }}</p>\n<p><strong>ID:</strong> {{ $('Compose WP Payload').item.json.spec.id }}</p>\n<p><strong>Type:</strong> {{ $('Compose WP Payload').item.json.spec.type }}</p>\n<p><strong>Language:</strong> {{ $('Compose WP Payload').item.json.spec.language }}</p>\n<p><strong>Preview URL:</strong> <a href=\"{{ $('Update Sheets').item.json.preview_url }}\">{{ $('Update Sheets').item.json.preview_url }}</a></p>\n\n<h3>Instructions:</h3>\n<p>To approve this draft, reply with: <code>APPROVE {{ $('Compose WP Payload').item.json.spec.id }}</code></p>\n<p>To request changes, reply with: <code>CHANGES {{ $('Compose WP Payload').item.json.spec.id }}: [your feedback]</code></p>\n\n<p>Best regards,<br>Tax4Us Content System</p>",
+                "options": {}
+            },
+            "id": "email-reviewer",
+            "name": "Email Reviewer",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                3100,
+                300
+            ],
+            "notes": "Credential: Gmail OAuth2 API"
+        }
+    ],
+    "connections": {
+        "Google Sheets Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Normalize Spec",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Normalize Spec": {
+            "main": [
+                [
+                    {
+                        "node": "Slug Collision Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Slug Collision Check": {
+            "main": [
+                [
+                    {
+                        "node": "Check Collision",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check Collision": {
+            "main": [
+                [
+                    {
+                        "node": "Resolve Collision",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "OpenAI Content Generator",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Resolve Collision": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI Content Generator",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Content Generator": {
+            "main": [
+                [
+                    {
+                        "node": "Compose WP Payload",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Compose WP Payload": {
+            "main": [
+                [
+                    {
+                        "node": "WordPress Create Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "WordPress Create Draft": {
+            "main": [
+                [
+                    {
+                        "node": "ACF Write Fields",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ACF Write Fields": {
+            "main": [
+                [
+                    {
+                        "node": "Check RankMath",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check RankMath": {
+            "main": [
+                [
+                    {
+                        "node": "Has RankMath",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Has RankMath": {
+            "main": [
+                [
+                    {
+                        "node": "Update RankMath",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Update Sheets",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update RankMath": {
+            "main": [
+                [
+                    {
+                        "node": "Update Sheets",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Sheets": {
+            "main": [
+                [
+                    {
+                        "node": "Email Reviewer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [
+        {
+            "createdAt": "2025-08-25T06:00:00.000Z",
+            "updatedAt": "2025-08-25T06:00:00.000Z",
+            "id": "tax4us-content",
+            "name": "tax4us-content"
+        }
+    ],
+    "triggerCount": 1,
+    "updatedAt": "2025-08-25T06:00:00.000Z",
+    "versionId": "1",
+    "meta": {
+        "instanceId": "tax4us-content-system"
+    }
+}

@@ -1,0 +1,50 @@
+name: LightRAG Integration
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+  issues:
+    types: [ opened, edited, closed ]
+
+jobs:
+  update-knowledge-graph:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Trigger LightRAG Update
+        run: |
+          echo "Triggering LightRAG knowledge graph update..."
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "Ref: $GITHUB_REF"
+          echo "SHA: $GITHUB_SHA"
+          
+          if [ -n "$LIGHTRAG_WEBHOOK_URL" ]; then
+            curl -X POST "$LIGHTRAG_WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "repository": "$GITHUB_REPOSITORY",
+                "event": "$GITHUB_EVENT_NAME",
+                "ref": "$GITHUB_REF",
+                "sha": "$GITHUB_SHA"
+              }'
+            echo "LightRAG webhook triggered successfully"
+          else
+            echo "LIGHTRAG_WEBHOOK_URL not configured"
+          fi
+        env:
+          LIGHTRAG_WEBHOOK_URL: ${{ secrets.LIGHTRAG_WEBHOOK_URL }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}

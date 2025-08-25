@@ -1,0 +1,111 @@
+{
+  "customerSystems": {
+    "shelly": {
+      "files": [],
+      "newestWorkflow": null,
+      "currentConfig": null,
+      "conflicts": []
+    },
+    "benGinati": {
+      "files": [],
+      "newestWorkflow": null,
+      "currentConfig": null,
+      "conflicts": []
+    },
+    "others": {
+      "files": [],
+      "conflicts": []
+    }
+  },
+  "infrastructure": {
+    "mcpServers": {
+      "files": [],
+      "currentConfig": null,
+      "activeServers": [],
+      "conflicts": []
+    },
+    "bmad": {
+      "files": [],
+      "currentImplementation": null,
+      "conflicts": []
+    },
+    "vps": {
+      "files": [],
+      "currentConfig": null,
+      "conflicts": []
+    },
+    "credentials": {
+      "files": [],
+      "currentKeys": {
+        "mcp-config.json": {
+          "exists": true,
+          "keyCount": 1,
+          "modified": 1755813924219
+        },
+        "quickbooks-fresh-credentials.json": {
+          "exists": true,
+          "keyCount": 0,
+          "modified": 1755764373419
+        },
+        ".cursor": {
+          "exists": true,
+          "error": "EISDIR: illegal operation on a directory, read"
+        }
+      },
+      "conflicts": []
+    }
+  },
+  "businessProcesses": {
+    "workflows": {
+      "files": [],
+      "currentProcess": null,
+      "conflicts": []
+    },
+    "designSystem": {
+      "files": [],
+      "currentGuidelines": null,
+      "conflicts": []
+    },
+    "qa": {
+      "files": [],
+      "currentProcess": null,
+      "conflicts": []
+    }
+  },
+  "configurations": {
+    "files": [],
+    "currentKeys": {
+      "mcp-config.json": {
+        "exists": true,
+        "keyCount": 1,
+        "modified": 1755813924219
+      },
+      "quickbooks-fresh-credentials.json": {
+        "exists": true,
+        "keyCount": 0,
+        "modified": 1755764373419
+      },
+      ".cursor": {
+        "exists": true,
+        "error": "EISDIR: illegal operation on a directory, read"
+      }
+    },
+    "securityProtocols": {
+      "scripts/security/": {
+        "files": 0,
+        "newest": null
+      },
+      "docs/SECURITY_": {
+        "files": 0,
+        "newest": null
+      },
+      "docs/GITHUB_": {
+        "files": 0,
+        "newest": null
+      }
+    },
+    "conflicts": []
+  },
+  "conflicts": [],
+  "recommendations": []
+}

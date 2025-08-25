@@ -1,0 +1,257 @@
+{
+  "timestamp": "2025-08-25T04:45:08.034Z",
+  "workflows": {
+    "customerProjectRelationship": {
+      "name": "Customer-Project Data Integration",
+      "description": "Creates relationships between customers and projects without linked tables",
+      "nodes": [
+        {
+          "type": "airtable",
+          "name": "Get All Customers",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Customers",
+            "operation": "read"
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Get All Projects",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Projects",
+            "operation": "read"
+          }
+        },
+        {
+          "type": "code",
+          "name": "Match Customer-Project Relationships",
+          "config": {
+            "code": "\n// Match customers with their projects\nconst customers = $('Get All Customers').all();\nconst projects = $('Get All Projects').all();\n\nconst relationships = [];\n\nfor (const customer of customers) {\n    const customerProjects = projects.filter(project => \n        project.fields.Customer === customer.fields.Name\n    );\n    \n    // Calculate customer metrics\n    const totalProjects = customerProjects.length;\n    const totalValue = customerProjects.reduce((sum, project) => \n        sum + (project.fields.Budget || 0), 0\n    );\n    const activeProjects = customerProjects.filter(project => \n        project.fields.Status === 'In Progress'\n    ).length;\n    \n    // Create enhanced customer record\n    const enhancedCustomer = {\n        ...customer.fields,\n        ProjectCount: totalProjects,\n        TotalProjectValue: totalValue,\n        ActiveProjects: activeProjects,\n        CustomerType: totalValue > 1000 ? 'Premium' : 'Standard',\n        Status: activeProjects > 0 ? 'Active' : 'Inactive'\n    };\n    \n    relationships.push({\n        customer: enhancedCustomer,\n        projects: customerProjects,\n        metrics: {\n            totalProjects,\n            totalValue,\n            activeProjects\n        }\n    });\n}\n\nreturn relationships;\n                        "
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Update Customer Metrics",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Customers",
+            "operation": "update",
+            "data": "{{$json.customer}}"
+          }
+        },
+        {
+          "type": "webhook",
+          "name": "Trigger Dashboard Update",
+          "config": {
+            "url": "https://rensto-dashboard.com/api/update-customer-metrics",
+            "method": "POST",
+            "data": "{{$json}}"
+          }
+        }
+      ]
+    },
+    "projectTaskIntegration": {
+      "name": "Project-Task Data Integration",
+      "description": "Integrates project and task data for progress tracking",
+      "nodes": [
+        {
+          "type": "airtable",
+          "name": "Get All Projects",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Projects",
+            "operation": "read"
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Get All Tasks",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Tasks",
+            "operation": "read"
+          }
+        },
+        {
+          "type": "code",
+          "name": "Calculate Project Progress",
+          "config": {
+            "code": "\n// Calculate project progress and metrics\nconst projects = $('Get All Projects').all();\nconst tasks = $('Get All Tasks').all();\n\nconst projectProgress = [];\n\nfor (const project of projects) {\n    const projectTasks = tasks.filter(task => \n        task.fields.Project === project.fields.Name\n    );\n    \n    // Calculate progress metrics\n    const totalTasks = projectTasks.length;\n    const completedTasks = projectTasks.filter(task => \n        task.fields.Status === 'Done'\n    ).length;\n    const inProgressTasks = projectTasks.filter(task => \n        task.fields.Status === 'In Progress'\n    ).length;\n    \n    const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;\n    \n    // Determine project health\n    let projectHealth = 'Good';\n    if (progressPercentage < 50) projectHealth = 'At Risk';\n    if (progressPercentage < 25) projectHealth = 'Critical';\n    if (progressPercentage >= 80) projectHealth = 'Excellent';\n    \n    // Create enhanced project record\n    const enhancedProject = {\n        ...project.fields,\n        TaskCount: totalTasks,\n        CompletedTasks: completedTasks,\n        InProgressTasks: inProgressTasks,\n        ProgressPercentage: progressPercentage,\n        ProjectHealth: projectHealth,\n        Status: progressPercentage === 100 ? 'Completed' : project.fields.Status\n    };\n    \n    projectProgress.push({\n        project: enhancedProject,\n        tasks: projectTasks,\n        metrics: {\n            totalTasks,\n            completedTasks,\n            inProgressTasks,\n            progressPercentage,\n            projectHealth\n        }\n    });\n}\n\nreturn projectProgress;\n                        "
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Update Project Progress",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Projects",
+            "operation": "update",
+            "data": "{{$json.project}}"
+          }
+        },
+        {
+          "type": "email",
+          "name": "Send Progress Alerts",
+          "config": {
+            "to": "{{$json.project.Project Manager}}",
+            "subject": "Project Progress Update: {{$json.project.Name}}",
+            "body": "\nProject: ${{$json.project.Name}}\nProgress: ${{$json.metrics.progressPercentage}}%\nHealth: ${{$json.metrics.projectHealth}}\nTasks: ${{$json.metrics.completedTasks}}/${{$json.metrics.totalTasks}} completed\n                        "
+          }
+        }
+      ]
+    },
+    "invoiceAutomation": {
+      "name": "Invoice Automation & Integration",
+      "description": "Automates invoice generation and integrates with project data",
+      "nodes": [
+        {
+          "type": "airtable",
+          "name": "Monitor Project Milestones",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Projects",
+            "operation": "watch",
+            "filter": {
+              "Status": "Completed"
+            }
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Get Customer Data",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Customers",
+            "operation": "read",
+            "filter": {
+              "Name": "{{$json.Customer}}"
+            }
+          }
+        },
+        {
+          "type": "code",
+          "name": "Generate Invoice Data",
+          "config": {
+            "code": "\n// Generate invoice data from project completion\nconst project = $input.first();\nconst customer = $('Get Customer Data').first();\n\n// Generate invoice number\nconst invoiceNumber = 'INV-' + Date.now().toString().slice(-6);\n\n// Calculate invoice amount (can be based on project budget or milestones)\nconst invoiceAmount = project.fields.Budget || 0;\n\n// Create invoice record\nconst invoice = {\n    Name: `Invoice for ${project.fields.Name}`,\n    'Invoice Number': invoiceNumber,\n    Customer: customer.fields.Name,\n    Project: project.fields.Name,\n    Amount: invoiceAmount,\n    Status: 'Draft',\n    'Due Date': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],\n    Notes: `Automatically generated for completed project: ${project.fields.Name}`\n};\n\nreturn {\n    invoice,\n    customer: customer.fields,\n    project: project.fields\n};\n                        "
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Create Invoice",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tableName": "Invoices",
+            "operation": "create",
+            "data": "{{$json.invoice}}"
+          }
+        },
+        {
+          "type": "email",
+          "name": "Send Invoice Email",
+          "config": {
+            "to": "{{$json.customer.Email}}",
+            "subject": "Invoice Generated: {{$json.invoice.Name}}",
+            "body": "\nDear ${{$json.customer.Name}},\n\nYour invoice has been generated for the completed project: ${{$json.project.Name}}\n\nInvoice Number: ${{$json.invoice.Invoice Number}}\nAmount: $${{$json.invoice.Amount}}\nDue Date: ${{$json.invoice.Due Date}}\n\nThank you for your business!\n\nBest regards,\nRensto Team\n                        "
+          }
+        }
+      ]
+    },
+    "realTimeSync": {
+      "name": "Real-Time Data Synchronization",
+      "description": "Synchronizes data across all tables in real-time",
+      "nodes": [
+        {
+          "type": "webhook",
+          "name": "Data Change Trigger",
+          "config": {
+            "path": "/airtable-webhook",
+            "method": "POST"
+          }
+        },
+        {
+          "type": "code",
+          "name": "Process Data Change",
+          "config": {
+            "code": "\n// Process data changes and trigger related updates\nconst change = $input.first();\n\n// Determine what changed and what needs to be updated\nconst tableName = change.table;\nconst recordId = change.recordId;\nconst fields = change.fields;\n\nlet updates = [];\n\nswitch (tableName) {\n    case 'Customers':\n        // When customer changes, update related projects\n        updates.push({\n            table: 'Projects',\n            filter: { Customer: fields.Name },\n            updates: { 'Customer Email': fields.Email, 'Customer Phone': fields.Phone }\n        });\n        break;\n        \n    case 'Projects':\n        // When project changes, update related tasks\n        updates.push({\n            table: 'Tasks',\n            filter: { Project: fields.Name },\n            updates: { 'Project Status': fields.Status, 'Project Priority': fields.Priority }\n        });\n        break;\n        \n    case 'Tasks':\n        // When task changes, update project progress\n        updates.push({\n            table: 'Projects',\n            filter: { Name: fields.Project },\n            updates: { 'Last Task Update': new Date().toISOString() }\n        });\n        break;\n        \n    case 'Invoices':\n        // When invoice changes, update customer payment status\n        updates.push({\n            table: 'Customers',\n            filter: { Name: fields.Customer },\n            updates: { 'Last Payment': fields.Status === 'Paid' ? new Date().toISOString() : null }\n        });\n        break;\n}\n\nreturn {\n    change,\n    updates,\n    timestamp: new Date().toISOString()\n};\n                        "
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Update Related Records",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "operation": "update",
+            "data": "{{$json.updates}}"
+          }
+        },
+        {
+          "type": "webhook",
+          "name": "Notify Dashboard",
+          "config": {
+            "url": "https://rensto-dashboard.com/api/data-updated",
+            "method": "POST",
+            "data": "{{$json}}"
+          }
+        }
+      ]
+    },
+    "businessIntelligence": {
+      "name": "Business Intelligence & Analytics",
+      "description": "Generates business intelligence from integrated data",
+      "nodes": [
+        {
+          "type": "cron",
+          "name": "Daily Analytics Trigger",
+          "config": {
+            "cronExpression": "0 9 * * *"
+          }
+        },
+        {
+          "type": "airtable",
+          "name": "Get All Data",
+          "config": {
+            "baseId": "appQijHhqqP4z6wGe",
+            "tables": [
+              "Customers",
+              "Projects",
+              "Tasks",
+              "Invoices"
+            ]
+          }
+        },
+        {
+          "type": "code",
+          "name": "Generate Business Intelligence",
+          "config": {
+            "code": "\n// Generate comprehensive business intelligence\nconst customers = $('Get All Data').filter(table => table.name === 'Customers').all();\nconst projects = $('Get All Data').filter(table => table.name === 'Projects').all();\nconst tasks = $('Get All Data').filter(table => table.name === 'Tasks').all();\nconst invoices = $('Get All Data').filter(table => table.name === 'Invoices').all();\n\n// Calculate key metrics\nconst totalCustomers = customers.length;\nconst activeCustomers = customers.filter(c => c.fields.Status === 'Active').length;\nconst totalProjects = projects.length;\nconst completedProjects = projects.filter(p => p.fields.Status === 'Completed').length;\nconst totalRevenue = invoices.filter(i => i.fields.Status === 'Paid')\n    .reduce((sum, inv) => sum + (inv.fields.Amount || 0), 0);\nconst pendingRevenue = invoices.filter(i => i.fields.Status === 'Sent')\n    .reduce((sum, inv) => sum + (inv.fields.Amount || 0), 0);\n\n// Calculate project success rate\nconst projectSuccessRate = totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0;\n\n// Calculate average project value\nconst averageProjectValue = totalProjects > 0 ? \n    projects.reduce((sum, p) => sum + (p.fields.Budget || 0), 0) / totalProjects : 0;\n\n// Generate insights\nconst insights = [];\n\nif (projectSuccessRate < 80) {\n    insights.push('Project success rate below target - review project management processes');\n}\n\nif (pendingRevenue > totalRevenue * 0.3) {\n    insights.push('High pending revenue - focus on invoice collection');\n}\n\nif (activeCustomers < totalCustomers * 0.7) {\n    insights.push('Low customer activation rate - review customer success processes');\n}\n\n// Create business intelligence report\nconst biReport = {\n    date: new Date().toISOString(),\n    metrics: {\n        totalCustomers,\n        activeCustomers,\n        customerActivationRate: (activeCustomers / totalCustomers) * 100,\n        totalProjects,\n        completedProjects,\n        projectSuccessRate,\n        totalRevenue,\n        pendingRevenue,\n        averageProjectValue\n    },\n    insights,\n    recommendations: [\n        'Implement automated project tracking',\n        'Set up invoice reminders',\n        'Create customer success workflows',\n        'Monitor project health metrics'\n    ]\n};\n\nreturn biReport;\n                        "
+          }
+        },
+        {
+          "type": "email",
+          "name": "Send Daily Report",
+          "config": {
+            "to": "shaifriedman@gmail.com",
+            "subject": "Daily Business Intelligence Report",
+            "body": "\n# Daily Business Intelligence Report\n\n## Key Metrics\n- Total Customers: ${{$json.metrics.totalCustomers}}\n- Active Customers: ${{$json.metrics.activeCustomers}} (${{$json.metrics.customerActivationRate}}%)\n- Total Projects: ${{$json.metrics.totalProjects}}\n- Completed Projects: ${{$json.metrics.completedProjects}} (${{$json.metrics.projectSuccessRate}}%)\n- Total Revenue: $${{$json.metrics.totalRevenue}}\n- Pending Revenue: $${{$json.metrics.pendingRevenue}}\n- Average Project Value: $${{$json.metrics.averageProjectValue}}\n\n## Insights\n${{#each $json.insights}}\n- ${{$this}}\n${{/each}}\n\n## Recommendations\n${{#each $json.recommendations}}\n- ${{$this}}\n${{/each}}\n                        "
+          }
+        },
+        {
+          "type": "webhook",
+          "name": "Update Dashboard",
+          "config": {
+            "url": "https://rensto-dashboard.com/api/update-bi",
+            "method": "POST",
+            "data": "{{$json}}"
+          }
+        }
+      ]
+    }
+  },
+  "dataRelationships": {},
+  "summary": {
+    "workflows": 0,
+    "relationships": 0,
+    "automations": 0
+  }
+}

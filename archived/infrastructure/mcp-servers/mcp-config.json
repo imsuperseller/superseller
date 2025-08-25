@@ -1,0 +1,80 @@
+{
+  "mcpServers": {
+    "cloudflare": {
+      "url": "https://customer-portal-mcp.service-46a.workers.dev/sse",
+      "headers": {
+        "Authorization": "Bearer O3pJlV8j-0Jw90xEK0394GLU145heSAOpSJFMqJ2"
+      }
+    },
+    "n8n": {
+      "command": "node",
+      "args": [
+        "infra/mcp-servers/n8n-mcp-server/server-enhanced.js"
+      ],
+      "env": {
+        "N8N_URL": "http://173.254.201.134:5678",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
+      }
+    },
+    "wordpress": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@automattic/wordpress-mcp@latest"
+      ],
+      "env": {
+        "WORDPRESS_URL": "https://tax4us.co.il",
+        "WORDPRESS_USERNAME": "admin",
+        "WORDPRESS_PASSWORD": "uVQm smKl vecQ WmEa 9cbW vn6N",
+        "WORDPRESS_APPLICATION_PASSWORD": "uVQm smKl vecQ WmEa 9cbW vn6N"
+      }
+    },
+    "github": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/github-mcp-server/server.py"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "your-github-token"
+      }
+    },
+    "vercel": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/vercel-mcp-server/server.py"
+      ]
+    },
+    "mongodb": {
+      "command": "python3",
+      "args": [
+        "infra/mcp-servers/mongodb-mcp-server/server.py"
+      ],
+      "env": {
+        "MONGODB_URI": "your-mongodb-uri"
+      }
+    },
+    "make": {
+      "url": "https://us2.make.com/mcp/api/v1/u/a88300ab-4048-4376-a396-0006d0c637c7/sse"
+    },
+    "makeRacknerd": {
+      "command": "node",
+      "args": [
+        "infra/mcp-servers/make-mcp-server/server.js"
+      ],
+      "env": {
+        "MAKE_API_KEY": "a88300ab-4048-4376-a396-0006d0c637c7",
+        "MAKE_ZONE": "us2.make.com",
+        "MAKE_BASE_URL": "https://us2.make.com/api/v2",
+        "MAKE_ORG_ID": "4994164"
+      }
+    },
+    "makeLegacy": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://us2.make.com/mcp/api/v1/u/a88300ab-4048-4376-a396-0006d0c637c7/sse"
+      ]
+    }
+  }
+}

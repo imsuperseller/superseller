@@ -1,0 +1,623 @@
+{
+  "timestamp": "2025-08-25T01:24:00.202Z",
+  "status": "manual_setup_required",
+  "bases": [
+    {
+      "id": "appqY1p53ge7UqxUO",
+      "name": "משאבים",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appLOvzN5ap47GJl0",
+      "name": "המאגר",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app3eCU24yxD5OWwm",
+      "name": "Groceries copy",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app2uZ1yhtokf8DXc",
+      "name": "דילי מילי",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appjL0rSZZ6c8AWKo",
+      "name": "דילי מילי חדש",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appxj059MvIaQ9W4c",
+      "name": "Apartment Hunting",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "apptXBaizvTfPoRr8",
+      "name": "STR Property Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app9jCd6uBvFZgjum",
+      "name": "OpenAI",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appFP57Ai15nl2GVN",
+      "name": "Untitled Base",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appNZ028VPO5OZhYP",
+      "name": "Property Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appRKz4U1GAYCI9Jn",
+      "name": "Guest Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appHM4DFQDfut9eT2",
+      "name": "Financial Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appiUgbdT3xsBox6h",
+      "name": "Marketing Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appFjirN9LwRPuog8",
+      "name": "The Northern Collection",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appvTgU5KZXwHZUqC",
+      "name": "Automations",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appiGpAQkZDMMojx8",
+      "name": "Content Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appAXXB9aj92HjmEY",
+      "name": "Dubai Research",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appSoTojCS6c22O7f",
+      "name": "Content Generation",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "apppyFfqxuE5RwmjO",
+      "name": "Performance Metrics",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appqTkx67X6HvZ4yo",
+      "name": "Echos of October",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appLvQoOMb2XnTaG5",
+      "name": "SuperSeller - the Agency",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appgOyus2jQWBp4wN",
+      "name": "Untitled Base",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appyFgN23VopoM2LD",
+      "name": "Smith's Solar CRM",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appKJ4Y4FuB60KiYc",
+      "name": "Midjourney",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appZIJrbZzGzNKHx9",
+      "name": "Sales Optimization Conversations",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appVXRmmyGbFwf7vF",
+      "name": "The House",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appg5acL4SRegdSBT",
+      "name": "Moving? Yard Sale",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appfweSTFDGaLimbM",
+      "name": "RELOCATION",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app8zfyqB81WILWmY",
+      "name": "SGD Springs Inventory and Sales",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appQkPB3poOPQji00",
+      "name": "01-01-24 to 06-31-24 sale report  shai",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appOWrsYoXqWsXFI1",
+      "name": "Smart Devices Integration",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appGEHUSBsNMPHOXI",
+      "name": "ChimneyEase Operations Tracker",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appWNUW1BMttgWZHK",
+      "name": "ChimneyEase Blog Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appyBvLsqltWNSbvX",
+      "name": "Imported Base",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appRR5ruBiN0hphFg",
+      "name": "Avishag's Real Estate Assistant App",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appeV2B2t3JS6N3Y9",
+      "name": "AI Super Agent System",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appUScWNrYQG1Btjv",
+      "name": "Amazon Wholesale Sourcing",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "apprDdIg4xFdgCJvE",
+      "name": "IsraeliDaily Pipline",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appWxram633ChhzyY",
+      "name": "Rensto Manage",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appNAo9Ga8xbFzWW1",
+      "name": "Avishag DFW Funnel",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appkCVW1p1kMG3zM5",
+      "name": "TNK Figures",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app7BZRcnLGu2tXjD",
+      "name": "Real Estate Scraped Addresses",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appN6c8XWSKLNWzWh",
+      "name": "Automation Scenarios Project Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appiBL42f7GAn64x6",
+      "name": "Demos",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appZaOEZFVTZR7y1H",
+      "name": "🎓 Shiran Lesson Management",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appx8De4R4xA7MULu",
+      "name": "ניהול מדיה חברתית אוהדי ליברפול ישראל ⚽",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appW6kZdAXdRfTApA",
+      "name": "שלי מזרחי",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appQijHhqqP4z6wGe",
+      "name": "Rensto",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "appSgjo19ui5dVb96",
+      "name": "EagleTorque",
+      "permissionLevel": "create"
+    },
+    {
+      "id": "app2NMzKhYFKV8K72",
+      "name": "אוטומציה חשבוניות הוצאות",
+      "permissionLevel": "read"
+    },
+    {
+      "id": "app51GkdMDKdcf5Xy",
+      "name": "Automatic Task Template",
+      "permissionLevel": "read"
+    },
+    {
+      "id": "app6yerTruQJkDPSS",
+      "name": "Groceries",
+      "permissionLevel": "read"
+    },
+    {
+      "id": "appwVbiaiUNfkldBF",
+      "name": "הוצאות",
+      "permissionLevel": "create"
+    }
+  ],
+  "setupInstructions": {
+    "recommendedBase": "appQijHhqqP4z6wGe",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Create Business Tables",
+        "description": "Manually create the following tables in your Airtable base",
+        "tables": [
+          {
+            "name": "Customers",
+            "description": "Customer information and profiles",
+            "fields": [
+              {
+                "name": "Name",
+                "type": "Single line text"
+              },
+              {
+                "name": "Email",
+                "type": "Email"
+              },
+              {
+                "name": "Phone",
+                "type": "Phone number"
+              },
+              {
+                "name": "Company",
+                "type": "Single line text"
+              },
+              {
+                "name": "Status",
+                "type": "Single select",
+                "options": [
+                  "Active",
+                  "Inactive",
+                  "Prospect",
+                  "Lead"
+                ]
+              },
+              {
+                "name": "Notes",
+                "type": "Long text"
+              },
+              {
+                "name": "Created Date",
+                "type": "Date"
+              }
+            ]
+          },
+          {
+            "name": "Projects",
+            "description": "Project management and tracking",
+            "fields": [
+              {
+                "name": "Project Name",
+                "type": "Single line text"
+              },
+              {
+                "name": "Customer",
+                "type": "Single line text"
+              },
+              {
+                "name": "Status",
+                "type": "Single select",
+                "options": [
+                  "Planning",
+                  "In Progress",
+                  "Completed",
+                  "On Hold"
+                ]
+              },
+              {
+                "name": "Start Date",
+                "type": "Date"
+              },
+              {
+                "name": "End Date",
+                "type": "Date"
+              },
+              {
+                "name": "Budget",
+                "type": "Currency"
+              },
+              {
+                "name": "Description",
+                "type": "Long text"
+              },
+              {
+                "name": "Priority",
+                "type": "Single select",
+                "options": [
+                  "Low",
+                  "Medium",
+                  "High",
+                  "Critical"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Invoices",
+            "description": "Financial invoice tracking",
+            "fields": [
+              {
+                "name": "Invoice Number",
+                "type": "Single line text"
+              },
+              {
+                "name": "Customer",
+                "type": "Single line text"
+              },
+              {
+                "name": "Project",
+                "type": "Single line text"
+              },
+              {
+                "name": "Amount",
+                "type": "Currency"
+              },
+              {
+                "name": "Status",
+                "type": "Single select",
+                "options": [
+                  "Draft",
+                  "Sent",
+                  "Paid",
+                  "Overdue"
+                ]
+              },
+              {
+                "name": "Issue Date",
+                "type": "Date"
+              },
+              {
+                "name": "Due Date",
+                "type": "Date"
+              },
+              {
+                "name": "Notes",
+                "type": "Long text"
+              }
+            ]
+          },
+          {
+            "name": "Tasks",
+            "description": "Task management and tracking",
+            "fields": [
+              {
+                "name": "Task Name",
+                "type": "Single line text"
+              },
+              {
+                "name": "Project",
+                "type": "Single line text"
+              },
+              {
+                "name": "Assigned To",
+                "type": "Single line text"
+              },
+              {
+                "name": "Status",
+                "type": "Single select",
+                "options": [
+                  "To Do",
+                  "In Progress",
+                  "Review",
+                  "Done"
+                ]
+              },
+              {
+                "name": "Priority",
+                "type": "Single select",
+                "options": [
+                  "Low",
+                  "Medium",
+                  "High",
+                  "Critical"
+                ]
+              },
+              {
+                "name": "Due Date",
+                "type": "Date"
+              },
+              {
+                "name": "Description",
+                "type": "Long text"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Set Up Views",
+        "description": "Create useful views for each table",
+        "views": [
+          {
+            "table": "Customers",
+            "view": "All Customers",
+            "filter": "None"
+          },
+          {
+            "table": "Customers",
+            "view": "Active Customers",
+            "filter": "Status = Active"
+          },
+          {
+            "table": "Projects",
+            "view": "All Projects",
+            "filter": "None"
+          },
+          {
+            "table": "Projects",
+            "view": "Active Projects",
+            "filter": "Status = In Progress"
+          },
+          {
+            "table": "Invoices",
+            "view": "All Invoices",
+            "filter": "None"
+          },
+          {
+            "table": "Invoices",
+            "view": "Unpaid Invoices",
+            "filter": "Status = Sent"
+          },
+          {
+            "table": "Tasks",
+            "view": "All Tasks",
+            "filter": "None"
+          },
+          {
+            "table": "Tasks",
+            "view": "My Tasks",
+            "filter": "Assigned To = Current User"
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "title": "Create Relationships",
+        "description": "Set up linked record fields to connect tables",
+        "relationships": [
+          {
+            "from": "Projects",
+            "field": "Name",
+            "to": "Customers"
+          },
+          {
+            "from": "Invoices",
+            "field": "Name",
+            "to": "Customers"
+          },
+          {
+            "from": "Invoices",
+            "field": "Project Name",
+            "to": "Projects"
+          },
+          {
+            "from": "Tasks",
+            "field": "Project Name",
+            "to": "Projects"
+          }
+        ]
+      }
+    ]
+  },
+  "sampleData": {
+    "customers": [
+      {
+        "Name": "Ben Ginati",
+        "Email": "ben@ginati.com",
+        "Phone": "+1-555-0123",
+        "Company": "Ginati Enterprises",
+        "Status": "Active",
+        "Notes": "Podcast and content creation client",
+        "Created Date": "2025-01-15"
+      },
+      {
+        "Name": "Shelly Mizrahi",
+        "Email": "shelly@mizrahi.com",
+        "Phone": "+1-555-0456",
+        "Company": "Mizrahi Insurance",
+        "Status": "Active",
+        "Notes": "Insurance business automation client",
+        "Created Date": "2025-02-20"
+      }
+    ],
+    "projects": [
+      {
+        "Project Name": "Ben Ginati Podcast Automation",
+        "Customer": "Ben Ginati",
+        "Status": "In Progress",
+        "Start Date": "2025-01-15",
+        "End Date": "2025-06-30",
+        "Budget": 15000,
+        "Description": "Automated podcast content creation and distribution system",
+        "Priority": "High"
+      },
+      {
+        "Project Name": "Shelly Mizrahi Insurance CRM",
+        "Customer": "Shelly Mizrahi",
+        "Status": "Planning",
+        "Start Date": "2025-02-20",
+        "End Date": "2025-08-31",
+        "Budget": 25000,
+        "Description": "Customer relationship management system for insurance business",
+        "Priority": "Medium"
+      }
+    ],
+    "invoices": [
+      {
+        "Invoice Number": "INV-2025-001",
+        "Customer": "Ben Ginati",
+        "Project": "Ben Ginati Podcast Automation",
+        "Amount": 5000,
+        "Status": "Paid",
+        "Issue Date": "2025-01-15",
+        "Due Date": "2025-02-15",
+        "Notes": "Initial setup and configuration"
+      },
+      {
+        "Invoice Number": "INV-2025-002",
+        "Customer": "Shelly Mizrahi",
+        "Project": "Shelly Mizrahi Insurance CRM",
+        "Amount": 7500,
+        "Status": "Sent",
+        "Issue Date": "2025-02-20",
+        "Due Date": "2025-03-20",
+        "Notes": "Project planning and requirements analysis"
+      }
+    ],
+    "tasks": [
+      {
+        "Task Name": "Set up podcast automation workflow",
+        "Project": "Ben Ginati Podcast Automation",
+        "Assigned To": "Development Team",
+        "Status": "In Progress",
+        "Priority": "High",
+        "Due Date": "2025-02-15",
+        "Description": "Configure n8n workflows for automated podcast content creation"
+      },
+      {
+        "Task Name": "Design CRM interface",
+        "Project": "Shelly Mizrahi Insurance CRM",
+        "Assigned To": "Design Team",
+        "Status": "To Do",
+        "Priority": "Medium",
+        "Due Date": "2025-03-15",
+        "Description": "Create user interface mockups for the insurance CRM system"
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-08-25T02:24:02.843Z",
+  "status": "completed",
+  "bases": {
+    "entities": {
+      "id": "app9DhsrZ0VnuEH3t",
+      "tables": [
+        {
+          "id": "tblyjH6tiW4vMvw46",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldqRVXUwWg0D3B2c",
+              "name": "Name"
+            }
+          ]
+        }
+      ]
+    },
+    "operations": {
+      "id": "appCGexgpGPkMUPXF",
+      "tables": [
+        {
+          "id": "tblVC42de1P1K6or2",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldvt6ekwsYE1azuZ",
+              "name": "Name"
+            }
+          ]
+        }
+      ]
+    },
+    "analytics": {
+      "id": "appOvDNYenyx7WITR",
+      "tables": [
+        {
+          "id": "tblX93phi97sWf0Zj",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldx1mv7Nf1wELFwR",
+              "name": "Name"
+            }
+          ]
+        }
+      ]
+    },
+    "integrations": {
+      "id": "app9oouVkvTkFjf3t",
+      "tables": [
+        {
+          "id": "tblJj2hILjH2ciXjy",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldbrRbjUDB7ScdPO",
+              "name": "Name"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "errors": []
+}

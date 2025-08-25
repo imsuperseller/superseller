@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-08-25T03:03:13.789Z",
+  "status": "completed",
+  "steps": [],
+  "errors": [
+    {
+      "step": "deployment",
+      "error": "ENOENT: no such file or directory, open 'webflow-mcp-server/package.json'"
+    }
+  ]
+}

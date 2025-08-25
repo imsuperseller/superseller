@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-08-24T15:26:31.325Z",
+  "status": "completed",
+  "population": {
+    "contacts": {
+      "total": 4,
+      "successful": 0,
+      "failed": 4,
+      "records": [
+        {
+          "name": "Ben Ginati",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        },
+        {
+          "name": "Shelly Mizrahi",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        },
+        {
+          "name": "John Smith",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        },
+        {
+          "name": "Jane Doe",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        }
+      ]
+    },
+    "businessCases": {
+      "total": 2,
+      "successful": 0,
+      "failed": 2,
+      "records": [
+        {
+          "name": "Ben Ginati - Complete Business Automation",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        },
+        {
+          "name": "Shelly Mizrahi - Insurance Document Processing",
+          "status": "failed",
+          "error": "Request failed with status code 404"
+        }
+      ]
+    },
+    "invoices": {
+      "total": 2,
+      "successful": 0,
+      "failed": 2,
+      "records": [
+        {
+          "number": "INV-001",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "number": "INV-002",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ]
+    },
+    "todos": {
+      "total": 3,
+      "successful": 0,
+      "failed": 3,
+      "records": [
+        {
+          "title": "Complete Ben Ginati WordPress setup",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "title": "Deploy Shelly Mizrahi document system",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "title": "Set up monitoring dashboard",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ]
+    },
+    "events": {
+      "total": 2,
+      "successful": 0,
+      "failed": 2,
+      "records": [
+        {
+          "title": "Ben Ginati Project Kickoff",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "title": "Shelly Mizrahi System Demo",
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ]
+    }
+  },
+  "mcpServer": {
+    "status": "failed",
+    "error": "stream has been aborted"
+  },
+  "summary": {
+    "totalRecords": 13,
+    "totalSuccessful": 0,
+    "totalFailed": 13,
+    "successRate": "0.0",
+    "modules": [
+      "contacts",
+      "businessCases",
+      "invoices",
+      "todos",
+      "events"
+    ]
+  }
+}

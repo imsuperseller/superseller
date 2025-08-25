@@ -1,0 +1,257 @@
+{
+  "timestamp": "2025-08-25T01:36:11.310Z",
+  "status": "completed",
+  "baseId": "appQijHhqqP4z6wGe",
+  "tables": {
+    "Leads": {
+      "id": "tblYR2UftNJ7nUl1Q",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "multilineText",
+          "id": "fldEdp7fSFY1Lwgf8"
+        }
+      ]
+    },
+    "Customers": {
+      "id": "tbl6BMipQQPJvPIWw",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldP6xVONTpHA2Ctx"
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "id": "fldeDObFgcBhMP1PY"
+        },
+        {
+          "name": "Phone",
+          "type": "phoneNumber",
+          "id": "fldQOpZkjooHiGD3M"
+        },
+        {
+          "name": "Company",
+          "type": "singleLineText",
+          "id": "fldLT5StXwRfPgapI"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldYxSdVAib2pTzyt"
+        },
+        {
+          "name": "Notes",
+          "type": "multilineText",
+          "id": "fld4PSUPsAwy5enbM"
+        }
+      ]
+    },
+    "Projects": {
+      "id": "tblNopy7xK0IUYf8E",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldFgldXF1PxDZHLB"
+        },
+        {
+          "name": "Customer",
+          "type": "singleLineText",
+          "id": "fldBKgu8SOgTaY5fm"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fld9xrwUC4W6As0VC"
+        },
+        {
+          "name": "Description",
+          "type": "multilineText",
+          "id": "fld3FhzzkYlHQur4R"
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect",
+          "id": "fldC4RjmOCokbaJi2"
+        }
+      ]
+    },
+    "Invoices": {
+      "id": "tbl3jjJxyhj5VTSeb",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldfmRZuURoJloXZF"
+        },
+        {
+          "name": "Invoice Number",
+          "type": "singleLineText",
+          "id": "flduf8HN6E882tecn"
+        },
+        {
+          "name": "Customer",
+          "type": "singleLineText",
+          "id": "fldLWSlUJNkJnCbSm"
+        },
+        {
+          "name": "Project",
+          "type": "singleLineText",
+          "id": "fldhQwzAROlV74Zba"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldzWWdm2R1wnh9KS"
+        },
+        {
+          "name": "Notes",
+          "type": "multilineText",
+          "id": "fld4Oe1I6RmQHEy9Z"
+        }
+      ]
+    },
+    "Tasks": {
+      "id": "tblUO4nQyDEXJ2jGu",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldsdXJOUF8BV8AbI"
+        },
+        {
+          "name": "Project",
+          "type": "singleLineText",
+          "id": "fldK4oRM4zE114lo6"
+        },
+        {
+          "name": "Assigned To",
+          "type": "singleLineText",
+          "id": "fldWJS47shWuzZm62"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldKayjxfj4czbc9Y"
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect",
+          "id": "fldd4kquQfr6Ynwsz"
+        },
+        {
+          "name": "Description",
+          "type": "multilineText",
+          "id": "fldA7og1zy9YH1EaN"
+        }
+      ]
+    }
+  },
+  "records": {
+    "Customers": [
+      {
+        "id": "recK8VtN8GMTP6yE1",
+        "createdTime": "2025-08-25T01:36:12.000Z",
+        "fields": {
+          "Name": "Ben Ginati",
+          "Email": "ben@ginati.com",
+          "Phone": "+1-555-0123",
+          "Company": "Ginati Enterprises",
+          "Status": "Active",
+          "Notes": "Podcast and content creation client - Created: 2025-01-15"
+        }
+      },
+      {
+        "id": "rec94D1McQj31igmL",
+        "createdTime": "2025-08-25T01:36:12.000Z",
+        "fields": {
+          "Name": "Shelly Mizrahi",
+          "Email": "shelly@mizrahi.com",
+          "Phone": "+1-555-0456",
+          "Company": "Mizrahi Insurance",
+          "Status": "Active",
+          "Notes": "Insurance business automation client - Created: 2025-02-20"
+        }
+      }
+    ],
+    "Projects": [
+      {
+        "id": "recuaxzPTAJECbF74",
+        "createdTime": "2025-08-25T01:36:12.000Z",
+        "fields": {
+          "Name": "Ben Ginati Podcast Automation",
+          "Customer": "Ben Ginati",
+          "Status": "In Progress",
+          "Description": "Automated podcast content creation and distribution system - Budget: $15,000 - Start: 2025-01-15 - End: 2025-06-30",
+          "Priority": "High"
+        }
+      },
+      {
+        "id": "recIA67Yjs66tcD9G",
+        "createdTime": "2025-08-25T01:36:12.000Z",
+        "fields": {
+          "Name": "Shelly Mizrahi Insurance CRM",
+          "Customer": "Shelly Mizrahi",
+          "Status": "Planning",
+          "Description": "Customer relationship management system for insurance business - Budget: $25,000 - Start: 2025-02-20 - End: 2025-08-31",
+          "Priority": "Medium"
+        }
+      }
+    ],
+    "Invoices": [
+      {
+        "id": "rechQJ2urlq4qGUSq",
+        "createdTime": "2025-08-25T01:36:13.000Z",
+        "fields": {
+          "Name": "INV-2025-001",
+          "Invoice Number": "INV-2025-001",
+          "Customer": "Ben Ginati",
+          "Project": "Ben Ginati Podcast Automation",
+          "Status": "Paid",
+          "Notes": "Initial setup and configuration - Amount: $5,000 - Issue: 2025-01-15 - Due: 2025-02-15"
+        }
+      },
+      {
+        "id": "recccjG0rMB1Z4rEy",
+        "createdTime": "2025-08-25T01:36:13.000Z",
+        "fields": {
+          "Name": "INV-2025-002",
+          "Invoice Number": "INV-2025-002",
+          "Customer": "Shelly Mizrahi",
+          "Project": "Shelly Mizrahi Insurance CRM",
+          "Status": "Sent",
+          "Notes": "Project planning and requirements analysis - Amount: $7,500 - Issue: 2025-02-20 - Due: 2025-03-20"
+        }
+      }
+    ],
+    "Tasks": [
+      {
+        "id": "recfUvqrIet4HYfO6",
+        "createdTime": "2025-08-25T01:36:13.000Z",
+        "fields": {
+          "Name": "Set up podcast automation workflow",
+          "Project": "Ben Ginati Podcast Automation",
+          "Assigned To": "Development Team",
+          "Status": "In Progress",
+          "Priority": "High",
+          "Description": "Configure n8n workflows for automated podcast content creation - Due: 2025-02-15"
+        }
+      },
+      {
+        "id": "recwjAJ43gIFdSx1X",
+        "createdTime": "2025-08-25T01:36:13.000Z",
+        "fields": {
+          "Name": "Design CRM interface",
+          "Project": "Shelly Mizrahi Insurance CRM",
+          "Assigned To": "Design Team",
+          "Status": "To Do",
+          "Priority": "Medium",
+          "Description": "Create user interface mockups for the insurance CRM system - Due: 2025-03-15"
+        }
+      }
+    ]
+  },
+  "errors": []
+}

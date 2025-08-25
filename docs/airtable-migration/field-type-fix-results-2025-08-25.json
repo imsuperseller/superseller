@@ -1,0 +1,3278 @@
+{
+  "timestamp": "2025-08-25T02:12:04.091Z",
+  "status": "completed",
+  "bases": {
+    "core": {
+      "id": "app4nJpP1ytGukXQT",
+      "tables": [
+        {
+          "id": "tblU9N6hSBJaPemrd",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldcYHeA4X1rMJIOX",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldykHXa4ntMwafqY",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldSQ1ElUy4CEjkLZ",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sellGVM4cfCkDxV6n",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "selnunmoAMdVwINyh",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "sel3KOHHJia9eAKdc",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldmTosdvO2w3idVN",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldZWjbG87KqVKgC6",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldZWjbG87KqVKgC6"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldZWjbG87KqVKgC6"
+                    }
+                  }
+                ]
+              },
+              "id": "fldKb07BgEaW2iSDS",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        },
+        {
+          "id": "tbl1roDiTjOCU3wiz",
+          "name": "Companies",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldGA0HcPVowGX9iK",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selEODk5ReRupaIVB",
+                    "name": "Client",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selmFX1nnALzpfOmi",
+                    "name": "Vendor",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sels5EeP7XkbDy0rI",
+                    "name": "Partner",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selcvWBUXbCKxhfC2",
+                    "name": "Internal",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldcaDzDWAbCP59PX",
+              "name": "Company Type"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldlcJaUrkvJVW489",
+              "name": "Industry"
+            },
+            {
+              "type": "url",
+              "id": "fldO3fDoN8VZCjd9C",
+              "name": "Website"
+            },
+            {
+              "type": "phoneNumber",
+              "id": "fld0eThJx6M73KRQn",
+              "name": "Phone"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldZgyYMUM90hSass",
+              "name": "Tax ID"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel6C2ApIMFNHx32j",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selJuHlKDVUm4FQ0W",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selwvmEIjb4nN7OU6",
+                    "name": "Prospect",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldkRTArVAYChcmLL",
+              "name": "Status"
+            }
+          ]
+        },
+        {
+          "id": "tblST9B2hqzDWwpdy",
+          "name": "Contacts",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldXBujlTkEyCDL8z",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldxz9bfntFCsyymZ",
+              "name": "Company"
+            },
+            {
+              "type": "email",
+              "id": "fld0cJsv5BEJIY6Ey",
+              "name": "Email"
+            },
+            {
+              "type": "phoneNumber",
+              "id": "fldTWbXfNhrvYE8Np",
+              "name": "Phone"
+            },
+            {
+              "type": "singleLineText",
+              "id": "flduZrOITrFGy3wzY",
+              "name": "Role"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldeiEC1sh7xerkes",
+              "name": "Department"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selOuK6B8CsaX2x9P",
+                    "name": "Customer",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seliqEV4tKrnJKMnd",
+                    "name": "Vendor",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQoRJTdw2DoFATI",
+                    "name": "Team Member",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selJDEGb1iqAHXC9S",
+                    "name": "Partner",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldpZD4jt34ePNcrK",
+              "name": "Contact Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selqIIqrWMgsn9TYH",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selINiylJweYh9hck",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selLZn3W9STFEQIQf",
+                    "name": "Lead",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldW4DzRbXlaWNS7r",
+              "name": "Status"
+            },
+            {
+              "type": "url",
+              "id": "fldNAk8b5enpSnRwB",
+              "name": "LinkedIn"
+            },
+            {
+              "type": "url",
+              "id": "fld9ZMUg6LAusEO9O",
+              "name": "Twitter"
+            }
+          ]
+        },
+        {
+          "id": "tblJ4C2HFSBlPkyP6",
+          "name": "Projects",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldK9l4WrbNKW1wZu",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld6pqOHhesbItnbm",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldkiBEfo5iCafwYv",
+              "name": "Project Manager"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selDCaTQIdA4TUN7O",
+                    "name": "Client Project",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selkxGVjAQS64Rcdd",
+                    "name": "Internal",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selpPxZbX51xOoMJR",
+                    "name": "R&D",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selYwSJtjgKFz8fS3",
+                    "name": "Maintenance",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld0jJUsQrabr4tUH",
+              "name": "Project Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selFY5SnX2WD573yp",
+                    "name": "Planning",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selU47V4O8lTMDuay",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seliyByHrsdZWe7Bs",
+                    "name": "On Hold",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMNGu5Pio44Xzuc",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selFnvusp48vlmyBj",
+                    "name": "Cancelled",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldYJr1c7niwe91P9",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel35uWRuGLisIPbe",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selFcbZmKqT5U3Awi",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sels7ssj2Vvx9CZRY",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9eRLanRMnTQXaU",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldHxwDuL5mT3sRUy",
+              "name": "Priority"
+            }
+          ]
+        },
+        {
+          "id": "tbltUIxPI1ZXgLgqQ",
+          "name": "Tasks",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldyNl2cnfm6l3S9B",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldK1UjC1rwLsvazi",
+              "name": "Project"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldIJpbDIB5VpLOst",
+              "name": "Assigned To"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldVpM607SFBfkQI4",
+              "name": "Created By"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selxyU03u2COV8tQh",
+                    "name": "Development",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selpNiEtZrgpz6OgD",
+                    "name": "Design",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9jsEZC3wpiPBuk",
+                    "name": "Content",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel85DxpI1wCQ8ar9",
+                    "name": "Testing",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sely6z2hqIVQj50sT",
+                    "name": "Deployment",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel34jUfd13KEp7nN",
+                    "name": "Maintenance",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldn328D371wXa9Zx",
+              "name": "Task Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel9RCIOEVihImNeH",
+                    "name": "To Do",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQXU4qcEtXKPb9n",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selDqwvTIGk43jyWR",
+                    "name": "Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selj1y24IAzfGDL1C",
+                    "name": "Done",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seluNUN6vwjSOoIls",
+                    "name": "Cancelled",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldPJyofXGjHmdFUA",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sell6FtHwNH8O6cwb",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selCdyLS0lPI73v67",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selFVbEwkvfyUjQiY",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selj9XEBDRZS82AIu",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldzpS0oWYCckPSZZ",
+              "name": "Priority"
+            }
+          ]
+        },
+        {
+          "id": "tbl7fhkC3pLVtICjt",
+          "name": "Time Tracking",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldqeaBkXKhRSJtQU",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldDEBD8vqfuA3aRO",
+              "name": "Project"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldF1LW8JPhMiOZrp",
+              "name": "Task"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldYHlQsvcbLZVYwf",
+              "name": "Person"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selNvbuuovPOiSeux",
+                    "name": "Development",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selIwHkp6sReQeigW",
+                    "name": "Design",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selLkH2R21oiWDARC",
+                    "name": "Meeting",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sels2AwQtG1Ew6bVC",
+                    "name": "Research",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel0XsG6aWRvlsrO4",
+                    "name": "Support",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldyZGZid2CDNy9h4",
+              "name": "Category"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldr4kgs4zBhTI0v1",
+              "name": "Approved By"
+            }
+          ]
+        },
+        {
+          "id": "tblI4qanQUV915V6Q",
+          "name": "Documents",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldWgjWiWqviBqgT7",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldrkiwI8uH2abKrv",
+              "name": "Project"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldWaRCguWNb7u8jF",
+              "name": "Company"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selo1B7cDyA2AomWs",
+                    "name": "Contract",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selCI5VeGBY1ceeT4",
+                    "name": "Proposal",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9KkLc0sAjHcizr",
+                    "name": "Invoice",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selnz9kJ1PgBjh7Eo",
+                    "name": "Report",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sellzPNSGn3Zxnr7J",
+                    "name": "Manual",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selcB4tqBWSz9hvIm",
+                    "name": "Code",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld945NUNfbAtfavm",
+              "name": "Document Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel7xuETPLpH4CIbw",
+                    "name": "Draft",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selcd6XbNeva1y98K",
+                    "name": "Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9Aq1iiF62cAI1T",
+                    "name": "Approved",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sell4ORg6cORBiFwK",
+                    "name": "Published",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selpLsNN5H6o73vrm",
+                    "name": "Archived",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldTkSPuBa1KeM4Np",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldnJANUsTIxhl9kz",
+              "name": "File"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldKzQXBzonaRRNrU",
+              "name": "File Type"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldwmwvqwe8Dzu7y4",
+              "name": "Version"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldMz5yJoByO0BrJI",
+              "name": "Created By"
+            }
+          ]
+        }
+      ]
+    },
+    "finance": {
+      "id": "app6yzlm67lRNuQZD",
+      "tables": [
+        {
+          "id": "tblqinQyqdCGIjKia",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldudJ8A1AmFesMhC",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldwFHNb33q3MneF8",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldWjCw2HCTiMk6dz",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selFpKKAklOSjQ540",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel1pYyBtil6k7nkK",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "seld4jEOCvv1BETGV",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldlZQPFd0DktqfSj",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldnpDbIXx9j2ucbG",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldnpDbIXx9j2ucbG"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldnpDbIXx9j2ucbG"
+                    }
+                  }
+                ]
+              },
+              "id": "fldwccYjk5Z430w0B",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        },
+        {
+          "id": "tblpQ71TjMAnVJ5by",
+          "name": "Invoices",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldarE278pa6gQONE",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldsRoTqCAwS7tVOH",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldpkDgus1U4YSndm",
+              "name": "Project"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldF0GGHbPuSc3UAc",
+              "name": "Contact"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selrJ7A4tuGNvo3cQ",
+                    "name": "Standard",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel201aeWPafPCBFa",
+                    "name": "Recurring",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel3TLX2uyVB7pFVu",
+                    "name": "Credit",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selVaXU7YcZjhGzFZ",
+                    "name": "Debit",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldJJOoTcI17Rk9Sg",
+              "name": "Invoice Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selD1ffyA4UTrXrao",
+                    "name": "Draft",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhLelo2YT5g1Rvy",
+                    "name": "Sent",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selSwiPsdUyXBPHiP",
+                    "name": "Paid",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seltA5QbGZZUrsJfv",
+                    "name": "Overdue",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7cxlzmPRE5s0hL",
+                    "name": "Cancelled",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldTgfqF9M6lfaPSO",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldxK5VutzvG6pj0M",
+              "name": "Payment Terms"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "seldFktHrEmjLEHVE",
+                    "name": "Credit Card",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selOgfw8XTS1aaRLk",
+                    "name": "Bank Transfer",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seli0shYAUvybmaWc",
+                    "name": "Check",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selJII8bAh8hBaRAU",
+                    "name": "Cash",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldXNf4eSrVKk4DQD",
+              "name": "Payment Method"
+            }
+          ]
+        },
+        {
+          "id": "tblAMmYPqX3Z4bbe3",
+          "name": "Payments",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldhS8JZYRWFDlW7W",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldfq0HRX0HpBB96Y",
+              "name": "Invoice"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldX18mig7NZnKJg4",
+              "name": "Company"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selgM8BbTX6jY0hZf",
+                    "name": "Credit Card",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selwyXZwsbe7khyOq",
+                    "name": "Bank Transfer",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selALBb9nI1Cm8nAt",
+                    "name": "Check",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selSOfwldOcXKKvpb",
+                    "name": "Cash",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldFjt0jHvCSpXvtC",
+              "name": "Payment Method"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldWmBoREoAQz3CxV",
+              "name": "Reference Number"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selQKIekNAYI8imAL",
+                    "name": "Pending",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel0AGiS1jPqBWpaX",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selI1uJeImijWJRzq",
+                    "name": "Failed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selfCX15451suOr72",
+                    "name": "Refunded",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldq5EZ3qTUIyquya",
+              "name": "Status"
+            }
+          ]
+        },
+        {
+          "id": "tbl2xSZXHcEY0eX1K",
+          "name": "Expenses",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldxUfGBNja45d4iq",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldHsLxz8MvMkVfuF",
+              "name": "Project"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selmhGyqFsu3EtwhI",
+                    "name": "Travel",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7j4QPAY6XdSxCp",
+                    "name": "Office",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel5LcvjakuOBUByo",
+                    "name": "Software",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selVdqfXWIVkEaXZw",
+                    "name": "Hardware",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel0fvLqkyxo2lGv1",
+                    "name": "Marketing",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selHnmq7sNTQJpiNo",
+                    "name": "Legal",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldJbsiPpy17pMapE",
+              "name": "Category"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel7rfEZVC8CQf23G",
+                    "name": "USD",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7Q2HAwCEWXhLxu",
+                    "name": "EUR",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seltNslukSqj8Sq1l",
+                    "name": "ILS",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldfMFv8eY698Z5s8",
+              "name": "Currency"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldmYmJwg1NcyusQ6",
+              "name": "Receipt"
+            },
+            {
+              "type": "singleLineText",
+              "id": "flduDJGnaH1g3PC8W",
+              "name": "Vendor"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld8trLbQQU7329OU",
+              "name": "Approved By"
+            }
+          ]
+        },
+        {
+          "id": "tblqDmT2plLKywouV",
+          "name": "Revenue",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldnqRRd5madUWsQu",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldi3WvXNmxgMzhtW",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldPK4DbI8M3KL8Hd",
+              "name": "Project"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel7QxDfLDEDrH4yg",
+                    "name": "Project Revenue",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9atc8IwGC76Ust",
+                    "name": "Recurring",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selZq9kSHoBGnmhQi",
+                    "name": "One-time",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selr6Eilodq8izrrg",
+                    "name": "Commission",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldYjs7hAdi61SzCX",
+              "name": "Revenue Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selggTJriG2JYE2HL",
+                    "name": "USD",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7Kc3ZzkH43kPGM",
+                    "name": "EUR",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQ35CSBWqXfhSrb",
+                    "name": "ILS",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldjrRo1oX6XxO4VH",
+              "name": "Currency"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld6a66ioofgpMaxD",
+              "name": "Invoice"
+            }
+          ]
+        },
+        {
+          "id": "tblnIdx4FrX8PWQxk",
+          "name": "Budgets",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldehtyDFv1kFaewI",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldpONSLHvgavG14a",
+              "name": "Project"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selPSho5rVfXkZ3iS",
+                    "name": "Project",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel1Y5uvZYzg6IOr7",
+                    "name": "Department",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXRlsy8CbSSYIHY",
+                    "name": "Company",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seleHCzyoUh15ifUi",
+                    "name": "Annual",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldY5PhGF6aIP2dti",
+              "name": "Budget Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selXOW48GMbMNzMWT",
+                    "name": "On Track",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selzOLiDVSNs9VhGv",
+                    "name": "Over Budget",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selpX3Q90qTun4dc1",
+                    "name": "Under Budget",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldLrHSwL1xiMMEtN",
+              "name": "Status"
+            }
+          ]
+        },
+        {
+          "id": "tblhxqWONe31jxIRW",
+          "name": "Tax Records",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldAoufaEJ5rp2qC9",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldLRfDcD4ZyfpkIv",
+              "name": "Company"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selm6IefegSr5sbKy",
+                    "name": "Income Tax",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selM98CqNdVpYc9oU",
+                    "name": "VAT",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selIaNZzg3fopPNOY",
+                    "name": "Sales Tax",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sels40NMk3zDQ8DnA",
+                    "name": "Property Tax",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldOJE136AHlja8hy",
+              "name": "Tax Type"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld001Lva68Jwvf4e",
+              "name": "Tax Period"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selKZP48FHhkSIfif",
+                    "name": "Pending",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selKuxKMkO6BFg5my",
+                    "name": "Paid",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selyuTw6cRc9C7omy",
+                    "name": "Overdue",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldwpAUcWN2XgaHZa",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldKwoExHuL3ljHlh",
+              "name": "Reference Number"
+            }
+          ]
+        }
+      ]
+    },
+    "marketing": {
+      "id": "appQhVkIaWoGJG301",
+      "tables": [
+        {
+          "id": "tblnj6RW1B9Vbl5r0",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fld9mbJaQCr7OUj6a",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fld0i4Uowam8fU9CR",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldbxrrpe4cpFQgHr",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selSVltZ0NfwWUk9t",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel7GD4aXYbUoFqum",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "seljQDQikiCja2AEX",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldmTommsIvmSPf3J",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldo4iDe0A9ScTomz",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldo4iDe0A9ScTomz"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldo4iDe0A9ScTomz"
+                    }
+                  }
+                ]
+              },
+              "id": "fldPqiyupxZxddCbn",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        },
+        {
+          "id": "tblbzmGf329gIITSH",
+          "name": "Leads",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldHOXuRAEx1mooen",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldyLuaiWi6s1hM7s",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "flda31akemUAqyHAR",
+              "name": "Contact Person"
+            },
+            {
+              "type": "email",
+              "id": "fldaWe69Iwk1JLa7J",
+              "name": "Email"
+            },
+            {
+              "type": "phoneNumber",
+              "id": "fldbCvwlvVfoV2BR2",
+              "name": "Phone"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel8of6PlrAr4kFbi",
+                    "name": "Website",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selBMSXNSLSCtaTYU",
+                    "name": "Social Media",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selPSpIdojCyNuISX",
+                    "name": "Referral",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selrJ9cxNKJrpqApp",
+                    "name": "Cold Call",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selo2SZf2J7AIPHl7",
+                    "name": "Event",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld5ld4V6BTLzXcvU",
+              "name": "Source"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selvCg4auGGHVWCxU",
+                    "name": "New",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhiu7EaDIqMXJHE",
+                    "name": "Contacted",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selEkAhS4mTKkK9FB",
+                    "name": "Qualified",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selKuPcV8EfjcKGT9",
+                    "name": "Unqualified",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selskDMLyi1iZtNnd",
+                    "name": "Converted",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldTxSsbe5zZY7jcI",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selkU34uDPtmmrvf4",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selfdQZpaoy0mbr2n",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selHNpEN46Za3byMY",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selNv65ge23imCPVJ",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldAP6ip127OnVy6P",
+              "name": "Priority"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldGx6Y5R0upO8nCN",
+              "name": "Industry"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldwRnnOkkbMro68K",
+              "name": "Assigned To"
+            }
+          ]
+        },
+        {
+          "id": "tblzfFsiGl8LwuW0E",
+          "name": "Opportunities",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldQwRQLW4VzrnUzY",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldjGZ4CPXZb2sA1T",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldmcMALtwxi5YPPo",
+              "name": "Contact"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldSKkTEsSqVlRJku",
+              "name": "Lead"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selblJ1lWTfUnGqVM",
+                    "name": "Prospecting",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selVDcdLEXyZKBaWp",
+                    "name": "Qualification",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selJV4MAwamC2bmd0",
+                    "name": "Proposal",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel4vYQ1zoM1j7V4w",
+                    "name": "Negotiation",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selt6ytGorgGj7Wb4",
+                    "name": "Closed Won",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selDsgWJq4Ja0eU4D",
+                    "name": "Closed Lost",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldYyUhYr2EJyZ5iy",
+              "name": "Stage"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldiTkCjJCdrnmSfu",
+              "name": "Lost Reason"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldfsxvynX4zYVjzY",
+              "name": "Assigned To"
+            }
+          ]
+        },
+        {
+          "id": "tbldquy3F52vDWOse",
+          "name": "Campaigns",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldymyua9ZG4tsVCl",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selndWyorTyaf58j7",
+                    "name": "Email",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seljkiVuVs4mworxi",
+                    "name": "Social Media",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selq10x6nbJxEVy4b",
+                    "name": "Content",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7bZW0NsxUGRtIX",
+                    "name": "Event",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel36H3ocgbdrpS72",
+                    "name": "Paid Ads",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldQGOKuF5oCxQbDc",
+              "name": "Campaign Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selTzxpl3MFZGNyYE",
+                    "name": "Planning",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selkwjAMKbkTaN4kz",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selcKeIjKclOlz7eR",
+                    "name": "Paused",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selrNrEjxb29eadYK",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldH6QXzXCwIrVqkM",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldwmmKOwofU7aWKO",
+              "name": "Created By"
+            }
+          ]
+        },
+        {
+          "id": "tblyouyRsrShihtsW",
+          "name": "Content",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldUsbUawEjHTGWeS",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selnchHmZuta7jTnG",
+                    "name": "Blog Post",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selWKDuIi9LtOVYlH",
+                    "name": "Video",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selCuRn9EhEf6eeH6",
+                    "name": "Podcast",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel6P1PgzGX0t7ENP",
+                    "name": "Whitepaper",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selAT2HPApc68W8tX",
+                    "name": "Case Study",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldCAyZ2c8xWUXHr0",
+              "name": "Content Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selZV40mPnG2P9Dhw",
+                    "name": "Draft",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXCWyYSXhXms5AO",
+                    "name": "Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sele5nWdnrNTLwK7N",
+                    "name": "Published",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel3A9V2ZUXhaJMs9",
+                    "name": "Archived",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldH1CYgCXgEITRbM",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldtwfLWIdYD2OCSv",
+              "name": "Author"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldQjNSQVZHfN95Fd",
+              "name": "Campaign"
+            },
+            {
+              "type": "url",
+              "id": "fld9b93vkIBYXGW2P",
+              "name": "URL"
+            }
+          ]
+        },
+        {
+          "id": "tblAhSt7nBZ6EDbFE",
+          "name": "Social Media",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fld6OMwUflMqGpoEU",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selshvytNXW1aguI4",
+                    "name": "LinkedIn",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selWILWTejZgoWJK5",
+                    "name": "Twitter",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selxkM6Kuk0GvlnUm",
+                    "name": "Facebook",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhiyT6ErHWv2ByN",
+                    "name": "Instagram",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selJLqOpsVdmtYt58",
+                    "name": "YouTube",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldDoX0BgmswhettP",
+              "name": "Platform"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selAZzPdrDSs6Au3x",
+                    "name": "Text",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seld7FlErkdSfBhgM",
+                    "name": "Image",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMp0C8qDUaH9L0T",
+                    "name": "Video",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selive4dTP4G6dbYy",
+                    "name": "Link",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selqMqqHN7T7bjriC",
+                    "name": "Poll",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldsbfB8NSzJyBpAb",
+              "name": "Content Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selBJnTTuCCA3wypW",
+                    "name": "Draft",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selCcaNU111fBcFzM",
+                    "name": "Scheduled",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selKWZmVfA10aTxdj",
+                    "name": "Published",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selYwuRH9MuZOeSs5",
+                    "name": "Archived",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldnE06zjIsjfKkS1",
+              "name": "Status"
+            },
+            {
+              "type": "url",
+              "id": "fldi9TQ8KoucTG4p9",
+              "name": "URL"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldg52QYx1R3bIZgs",
+              "name": "Campaign"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldW7UqmdbbYo41Td",
+              "name": "Created By"
+            }
+          ]
+        },
+        {
+          "id": "tbl6YlucpfIso2ozi",
+          "name": "Analytics",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldWJFJJcad6TZk2t",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selCJQpCmp29ZVJCQ",
+                    "name": "Traffic",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selG9u3YUIUMjeaJ1",
+                    "name": "Conversion",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMFER6K0Z4hPn72",
+                    "name": "Revenue",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selO81EPfYCmykwcV",
+                    "name": "Engagement",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selEBzrm42NtSL8r3",
+                    "name": "Performance",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldztyXDVejdifAPG",
+              "name": "Metric Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selDLexHRzNz77Oce",
+                    "name": "Daily",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXplHYNdcCkcFzC",
+                    "name": "Weekly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selE2MESN8PB9TUNH",
+                    "name": "Monthly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selP4aSQl20cwz1zg",
+                    "name": "Quarterly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selaLhGeZZ1h75pCo",
+                    "name": "Yearly",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldAxMMU4udpmJggs",
+              "name": "Period"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldNO3XMZCl3HhUs7",
+              "name": "Source"
+            }
+          ]
+        }
+      ]
+    },
+    "operations": {
+      "id": "app6saCaH88uK3kCO",
+      "tables": [
+        {
+          "id": "tblEkmMKUWmd6Ze8N",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldFEPlj97rtFKJfb",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldMPSKcj7StpTWO8",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldTKAvb3DRnm6fOQ",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selZchFp2JRP4Hkdd",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "selpJJMc4mPxmRfze",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "selv4cPY1tRolb85G",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldM1ORr59llkyXfW",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fld7erwIq41GMcFzT",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fld7erwIq41GMcFzT"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fld7erwIq41GMcFzT"
+                    }
+                  }
+                ]
+              },
+              "id": "fldbyZ6BXQy9tPRhp",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        },
+        {
+          "id": "tblMxN9pRVaw3UA52",
+          "name": "Workflows",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldnfpKOovvhRIPAF",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selFnOTinrmiDwtmy",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selSKjQ3gYaIIoQsr",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selUDO5SCE68vVi9V",
+                    "name": "Zapier",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhjOkjK30Tqkmm1",
+                    "name": "Custom",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld2i11jEE8XXKvng",
+              "name": "Workflow Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel4mahTCqT03vt4U",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel6oFMODkIgT3zP3",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selDGHCEMVIvKr17H",
+                    "name": "Development",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selZhvjuEyzmvLN4i",
+                    "name": "Testing",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldMtfpeZalqBU3UU",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldnik7MnNrY5DNop",
+              "name": "Trigger"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld6VAe6JGAsDShKA",
+              "name": "Schedule"
+            },
+            {
+              "type": "singleLineText",
+              "id": "flds5E7W1uHcTvmry",
+              "name": "Created By"
+            }
+          ]
+        },
+        {
+          "id": "tblbET0kkCs9sGPZB",
+          "name": "Automations",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldvGY6WveKUGSGkx",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selYeL1SJFaPWs4OM",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQHjrEUSNQvanTf",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selvrQqZAvY07UxC7",
+                    "name": "Zapier",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seliQHfVRNu0Udowq",
+                    "name": "Custom",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldGRuVZ7HOMzjM8Z",
+              "name": "Platform"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel8QbXGtzlSd8HyE",
+                    "name": "Trigger",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMCzbdvqh8fcAYS",
+                    "name": "Action",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selTdOZ5PDgFGFoxQ",
+                    "name": "Scheduled",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldKem0Q9q9J7Nu7M",
+              "name": "Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel75TfWt4C1WM5aT",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selHlC5XkY0nK0Q2Y",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7ZyyzrhFPMIFCp",
+                    "name": "Error",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldDLFeyeX4vUvdcc",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld0LmHAZuQvgfOlF",
+              "name": "Schedule"
+            }
+          ]
+        },
+        {
+          "id": "tblinADnGZDH2QQYv",
+          "name": "Integrations",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldnw9bejRSqtelw0",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selTtIZro6o6hn5KK",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selIiYBAP8p05KDfS",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selysCgJZdZWYH99y",
+                    "name": "Zapier",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMgOP7cltqDpXBo",
+                    "name": "Webflow",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7BGFj7J7YdKCnG",
+                    "name": "QuickBooks",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selD9rmK8HB2pqpGV",
+                    "name": "Slack",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldOl9pRr8CrTynFc",
+              "name": "Platform"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selrUmrP4RBLHfovI",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selupWnrJpms8IuY0",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selqy3VlGB8jqdvSF",
+                    "name": "Development",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selaA93FYj0ttN5CE",
+                    "name": "Testing",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldug60HSSI3Hvpl2",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld4JBduZjc1PzS9E",
+              "name": "API Key"
+            },
+            {
+              "type": "url",
+              "id": "fldg5KhNT7UgGSNde",
+              "name": "Endpoint URL"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selRneyY3ni0nsTaz",
+                    "name": "API Key",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selqTNA7FWe6r659y",
+                    "name": "OAuth",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selBT319RRliWDmqZ",
+                    "name": "Basic Auth",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldnQHYThjrk8KoTo",
+              "name": "Authentication Method"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld4OSjaIrcH3NMTM",
+              "name": "Sync Frequency"
+            }
+          ]
+        },
+        {
+          "id": "tblWE9DZnfE8e8x2o",
+          "name": "System Logs",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldCt8om0fBRemkUJ",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "seljMbOQu990eTPdz",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selRnBZ9hftZQnK0H",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXlxLzGz8F4RO4Q",
+                    "name": "Webflow",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel2VVNhryxkhfwjP",
+                    "name": "Custom",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldOeFTe74U5RY3ct",
+              "name": "System"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "seldIxqYpRvPJToXu",
+                    "name": "Info",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selPs6u6VJMp6q1KM",
+                    "name": "Warning",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "self2sQxZKOrM2Mrs",
+                    "name": "Error",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selqQeOpvgXpUwMxT",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldCjhpqYYiDpeWDU",
+              "name": "Log Level"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldCOkEfIGebYHAeB",
+              "name": "User"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldptuD1pUWEWOHhN",
+              "name": "IP Address"
+            }
+          ]
+        },
+        {
+          "id": "tbl8zubWT0cGVC6mV",
+          "name": "Maintenance",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldf0li9LxSmGEGcJ",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selRmrslnPJ6MeEJ6",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seluBVZZ0kUl8LRIJ",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel2ur0uMCFdUFttD",
+                    "name": "Webflow",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel96yQDze7fG5lpR",
+                    "name": "Server",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selow516In2DC58XU",
+                    "name": "Database",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld98rvaxgOZcBltn",
+              "name": "System"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selvKBHEETlokSvQs",
+                    "name": "Scheduled",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel2VW2EmHQO8VLKF",
+                    "name": "Emergency",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selZ76PdeLAYMUN8o",
+                    "name": "Update",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhpkdBnSf64j6pg",
+                    "name": "Backup",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldnpS4QN2rsSHo5W",
+              "name": "Maintenance Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selFKN3n0nbYfO1z9",
+                    "name": "Scheduled",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selxevHnS4U9t0WXT",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selEwfo6ku3nkLIla",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selyXmZKI6Ur6HW3h",
+                    "name": "Cancelled",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldPtN16H6TxV81eF",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldQR2mfkyTLZmGRF",
+              "name": "Assigned To"
+            }
+          ]
+        },
+        {
+          "id": "tblCNbxBDqZ5PoiF2",
+          "name": "Backups",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldgdTCOd7ljmftqh",
+              "name": "Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selJAUCjzyf90eXJZ",
+                    "name": "Airtable",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel7ojnwEX8UI6a5M",
+                    "name": "n8n",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selWGYWQSfK5RswMT",
+                    "name": "Webflow",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selw8RbOecdFQVYJm",
+                    "name": "Database",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selxBFcg56UDWVJLM",
+                    "name": "Files",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld4U18N5MsJWqdDx",
+              "name": "System"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selE6oeIC1z4aMrCT",
+                    "name": "Full",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seleAaFbbkpPI1AiC",
+                    "name": "Incremental",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selWTmhaCqsNwGZOC",
+                    "name": "Differential",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldvFKu1T7AHsPwcI",
+              "name": "Backup Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selEIjF0Z5112fvVl",
+                    "name": "Scheduled",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selxbETro4PV0gcrq",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel1m1vWAQPr3nUdL",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selH0JbDsfd6QuLng",
+                    "name": "Failed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld0cjjrPmvS8pYg0",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldaKCqDfB5XEVfJv",
+              "name": "Location"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selyuwJT9TrNhzyjY",
+                    "name": "Pending",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seltviLAfQo95fOIH",
+                    "name": "Verified",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selqDv8rGcCDY4qpI",
+                    "name": "Failed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldHsZfPGVUQbw1M1",
+              "name": "Verification Status"
+            }
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "id": "appSCBZk03GUCTfhN",
+      "tables": [
+        {
+          "id": "tblqvYzEzMfUHZohB",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldEmQWVdKjlzcXGg",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldKUfflLDDxDHBtl",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldv41xjXh3KjNSVq",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel9KXgyPHgnjilRv",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel1ys2l0X31EjG53",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "selOrj9GB6fCZlrJY",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fld78RI8MP7g0snKE",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldVx4PPfo8NEsiXi",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldVx4PPfo8NEsiXi"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldVx4PPfo8NEsiXi"
+                    }
+                  }
+                ]
+              },
+              "id": "fldtyLAKgC8JDYp3K",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        },
+        {
+          "id": "tblhzxwqGZCH4qOjR",
+          "name": "Customers",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldovv1t2jmv4VLqt",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldcgNiMfgck97ddd",
+              "name": "Company"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldngKx91jf3PccPo",
+              "name": "Contact Person"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "seloLdk0cnSwaDgyJ",
+                    "name": "Individual",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selGwOtE1xLaundmL",
+                    "name": "Small Business",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selaXXuSWIo7T1VxI",
+                    "name": "Enterprise",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldqeSzMsHNGLNF6r",
+              "name": "Customer Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel5qg2ioFkFDszjE",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selo8yf4GifSKXjCd",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selidTopwRIdoZyyL",
+                    "name": "Churned",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selM8buQzNNMivTfj",
+                    "name": "Prospect",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldoXf1pSDUwt8a7O",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selldrxSFVXIa8XFb",
+                    "name": "Not Started",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seloCLT3leG4o8LtC",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selpCjPrZ4KoqB1Xr",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldNxYdpLgBO3tWMz",
+              "name": "Onboarding Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldm7ScsggYqctnB5",
+              "name": "Subscription Plan"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldZRPwEDOL2OZ0x2",
+              "name": "Success Manager"
+            }
+          ]
+        },
+        {
+          "id": "tblWmCCbUMSF4tFKb",
+          "name": "Support Tickets",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldluwvp7as5N8Jei",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld3TdxZXnYPE8uUQ",
+              "name": "Customer"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld3OtyET2emJ2YPP",
+              "name": "Contact"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldqkP2G1OCyWmJPY",
+              "name": "Project"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selZsSDGXeTuRtULG",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selZOUtnM8EWKccGM",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selbsudQUPoNIBvSO",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQDJTCJDxPAaDvl",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldXoRYdo9RuQkJZp",
+              "name": "Priority"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selfYTsb18hN7W7Dp",
+                    "name": "Open",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel2MS32eKIbTN9Sl",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selwPGyDZrR1TbTe3",
+                    "name": "Waiting for Customer",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selghnNrrtBVm5Xxc",
+                    "name": "Resolved",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selLp5SSAshJ4r9kc",
+                    "name": "Closed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldlqi5lbYutyJBRy",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selQHJs1MkS3osCJ7",
+                    "name": "Technical",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selKInzFsiIPUpejs",
+                    "name": "Billing",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQL6HBDdMDevuQ2",
+                    "name": "Feature Request",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selePA1iM58mzEW7f",
+                    "name": "Bug Report",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldltzX0YnFLtH3LJ",
+              "name": "Category"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fld49gCXSFCeOtWKx",
+              "name": "Subject"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldESflm8CmUB2eGK",
+              "name": "Assigned To"
+            }
+          ]
+        },
+        {
+          "id": "tblDkwhuM1qu4t5FA",
+          "name": "Onboarding",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldNocyMbCH5WCUTr",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldylpRSUK21jMkAc",
+              "name": "Customer"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldjgiuHBaZHTk7yO",
+              "name": "Onboarding Manager"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selrRel9GUPYplDoC",
+                    "name": "Not Started",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seljWpAJbiTEScgqP",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selmIv0PYAKAgH2Wa",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selzNZeqKHv3zgAoI",
+                    "name": "On Hold",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldkezUhsOykzs3Ap",
+              "name": "Status"
+            }
+          ]
+        },
+        {
+          "id": "tblYFs2DGuTs0u2cs",
+          "name": "Success Metrics",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldl3ZSxQ5IQImTJu",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldIliSjXGCkCBxO6",
+              "name": "Customer"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selNTBqw9gSo2Vkkw",
+                    "name": "Usage",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selN1ii3GRv4R1FfT",
+                    "name": "Engagement",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selMlxBlIIPwXCgk3",
+                    "name": "Satisfaction",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selaBFuMRR62wRthi",
+                    "name": "Revenue",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld3BjmqEtenAbSFt",
+              "name": "Metric Type"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldAu1Ht7Bw72qjaN",
+              "name": "Metric Name"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sell1m6oFnCKk6hr5",
+                    "name": "Daily",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel4tGalIRAL2jARO",
+                    "name": "Weekly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selAHic4n9Gt5qPOm",
+                    "name": "Monthly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9L4e4b7fafVPS8",
+                    "name": "Quarterly",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldtgIlcZXhLcR2jf",
+              "name": "Period"
+            }
+          ]
+        },
+        {
+          "id": "tblpMKJIlwLt2MzrF",
+          "name": "Feedback",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "flde3ut3CboDFFJxr",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldmmu5ZwCp2AChUb",
+              "name": "Customer"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldPhLRbOuWbnPL2N",
+              "name": "Contact"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selfExo8gTjKd4hI0",
+                    "name": "Survey",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selcpmvjrtn2AaILy",
+                    "name": "Interview",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selhBSp1Ixy44FmBj",
+                    "name": "Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selThmeMBUZm1Xn5R",
+                    "name": "Support",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldq1AgZMPVmLIYNt",
+              "name": "Feedback Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selJAYaB6hBk8RVmj",
+                    "name": "Product",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selO8mt2ZWxNlwAyL",
+                    "name": "Service",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seltCqEUZFqZAI5AV",
+                    "name": "Support",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selSj83ZGucO95aHL",
+                    "name": "Overall",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldTXmjWawrLLceah",
+              "name": "Category"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selQ1EJSDGzZt5u6z",
+                    "name": "New",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selkOCSzGlxWBrIBX",
+                    "name": "In Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel8hbWxpFsCd35y0",
+                    "name": "Actioned",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "seltFnZPt4nvz51JC",
+                    "name": "Closed",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldIj4rPvOS9fzZRo",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldaFELyfw02AMZ9Q",
+              "name": "Assigned To"
+            }
+          ]
+        },
+        {
+          "id": "tbl1Di5hqfdyexmI8",
+          "name": "Retention",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldauEOLXNmC3E5US",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldNWXjo7azWpIZIu",
+              "name": "Customer"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selLeST4y7y9rV3Ht",
+                    "name": "Monthly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selFEK6B3F2Qgxfum",
+                    "name": "Quarterly",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selLccuzdeNgy3Vlg",
+                    "name": "Annual",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldack9DTFdtiPiC7",
+              "name": "Retention Type"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selQB8zRwPiEsPw0Q",
+                    "name": "Retained",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selp8CAPROiW2IceU",
+                    "name": "Churned",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selyZjbJwhmruhO9s",
+                    "name": "At Risk",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldtiQc8seWqhIhxm",
+              "name": "Status"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldE82OQ44Vi6brqS",
+              "name": "Churn Reason"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldLrm6RCdQ0LP57x",
+              "name": "Success Manager"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "errors": []
+}

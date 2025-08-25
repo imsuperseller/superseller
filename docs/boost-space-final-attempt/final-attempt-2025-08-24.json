@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-08-24T16:14:22.022Z",
+  "status": "completed",
+  "populationResults": {
+    "businessCases": {
+      "description": "Business cases with minimal data",
+      "endpoint": "/business-case",
+      "records": [
+        {
+          "data": {
+            "name": "Test Business Case 1",
+            "statusSystemId": 30,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "successful": 0,
+        "failed": 1
+      }
+    },
+    "businessContracts": {
+      "description": "Business contracts with minimal data",
+      "endpoint": "/business-contract",
+      "records": [
+        {
+          "data": {
+            "name": "Test Business Contract 1",
+            "statusSystemId": 54,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "successful": 0,
+        "failed": 1
+      }
+    }
+  },
+  "summary": {
+    "totalModules": 0,
+    "successfulModules": 0,
+    "failedModules": 0,
+    "totalRecords": 0,
+    "successfulRecords": 0
+  }
+}

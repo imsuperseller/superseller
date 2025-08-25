@@ -1,0 +1,23 @@
+{
+  "server": {
+    "status": "deployed",
+    "url": "https://rensto-lightrag.onrender.com",
+    "error": null
+  },
+  "github": {
+    "status": "configured",
+    "webhook": "https://rensto-lightrag.onrender.com/webhook",
+    "error": null
+  },
+  "knowledgeGraph": {
+    "status": "created",
+    "entities": 13,
+    "error": null
+  },
+  "integration": {
+    "status": "configured",
+    "tested": false,
+    "error": null
+  },
+  "errors": []
+}

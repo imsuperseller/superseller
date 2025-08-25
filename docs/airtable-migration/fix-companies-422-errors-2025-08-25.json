@@ -1,0 +1,67 @@
+{
+  "timestamp": "2025-08-25T02:40:46.870Z",
+  "status": "completed",
+  "fieldsAdded": [],
+  "errors": [
+    {
+      "step": "addField",
+      "field": "Tax ID",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Industry",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Company Type",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Website",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Phone",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Founded Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Employee Count",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Annual Revenue",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Status",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Created Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Last Updated",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "field": "Tags",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

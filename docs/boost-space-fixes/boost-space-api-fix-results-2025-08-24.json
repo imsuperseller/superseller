@@ -1,0 +1,215 @@
+{
+  "timestamp": "2025-08-24T15:13:08.672Z",
+  "status": "completed",
+  "tests": {
+    "platformConnectivity": {
+      "platformHome": {
+        "status": "passed",
+        "statusCode": 200,
+        "url": "https://superseller.boost.space",
+        "method": "GET"
+      },
+      "platformAPI": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "url": "https://superseller.boost.space/api",
+        "method": "GET"
+      },
+      "platformHealth": {
+        "status": "passed",
+        "statusCode": 200,
+        "url": "https://superseller.boost.space/health",
+        "method": "GET"
+      }
+    },
+    "authentication": {
+      "authTest": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "endpoint": "/api/contacts"
+      },
+      "userInfo": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/user",
+        "data": [
+          {
+            "id": 4,
+            "created": "2024-02-29T16:07:42+01:00",
+            "createdUserId": null,
+            "updated": "2025-07-07T05:47:52+02:00",
+            "updatedUserId": null,
+            "imageId": 13,
+            "username": "shai",
+            "email": "shai@superseller.agency",
+            "emailVerified": true,
+            "lostPasswordCode": null,
+            "first_name": "Shai",
+            "last_name": "Friedman",
+            "phone": null,
+            "role": "admin",
+            "color": null,
+            "currencyId": null,
+            "default_activity_id": null,
+            "auth_token": "0b9b38ef38cca2180117c0d56c0a2582",
+            "status_system_id": 8,
+            "language": "en",
+            "showSurvey": true,
+            "boostId": "User04",
+            "remotes": [],
+            "uuid": 4,
+            "rate": null,
+            "fullName": "Shai Friedman",
+            "categories": [
+              2
+            ],
+            "teams": [],
+            "labels": [],
+            "image_url": "/images/user/9k2tuf38atc9ltkg",
+            "image_url_resize": {
+              "s_40x40": {
+                "id": 5,
+                "path": "/images/user/40x40/9k2tuf38atc9ltkg",
+                "created": "2024-02-29T18:05:58+01:00"
+              },
+              "s_100x100": {
+                "id": 7,
+                "path": "/images/user/100x100/9k2tuf38atc9ltkg",
+                "created": "2024-02-29T18:05:58+01:00"
+              }
+            },
+            "status_system": {
+              "id": 8,
+              "created": "2024-02-26T13:57:07+01:00",
+              "createdUserId": null,
+              "updated": "2024-02-26T13:57:50+01:00",
+              "updatedUserId": null,
+              "color": "#000000",
+              "iconPrefix": "fas",
+              "icon": "user",
+              "module": "user",
+              "weight": 1,
+              "name": "Active",
+              "system_name": "active",
+              "actived": true,
+              "custom": false,
+              "allow_move": "8,9",
+              "boostId": "StatusSystem08",
+              "remotes": []
+            },
+            "managerWork": false,
+            "visible_rate": false,
+            "rates": [],
+            "isTwoFactorEnabled": false,
+            "default_menu": null
+          }
+        ]
+      },
+      "accountInfo": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "endpoint": "/api/account"
+      }
+    },
+    "moduleEndpoints": {
+      "contacts": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "endpoint": "/api/contacts"
+      },
+      "business-case": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/business-case",
+        "data": []
+      },
+      "business-contract": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/business-contract",
+        "data": []
+      },
+      "invoice": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/invoice",
+        "data": []
+      },
+      "todo": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/todo",
+        "data": []
+      },
+      "event": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/event",
+        "data": []
+      },
+      "products": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "endpoint": "/api/products"
+      },
+      "note": {
+        "status": "passed",
+        "statusCode": 200,
+        "endpoint": "/api/note",
+        "data": []
+      }
+    },
+    "dataOperations": {
+      "createContact": {
+        "status": "failed",
+        "error": "Request failed with status code 404"
+      },
+      "readContacts": {
+        "status": "failed",
+        "error": "Request failed with status code 404"
+      },
+      "updateContact": {
+        "status": "failed",
+        "error": "Request failed with status code 404"
+      },
+      "deleteContact": {
+        "status": "failed",
+        "error": "Request failed with status code 404"
+      }
+    }
+  },
+  "fixes": {
+    "configuration": {
+      "status": "updated",
+      "changes": [
+        "API base URL corrected",
+        "Endpoint URLs updated",
+        "Authentication verified"
+      ]
+    },
+    "verification": {
+      "platformAccess": {
+        "status": "passed",
+        "statusCode": 200,
+        "url": "https://superseller.boost.space",
+        "method": "GET"
+      },
+      "apiAccess": {
+        "status": "failed",
+        "error": "Request failed with status code 404",
+        "statusCode": 404,
+        "endpoint": "/api/contacts"
+      },
+      "dataAccess": {
+        "status": "failed",
+        "error": "Request failed with status code 404"
+      }
+    }
+  },
+  "finalStatus": "success"
+}

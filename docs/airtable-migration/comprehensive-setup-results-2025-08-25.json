@@ -1,0 +1,700 @@
+{
+  "timestamp": "2025-08-25T01:59:52.711Z",
+  "status": "completed",
+  "bases": {
+    "rensto": {
+      "id": "appQijHhqqP4z6wGe",
+      "tables": [
+        {
+          "id": "tblYR2UftNJ7nUl1Q",
+          "name": "Leads",
+          "fields": [
+            {
+              "type": "multilineText",
+              "id": "fldEdp7fSFY1Lwgf8",
+              "name": "Name"
+            }
+          ]
+        },
+        {
+          "id": "tbl6BMipQQPJvPIWw",
+          "name": "Customers",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldP6xVONTpHA2Ctx",
+              "name": "Name"
+            },
+            {
+              "type": "email",
+              "id": "fldeDObFgcBhMP1PY",
+              "name": "Email"
+            },
+            {
+              "type": "phoneNumber",
+              "id": "fldQOpZkjooHiGD3M",
+              "name": "Phone"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldLT5StXwRfPgapI",
+              "name": "Company"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sell09UZv63absyNZ",
+                    "name": "Active",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selDXvV6svvSKP5dt",
+                    "name": "Inactive",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selW1aRyZsrho8zcZ",
+                    "name": "Prospect",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selSS2C9oyahunwTV",
+                    "name": "Lead",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldYxSdVAib2pTzyt",
+              "name": "Status"
+            },
+            {
+              "type": "multilineText",
+              "id": "fld4PSUPsAwy5enbM",
+              "name": "Notes"
+            }
+          ]
+        },
+        {
+          "id": "tblNopy7xK0IUYf8E",
+          "name": "Projects",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldFgldXF1PxDZHLB",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldBKgu8SOgTaY5fm",
+              "name": "Customer"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selp0ds8Av4CIQV6o",
+                    "name": "Planning",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selaqLfDTmy11buYe",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selUNMWBR5eldwI8K",
+                    "name": "Completed",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel4YjxvYYNYz5ACh",
+                    "name": "On Hold",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fld9xrwUC4W6As0VC",
+              "name": "Status"
+            },
+            {
+              "type": "multilineText",
+              "id": "fld3FhzzkYlHQur4R",
+              "name": "Description"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selHcsNsBm167FGiY",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selkUKvoEJKO745o0",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQh80TkB9vGNTcX",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXV7OIByvHCJ1cg",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldC4RjmOCokbaJi2",
+              "name": "Priority"
+            }
+          ]
+        },
+        {
+          "id": "tbl3jjJxyhj5VTSeb",
+          "name": "Invoices",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldfmRZuURoJloXZF",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "flduf8HN6E882tecn",
+              "name": "Invoice Number"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldLWSlUJNkJnCbSm",
+              "name": "Customer"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldhQwzAROlV74Zba",
+              "name": "Project"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selt2VtMToaIa3cVg",
+                    "name": "Draft",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel0gMlXtXDYbEYDE",
+                    "name": "Sent",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selQVQbYfhleh2FM3",
+                    "name": "Paid",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel46jJNWZ7QFgT7J",
+                    "name": "Overdue",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldzWWdm2R1wnh9KS",
+              "name": "Status"
+            },
+            {
+              "type": "multilineText",
+              "id": "fld4Oe1I6RmQHEy9Z",
+              "name": "Notes"
+            }
+          ]
+        },
+        {
+          "id": "tblUO4nQyDEXJ2jGu",
+          "name": "Tasks",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldsdXJOUF8BV8AbI",
+              "name": "Name"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldK4oRM4zE114lo6",
+              "name": "Project"
+            },
+            {
+              "type": "singleLineText",
+              "id": "fldWJS47shWuzZm62",
+              "name": "Assigned To"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selyJm5l3YeOC8h0w",
+                    "name": "To Do",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selRKSdWgMSMl6RcK",
+                    "name": "In Progress",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel9FehplpsxXE4y0",
+                    "name": "Review",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selsSylmphrBIdpx2",
+                    "name": "Done",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldKayjxfj4czbc9Y",
+              "name": "Status"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel1qliXYiPlo9e2m",
+                    "name": "Low",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selFXrsDHhDB0Bc1E",
+                    "name": "Medium",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "selXHadOWixSuQbtC",
+                    "name": "High",
+                    "color": "grayLight2"
+                  },
+                  {
+                    "id": "sel23aGm4yfBqk3sw",
+                    "name": "Critical",
+                    "color": "grayLight2"
+                  }
+                ]
+              },
+              "id": "fldd4kquQfr6Ynwsz",
+              "name": "Priority"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldA7og1zy9YH1EaN",
+              "name": "Description"
+            }
+          ]
+        }
+      ]
+    },
+    "core": {
+      "id": "app4nJpP1ytGukXQT",
+      "tables": [
+        {
+          "id": "tblU9N6hSBJaPemrd",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldcYHeA4X1rMJIOX",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldykHXa4ntMwafqY",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldSQ1ElUy4CEjkLZ",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sellGVM4cfCkDxV6n",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "selnunmoAMdVwINyh",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "sel3KOHHJia9eAKdc",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldmTosdvO2w3idVN",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldZWjbG87KqVKgC6",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldZWjbG87KqVKgC6"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldZWjbG87KqVKgC6"
+                    }
+                  }
+                ]
+              },
+              "id": "fldKb07BgEaW2iSDS",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        }
+      ]
+    },
+    "finance": {
+      "id": "app6yzlm67lRNuQZD",
+      "tables": [
+        {
+          "id": "tblqinQyqdCGIjKia",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldudJ8A1AmFesMhC",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldwFHNb33q3MneF8",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldWjCw2HCTiMk6dz",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selFpKKAklOSjQ540",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel1pYyBtil6k7nkK",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "seld4jEOCvv1BETGV",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldlZQPFd0DktqfSj",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldnpDbIXx9j2ucbG",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldnpDbIXx9j2ucbG"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldnpDbIXx9j2ucbG"
+                    }
+                  }
+                ]
+              },
+              "id": "fldwccYjk5Z430w0B",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        }
+      ]
+    },
+    "marketing": {
+      "id": "appQhVkIaWoGJG301",
+      "tables": [
+        {
+          "id": "tblnj6RW1B9Vbl5r0",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fld9mbJaQCr7OUj6a",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fld0i4Uowam8fU9CR",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldbxrrpe4cpFQgHr",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selSVltZ0NfwWUk9t",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel7GD4aXYbUoFqum",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "seljQDQikiCja2AEX",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldmTommsIvmSPf3J",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldo4iDe0A9ScTomz",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldo4iDe0A9ScTomz"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldo4iDe0A9ScTomz"
+                    }
+                  }
+                ]
+              },
+              "id": "fldPqiyupxZxddCbn",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        }
+      ]
+    },
+    "operations": {
+      "id": "app6saCaH88uK3kCO",
+      "tables": [
+        {
+          "id": "tblEkmMKUWmd6Ze8N",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldFEPlj97rtFKJfb",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldMPSKcj7StpTWO8",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldTKAvb3DRnm6fOQ",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "selZchFp2JRP4Hkdd",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "selpJJMc4mPxmRfze",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "selv4cPY1tRolb85G",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fldM1ORr59llkyXfW",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fld7erwIq41GMcFzT",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fld7erwIq41GMcFzT"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fld7erwIq41GMcFzT"
+                    }
+                  }
+                ]
+              },
+              "id": "fldbyZ6BXQy9tPRhp",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        }
+      ]
+    },
+    "customers": {
+      "id": "appSCBZk03GUCTfhN",
+      "tables": [
+        {
+          "id": "tblqvYzEzMfUHZohB",
+          "name": "Table 1",
+          "fields": [
+            {
+              "type": "singleLineText",
+              "id": "fldEmQWVdKjlzcXGg",
+              "name": "Name"
+            },
+            {
+              "type": "multilineText",
+              "id": "fldKUfflLDDxDHBtl",
+              "name": "Notes"
+            },
+            {
+              "type": "singleCollaborator",
+              "id": "fldv41xjXh3KjNSVq",
+              "name": "Assignee"
+            },
+            {
+              "type": "singleSelect",
+              "options": {
+                "choices": [
+                  {
+                    "id": "sel9KXgyPHgnjilRv",
+                    "name": "Todo",
+                    "color": "redLight2"
+                  },
+                  {
+                    "id": "sel1ys2l0X31EjG53",
+                    "name": "In progress",
+                    "color": "yellowLight2"
+                  },
+                  {
+                    "id": "selOrj9GB6fCZlrJY",
+                    "name": "Done",
+                    "color": "greenLight2"
+                  }
+                ]
+              },
+              "id": "fld78RI8MP7g0snKE",
+              "name": "Status"
+            },
+            {
+              "type": "multipleAttachments",
+              "options": {
+                "isReversed": false
+              },
+              "id": "fldVx4PPfo8NEsiXi",
+              "name": "Attachments"
+            },
+            {
+              "type": "aiText",
+              "options": {
+                "referencedFieldIds": [
+                  "fldVx4PPfo8NEsiXi"
+                ],
+                "prompt": [
+                  "You are a professional document analyst specializing in summarizing content from various file types. Your task is to extract key points and provide a concise summary of the content found in the attached files. Ensure that the summary captures the main ideas and any important details without including unnecessary information.\n\nAnalyze the content of the attached files to identify the main themes and significant details. Summarize these points clearly and concisely, ensuring that the summary is informative and relevant to the document's purpose.\n\nFormat your response as plain text, keeping it concise and to the point. If you cannot summarize the content, output \"Unable to summarize the content.\" Example: \"The document discusses the impact of climate change on polar bears, highlighting the loss of habitat and food sources.\" (Real examples should be longer and more detailed.)\n\nFiles:\n",
+                  {
+                    "field": {
+                      "fieldId": "fldVx4PPfo8NEsiXi"
+                    }
+                  }
+                ]
+              },
+              "id": "fldtyLAKgC8JDYp3K",
+              "name": "Attachment Summary",
+              "description": "An AI generated summary of the Attachments field. Upload files to Attachments to generate a summary."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "tables": {},
+  "records": {},
+  "errors": [
+    {
+      "step": "addRecords",
+      "base": "app4nJpP1ytGukXQT",
+      "table": "Companies",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

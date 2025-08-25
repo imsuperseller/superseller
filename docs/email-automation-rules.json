@@ -1,0 +1,91 @@
+{
+  "customerJourney": [
+    {
+      "trigger": "New customer signup",
+      "actions": [
+        "Send welcome email from mary@rensto.com",
+        "Schedule onboarding call",
+        "Create customer profile",
+        "Send resource access email"
+      ]
+    },
+    {
+      "trigger": "Support ticket created",
+      "actions": [
+        "Send confirmation email from john@rensto.com",
+        "Assign ticket number",
+        "Set priority level",
+        "Schedule follow-up"
+      ]
+    },
+    {
+      "trigger": "Lead captured",
+      "actions": [
+        "Send personalized outreach from winston@rensto.com",
+        "Add to sales pipeline",
+        "Schedule discovery call",
+        "Send relevant resources"
+      ]
+    }
+  ],
+  "marketingAutomation": [
+    {
+      "trigger": "New blog post published",
+      "actions": [
+        "Send newsletter from sarah@rensto.com",
+        "Post to social media",
+        "Update email sequences",
+        "Track engagement metrics"
+      ]
+    },
+    {
+      "trigger": "Campaign milestone reached",
+      "actions": [
+        "Send celebration email from sarah@rensto.com",
+        "Update stakeholders",
+        "Generate performance report",
+        "Plan next campaign"
+      ]
+    }
+  ],
+  "operationsAutomation": [
+    {
+      "trigger": "System performance alert",
+      "actions": [
+        "Send alert email from alex@rensto.com",
+        "Create incident ticket",
+        "Notify technical team",
+        "Update status page"
+      ]
+    },
+    {
+      "trigger": "Process optimization opportunity",
+      "actions": [
+        "Send analysis email from alex@rensto.com",
+        "Create improvement plan",
+        "Schedule review meeting",
+        "Track implementation progress"
+      ]
+    }
+  ],
+  "financialAutomation": [
+    {
+      "trigger": "Monthly financial report generated",
+      "actions": [
+        "Send report email from quinn@rensto.com",
+        "Update stakeholders",
+        "Generate insights summary",
+        "Schedule review meeting"
+      ]
+    },
+    {
+      "trigger": "Budget threshold reached",
+      "actions": [
+        "Send alert email from quinn@rensto.com",
+        "Create budget review",
+        "Generate recommendations",
+        "Schedule budget meeting"
+      ]
+    }
+  ]
+}

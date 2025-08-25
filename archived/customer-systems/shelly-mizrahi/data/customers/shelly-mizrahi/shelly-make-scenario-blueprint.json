@@ -1,0 +1,338 @@
+{
+    "name": "Shelly's Family Profile Data Fetcher",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 1245355,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "WH: Family Profile Request"
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "label": "family_profile_request",
+                            "data": {
+                                "editable": "true"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "surense:SearchLeads",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 5026390
+            },
+            "mapper": {
+                "order": "desc",
+                "orderBy": "createdDate",
+                "limit": "100"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0,
+                    "name": "SR: Get Latest Leads"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Shelly Surense connection (shellypensia@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "surense"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "order": {
+                            "mode": "chose",
+                            "label": "יורד"
+                        },
+                        "orderBy": {
+                            "mode": "chose",
+                            "label": "תאריך יצירה"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "quickFilter",
+                        "type": "text",
+                        "label": "חיפוש מהיר"
+                    },
+                    {
+                        "name": "order",
+                        "type": "select",
+                        "label": "סדר",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "type": "select",
+                        "label": "מיון לפי",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "createdDate",
+                                "lastActivityDate"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "type": "number",
+                        "label": "מספר תוצאות",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 2
+            },
+            "filter": {
+                "name": "Filter Last 24 Hours",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{parseDate(; )}}",
+                            "o": "text:equal",
+                            "b": "{{addHours(now; -24)}}"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "leads": "{{2}}",
+                "selected_leads": "{{1.selected_leads}}",
+                "client_id": "{{1.client_id}}",
+                "request_time": "{{now}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0,
+                    "name": "TL: Prepare Data for n8n"
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "SR: Get Latest Leads - Search Leads [2]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "status": "200",
+                "body": "{\n  \"leads\": 3,\n  \"selected_leads\": \"{{3.selected_leads}}\",\n  \"client_id\": \"{{3.client_id}}\",\n  \"request_time\": \"{{3.request_time}}\"\n}",
+                "headers": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0,
+                    "name": "WH: Return Leads to Portal"
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "validate": {
+                            "min": 100
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        },
+                        "spec": [
+                            {
+                                "name": "key",
+                                "label": "Key",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "label": "Value",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "status": "200",
+                "body": "{\n  \"success\": true,\n  \"message\": \"Data sent to n8n workflow\",\n  \"leads_count\": \"{{3.leads.length}}\",\n  \"ready_for_ai_processing\": true\n}",
+                "headers": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0,
+                    "name": "WH: Trigger n8n Workflow"
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "validate": {
+                            "min": 100
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        },
+                        "spec": [
+                            {
+                                "name": "key",
+                                "label": "Key",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "label": "Value",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": [
+            "Shelly's Family Profile Data Fetcher",
+            "Fetches latest leads from Surense",
+            "Prepares data for n8n workflow processing",
+            "Triggers AI-powered family profile generation"
+        ]
+    }
+}

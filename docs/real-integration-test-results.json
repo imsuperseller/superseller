@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-08-25T04:59:51.903Z",
+  "tests": {
+    "n8n": {
+      "status": "auth_error",
+      "error": "401 - Authentication failed",
+      "action": "Check n8n API key"
+    },
+    "webflow": {
+      "status": "working",
+      "sites": 1,
+      "siteId": "66c7e551a317e0e9c9f906d8"
+    },
+    "lightrag": {
+      "status": "not_found",
+      "error": "404 - Endpoint not found",
+      "action": "Check Lightrag API endpoints"
+    },
+    "workflowDeployment": {
+      "status": "ready",
+      "workflows": 5,
+      "action": "Deploy workflows to n8n when connection is confirmed"
+    }
+  },
+  "summary": {
+    "working": 1,
+    "needsAction": 2,
+    "errors": 0
+  }
+}

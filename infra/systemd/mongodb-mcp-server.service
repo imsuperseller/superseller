@@ -1,0 +1,16 @@
+[Unit]
+Description=MongoDB MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mcp-servers/mongodb-mcp-server
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=10
+Environment=PYTHONPATH=/opt/mcp-servers/mongodb-mcp-server
+Environment=MONGODB_URI=mongodb://localhost:27017
+
+[Install]
+WantedBy=multi-user.target

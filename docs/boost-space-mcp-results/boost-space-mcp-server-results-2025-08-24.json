@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-08-24T15:28:22.755Z",
+  "status": "failed",
+  "mcpConnection": {
+    "status": "failed",
+    "error": "Cannot read properties of undefined (reading 'stderr')"
+  },
+  "dataPopulation": {},
+  "error": "Cannot read properties of undefined (reading 'stderr')"
+}

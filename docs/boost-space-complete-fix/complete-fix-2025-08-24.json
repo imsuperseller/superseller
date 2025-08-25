@@ -1,0 +1,706 @@
+{
+  "timestamp": "2025-08-24T16:43:59.496Z",
+  "status": "completed",
+  "spacesCreated": {},
+  "modulesPopulated": {
+    "contact": {
+      "status": "already_populated",
+      "recordCount": 4,
+      "spaceId": 26
+    },
+    "product": {
+      "status": "already_populated",
+      "recordCount": 4,
+      "spaceId": 27
+    },
+    "invoice": {
+      "status": "already_populated",
+      "recordCount": 2,
+      "spaceId": 27
+    },
+    "event": {
+      "status": "already_populated",
+      "recordCount": 2,
+      "spaceId": 27
+    },
+    "note": {
+      "status": "already_populated",
+      "recordCount": 2,
+      "spaceId": 27
+    },
+    "business-order": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 29,
+            "statusSystemId": 1,
+            "name": "Order #001",
+            "contactId": 11
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        },
+        {
+          "data": {
+            "spaceId": 29,
+            "statusSystemId": 1,
+            "name": "Order #002",
+            "contactId": 13
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        }
+      ],
+      "spaceId": 29,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "business-offer": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 29,
+            "statusSystemId": 1,
+            "name": "Ginati Business Offer",
+            "contactId": 11,
+            "currencyId": 1,
+            "startDate": "2024-01-15"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        },
+        {
+          "data": {
+            "spaceId": 29,
+            "statusSystemId": 1,
+            "name": "Mizrahi Insurance Offer",
+            "contactId": 13,
+            "currencyId": 1,
+            "startDate": "2024-01-20"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        }
+      ],
+      "spaceId": 29,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "form": {
+      "status": "already_populated",
+      "recordCount": 2,
+      "spaceId": 27
+    },
+    "business-case": {
+      "status": "already_populated",
+      "recordCount": 4,
+      "spaceId": 29
+    },
+    "business-contract": {
+      "status": "already_populated",
+      "recordCount": 3,
+      "spaceId": 29
+    },
+    "todo": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 5,
+            "name": "Review Project Requirements",
+            "description": "Review and finalize project requirements"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 5,
+            "name": "Setup Development Environment",
+            "description": "Configure development environment for the project"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "project": {
+      "status": "failed",
+      "error": "Request failed with status code 404",
+      "spaceId": 27
+    },
+    "work": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "System Development",
+            "description": "Core system development work"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Testing & QA",
+            "description": "Quality assurance and testing work"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "activities": {
+      "status": "already_populated",
+      "recordCount": 1,
+      "spaceId": 27
+    },
+    "team": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Team Record 1",
+            "description": "Sample team record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Team Record 2",
+            "description": "Sample team record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "user": {
+      "status": "already_populated",
+      "recordCount": 1,
+      "spaceId": 27
+    },
+    "category": {
+      "status": "already_populated",
+      "recordCount": 1,
+      "spaceId": 27
+    },
+    "submission": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Submission Record 1",
+            "description": "Sample submission record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 405"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Submission Record 2",
+            "description": "Sample submission record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 405"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "purchase": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Purchase Record 1",
+            "description": "Sample purchase record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Purchase Record 2",
+            "description": "Sample purchase record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "stock-request": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-request Record 1",
+            "description": "Sample stock-request record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-request Record 2",
+            "description": "Sample stock-request record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "stock-reservation": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-reservation Record 1",
+            "description": "Sample stock-reservation record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-reservation Record 2",
+            "description": "Sample stock-reservation record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "stock-inventory": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-inventory Record 1",
+            "description": "Sample stock-inventory record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-inventory Record 2",
+            "description": "Sample stock-inventory record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "stock-item": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-item Record 1",
+            "description": "Sample stock-item record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Stock-item Record 2",
+            "description": "Sample stock-item record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "address": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Address Record 1",
+            "description": "Sample address record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Address Record 2",
+            "description": "Sample address record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "page": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Page Record 1",
+            "description": "Sample page record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Page Record 2",
+            "description": "Sample page record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "resource": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Resource Record 1",
+            "description": "Sample resource record"
+          },
+          "status": "success",
+          "response": {
+            "id": 1,
+            "created": "2025-08-24T18:44:22+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:44:22+02:00",
+            "updatedUserId": null,
+            "featuredImageId": null,
+            "name": "Resource Record 1",
+            "customTypeId": null,
+            "boostId": "Resource01",
+            "remotes": [],
+            "featuredImage": null,
+            "spaceIds": [],
+            "spaces": []
+          }
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Resource Record 2",
+            "description": "Sample resource record"
+          },
+          "status": "success",
+          "response": {
+            "id": 3,
+            "created": "2025-08-24T18:44:22+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:44:22+02:00",
+            "updatedUserId": null,
+            "featuredImageId": null,
+            "name": "Resource Record 2",
+            "customTypeId": null,
+            "boostId": "Resource03",
+            "remotes": [],
+            "featuredImage": null,
+            "spaceIds": [],
+            "spaces": []
+          }
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 2,
+        "failed": 0
+      }
+    },
+    "integration": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Integration Record 1",
+            "description": "Sample integration record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Integration Record 2",
+            "description": "Sample integration record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "chart": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Chart Record 1",
+            "description": "Sample chart record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Chart Record 2",
+            "description": "Sample chart record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "custom-info": {
+      "status": "failed",
+      "error": "Request failed with status code 404",
+      "spaceId": 27
+    },
+    "custom-module-item": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Custom-module-item Record 1",
+            "description": "Sample custom-module-item record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Custom-module-item Record 2",
+            "description": "Sample custom-module-item record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 403"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "automatization": {
+      "status": "failed",
+      "error": "Request failed with status code 404",
+      "spaceId": 27
+    },
+    "import": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Import Record 1",
+            "description": "Sample import record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Import Record 2",
+            "description": "Sample import record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "payment": {
+      "status": "populating",
+      "records": [
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Payment Record 1",
+            "description": "Sample payment record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        },
+        {
+          "data": {
+            "spaceId": 27,
+            "statusSystemId": 1,
+            "name": "Payment Record 2",
+            "description": "Sample payment record"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "spaceId": 27,
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    }
+  },
+  "summary": {
+    "totalSpaces": 0,
+    "createdSpaces": 0,
+    "totalModules": 0,
+    "successfulModules": 12,
+    "totalRecords": 0,
+    "successfulRecords": 28
+  }
+}

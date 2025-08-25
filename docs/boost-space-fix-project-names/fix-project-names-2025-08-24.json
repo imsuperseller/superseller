@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-08-24T17:45:24.101Z",
+  "status": "completed",
+  "projectsFixed": [
+    {
+      "projectId": 7,
+      "newName": "E-Signatures Implementation",
+      "status": "success",
+      "response": {
+        "labels": [],
+        "id": 7,
+        "created": "2025-08-24T19:41:20+02:00",
+        "createdUserId": 4,
+        "statusSystemId": 94,
+        "statusId": null,
+        "spaceId": 33,
+        "boostId": "CustomModuleItem07",
+        "remotes": [],
+        "customFieldsValues": []
+      }
+    },
+    {
+      "projectId": 9,
+      "newName": "Business Process Automation",
+      "status": "success",
+      "response": {
+        "labels": [],
+        "id": 9,
+        "created": "2025-08-24T19:41:21+02:00",
+        "createdUserId": 4,
+        "statusSystemId": 94,
+        "statusId": null,
+        "spaceId": 33,
+        "boostId": "CustomModuleItem09",
+        "remotes": [],
+        "customFieldsValues": []
+      }
+    },
+    {
+      "projectId": 11,
+      "newName": "Insurance Management System",
+      "status": "success",
+      "response": {
+        "labels": [],
+        "id": 11,
+        "created": "2025-08-24T19:41:21+02:00",
+        "createdUserId": 4,
+        "statusSystemId": 94,
+        "statusId": null,
+        "spaceId": 33,
+        "boostId": "CustomModuleItem011",
+        "remotes": [],
+        "customFieldsValues": []
+      }
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "successful": 3,
+    "failed": 0
+  },
+  "projectsInSpace33": [
+    {
+      "labels": [],
+      "id": 7,
+      "created": "2025-08-24T19:41:20+02:00",
+      "createdUserId": 4,
+      "statusSystemId": 94,
+      "statusId": null,
+      "spaceId": 33,
+      "boostId": "CustomModuleItem07",
+      "remotes": [],
+      "customFieldsValues": []
+    },
+    {
+      "labels": [],
+      "id": 9,
+      "created": "2025-08-24T19:41:21+02:00",
+      "createdUserId": 4,
+      "statusSystemId": 94,
+      "statusId": null,
+      "spaceId": 33,
+      "boostId": "CustomModuleItem09",
+      "remotes": [],
+      "customFieldsValues": []
+    },
+    {
+      "labels": [],
+      "id": 11,
+      "created": "2025-08-24T19:41:21+02:00",
+      "createdUserId": 4,
+      "statusSystemId": 94,
+      "statusId": null,
+      "spaceId": 33,
+      "boostId": "CustomModuleItem011",
+      "remotes": [],
+      "customFieldsValues": []
+    }
+  ]
+}

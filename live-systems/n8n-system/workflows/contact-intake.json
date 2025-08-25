@@ -1,0 +1,320 @@
+{
+  "name": "Contact Intake Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "contact",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Contact Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize and validate contact form data\nconst data = $input.first().json;\n\n// Extract and clean fields\nconst contact = {\n  name: data.name?.trim() || '',\n  email: data.email?.trim().toLowerCase() || '',\n  company: data.company?.trim() || '',\n  message: data.message?.trim() || '',\n  budget: data.budget || '',\n  timeline: data.timeline || '',\n  source: 'Website Contact Form',\n  created_at: new Date().toISOString()\n};\n\n// Validate required fields\nconst errors = [];\nif (!contact.name) errors.push('Name is required');\nif (!contact.email) errors.push('Email is required');\nif (!contact.message) errors.push('Message is required');\n\n// Basic email validation\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nif (contact.email && !emailRegex.test(contact.email)) {\n  errors.push('Invalid email format');\n}\n\nif (errors.length > 0) {\n  return [\n    {\n      json: {\n        success: false,\n        errors: errors,\n        message: 'Validation failed'\n      }\n    }\n  ];\n}\n\n// Enrich with additional data\ncontact.ip_address = $input.first().json.ip || 'Unknown';\ncontact.user_agent = $input.first().json.userAgent || 'Unknown';\ncontact.referrer = $input.first().json.referrer || 'Direct';\n\n// Generate lead score (simple scoring)\nlet leadScore = 0;\nif (contact.company) leadScore += 10;\nif (contact.budget && contact.budget !== 'under-1k') leadScore += 20;\nif (contact.timeline && contact.timeline !== 'flexible') leadScore += 15;\nif (contact.message.length > 100) leadScore += 10;\n\ncontact.lead_score = leadScore;\ncontact.status = leadScore >= 30 ? 'Qualified' : 'New';\n\nreturn [\n  {\n    json: {\n      success: true,\n      contact: contact,\n      lead_score: leadScore,\n      status: contact.status\n    }\n  }\n];"
+      },
+      "id": "normalize-data",
+      "name": "Normalize Contact Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "validation-success",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-validation",
+      "name": "Check Validation",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Leads",
+        "additionalOptions": {
+          "filterByFormula": `{email} = '${$json.contact.email}'`
+        }
+      },
+      "id": "check-duplicate",
+      "name": "Check for Duplicate",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-duplicate",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-duplicate-result",
+      "name": "Is Duplicate?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Leads",
+        "id": "={{ $json[0].id }}",
+        "fields": {
+          "last_contact": "={{ $('Normalize Contact Data').item.json.contact.created_at }}",
+          "message": "={{ $('Normalize Contact Data').item.json.contact.message }}",
+          "status": "={{ $('Normalize Contact Data').item.json.contact.status }}",
+          "lead_score": "={{ $('Normalize Contact Data').item.json.contact.lead_score }}"
+        }
+      },
+      "id": "update-existing",
+      "name": "Update Existing Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [1340, 100]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Leads",
+        "fields": {
+          "name": "={{ $('Normalize Contact Data').item.json.contact.name }}",
+          "email": "={{ $('Normalize Contact Data').item.json.contact.email }}",
+          "company": "={{ $('Normalize Contact Data').item.json.contact.company }}",
+          "message": "={{ $('Normalize Contact Data').item.json.contact.message }}",
+          "budget": "={{ $('Normalize Contact Data').item.json.contact.budget }}",
+          "timeline": "={{ $('Normalize Contact Data').item.json.contact.timeline }}",
+          "source": "={{ $('Normalize Contact Data').item.json.contact.source }}",
+          "status": "={{ $('Normalize Contact Data').item.json.contact.status }}",
+          "lead_score": "={{ $('Normalize Contact Data').item.json.contact.lead_score }}",
+          "next_action_at": "={{ $now.format('YYYY-MM-DD') }}"
+        }
+      },
+      "id": "create-new-lead",
+      "name": "Create New Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "channel": "sales",
+        "text": "=## 🎯 New Lead Alert\n\n**{{ $('Normalize Contact Data').item.json.contact.name }}** from **{{ $('Normalize Contact Data').item.json.contact.company || 'Unknown Company' }}**\n\n📧 **Email:** {{ $('Normalize Contact Data').item.json.contact.email }}\n💰 **Budget:** {{ $('Normalize Contact Data').item.json.contact.budget || 'Not specified' }}\n⏰ **Timeline:** {{ $('Normalize Contact Data').item.json.contact.timeline || 'Not specified' }}\n📊 **Lead Score:** {{ $('Normalize Contact Data').item.json.contact.lead_score }}/55\n\n💬 **Message:**\n{{ $('Normalize Contact Data').item.json.contact.message }}\n\n**Action Required:** Follow up within 24 hours",
+        "otherOptions": {
+          "username": "Rensto Bot",
+          "icon_emoji": ":rocket:"
+        }
+      },
+      "id": "slack-notify",
+      "name": "Notify Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Thank you for your message! We'll get back to you within 24 hours.\",\n  \"lead_id\": \"{{ $json.id }}\"\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1780, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"message\": \"Please check your input and try again.\",\n  \"errors\": {{ $('Normalize Contact Data').item.json.errors }}\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Contact Form Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Contact Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Contact Data": {
+      "main": [
+        [
+          {
+            "node": "Check Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Validation": {
+      "main": [
+        [
+          {
+            "node": "Check for Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Duplicate": {
+      "main": [
+        [
+          {
+            "node": "Is Duplicate?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Duplicate?": {
+      "main": [
+        [
+          {
+            "node": "Update Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create New Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create New Lead": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Slack": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-06T12:00:00.000Z",
+      "updatedAt": "2024-01-06T12:00:00.000Z",
+      "id": "contact-intake",
+      "name": "contact-intake"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

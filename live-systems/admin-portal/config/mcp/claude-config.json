@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "node",
+      "args": ["/Users/shaifriedman/Rensto/infra/mcp-servers/n8n-mcp-server/server.js"],
+      "env": {
+        "N8N_URL": "http://173.254.201.134:5678",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
+      }
+    },
+    "ai-workflow-generator": {
+      "command": "node",
+      "args": ["/Users/shaifriedman/Rensto/infra/mcp-servers/ai-workflow-generator/server.js"],
+      "env": {
+        "N8N_URL": "http://173.254.201.134:5678",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
+      }
+    }
+  }
+}

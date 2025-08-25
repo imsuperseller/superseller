@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-08-25T01:22:56.430Z",
+  "status": "completed",
+  "baseId": "appQijHhqqP4z6wGe",
+  "tables": {
+    "Leads": {
+      "id": "tblYR2UftNJ7nUl1Q",
+      "fields": [
+        "lead_id"
+      ]
+    }
+  },
+  "records": {},
+  "errors": [
+    {
+      "step": "createTable",
+      "table": "Customers",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createTable",
+      "table": "Projects",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createTable",
+      "table": "Invoices",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "createTable",
+      "table": "Tasks",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "overall": {
+    "brandVoice": "Professional, innovative, and customer-focused",
+    "responseTime": "2-24 hours depending on urgency",
+    "tone": "Helpful, knowledgeable, and solution-oriented",
+    "signature": "Always include role, company, and contact information"
+  },
+  "personaSpecific": {
+    "mary": {
+      "focus": "Customer success and satisfaction",
+      "communication": "Warm, supportive, and solution-focused",
+      "priorities": "Customer onboarding, support, and success metrics"
+    },
+    "john": {
+      "focus": "Technical excellence and problem-solving",
+      "communication": "Precise, technical, and efficient",
+      "priorities": "System reliability, API support, and technical documentation"
+    },
+    "winston": {
+      "focus": "Business growth and partnership development",
+      "communication": "Strategic, enthusiastic, and value-focused",
+      "priorities": "Lead generation, partnerships, and revenue growth"
+    },
+    "sarah": {
+      "focus": "Brand awareness and engagement",
+      "communication": "Creative, engaging, and informative",
+      "priorities": "Content creation, social media, and marketing campaigns"
+    },
+    "alex": {
+      "focus": "Operational efficiency and process optimization",
+      "communication": "Analytical, efficient, and improvement-focused",
+      "priorities": "Process optimization, quality assurance, and performance monitoring"
+    },
+    "quinn": {
+      "focus": "Financial health and data-driven insights",
+      "communication": "Analytical, trustworthy, and detail-oriented",
+      "priorities": "Financial reporting, budget management, and revenue analysis"
+    }
+  }
+}

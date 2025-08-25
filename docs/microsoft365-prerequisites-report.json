@@ -1,0 +1,88 @@
+{
+  "accountAccess": {
+    "adminAccess": {
+      "required": true,
+      "description": "Admin access to Microsoft 365 account",
+      "currentStatus": "UNKNOWN",
+      "action": "Verify admin access to service@rensto.com account"
+    },
+    "emailBoxAccess": {
+      "required": true,
+      "description": "Access to configure email rules and settings",
+      "currentStatus": "UNKNOWN",
+      "action": "Ensure you can log into Outlook/Office 365"
+    },
+    "goDaddyAccess": {
+      "required": true,
+      "description": "Access to GoDaddy Microsoft 365 management",
+      "currentStatus": "UNKNOWN",
+      "action": "Verify GoDaddy account access for Microsoft 365"
+    }
+  },
+  "emailConfiguration": {
+    "emailRules": {
+      "required": true,
+      "description": "Ability to create email rules in Outlook",
+      "currentStatus": "UNKNOWN",
+      "action": "Test creating a simple email rule"
+    },
+    "emailTemplates": {
+      "required": true,
+      "description": "Ability to create email templates",
+      "currentStatus": "UNKNOWN",
+      "action": "Test creating an email template"
+    },
+    "autoReplies": {
+      "required": true,
+      "description": "Ability to set up auto-replies",
+      "currentStatus": "UNKNOWN",
+      "action": "Test setting up an auto-reply"
+    },
+    "folderOrganization": {
+      "required": true,
+      "description": "Ability to create folders and labels",
+      "currentStatus": "UNKNOWN",
+      "action": "Test creating email folders"
+    }
+  },
+  "securitySettings": {
+    "apiAccess": {
+      "required": true,
+      "description": "Enable API access for automation",
+      "currentStatus": "UNKNOWN",
+      "action": "Enable Microsoft Graph API access"
+    },
+    "appPermissions": {
+      "required": true,
+      "description": "Allow third-party app access",
+      "currentStatus": "UNKNOWN",
+      "action": "Configure app permissions for n8n integration"
+    },
+    "modernAuthentication": {
+      "required": true,
+      "description": "Enable modern authentication",
+      "currentStatus": "UNKNOWN",
+      "action": "Ensure modern authentication is enabled"
+    }
+  },
+  "automationRequirements": {
+    "webhookSupport": {
+      "required": true,
+      "description": "Support for webhook notifications",
+      "currentStatus": "UNKNOWN",
+      "action": "Verify webhook support in Microsoft 365"
+    },
+    "apiEndpoints": {
+      "required": true,
+      "description": "Access to Microsoft Graph API endpoints",
+      "currentStatus": "UNKNOWN",
+      "action": "Test API connectivity"
+    },
+    "integrationPermissions": {
+      "required": true,
+      "description": "Permissions for n8n integration",
+      "currentStatus": "UNKNOWN",
+      "action": "Configure integration permissions"
+    }
+  }
+}

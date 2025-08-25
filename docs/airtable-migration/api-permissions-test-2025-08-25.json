@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-08-25T03:32:51.828Z",
+  "status": "completed",
+  "accessibleBases": [
+    {
+      "name": "משאבים",
+      "id": "appqY1p53ge7UqxUO",
+      "access": "list_only"
+    },
+    {
+      "name": "המאגר",
+      "id": "appLOvzN5ap47GJl0",
+      "access": "list_only"
+    },
+    {
+      "name": "Groceries copy",
+      "id": "app3eCU24yxD5OWwm",
+      "access": "list_only"
+    },
+    {
+      "name": "דילי מילי",
+      "id": "app2uZ1yhtokf8DXc",
+      "access": "list_only"
+    },
+    {
+      "name": "דילי מילי חדש",
+      "id": "appjL0rSZZ6c8AWKo",
+      "access": "list_only"
+    },
+    {
+      "name": "Rensto",
+      "id": "appQijHhqqP4z6wGe",
+      "access": "none",
+      "error": 403
+    },
+    {
+      "name": "Core Business Operations",
+      "id": "app4nJpP1ytGukXQT",
+      "access": "none",
+      "error": 403
+    },
+    {
+      "name": "Financial Management",
+      "id": "app6yzlm67lRNuQZD",
+      "access": "none",
+      "error": 403
+    }
+  ],
+  "testResults": [
+    {
+      "test": "listBases",
+      "status": "success",
+      "count": 63
+    }
+  ],
+  "errors": [],
+  "recommendations": {
+    "accessibleBases": 0,
+    "listOnlyBases": 5,
+    "inaccessibleBases": 3,
+    "suggestedAction": "request_permissions"
+  }
+}

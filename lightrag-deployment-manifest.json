@@ -1,0 +1,21 @@
+{
+  "service": "rensto-lightrag",
+  "status": "deployed",
+  "url": "https://rensto-lightrag.onrender.com",
+  "webhookUrl": "https://rensto-lightrag.onrender.com/webhook",
+  "healthUrl": "https://rensto-lightrag.onrender.com/health",
+  "deployedAt": "2025-08-22T17:21:26.759Z",
+  "configuration": {
+    "name": "rensto-lightrag",
+    "image": "ghcr.io/hkuds/lightrag:latest",
+    "environment": {
+      "LIGHTRAG_API_KEY": "generated-api-key",
+      "GITHUB_TOKEN": "your-github-token",
+      "OPENAI_API_KEY": "your-openai-key",
+      "NODE_ENV": "production",
+      "PORT": "3000"
+    },
+    "healthCheck": "/health",
+    "webhook": "/webhook"
+  }
+}

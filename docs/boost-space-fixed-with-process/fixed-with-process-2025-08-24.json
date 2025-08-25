@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-08-24T16:17:08.014Z",
+  "status": "completed",
+  "populationResults": {
+    "businessCases": {
+      "description": "Business cases with business process field",
+      "endpoint": "/business-case",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Business Automation Case",
+            "statusSystemId": 30,
+            "spaceId": 2,
+            "categoryBusiness": 2,
+            "typeOfInterest": "consulting",
+            "contactId": 11
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400,
+          "errorDetails": {
+            "code": 4007,
+            "message": "Operation has been blocked due to wrongly specified field typeOfInterest"
+          }
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance System Case",
+            "statusSystemId": 30,
+            "spaceId": 2,
+            "categoryBusiness": 2,
+            "typeOfInterest": "development",
+            "contactId": 13
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400,
+          "errorDetails": {
+            "code": 4007,
+            "message": "Operation has been blocked due to wrongly specified field typeOfInterest"
+          }
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "businessContracts": {
+      "description": "Business contracts with business process field",
+      "endpoint": "/business-contract",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Service Agreement Contract",
+            "statusSystemId": 54,
+            "spaceId": 2,
+            "categoryBusiness": 2,
+            "contactId": 11
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400,
+          "errorDetails": {
+            "code": 4007,
+            "message": "Operation has been blocked due to wrongly specified field categoryBusiness"
+          }
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance Contract",
+            "statusSystemId": 54,
+            "spaceId": 2,
+            "categoryBusiness": 2,
+            "contactId": 13
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400,
+          "errorDetails": {
+            "code": 4007,
+            "message": "Operation has been blocked due to wrongly specified field categoryBusiness"
+          }
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    }
+  },
+  "summary": {
+    "totalModules": 0,
+    "successfulModules": 0,
+    "failedModules": 0,
+    "totalRecords": 0,
+    "successfulRecords": 0
+  }
+}

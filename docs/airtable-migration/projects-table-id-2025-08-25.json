@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-08-25T02:47:44.800Z",
+  "baseId": "app4nJpP1ytGukXQT",
+  "totalTables": 7,
+  "tables": [
+    {
+      "name": "Table 1",
+      "id": "tblU9N6hSBJaPemrd"
+    },
+    {
+      "name": "Companies",
+      "id": "tbl1roDiTjOCU3wiz",
+      "description": "Companies table for business operations"
+    },
+    {
+      "name": "Contacts",
+      "id": "tblST9B2hqzDWwpdy",
+      "description": "Contacts table for business operations"
+    },
+    {
+      "name": "Projects",
+      "id": "tblJ4C2HFSBlPkyP6",
+      "description": "Projects table for business operations"
+    },
+    {
+      "name": "Tasks",
+      "id": "tbltUIxPI1ZXgLgqQ",
+      "description": "Tasks table for business operations"
+    },
+    {
+      "name": "Time Tracking",
+      "id": "tbl7fhkC3pLVtICjt",
+      "description": "Time Tracking table for business operations"
+    },
+    {
+      "name": "Documents",
+      "id": "tblI4qanQUV915V6Q",
+      "description": "Documents table for business operations"
+    }
+  ],
+  "projectsTable": {
+    "name": "Projects",
+    "id": "tblJ4C2HFSBlPkyP6"
+  }
+}

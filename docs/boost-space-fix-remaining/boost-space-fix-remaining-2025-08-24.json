@@ -1,0 +1,311 @@
+{
+  "timestamp": "2025-08-24T16:07:36.639Z",
+  "status": "completed",
+  "populationResults": {
+    "businessCases": {
+      "description": "Business cases",
+      "endpoint": "/business-case",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Business Automation",
+            "statusSystemId": 30,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance System",
+            "statusSystemId": 30,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "businessOffers": {
+      "description": "Business offers",
+      "endpoint": "/business-offer",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Business Automation Offer",
+            "statusSystemId": 34,
+            "spaceId": 2,
+            "contactId": 11,
+            "currencyId": 1,
+            "startDate": "2024-01-15"
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 1,
+            "created": "2025-08-24T18:07:39+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:07:39+02:00",
+            "updatedUserId": null,
+            "number": "OF2025-00001",
+            "spaceId": 2,
+            "businessCaseId": null,
+            "businessContractId": null,
+            "statusId": null,
+            "statusSystemId": 34,
+            "contactId": 11,
+            "categoryBusiness": null,
+            "currencyId": 1,
+            "reasonResult": null,
+            "categoryResult": null,
+            "registrationNumber": null,
+            "vat": null,
+            "startDate": "2024-01-15T00:00:00+01:00",
+            "endDate": null,
+            "deliveryCompany": null,
+            "deliveryAddress": null,
+            "deliveryAddressNote": null,
+            "deliveryPostCode": null,
+            "deliveryCity": null,
+            "deliveryCountryId": null,
+            "deliverySubdivisionId": null,
+            "invoiceCompany": null,
+            "invoiceAddress": null,
+            "invoiceAddressNote": null,
+            "invoicePostCode": null,
+            "invoiceCity": null,
+            "invoiceCountryId": null,
+            "invoiceSubdivisionId": null,
+            "note": null,
+            "boostId": "BusinessOffer01",
+            "remotes": [],
+            "customFieldsValues": [],
+            "users": [],
+            "teams": [],
+            "categories": [],
+            "labels": [],
+            "items": [],
+            "files": [],
+            "invoiceCountry": null,
+            "invoiceSubdivision": null,
+            "deliveryCountry": null,
+            "deliverySubdivision": null,
+            "totalPrice": 0,
+            "totalPriceWithVat": 0,
+            "activePrice": 0,
+            "activePriceWithVat": 0,
+            "finalPrice": null,
+            "finalPriceWithVat": null
+          }
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance System Offer",
+            "statusSystemId": 34,
+            "spaceId": 2,
+            "contactId": 13,
+            "currencyId": 1,
+            "startDate": "2024-01-20"
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 3,
+            "created": "2025-08-24T18:07:39+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:07:39+02:00",
+            "updatedUserId": null,
+            "number": "OF2025-00002",
+            "spaceId": 2,
+            "businessCaseId": null,
+            "businessContractId": null,
+            "statusId": null,
+            "statusSystemId": 34,
+            "contactId": 13,
+            "categoryBusiness": null,
+            "currencyId": 1,
+            "reasonResult": null,
+            "categoryResult": null,
+            "registrationNumber": null,
+            "vat": null,
+            "startDate": "2024-01-20T00:00:00+01:00",
+            "endDate": null,
+            "deliveryCompany": null,
+            "deliveryAddress": null,
+            "deliveryAddressNote": null,
+            "deliveryPostCode": null,
+            "deliveryCity": null,
+            "deliveryCountryId": null,
+            "deliverySubdivisionId": null,
+            "invoiceCompany": null,
+            "invoiceAddress": null,
+            "invoiceAddressNote": null,
+            "invoicePostCode": null,
+            "invoiceCity": null,
+            "invoiceCountryId": null,
+            "invoiceSubdivisionId": null,
+            "note": null,
+            "boostId": "BusinessOffer03",
+            "remotes": [],
+            "customFieldsValues": [],
+            "users": [],
+            "teams": [],
+            "categories": [],
+            "labels": [],
+            "items": [],
+            "files": [],
+            "invoiceCountry": null,
+            "invoiceSubdivision": null,
+            "deliveryCountry": null,
+            "deliverySubdivision": null,
+            "totalPrice": 0,
+            "totalPriceWithVat": 0,
+            "activePrice": 0,
+            "activePriceWithVat": 0,
+            "finalPrice": null,
+            "finalPriceWithVat": null
+          }
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 2,
+        "failed": 0
+      }
+    },
+    "businessContracts": {
+      "description": "Business contracts",
+      "endpoint": "/business-contract",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Service Agreement",
+            "statusSystemId": 54,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance Contract",
+            "statusSystemId": 54,
+            "spaceId": 2
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500,
+          "errorDetails": "<!DOCTYPE html><!-- \"' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>\n<meta charset=\"utf-8\">\n<meta name=robots content=noindex>\n<meta name=generator content=\"Nette Framework\">\n<title>Server Error</title>\n\n<style>\n\t#nette-error { all: initial; position: absolute; top: 0; left: 0; right: 0; height: 70vh; min-height: 400px; display: flex; align-items: center; justify-content: center; z-index: 1000 }\n\t#nette-error div { all: initial; max-width: 550px; background: white; color: #333; display: block }\n\t#nette-error h1 { all: initial; font: bold 50px/1.1 sans-serif; display: block; margin: 40px }\n\t#nette-error p { all: initial; font: 20px/1.4 sans-serif; margin: 40px; display: block }\n\t#nette-error small { color: gray }\n</style>\n\n<div id=nette-error>\n\t<div>\n\t\t<h1>Server Error</h1>\n\n\t\t<p>We're sorry! The server encountered an internal error and was unable to complete your request. Please try again later.</p>\n\n\t\t<p><small>error 500</small></p>\t</div>\n</div>\n\n<script>\n\tdocument.body.insertBefore(document.getElementById('nette-error'), document.body.firstChild);\n</script>\n"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "forms": {
+      "description": "Form management",
+      "endpoint": "/form",
+      "records": [
+        {
+          "data": {
+            "name": "Customer Onboarding Form",
+            "statusSystemId": 73,
+            "domain": "superseller.boost.space",
+            "spaces": [
+              2
+            ]
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 3,
+            "created": "2025-08-24T18:07:41+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:07:41+02:00",
+            "updatedUserId": null,
+            "name": "Customer Onboarding Form",
+            "statusId": null,
+            "statusSystemId": 73,
+            "domain": "superseller.boost.space",
+            "insertFormId": "7d50298135ee5866e20ee8ab0e811bf4",
+            "defaultContactSpaceId": null,
+            "defaultSpaceId": null,
+            "defaultSourceOfInterest": null,
+            "recaptchaActive": 0,
+            "recaptchaSiteKey": null,
+            "recaptchaSecretKey": null,
+            "recaptchaTheme": null,
+            "gistSync": null,
+            "boostId": "Form03",
+            "remotes": [],
+            "spaces": [
+              2
+            ]
+          }
+        },
+        {
+          "data": {
+            "name": "Project Requirements Form",
+            "statusSystemId": 73,
+            "domain": "superseller.boost.space",
+            "spaces": [
+              2
+            ]
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 5,
+            "created": "2025-08-24T18:07:41+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:07:41+02:00",
+            "updatedUserId": null,
+            "name": "Project Requirements Form",
+            "statusId": null,
+            "statusSystemId": 73,
+            "domain": "superseller.boost.space",
+            "insertFormId": "7d50298135ee5866e20ee8ab0e811bf4",
+            "defaultContactSpaceId": null,
+            "defaultSpaceId": null,
+            "defaultSourceOfInterest": null,
+            "recaptchaActive": 0,
+            "recaptchaSiteKey": null,
+            "recaptchaSecretKey": null,
+            "recaptchaTheme": null,
+            "gistSync": null,
+            "boostId": "Form05",
+            "remotes": [],
+            "spaces": [
+              2
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 2,
+        "failed": 0
+      }
+    }
+  },
+  "summary": {
+    "totalModules": 0,
+    "successfulModules": 2,
+    "failedModules": 0,
+    "totalRecords": 0,
+    "successfulRecords": 4
+  }
+}

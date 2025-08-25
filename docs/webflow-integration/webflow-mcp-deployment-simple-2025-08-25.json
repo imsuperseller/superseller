@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-08-25T03:21:32.221Z",
+  "status": "completed",
+  "steps": [
+    {
+      "step": "build",
+      "status": "success"
+    },
+    {
+      "step": "deploy",
+      "status": "success"
+    },
+    {
+      "step": "systemd",
+      "status": "success"
+    }
+  ],
+  "errors": [
+    {
+      "step": "test",
+      "error": "Command failed: sshpass -p '05ngBiq2pTA8XSF76x' ssh root@173.254.201.134 \"systemctl status webflow-mcp-server --no-pager\""
+    }
+  ],
+  "webflowMCPStatus": "deployed_but_test_failed"
+}

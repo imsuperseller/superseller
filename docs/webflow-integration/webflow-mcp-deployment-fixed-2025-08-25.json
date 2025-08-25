@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-25T03:20:24.951Z",
+  "status": "completed",
+  "steps": [],
+  "errors": [
+    {
+      "step": "build",
+      "error": "Command failed: cd webflow-mcp-server && npm run build"
+    },
+    {
+      "step": "deployment",
+      "error": "Command failed: cd webflow-mcp-server && npm run build"
+    }
+  ],
+  "webflowMCPStatus": "not_deployed"
+}

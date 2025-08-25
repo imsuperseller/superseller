@@ -1,0 +1,28 @@
+{
+  "name": "make-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Make.com integration running on Racknerd VPS",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "keywords": [
+    "mcp",
+    "make",
+    "make.com",
+    "automation",
+    "workflow",
+    "scenarios"
+  ],
+  "author": "Rensto",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,503 @@
+{
+  "timestamp": "2025-08-24T15:56:02.522Z",
+  "status": "completed",
+  "discoveredModules": {
+    "contacts": {
+      "description": "Customer contacts",
+      "endpoints": {
+        "/contacts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/contacts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/contactss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/contacts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/contacts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "products": {
+      "description": "Product catalog",
+      "endpoints": {
+        "/products": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/products": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/productss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/products": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/products": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "business-cases": {
+      "description": "Business cases",
+      "endpoints": {
+        "/business-cases": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/business-cases": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/business-casess": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/business-cases": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/business-cases": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "invoices": {
+      "description": "Invoice management",
+      "endpoints": {
+        "/invoices": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/invoices": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/invoicess": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/invoices": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/invoices": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "events": {
+      "description": "Calendar events",
+      "endpoints": {
+        "/events": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/events": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/eventss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/events": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/events": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "notes": {
+      "description": "Notes and documentation",
+      "endpoints": {
+        "/notes": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/notes": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/notess": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/notes": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/notes": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "tasks": {
+      "description": "Task management",
+      "endpoints": {
+        "/tasks": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/tasks": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/taskss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/tasks": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/tasks": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "projects": {
+      "description": "Project management",
+      "endpoints": {
+        "/projects": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/projects": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/projectss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/projects": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/projects": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "contracts": {
+      "description": "Contract management",
+      "endpoints": {
+        "/contracts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/contracts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/contractss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/contracts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/contracts": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "offers": {
+      "description": "Business offers",
+      "endpoints": {
+        "/offers": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/offers": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/offerss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/offers": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/offers": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "orders": {
+      "description": "Order management",
+      "endpoints": {
+        "/orders": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/orders": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/orderss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/orders": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/orders": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "submissions": {
+      "description": "Document submissions",
+      "endpoints": {
+        "/submissions": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/submissions": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/submissionss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/submissions": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/submissions": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "forms": {
+      "description": "Form management",
+      "endpoints": {
+        "/forms": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/forms": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/formss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/forms": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/forms": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "docs": {
+      "description": "Document management",
+      "endpoints": {
+        "/docs": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/docs": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/docss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/docs": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/docs": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "work-hours": {
+      "description": "Time tracking",
+      "endpoints": {
+        "/work-hours": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/work-hours": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/work-hourss": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/work-hours": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/work-hours": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    },
+    "usage-cost": {
+      "description": "Usage and cost tracking",
+      "endpoints": {
+        "/usage-cost": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/usage-cost": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/api/usage-costs": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/v1/usage-cost": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        "/data/usage-cost": {
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      },
+      "status": "not_found"
+    }
+  },
+  "populationResults": {}
+}

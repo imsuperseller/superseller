@@ -1,0 +1,13 @@
+{
+  "name": "rensto-lightrag",
+  "image": "ghcr.io/hkuds/lightrag:latest",
+  "environment": {
+    "LIGHTRAG_API_KEY": "generated-api-key",
+    "GITHUB_TOKEN": "your-github-token",
+    "OPENAI_API_KEY": "your-openai-key",
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  },
+  "healthCheck": "/health",
+  "webhook": "/webhook"
+}

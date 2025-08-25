@@ -1,0 +1,2023 @@
+{
+  "mcpServers": {
+    "files": [
+      {
+        "path": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "modified": 1755882279182,
+        "size": 10074,
+        "type": "script"
+      },
+      {
+        "path": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "modified": 1755882279181,
+        "size": 12624,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/test-make-mcp-client.js",
+        "modified": 1755842182953,
+        "size": 13085,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/test-racknerd-mcp-tools.js",
+        "modified": 1755814136571,
+        "size": 3780,
+        "type": "script"
+      },
+      {
+        "path": "./mcp-config.json",
+        "modified": 1755813924219,
+        "size": 2225,
+        "type": "config"
+      },
+      {
+        "path": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "modified": 1755809609847,
+        "size": 2200,
+        "type": "deployment"
+      },
+      {
+        "path": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "modified": 1755808371542,
+        "size": 8552,
+        "type": "server"
+      },
+      {
+        "path": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "modified": 1755808371541,
+        "size": 5451,
+        "type": "server"
+      },
+      {
+        "path": "./docs/wordpress-mcp-integration-research.md",
+        "modified": 1755795929283,
+        "size": 10181,
+        "type": "documentation"
+      },
+      {
+        "path": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "modified": 1755762300285,
+        "size": 6070,
+        "type": "server"
+      },
+      {
+        "path": "./scripts/start-n8n-mcp.sh",
+        "modified": 1755753284600,
+        "size": 709,
+        "type": "other"
+      },
+      {
+        "path": "./scripts/setup-mcp.sh",
+        "modified": 1755753284600,
+        "size": 7310,
+        "type": "other"
+      },
+      {
+        "path": "./scripts/start-mcp.sh",
+        "modified": 1755753284600,
+        "size": 1588,
+        "type": "other"
+      },
+      {
+        "path": "./scripts/mcp-workflow-management.js",
+        "modified": 1755753284598,
+        "size": 9010,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/business/mcp-monetization-implementation.js",
+        "modified": 1755753284593,
+        "size": 21182,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/business/mcp-business-enhancement.js",
+        "modified": 1755753284593,
+        "size": 28398,
+        "type": "script"
+      },
+      {
+        "path": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "modified": 1755753284588,
+        "size": 7639,
+        "type": "server"
+      },
+      {
+        "path": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "modified": 1755753284588,
+        "size": 16149,
+        "type": "server"
+      },
+      {
+        "path": "./docs/mcp-integration-simple-report.json",
+        "modified": 1755753284569,
+        "size": 235,
+        "type": "configuration"
+      },
+      {
+        "path": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "modified": 1755753284556,
+        "size": 482,
+        "type": "documentation"
+      },
+      {
+        "path": "./archived/data/mcp-workflow-management-results.json",
+        "modified": 1755753284100,
+        "size": 1243,
+        "type": "configuration"
+      },
+      {
+        "path": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "modified": 1755753284089,
+        "size": 7886,
+        "type": "documentation"
+      },
+      {
+        "path": "./config/editor/.cursor/mcp.json",
+        "modified": 1755753284081,
+        "size": 618,
+        "type": "config"
+      }
+    ],
+    "newest": {
+      "server": {
+        "path": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "modified": 1755808371542,
+        "size": 8552,
+        "type": "server"
+      },
+      "config": {
+        "path": "./mcp-config.json",
+        "modified": 1755813924219,
+        "size": 2225,
+        "type": "config"
+      },
+      "deployment": {
+        "path": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "modified": 1755809609847,
+        "size": 2200,
+        "type": "deployment"
+      },
+      "credential": null,
+      "api": null,
+      "documentation": {
+        "path": "./docs/wordpress-mcp-integration-research.md",
+        "modified": 1755795929283,
+        "size": 10181,
+        "type": "documentation"
+      },
+      "script": {
+        "path": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "modified": 1755882279182,
+        "size": 10074,
+        "type": "script"
+      },
+      "other": {
+        "path": "./scripts/start-n8n-mcp.sh",
+        "modified": 1755753284600,
+        "size": 709,
+        "type": "other"
+      },
+      "configuration": {
+        "path": "./docs/mcp-integration-simple-report.json",
+        "modified": 1755753284569,
+        "size": 235,
+        "type": "configuration"
+      }
+    },
+    "conflicts": [
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/test-make-mcp-client.js",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./mcp-config.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./docs/wordpress-mcp-integration-research.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/fix-shelly-workflow-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/test-make-mcp-client.js",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./mcp-config.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./docs/wordpress-mcp-integration-research.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/create-shelly-workflow-via-mcp.js"
+      },
+      {
+        "file1": "./scripts/test-make-mcp-client.js",
+        "file2": "./mcp-config.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/test-make-mcp-client.js"
+      },
+      {
+        "file1": "./scripts/test-make-mcp-client.js",
+        "file2": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/test-make-mcp-client.js"
+      },
+      {
+        "file1": "./scripts/test-make-mcp-client.js",
+        "file2": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/test-make-mcp-client.js"
+      },
+      {
+        "file1": "./scripts/test-make-mcp-client.js",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/test-make-mcp-client.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./mcp-config.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./scripts/test-racknerd-mcp-tools.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/test-racknerd-mcp-tools.js"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./docs/wordpress-mcp-integration-research.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./mcp-config.json",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./mcp-config.json"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./scripts/deploy-make-mcp-to-racknerd.sh",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-make-mcp-to-racknerd.sh"
+      },
+      {
+        "file1": "./data/customers/shelly-mizrahi/make-mcp-server-data.json",
+        "file2": "./data/customers/shelly-mizrahi/mcp-server-technical-instructions.md",
+        "pattern": "make.com",
+        "conflict": "Different make.com values found",
+        "newerFile": "./data/customers/shelly-mizrahi/make-mcp-server-data.json"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./docs/wordpress-mcp-integration-research.md",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./docs/wordpress-mcp-integration-research.md"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./scripts/start-n8n-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/deploy-quickbooks-mcp-server.sh",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/deploy-quickbooks-mcp-server.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./scripts/setup-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-n8n-mcp.sh",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-n8n-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./scripts/start-mcp.sh",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/setup-mcp.sh",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/setup-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./scripts/mcp-workflow-management.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/start-mcp.sh",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/start-mcp.sh"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./scripts/business/mcp-monetization-implementation.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/mcp-workflow-management.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/mcp-workflow-management.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./scripts/business/mcp-business-enhancement.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/business/mcp-monetization-implementation.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/business/mcp-monetization-implementation.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-monetization-implementation.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-monetization-implementation.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-monetization-implementation.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./scripts/business/mcp-monetization-implementation.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-business-enhancement.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-business-enhancement.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-business-enhancement.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-business-enhancement.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./scripts/business/mcp-business-enhancement.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./scripts/business/mcp-business-enhancement.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "file2": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-ecosystem.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-communication.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-communication.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-communication.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-communication.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "file2": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-ecosystem.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-ecosystem.js"
+      },
+      {
+        "file1": "./infra/mcp-servers/enhanced-mcp-ecosystem.js",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "mcp-server",
+        "conflict": "Different mcp-server values found",
+        "newerFile": "./infra/mcp-servers/enhanced-mcp-ecosystem.js"
+      },
+      {
+        "file1": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "file2": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/docs/customer-portal-mcp-update-legacy.md"
+      },
+      {
+        "file1": "./archived/docs/customer-portal-mcp-update-legacy.md",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/docs/customer-portal-mcp-update-legacy.md"
+      },
+      {
+        "file1": "./archived/data/ben-ginati-mcp-integration-summary.md",
+        "file2": "./config/editor/.cursor/mcp.json",
+        "pattern": "n8n",
+        "conflict": "Different n8n values found",
+        "newerFile": "./archived/data/ben-ginati-mcp-integration-summary.md"
+      }
+    ]
+  },
+  "bmad": {
+    "files": [
+      {
+        "path": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "modified": 1755882279182,
+        "size": 13519,
+        "type": "deployment"
+      },
+      {
+        "path": "./docs/bmad-workflow-testing-plan.md",
+        "modified": 1755787417289,
+        "size": 1923,
+        "type": "documentation"
+      },
+      {
+        "path": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "modified": 1755764855506,
+        "size": 1943,
+        "type": "deployment"
+      },
+      {
+        "path": "./docs/bmad-execution-status-update.md",
+        "modified": 1755762646843,
+        "size": 5797,
+        "type": "documentation"
+      },
+      {
+        "path": "./docs/bmad-immediate-action-execution.md",
+        "modified": 1755762077270,
+        "size": 17009,
+        "type": "documentation"
+      },
+      {
+        "path": "./docs/bmad-cleanup-execution.md",
+        "modified": 1755759475345,
+        "size": 6949,
+        "type": "documentation"
+      },
+      {
+        "path": "./docs/bmad-implementation-plan.md",
+        "modified": 1755759083152,
+        "size": 8429,
+        "type": "documentation"
+      },
+      {
+        "path": "./scripts/execute-bmad-workflow-activation.js",
+        "modified": 1755753284595,
+        "size": 12515,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/bmad-archon-integration.js",
+        "modified": 1755753284593,
+        "size": 14716,
+        "type": "script"
+      },
+      {
+        "path": "./scripts/bmad-method-implementation.js",
+        "modified": 1755753284593,
+        "size": 21489,
+        "type": "script"
+      },
+      {
+        "path": "./archived/data/bmad-workflow-activation-results.json",
+        "modified": 1755753284092,
+        "size": 708766,
+        "type": "configuration"
+      }
+    ],
+    "newest": {
+      "server": null,
+      "config": null,
+      "deployment": {
+        "path": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "modified": 1755882279182,
+        "size": 13519,
+        "type": "deployment"
+      },
+      "credential": null,
+      "api": null,
+      "documentation": {
+        "path": "./docs/bmad-workflow-testing-plan.md",
+        "modified": 1755787417289,
+        "size": 1923,
+        "type": "documentation"
+      },
+      "script": {
+        "path": "./scripts/execute-bmad-workflow-activation.js",
+        "modified": 1755753284595,
+        "size": 12515,
+        "type": "script"
+      },
+      "configuration": {
+        "path": "./archived/data/bmad-workflow-activation-results.json",
+        "modified": 1755753284092,
+        "size": 708766,
+        "type": "configuration"
+      }
+    },
+    "conflicts": [
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-workflow-testing-plan.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-execution-status-update.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-immediate-action-execution.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-cleanup-execution.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./archived/customer-systems/shelly-mizrahi/scripts/deploy-shelly-n8n-bmad.js"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./docs/bmad-execution-status-update.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./docs/bmad-immediate-action-execution.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./docs/bmad-cleanup-execution.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-workflow-testing-plan.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-workflow-testing-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./docs/bmad-execution-status-update.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./docs/bmad-immediate-action-execution.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./docs/bmad-cleanup-execution.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-ben-ginati-n8n-deployment.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-ben-ginati-n8n-deployment.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./docs/bmad-immediate-action-execution.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-execution-status-update.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-execution-status-update.md"
+      },
+      {
+        "file1": "./docs/bmad-immediate-action-execution.md",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-immediate-action-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-immediate-action-execution.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-immediate-action-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-immediate-action-execution.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-immediate-action-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-immediate-action-execution.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-immediate-action-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-immediate-action-execution.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-immediate-action-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-cleanup-execution.md",
+        "file2": "./docs/bmad-implementation-plan.md",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-cleanup-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-cleanup-execution.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-cleanup-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-cleanup-execution.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "analyze",
+        "conflict": "Different analyze values found",
+        "newerFile": "./docs/bmad-cleanup-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-cleanup-execution.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-cleanup-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-cleanup-execution.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-cleanup-execution.md"
+      },
+      {
+        "file1": "./docs/bmad-implementation-plan.md",
+        "file2": "./scripts/execute-bmad-workflow-activation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-implementation-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-implementation-plan.md",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-implementation-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-implementation-plan.md",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "deploy",
+        "conflict": "Different deploy values found",
+        "newerFile": "./docs/bmad-implementation-plan.md"
+      },
+      {
+        "file1": "./docs/bmad-implementation-plan.md",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./docs/bmad-implementation-plan.md"
+      },
+      {
+        "file1": "./scripts/execute-bmad-workflow-activation.js",
+        "file2": "./scripts/bmad-archon-integration.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/execute-bmad-workflow-activation.js"
+      },
+      {
+        "file1": "./scripts/execute-bmad-workflow-activation.js",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/execute-bmad-workflow-activation.js"
+      },
+      {
+        "file1": "./scripts/execute-bmad-workflow-activation.js",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/execute-bmad-workflow-activation.js"
+      },
+      {
+        "file1": "./scripts/bmad-archon-integration.js",
+        "file2": "./scripts/bmad-method-implementation.js",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/bmad-method-implementation.js"
+      },
+      {
+        "file1": "./scripts/bmad-archon-integration.js",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/bmad-archon-integration.js"
+      },
+      {
+        "file1": "./scripts/bmad-method-implementation.js",
+        "file2": "./archived/data/bmad-workflow-activation-results.json",
+        "pattern": "build",
+        "conflict": "Different build values found",
+        "newerFile": "./scripts/bmad-method-implementation.js"
+      }
+    ]
+  },
+  "vps": {
+    "files": [
+      {
+        "path": "./fix_vps_optimization.py",
+        "modified": 1755753284585,
+        "size": 8255,
+        "type": "other"
+      },
+      {
+        "path": "./execute_vps_optimization.py",
+        "modified": 1755753284585,
+        "size": 25156,
+        "type": "other"
+      },
+      {
+        "path": "./archived/data/vps-optimization-fix-results.json",
+        "modified": 1755753284553,
+        "size": 138,
+        "type": "configuration"
+      },
+      {
+        "path": "./archived/data/vps-optimization-results.json",
+        "modified": 1755753284553,
+        "size": 984,
+        "type": "configuration"
+      }
+    ],
+    "newest": {
+      "server": null,
+      "config": null,
+      "deployment": null,
+      "credential": null,
+      "api": null,
+      "documentation": null,
+      "script": null,
+      "other": {
+        "path": "./fix_vps_optimization.py",
+        "modified": 1755753284585,
+        "size": 8255,
+        "type": "other"
+      },
+      "configuration": {
+        "path": "./archived/data/vps-optimization-fix-results.json",
+        "modified": 1755753284553,
+        "size": 138,
+        "type": "configuration"
+      }
+    },
+    "conflicts": [
+      {
+        "file1": "./fix_vps_optimization.py",
+        "file2": "./execute_vps_optimization.py",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./execute_vps_optimization.py"
+      },
+      {
+        "file1": "./fix_vps_optimization.py",
+        "file2": "./archived/data/vps-optimization-fix-results.json",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./fix_vps_optimization.py"
+      },
+      {
+        "file1": "./fix_vps_optimization.py",
+        "file2": "./archived/data/vps-optimization-results.json",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./fix_vps_optimization.py"
+      },
+      {
+        "file1": "./execute_vps_optimization.py",
+        "file2": "./archived/data/vps-optimization-fix-results.json",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./execute_vps_optimization.py"
+      },
+      {
+        "file1": "./execute_vps_optimization.py",
+        "file2": "./archived/data/vps-optimization-results.json",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./execute_vps_optimization.py"
+      },
+      {
+        "file1": "./archived/data/vps-optimization-fix-results.json",
+        "file2": "./archived/data/vps-optimization-results.json",
+        "pattern": "vps",
+        "conflict": "Different vps values found",
+        "newerFile": "./archived/data/vps-optimization-results.json"
+      }
+    ]
+  },
+  "credentials": {
+    "files": [
+      {
+        "path": "./scripts/credential-manager.js",
+        "modified": 1755848735336,
+        "size": 8768,
+        "type": "credential"
+      },
+      {
+        "path": "./quickbooks-credentials-test-report.json",
+        "modified": 1755764696973,
+        "size": 5562,
+        "type": "credential"
+      },
+      {
+        "path": "./scripts/test-quickbooks-credentials.js",
+        "modified": 1755764445824,
+        "size": 15975,
+        "type": "credential"
+      },
+      {
+        "path": "./quickbooks-fresh-credentials.json",
+        "modified": 1755764373419,
+        "size": 985,
+        "type": "credential"
+      },
+      {
+        "path": "./quickbooks-fresh-credentials.env",
+        "modified": 1755764373419,
+        "size": 1073,
+        "type": "credential"
+      },
+      {
+        "path": "./scripts/setup-native-credentials.js",
+        "modified": 1755753284600,
+        "size": 8099,
+        "type": "credential"
+      },
+      {
+        "path": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "modified": 1755753284096,
+        "size": 1604,
+        "type": "credential"
+      },
+      {
+        "path": "./archived/data/baseline-credentials-report.json",
+        "modified": 1755753284087,
+        "size": 849,
+        "type": "credential"
+      }
+    ],
+    "newest": {
+      "server": null,
+      "config": null,
+      "deployment": null,
+      "credential": {
+        "path": "./scripts/credential-manager.js",
+        "modified": 1755848735336,
+        "size": 8768,
+        "type": "credential"
+      },
+      "api": null,
+      "documentation": null,
+      "script": null
+    },
+    "conflicts": [
+      {
+        "file1": "./scripts/credential-manager.js",
+        "file2": "./scripts/test-quickbooks-credentials.js",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/credential-manager.js"
+      },
+      {
+        "file1": "./scripts/credential-manager.js",
+        "file2": "./quickbooks-fresh-credentials.env",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/credential-manager.js"
+      },
+      {
+        "file1": "./scripts/credential-manager.js",
+        "file2": "./scripts/setup-native-credentials.js",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/credential-manager.js"
+      },
+      {
+        "file1": "./scripts/credential-manager.js",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/credential-manager.js"
+      },
+      {
+        "file1": "./scripts/credential-manager.js",
+        "file2": "./archived/data/baseline-credentials-report.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/credential-manager.js"
+      },
+      {
+        "file1": "./quickbooks-credentials-test-report.json",
+        "file2": "./scripts/test-quickbooks-credentials.js",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-credentials-test-report.json"
+      },
+      {
+        "file1": "./quickbooks-credentials-test-report.json",
+        "file2": "./quickbooks-fresh-credentials.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-credentials-test-report.json"
+      },
+      {
+        "file1": "./quickbooks-credentials-test-report.json",
+        "file2": "./quickbooks-fresh-credentials.env",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-credentials-test-report.json"
+      },
+      {
+        "file1": "./quickbooks-credentials-test-report.json",
+        "file2": "./scripts/setup-native-credentials.js",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-credentials-test-report.json"
+      },
+      {
+        "file1": "./quickbooks-credentials-test-report.json",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-credentials-test-report.json"
+      },
+      {
+        "file1": "./scripts/test-quickbooks-credentials.js",
+        "file2": "./quickbooks-fresh-credentials.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./scripts/test-quickbooks-credentials.js"
+      },
+      {
+        "file1": "./scripts/test-quickbooks-credentials.js",
+        "file2": "./quickbooks-fresh-credentials.env",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./scripts/test-quickbooks-credentials.js"
+      },
+      {
+        "file1": "./scripts/test-quickbooks-credentials.js",
+        "file2": "./scripts/setup-native-credentials.js",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./scripts/test-quickbooks-credentials.js"
+      },
+      {
+        "file1": "./scripts/test-quickbooks-credentials.js",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./scripts/test-quickbooks-credentials.js"
+      },
+      {
+        "file1": "./scripts/test-quickbooks-credentials.js",
+        "file2": "./archived/data/baseline-credentials-report.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/test-quickbooks-credentials.js"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.json",
+        "file2": "./quickbooks-fresh-credentials.env",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-fresh-credentials.env"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.json",
+        "file2": "./scripts/setup-native-credentials.js",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-fresh-credentials.json"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.json",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-fresh-credentials.json"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.env",
+        "file2": "./scripts/setup-native-credentials.js",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-fresh-credentials.env"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.env",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./quickbooks-fresh-credentials.env"
+      },
+      {
+        "file1": "./quickbooks-fresh-credentials.env",
+        "file2": "./archived/data/baseline-credentials-report.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./quickbooks-fresh-credentials.env"
+      },
+      {
+        "file1": "./scripts/setup-native-credentials.js",
+        "file2": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "pattern": "token",
+        "conflict": "Different token values found",
+        "newerFile": "./scripts/setup-native-credentials.js"
+      },
+      {
+        "file1": "./scripts/setup-native-credentials.js",
+        "file2": "./archived/data/baseline-credentials-report.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./scripts/setup-native-credentials.js"
+      },
+      {
+        "file1": "./archived/data/customers/customer-1755455121176/credential-setup.json",
+        "file2": "./archived/data/baseline-credentials-report.json",
+        "pattern": "credential",
+        "conflict": "Different credential values found",
+        "newerFile": "./archived/data/customers/customer-1755455121176/credential-setup.json"
+      }
+    ]
+  },
+  "masterFiles": [
+    "docs/INFRASTRUCTURE_MASTER.md",
+    "docs/MCP_SERVERS_SPECIFIC.md",
+    "docs/BMAD_PROCESS_SPECIFIC.md",
+    "docs/VPS_CONFIGURATION_SPECIFIC.md",
+    "docs/API_CREDENTIALS_SPECIFIC.md"
+  ]
+}

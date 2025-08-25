@@ -1,0 +1,647 @@
+{
+  "name": "Boost.space Integration Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "boost-space-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "boost-space-webhook",
+      "name": "Boost.space Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "boost-space-integration"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "module-type",
+              "leftValue": "={{ $json.module }}",
+              "rightValue": "contacts",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "module-router",
+      "name": "Module Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://superseller.boost.space/api/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.data.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.data.email }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.data.phone }}"
+            },
+            {
+              "name": "company",
+              "value": "={{ $json.data.company }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.data.status || 'active' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-contact",
+      "name": "Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "boost-space-auth",
+          "name": "Boost.space API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://superseller.boost.space/api/invoice",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.data.number }}"
+            },
+            {
+              "name": "customer",
+              "value": "={{ $json.data.customer }}"
+            },
+            {
+              "name": "amount",
+              "value": "={{ $json.data.amount }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.data.status || 'draft' }}"
+            },
+            {
+              "name": "dueDate",
+              "value": "={{ $json.data.dueDate }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-invoice",
+      "name": "Create Invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "boost-space-auth",
+          "name": "Boost.space API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://superseller.boost.space/api/business-contract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.data.name }}"
+            },
+            {
+              "name": "parties",
+              "value": "={{ $json.data.parties }}"
+            },
+            {
+              "name": "terms",
+              "value": "={{ $json.data.terms }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.data.status || 'draft' }}"
+            },
+            {
+              "name": "startDate",
+              "value": "={{ $json.data.startDate }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-contract",
+      "name": "Create Contract",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 600],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "boost-space-auth",
+          "name": "Boost.space API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://superseller.boost.space/api/todo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $json.data.title }}"
+            },
+            {
+              "name": "assignee",
+              "value": "={{ $json.data.assignee }}"
+            },
+            {
+              "name": "priority",
+              "value": "={{ $json.data.priority || 'medium' }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.data.status || 'pending' }}"
+            },
+            {
+              "name": "dueDate",
+              "value": "={{ $json.data.dueDate }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-task",
+      "name": "Create Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 800],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "boost-space-auth",
+          "name": "Boost.space API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://superseller.boost.space/api/event",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $json.data.title }}"
+            },
+            {
+              "name": "startDate",
+              "value": "={{ $json.data.startDate }}"
+            },
+            {
+              "name": "endDate",
+              "value": "={{ $json.data.endDate }}"
+            },
+            {
+              "name": "attendees",
+              "value": "={{ $json.data.attendees }}"
+            },
+            {
+              "name": "location",
+              "value": "={{ $json.data.location }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-event",
+      "name": "Create Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 1000],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "boost-space-auth",
+          "name": "Boost.space API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Record created successfully', data: $json } }}",
+        "options": {}
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: 'Invalid module type', error: $json } }}",
+        "options": {}
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 500]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "module-type",
+              "leftValue": "={{ $json.module }}",
+              "rightValue": "invoice",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "invoice-router",
+      "name": "Invoice Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "module-type",
+              "leftValue": "={{ $json.module }}",
+              "rightValue": "business-contract",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "contract-router",
+      "name": "Contract Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "module-type",
+              "leftValue": "={{ $json.module }}",
+              "rightValue": "todo",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "task-router",
+      "name": "Task Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 800]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "module-type",
+              "leftValue": "={{ $json.module }}",
+              "rightValue": "event",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "event-router",
+      "name": "Event Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 1000]
+    }
+  ],
+  "connections": {
+    "Boost.space Webhook": {
+      "main": [
+        [
+          {
+            "node": "Module Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Module Router": {
+      "main": [
+        [
+          {
+            "node": "Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invoice Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invoice Router": {
+      "main": [
+        [
+          {
+            "node": "Create Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Contract Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contract Router": {
+      "main": [
+        [
+          {
+            "node": "Create Contract",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Task Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Router": {
+      "main": [
+        [
+          {
+            "node": "Create Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Event Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event Router": {
+      "main": [
+        [
+          {
+            "node": "Create Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Contact": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Invoice": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Contract": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-08-22T16:30:00.000Z",
+      "updatedAt": "2025-08-22T16:30:00.000Z",
+      "id": "boost-space-integration",
+      "name": "Boost.space Integration"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-22T16:30:00.000Z",
+  "versionId": "1"
+}

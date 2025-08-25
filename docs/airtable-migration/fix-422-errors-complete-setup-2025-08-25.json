@@ -1,0 +1,89 @@
+{
+  "timestamp": "2025-08-25T03:08:18.365Z",
+  "status": "completed",
+  "steps": [],
+  "errors": [
+    {
+      "step": "analyzeFields",
+      "table": "Companies",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "step": "analyzeFields",
+      "table": "Contacts",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "step": "analyzeFields",
+      "table": "Projects",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "step": "analyzeFields",
+      "table": "Invoices",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "step": "createContact",
+      "contact": "John Smith",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addLookupField",
+      "table": "Contacts",
+      "field": "Company Details",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addLookupField",
+      "table": "Projects",
+      "field": "Company Details",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addFormulaField",
+      "table": "Companies",
+      "field": "Revenue per Employee",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addFormulaField",
+      "table": "Companies",
+      "field": "Company Health Score",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addFormulaField",
+      "table": "Contacts",
+      "field": "Contact Priority Score",
+      "error": "Request failed with status code 422"
+    }
+  ],
+  "recordsCreated": [
+    {
+      "type": "company",
+      "name": "Rensto Technologies",
+      "id": "recMCehWMrZRNq4ON",
+      "success": true
+    },
+    {
+      "type": "company",
+      "name": "TechCorp Solutions",
+      "id": "recmOuZKAJwKuBtk1",
+      "success": true
+    },
+    {
+      "type": "contact",
+      "name": "Sarah Johnson",
+      "id": "rec8b7RbnpFnBCVyq",
+      "success": true
+    },
+    {
+      "type": "project",
+      "name": "Test Project",
+      "id": "recd0cCBGKreIM5tT",
+      "success": true
+    }
+  ],
+  "fieldsAdded": []
+}

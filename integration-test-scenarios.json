@@ -1,0 +1,34 @@
+[
+  {
+    "name": "GitHub Webhook Test",
+    "description": "Test GitHub webhook delivery to LightRAG",
+    "endpoint": "https://rensto-lightrag.onrender.com/webhook",
+    "payload": {
+      "repository": "rensto/business-intelligence",
+      "event": "push",
+      "ref": "refs/heads/main",
+      "sha": "test-commit-sha"
+    }
+  },
+  {
+    "name": "Knowledge Graph Query Test",
+    "description": "Test querying the knowledge graph",
+    "endpoint": "https://rensto-lightrag.onrender.com/query",
+    "payload": {
+      "query": "What systems does Shelly Mizrahi use?",
+      "entities": [
+        "Shelly Mizrahi",
+        "Smart Family Profile Generator"
+      ]
+    }
+  },
+  {
+    "name": "Documentation Processing Test",
+    "description": "Test processing master documentation files",
+    "files": [
+      "docs/CUSTOMER_SYSTEMS_MASTER.md",
+      "docs/INFRASTRUCTURE_MASTER.md",
+      "docs/BUSINESS_PROCESSES_MASTER.md"
+    ]
+  }
+]

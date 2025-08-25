@@ -1,0 +1,17 @@
+[Unit]
+Description=n8n MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mcp-servers/n8n-mcp-server
+ExecStart=/usr/bin/node server-enhanced.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+Environment=N8N_URL=http://173.254.201.134:5678
+Environment=N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE
+
+[Install]
+WantedBy=multi-user.target

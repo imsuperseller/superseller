@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-08-25T03:41:53.916Z",
+  "status": "completed",
+  "accessibleBases": [
+    {
+      "name": "משאבים",
+      "id": "appqY1p53ge7UqxUO",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "המאגר",
+      "id": "appLOvzN5ap47GJl0",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "Groceries copy",
+      "id": "app3eCU24yxD5OWwm",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "דילי מילי",
+      "id": "app2uZ1yhtokf8DXc",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "דילי מילי חדש",
+      "id": "appjL0rSZZ6c8AWKo",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "Apartment Hunting",
+      "id": "appxj059MvIaQ9W4c",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "STR Property Management",
+      "id": "apptXBaizvTfPoRr8",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "OpenAI",
+      "id": "app9jCd6uBvFZgjum",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "Untitled Base",
+      "id": "appFP57Ai15nl2GVN",
+      "access": "no_tables",
+      "error": "No tables found"
+    },
+    {
+      "name": "Property Management",
+      "id": "appNZ028VPO5OZhYP",
+      "access": "no_tables",
+      "error": "No tables found"
+    }
+  ],
+  "testResults": [],
+  "errors": [],
+  "recommendations": {
+    "accessibleBases": 0,
+    "noTablesBases": 10,
+    "noAccessBases": 0,
+    "suggestedAction": "create_tables_in_empty_bases"
+  }
+}

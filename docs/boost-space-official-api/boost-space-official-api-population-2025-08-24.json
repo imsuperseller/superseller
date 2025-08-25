@@ -1,0 +1,584 @@
+{
+  "timestamp": "2025-08-24T16:01:54.467Z",
+  "status": "completed",
+  "populationResults": {
+    "contact": {
+      "description": "Customer contacts",
+      "endpoint": "/contact",
+      "records": [
+        {
+          "data": {
+            "name": "Ben Ginati",
+            "email": "ben@ginati.com",
+            "phone": "+972-50-123-4567",
+            "company": "Ginati Business Solutions",
+            "status": "Active Customer",
+            "notes": "Complete business automation project"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        },
+        {
+          "data": {
+            "name": "Shelly Mizrahi",
+            "email": "shelly@mizrahi-insurance.com",
+            "phone": "+972-52-987-6543",
+            "company": "Mizrahi Insurance Services",
+            "status": "Active Customer",
+            "notes": "Insurance document processing system"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "product": {
+      "description": "Product catalog",
+      "endpoint": "/product",
+      "records": [
+        {
+          "data": {
+            "name": "Business Automation Package",
+            "sku": "BAP-001",
+            "price": 15000,
+            "category": "Automation",
+            "status": "Active",
+            "description": "Complete business process automation solution"
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 9,
+            "created": "2025-08-24T18:01:56+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:01:56+02:00",
+            "updatedUserId": null,
+            "currency_id": null,
+            "name": "Business Automation Package",
+            "description": "Complete business process automation solution",
+            "description_html": null,
+            "invoice_description": "Business Automation Package",
+            "featured_image_id": null,
+            "quantity": 0,
+            "default_quantity": null,
+            "ratioQuantity": null,
+            "ratioUnit": "pcs",
+            "unit_name": "ks",
+            "unit": "pcs",
+            "unitQuantity": 1,
+            "unit_price": null,
+            "vat": null,
+            "discount": null,
+            "discount_amount": null,
+            "part_number": null,
+            "ean_code": null,
+            "sku": "BAP-001",
+            "status_id": null,
+            "status_system_id": 52,
+            "parent_id": null,
+            "order": null,
+            "boostId": "Product09",
+            "remotes": [],
+            "customFieldsValues": [],
+            "quantitiesOnStock": [],
+            "unitPriceWithVat": null,
+            "unitPriceDiscounted": null,
+            "unitPriceWithVatDiscounted": null,
+            "ratioPrice": null,
+            "ratioPriceWithVat": null,
+            "ratioPriceDiscounted": null,
+            "ratioPriceWithVatDiscounted": null,
+            "reservable": false,
+            "hasVariants": false,
+            "featured_image_path": null,
+            "spaces": [],
+            "files": [],
+            "labels": [],
+            "default_category": null,
+            "categories": [],
+            "status": null,
+            "statusSystem": {
+              "id": 52,
+              "created": "2024-02-26T13:57:07+01:00",
+              "createdUserId": null,
+              "updated": "2024-02-26T13:57:07+01:00",
+              "updatedUserId": null,
+              "color": "#2196F3",
+              "iconPrefix": "fas",
+              "icon": "parking",
+              "module": "product",
+              "weight": 1,
+              "name": "Active",
+              "system_name": "active",
+              "actived": true,
+              "custom": false,
+              "allow_move": "52,53",
+              "boostId": "StatusSystem052",
+              "remotes": []
+            },
+            "specialPrices": [],
+            "variants": []
+          }
+        },
+        {
+          "data": {
+            "name": "Document Processing System",
+            "sku": "DPS-002",
+            "price": 8000,
+            "category": "Documentation",
+            "status": "Active",
+            "description": "Advanced document processing and workflow automation"
+          },
+          "status": "success",
+          "statusCode": 201,
+          "response": {
+            "id": 11,
+            "created": "2025-08-24T18:01:57+02:00",
+            "createdUserId": 4,
+            "updated": "2025-08-24T18:01:57+02:00",
+            "updatedUserId": null,
+            "currency_id": null,
+            "name": "Document Processing System",
+            "description": "Advanced document processing and workflow automation",
+            "description_html": null,
+            "invoice_description": "Document Processing System",
+            "featured_image_id": null,
+            "quantity": 0,
+            "default_quantity": null,
+            "ratioQuantity": null,
+            "ratioUnit": "pcs",
+            "unit_name": "ks",
+            "unit": "pcs",
+            "unitQuantity": 1,
+            "unit_price": null,
+            "vat": null,
+            "discount": null,
+            "discount_amount": null,
+            "part_number": null,
+            "ean_code": null,
+            "sku": "DPS-002",
+            "status_id": null,
+            "status_system_id": 52,
+            "parent_id": null,
+            "order": null,
+            "boostId": "Product011",
+            "remotes": [],
+            "customFieldsValues": [],
+            "quantitiesOnStock": [],
+            "unitPriceWithVat": null,
+            "unitPriceDiscounted": null,
+            "unitPriceWithVatDiscounted": null,
+            "ratioPrice": null,
+            "ratioPriceWithVat": null,
+            "ratioPriceDiscounted": null,
+            "ratioPriceWithVatDiscounted": null,
+            "reservable": false,
+            "hasVariants": false,
+            "featured_image_path": null,
+            "spaces": [],
+            "files": [],
+            "labels": [],
+            "default_category": null,
+            "categories": [],
+            "status": null,
+            "statusSystem": {
+              "id": 52,
+              "created": "2024-02-26T13:57:07+01:00",
+              "createdUserId": null,
+              "updated": "2024-02-26T13:57:07+01:00",
+              "updatedUserId": null,
+              "color": "#2196F3",
+              "iconPrefix": "fas",
+              "icon": "parking",
+              "module": "product",
+              "weight": 1,
+              "name": "Active",
+              "system_name": "active",
+              "actived": true,
+              "custom": false,
+              "allow_move": "52,53",
+              "boostId": "StatusSystem052",
+              "remotes": []
+            },
+            "specialPrices": [],
+            "variants": []
+          }
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 2,
+        "failed": 0
+      }
+    },
+    "business-case": {
+      "description": "Business cases",
+      "endpoint": "/business-case",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Business Automation",
+            "status": "In Progress",
+            "customer": "Ben Ginati",
+            "budget": 15000,
+            "timeline": "3 months",
+            "description": "Complete business process automation for Ginati Business Solutions"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance System",
+            "status": "In Progress",
+            "customer": "Shelly Mizrahi",
+            "budget": 12000,
+            "timeline": "2 months",
+            "description": "Insurance document processing and workflow automation"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "invoice": {
+      "description": "Invoice management",
+      "endpoint": "/invoice",
+      "records": [
+        {
+          "data": {
+            "number": "INV-2024-001",
+            "customer": "Ben Ginati",
+            "amount": 5000,
+            "status": "Pending",
+            "due_date": "2024-12-31",
+            "description": "Business automation package payment"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        },
+        {
+          "data": {
+            "number": "INV-2024-002",
+            "customer": "Shelly Mizrahi",
+            "amount": 3000,
+            "status": "Pending",
+            "due_date": "2024-12-31",
+            "description": "Insurance system implementation"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "event": {
+      "description": "Calendar events",
+      "endpoint": "/event",
+      "records": [
+        {
+          "data": {
+            "title": "Ben Ginati Project Kickoff",
+            "start_date": "2024-01-15T10:00:00Z",
+            "end_date": "2024-01-15T11:00:00Z",
+            "location": "Virtual Meeting",
+            "description": "Initial project planning and requirements gathering"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        },
+        {
+          "data": {
+            "title": "Shelly Mizrahi System Demo",
+            "start_date": "2024-01-20T14:00:00Z",
+            "end_date": "2024-01-20T15:00:00Z",
+            "location": "Virtual Meeting",
+            "description": "Insurance system demonstration and feedback session"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "note": {
+      "description": "Notes and documentation",
+      "endpoint": "/note",
+      "records": [
+        {
+          "data": {
+            "title": "Ben Ginati Project Requirements",
+            "content": "Complete business automation including document processing, workflow management, and reporting. Key requirements: 1) Automated document processing, 2) Workflow management, 3) Reporting dashboard, 4) Integration with existing systems.",
+            "author": "Shai Friedman",
+            "category": "Project",
+            "tags": [
+              "automation",
+              "business",
+              "ginati",
+              "requirements"
+            ]
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        },
+        {
+          "data": {
+            "title": "Shelly Mizrahi Insurance System",
+            "content": "Insurance document processing system requirements: 1) Document upload and processing, 2) Automated form filling, 3) Client portal access, 4) Integration with insurance databases, 5) Compliance reporting.",
+            "author": "Shai Friedman",
+            "category": "Project",
+            "tags": [
+              "insurance",
+              "documents",
+              "mizrahi",
+              "compliance"
+            ]
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "business-offer": {
+      "description": "Business offers",
+      "endpoint": "/business-offer",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Business Automation Offer",
+            "customer": "Ben Ginati",
+            "value": 15000,
+            "status": "Active",
+            "valid_until": "2024-12-31",
+            "description": "Complete business automation package including document processing, workflow management, and reporting dashboard."
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance System Offer",
+            "customer": "Shelly Mizrahi",
+            "value": 12000,
+            "status": "Active",
+            "valid_until": "2024-12-31",
+            "description": "Insurance document processing system with client portal and compliance reporting."
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "business-order": {
+      "description": "Business orders",
+      "endpoint": "/business-order",
+      "records": [
+        {
+          "data": {
+            "number": "ORD-2024-001",
+            "customer": "Ben Ginati",
+            "items": [
+              "Business Automation Package"
+            ],
+            "total": 15000,
+            "status": "Confirmed",
+            "delivery_date": "2024-03-15"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500
+        },
+        {
+          "data": {
+            "number": "ORD-2024-002",
+            "customer": "Shelly Mizrahi",
+            "items": [
+              "Insurance Document System"
+            ],
+            "total": 12000,
+            "status": "Confirmed",
+            "delivery_date": "2024-02-28"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 500",
+          "statusCode": 500
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "business-contract": {
+      "description": "Business contracts",
+      "endpoint": "/business-contract",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Service Agreement",
+            "parties": [
+              "Rensto",
+              "Ginati Business Solutions"
+            ],
+            "terms": "Complete business automation service including implementation, training, and support.",
+            "status": "Active",
+            "start_date": "2024-01-15",
+            "end_date": "2024-12-31"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance Contract",
+            "parties": [
+              "Rensto",
+              "Mizrahi Insurance Services"
+            ],
+            "terms": "Insurance document processing system implementation with ongoing support and maintenance.",
+            "status": "Active",
+            "start_date": "2024-01-20",
+            "end_date": "2024-12-31"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 404",
+          "statusCode": 404
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "submission": {
+      "description": "Document submissions",
+      "endpoint": "/submission",
+      "records": [
+        {
+          "data": {
+            "name": "Ginati Project Proposal",
+            "customer": "Ben Ginati",
+            "status": "Submitted",
+            "submission_date": "2024-01-10",
+            "content": "Business automation project proposal with detailed requirements and implementation plan."
+          },
+          "status": "failed",
+          "error": "Request failed with status code 405",
+          "statusCode": 405
+        },
+        {
+          "data": {
+            "name": "Mizrahi Insurance Requirements",
+            "customer": "Shelly Mizrahi",
+            "status": "Submitted",
+            "submission_date": "2024-01-12",
+            "content": "Insurance document processing system requirements and specifications."
+          },
+          "status": "failed",
+          "error": "Request failed with status code 405",
+          "statusCode": 405
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    },
+    "form": {
+      "description": "Form management",
+      "endpoint": "/form",
+      "records": [
+        {
+          "data": {
+            "name": "Customer Onboarding Form",
+            "fields": [
+              "name",
+              "email",
+              "company",
+              "requirements",
+              "budget"
+            ],
+            "status": "Active",
+            "created_date": "2024-01-01"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        },
+        {
+          "data": {
+            "name": "Project Requirements Form",
+            "fields": [
+              "project_name",
+              "description",
+              "timeline",
+              "budget",
+              "contact_info"
+            ],
+            "status": "Active",
+            "created_date": "2024-01-01"
+          },
+          "status": "failed",
+          "error": "Request failed with status code 400",
+          "statusCode": 400
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "successful": 0,
+        "failed": 2
+      }
+    }
+  },
+  "summary": {
+    "totalModules": 11,
+    "successfulModules": 1,
+    "failedModules": 10,
+    "totalRecords": 22,
+    "successfulRecords": 2
+  }
+}

@@ -1,0 +1,361 @@
+# 🎯 SHELLY'S SURENSE INTEGRATION GUIDE
+
+## 📋 OVERVIEW
+This guide integrates Shelly's existing Surense workflow with a Make.com scenario using native Surense modules. The workflow processes family research data, uploads results to customer profiles, and updates Shelly's Rensto portal.
+
+## 🎯 EXISTING INFRASTRUCTURE
+- **Surense Form**: `https://hook.us2.make.com/y3lwmprzu14ftg6fz1lq1q6dkg02rtw4`
+- **Customer**: שי פרידמן (039426341)
+- **Agent**: שלי מזרחי (00135611-L)
+- **Family Members**: 039426341, 301033270
+
+## 🔧 STEP-BY-STEP INTEGRATION
+
+### Step 1: Access Make.com
+1. Go to [https://us2.make.com](https://us2.make.com)
+2. Log in with your credentials
+3. Navigate to your workspace
+
+### Step 2: Create New Scenario
+1. Click the **"+"** button to create a new scenario
+2. Name it: **"Shelly Family Research & Surense Integration"**
+3. Description: **"AI-powered family research with native Surense integration for Shaifriedman family"**
+
+### Step 3: Add Webhook Trigger
+1. Click **"Add a module"**
+2. Search for **"Webhook"**
+3. Select **"Webhook"** trigger
+4. Configure the webhook:
+   - **Name**: `shelly_family_research_webhook`
+   - **Description**: `Receives family research requests from Surense form`
+   - **URL**: `https://hook.us2.make.com/y3lwmprzu14ftg6fz1lq1q6dkg02rtw4`
+5. Click **"Save"**
+
+### Step 4: Add OpenAI Research Agent
+1. Click **"Add a module"** after the webhook
+2. Search for **"OpenAI"**
+3. Select **"OpenAI"** module
+4. Configure the module:
+   - **Model**: `gpt-4o-mini`
+   - **Temperature**: `0.3`
+   - **Max Tokens**: `2000`
+   - **System Prompt**:
+   ```
+   You are an expert insurance research agent. Research each family member thoroughly:
+   1. Personal information (age, occupation, health status)
+   2. Financial situation (income, assets, liabilities)
+   3. Insurance needs (life, health, property, liability)
+   4. Risk factors and coverage gaps
+   5. Family dynamics and dependencies
+   
+   Provide structured, professional analysis suitable for insurance profiling.
+   ```
+   - **User Prompt**:
+   ```
+   Research the following family members for insurance profiling:
+   
+   Customer: {{1.customer_name}} ({{1.customer_id}})
+   Family Member IDs: {{1.family_member_ids}}
+   Research Depth: {{1.research_depth}}
+   
+   Please provide comprehensive analysis for each family member including:
+   - Personal and financial information
+   - Insurance needs assessment
+   - Risk factors identification
+   - Coverage recommendations
+   ```
+5. Click **"Save"**
+
+### Step 5: Add OpenAI Document Generator
+1. Click **"Add a module"** after the research agent
+2. Search for **"OpenAI"**
+3. Select **"OpenAI"** module
+4. Configure the module:
+   - **Model**: `gpt-4o-mini`
+   - **Temperature**: `0.2`
+   - **Max Tokens**: `3000`
+   - **System Prompt**:
+   ```
+   Create a comprehensive family insurance profile document in Hebrew. Include:
+   1. Executive Summary
+   2. Family Overview
+   3. Individual Member Analysis
+   4. Insurance Recommendations
+   5. Risk Assessment
+   6. Action Plan
+   
+   Format as a professional document with proper sections and formatting.
+   ```
+   - **User Prompt**:
+   ```
+   Create a professional Hebrew family insurance profile based on this research:
+   
+   {{2.choices[0].message.content}}
+   
+   Customer: {{1.customer_name}} ({{1.customer_id}})
+   Family Members: {{1.family_member_ids}}
+   Agent: {{1.agent_name}} ({{1.agent_license}})
+   
+   Generate a complete Hebrew document with:
+   - Executive summary
+   - Family overview
+   - Individual member analysis
+   - Insurance recommendations
+   - Risk assessment
+   - Action plan
+   ```
+5. Click **"Save"**
+
+### Step 6: Add Surense Create Customer
+1. Click **"Add a module"** after the document generator
+2. Search for **"Surense"**
+3. Select **"Surense"** module
+4. Configure the module:
+   - **Action**: `Create Customer`
+   - **Mapping**:
+     - `name`: `{{1.customer_name}}`
+     - `id_number`: `{{1.customer_id}}`
+     - `address`: `{{1.customer_address}}`
+     - `email`: `{{1.customer_email}}`
+     - `phone`: `{{1.customer_phone}}`
+     - `agent_name`: `{{1.agent_name}}`
+     - `agent_license`: `{{1.agent_license}}`
+     - `agent_email`: `{{1.agent_email}}`
+     - `agent_phone`: `{{1.agent_phone}}`
+     - `status`: `active`
+     - `source`: `AI Family Research`
+     - `notes`: `Customer created via AI family research workflow`
+5. Click **"Save"**
+
+### Step 7: Add Surense Create Lead
+1. Click **"Add a module"** after the customer creation
+2. Search for **"Surense"**
+3. Select **"Surense"** module
+4. Configure the module:
+   - **Action**: `Create Lead`
+   - **Mapping**:
+     - `customer_id`: `{{4.id}}`
+     - `family_profile`: `{{3.choices[0].message.content}}`
+     - `research_data`: `{{2.choices[0].message.content}}`
+     - `status`: `new`
+     - `priority`: `high`
+     - `lead_source`: `AI Family Research`
+     - `description`: `Family insurance profile generated by AI research`
+     - `tags`: `["family-research", "ai-generated", "insurance-profile"]`
+     - `agent_name`: `{{1.agent_name}}`
+     - `agent_license`: `{{1.agent_license}}`
+5. Click **"Save"**
+
+### Step 8: Add Surense Upload Document to Customer Profile
+1. Click **"Add a module"** after the lead creation
+2. Search for **"Surense"**
+3. Select **"Surense"** module
+4. Configure the module:
+   - **Action**: `Upload Document`
+   - **Mapping**:
+     - `customer_id`: `{{4.id}}`
+     - `lead_id`: `{{5.id}}`
+     - `document_content`: `{{3.choices[0].message.content}}`
+     - `document_type`: `family_profile`
+     - `filename`: `family_profile_{{1.customer_id}}_{{formatDate(now, 'YYYY-MM-DD')}}.pdf`
+     - `content_type`: `text/html`
+     - `encoding`: `UTF-8`
+     - `language`: `he`
+     - `title`: `Family Insurance Profile - {{1.customer_name}}`
+     - `description`: `AI-generated family insurance profile in Hebrew`
+     - `upload_to_profile`: `true`
+     - `profile_section`: `insurance_profiles`
+5. Click **"Save"**
+
+### Step 9: Add Surense Update Customer Profile
+1. Click **"Add a module"** after the document upload
+2. Search for **"Surense"**
+3. Select **"Surense"** module
+4. Configure the module:
+   - **Action**: `Update Customer`
+   - **Mapping**:
+     - `customer_id`: `{{4.id}}`
+     - `profile_data`: `{"family_research_completed": true, "research_date": "{{now}}", "research_depth": "{{1.research_depth}}", "family_members": "{{1.family_member_ids}}", "insurance_profile_document": "{{6.document_url}}", "last_ai_analysis": "{{now}}", "profile_status": "research_completed"}`
+     - `notes`: `Family research completed and profile updated with AI-generated insurance profile`
+5. Click **"Save"**
+
+### Step 10: Add Surense Create Activity
+1. Click **"Add a module"** after the customer profile update
+2. Search for **"Surense"**
+3. Select **"Surense"** module
+4. Configure the module:
+   - **Action**: `Create Activity`
+   - **Mapping**:
+     - `customer_id`: `{{4.id}}`
+     - `lead_id`: `{{5.id}}`
+     - `activity_type`: `research_completed`
+     - `title`: `AI Family Research Completed`
+     - `description`: `AI-powered family research and profile generation completed for {{1.customer_name}}`
+     - `status`: `completed`
+     - `priority`: `high`
+     - `agent_name`: `{{1.agent_name}}`
+     - `agent_license`: `{{1.agent_license}}`
+     - `data`: `{"research_depth": "{{1.research_depth}}", "family_members": "{{1.family_member_ids}}", "document_uploaded": true, "lead_created": true, "profile_updated": true}`
+5. Click **"Save"**
+
+### Step 11: Add Update Shelly's Rensto Portal
+1. Click **"Add a module"** after the activity creation
+2. Search for **"HTTP"**
+3. Select **"HTTP"** module
+4. Configure the module:
+   - **URL**: `https://shelly.rensto.com/api/update-agent-portal`
+   - **Method**: `POST`
+   - **Headers**:
+     - `Content-Type`: `application/json`
+     - `Authorization`: `Bearer {{env.RENSTO_API_KEY}}`
+   - **Body**:
+   ```json
+   {
+     "agent_id": "shelly-mizrahi",
+     "agent_name": "{{1.agent_name}}",
+     "agent_license": "{{1.agent_license}}",
+     "customer_id": "{{4.id}}",
+     "customer_name": "{{1.customer_name}}",
+     "customer_id_number": "{{1.customer_id}}",
+     "action": "family_research_completed",
+     "research_data": {
+       "family_members": "{{1.family_member_ids}}",
+       "research_depth": "{{1.research_depth}}",
+       "completion_date": "{{now}}",
+       "document_url": "{{6.document_url}}",
+       "lead_id": "{{5.id}}",
+       "profile_updated": true
+     },
+     "status": "completed",
+     "priority": "high",
+     "notes": "Family research completed for {{1.customer_name}} - AI profile generated and uploaded to customer profile"
+   }
+   ```
+5. Click **"Save"**
+
+### Step 12: Connect Modules
+1. Connect the webhook trigger to the OpenAI Research Agent
+2. Connect the OpenAI Research Agent to the OpenAI Document Generator
+3. Connect the OpenAI Document Generator to the Surense Create Customer
+4. Connect the Surense Create Customer to the Surense Create Lead
+5. Connect the Surense Create Lead to the Surense Upload Document to Customer Profile
+6. Connect the Surense Upload Document to the Surense Update Customer Profile
+7. Connect the Surense Update Customer Profile to the Surense Create Activity
+8. Connect the Surense Create Activity to the Update Shelly's Rensto Portal
+
+### Step 13: Save and Activate
+1. Click **"Save"** to save the scenario
+2. Click **"Activate"** to make it live
+3. The webhook URL is already configured: `https://hook.us2.make.com/y3lwmprzu14ftg6fz1lq1q6dkg02rtw4`
+
+## �� TESTING THE INTEGRATION
+
+### Test Data
+```json
+{
+  "customer_name": "שי פרידמן",
+  "customer_id": "039426341",
+  "customer_address": "נחל אלונה 5 עתלית 3033805",
+  "customer_email": "shai@example.com",
+  "customer_phone": "050-1234567",
+  "family_member_ids": "039426341,301033270",
+  "research_depth": "comprehensive",
+  "agent_name": "שלי מזרחי",
+  "agent_license": "00135611-L",
+  "agent_email": "shelly@gal-almagor.co.il",
+  "agent_phone": "052-470-4232"
+}
+```
+
+### Test Steps
+1. Send a POST request to the webhook URL with the test data
+2. Monitor the scenario execution in Make.com
+3. Check that all Surense modules execute successfully
+4. Verify the results:
+   - Customer created in Surense
+   - Lead created in Surense
+   - Document uploaded to customer profile
+   - Customer profile updated with research data
+   - Activity logged in Surense
+   - Shelly's Rensto portal updated
+
+## 📝 WORKFLOW INTEGRATION
+
+### Existing Surense Form Flow
+1. Customer fills out Surense form
+2. Form submits to webhook: `https://hook.us2.make.com/y3lwmprzu14ftg6fz1lq1q6dkg02rtw4`
+3. Make.com scenario triggers automatically
+4. AI research and document generation
+5. Results uploaded to customer profile in Surense
+6. Shelly's Rensto portal updated
+
+### Power of Attorney Process
+The existing power of attorney workflow remains unchanged:
+1. Customer approves power of attorney documents
+2. Agent accesses Har Bituah (הר הביטוח)
+3. Insurance policy information retrieved
+4. All data integrated into Surense customer profile
+
+## 🎯 BENEFITS OF CUSTOMER PROFILE UPLOAD
+
+### Advantages Over Report Sending
+- **Profile Integration**: Documents become part of customer's permanent profile
+- **Easy Access**: Agents can access documents directly from customer profile
+- **Historical Record**: Complete history of research and documents
+- **Professional Presentation**: Documents appear in customer's profile section
+- **No Email Dependencies**: No need to worry about email delivery
+
+### Customer Profile Updates
+- **Research Status**: Profile shows research completion status
+- **Document Links**: Direct links to uploaded insurance profiles
+- **Research Metadata**: Research depth, family members, completion date
+- **Agent Information**: Links research to specific agent
+- **Activity Log**: Complete audit trail of research activities
+
+## 🔗 EXECUTION
+
+### Manual Execution
+1. Run the script: `node scripts/shelly-create-surense-integrated-scenario.js`
+2. Monitor execution in Make.com
+3. Verify results in Surense customer profile
+4. Check Shelly's Rensto portal updates
+
+### Automated Execution
+The scenario will automatically trigger when:
+- Surense form is submitted
+- Webhook receives data
+- Family research is requested
+
+## 📊 MONITORING AND RESULTS
+
+### Success Indicators
+- ✅ Customer created in Surense
+- ✅ Lead generated with AI research
+- ✅ Document uploaded to customer profile
+- ✅ Customer profile updated with research data
+- ✅ Activity logged in Surense
+- ✅ Shelly's Rensto portal updated
+
+### Error Handling
+- Monitor Make.com execution logs
+- Check Surense API responses
+- Verify data mapping accuracy
+- Ensure all required fields are populated
+- Confirm Rensto portal API connectivity
+
+## 🎉 COMPLETE INTEGRATION
+
+This integration provides:
+- **Seamless Workflow**: From Surense form to AI research to customer profile
+- **Native Integration**: Uses Surense's native modules for optimal performance
+- **Real Family Data**: Processes actual family member IDs (039426341, 301033270)
+- **Hebrew Support**: Generates professional Hebrew documents
+- **Profile Integration**: Documents uploaded directly to customer profiles
+- **Portal Updates**: Shelly's Rensto portal updated automatically
+- **Complete Audit Trail**: All activities logged in Surense
+- **Production Ready**: Ready for immediate use
+
+## 🔗 RELATED FILES
+- `scripts/shelly-create-surense-integrated-scenario.js` - Main integration script
+- `data/customers/shelly-mizrahi/shelly-surense-integrated-results.json` - Execution results
+- `docs/MAKE_COM_INTEGRATION_GUIDE.md` - General Make.com integration guide

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-08-25T03:42:46.330Z",
+  "status": "completed",
+  "baseId": "appqY1p53ge7UqxUO",
+  "createdTables": [],
+  "errors": [
+    {
+      "table": "Customers",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Projects",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Tasks",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Invoices",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Expenses",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Leads",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Communications",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Time Tracking",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Resources",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "KPIs",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "table": "Reports",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

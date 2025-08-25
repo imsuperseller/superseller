@@ -7,37 +7,74 @@
       }
     },
     "n8n": {
-      "command": "node",
+      "command": "ssh",
       "args": [
-        "infra/mcp-servers/n8n-mcp-server/server-enhanced.js"
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "node /opt/mcp-servers/n8n-mcp-server/server-enhanced.js"
       ],
       "env": {
         "N8N_URL": "http://173.254.201.134:5678",
         "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
       }
     },
-    "github": {
-      "command": "python3",
+    "airtable": {
+      "command": "ssh",
       "args": [
-        "infra/mcp-servers/github-mcp-server/server.py"
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "node --experimental-modules /opt/mcp-servers/airtable-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "AIRTABLE_API_KEY": "pat0dxG1HQcAUz2Kr.2c6134ed2b8df1435d7966f9434da6755d1467fd4a62fee0de7984b48f448ac9"
+      }
+    },
+    "webflow": {
+      "command": "ssh",
+      "args": [
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "node /opt/mcp-servers/webflow-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "WEBFLOW_API_TOKEN": "90b67c9892c0067fde5f716f9a95f2e0b863cbbf496465cdeef5ddc817e4124b",
+        "WEBFLOW_SITE_ID": "66c7e551a317e0e9c9f906d8"
+      }
+    },
+    "github": {
+      "command": "ssh",
+      "args": [
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "python3 /opt/mcp-servers/github-mcp-server/server.py"
       ],
       "env": {
         "GITHUB_TOKEN": "your-github-token"
       }
     },
     "vercel": {
-      "command": "python3",
+      "command": "ssh",
       "args": [
-        "infra/mcp-servers/vercel-mcp-server/server.py"
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "python3 /opt/mcp-servers/vercel-mcp-server/server.py"
       ]
     },
     "mongodb": {
-      "command": "python3",
+      "command": "ssh",
       "args": [
-        "infra/mcp-servers/mongodb-mcp-server/server.py"
+        "-o",
+        "StrictHostKeyChecking=no",
+        "root@173.254.201.134",
+        "python3 /opt/mcp-servers/mongodb-mcp-server/server.py"
       ],
       "env": {
-        "MONGODB_URI": "your-mongodb-uri"
+        "MONGODB_URI": "mongodb://localhost:27017"
       }
     }
   }

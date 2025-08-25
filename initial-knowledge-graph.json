@@ -1,0 +1,111 @@
+{
+  "entities": [
+    {
+      "type": "customer",
+      "name": "Shelly Mizrahi",
+      "description": "Insurance professional with Smart Family Profile Generator"
+    },
+    {
+      "type": "customer",
+      "name": "Ben Ginati",
+      "description": "Content creator with automation system"
+    },
+    {
+      "type": "system",
+      "name": "Smart Family Profile Generator",
+      "description": "AI-powered family insurance profile creation"
+    },
+    {
+      "type": "system",
+      "name": "Content Automation System",
+      "description": "WordPress and social media automation"
+    },
+    {
+      "type": "system",
+      "name": "MCP Servers",
+      "description": "Model Context Protocol servers for automation"
+    },
+    {
+      "type": "system",
+      "name": "BMAD Process",
+      "description": "Build, Measure, Analyze, Deploy methodology"
+    },
+    {
+      "type": "process",
+      "name": "Customer Onboarding",
+      "description": "Automated customer setup and configuration"
+    },
+    {
+      "type": "process",
+      "name": "Content Generation",
+      "description": "AI-powered content creation and publishing"
+    },
+    {
+      "type": "process",
+      "name": "Quality Assurance",
+      "description": "Automated testing and validation"
+    },
+    {
+      "type": "technology",
+      "name": "n8n",
+      "description": "Workflow automation platform"
+    },
+    {
+      "type": "technology",
+      "name": "Make.com",
+      "description": "Visual automation platform"
+    },
+    {
+      "type": "technology",
+      "name": "LightRAG",
+      "description": "Knowledge graph and RAG system"
+    },
+    {
+      "type": "technology",
+      "name": "GitHub",
+      "description": "Version control and knowledge repository"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Shelly Mizrahi",
+      "to": "Smart Family Profile Generator",
+      "type": "uses"
+    },
+    {
+      "from": "Ben Ginati",
+      "to": "Content Automation System",
+      "type": "uses"
+    },
+    {
+      "from": "Smart Family Profile Generator",
+      "to": "n8n",
+      "type": "implements"
+    },
+    {
+      "from": "Smart Family Profile Generator",
+      "to": "Make.com",
+      "type": "implements"
+    },
+    {
+      "from": "Content Automation System",
+      "to": "WordPress",
+      "type": "integrates"
+    },
+    {
+      "from": "MCP Servers",
+      "to": "BMAD Process",
+      "type": "follows"
+    },
+    {
+      "from": "LightRAG",
+      "to": "GitHub",
+      "type": "syncs_with"
+    },
+    {
+      "from": "GitHub",
+      "to": "Knowledge Graph",
+      "type": "feeds"
+    }
+  ]
+}

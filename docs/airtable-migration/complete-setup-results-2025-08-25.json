@@ -1,0 +1,223 @@
+{
+  "timestamp": "2025-08-25T01:35:28.071Z",
+  "status": "completed",
+  "baseId": "appQijHhqqP4z6wGe",
+  "tables": {
+    "Leads": {
+      "id": "tblYR2UftNJ7nUl1Q",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "multilineText",
+          "id": "fldEdp7fSFY1Lwgf8"
+        }
+      ]
+    },
+    "Customers": {
+      "id": "tbl6BMipQQPJvPIWw",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldP6xVONTpHA2Ctx"
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "id": "fldeDObFgcBhMP1PY"
+        },
+        {
+          "name": "Phone",
+          "type": "phoneNumber",
+          "id": "fldQOpZkjooHiGD3M"
+        },
+        {
+          "name": "Company",
+          "type": "singleLineText",
+          "id": "fldLT5StXwRfPgapI"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldYxSdVAib2pTzyt"
+        },
+        {
+          "name": "Notes",
+          "type": "multilineText",
+          "id": "fld4PSUPsAwy5enbM"
+        }
+      ]
+    },
+    "Projects": {
+      "id": "tblNopy7xK0IUYf8E",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldFgldXF1PxDZHLB"
+        },
+        {
+          "name": "Customer",
+          "type": "singleLineText",
+          "id": "fldBKgu8SOgTaY5fm"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fld9xrwUC4W6As0VC"
+        },
+        {
+          "name": "Description",
+          "type": "multilineText",
+          "id": "fld3FhzzkYlHQur4R"
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect",
+          "id": "fldC4RjmOCokbaJi2"
+        }
+      ]
+    },
+    "Invoices": {
+      "id": "tbl3jjJxyhj5VTSeb",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldfmRZuURoJloXZF"
+        },
+        {
+          "name": "Invoice Number",
+          "type": "singleLineText",
+          "id": "flduf8HN6E882tecn"
+        },
+        {
+          "name": "Customer",
+          "type": "singleLineText",
+          "id": "fldLWSlUJNkJnCbSm"
+        },
+        {
+          "name": "Project",
+          "type": "singleLineText",
+          "id": "fldhQwzAROlV74Zba"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldzWWdm2R1wnh9KS"
+        },
+        {
+          "name": "Notes",
+          "type": "multilineText",
+          "id": "fld4Oe1I6RmQHEy9Z"
+        }
+      ]
+    },
+    "Tasks": {
+      "id": "tblUO4nQyDEXJ2jGu",
+      "fields": [
+        {
+          "name": "Name",
+          "type": "singleLineText",
+          "id": "fldsdXJOUF8BV8AbI"
+        },
+        {
+          "name": "Project",
+          "type": "singleLineText",
+          "id": "fldK4oRM4zE114lo6"
+        },
+        {
+          "name": "Assigned To",
+          "type": "singleLineText",
+          "id": "fldWJS47shWuzZm62"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "id": "fldKayjxfj4czbc9Y"
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect",
+          "id": "fldd4kquQfr6Ynwsz"
+        },
+        {
+          "name": "Description",
+          "type": "multilineText",
+          "id": "fldA7og1zy9YH1EaN"
+        }
+      ]
+    }
+  },
+  "records": {},
+  "errors": [
+    {
+      "step": "addField",
+      "table": "Customers",
+      "field": "Created Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Projects",
+      "field": "Start Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Projects",
+      "field": "End Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Projects",
+      "field": "Budget",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Invoices",
+      "field": "Amount",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Invoices",
+      "field": "Issue Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Invoices",
+      "field": "Due Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addField",
+      "table": "Tasks",
+      "field": "Due Date",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addRecords",
+      "table": "Customers",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addRecords",
+      "table": "Projects",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addRecords",
+      "table": "Invoices",
+      "error": "Request failed with status code 422"
+    },
+    {
+      "step": "addRecords",
+      "table": "Tasks",
+      "error": "Request failed with status code 422"
+    }
+  ]
+}

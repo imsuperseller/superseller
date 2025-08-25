@@ -1,0 +1,15 @@
+{
+  "name": "web",
+  "active": true,
+  "events": [
+    "push",
+    "pull_request",
+    "issues"
+  ],
+  "config": {
+    "url": "https://rensto-lightrag.onrender.com/webhook",
+    "content_type": "json",
+    "secret": "your-webhook-secret",
+    "insecure_ssl": "0"
+  }
+}

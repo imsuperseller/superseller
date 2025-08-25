@@ -11,13 +11,13 @@ class BenGinatiAgentDeployer {
             baseUrl: 'https://tax4us.app.n8n.cloud',
             apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNjUxZWNkZS04Yzc5LTRiMTktYjEzMC04NTJiY2VkYWViY2YiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NDk1MDk3fQ.pDpDBUrHJCiPh1xaaq0p9PmRoGp-i36hiR_Ld_EhtZc'
         };
-        
+
         this.wordpressConfig = {
             username: 'Shai ai',
             password: 'JNmxDaaN1X0yJ1CGRGD9Hc5S',
             siteUrl: 'https://tax4us.co.il'
         };
-        
+
         this.openaiConfig = {
             apiKey: process.env.OPENAI_API_KEY
         };
@@ -82,7 +82,7 @@ class BenGinatiAgentDeployer {
 
     async deployWordPressContentAgent() {
         console.log('📝 Deploying WordPress Content Agent...');
-        
+
         const workflow = {
             name: "WordPress Content Agent",
             active: true,
@@ -175,7 +175,7 @@ class BenGinatiAgentDeployer {
 
     async deployWordPressBlogAgent() {
         console.log('📰 Deploying WordPress Blog Agent...');
-        
+
         const workflow = {
             name: "WordPress Blog Agent",
             active: true,
@@ -250,7 +250,7 @@ class BenGinatiAgentDeployer {
 
     async deployPodcastAgent() {
         console.log('🎙️ Deploying Podcast Agent...');
-        
+
         const workflow = {
             name: "Podcast Agent",
             active: true,
@@ -325,7 +325,7 @@ class BenGinatiAgentDeployer {
 
     async deploySocialMediaAgent() {
         console.log('📱 Deploying Social Media Agent...');
-        
+
         const workflow = {
             name: "Social Media Agent",
             active: true,
@@ -441,7 +441,7 @@ class BenGinatiAgentDeployer {
         try {
             const fs = require('fs');
             const path = require('path');
-            
+
             const profilePath = path.join(__dirname, '../archived/data/customers/ben-ginati/customer-profile.json');
             const profile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
 
@@ -478,14 +478,14 @@ class BenGinatiAgentDeployer {
 // Execute the deployment
 async function main() {
     const deployer = new BenGinatiAgentDeployer();
-    
+
     try {
         await deployer.deployAllAgents();
-        
+
         console.log('\n🎯 BEN GINATI AGENT DEPLOYMENT COMPLETE');
         console.log('💰 Customer should now receive value for their $2,500 payment');
         console.log('🚀 Agents deployed to: https://tax4us.app.n8n.cloud');
-        
+
     } catch (error) {
         console.error('❌ Critical deployment failed:', error.message);
         process.exit(1);

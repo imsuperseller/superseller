@@ -1,0 +1,195 @@
+{
+  "name": "Projects In Progress Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Daily at 9:00 AM CT",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Projects",
+        "view": "🔨 In Progress",
+        "additionalOptions": {
+          "sort": [
+            {
+              "field": "last_updated",
+              "direction": "desc"
+            }
+          ]
+        }
+      },
+      "id": "airtable-get-projects",
+      "name": "Get In Progress Projects",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-projects",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-projects",
+      "name": "Check if projects exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Group projects by status\nconst projects = $input.all();\nconst grouped = {};\n\nprojects.forEach(project => {\n  const status = project.fields.status || 'Unknown';\n  if (!grouped[status]) {\n    grouped[status] = [];\n  }\n  grouped[status].push(project);\n});\n\n// Create digest HTML\nlet html = '<h2>🔨 Projects In Progress Digest</h2>';\nhtml += `<p><strong>Total active projects: ${projects.length}</strong></p>`;\n\nObject.keys(grouped).forEach(status => {\n  html += `<h3>${status} (${grouped[status].length})</h3>`;\n  html += '<ul>';\n  grouped[status].forEach(project => {\n    html += `<li><strong>${project.fields.project_name || 'Unnamed Project'}</strong>`;\n    html += `<br>📅 Due: ${project.fields.due_date || 'Not set'}`;\n    html += `<br>👤 Owner: ${project.fields.owner || 'Unassigned'}`;\n    html += `<br>💰 Budget: ${project.fields.budget || 'Not set'}`;\n    html += `<br>📝 Notes: ${project.fields.notes || 'No notes'}`;\n    html += '</li>';\n  });\n  html += '</ul>';\n});\n\n// Create Slack text\nlet slackText = `## 🔨 Projects In Progress Digest\\n\\n**Total active projects: ${projects.length}**\\n\\n`;\n\nObject.keys(grouped).forEach(status => {\n  slackText += `**${status} (${grouped[status].length})**\\n`;\n  grouped[status].forEach(project => {\n    slackText += `• **${project.fields.project_name || 'Unnamed Project'}**\\n`;\n    slackText += `  📅 Due: ${project.fields.due_date || 'Not set'}\\n`;\n    slackText += `  👤 Owner: ${project.fields.owner || 'Unassigned'}\\n`;\n    slackText += `  💰 Budget: ${project.fields.budget || 'Not set'}\\n`;\n  });\n  slackText += '\\n';\n});\n\nreturn [\n  {\n    json: {\n      html: html,\n      slackText: slackText,\n      projectCount: projects.length,\n      statusGroups: grouped\n    }\n  }\n];"
+      },
+      "id": "format-digest",
+      "name": "Format Digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "channel": "projects",
+        "text": "={{ $json.slackText }}",
+        "otherOptions": {
+          "username": "Rensto Bot",
+          "icon_emoji": ":hammer_and_wrench:"
+        }
+      },
+      "id": "slack-notify",
+      "name": "Send Slack Digest",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "toEmail": "service@rensto.com",
+        "subject": "Projects Digest - {{ $json.projectCount }} active projects",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "email-digest",
+      "name": "Email Digest",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "message": "No active projects today. ✅"
+      },
+      "id": "no-projects-message",
+      "name": "No projects message",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Daily at 9:00 AM CT": {
+      "main": [
+        [
+          {
+            "node": "Get In Progress Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get In Progress Projects": {
+      "main": [
+        [
+          {
+            "node": "Check if projects exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if projects exist": {
+      "main": [
+        [
+          {
+            "node": "Format Digest",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No projects message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Digest": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Digest",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-06T12:00:00.000Z",
+      "updatedAt": "2024-01-06T12:00:00.000Z",
+      "id": "projects-digest",
+      "name": "projects-digest"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

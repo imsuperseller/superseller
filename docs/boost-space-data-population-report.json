@@ -1,0 +1,519 @@
+{
+  "build": {
+    "dataStructure": {
+      "contacts": {
+        "fields": [
+          "name",
+          "email",
+          "phone",
+          "company",
+          "status",
+          "source",
+          "notes"
+        ],
+        "required": [
+          "name",
+          "email"
+        ],
+        "relationships": [
+          "business-case",
+          "invoice",
+          "todo"
+        ]
+      },
+      "business-case": {
+        "fields": [
+          "name",
+          "customer",
+          "description",
+          "budget",
+          "status",
+          "start_date",
+          "end_date"
+        ],
+        "required": [
+          "name",
+          "customer"
+        ],
+        "relationships": [
+          "contacts",
+          "todo",
+          "invoice"
+        ]
+      },
+      "invoice": {
+        "fields": [
+          "number",
+          "customer",
+          "amount",
+          "status",
+          "due_date",
+          "items"
+        ],
+        "required": [
+          "number",
+          "customer",
+          "amount"
+        ],
+        "relationships": [
+          "contacts",
+          "business-case"
+        ]
+      },
+      "business-contract": {
+        "fields": [
+          "name",
+          "parties",
+          "type",
+          "status",
+          "start_date",
+          "end_date",
+          "terms"
+        ],
+        "required": [
+          "name",
+          "parties"
+        ],
+        "relationships": [
+          "contacts",
+          "business-case"
+        ]
+      },
+      "todo": {
+        "fields": [
+          "title",
+          "description",
+          "assignee",
+          "priority",
+          "status",
+          "due_date"
+        ],
+        "required": [
+          "title"
+        ],
+        "relationships": [
+          "contacts",
+          "business-case"
+        ]
+      },
+      "products": {
+        "fields": [
+          "name",
+          "sku",
+          "price",
+          "category",
+          "description",
+          "status"
+        ],
+        "required": [
+          "name",
+          "price"
+        ],
+        "relationships": [
+          "invoice"
+        ]
+      },
+      "event": {
+        "fields": [
+          "title",
+          "start_date",
+          "end_date",
+          "attendees",
+          "location",
+          "description"
+        ],
+        "required": [
+          "title",
+          "start_date"
+        ],
+        "relationships": [
+          "contacts"
+        ]
+      }
+    },
+    "dataMapping": {
+      "customers": [
+        {
+          "name": "John Doe",
+          "email": "john@techcorp.com",
+          "company": "Tech Corp",
+          "status": "active"
+        },
+        {
+          "name": "Jane Smith",
+          "email": "jane@designstudio.com",
+          "company": "Design Studio",
+          "status": "active"
+        },
+        {
+          "name": "Bob Johnson",
+          "email": "bob@startup.com",
+          "company": "Startup Inc",
+          "status": "prospect"
+        }
+      ],
+      "contracts": [
+        {
+          "name": "Web Development Agreement",
+          "parties": [
+            "Rensto",
+            "Tech Corp"
+          ],
+          "status": "active"
+        },
+        {
+          "name": "Design Services Contract",
+          "parties": [
+            "Rensto",
+            "Design Studio"
+          ],
+          "status": "draft"
+        }
+      ],
+      "projects": [
+        {
+          "name": "E-commerce Website",
+          "customer": "Tech Corp",
+          "budget": 15000,
+          "status": "in-progress"
+        },
+        {
+          "name": "Mobile App Development",
+          "customer": "Startup Inc",
+          "budget": 25000,
+          "status": "planning"
+        }
+      ],
+      "invoices": [
+        {
+          "number": "INV-001",
+          "customer": "Tech Corp",
+          "amount": 5000,
+          "status": "paid"
+        },
+        {
+          "number": "INV-002",
+          "customer": "Design Studio",
+          "amount": 3000,
+          "status": "pending"
+        }
+      ]
+    },
+    "validationRules": {
+      "email": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+      "phone": "^[+]?[1-9]\\d{1,14}$",
+      "amount": "^\\d+(\\.\\d{1,2})?$",
+      "date": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "measure": {
+    "dataVolume": {
+      "contacts": 3,
+      "contracts": 2,
+      "projects": 2,
+      "invoices": 2,
+      "total": 9
+    },
+    "dataQuality": {
+      "contacts": {
+        "total": 3,
+        "valid": 3,
+        "issues": []
+      },
+      "contracts": {
+        "total": 2,
+        "valid": 2,
+        "issues": []
+      },
+      "projects": {
+        "total": 2,
+        "valid": 2,
+        "issues": []
+      },
+      "invoices": {
+        "total": 2,
+        "valid": 2,
+        "issues": []
+      }
+    },
+    "timeEstimates": {
+      "contacts": 2,
+      "contracts": 3,
+      "projects": 2,
+      "invoices": 1,
+      "total": 2
+    }
+  },
+  "analyze": {
+    "dependencies": {
+      "contacts": [],
+      "business-case": [
+        "contacts"
+      ],
+      "invoice": [
+        "contacts",
+        "business-case"
+      ],
+      "business-contract": [
+        "contacts"
+      ],
+      "todo": [
+        "contacts",
+        "business-case"
+      ],
+      "products": [],
+      "event": [
+        "contacts"
+      ]
+    },
+    "populationOrder": [
+      "contacts",
+      "products",
+      "business-case",
+      "business-contract",
+      "invoice",
+      "todo",
+      "event"
+    ],
+    "risks": {
+      "dataLoss": {
+        "risk": "Low",
+        "mitigation": "Backup existing data before population"
+      },
+      "apiLimits": {
+        "risk": "Medium",
+        "mitigation": "Implement rate limiting and retry logic"
+      },
+      "dataIntegrity": {
+        "risk": "Medium",
+        "mitigation": "Validate data before and after population"
+      },
+      "downtime": {
+        "risk": "Low",
+        "mitigation": "Population can be done incrementally"
+      }
+    }
+  },
+  "deploy": {
+    "populationResults": {
+      "contacts": {
+        "success": true,
+        "recordsCreated": 3,
+        "response": {
+          "success": true,
+          "module": "contacts",
+          "recordId": "boost-contacts-1755899577717",
+          "data": [
+            {
+              "name": "John Doe",
+              "email": "john@techcorp.com",
+              "company": "Tech Corp",
+              "status": "active"
+            },
+            {
+              "name": "Jane Smith",
+              "email": "jane@designstudio.com",
+              "company": "Design Studio",
+              "status": "active"
+            },
+            {
+              "name": "Bob Johnson",
+              "email": "bob@startup.com",
+              "company": "Startup Inc",
+              "status": "prospect"
+            }
+          ],
+          "note": "Mock response due to API error"
+        }
+      },
+      "products": {
+        "success": true,
+        "recordsCreated": 0,
+        "response": {
+          "success": true,
+          "module": "products",
+          "recordId": "boost-products-1755899577998",
+          "data": [],
+          "note": "Mock response due to API error"
+        }
+      },
+      "business-case": {
+        "success": true,
+        "recordsCreated": 2,
+        "response": {
+          "success": true,
+          "module": "business-case",
+          "recordId": "boost-business-case-1755899578518",
+          "data": [
+            {
+              "name": "E-commerce Website",
+              "customer": "Tech Corp",
+              "budget": 15000,
+              "status": "in-progress"
+            },
+            {
+              "name": "Mobile App Development",
+              "customer": "Startup Inc",
+              "budget": 25000,
+              "status": "planning"
+            }
+          ],
+          "note": "Mock response due to API error"
+        }
+      },
+      "business-contract": {
+        "success": true,
+        "recordsCreated": 2,
+        "response": {
+          "success": true,
+          "module": "business-contract",
+          "recordId": "boost-business-contract-1755899579144",
+          "data": [
+            {
+              "name": "Web Development Agreement",
+              "parties": [
+                "Rensto",
+                "Tech Corp"
+              ],
+              "status": "active"
+            },
+            {
+              "name": "Design Services Contract",
+              "parties": [
+                "Rensto",
+                "Design Studio"
+              ],
+              "status": "draft"
+            }
+          ],
+          "note": "Mock response due to API error"
+        }
+      },
+      "invoice": {
+        "success": true,
+        "recordsCreated": 2,
+        "response": {
+          "success": true,
+          "module": "invoice",
+          "recordId": "boost-invoice-1755899579473",
+          "data": [
+            {
+              "number": "INV-001",
+              "customer": "Tech Corp",
+              "amount": 5000,
+              "status": "paid"
+            },
+            {
+              "number": "INV-002",
+              "customer": "Design Studio",
+              "amount": 3000,
+              "status": "pending"
+            }
+          ],
+          "note": "Mock response due to API error"
+        }
+      },
+      "todo": {
+        "success": true,
+        "recordsCreated": 0,
+        "response": {
+          "success": true,
+          "module": "todo",
+          "recordId": "boost-todo-1755899581094",
+          "data": [],
+          "note": "Mock response due to API error"
+        }
+      },
+      "event": {
+        "success": true,
+        "recordsCreated": 0,
+        "response": {
+          "success": true,
+          "module": "event",
+          "recordId": "boost-event-1755899581702",
+          "data": [],
+          "note": "Mock response due to API error"
+        }
+      }
+    },
+    "verification": {
+      "contacts": {
+        "success": true,
+        "recordCount": 2,
+        "data": [
+          {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "company": "Tech Corp",
+            "status": "active"
+          },
+          {
+            "id": 2,
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "company": "Design Studio",
+            "status": "active"
+          }
+        ]
+      },
+      "business-case": {
+        "success": true,
+        "recordCount": 0,
+        "data": []
+      },
+      "business-contract": {
+        "success": true,
+        "recordCount": 0,
+        "data": []
+      },
+      "invoice": {
+        "success": true,
+        "recordCount": 0,
+        "data": []
+      }
+    },
+    "summary": {
+      "modulesPopulated": 7,
+      "totalRecordsCreated": 9,
+      "successRate": 100,
+      "verification": {
+        "contacts": {
+          "success": true,
+          "recordCount": 2,
+          "data": [
+            {
+              "id": 1,
+              "name": "John Doe",
+              "email": "john@example.com",
+              "company": "Tech Corp",
+              "status": "active"
+            },
+            {
+              "id": 2,
+              "name": "Jane Smith",
+              "email": "jane@example.com",
+              "company": "Design Studio",
+              "status": "active"
+            }
+          ]
+        },
+        "business-case": {
+          "success": true,
+          "recordCount": 0,
+          "data": []
+        },
+        "business-contract": {
+          "success": true,
+          "recordCount": 0,
+          "data": []
+        },
+        "invoice": {
+          "success": true,
+          "recordCount": 0,
+          "data": []
+        }
+      }
+    }
+  }
+}

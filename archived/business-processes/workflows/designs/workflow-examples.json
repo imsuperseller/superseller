@@ -1,0 +1,33 @@
+{
+  "workflow_examples": {
+    "food_ordering_app": {
+      "step1": "Extract design from food app screenshot",
+      "step2": "Generate 3 food app variations (minimalist, vibrant, functional)",
+      "step3": "Create persona variations (student, professional, senior)",
+      "step4": "Generate geographical adaptations (US, Japan, Middle East)",
+      "step5": "Infinite iteration for color and style variations"
+    },
+    "todo_list_app": {
+      "step1": "Extract design from productivity app",
+      "step2": "Generate 3 todo app approaches (simple, detailed, collaborative)",
+      "step3": "Create device variations (mobile, desktop, TV)",
+      "step4": "Generate cultural adaptations (US productivity, Japanese collaboration)",
+      "step5": "Infinite iteration for theme variations (dark, rainbow, minimal)"
+    },
+    "calculator_app": {
+      "step1": "Extract design from calculator UI",
+      "step2": "Generate 3 calculator approaches (basic, scientific, financial)",
+      "step3": "Create function variations (simple, advanced, specialized)",
+      "step4": "Generate regional adaptations (Western, Asian, Nordic)",
+      "step5": "Infinite iteration for color schemes and layouts"
+    }
+  },
+  "cursor_rule_usage": {
+    "extract_design": "Paste UI image + use extract-design.md rule",
+    "multiple_ui": "Describe UI + use multiple-ui.md rule",
+    "infinite_design": "Reference design + use infinite-design.md rule",
+    "geo_adaptation": "Reference design + use geo.md rule",
+    "persona_variation": "Reference design + use persona.md rule",
+    "device_adaptation": "Reference design + use device.md rule"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "server": {
+    "url": "https://rensto-lightrag.onrender.com",
+    "apiKey": "your-api-key-here",
+    "webhookUrl": "https://rensto-lightrag.onrender.com/webhook"
+  },
+  "github": {
+    "repository": "rensto/business-intelligence",
+    "token": "your-github-token-here",
+    "webhookSecret": "your-webhook-secret-here"
+  },
+  "knowledgeGraph": {
+    "entities": [
+      "customer",
+      "system",
+      "process",
+      "person",
+      "project",
+      "documentation",
+      "workflow",
+      "configuration"
+    ],
+    "relationships": [
+      "depends_on",
+      "implements",
+      "manages",
+      "contributes_to",
+      "uses",
+      "configures",
+      "documents"
+    ]
+  },
+  "n8n": {
+    "baseUrl": "https://rensto.app.n8n.cloud",
+    "apiKey": "your-n8n-api-key-here",
+    "webhookUrl": "https://rensto.app.n8n.cloud/webhook/lightrag-query"
+  }
+}

@@ -1,0 +1,371 @@
+{
+    "name": "Shelly's Family Profile Final Processor",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 1245356,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "WH: n8n Response Handler"
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "label": "n8n_response_handler",
+                            "data": {
+                                "editable": "true"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 1
+            },
+            "filter": {
+                "name": "Validate n8n Response",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{1.success}}",
+                            "o": "text:equal",
+                            "b": "true"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "success": "{{1.success}}",
+                "familyProfileUrl": "{{1.familyProfileUrl}}",
+                "memberProfileUrls": "{{1.memberProfileUrls}}",
+                "emailSent": "{{1.emailSent}}",
+                "readyForContact": "{{1.readyForContact}}",
+                "clientId": "{{1.clientId}}",
+                "processedAt": "{{now}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0,
+                    "name": "TL: Process n8n Response"
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "WH: n8n Response Handler - Custom webhook [1]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "surense:UpdateLead",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 5026390
+            },
+            "mapper": {
+                "id": "{{2.clientId}}",
+                "status": "profile_completed",
+                "customFields": {
+                    "family_profile_url": "{{2.familyProfileUrl}}",
+                    "member_profile_urls": "{{2.memberProfileUrls}}",
+                    "profile_completed_at": "{{2.processedAt}}",
+                    "ready_for_contact": "{{2.readyForContact}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0,
+                    "name": "SR: Update Client Status"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Shelly Surense connection (shellypensia@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "surense"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "Lead ID",
+                        "required": true
+                    },
+                    {
+                        "name": "status",
+                        "type": "text",
+                        "label": "Status"
+                    },
+                    {
+                        "name": "customFields",
+                        "type": "object",
+                        "label": "Custom Fields"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "surense:CreateActivity",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 5026390
+            },
+            "mapper": {
+                "leadId": "{{2.clientId}}",
+                "type": "profile_completion",
+                "description": "Family insurance profile completed and ready for contact",
+                "date": "{{2.processedAt}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0,
+                    "name": "SR: Log Completion Activity"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Shelly Surense connection (shellypensia@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "surense"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "leadId",
+                        "type": "text",
+                        "label": "Lead ID",
+                        "required": true
+                    },
+                    {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Activity Type",
+                        "required": true
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "date",
+                        "type": "datetime",
+                        "label": "Date"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "email:SendEmail",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 5026391
+            },
+            "mapper": {
+                "to": "shellypensia@gmail.com",
+                "subject": "Family Insurance Profile Ready - Ready for Contact",
+                "text": "Hi Shelly,\n\nFamily insurance profile has been generated and uploaded successfully!\n\n📋 Family Profile: {{2.familyProfileUrl}}\n👨‍👩‍👧‍👦 Member Profiles: {{2.memberProfileUrls}}\n\n📊 Client Details:\n- Client ID: {{2.clientId}}\n- Processed At: {{2.processedAt}}\n- Ready for Contact: {{2.readyForContact}}\n\n🎯 Ready to contact the main customer!\n\nBest regards,\nRensto Automation"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0,
+                    "name": "EM: Email to Shelly"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "Shelly Email connection (shellypensia@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "email"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:email",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "to",
+                        "type": "text",
+                        "label": "To",
+                        "required": true
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "status": "200",
+                "body": "{\n  \"success\": true,\n  \"message\": \"Family profile process completed successfully\",\n  \"client_id\": \"{{2.clientId}}\",\n  \"family_profile_url\": \"{{2.familyProfileUrl}}\",\n  \"ready_for_contact\": true,\n  \"completed_at\": \"{{2.processedAt}}\",\n  \"email_sent\": true\n}",
+                "headers": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0,
+                    "name": "WH: Final Success Response"
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "validate": {
+                            "min": 100
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        },
+                        "spec": [
+                            {
+                                "name": "key",
+                                "label": "Key",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "label": "Value",
+                                "type": "text",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": [
+            "Shelly's Family Profile Final Processor",
+            "Receives response from n8n workflow",
+            "Updates Surense with completion status",
+            "Logs activity and sends email notification to Shelly",
+            "Confirms ready for contact"
+        ]
+    }
+}
