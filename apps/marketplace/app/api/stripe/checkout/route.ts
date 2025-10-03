@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, PRODUCT_PRICES, SUBSCRIPTION_PRICES, DEPLOYMENT_PACKAGES } from '@/lib/stripe';
+import { stripe, PRODUCT_PRICES, SUBSCRIPTION_PRICES, DEPLOYMENT_PACKAGES, ProductId, SubscriptionTier, DeploymentPackage } from '@/lib/stripe';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -27,11 +27,16 @@ export async function POST(request: NextRequest) {
       customerName: session.user.name || '',
     };
 
-    // Determine pricing based on type
+    // Determine pricing based on type with strict validation
     if (type === 'product' && productId) {
-      const amount = PRODUCT_PRICES[productId as keyof typeof PRODUCT_PRICES];
-      if (!amount) {
+      // Validate product ID exists in our configuration
+      if (!(productId in PRODUCT_PRICES)) {
         return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+      }
+      
+      const amount = PRODUCT_PRICES[productId as ProductId];
+      if (amount === undefined || amount < 0) {
+        return NextResponse.json({ error: 'Invalid product pricing' }, { status: 400 });
       }
       
       metadata.productId = productId;
@@ -49,9 +54,14 @@ export async function POST(request: NextRequest) {
       
       priceId = price.id;
     } else if (type === 'subscription' && subscriptionTier) {
-      const tierPricing = SUBSCRIPTION_PRICES[subscriptionTier as keyof typeof SUBSCRIPTION_PRICES];
-      if (!tierPricing) {
+      // Validate subscription tier exists in our configuration
+      if (!(subscriptionTier in SUBSCRIPTION_PRICES)) {
         return NextResponse.json({ error: 'Invalid subscription tier' }, { status: 400 });
+      }
+      
+      const tierPricing = SUBSCRIPTION_PRICES[subscriptionTier as SubscriptionTier];
+      if (!tierPricing || tierPricing.monthly < 0) {
+        return NextResponse.json({ error: 'Invalid subscription pricing' }, { status: 400 });
       }
       
       metadata.subscriptionTier = subscriptionTier;
@@ -70,7 +80,15 @@ export async function POST(request: NextRequest) {
       
       priceId = price.id;
     } else if (type === 'deployment' && deploymentPackage) {
-      const amount = DEPLOYMENT_PACKAGES[deploymentPackage as keyof typeof DEPLOYMENT_PACKAGES];
+      // Validate deployment package exists in our configuration
+      if (!(deploymentPackage in DEPLOYMENT_PACKAGES)) {
+        return NextResponse.json({ error: 'Invalid deployment package' }, { status: 400 });
+      }
+      
+      const amount = DEPLOYMENT_PACKAGES[deploymentPackage as DeploymentPackage];
+      if (amount === undefined || amount < 0) {
+        return NextResponse.json({ error: 'Invalid deployment package pricing' }, { status: 400 });
+      }
       
       metadata.deploymentPackage = deploymentPackage;
       metadata.type = 'deployment';
@@ -116,7 +134,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create checkout session
+    // Create checkout session with server-side price validation
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ['card'],
@@ -129,12 +147,31 @@ export async function POST(request: NextRequest) {
       mode: type === 'subscription' ? 'subscription' : 'payment',
       success_url: `${process.env.NEXTAUTH_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cancel`,
-      metadata,
+      metadata: {
+        ...metadata,
+        // Add server-side validation metadata
+        serverValidated: 'true',
+        validatedAt: new Date().toISOString(),
+        userId: session.user.id || '',
+      },
       allow_promotion_codes: true,
       billing_address_collection: 'required',
       shipping_address_collection: {
         allowed_countries: ['US', 'CA', 'GB', 'AU', 'IL'],
       },
+      // Additional security measures
+      payment_intent_data: type === 'product' ? {
+        metadata: {
+          productId: productId || '',
+          validatedPrice: amount?.toString() || '0',
+        }
+      } : undefined,
+      subscription_data: type === 'subscription' ? {
+        metadata: {
+          subscriptionTier: subscriptionTier || '',
+          validatedPrice: tierPricing?.monthly.toString() || '0',
+        }
+      } : undefined,
     });
 
     return NextResponse.json({ 

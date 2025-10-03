@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { OAuthStateManager } from '@/lib/oauth-state';
+import { CredentialManager } from '@/lib/credential-manager';
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,14 +26,13 @@ export async function GET(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // In production, you would validate the state parameter against what was stored
-    // For now, we'll just ensure it exists and has a reasonable format
-    if (state.length < 16) {
-      console.error('❌ Invalid state parameter format');
+    // Validate state parameter against stored value to prevent CSRF attacks
+    if (!OAuthStateManager.validateState(state)) {
+      console.error('❌ Invalid or expired state parameter');
       return NextResponse.json({ 
         success: false, 
         error: 'invalid_state',
-        message: 'State parameter format is invalid'
+        message: 'State parameter is invalid, expired, or has been used already'
       }, { status: 400 });
     }
 
@@ -90,32 +91,23 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResponse.json();
     console.log('✅ Access token obtained successfully');
 
-    // Save credentials
+    // Save credentials securely
     const credentials = {
       accessToken: tokenData.access_token,
       refreshToken: tokenData.refresh_token,
       expiresIn: tokenData.expires_in,
       tokenType: tokenData.token_type,
       realmId: realmId,
-      clientId: process.env.QUICKBOOKS_CLIENT_ID,
-      clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET,
+      clientId: process.env.QUICKBOOKS_CLIENT_ID || '',
+      clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET || '',
       obtainedAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
     };
 
-    // Save to file system (in production, use secure storage)
-    const fs = require('fs');
-    const path = require('path');
-    const credentialsPath = path.join(process.cwd(), 'scripts', 'quickbooks-fresh-credentials.json');
-    
-    // Ensure directory exists
-    const dir = path.dirname(credentialsPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    
-    fs.writeFileSync(credentialsPath, JSON.stringify(credentials, null, 2));
-    console.log('💾 Credentials saved to scripts/quickbooks-fresh-credentials.json');
+    // Store credentials securely (replace with proper user ID in production)
+    const userId = 'default-user'; // TODO: Get from session/auth
+    await CredentialManager.storeCredentials(credentials, userId);
+    console.log('💾 Credentials stored securely');
 
     // Test the connection by getting company info
     try {

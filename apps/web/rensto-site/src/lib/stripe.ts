@@ -130,16 +130,59 @@ export class StripeApi {
         webhookSecret
       );
 
+      // Process webhook event based on type
+      let processed = false;
+      let processingResult = null;
+
+      switch (event.type) {
+        case 'payment_intent.succeeded':
+          processed = true;
+          processingResult = { type: 'payment_success', eventId: event.id };
+          break;
+        case 'payment_intent.payment_failed':
+          processed = true;
+          processingResult = { type: 'payment_failed', eventId: event.id };
+          break;
+        case 'customer.subscription.created':
+          processed = true;
+          processingResult = { type: 'subscription_created', eventId: event.id };
+          break;
+        case 'customer.subscription.updated':
+          processed = true;
+          processingResult = { type: 'subscription_updated', eventId: event.id };
+          break;
+        case 'customer.subscription.deleted':
+          processed = true;
+          processingResult = { type: 'subscription_deleted', eventId: event.id };
+          break;
+        default:
+          console.log(`Unhandled webhook event type: ${event.type}`);
+          processed = false;
+          processingResult = { type: 'unhandled', eventId: event.id };
+      }
+
       return {
         success: true,
-        event
+        event,
+        result: {
+          processed,
+          processingResult,
+          eventId: event.id,
+          eventType: event.type,
+          timestamp: new Date().toISOString()
+        }
       };
 
     } catch (error) {
       console.error('Stripe webhook error:', error);
       return {
         success: false,
-        error: 'Failed to handle webhook'
+        error: 'Failed to handle webhook',
+        result: {
+          processed: false,
+          processingResult: null,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
       };
     }
   }

@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { UserDatabase } from './database';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,17 +15,29 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Simple authentication for demo purposes
-        if (credentials.email === 'admin@rensto.com' && credentials.password === 'admin123') {
-          return {
-            id: '1',
-            email: 'admin@rensto.com',
-            name: 'Admin User',
-            role: 'admin'
-          };
-        }
+        try {
+          // Find user in database
+          const user = await UserDatabase.findUserByEmail(credentials.email);
+          if (!user) {
+            return null;
+          }
 
-        return null;
+          // Validate password
+          const isValidPassword = await UserDatabase.validatePassword(user, credentials.password);
+          if (!isValidPassword) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+          };
+        } catch (error) {
+          console.error('Authentication error:', error);
+          return null;
+        }
       }
     })
   ],

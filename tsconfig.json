@@ -6,11 +6,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "exclude": [
-      "node_modules",
-      "/Users/shaifriedman/.npm-global/bin/*"
-    ]
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules",

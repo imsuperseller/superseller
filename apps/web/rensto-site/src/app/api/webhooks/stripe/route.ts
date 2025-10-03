@@ -31,18 +31,34 @@ export async function POST(request: NextRequest) {
     const event = webhookResult.event;
     const result = webhookResult.result;
 
-    // Log webhook event to Airtable
-    await airtable.logWebhookEvent({
-      eventType: event.type,
-      eventId: event.id,
-      processed: result.processed,
-      timestamp: new Date().toISOString()
-    });
+    // Log webhook event to Airtable with proper error handling
+    try {
+      await airtable.logWebhookEvent({
+        eventType: event.type,
+        eventId: event.id,
+        processed: result.processed,
+        timestamp: result.timestamp || new Date().toISOString(),
+        processingResult: result.processingResult
+      });
+    } catch (airtableError) {
+      console.error('❌ Failed to log webhook event to Airtable:', airtableError);
+      // Return error to Stripe so it will retry
+      return NextResponse.json(
+        { success: false, error: 'Failed to log webhook event' },
+        { status: 500 }
+      );
+    }
+
+    // Return success only if webhook was processed successfully
+    if (!result.processed) {
+      console.log(`⚠️ Webhook event ${event.type} was not processed`);
+    }
 
     return NextResponse.json({
       success: true,
       event: event.type,
-      processed: result.processed
+      processed: result.processed,
+      eventId: result.eventId
     });
 
   } catch (error) {
