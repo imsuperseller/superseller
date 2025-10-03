@@ -296,3 +296,58 @@ quickbooks-*.cjs
 
 # Vercel
 .vercel
+
+# ============================================
+# 🔐 SECURITY - NEVER COMMIT THESE FILES
+# ============================================
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# Credential files
+*credentials*.json
+*secrets*.json
+*tokens*.json
+*keys*.json
+*-auth.env
+
+# API key files
+scripts/*key*.js
+scripts/*token*.js
+scripts/*secret*.js
+scripts/*credential*.js
+
+# Data files that may contain secrets
+data/comprehensive-system-analysis-report.json
+docs/TOOL_OPTIMIZATION_RECOMMENDATION.md
+scripts/setup-bidirectional-sync.js
+scripts/simple-add-notion-fields.js
+scripts/sync-workflow-templates-to-notion.js
+scripts/bmad/bmad-smart-data-population.js
+scripts/build-email-automation-system.js
+scripts/create-rensto-system-corrected.js
+scripts/document-all-rensto-implementations.js
+scripts/workflow-organization-and-migration.js
+scripts/cleanup_duplicates.js
+scripts/notion_deep_investigation.js
+webhook-fix.json
+
+# Archive directories with potential secrets
+archives/conflicting-docs/
+exports/tax4us-system/
+docs/master/
+
+# Security-related files that should not be committed
+.secret
+.password
+private_key*
+*.pem
+*.p12
+*.pfx
+*.key
+*.crt
