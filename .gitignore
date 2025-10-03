@@ -247,6 +247,7 @@ tmp/
 # ===========================
 
 # Archive directories
+archived/
 data/archived-files/
 data/backups/
 
@@ -270,4 +271,28 @@ example-*.js
 README-*.md
 package-*.json
 tsconfig-*.json
+
+# BMAD Analysis Files (completed work)
+BMAD_*.md
+*_ANALYSIS_*.md
+*_COMPLETE_*.md
+*_SUMMARY_*.md
+*_GUIDE_*.md
+*_SETUP_*.md
+*_SOLUTION_*.md
+
+# Outdated Scripts
+notion-*.js
+quickbooks-*.js
+quickbooks-*.cjs
+*airtable*.js
+*airtable*.json
+*fix*.js
+*debug*.js
+*check*.js
+*create*.js
+*populate*.js
+*update*.js
+
+# Vercel
 .vercel

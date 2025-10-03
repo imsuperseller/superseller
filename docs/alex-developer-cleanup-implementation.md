@@ -246,11 +246,9 @@ Comprehensive architecture for customer-specific portals with multi-tenant suppo
 - **Frontend**: Next.js 14 + Tailwind CSS + shadcn/ui + GSAP
 - **Backend**: Next.js API Routes + PostgreSQL + Redis
 - **Authentication**: Magic Link + JWT
-- **Hosting**: Vercel + Cloudflare
 
 ## 🔗 **URL Structure**
 - Production: https://[customer].rensto.com
-- Development: https://rensto-business-system.vercel.app/portal/[slug]
 
 ## 🎨 **Features**
 - Real-time dashboard
@@ -282,11 +280,9 @@ Comprehensive admin portal for system management and customer oversight.
 - **Frontend**: Next.js 14 + Tailwind CSS + shadcn/ui + GSAP
 - **Backend**: Next.js API Routes + PostgreSQL + Redis
 - **Authentication**: Admin-specific JWT
-- **Hosting**: Vercel + Cloudflare
 
 ## 🔗 **URL Structure**
 - Production: https://admin.rensto.com
-- Development: https://rensto-business-system.vercel.app/admin
 
 ## 🎨 **Features**
 - Customer management (CRUD)
@@ -628,3 +624,6 @@ yamllint .github/workflows/auto-sync.yml
 ---
 
 **Implementation completed successfully! All cleanup tasks executed according to BMAD method v4.33.1 with proper documentation and verification.** 🚀
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

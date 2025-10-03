@@ -1,0 +1,430 @@
+{
+  "project": "Local-IL Lead Generation Portal Deployment",
+  "customer": "local-il",
+  "subdomain": "localil.rensto.com",
+  "methodology": "BMAD v4.33.1",
+  "phases": {
+    "phase1": {
+      "name": "Environment Setup",
+      "duration": "2 hours",
+      "tasks": [
+        "Create Vercel project for local-il",
+        "Configure subdomain DNS (localil.rensto.com)",
+        "Set up environment variables",
+        "Configure Cloudflare SSL and CDN"
+      ]
+    },
+    "phase2": {
+      "name": "Application Deployment",
+      "duration": "1 hour",
+      "tasks": [
+        "Build and deploy React app to Vercel",
+        "Configure custom domain",
+        "Test SSL certificate",
+        "Verify CDN functionality"
+      ]
+    },
+    "phase3": {
+      "name": "Integration Testing",
+      "duration": "2 hours",
+      "tasks": [
+        "Test Stripe payment flow",
+        "Test QuickBooks invoice creation",
+        "Test Gemini lead generation",
+        "Test Airtable data integration"
+      ]
+    },
+    "phase4": {
+      "name": "Production Validation",
+      "duration": "1 hour",
+      "tasks": [
+        "End-to-end user journey testing",
+        "Performance optimization",
+        "Security validation",
+        "Monitoring setup"
+      ]
+    }
+  },
+  "architecture": {
+    "deploymentArchitecture": {
+      "frontend": {
+        "platform": "Vercel",
+        "framework": "React + Vite",
+        "build": "Static site generation",
+        "domain": "localil.rensto.com",
+        "ssl": "Cloudflare managed",
+        "cdn": "Cloudflare CDN"
+      },
+      "backend": {
+        "approach": "Direct API integrations",
+        "stripe": "Client-side + webhook validation",
+        "quickbooks": "Server-side API calls",
+        "gemini": "Client-side API calls",
+        "airtable": "Client-side API calls"
+      },
+      "data": {
+        "primary": "Airtable (customer records, lead orders)",
+        "secondary": "Local storage (session data)",
+        "backup": "CSV export functionality"
+      }
+    },
+    "networkArchitecture": {
+      "dns": {
+        "provider": "Cloudflare",
+        "record": "CNAME localil.rensto.com → Vercel deployment",
+        "ttl": "Auto (Cloudflare managed)",
+        "proxy": "Enabled (Orange cloud)"
+      },
+      "ssl": {
+        "provider": "Cloudflare",
+        "type": "Full SSL (Strict)",
+        "certificate": "Auto-generated and managed",
+        "hsts": "Enabled"
+      },
+      "cdn": {
+        "provider": "Cloudflare",
+        "caching": "Static assets cached",
+        "optimization": "Auto minification, compression",
+        "security": "DDoS protection, WAF"
+      }
+    },
+    "securityArchitecture": {
+      "apiKeys": {
+        "stripe": "Environment variables (Vercel)",
+        "quickbooks": "Environment variables (Vercel)",
+        "gemini": "Environment variables (Vercel)",
+        "airtable": "Environment variables (Vercel)"
+      },
+      "dataProtection": {
+        "encryption": "HTTPS everywhere",
+        "storage": "No sensitive data in localStorage",
+        "validation": "Client and server-side validation",
+        "sanitization": "Input sanitization for all forms"
+      },
+      "accessControl": {
+        "authentication": "Email-based (simulated)",
+        "authorization": "Customer-specific data access",
+        "rateLimiting": "API rate limiting",
+        "monitoring": "Error tracking and alerting"
+      }
+    },
+    "integrationArchitecture": {
+      "stripe": {
+        "flow": "Client → Stripe Checkout → Webhook → App",
+        "webhook": "Vercel serverless function",
+        "validation": "Webhook signature verification",
+        "errorHandling": "Retry logic and fallback"
+      },
+      "quickbooks": {
+        "flow": "App → QuickBooks API → Invoice creation",
+        "authentication": "OAuth 2.0 flow",
+        "data": "Customer and invoice data",
+        "errorHandling": "API error handling and retry"
+      },
+      "gemini": {
+        "flow": "App → Gemini API → Lead generation",
+        "authentication": "API key authentication",
+        "data": "Lead parameters and results",
+        "errorHandling": "Rate limiting and error recovery"
+      },
+      "airtable": {
+        "flow": "App → Airtable API → Data storage",
+        "authentication": "API key authentication",
+        "data": "Customer records, lead orders",
+        "errorHandling": "Retry logic and data validation"
+      }
+    }
+  },
+  "implementation": {
+    "deploymentScripts": {
+      "vercelDeployment": {
+        "file": "scripts/deploy-local-il-vercel.js",
+        "purpose": "Automated Vercel deployment with environment setup",
+        "features": [
+          "Environment variable validation",
+          "Build optimization",
+          "Domain configuration",
+          "SSL certificate setup"
+        ]
+      },
+      "dnsConfiguration": {
+        "file": "scripts/configure-local-il-dns.js",
+        "purpose": "Cloudflare DNS record creation and management",
+        "features": [
+          "CNAME record creation",
+          "SSL certificate provisioning",
+          "CDN configuration",
+          "Security settings"
+        ]
+      },
+      "integrationTesting": {
+        "file": "scripts/test-local-il-integrations.js",
+        "purpose": "End-to-end integration testing",
+        "features": [
+          "Stripe payment flow testing",
+          "QuickBooks API testing",
+          "Gemini API testing",
+          "Airtable integration testing"
+        ]
+      }
+    },
+    "environmentConfiguration": {
+      "vercel": {
+        "variables": [
+          "VITE_STRIPE_PUBLISHABLE_KEY",
+          "VITE_GEMINI_API_KEY",
+          "VITE_AIRTABLE_API_KEY",
+          "STRIPE_SECRET_KEY",
+          "QUICKBOOKS_CLIENT_ID",
+          "QUICKBOOKS_CLIENT_SECRET",
+          "QUICKBOOKS_REDIRECT_URI"
+        ],
+        "secrets": [
+          "STRIPE_WEBHOOK_SECRET",
+          "QUICKBOOKS_ACCESS_TOKEN",
+          "QUICKBOOKS_REFRESH_TOKEN"
+        ]
+      },
+      "cloudflare": {
+        "dns": {
+          "type": "CNAME",
+          "name": "localil",
+          "content": "cname.vercel-dns.com",
+          "proxied": true
+        },
+        "ssl": {
+          "mode": "Full (Strict)",
+          "edgeCertificates": "Universal SSL",
+          "alwaysUseHttps": true
+        }
+      }
+    },
+    "buildOptimization": {
+      "vite": {
+        "build": {
+          "target": "es2015",
+          "minify": "terser",
+          "sourcemap": false,
+          "rollupOptions": {
+            "output": {
+              "manualChunks": {
+                "vendor": [
+                  "react",
+                  "react-dom"
+                ],
+                "stripe": [
+                  "@stripe/stripe-js"
+                ],
+                "ui": [
+                  "framer-motion"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "vercel": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "installCommand": "npm install",
+        "framework": "vite"
+      }
+    },
+    "monitoringSetup": {
+      "vercel": {
+        "analytics": "Enabled",
+        "speedInsights": "Enabled",
+        "errorTracking": "Enabled"
+      },
+      "custom": {
+        "errorReporting": "Console error tracking",
+        "performance": "Core Web Vitals monitoring",
+        "uptime": "Health check endpoint"
+      }
+    }
+  },
+  "testing": {
+    "testingStrategy": {
+      "unit": {
+        "scope": "Individual components and services",
+        "tools": [
+          "Jest",
+          "React Testing Library"
+        ],
+        "coverage": "80% minimum"
+      },
+      "integration": {
+        "scope": "API integrations and data flow",
+        "tools": [
+          "Custom test scripts",
+          "API mocking"
+        ],
+        "coverage": "All integration points"
+      },
+      "e2e": {
+        "scope": "Complete user journey",
+        "tools": [
+          "Playwright",
+          "Custom test scenarios"
+        ],
+        "coverage": "Critical user paths"
+      }
+    },
+    "testScenarios": {
+      "paymentFlow": [
+        "User fills lead generation form",
+        "Price calculation displays correctly",
+        "Stripe checkout session created",
+        "Payment processed successfully",
+        "Invoice created in QuickBooks",
+        "Customer record updated in Airtable"
+      ],
+      "leadGeneration": [
+        "User submits lead parameters",
+        "Gemini API called successfully",
+        "Leads generated and formatted",
+        "Results displayed to user",
+        "CSV export functionality works",
+        "Data saved to Airtable"
+      ],
+      "dashboardAccess": [
+        "User authentication (simulated)",
+        "Dashboard loads customer data",
+        "Lead orders displayed correctly",
+        "Invoices displayed correctly",
+        "Navigation between sections works"
+      ]
+    },
+    "validationCriteria": {
+      "performance": {
+        "First Contentful Paint": "< 1.5s",
+        "Largest Contentful Paint": "< 2.5s",
+        "Cumulative Layout Shift": "< 0.1",
+        "First Input Delay": "< 100ms"
+      },
+      "functionality": {
+        "Payment Success Rate": "> 99%",
+        "Lead Generation Success": "> 95%",
+        "API Response Time": "< 3s",
+        "Error Rate": "< 1%"
+      },
+      "security": {
+        "SSL Certificate": "Valid and secure",
+        "API Key Protection": "No exposure in client code",
+        "Data Validation": "All inputs sanitized",
+        "HTTPS Enforcement": "All traffic encrypted"
+      }
+    },
+    "testingEnvironment": {
+      "staging": {
+        "url": "localil-staging.rensto.com",
+        "purpose": "Pre-production testing",
+        "data": "Test data only"
+      },
+      "production": {
+        "url": "localil.rensto.com",
+        "purpose": "Live customer access",
+        "data": "Real customer data"
+      }
+    }
+  },
+  "deployment": {
+    "deploymentPlan": {
+      "preDeployment": [
+        "Validate all environment variables",
+        "Run integration tests",
+        "Build and test locally",
+        "Prepare deployment scripts",
+        "Backup current state (if exists)"
+      ],
+      "deployment": [
+        "Create Vercel project",
+        "Configure environment variables",
+        "Deploy application",
+        "Configure custom domain",
+        "Set up SSL certificate",
+        "Configure CDN settings"
+      ],
+      "postDeployment": [
+        "Run smoke tests",
+        "Validate SSL certificate",
+        "Test all integrations",
+        "Monitor error rates",
+        "Update documentation",
+        "Notify stakeholders"
+      ]
+    },
+    "rollbackPlan": {
+      "triggers": [
+        "Critical errors in production",
+        "Payment processing failures",
+        "Security vulnerabilities",
+        "Performance degradation"
+      ],
+      "procedure": [
+        "Immediate: Disable new customer registrations",
+        "Quick: Revert to previous Vercel deployment",
+        "Full: Restore from backup if needed",
+        "Communication: Notify affected customers"
+      ]
+    },
+    "monitoringPlan": {
+      "realTime": [
+        "Vercel Analytics dashboard",
+        "Error rate monitoring",
+        "Response time tracking",
+        "SSL certificate status"
+      ],
+      "daily": [
+        "Performance metrics review",
+        "Error log analysis",
+        "Customer feedback review",
+        "Security scan results"
+      ],
+      "weekly": [
+        "Comprehensive system health check",
+        "Performance optimization review",
+        "Security audit",
+        "Backup validation"
+      ]
+    },
+    "successMetrics": {
+      "technical": {
+        "Deployment Success": "100%",
+        "SSL Certificate Valid": "Yes",
+        "All Integrations Working": "Yes",
+        "Performance Targets Met": "Yes"
+      },
+      "business": {
+        "Customer Access": "localil.rensto.com live",
+        "Payment Processing": "Stripe integration active",
+        "Lead Generation": "Gemini API functional",
+        "Invoice Creation": "QuickBooks integration active"
+      }
+    }
+  },
+  "timeline": {
+    "total": "6 hours",
+    "phases": {
+      "Environment Setup": "2 hours",
+      "Application Deployment": "1 hour",
+      "Integration Testing": "2 hours",
+      "Production Validation": "1 hour"
+    }
+  },
+  "resources": {
+    "hosting": "Vercel (Free tier)",
+    "domain": "rensto.com subdomain",
+    "ssl": "Cloudflare (Free)",
+    "cdn": "Cloudflare (Free)",
+    "monitoring": "Vercel Analytics (Free)",
+    "totalCost": "$0/month"
+  },
+  "nextSteps": [
+    "Execute Phase 1: Environment Setup",
+    "Create Vercel project and configure DNS",
+    "Deploy application and test integrations",
+    "Validate production functionality",
+    "Monitor and optimize performance"
+  ]
+}

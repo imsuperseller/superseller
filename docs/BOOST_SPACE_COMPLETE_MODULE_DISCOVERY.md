@@ -233,3 +233,6 @@
 **🎯 BOOST.SPACE IS NOW FULLY DISCOVERED AND PARTIALLY POPULATED!**
 
 **Ready for comprehensive business operations with 18 available modules and custom module creation capabilities.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

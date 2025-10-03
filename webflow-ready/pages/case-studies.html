@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies - Rensto Automation Success Stories</title>
+    <meta name="description" content="See how businesses transformed their operations with Rensto automation. Real case studies from insurance, tax services, and healthcare companies showing measurable results.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(17, 13, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--cyan);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 140px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .page-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumbs {
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item:not(:last-child)::after {
+            content: "›";
+            color: var(--gray-text);
+            margin-left: 0.5rem;
+        }
+        
+        .breadcrumb-link {
+            color: var(--light-text);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .breadcrumb-link:hover {
+            opacity: 1;
+        }
+        
+        .breadcrumb-current {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .page-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .stats-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .stats-subtitle {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 4rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--gray-text);
+        }
+        
+        /* Case Studies Section */
+        .case-studies-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .case-studies-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .case-studies-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .case-studies-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 4rem;
+        }
+        
+        .case-study {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin-bottom: 4rem;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .case-study:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .case-study-header {
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+        }
+        
+        .case-study-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .case-study-industry {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .case-study-service {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .case-study-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .case-study-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+        
+        .case-study-quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.9;
+            border-left: 4px solid rgba(255, 255, 255, 0.3);
+            padding-left: 1.5rem;
+        }
+        
+        .case-study-content {
+            padding: 3rem;
+        }
+        
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .case-study-problem,
+        .case-study-solution {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .case-study-problem {
+            border-left: 4px solid var(--red);
+        }
+        
+        .case-study-solution {
+            border-left: 4px solid var(--cyan);
+        }
+        
+        .case-study-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .case-study-problem .case-study-section-title {
+            color: var(--red);
+        }
+        
+        .case-study-solution .case-study-section-title {
+            color: var(--cyan);
+        }
+        
+        .case-study-section-content {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+        
+        .case-study-timeline {
+            margin: 3rem 0;
+        }
+        
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--cyan);
+            text-align: center;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--orange), var(--blue));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin: 0 2rem;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 4rem;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 4rem;
+        }
+        
+        .timeline-week {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        
+        .timeline-title-step {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .timeline-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        .case-study-results {
+            background: linear-gradient(135deg, rgba(95, 251, 253, 0.15), rgba(30, 174, 247, 0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .results-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .result-item {
+            text-align: center;
+        }
+        
+        .result-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-label {
+            font-size: 1rem;
+            color: var(--gray-text);
+        }
+        
+        .case-study-cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .case-study-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .case-study-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button.secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 2rem 30px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--cyan);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--cyan);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+        }
+        
+        .footer-copyright {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .case-study-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 2rem;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 4rem;
+            }
+            
+            .timeline-week {
+                left: 2rem;
+                transform: translateX(-50%);
+            }
+            
+            .timeline-content {
+                margin: 0 !important;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/marketplace">Marketplace</a></li>
+                    <li><a href="/custom-solutions">Custom Solutions</a></li>
+                    <li><a href="/subscriptions">Subscriptions</a></li>
+                    <li><a href="/ready-solutions">Ready Solutions</a></li>
+                    <li><a href="#contact" class="cta-button">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-container">
+            <nav class="breadcrumbs">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">Case Studies</span>
+                    </li>
+                </ol>
+            </nav>
+            
+            <h1 class="page-title">Real Results from Real Businesses</h1>
+            <p class="page-subtitle">See how companies transformed their operations with Rensto automation. From manual processes to intelligent workflows, discover the measurable impact of business automation.</p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <h2 class="stats-title">Our Impact in Numbers</h2>
+            <p class="stats-subtitle">Real results from businesses that chose automation over manual processes</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Businesses Transformed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">75%</div>
+                    <div class="stat-label">Average Time Savings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$2.3M</div>
+                    <div class="stat-label">Total Cost Savings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Customer Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Section -->
+    <section class="case-studies-section">
+        <div class="case-studies-container">
+            <h2 class="case-studies-title">Success Stories</h2>
+            <p class="case-studies-subtitle">From manual to automated: Real transformations that changed businesses forever</p>
+            
+            <!-- Case Study 1: Shelly's Insurance Profiling -->
+            <div class="case-study">
+                <div class="case-study-header">
+                    <div class="case-study-meta">
+                        <div class="case-study-industry">Insurance</div>
+                        <div class="case-study-service">Custom Solutions</div>
+                    </div>
+                    <h2 class="case-study-title">From Hours of Manual Profiling to Instant Automation</h2>
+                    <p class="case-study-subtitle">How Shelly transformed her insurance business from spending hours daily on client profiling to having an intelligent system that does it automatically.</p>
+                    <blockquote class="case-study-quote">
+                        "I used to spend 4-5 hours every day just on client profiling. Now my system does it automatically while I focus on what really matters - building relationships and closing deals."
+                    </blockquote>
+                </div>
+                
+                <div class="case-study-content">
+                    <div class="case-study-grid">
+                        <div class="case-study-problem">
+                            <h3 class="case-study-section-title">The Problem</h3>
+                            <div class="case-study-section-content">
+                                <p>Shelly was drowning in manual work:</p>
+                                <ul>
+                                    <li>4-5 hours daily spent on client profiling</li>
+                                    <li>Manual data entry from multiple sources</li>
+                                    <li>Repetitive risk assessment processes</li>
+                                    <li>No time for client relationship building</li>
+                                    <li>Constant stress from overwhelming workload</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="case-study-solution">
+                            <h3 class="case-study-section-title">Our Solution</h3>
+                            <div class="case-study-section-content">
+                                <p>We built an intelligent automation system:</p>
+                                <ul>
+                                    <li>AI-powered client profiling automation</li>
+                                    <li>Automated data collection from multiple sources</li>
+                                    <li>Intelligent risk assessment algorithms</li>
+                                    <li>Real-time client insights dashboard</li>
+                                    <li>Seamless CRM integration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-timeline">
+                        <h3 class="timeline-title">Implementation Journey</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-week">W1</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Discovery & Analysis</h4>
+                                    <p class="timeline-description">Analyzed Shelly's current profiling process, identified pain points, and mapped out automation opportunities.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W2</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">System Design</h4>
+                                    <p class="timeline-description">Designed intelligent profiling workflows and integrated with existing CRM and data sources.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W3</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Development & Testing</h4>
+                                    <p class="timeline-description">Built and tested the automation system with real client data to ensure accuracy and reliability.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W4</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Launch & Training</h4>
+                                    <p class="timeline-description">Deployed the system and trained Shelly on using the new automated profiling dashboard.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-results">
+                        <h3 class="results-title">The Results</h3>
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-number">4.5h</div>
+                                <div class="result-label">Hours Saved Daily</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">90%</div>
+                                <div class="result-label">Faster Profiling</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">300%</div>
+                                <div class="result-label">More Client Time</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <a href="/custom-solutions" class="case-study-button">Get Similar Results</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Case Study 2: Ben's Tax4Us Content Agents -->
+            <div class="case-study">
+                <div class="case-study-header">
+                    <div class="case-study-meta">
+                        <div class="case-study-industry">Tax Services</div>
+                        <div class="case-study-service">Custom Solutions</div>
+                    </div>
+                    <h2 class="case-study-title">From Manual Content Creation to AI-Powered Content Agents</h2>
+                    <p class="case-study-subtitle">How Ben transformed Tax4Us from manual content creation to having intelligent agents handle WordPress blogs, podcast content, and social media automatically.</p>
+                    <blockquote class="case-study-quote">
+                        "I was spending 20+ hours a week on content creation. Now my AI agents handle everything - WordPress blogs, podcast scripts, social media posts. I can focus on growing the business instead of creating content."
+                    </blockquote>
+                </div>
+                
+                <div class="case-study-content">
+                    <div class="case-study-grid">
+                        <div class="case-study-problem">
+                            <h3 class="case-study-section-title">The Problem</h3>
+                            <div class="case-study-section-content">
+                                <p>Ben was overwhelmed with content creation:</p>
+                                <ul>
+                                    <li>20+ hours weekly on content creation</li>
+                                    <li>Manual WordPress blog writing</li>
+                                    <li>Time-consuming podcast script preparation</li>
+                                    <li>Daily social media content creation</li>
+                                    <li>No time for business development</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="case-study-solution">
+                            <h3 class="case-study-section-title">Our Solution</h3>
+                            <div class="case-study-section-content">
+                                <p>We created intelligent content agents:</p>
+                                <ul>
+                                    <li>AI-powered WordPress blog writer</li>
+                                    <li>Automated podcast script generator</li>
+                                    <li>Social media content automation</li>
+                                    <li>Content calendar management</li>
+                                    <li>Multi-platform content distribution</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-timeline">
+                        <h3 class="timeline-title">Implementation Journey</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-week">W1</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Content Audit</h4>
+                                    <p class="timeline-description">Analyzed Ben's content strategy, identified automation opportunities, and designed AI agent workflows.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W2</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Agent Development</h4>
+                                    <p class="timeline-description">Built specialized AI agents for blog writing, podcast scripts, and social media content generation.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W3</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Integration & Testing</h4>
+                                    <p class="timeline-description">Integrated agents with WordPress, podcast platforms, and social media accounts. Tested content quality and automation.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W4</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Launch & Optimization</h4>
+                                    <p class="timeline-description">Deployed all content agents and optimized performance based on engagement metrics and feedback.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-results">
+                        <h3 class="results-title">The Results</h3>
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-number">20h</div>
+                                <div class="result-label">Hours Saved Weekly</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">5x</div>
+                                <div class="result-label">More Content Output</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">150%</div>
+                                <div class="result-label">Engagement Increase</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <a href="/custom-solutions" class="case-study-button">Get Similar Results</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Case Study 3: Portal's Wonder.care -->
+            <div class="case-study">
+                <div class="case-study-header">
+                    <div class="case-study-meta">
+                        <div class="case-study-industry">Healthcare</div>
+                        <div class="case-study-service">Custom Solutions</div>
+                    </div>
+                    <h2 class="case-study-title">From Spreadsheet Chaos to Intelligent Workflow Management</h2>
+                    <p class="case-study-subtitle">How Portal transformed Wonder.care from manual spreadsheet management to intelligent workflow automation, allowing employees to focus on patient care instead of data entry.</p>
+                    <blockquote class="case-study-quote">
+                        "My team was spending 60% of their time on data entry and spreadsheet management. Now they focus on what matters most - patient care. The automation handles everything seamlessly."
+                    </blockquote>
+                </div>
+                
+                <div class="case-study-content">
+                    <div class="case-study-grid">
+                        <div class="case-study-problem">
+                            <h3 class="case-study-section-title">The Problem</h3>
+                            <div class="case-study-section-content">
+                                <p>Portal's team was overwhelmed with manual processes:</p>
+                                <ul>
+                                    <li>60% of time spent on data entry</li>
+                                    <li>Complex spreadsheet management</li>
+                                    <li>Manual patient data processing</li>
+                                    <li>Time-consuming report generation</li>
+                                    <li>No time for patient care focus</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="case-study-solution">
+                            <h3 class="case-study-section-title">Our Solution</h3>
+                            <div class="case-study-section-content">
+                                <p>We built intelligent workflow automation:</p>
+                                <ul>
+                                    <li>Automated patient data processing</li>
+                                    <li>Intelligent workflow management</li>
+                                    <li>Automated report generation</li>
+                                    <li>Seamless system integrations</li>
+                                    <li>Real-time data synchronization</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-timeline">
+                        <h3 class="timeline-title">Implementation Journey</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-week">W1</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Process Analysis</h4>
+                                    <p class="timeline-description">Mapped out all manual processes, identified automation opportunities, and designed intelligent workflow solutions.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W2</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">System Integration</h4>
+                                    <p class="timeline-description">Integrated with existing healthcare systems, databases, and Monday.com for seamless workflow management.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W3</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Automation Development</h4>
+                                    <p class="timeline-description">Built intelligent automation workflows for patient data processing, report generation, and system synchronization.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-week">W4</div>
+                                <div class="timeline-content">
+                                    <h4 class="timeline-title-step">Training & Launch</h4>
+                                    <p class="timeline-description">Trained the team on new automated processes and launched the intelligent workflow system.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-results">
+                        <h3 class="results-title">The Results</h3>
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-number">60%</div>
+                                <div class="result-label">Time Reduction</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">3x</div>
+                                <div class="result-label">More Patient Focus</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-number">95%</div>
+                                <div class="result-label">Accuracy Improvement</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <a href="/custom-solutions" class="case-study-button">Get Similar Results</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform Your Business?</h2>
+            <p class="cta-subtitle">Join hundreds of businesses that have already automated their operations. Get personalized recommendations and expert guidance for your specific needs.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-button">Get Free Consultation</a>
+                <a href="/custom-solutions" class="cta-button secondary">View Custom Solutions</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="/marketplace">Marketplace</a></li>
+                        <li><a href="/custom-solutions">Custom Solutions</a></li>
+                        <li><a href="/subscriptions">Subscriptions</a></li>
+                        <li><a href="/ready-solutions">Ready Solutions</a></li>
+                        <li><a href="/api">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help-center">Help Center</a></li>
+                        <li><a href="/documentation">Documentation</a></li>
+                        <li><a href="/contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/cookie-policy">Cookie Policy</a></li>
+                        <li><a href="/security">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-logo">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </div>
+                <div class="footer-copyright">
+                    © 2024 Rensto. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate page header
+        gsap.from('.page-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.page-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        // Animate stats cards
+        gsap.utils.toArray('.stat-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate case studies
+        gsap.utils.toArray('.case-study').forEach((study, i) => {
+            gsap.from(study, {
+                scrollTrigger: {
+                    trigger: study,
+                    start: 'top 80%',
+                },
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.2,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate timeline items
+        gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Add hover effects to case studies
+        document.querySelectorAll('.case-study').forEach(study => {
+            study.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.01,
+                    ease: 'power2.out'
+                });
+            });
+            
+            study.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to buttons
+        document.querySelectorAll('.case-study-button, .cta-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: -2,
+                    ease: 'power2.out'
+                });
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

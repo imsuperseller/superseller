@@ -21,7 +21,7 @@ class QuickBooksActivator {
         name: 'get_customer_payment_data',
         description: 'Get real-time customer payment data',
         testData: {
-          customerId: 'ben-ginati',
+          customerId: 'rensto-system',
           includeInvoices: true
         }
       },
@@ -38,7 +38,7 @@ class QuickBooksActivator {
         name: 'create_payment_record',
         description: 'Create payment record in QuickBooks',
         testData: {
-          customerId: 'ben-ginati',
+          customerId: 'rensto-system',
           amount: 1500,
           paymentMethod: 'QuickBooks',
           description: 'Second payment for Tax4Us project'
@@ -48,7 +48,7 @@ class QuickBooksActivator {
         name: 'get_customer_balance_aging',
         description: 'Get customer balance and aging report',
         testData: {
-          customerId: 'ben-ginati',
+          customerId: 'rensto-system',
           includeAgingReport: true
         }
       }
@@ -67,7 +67,7 @@ class QuickBooksActivator {
 
     console.log('\n📊 Expected Real-Time Data:');
     console.log('• Ben Ginati: $3,000 paid of $5,000 (Real-time from QuickBooks)');
-    console.log('• Shelly Mizrahi: $150 paid of $250 (Real-time from QuickBooks)');
+    console.log('• Rensto System: $150 paid of $250 (Real-time from QuickBooks)');
     console.log('• Ortal Flanary: $1,800 paid of $3,000 (Real-time from QuickBooks)');
 
     console.log('\n✅ QuickBooks MCP Tools Status:');
@@ -126,7 +126,7 @@ class QuickBooksActivator {
 
     const customers = [
       {
-        id: 'ben-ginati',
+        id: 'rensto-system',
         name: 'Ben Ginati',
         project: 'Tax4Us Website & Podcast',
         totalInvoiced: 5000,
@@ -139,8 +139,8 @@ class QuickBooksActivator {
         }
       },
       {
-        id: 'shelly-mizrahi',
-        name: 'Shelly Mizrahi',
+        id: 'rensto-system',
+        name: 'Rensto System',
         project: 'Excel Family Profile Processor',
         totalInvoiced: 250,
         totalPaid: 150,

@@ -17,7 +17,10 @@
     "check-port": "node scripts/check-port.js",
     "populate-data": "node scripts/populate-sample-data.js",
     "setup": "node scripts/setup-system.js",
-    "test-mongo": "node scripts/test-mongo.js"
+    "test-mongo": "node scripts/test-mongo.js",
+    "webflow:build": "next build && webflow devlink build",
+    "webflow:deploy": "webflow devlink deploy",
+    "webflow:sync": "webflow devlink sync"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",

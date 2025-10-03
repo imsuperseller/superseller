@@ -1,0 +1,732 @@
+<!-- 📝 FORMS COLLECTION COMPONENT -->
+<!-- Contains: Contact forms, lead capture, and form variations -->
+<!-- Character Count: ~8,000 chars -->
+<!-- Business Model: Universal Automation Platform with Form Management -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Forms - Contact & Lead Capture</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Forms Header */
+        .forms-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .forms-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .forms-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .forms-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Contact Form */
+        .contact-form-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .contact-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-form-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .contact-form-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .contact-form {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--gray-text);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .form-disclaimer {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        /* Quick Contact Form */
+        .quick-contact-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .quick-contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .quick-contact-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .quick-contact-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .quick-contact-form {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .quick-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quick-form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .quick-form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+        }
+        
+        .quick-form-group input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .quick-form-group input::placeholder {
+            color: var(--gray-text);
+        }
+        
+        .quick-form-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .quick-form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Newsletter Signup */
+        .newsletter-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-subtitle {
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .newsletter-input::placeholder {
+            color: var(--gray-text);
+        }
+        
+        .newsletter-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .newsletter-disclaimer {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+        }
+        
+        /* Service Inquiry Form */
+        .service-inquiry-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .service-inquiry-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .service-inquiry-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .service-inquiry-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .service-inquiry-form {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .service-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .service-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .service-option:hover {
+            border-color: var(--cyan);
+            background: rgba(95, 251, 253, 0.1);
+        }
+        
+        .service-option.selected {
+            border-color: var(--cyan);
+            background: rgba(95, 251, 253, 0.2);
+        }
+        
+        .service-option input[type="radio"] {
+            display: none;
+        }
+        
+        .service-option-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+        }
+        
+        .service-option-description {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .service-selection {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Forms Header -->
+    <section class="forms-header">
+        <div class="forms-container">
+            <h1 class="forms-title">Get in Touch</h1>
+            <p class="forms-subtitle">Ready to transform your business with automation? Choose the best way to connect with our team.</p>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact-form-section">
+        <div class="contact-form-container">
+            <h2 class="contact-form-title">Contact Us</h2>
+            <p class="contact-form-subtitle">Send us a message and we'll get back to you within 24 hours</p>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input type="text" id="company" name="company" placeholder="Enter your company name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">Select a subject</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="marketplace">Marketplace Templates</option>
+                        <option value="custom">Custom Solutions</option>
+                        <option value="subscriptions">Lead Generation</option>
+                        <option value="ready">Ready Solutions</option>
+                        <option value="support">Technical Support</option>
+                        <option value="partnership">Partnership</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Tell us about your automation needs and goals" required></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit">Send Message</button>
+            </form>
+            <p class="form-disclaimer">We respect your privacy. Your information will never be shared with third parties.</p>
+        </div>
+    </section>
+
+    <!-- Quick Contact Form -->
+    <section class="quick-contact-section">
+        <div class="quick-contact-container">
+            <h2 class="quick-contact-title">Quick Contact</h2>
+            <p class="quick-contact-subtitle">Need a quick response? Fill out this simple form and we'll get back to you within 2 hours.</p>
+            
+            <form class="quick-contact-form" id="quickContactForm">
+                <div class="quick-form-row">
+                    <div class="quick-form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="quick-form-group">
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+                </div>
+                
+                <div class="quick-form-group">
+                    <input type="text" name="subject" placeholder="Subject" required>
+                </div>
+                
+                <div class="quick-form-group">
+                    <input type="text" name="message" placeholder="Brief message" required>
+                </div>
+                
+                <button type="submit" class="quick-form-submit">Send Quick Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2 class="newsletter-title">Stay Updated</h2>
+            <p class="newsletter-subtitle">Get the latest automation tips, templates, and industry insights delivered to your inbox.</p>
+            
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+            <p class="newsletter-disclaimer">We send 1-2 emails per week. Unsubscribe anytime.</p>
+        </div>
+    </section>
+
+    <!-- Service Inquiry Form -->
+    <section class="service-inquiry-section">
+        <div class="service-inquiry-container">
+            <h2 class="service-inquiry-title">Service Inquiry</h2>
+            <p class="service-inquiry-subtitle">Tell us about your automation needs and we'll recommend the best solution for your business.</p>
+            
+            <form class="service-inquiry-form" id="serviceInquiryForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inquiryFirstName">First Name</label>
+                        <input type="text" id="inquiryFirstName" name="firstName" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inquiryLastName">Last Name</label>
+                        <input type="text" id="inquiryLastName" name="lastName" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inquiryEmail">Email Address</label>
+                        <input type="email" id="inquiryEmail" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inquiryCompany">Company Name</label>
+                        <input type="text" id="inquiryCompany" name="company" placeholder="Enter your company name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Which service interests you most?</label>
+                    <div class="service-selection">
+                        <label class="service-option">
+                            <input type="radio" name="service" value="marketplace">
+                            <div class="service-option-title">Marketplace</div>
+                            <div class="service-option-description">Pre-built templates</div>
+                        </label>
+                        <label class="service-option">
+                            <input type="radio" name="service" value="custom">
+                            <div class="service-option-title">Custom Solutions</div>
+                            <div class="service-option-description">Tailored development</div>
+                        </label>
+                        <label class="service-option">
+                            <input type="radio" name="service" value="subscriptions">
+                            <div class="service-option-title">Subscriptions</div>
+                            <div class="service-option-description">Lead generation</div>
+                        </label>
+                        <label class="service-option">
+                            <input type="radio" name="service" value="ready">
+                            <div class="service-option-title">Ready Solutions</div>
+                            <div class="service-option-description">Industry packages</div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inquiryMessage">Tell us about your automation goals</label>
+                    <textarea id="inquiryMessage" name="message" placeholder="Describe your current challenges and what you hope to achieve with automation" required></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit">Get Personalized Recommendations</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate forms header
+        gsap.from('.forms-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.forms-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        // Animate contact form
+        gsap.from('.contact-form', {
+            scrollTrigger: {
+                trigger: '.contact-form',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate quick contact
+        gsap.from('.quick-contact-form', {
+            scrollTrigger: {
+                trigger: '.quick-contact-form',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate newsletter
+        gsap.from('.newsletter-form', {
+            scrollTrigger: {
+                trigger: '.newsletter-form',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate service inquiry
+        gsap.from('.service-inquiry-form', {
+            scrollTrigger: {
+                trigger: '.service-inquiry-form',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Service option selection
+        document.querySelectorAll('.service-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                // Check the radio button
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Form submissions
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            alert(`Thank you for your message! We'll contact you at ${data.email} within 24 hours.`);
+            this.reset();
+        });
+
+        document.getElementById('quickContactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            alert(`Quick message sent! We'll respond to ${data.email} within 2 hours.`);
+            this.reset();
+        });
+
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.newsletter-input').value;
+            alert(`Thank you for subscribing! We'll send updates to ${email}.`);
+            this.reset();
+        });
+
+        document.getElementById('serviceInquiryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const service = data.service || 'No service selected';
+            alert(`Thank you for your inquiry! We'll send personalized recommendations for ${service} to ${data.email}.`);
+            this.reset();
+            // Reset service selection
+            document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('selected'));
+        });
+
+        // Add focus effects to form inputs
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('focus', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            input.addEventListener('blur', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

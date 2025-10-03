@@ -1,0 +1,191 @@
+{
+    "name": "Tax4Us Social Media Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "tax4us-social-media-agent",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Social Media Agent Trigger",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Social Media Agent - Input Processing\nconst input = $input.first().json;\n\n// Validate required fields\nconst required = ['platform', 'content_type', 'topic'];\nconst missing = required.filter(field => !input[field]);\nif (missing.length > 0) {\n  throw new Error('Missing required fields: ' + missing.join(', '));\n}\n\n// Process social media request\nconst socialData = {\n  platform: input.platform, // 'facebook' or 'linkedin'\n  contentType: input.content_type || 'post',\n  topic: input.topic,\n  targetAudience: input.targetAudience || 'Israeli business owners',\n  language: input.language || 'hebrew',\n  tone: input.tone || 'professional',\n  hashtags: input.hashtags || [],\n  timestamp: new Date().toISOString(),\n  status: 'processing'\n};\n\nreturn {\n  json: {\n    ...socialData,\n    message: 'Social media request processed successfully',\n    nextStep: 'content_generation'\n  }\n};"
+            },
+            "id": "process-request",
+            "name": "Process Social Media Request",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create engaging social media content for Tax4Us based on the following specifications:\n\nPlatform: {{ $json.platform }}\nContent Type: {{ $json.contentType }}\nTopic: {{ $json.topic }}\nTarget Audience: {{ $json.targetAudience }}\nLanguage: {{ $json.language }}\nTone: {{ $json.tone }}\n\nRequirements:\n1. Create platform-specific content (Facebook: casual, LinkedIn: professional)\n2. Include relevant hashtags\n3. Add call-to-action for Tax4Us services\n4. Keep within platform character limits\n5. Use appropriate tone and style\n6. Include emojis where appropriate\n7. Make it engaging and shareable\n\nFormat the output with the content and suggested hashtags.",
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 1000
+                }
+            },
+            "id": "generate-content",
+            "name": "Generate Social Media Content",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create an image prompt for an AI image generation tool to create a visual for this social media post:\n\nPlatform: {{ $json.platform }}\nTopic: {{ $json.topic }}\nContent: {{ $('Generate Social Media Content').item.json.text }}\n\nRequirements:\n1. Create a professional, business-focused image\n2. Include relevant visual elements\n3. Use appropriate colors and style\n4. Make it engaging and relevant\n5. Specify aspect ratio for {{ $json.platform }}\n6. Include brand elements if applicable\n\nReturn only the image prompt text.",
+                "options": {
+                    "temperature": 0.6,
+                    "maxTokens": 300
+                }
+            },
+            "id": "generate-image-prompt",
+            "name": "Generate Image Prompt",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Platform-specific publishing logic\nconst platform = $json.platform;\nconst content = $('Generate Social Media Content').item.json.text;\nconst imagePrompt = $('Generate Image Prompt').item.json.text;\n\nlet publishResult = {\n  platform: platform,\n  content: content,\n  imagePrompt: imagePrompt,\n  status: 'ready_for_publishing',\n  timestamp: new Date().toISOString()\n};\n\n// Simulate platform-specific publishing\nif (platform === 'facebook') {\n  publishResult.publishingUrl = 'https://graph.facebook.com/v18.0/me/feed';\n  publishResult.method = 'POST';\n  publishResult.requiredFields = ['message', 'access_token'];\n} else if (platform === 'linkedin') {\n  publishResult.publishingUrl = 'https://api.linkedin.com/v2/ugcPosts';\n  publishResult.method = 'POST';\n  publishResult.requiredFields = ['author', 'lifecycleState', 'specificContent'];\n}\n\nreturn {\n  json: publishResult\n};"
+            },
+            "id": "prepare-publishing",
+            "name": "Prepare for Publishing",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Log successful social media content creation\nconst results = $input.all();\nconsole.log('Tax4Us Social Media Agent Results:');\n\nlet summary = {\n  socialRequest: $json,\n  content: $('Generate Social Media Content').item.json.text,\n  imagePrompt: $('Generate Image Prompt').item.json.text,\n  publishingInfo: $('Prepare for Publishing').item.json,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log('✅ Social media content created successfully!');\nconsole.log(`📱 Platform: ${summary.socialRequest.platform}`);\nconsole.log(`📝 Topic: ${summary.socialRequest.topic}`);\nconsole.log(`📊 Content Length: ${summary.content.length} characters`);\n\nreturn {\n  json: {\n    message: 'Social media content created successfully!',\n    summary,\n    status: 'success',\n    nextSteps: [\n      'Content is ready for publishing',\n      'Review and approve manually',\n      'Generate image using the provided prompt',\n      'Publish to ' + summary.socialRequest.platform,\n      'Ready for next social media request'\n    ]\n  }\n};"
+            },
+            "id": "log-success",
+            "name": "Log Success & Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1340,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {
+                    "responseHeaders": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "respond",
+            "name": "Respond",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1560,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Social Media Agent Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Process Social Media Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Process Social Media Request": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Social Media Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Social Media Content": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Image Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Image Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare for Publishing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare for Publishing": {
+            "main": [
+                [
+                    {
+                        "node": "Log Success & Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Log Success & Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Respond",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "workflowPerformance": {
+    "averageExecutionTime": "3.2 minutes",
+    "successRate": "94.5%",
+    "errorRate": "5.5%",
+    "mostCommonErrors": [
+      "API timeout (40%)",
+      "Authentication failure (30%)",
+      "Data validation error (20%)",
+      "Network connectivity (10%)"
+    ]
+  },
+  "clientBehavior": {
+    "mostUsedWorkflows": [
+      "Lead capture automation (35%)",
+      "Email marketing (25%)",
+      "Data processing (20%)",
+      "Calendar scheduling (20%)"
+    ],
+    "peakUsageTimes": [
+      "9:00 AM - 11:00 AM (40%)",
+      "2:00 PM - 4:00 PM (35%)",
+      "6:00 PM - 8:00 PM (25%)"
+    ]
+  },
+  "systemOptimization": {
+    "resourceUtilization": "72%",
+    "costOptimization": "15% savings possible",
+    "performanceBottlenecks": [
+      "Database queries (30%)",
+      "API calls (25%)",
+      "Workflow execution (25%)",
+      "Data processing (20%)"
+    ]
+  }
+}

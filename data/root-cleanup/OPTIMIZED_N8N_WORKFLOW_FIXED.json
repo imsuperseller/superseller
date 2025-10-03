@@ -1,0 +1,317 @@
+{
+    "name": "Working Optimized Workflow - Fixed",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "working-optimized",
+                "responseMode": "responseNode",
+                "onError": "continueRegularOutput",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "🔗 טריגר Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                240,
+                400
+            ],
+            "webhookId": "working-optimized"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "onError": "continueRegularOutput",
+                "options": {}
+            },
+            "id": "webhook-response",
+            "name": "📤 תגובת Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.5,
+            "position": [
+                1936,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// בדיקת נתונים ועיבוד מקדים\nconst inputData = $input.all();\n\nif (!inputData || inputData.length === 0) {\n  throw new Error('לא התקבלו נתונים');\n}\n\nconst webhookData = inputData[0].json;\n\n// חילוץ מערך חברי המשפחה - טיפול במבנה body מקונן\nlet familyMembers = [];\nif (Array.isArray(webhookData)) {\n  familyMembers = webhookData;\n} else if (webhookData.body && Array.isArray(webhookData.body)) {\n  familyMembers = webhookData.body;\n} else if (webhookData.body && webhookData.body.body && Array.isArray(webhookData.body.body)) {\n  familyMembers = webhookData.body.body;\n} else {\n  console.log('מבנה נתוני Webhook:', JSON.stringify(webhookData, null, 2));\n  throw new Error('מבנה נתונים לא תקין - מצופה מערך של חברי משפחה');\n}\n\n// אימות וניקוי נתונים\nconst validatedMembers = familyMembers.map((member, index) => {\n  if (!member['מספר מזהה'] || !member['לקוח'] || !member['סלולרי']) {\n    throw new Error(`חבר משפחה ${index + 1} חסרים שדות נדרשים`);\n  }\n  \n  return {\n    id: member['מספר מזהה'],\n    name: member['לקוח'],\n    age: parseInt(member['גיל']) || 0,\n    income: parseInt(member['הכנסה']) || 0,\n    phone: member['סלולרי'],\n    city: member['עיר'] || '',\n    maritalStatus: member['מצב משפחתי'] || '',\n    children: parseInt(member['ילדים']) || 0,\n    profession: member['מקצוע'] || '',\n    mortgage: parseInt(member['משכנתא']) || 0,\n    savings: parseInt(member['חסכונות']) || 0,\n    isChild: member['מצב משפחתי'] === 'ילד' || parseInt(member['גיל']) < 18\n  };\n});\n\nconsole.log(`✅ אומתו ${validatedMembers.length} חברי משפחה`);\n\nreturn validatedMembers.map(member => ({ json: member }));"
+            },
+            "id": "data-validation",
+            "name": "✅ בדיקת נתונים",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                464,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// לוגיקת קיבוץ משפחות\nconst inputData = $input.all();\n\nif (!inputData || inputData.length === 0) {\n  return [{ json: { families: [], individuals: [] } }];\n}\n\n// קיבוץ לפי מספר טלפון\nconst familyGroups = new Map();\nconst individuals = [];\n\ninputData.forEach(item => {\n  const member = item.json;\n  const phone = member.phone;\n  \n  if (!phone) {\n    individuals.push(member);\n    return;\n  }\n  \n  if (!familyGroups.has(phone)) {\n    familyGroups.set(phone, []);\n  }\n  \n  familyGroups.get(phone).push(member);\n});\n\n// עיבוד משפחות\nconst families = [];\n\nfamilyGroups.forEach((members, phone) => {\n  if (members.length === 0) return;\n  \n  const parents = members.filter(m => !m.isChild && m.age >= 18);\n  const children = members.filter(m => m.isChild || m.age < 18);\n  \n  const totalIncome = parents.reduce((sum, p) => sum + p.income, 0);\n  const totalSavings = members.reduce((sum, m) => sum + m.savings, 0);\n  const totalMortgage = parents.reduce((sum, p) => sum + p.mortgage, 0);\n  \n  const primaryParent = parents.length > 0 ? \n    parents.reduce((prev, current) => (prev.income > current.income) ? prev : current) :\n    members[0];\n  \n  const family = {\n    familyId: `family_${phone.replace(/[^0-9]/g, '')}`,\n    phone: phone,\n    primaryParent: primaryParent,\n    parents: parents,\n    children: children,\n    members: members,\n    familySize: members.length,\n    totalIncome: totalIncome,\n    totalSavings: totalSavings,\n    totalMortgage: totalMortgage,\n    city: primaryParent.city,\n    createdAt: new Date().toISOString()\n  };\n  \n  families.push(family);\n});\n\nconsole.log(`✅ נוצרו ${families.length} פרופילי משפחה ו-${individuals.length} פרופילי יחיד`);\n\nreturn [{ \n  json: { \n    families: families,\n    individuals: individuals,\n    totalFamilies: families.length,\n    totalIndividuals: individuals.length,\n    processedAt: new Date().toISOString()\n  } \n}];"
+            },
+            "id": "family-grouping",
+            "name": "👨‍👩‍👧‍👦 קיבוץ משפחות",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                688,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// יצירת תוכן אימייל\nconst inputData = $input.all()[0].json;\nconst { families, individuals, totalFamilies, totalIndividuals } = inputData;\n\nconst subject = `משפחות ביטוח - ${totalFamilies} משפחות ו-${totalIndividuals} יחידים`;\n\nlet htmlBody = `\n<!DOCTYPE html>\n<html dir=\"rtl\" lang=\"he\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>דוח משפחות ביטוח</title>\n    <style>\n        body { font-family: Arial, sans-serif; direction: rtl; margin: 20px; }\n        .header { background: #1eaef7; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }\n        .family-card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin: 15px 0; background: #f9f9f9; }\n        .family-header { background: #bf5700; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; }\n        .member { background: white; padding: 10px; margin: 5px 0; border-radius: 5px; border-right: 4px solid #fe3d51; }\n        .summary { background: #5ffbfd; padding: 15px; border-radius: 8px; margin: 20px 0; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>🏠 דוח משפחות ביטוח - מערכת Rensto</h1>\n        <p>נוצר ב: ${new Date().toLocaleDateString('he-IL')} בשעה ${new Date().toLocaleTimeString('he-IL')}</p>\n    </div>\n`;\n\nhtmlBody += `\n    <div class=\"summary\">\n        <h2>📊 סיכום כללי</h2>\n        <p><strong>סה\"כ משפחות:</strong> ${totalFamilies}</p>\n        <p><strong>סה\"כ יחידים:</strong> ${totalIndividuals}</p>\n        <p><strong>סה\"כ אנשים:</strong> ${families.reduce((sum, f) => sum + f.familySize, 0) + totalIndividuals}</p>\n    </div>\n`;\n\nfamilies.forEach((family, index) => {\n  htmlBody += `\n    <div class=\"family-card\">\n        <div class=\"family-header\">\n            <h3>👨‍👩‍👧‍👦 משפחה ${index + 1}: ${family.primaryParent.name}</h3>\n            <p>📞 ${family.phone} | 🏠 ${family.city} | 👥 ${family.familySize} בני משפחה</p>\n        </div>\n        \n        <div class=\"family-members\">\n            <h4>👨‍👩‍👧‍👦 בני המשפחה:</h4>\n`;\n  \n  family.members.forEach(member => {\n    const role = member.isChild ? '👶 ילד' : '👤 מבוגר';\n    htmlBody += `\n            <div class=\"member\">\n                <strong>${member.name}</strong> (${member.age} שנים) - ${role}<br>\n                💼 ${member.profession} | 💰 הכנסה: ₪${member.income.toLocaleString()}\n            </div>\n`;\n  });\n  \n  htmlBody += `\n        </div>\n        \n        <div class=\"family-finances\">\n            <h4>💰 מצב כלכלי:</h4>\n            <p><strong>הכנסה משפחתית:</strong> ₪${family.totalIncome.toLocaleString()}</p>\n            <p><strong>חסכונות:</strong> ₪${family.totalSavings.toLocaleString()}</p>\n            <p><strong>משכנתא:</strong> ₪${family.totalMortgage.toLocaleString()}</p>\n        </div>\n    </div>\n`;\n});\n\nhtmlBody += `\n    <div class=\"footer\" style=\"margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px; text-align: center;\">\n        <p>🤖 דוח זה נוצר אוטומטית על ידי מערכת Rensto</p>\n        <p>📧 לשאלות: support@rensto.com | 🌐 www.rensto.com</p>\n    </div>\n</body>\n</html>\n`;\n\nreturn [{\n  json: {\n    subject: subject,\n    htmlBody: htmlBody,\n    textBody: `דוח משפחות ביטוח - ${totalFamilies} משפחות ו-${totalIndividuals} יחידים`,\n    families: families,\n    individuals: individuals,\n    totalFamilies: totalFamilies,\n    totalIndividuals: totalIndividuals\n  }\n}];"
+            },
+            "id": "email-content-generator",
+            "name": "📧 יצירת תוכן אימייל",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                912,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "sendTo": "office@shellycover.co.il",
+                "subject": "={{ $json.subject }}",
+                "message": "={{ $json.htmlBody }}",
+                "options": {}
+            },
+            "id": "gmail-sender",
+            "name": "📮 שליחת אימייל ב-Gmail",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.1,
+            "position": [
+                1488,
+                400
+            ],
+            "webhookId": "4ca9eba6-4e6e-4678-870f-9a774ad17e60",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "PTMVq4wB9ZnS2w37",
+                    "name": "Gmail account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// יצירת תגובה סופית\nconst emailData = $input.all()[0].json;\nconst familyData = $('👨\u200d👩\u200d👧\u200d👦 קיבוץ משפחות').all()[0].json;\n\nconst response = {\n  success: true,\n  familyProfiles: familyData.families,\n  individualProfiles: familyData.individuals,\n  summary: {\n    totalFamilies: familyData.totalFamilies,\n    totalIndividuals: familyData.totalIndividuals,\n    totalPeople: familyData.families.reduce((sum, f) => sum + f.familySize, 0) + familyData.totalIndividuals\n  },\n  message: `פרופילי משפחה עובדו בהצלחה - ${familyData.totalFamilies} משפחות ו-${familyData.totalIndividuals} יחידים עובדו. התראה נשלחה ל-office@shellycover.co.il`,\n  generatedAt: new Date().toISOString(),\n  emailSent: true,\n  emailSubject: emailData.subject\n};\n\nconsole.log('✅ תגובה סופית נוצרה:', JSON.stringify(response, null, 2));\n\nreturn [{ json: response }];"
+            },
+            "id": "final-response",
+            "name": "📋 בניית תגובה סופית",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1712,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://hook.us2.make.com/xy5hisxpbyd4wucio7jcwvlofsjmpoqg",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ $json }}",
+                "onError": "continueRegularOutput",
+                "options": {}
+            },
+            "id": "make-webhook-1",
+            "name": "📞 קריאה ל-Make.com Data Fetcher",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1936,
+                208
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://hook.us2.make.com/iuptqtm9mcgy5nnwpw86b9kg3o6o1h8w",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ $json }}",
+                "onError": "continueRegularOutput",
+                "options": {}
+            },
+            "id": "make-webhook-2",
+            "name": "📞 קריאה ל-Make.com Action Processor",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1936,
+                592
+            ]
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "נתח את פרופיל הביטוח המשפחתי הבא וספק המלצות מקצועיות:\n\nנתוני המשפחה:\n{{ $json }}\n\nאנא נתח:\n1. רמת סיכון משפחתית\n2. צרכי ביטוח חסרים\n3. המלצות למוצרי ביטוח\n4. סיכונים פיננסיים\n5. הזדמנויות לחיסכון\n\nספק תשובה מקצועית בעברית עם המלצות קונקרטיות.",
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 2.2,
+            "position": [
+                1136,
+                400
+            ],
+            "id": "533dda51-a6b0-4586-8efb-861d7e9ec36d",
+            "name": "🤖 ניתוח פרופיל AI"
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "value": "models/gemini-1.5-pro-latest",
+                    "mode": "list",
+                    "cachedResultName": "models/gemini-1.5-pro-latest"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "role": "user",
+                            "content": "נתח את נתוני המשפחה הבאים וספק המלצות ביטוח מקצועיות בעברית:\n\n{{ $json }}\n\nאנא התמקד ב:\n1. הערכת סיכונים משפחתיים\n2. זיהוי צרכי ביטוח חסרים\n3. המלצות למוצרי ביטוח מתאימים\n4. ניתוח סיכונים פיננסיים\n5. הזדמנויות לחיסכון וניהול סיכונים\n\nספק תשובה מקצועית ומפורטת בעברית."
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+            "typeVersion": 1,
+            "position": [
+                1208,
+                624
+            ],
+            "id": "0ec3d5fe-a08d-4c81-993b-795745ba2558",
+            "name": "🧠 ניתוח Google Gemini",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "NbN9fufTqIImGzWK",
+                    "name": "Google Gemini(PaLM) Api account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "🔗 טריגר Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "✅ בדיקת נתונים",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "✅ בדיקת נתונים": {
+            "main": [
+                [
+                    {
+                        "node": "👨\u200d👩\u200d👧\u200d👦 קיבוץ משפחות",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "👨\u200d👩\u200d👧\u200d👦 קיבוץ משפחות": {
+            "main": [
+                [
+                    {
+                        "node": "📧 יצירת תוכן אימייל",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "📧 יצירת תוכן אימייל": {
+            "main": [
+                [
+                    {
+                        "node": "🤖 ניתוח פרופיל AI",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "📮 שליחת אימייל ב-Gmail": {
+            "main": [
+                [
+                    {
+                        "node": "📋 בניית תגובה סופית",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "📋 בניית תגובה סופית": {
+            "main": [
+                [
+                    {
+                        "node": "📞 קריאה ל-Make.com Data Fetcher",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "📞 קריאה ל-Make.com Action Processor",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "📤 תגובת Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🤖 ניתוח פרופיל AI": {
+            "main": [
+                [
+                    {
+                        "node": "📮 שליחת אימייל ב-Gmail",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🧠 ניתוח Google Gemini": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "🤖 ניתוח פרופיל AI",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ],
+            "main": [
+                [
+                    {
+                        "node": "🤖 ניתוח פרופיל AI",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "saveDataErrorExecution": "all",
+        "saveDataSuccessExecution": "all",
+        "saveManualExecutions": true,
+        "saveExecutionProgress": true
+    }
+}

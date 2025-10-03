@@ -1,8 +1,0 @@
-Ortal's Complete Facebook Data - ALL USERS
-
-Public URL: https://731184a480b7.ngrok-free.app
-
-This URL shows ALL scraped users with complete details.
-No mock data - 100% real Facebook scraping.
-
-Generated: 8/17/2025, 10:38:06 PM

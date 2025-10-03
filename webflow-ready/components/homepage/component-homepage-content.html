@@ -1,0 +1,393 @@
+<!-- 📚 HOMEPAGE CONTENT COMPONENT -->
+<!-- Contains: Content Sampler + FAQ Section + Guarantee Card -->
+<!-- Character Count: ~12,000 chars -->
+<!-- Business Model: Universal Automation Platform with Educational Content -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Content - Automation Resources</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Content Sampler - H-08 */
+        .content-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 2.75rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .content-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .content-body {
+            padding: 2rem;
+        }
+        
+        .content-category {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .content-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-card p {
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .content-cta {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s;
+        }
+        
+        .content-cta:hover {
+            gap: 1rem;
+        }
+        
+        /* FAQ Section - H-09 */
+        .faq-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .faq-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .guarantee-card {
+            background: linear-gradient(135deg, rgba(95, 251, 253, 0.15), rgba(30, 174, 247, 0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .guarantee-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .guarantee-card p {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+        }
+        
+        .guarantee-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .guarantee-feature {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+        
+        .guarantee-feature:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .faq-item h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .faq-item p {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .guarantee-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- H-08: Content Sampler -->
+    <section class="content-section">
+        <div class="content-container">
+            <h2 class="section-title">Automation Resources</h2>
+            <p class="section-subtitle">Learn how to transform your business with automation</p>
+            
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="content-image">📚</div>
+                    <div class="content-body">
+                        <span class="content-category">Guide</span>
+                        <h3>Complete Guide to Business Automation</h3>
+                        <p>Everything you need to know about automating your business processes and choosing the right tools.</p>
+                        <a href="/blog/automation-guide" class="content-cta">Download Free Guide →</a>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-image">💼</div>
+                    <div class="content-body">
+                        <span class="content-category">Case Study</span>
+                        <h3>How HealthcareCorp Automated Patient Management</h3>
+                        <p>See how we helped a healthcare provider save 20 hours per week and increase patient satisfaction by 45%.</p>
+                        <a href="/case-studies/healthcarecorp" class="content-cta">Get Free Template →</a>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-image">🎓</div>
+                    <div class="content-body">
+                        <span class="content-category">Tutorial</span>
+                        <h3>Building Your First n8n Workflow</h3>
+                        <p>Step-by-step video tutorial showing you how to create your first automation workflow from scratch.</p>
+                        <a href="/blog/first-n8n-workflow" class="content-cta">Get Starter Templates →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-09: FAQ & Guarantee -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <div class="guarantee-card">
+                <h3>30-Day Money-Back Guarantee</h3>
+                <p>Try Rensto risk-free. If you're not completely satisfied within 30 days, we'll refund your money—no questions asked.</p>
+                <div class="guarantee-features">
+                    <div class="guarantee-feature">Full refund if not satisfied</div>
+                    <div class="guarantee-feature">Keep all delivered templates</div>
+                    <div class="guarantee-feature">24/7 support during trial</div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h4>Do I need technical skills to use Rensto?</h4>
+                    <p>No! Our marketplace templates are designed for non-technical users. For custom solutions, our team handles all the technical implementation for you.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How long does implementation take?</h4>
+                    <p>Marketplace templates can be set up in under 1 hour. Custom solutions typically take 2-4 weeks, and ready-made niche packages are live within 30 days.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What if I need help after setup?</h4>
+                    <p>All plans include ongoing support. Marketplace users get documentation and email support, while subscription customers get priority support and dedicated account management.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I switch between different service types?</h4>
+                    <p>Absolutely! Many customers start with marketplace templates and upgrade to custom solutions as their needs grow. We make transitions seamless.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What industries do you work with?</h4>
+                    <p>We work with businesses across all industries including healthcare, finance, technology, education, retail, and professional services. Our solutions are designed to be industry-agnostic.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How do you ensure data security?</h4>
+                    <p>We use enterprise-grade security measures including encryption, secure hosting, and compliance with industry standards. Your data is always protected and never shared.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I integrate with my existing tools?</h4>
+                    <p>Yes! Our platform integrates with 400+ popular business tools including CRM systems, email platforms, project management tools, and more.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What's included in the free consultation?</h4>
+                    <p>Our free consultation includes a complete business process audit, automation opportunity assessment, custom roadmap creation, and specific recommendations for your business.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Do you offer training for my team?</h4>
+                    <p>Yes! We provide comprehensive training for your team including video tutorials, documentation, live training sessions, and ongoing support to ensure successful implementation.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What happens if I need to scale up?</h4>
+                    <p>Our platform is designed to scale with your business. You can easily upgrade your plan, add more automations, or switch to custom solutions as your needs grow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate content cards on scroll
+        gsap.utils.toArray('.content-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate guarantee card on scroll
+        gsap.from('.guarantee-card', {
+            scrollTrigger: {
+                trigger: '.guarantee-card',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate FAQ items on scroll
+        gsap.utils.toArray('.faq-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 80%',
+                },
+                duration: 0.6,
+                y: 30,
+                opacity: 0,
+                delay: i * 0.05,
+                ease: 'power3.out'
+            });
+        });
+
+        // Add hover effects to content cards
+        document.querySelectorAll('.content-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

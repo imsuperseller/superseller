@@ -1,0 +1,881 @@
+<!-- 💬 TESTIMONIALS CAROUSEL COMPONENT -->
+<!-- Contains: Customer testimonials, case study highlights, and social proof -->
+<!-- Character Count: ~10,000 chars -->
+<!-- Business Model: Universal Automation Platform with Social Proof -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Testimonials - Customer Success Stories</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Testimonials Header */
+        .testimonials-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonials-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonials-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .testimonials-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Testimonials Carousel */
+        .testimonials-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .carousel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .carousel-wrapper {
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .testimonial-slide {
+            min-width: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .testimonial-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-quote {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: var(--light-text);
+            position: relative;
+        }
+        
+        .testimonial-quote:before {
+            content: """;
+            font-size: 4rem;
+            color: var(--cyan);
+            position: absolute;
+            top: -1rem;
+            left: -2rem;
+            opacity: 0.3;
+        }
+        
+        .testimonial-quote:after {
+            content: """;
+            font-size: 4rem;
+            color: var(--cyan);
+            position: absolute;
+            bottom: -2rem;
+            right: -1rem;
+            opacity: 0.3;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .author-info {
+            text-align: left;
+        }
+        
+        .author-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--cyan);
+        }
+        
+        .author-title {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+        
+        .author-company {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .testimonial-rating {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .star {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+        
+        .testimonial-results {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .results-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .result-item {
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-label {
+            font-size: 0.8rem;
+            color: var(--gray-text);
+        }
+        
+        /* Carousel Controls */
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .carousel-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--light-text);
+            font-size: 1.2rem;
+        }
+        
+        .carousel-button:hover {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-color: var(--cyan);
+            transform: scale(1.1);
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .carousel-dot.active {
+            background: var(--cyan);
+            transform: scale(1.2);
+        }
+        
+        /* Video Testimonials */
+        .video-testimonials {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .video-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .video-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .video-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .video-testimonial {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .video-testimonial:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--dark-bg);
+            transition: all 0.3s;
+        }
+        
+        .video-thumbnail:hover .play-button {
+            background: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .video-info {
+            padding: 1.5rem;
+        }
+        
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+        }
+        
+        .video-author {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-duration {
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+        
+        /* Social Proof */
+        .social-proof {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .proof-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .proof-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .proof-subtitle {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .proof-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        
+        .proof-logo {
+            height: 40px;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .proof-item:hover .proof-logo {
+            opacity: 1;
+        }
+        
+        .proof-text {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .proof-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .testimonials-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .proof-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonial-quote {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Testimonials Header -->
+    <section class="testimonials-header">
+        <div class="testimonials-container">
+            <h1 class="testimonials-title">Customer Success Stories</h1>
+            <p class="testimonials-subtitle">See how businesses like yours are transforming their operations with Rensto automation solutions.</p>
+            
+            <div class="testimonials-stats">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10x</div>
+                    <div class="stat-label">Average ROI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Carousel -->
+    <section class="testimonials-section">
+        <div class="carousel-container">
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <p class="testimonial-quote">"Rensto transformed our entire business operations. We went from spending 20+ hours per week on manual tasks to having everything automated. The ROI was immediate and the support team is incredible."</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">SM</div>
+                                <div class="author-info">
+                                    <div class="author-name">Sarah Mitchell</div>
+                                    <div class="author-title">CEO</div>
+                                    <div class="author-company">TechFlow Solutions</div>
+                                </div>
+                            </div>
+                            <div class="testimonial-results">
+                                <div class="results-title">Results Achieved</div>
+                                <div class="results-grid">
+                                    <div class="result-item">
+                                        <div class="result-value">75%</div>
+                                        <div class="result-label">Time Saved</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">300%</div>
+                                        <div class="result-label">ROI Increase</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">$50K</div>
+                                        <div class="result-label">Cost Savings</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <p class="testimonial-quote">"The custom automation solutions from Rensto are game-changing. They understood our complex requirements and delivered exactly what we needed. Our lead generation increased by 400% in just 3 months."</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">MJ</div>
+                                <div class="author-info">
+                                    <div class="author-name">Michael Johnson</div>
+                                    <div class="author-title">Operations Director</div>
+                                    <div class="author-company">GrowthCorp</div>
+                                </div>
+                            </div>
+                            <div class="testimonial-results">
+                                <div class="results-title">Results Achieved</div>
+                                <div class="results-grid">
+                                    <div class="result-item">
+                                        <div class="result-value">400%</div>
+                                        <div class="result-label">Lead Increase</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">60%</div>
+                                        <div class="result-label">Conversion Rate</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">$100K</div>
+                                        <div class="result-label">Revenue Growth</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <p class="testimonial-quote">"The ready solutions package was perfect for our industry. We had everything up and running in 30 days, and the results speak for themselves. Highly recommend Rensto to any business looking to automate."</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">AL</div>
+                                <div class="author-info">
+                                    <div class="author-name">Alexandra Lee</div>
+                                    <div class="author-title">Founder</div>
+                                    <div class="author-company">HealthTech Innovations</div>
+                                </div>
+                            </div>
+                            <div class="testimonial-results">
+                                <div class="results-title">Results Achieved</div>
+                                <div class="results-grid">
+                                    <div class="result-item">
+                                        <div class="result-value">30</div>
+                                        <div class="result-label">Days to ROI</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">90%</div>
+                                        <div class="result-label">Process Efficiency</div>
+                                    </div>
+                                    <div class="result-item">
+                                        <div class="result-value">$25K</div>
+                                        <div class="result-label">Monthly Savings</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="carousel-controls">
+                <button class="carousel-button" id="prevButton">‹</button>
+                <button class="carousel-button" id="nextButton">›</button>
+            </div>
+            
+            <div class="carousel-dots" id="carouselDots">
+                <div class="carousel-dot active"></div>
+                <div class="carousel-dot"></div>
+                <div class="carousel-dot"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Testimonials -->
+    <section class="video-testimonials">
+        <div class="video-container">
+            <h2 class="video-title">Video Testimonials</h2>
+            <p class="video-subtitle">Hear directly from our customers about their automation success stories</p>
+            
+            <div class="video-grid">
+                <div class="video-testimonial">
+                    <div class="video-thumbnail">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">"How Rensto Saved Us 20 Hours Per Week"</div>
+                        <div class="video-author">Sarah Mitchell, CEO at TechFlow</div>
+                        <div class="video-duration">3:45</div>
+                    </div>
+                </div>
+                
+                <div class="video-testimonial">
+                    <div class="video-thumbnail">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">"400% Lead Generation Increase"</div>
+                        <div class="video-author">Michael Johnson, Operations Director</div>
+                        <div class="video-duration">4:12</div>
+                    </div>
+                </div>
+                
+                <div class="video-testimonial">
+                    <div class="video-thumbnail">
+                        <div class="play-button">▶</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">"Ready Solutions in 30 Days"</div>
+                        <div class="video-author">Alexandra Lee, Founder</div>
+                        <div class="video-duration">2:58</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="proof-container">
+            <h2 class="proof-title">Trusted by Industry Leaders</h2>
+            <p class="proof-subtitle">Join hundreds of successful businesses already using Rensto</p>
+            
+            <div class="proof-grid">
+                <div class="proof-item">
+                    <div class="proof-logo">🏢</div>
+                    <div class="proof-text">Fortune 500 Companies</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-logo">🚀</div>
+                    <div class="proof-text">Fast-Growing Startups</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-logo">🏥</div>
+                    <div class="proof-text">Healthcare Organizations</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-logo">💰</div>
+                    <div class="proof-text">Financial Services</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate testimonials header
+        gsap.from('.testimonials-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.testimonials-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.testimonials-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate testimonial slides
+        gsap.from('.testimonial-slide', {
+            scrollTrigger: {
+                trigger: '.testimonials-section',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate video testimonials
+        gsap.utils.toArray('.video-testimonial').forEach((video, i) => {
+            gsap.from(video, {
+                scrollTrigger: {
+                    trigger: video,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate social proof
+        gsap.from('.proof-grid', {
+            scrollTrigger: {
+                trigger: '.proof-grid',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Carousel functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const track = document.getElementById('carouselTrack');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+
+        function updateCarousel() {
+            const translateX = -currentSlide * 100;
+            track.style.transform = `translateX(${translateX}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateCarousel();
+        }
+
+        // Event listeners
+        nextButton.addEventListener('click', nextSlide);
+        prevButton.addEventListener('click', prevSlide);
+
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                updateCarousel();
+            });
+        });
+
+        // Auto-play carousel
+        setInterval(nextSlide, 5000);
+
+        // Video testimonial functionality
+        document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const videoTitle = this.nextElementSibling.querySelector('.video-title').textContent;
+                alert(`Playing video: "${videoTitle}". This would open a video player or modal.`);
+            });
+        });
+
+        // Add hover effects to video testimonials
+        document.querySelectorAll('.video-testimonial').forEach(video => {
+            video.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            video.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to social proof items
+        document.querySelectorAll('.proof-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: -5,
+                    ease: 'power2.out'
+                });
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

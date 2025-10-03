@@ -1,0 +1,807 @@
+<!-- 📚 RESOURCES COMPONENT -->
+<!-- Contains: Resource cards, downloads, and content management -->
+<!-- Character Count: ~8,000 chars -->
+<!-- Business Model: Content marketing and lead generation resources -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Resources - Guides, Templates & Downloads</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Resources Header */
+        .resources-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .resources-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .resources-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .resources-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .resources-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Category Filter */
+        .category-filter {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .filter-button:hover,
+        .filter-button.active {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+        
+        /* Resources Grid */
+        .resources-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .resources-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            border-color: var(--cyan);
+        }
+        
+        .resource-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .resource-type {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .resource-content {
+            padding: 2rem;
+        }
+        
+        .resource-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--cyan);
+        }
+        
+        .resource-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .resource-downloads {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .resource-size {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .resource-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .resource-tag {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            color: var(--cyan);
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .resource-button {
+            flex: 1;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .resource-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .resource-button-secondary {
+            background: transparent;
+            border: 2px solid var(--blue);
+            color: var(--blue);
+        }
+        
+        .resource-button-secondary:hover {
+            background: var(--blue);
+            color: white;
+        }
+        
+        /* Featured Resources */
+        .featured-resources {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .featured-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+        
+        .featured-resource {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .featured-resource h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .featured-resource p {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        
+        .featured-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .featured-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .featured-features li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        .featured-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .featured-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Newsletter Signup */
+        .newsletter-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .newsletter-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .newsletter-button {
+            background: var(--dark-bg);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .resources-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Resources Header -->
+    <section class="resources-header">
+        <div class="resources-container">
+            <h1 class="resources-title">Resources & Downloads</h1>
+            <p class="resources-subtitle">Free guides, templates, and tools to help you succeed with automation. Download our latest resources and transform your business.</p>
+            
+            <div class="resources-stats">
+                <div class="stat-card">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label">Free Guides</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Templates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Downloads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">User Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="category-filter">
+        <div class="filter-container">
+            <div class="filter-grid">
+                <button class="filter-button active" data-category="all">All Resources</button>
+                <button class="filter-button" data-category="guides">Guides</button>
+                <button class="filter-button" data-category="templates">Templates</button>
+                <button class="filter-button" data-category="tools">Tools</button>
+                <button class="filter-button" data-category="whitepapers">Whitepapers</button>
+                <button class="filter-button" data-category="webinars">Webinars</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Grid -->
+    <section class="resources-section">
+        <div class="resources-grid">
+            <!-- Resource 1 -->
+            <div class="resource-card" data-category="guides">
+                <div class="resource-image">
+                    <div class="resource-type">Guide</div>
+                    📚
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Complete Guide to Business Automation</h3>
+                    <p class="resource-description">Everything you need to know about automating your business processes, from strategy to implementation.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 2,500 downloads</div>
+                        <div class="resource-size">📄 45 pages</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">Automation</span>
+                        <span class="resource-tag">Strategy</span>
+                        <span class="resource-tag">Beginner</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource 2 -->
+            <div class="resource-card" data-category="templates">
+                <div class="resource-image">
+                    <div class="resource-type">Template</div>
+                    📋
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">n8n Workflow Templates</h3>
+                    <p class="resource-description">Ready-to-use n8n workflow templates for common business processes and integrations.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 1,800 downloads</div>
+                        <div class="resource-size">📄 12 templates</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">n8n</span>
+                        <span class="resource-tag">Templates</span>
+                        <span class="resource-tag">Workflows</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource 3 -->
+            <div class="resource-card" data-category="tools">
+                <div class="resource-image">
+                    <div class="resource-type">Tool</div>
+                    🛠️
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Automation ROI Calculator</h3>
+                    <p class="resource-description">Calculate the potential ROI of your automation projects with our interactive calculator tool.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 3,200 downloads</div>
+                        <div class="resource-size">📄 Excel Tool</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">ROI</span>
+                        <span class="resource-tag">Calculator</span>
+                        <span class="resource-tag">Business</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource 4 -->
+            <div class="resource-card" data-category="whitepapers">
+                <div class="resource-image">
+                    <div class="resource-type">Whitepaper</div>
+                    📊
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">AI in Business Automation</h3>
+                    <p class="resource-description">Comprehensive research on AI applications in business automation and future trends.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 1,500 downloads</div>
+                        <div class="resource-size">📄 28 pages</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">AI</span>
+                        <span class="resource-tag">Research</span>
+                        <span class="resource-tag">Trends</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource 5 -->
+            <div class="resource-card" data-category="webinars">
+                <div class="resource-image">
+                    <div class="resource-type">Webinar</div>
+                    🎥
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Automation Masterclass</h3>
+                    <p class="resource-description">Recorded webinar covering advanced automation strategies and best practices for business growth.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 2,100 downloads</div>
+                        <div class="resource-size">📄 60 min video</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">Video</span>
+                        <span class="resource-tag">Masterclass</span>
+                        <span class="resource-tag">Advanced</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource 6 -->
+            <div class="resource-card" data-category="guides">
+                <div class="resource-image">
+                    <div class="resource-type">Guide</div>
+                    📖
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">CRM Integration Guide</h3>
+                    <p class="resource-description">Step-by-step guide to integrating automation with popular CRM systems like Salesforce and HubSpot.</p>
+                    <div class="resource-meta">
+                        <div class="resource-downloads">📥 1,900 downloads</div>
+                        <div class="resource-size">📄 32 pages</div>
+                    </div>
+                    <div class="resource-tags">
+                        <span class="resource-tag">CRM</span>
+                        <span class="resource-tag">Integration</span>
+                        <span class="resource-tag">Salesforce</span>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="resource-button">Download Free</button>
+                        <button class="resource-button resource-button-secondary">Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Resources -->
+    <section class="featured-resources">
+        <div class="featured-container">
+            <h2 class="section-title">Featured Resources</h2>
+            <p class="section-subtitle">Our most popular and valuable resources for automation success</p>
+            
+            <div class="featured-grid">
+                <div class="featured-resource">
+                    <h3>Automation Success Playbook</h3>
+                    <p>Our comprehensive playbook covers everything from planning your first automation to scaling across your entire organization. Used by 500+ successful businesses.</p>
+                    <ul class="featured-features">
+                        <li>Step-by-step implementation guide</li>
+                        <li>ROI calculation templates</li>
+                        <li>Common pitfalls and how to avoid them</li>
+                        <li>Scaling strategies for growth</li>
+                        <li>Case studies and examples</li>
+                    </ul>
+                    <button class="featured-button">Get Free Playbook</button>
+                </div>
+                
+                <div class="featured-resource">
+                    <h3>n8n Template Library</h3>
+                    <p>Access our complete library of 50+ professionally designed n8n workflow templates. Ready to use and customize for your specific business needs.</p>
+                    <ul class="featured-features">
+                        <li>50+ ready-to-use templates</li>
+                        <li>Industry-specific workflows</li>
+                        <li>Professional documentation</li>
+                        <li>Regular updates and new templates</li>
+                        <li>Community support and examples</li>
+                    </ul>
+                    <button class="featured-button">Access Template Library</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2 class="newsletter-title">Get New Resources Weekly</h2>
+            <p class="newsletter-subtitle">Subscribe to receive our latest guides, templates, and automation insights delivered to your inbox.</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate resources header
+        gsap.from('.resources-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.resources-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.resources-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate resource cards
+        gsap.utils.toArray('.resource-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate featured resources
+        gsap.from('.featured-resource', {
+            scrollTrigger: {
+                trigger: '.featured-resource',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Category filtering
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                filterResources(category);
+            });
+        });
+
+        function filterResources(category) {
+            const resources = document.querySelectorAll('.resource-card');
+            
+            resources.forEach(resource => {
+                if (category === 'all' || resource.getAttribute('data-category') === category) {
+                    resource.style.display = 'block';
+                    gsap.from(resource, {
+                        duration: 0.5,
+                        y: 30,
+                        opacity: 0,
+                        ease: 'power3.out'
+                    });
+                } else {
+                    resource.style.display = 'none';
+                }
+            });
+        }
+
+        // Add hover effects to resource cards
+        document.querySelectorAll('.resource-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Resource button functionality
+        document.querySelectorAll('.resource-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const resource = this.closest('.resource-card')?.querySelector('.resource-title')?.textContent || 
+                               this.closest('.featured-resource')?.querySelector('h3')?.textContent;
+                const action = this.textContent;
+                alert(`${action}: "${resource}". This would download or preview the resource.`);
+            });
+        });
+
+        // Newsletter form handling
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.newsletter-input').value;
+            alert(`Thank you for subscribing! We'll send new resources to ${email}`);
+            this.reset();
+        });
+    </script>
+</body>
+</html>

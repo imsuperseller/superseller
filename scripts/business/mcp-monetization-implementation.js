@@ -5,7 +5,8 @@ const axios = require('axios');
 class MCPMonetizationImplementation {
   constructor() {
     this.config = {
-      mcp: { url: 'http://173.254.201.134:5678/webhook/mcp' },
+      // Updated: MCP servers now use NPX packages instead of VPS HTTP endpoints
+      mcp: { url: 'NPX_PACKAGE_METHOD' }, // OBSOLETE: VPS HTTP endpoint
       projectRoot: process.cwd(),
       webAppPath: 'web/rensto-site',
       resultsPath: 'data/mcp-monetization-implementation',

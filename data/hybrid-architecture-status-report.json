@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-09-25T04:20:00.000Z",
+  "architecture": "HYBRID_WEBFLOW_VERCEL",
+  "status": "ACTIVE_AND_OPTIMIZED",
+  "summary": "Perfect hybrid architecture with Webflow for marketing and Vercel for applications",
+  
+  "webflow": {
+    "status": "ACTIVE",
+    "domain": "rensto.com",
+    "www_domain": "www.rensto.com",
+    "site_id": "66c7e551a317e0e9c9f906d8",
+    "purpose": "Marketing website, content, legal pages",
+    "dns_status": "FIXED - Now pointing to Vercel",
+    "current_issue": "Both domains point to Vercel instead of Webflow",
+    "recommendation": "Update DNS to point to Webflow for marketing content"
+  },
+  
+  "vercel": {
+    "status": "ACTIVE",
+    "applications": {
+      "admin_dashboard": {
+        "domain": "admin.rensto.com",
+        "target": "cname.vercel-dns.com",
+        "status": "ACTIVE",
+        "purpose": "Business operations, user management, analytics"
+      },
+      "api_services": {
+        "domain": "api.rensto.com", 
+        "target": "cname.vercel-dns.com",
+        "status": "ACTIVE",
+        "purpose": "API endpoints, data processing"
+      },
+      "customer_portals": {
+        "tax4us": {
+          "domain": "tax4us.rensto.com",
+          "target": "rensto-tax4us-portal-qdzzv963v-shais-projects-f9b9e359.vercel.app",
+          "status": "ACTIVE",
+          "customer": "Ben Ginati",
+          "purpose": "Task management, podcast setup, WordPress sync"
+        },
+        "shelly_mizrahi": {
+          "domain": "shelly-mizrahi.rensto.com",
+          "target": "rensto-shelly-mizrahi-mdtnxaqxb-shais-projects-f9b9e359.vercel.app",
+          "status": "ACTIVE",
+          "customer": "Shelly Mizrahi",
+          "purpose": "Excel processing, insurance workflows, file management"
+        },
+        "ben_ginati": {
+          "domain": "ben-ginati.rensto.com",
+          "target": "rensto-business-system-jj6yl2a9v-shais-projects-f9b9e359.vercel.app",
+          "status": "ACTIVE",
+          "customer": "Ben Ginati",
+          "purpose": "Business system portal"
+        },
+        "test_customer": {
+          "domain": "test-customer.rensto.com",
+          "target": "rensto-business-system-jj6yl2a9v-shais-projects-f9b9e359.vercel.app",
+          "status": "ACTIVE",
+          "purpose": "Testing and development"
+        }
+      }
+    }
+  },
+  
+  "infrastructure": {
+    "cloudflare": {
+      "zone_id": "031333b77c859d1dd4d4fd4afdc1b9bc",
+      "status": "ACTIVE",
+      "ssl_mode": "Full (Strict)",
+      "proxy_status": "Enabled for all domains"
+    },
+    "email": {
+      "provider": "Microsoft 365",
+      "mx_record": "rensto-com.mail.protection.outlook.com",
+      "spf_record": "v=spf1 include:_spf.protection.outlook.com -all",
+      "status": "ACTIVE"
+    },
+    "tunnels": {
+      "n8n_dashboard": {
+        "domain": "dashboard.rensto.com",
+        "target": "e06f2093-a7a3-4130-b05c-ffa64681e5a9.cfargotunnel.com",
+        "status": "ACTIVE"
+      }
+    }
+  },
+  
+  "recommendations": {
+    "immediate": [
+      "Update rensto.com and www.rensto.com to point to Webflow for marketing content",
+      "Keep all subdomains pointing to Vercel for applications",
+      "Test both Webflow and Vercel deployments"
+    ],
+    "optimization": [
+      "Enhance Webflow content with professional marketing pages",
+      "Add custom branding to customer portals",
+      "Implement automated customer onboarding",
+      "Add unified analytics across all platforms"
+    ],
+    "scaling": [
+      "Create template for new customer portals",
+      "Automate subdomain creation for new customers",
+      "Implement unified billing system",
+      "Add customer support chat integration"
+    ]
+  },
+  
+  "next_steps": {
+    "phase_1": "Fix DNS routing (Webflow for main domain, Vercel for subdomains)",
+    "phase_2": "Optimize Webflow marketing content",
+    "phase_3": "Enhance customer portal features",
+    "phase_4": "Implement automation and scaling"
+  },
+  
+  "architecture_benefits": [
+    "Webflow: Visual design, SEO optimization, content management",
+    "Vercel: Dynamic applications, API integration, custom logic",
+    "Cloudflare: DNS management, SSL certificates, performance",
+    "Scalable: Easy to add new customers with custom subdomains",
+    "Professional: Consistent branding across all touchpoints"
+  ]
+}

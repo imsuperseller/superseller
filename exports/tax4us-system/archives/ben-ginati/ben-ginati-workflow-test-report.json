@@ -1,0 +1,388 @@
+{
+  "timestamp": "2025-08-21T14:45:56.198Z",
+  "summary": {
+    "totalTests": 67,
+    "passedTests": 67,
+    "failedTests": 0,
+    "successRate": 100
+  },
+  "details": [
+    {
+      "test": "Valid JSON structure",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has workflow name",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has nodes array",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has webhook configuration",
+      "passed": "ben-wordpress-content",
+      "details": ""
+    },
+    {
+      "test": "Has node connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has OpenAI integration",
+      "passed": "Generate SEO-optimized WordPress content for a tax services website. Topic: {{ $json.topic }}. Include meta description, keywords, and structured content. Format as JSON with title, content, meta_description, keywords, and seo_score.",
+      "details": ""
+    },
+    {
+      "test": "Has response configuration",
+      "passed": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"WordPress content published successfully\",\n  \"data\": {\n    \"post_id\": \"{{ $json.id }}\",\n    \"title\": \"{{ $json.title }}\",\n    \"url\": \"{{ $json.link }}\",\n    \"seo_score\": \"{{ $json.seo_score }}\",\n    \"published_at\": \"{{ $json.date }}\"\n  }\n}"
+      },
+      "details": ""
+    },
+    {
+      "test": "Webhook has connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has valid prompt",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has model specified",
+      "passed": "gpt-4",
+      "details": ""
+    },
+    {
+      "test": "Has WordPress integration",
+      "passed": {
+        "operation": "create",
+        "resource": "post",
+        "title": "={{ $json.title }}",
+        "content": "={{ $json.content }}",
+        "status": "publish",
+        "additionalFields": {
+          "meta": {
+            "description": "={{ $json.meta_description }}",
+            "keywords": "={{ $json.keywords }}"
+          }
+        }
+      },
+      "details": ""
+    },
+    {
+      "test": "Has error handling",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Webhook accepts payload",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "WordPress response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI API key available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "WordPress URL available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Valid JSON structure",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has workflow name",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has nodes array",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has webhook configuration",
+      "passed": "ben-wordpress-blog",
+      "details": ""
+    },
+    {
+      "test": "Has node connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has OpenAI integration",
+      "passed": "Research trending tax topics for blog posts. Focus on current tax laws, deductions, and financial planning. Generate 5 blog post ideas with titles, outlines, and target keywords. Format as JSON array with title, outline, keywords, and estimated_read_time.",
+      "details": ""
+    },
+    {
+      "test": "Has response configuration",
+      "passed": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Blog post published successfully\",\n  \"data\": {\n    \"post_id\": \"{{ $json.id }}\",\n    \"title\": \"{{ $json.title }}\",\n    \"url\": \"{{ $json.link }}\",\n    \"status\": \"published\",\n    \"published_at\": \"{{ $json.date }}\"\n  }\n}"
+      },
+      "details": ""
+    },
+    {
+      "test": "Webhook has connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has valid prompt",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has model specified",
+      "passed": "gpt-4",
+      "details": ""
+    },
+    {
+      "test": "Has WordPress integration",
+      "passed": {
+        "operation": "create",
+        "resource": "post",
+        "title": "={{ $json.title }}",
+        "content": "={{ $json.content }}",
+        "status": "publish",
+        "additionalFields": {
+          "categories": [
+            "Tax Services",
+            "Financial Planning"
+          ],
+          "tags": "={{ $json.keywords.split(',') }}",
+          "meta": {
+            "description": "={{ $json.meta_description }}",
+            "keywords": "={{ $json.keywords }}"
+          },
+          "featured_media": "={{ $json.featured_image_suggestion }}"
+        }
+      },
+      "details": ""
+    },
+    {
+      "test": "Has error handling",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Webhook accepts payload",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "WordPress response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI API key available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "WordPress URL available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Valid JSON structure",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has workflow name",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has nodes array",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has webhook configuration",
+      "passed": "ben-podcast",
+      "details": ""
+    },
+    {
+      "test": "Has node connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has OpenAI integration",
+      "passed": "Research market and competitors for fresh podcast content in the tax services industry. Focus on current tax laws, financial planning tips, and business insights. Generate 3 episode ideas with titles, outlines, and target audience. Format as JSON array with title, outline, target_audience, estimated_duration, and key_points.",
+      "details": ""
+    },
+    {
+      "test": "Has response configuration",
+      "passed": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Podcast episode created and uploaded successfully\",\n  \"data\": {\n    \"episode_title\": \"{{ $json.title }}\",\n    \"episode_number\": \"{{ $json.episode_number }}\",\n    \"duration\": \"{{ $json.estimated_duration }}\",\n    \"audio_file\": \"{{ $json.audio_file_url }}\",\n    \"platforms\": [\"Captivate\", \"Spotify\", \"Apple Podcasts\"],\n    \"created_at\": \"{{ new Date().toISOString() }}\"\n  }\n}"
+      },
+      "details": ""
+    },
+    {
+      "test": "Webhook has connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has valid prompt",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has model specified",
+      "passed": "gpt-4",
+      "details": ""
+    },
+    {
+      "test": "Has error handling",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Webhook accepts payload",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI API key available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Valid JSON structure",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has workflow name",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has nodes array",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has webhook configuration",
+      "passed": "ben-social-media",
+      "details": ""
+    },
+    {
+      "test": "Has node connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Has OpenAI integration",
+      "passed": "Generate engaging social media content for a tax services business. Platform: {{ $json.platform }}. Topic: {{ $json.topic }}. Include hashtags, call-to-action, and platform-specific formatting. Format as JSON with content, hashtags, image_suggestion, posting_time, and engagement_tips.",
+      "details": ""
+    },
+    {
+      "test": "Has response configuration",
+      "passed": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Social media content posted successfully\",\n  \"data\": {\n    \"platform\": \"{{ $json.platform }}\",\n    \"content\": \"{{ $json.content }}\",\n    \"post_id\": \"{{ $json.id }}\",\n    \"posted_at\": \"{{ $json.created_time }}\",\n    \"engagement_tips\": \"{{ $json.engagement_tips }}\"\n  }\n}"
+      },
+      "details": ""
+    },
+    {
+      "test": "Webhook has connections",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has valid prompt",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI has model specified",
+      "passed": "gpt-4",
+      "details": ""
+    },
+    {
+      "test": "Has error handling",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Webhook accepts payload",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Response format valid",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "OpenAI API key available",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "test": "Facebook credentials available",
+      "passed": true,
+      "details": ""
+    }
+  ]
+}

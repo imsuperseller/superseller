@@ -1,0 +1,70 @@
+{
+  "integration": {
+    "type": "bidirectional",
+    "frequency": "real-time",
+    "conflictResolution": "notion_priority",
+    "status": "configured"
+  },
+  "airtable": {
+    "bases": [
+      {
+        "id": "app4nJpP1ytGukXQT",
+        "name": "Core Business Operations"
+      },
+      {
+        "id": "app6saCaH88uK3kCO",
+        "name": "Operations & Automation"
+      },
+      {
+        "id": "app8tbCaH88uK3kCO",
+        "name": "Rensto Client Operations"
+      }
+    ],
+    "tables": {
+      "companies": "tbl1roDiTjOCU3wiz",
+      "contacts": "tblST9B2hqzDWwpdy",
+      "progressTracking": "tblcMWjm9AMG8LmQN"
+    },
+    "fields": {
+      "primary": "RGID",
+      "sync": [
+        "Name",
+        "Status",
+        "Last Updated",
+        "Created By"
+      ]
+    }
+  },
+  "notion": {
+    "databases": [
+      {
+        "id": "d19df0fe-8284-448a-8ea1-963d2031b9c6",
+        "name": "Rensto Business References",
+        "syncFields": [
+          "Name",
+          "Type",
+          "Description",
+          "Customer",
+          "Status",
+          "Priority",
+          "Platform",
+          "RGID"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "triggers": [
+      "Airtable record created",
+      "Airtable record updated",
+      "Notion page created",
+      "Notion page updated"
+    ],
+    "actions": [
+      "Create corresponding record in target system",
+      "Update existing record with new data",
+      "Validate RGID format",
+      "Log sync activity"
+    ]
+  }
+}

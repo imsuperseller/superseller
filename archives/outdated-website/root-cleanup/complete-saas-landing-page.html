@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Lead Generation - Rensto SaaS</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #110d28 0%, #1a1a2e 50%, #16213e 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fe3d51, #1eaef7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .pricing-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        .trial-banner {
+            background: linear-gradient(45deg, #fe3d51, #1eaef7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.3);
+        }
+        .trial-banner h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .trial-banner p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .trial-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .trial-toggle label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .trial-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .trial-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .trial-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .trial-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .trial-slider {
+            background: linear-gradient(45deg, #fe3d51, #1eaef7);
+        }
+        input:checked + .trial-slider:before {
+            transform: translateX(30px);
+        }
+        .trial-info {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .trial-info h4 {
+            margin: 0 0 10px 0;
+            color: #1eaef7;
+            font-size: 1.2rem;
+        }
+        .trial-info p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+        }
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        .pricing-calculator {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .lead-slider {
+            margin: 20px 0;
+        }
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #fe3d51;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #fe3d51;
+            cursor: pointer;
+            border: none;
+        }
+        .price-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1eaef7;
+            margin: 20px 0;
+        }
+        .lead-count {
+            font-size: 1.5rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        .price-breakdown {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #fe3d51;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #888;
+        }
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #fe3d51, #bf5700);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.4);
+        }
+        .submit-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .status.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        .status.loading {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .trust-indicators {
+            text-align: center;
+            margin-top: 50px;
+            color: #b0b0b0;
+        }
+        .trust-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .trust-stat {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .trust-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI-Powered Lead Generation</h1>
+            <p>Self-service lead generation with dynamic pricing. Choose your quantity, pay with Stripe, get instant results.</p>
+        </div>
+
+        <div class="main-content">
+            <div class="pricing-section">
+                <div class="trial-banner">
+                    <h3>🎉 FREE TRIAL AVAILABLE!</h3>
+                    <p>Get 5 FREE leads to test our AI-powered system</p>
+                </div>
+                
+                <div class="trial-toggle">
+                    <label for="trialMode">Start with FREE Trial</label>
+                    <label class="trial-switch">
+                        <input type="checkbox" id="trialMode" checked>
+                        <span class="trial-slider"></span>
+                    </label>
+                    <label for="trialMode">Full Package</label>
+                </div>
+                
+                <div class="trial-info" id="trialInfo">
+                    <h4>🎁 FREE Trial Includes:</h4>
+                    <p>5 AI-enriched leads • Full research • Email templates • No credit card required</p>
+                </div>
+                
+                <div class="pricing-calculator">
+                    <h3>Dynamic Pricing Calculator</h3>
+                    <div class="lead-slider">
+                        <input type="range" id="leadSlider" class="slider" min="5" max="1000" value="5" step="5">
+                    </div>
+                    <div class="lead-count" id="leadCount">100 leads</div>
+                    <div class="price-display" id="priceDisplay">$49</div>
+                    
+                    <div class="price-breakdown">
+                        <div class="breakdown-item">
+                            <span>Base Price (10 leads):</span>
+                            <span>$9.90</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Additional Leads:</span>
+                            <span id="additionalLeads">90 × $0.49</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Volume Discount:</span>
+                            <span id="volumeDiscount">-$0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Total Price:</span>
+                            <span id="totalPrice">$49.00</span>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #b0b0b0; margin: 0; font-size: 0.9rem;">
+                        Price per lead: <span id="pricePerLead">$0.49</span> | 
+                        Delivery: 5-10 minutes | 
+                        Payment: Stripe
+                    </p>
+                </div>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">⚡</div>
+                        <h4>AI-Powered Research</h4>
+                        <p>Advanced AI finds and analyzes the best leads</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🎯</div>
+                        <h4>Personalized Outreach</h4>
+                        <p>Custom messages for each lead</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">📧</div>
+                        <h4>Ready-to-Send</h4>
+                        <p>Complete email templates included</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💳</div>
+                        <h4>Secure Payment</h4>
+                        <p>Stripe-powered secure payments</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Get Your Leads Now</h3>
+                <form id="leadForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required value="Ortal">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required value="Test">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required value="ortal@test.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="businessDescription">Tell us about your business</label>
+                        <textarea id="businessDescription" name="businessDescription" rows="3" required>Marketing agency for Israeli businesses in USA</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetLeads">What type of leads are you searching for?</label>
+                        <input type="text" id="targetLeads" name="targetLeads" required value="Israeli marketing professionals in New York aged 24-50">
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Pay $49 - Get 100 Leads
+                    </button>
+                </form>
+
+                <div id="status"></div>
+            </div>
+        </div>
+
+        <div class="trust-indicators">
+            <div class="trust-stats">
+                <div class="trust-stat">
+                    <span>👥</span>
+                    <span>1000+ Leads Generated</span>
+                </div>
+                <div class="trust-stat">
+                    <span>📈</span>
+                    <span>95% Success Rate</span>
+                </div>
+                <div class="trust-stat">
+                    <span>⚡</span>
+                    <span>5-10 Min Delivery</span>
+                </div>
+                <div class="trust-stat">
+                    <span>💳</span>
+                    <span>Secure Stripe Payments</span>
+                </div>
+            </div>
+            <p>Your leads will be delivered within 5-10 minutes via email</p>
+        </div>
+    </div>
+
+    <script>
+        // Pricing tiers configuration
+        const pricingTiers = {
+            basic: {
+                name: 'Basic',
+                price: 19,
+                leads: 10,
+                features: ['10 Enriched Leads', 'Basic Research', 'Email Templates', 'CSV Export'],
+                color: 'bg-blue-500',
+                popular: false
+            },
+            professional: {
+                name: 'Professional',
+                price: 49,
+                leads: 100,
+                features: ['100 Enriched Leads', 'Advanced Research', 'Personalized Messages', 'Voice Messages', 'CSV Export', 'Priority Support'],
+                color: 'bg-purple-500',
+                popular: true
+            },
+            enterprise: {
+                name: 'Enterprise',
+                price: 99,
+                leads: 500,
+                features: ['500 Enriched Leads', 'Premium Research', 'AI-Powered Personalization', 'Voice Messages', 'CSV Export', 'Dedicated Support', 'Custom Integration'],
+                color: 'bg-orange-500',
+                popular: false
+            }
+        };
+
+        // Dynamic pricing calculation with detailed breakdown
+        function calculatePrice(leadCount, isTrial = false) {
+            // Trial mode - FREE for first 5 leads
+            if (isTrial && leadCount <= 5) {
+                return {
+                    totalPrice: 0,
+                    basePrice: 0,
+                    additionalLeads: 0,
+                    pricePerLead: 0,
+                    volumeDiscount: 0,
+                    pricePerLeadDisplay: '0.00',
+                    isTrial: true
+                };
+            }
+            
+            const basePrice = 9.90; // First 10 leads
+            const baseLeads = 10;
+            
+            let additionalLeads = Math.max(0, leadCount - baseLeads);
+            let pricePerLead = 0.99;
+            let volumeDiscount = 0;
+            
+            // Volume pricing tiers
+            if (leadCount > 500) {
+                pricePerLead = 0.19;
+                volumeDiscount = additionalLeads * (0.99 - 0.19);
+            } else if (leadCount > 250) {
+                pricePerLead = 0.29;
+                volumeDiscount = additionalLeads * (0.99 - 0.29);
+            } else if (leadCount > 100) {
+                pricePerLead = 0.39;
+                volumeDiscount = additionalLeads * (0.99 - 0.39);
+            } else if (leadCount > 50) {
+                pricePerLead = 0.49;
+                volumeDiscount = additionalLeads * (0.99 - 0.49);
+            }
+            
+            const totalPrice = basePrice + (additionalLeads * pricePerLead);
+            
+            return {
+                totalPrice: Math.round(totalPrice * 100) / 100,
+                basePrice,
+                additionalLeads,
+                pricePerLead,
+                volumeDiscount: Math.round(volumeDiscount * 100) / 100,
+                pricePerLeadDisplay: pricePerLead.toFixed(2),
+                isTrial: false
+            };
+        }
+
+        // Update pricing display with detailed breakdown
+        function updatePricing() {
+            const leadCount = parseInt(document.getElementById('leadSlider').value);
+            const isTrial = document.getElementById('trialMode').checked;
+            const pricing = calculatePrice(leadCount, isTrial);
+            
+            document.getElementById('leadCount').textContent = `${leadCount} leads`;
+            
+            if (pricing.isTrial) {
+                document.getElementById('priceDisplay').textContent = 'FREE';
+                document.getElementById('priceDisplay').style.color = '#1eaef7';
+                document.getElementById('pricePerLead').textContent = 'FREE';
+                document.getElementById('additionalLeads').textContent = 'Trial Package';
+                document.getElementById('volumeDiscount').textContent = 'FREE';
+                document.getElementById('totalPrice').textContent = 'FREE';
+                document.getElementById('submitBtn').textContent = `Get ${leadCount} FREE Leads - No Payment Required`;
+                document.getElementById('submitBtn').style.background = 'linear-gradient(45deg, #1eaef7, #5ffbfd)';
+            } else {
+                document.getElementById('priceDisplay').textContent = `$${pricing.totalPrice}`;
+                document.getElementById('priceDisplay').style.color = '#fe3d51';
+                document.getElementById('pricePerLead').textContent = `$${pricing.pricePerLeadDisplay}`;
+                document.getElementById('additionalLeads').textContent = `${pricing.additionalLeads} × $${pricing.pricePerLeadDisplay}`;
+                document.getElementById('volumeDiscount').textContent = pricing.volumeDiscount > 0 ? `-$${pricing.volumeDiscount}` : '$0.00';
+                document.getElementById('totalPrice').textContent = `$${pricing.totalPrice}`;
+                document.getElementById('submitBtn').textContent = `Pay $${pricing.totalPrice} - Get ${leadCount} Leads`;
+                document.getElementById('submitBtn').style.background = 'linear-gradient(45deg, #fe3d51, #bf5700)';
+            }
+        }
+
+        // Slider event listener
+        document.getElementById('leadSlider').addEventListener('input', updatePricing);
+        
+        // Trial mode toggle event listener
+        document.getElementById('trialMode').addEventListener('change', function() {
+            const isTrial = this.checked;
+            const slider = document.getElementById('leadSlider');
+            const trialInfo = document.getElementById('trialInfo');
+            
+            if (isTrial) {
+                // Trial mode - limit to 5 leads max
+                slider.max = 5;
+                slider.value = 5;
+                trialInfo.style.display = 'block';
+            } else {
+                // Full mode - allow up to 1000 leads
+                slider.max = 1000;
+                slider.value = 100;
+                trialInfo.style.display = 'none';
+            }
+            
+            updatePricing();
+        });
+
+        // Initialize pricing
+        updatePricing();
+
+        // Alias for testing compatibility
+        function updatePrice() {
+            updatePricing();
+        }
+
+        // Form submission with Stripe integration
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const statusDiv = document.getElementById('status');
+            
+            const formData = new FormData(e.target);
+            const leadCount = parseInt(document.getElementById('leadSlider').value);
+            const isTrial = document.getElementById('trialMode').checked;
+            const pricing = calculatePrice(leadCount, isTrial);
+            
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                businessDescription: formData.get('businessDescription'),
+                targetLeads: formData.get('targetLeads'),
+                leadCount: leadCount,
+                price: pricing.totalPrice,
+                isTrial: pricing.isTrial,
+                tier: leadCount <= 50 ? 'basic' : leadCount <= 100 ? 'professional' : 'enterprise'
+            };
+
+            submitBtn.disabled = true;
+            
+            if (pricing.isTrial) {
+                // Trial mode - no payment required
+                submitBtn.textContent = 'Processing FREE Trial...';
+                statusDiv.innerHTML = '<div class="status loading">🎁 Processing your FREE trial...</div>';
+                
+                try {
+                    // Direct webhook call for trial
+                    const response = await fetch('http://173.254.201.134:5678/webhook/lead-enrichment-saas', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Trial processing failed');
+                    }
+                    
+                    statusDiv.innerHTML = '<div class="status success">🎉 FREE trial processed! Check your email for leads.</div>';
+                    submitBtn.textContent = 'Trial Complete!';
+                    
+                } catch (error) {
+                    console.error('Error during trial process:', error);
+                    statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Try Again';
+                }
+                return;
+            }
+            
+            // Full payment mode
+            submitBtn.textContent = 'Processing Payment...';
+            statusDiv.innerHTML = '<div class="status loading">🔄 Creating Stripe payment session...</div>';
+
+            try {
+                // Create Stripe payment intent
+                const paymentResponse = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        amount: Math.round(pricing.totalPrice * 100) // Convert to cents
+                    })
+                });
+
+                if (!paymentResponse.ok) {
+                    throw new Error(`Payment setup failed: ${paymentResponse.status}`);
+                }
+
+                const { clientSecret } = await paymentResponse.json();
+
+                // Initialize Stripe
+                const stripe = Stripe('pk_test_51234567890abcdef'); // Replace with your actual publishable key
+                
+                if (!stripe) {
+                    throw new Error('Stripe failed to load');
+                }
+
+                // Redirect to Stripe Checkout
+                const { error } = await stripe.redirectToCheckout({
+                    clientSecret,
+                    successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+                    cancelUrl: `${window.location.origin}/cancel`
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ <strong>Error:</strong><br>
+                        ${error.message}<br>
+                        <small>Please try again or contact support.</small>
+                    </div>
+                `;
+                
+                submitBtn.disabled = false;
+                updatePricing();
+            }
+        });
+    </script>
+</body>
+</html>

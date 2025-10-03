@@ -1,0 +1,24 @@
+{
+  "timestamp": "2025-08-29T07:00:56.430Z",
+  "pages": {},
+  "errors": [
+    {
+      "phase": "analysis",
+      "error": "Request failed with status code 401"
+    },
+    {
+      "phase": "page_creation",
+      "page": "privacyPolicy",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "phase": "page_creation",
+      "page": "termsOfService",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "phase": "publishing",
+      "error": "Request failed with status code 401"
+    }
+  ]
+}

@@ -39,3 +39,5 @@
     "accessibility": "WCAG AA compliant"
   }
 }
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -1,0 +1,50 @@
+name = "rensto-gateway"
+main = "src/index.ts"
+compatibility_date = "2025-01-15"
+minify = true
+node_compat = false
+
+# ----- KV bindings -----
+[[kv_namespaces]]
+binding = "TENANT_REGISTRY_KV"
+id = "TODO_TENANT_REGISTRY_KV_ID"
+
+[[kv_namespaces]]
+binding = "IDEMPOTENCY_KV"
+id = "TODO_IDEMPOTENCY_KV_ID"
+
+[[kv_namespaces]]
+binding = "THROTTLE_KV"
+id = "TODO_THROTTLE_KV_ID"
+
+# ----- Environments -----
+[env.staging]
+route = ""
+# add your staging routes/zones here
+
+[env.production]
+route = ""
+# add your prod routes/zones here
+
+[vars]
+N8N_WEBHOOK_PATH = "rensto-exec"   # single contract path on n8n side
+DRY_RUN = "true"                   # set false in prod after secrets loaded
+SIGNATURE_TTL_SECONDS = "300"      # 5 minutes
+THROTTLE_DEFAULT_BURST = "10"
+THROTTLE_DEFAULT_RATE_PER_MIN = "60"
+LOG_SAMPLE_RATE = "1.0"            # 0..1
+
+# Secrets (store via `wrangler secret put`, not here):
+# STRIPE_SECRET_KEY
+# OPENROUTER_API_KEY
+# AIRTABLE_API_KEY
+# AIRTABLE_BASE_ID
+# AIRTABLE_USAGE_TABLE
+# ROLLBAR_ACCESS_TOKEN
+# N8N_API_URL
+# N8N_API_KEY
+# WEBFLOW_API_TOKEN
+# QUICKBOOKS_CLIENT_ID
+# QUICKBOOKS_CLIENT_SECRET
+# PARTNERSTACK_API_KEY
+# CLOUDFLARE_API_TOKEN

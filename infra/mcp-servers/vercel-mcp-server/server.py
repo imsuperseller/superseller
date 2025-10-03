@@ -1,4 +1,23 @@
 
+# OBSOLETE: Vercel MCP Server
+# This server is no longer used as Vercel MCP now uses NPX package
+# 
+# Migration: Vercel MCP server now runs via NPX package:
+# npx @modelcontextprotocol/server-vercel
+#
+# Configuration: Managed through Cursor MCP configuration
+# File: /Users/shaifriedman/.cursor/mcp.json
+#
+# Last Updated: 2025-01-10
+# Status: OBSOLETE - Use NPX package instead
+
+print('⚠️  OBSOLETE SERVER: Vercel MCP Server')
+print('====================================')
+print('This server is no longer used.')
+print('Vercel MCP now uses NPX package: npx @modelcontextprotocol/server-vercel')
+print('Configuration managed through Cursor MCP settings.')
+exit(0)
+
 import asyncio
 from mcp.server import Server
 from mcp.types import Resource, Tool

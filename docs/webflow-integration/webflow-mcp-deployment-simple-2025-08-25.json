@@ -1,25 +1,30 @@
 {
   "timestamp": "2025-08-25T03:21:32.221Z",
-  "status": "completed",
+  "status": "updated_to_npx",
   "steps": [
     {
       "step": "build",
-      "status": "success"
+      "status": "obsolete - now using NPX package"
     },
     {
       "step": "deploy",
-      "status": "success"
+      "status": "obsolete - now using NPX package"
     },
     {
       "step": "systemd",
-      "status": "success"
+      "status": "obsolete - now using NPX package"
+    },
+    {
+      "step": "npx_migration",
+      "status": "completed",
+      "note": "Webflow MCP now uses webflow-mcp-server@0.6.0 NPX package"
     }
   ],
   "errors": [
     {
       "step": "test",
-      "error": "Command failed: sshpass -p '05ngBiq2pTA8XSF76x' ssh root@173.254.201.134 \"systemctl status webflow-mcp-server --no-pager\""
+      "error": "VPS deployment obsolete - now using NPX package"
     }
   ],
-  "webflowMCPStatus": "deployed_but_test_failed"
+  "webflowMCPStatus": "migrated_to_npx_package"
 }

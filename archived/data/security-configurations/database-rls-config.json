@@ -1,8 +1,0 @@
-{
-  "identityProvider": "supabase_auth",
-  "accessTokenLifetime": "1h",
-  "refreshTokenLifetime": "7d",
-  "policies": {
-    "customers": "\n          CREATE POLICY \"users_can_view_own_customer_data\" ON customers\n          FOR SELECT USING (customer_id = (current_setting('request.jwt.claims', true)::json->>'customer_id'));\n        "
-  }
-}

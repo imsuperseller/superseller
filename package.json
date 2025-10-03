@@ -1,16 +1,30 @@
 {
-  "name": "rensto",
+  "name": "rensto-business-operations",
   "version": "1.0.0",
+  "description": "Rensto Business Operations - Centralized business management system",
+  "main": "index.js",
   "type": "module",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.4",
-    "@types/node": "^24.3.0",
-    "axios": "^1.11.0",
-    "dotenv": "^17.2.1",
-    "jsonwebtoken": "^9.0.2",
-    "open": "^10.2.0"
+  "scripts": {
+    "migrate-notion": "node notion-migration-script.js",
+    "migrate-notion-v2025": "node notion-migration-script-v2025.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "typescript": "^5.9.2"
+  "keywords": [
+    "rensto",
+    "business",
+    "operations",
+    "notion",
+    "airtable",
+    "migration"
+  ],
+  "author": "Rensto",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.63.1",
+    "@google/genai": "^1.20.0",
+    "@google/generative-ai": "^0.24.1",
+    "@notionhq/client": "^5.1.0",
+    "axios": "^1.12.2",
+    "express": "^5.1.0"
   }
 }

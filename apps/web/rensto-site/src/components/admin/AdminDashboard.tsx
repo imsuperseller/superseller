@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIAgentManagement from './AIAgentManagement';
 import CustomerManagement from './CustomerManagement';
 import WorkflowManagement from './WorkflowManagement';
+import WorkflowTemplatesManagement from './WorkflowTemplatesManagement';
 import SystemMonitoring from './SystemMonitoring';
 import QuickBooksDashboard from './QuickBooksDashboard';
 
@@ -20,10 +21,11 @@ export default function AdminDashboard() {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="ai-agents">AI Agents</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="workflows">Workflows</TabsTrigger>
+          <TabsTrigger value="workflow-templates">Templates</TabsTrigger>
           <TabsTrigger value="system">System</TabsTrigger>
           <TabsTrigger value="quickbooks">QuickBooks</TabsTrigger>
         </TabsList>
@@ -39,7 +41,11 @@ export default function AdminDashboard() {
         <TabsContent value="workflows" className="space-y-6">
           <WorkflowManagement />
         </TabsContent>
-        
+
+        <TabsContent value="workflow-templates" className="space-y-6">
+          <WorkflowTemplatesManagement />
+        </TabsContent>
+
         <TabsContent value="system" className="space-y-6">
           <SystemMonitoring />
         </TabsContent>

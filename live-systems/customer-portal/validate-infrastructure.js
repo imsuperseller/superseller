@@ -73,9 +73,9 @@ class InfrastructureValidator {
     console.log('🔍 RUNNING INFRASTRUCTURE VALIDATION...');
     
     const filesToCheck = [
-      'scripts/deploy-shelly-vps-n8n.sh',
-      'scripts/deploy-shelly-vps-workflow.js',
-      'scripts/fix-shelly-vps-deployment.js',
+      'scripts/deploy-rensto-vps-n8n.sh',
+      'scripts/deploy-rensto-vps-workflow.js',
+      'scripts/fix-rensto-vps-deployment.js',
       'docs/technical/WORKFLOW_DEPLOYMENT.md',
       'docs/customer-portal-system.md',
       'apps/web/rensto-site/api-backup/api/mcp/deploy-n8n-workflow/route.ts'

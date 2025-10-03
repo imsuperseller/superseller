@@ -1,0 +1,933 @@
+<!-- 📖 DOCUMENTATION COMPONENT -->
+<!-- Contains: Documentation navigation and content management -->
+<!-- Character Count: ~9,000 chars -->
+<!-- Business Model: User guides and API documentation for Universal Automation Platform -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Documentation - User Guides & API Reference</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Documentation Header */
+        .docs-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .docs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .docs-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .docs-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .docs-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Search Bar */
+        .search-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Documentation Layout */
+        .docs-layout {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .docs-layout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+        }
+        
+        /* Sidebar Navigation */
+        .docs-sidebar {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--cyan);
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            display: block;
+            transition: color 0.3s;
+        }
+        
+        .sidebar-nav a:hover {
+            color: var(--cyan);
+        }
+        
+        .sidebar-nav .active a {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+        
+        .sidebar-subnav {
+            list-style: none;
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .sidebar-subnav li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar-subnav a {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        /* Main Content */
+        .docs-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+        }
+        
+        .content-header {
+            margin-bottom: 2rem;
+        }
+        
+        .content-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .content-subtitle {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .content-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .content-body {
+            line-height: 1.7;
+        }
+        
+        .content-body h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--cyan);
+        }
+        
+        .content-body h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--light-text);
+        }
+        
+        .content-body p {
+            margin-bottom: 1rem;
+            color: var(--gray-text);
+        }
+        
+        .content-body ul {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .content-body li {
+            margin-bottom: 0.5rem;
+            color: var(--gray-text);
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            overflow-x: auto;
+        }
+        
+        .info-box {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h4 {
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-box p {
+            color: var(--gray-text);
+            margin-bottom: 0;
+        }
+        
+        /* Quick Start Guide */
+        .quick-start-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .quick-start-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .quick-start-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .quick-start-card {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .quick-start-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-start-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .quick-start-description {
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .quick-start-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .quick-start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* API Reference */
+        .api-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .api-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .api-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+        
+        .api-method {
+            display: inline-block;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .api-endpoint {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--light-text);
+            margin-bottom: 1rem;
+        }
+        
+        .api-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .api-parameters {
+            list-style: none;
+        }
+        
+        .api-parameters li {
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .parameter-name {
+            font-family: 'Courier New', monospace;
+            color: var(--cyan);
+        }
+        
+        .parameter-type {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button-secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .docs-layout-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .docs-sidebar {
+                position: static;
+            }
+            
+            .quick-start-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .api-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .quick-start-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .docs-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Documentation Header -->
+    <section class="docs-header">
+        <div class="docs-container">
+            <h1 class="docs-title">Documentation & API Reference</h1>
+            <p class="docs-subtitle">Complete guides, tutorials, and API documentation to help you get the most out of Rensto automation platform.</p>
+            
+            <div class="docs-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Guides & Tutorials</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">API Coverage</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">User Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="searchInput">
+                <button class="search-button" onclick="searchDocs()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Layout -->
+    <section class="docs-layout">
+        <div class="docs-layout-container">
+            <!-- Sidebar Navigation -->
+            <div class="docs-sidebar">
+                <h3 class="sidebar-title">Documentation</h3>
+                <ul class="sidebar-nav">
+                    <li class="active">
+                        <a href="#getting-started">Getting Started</a>
+                        <ul class="sidebar-subnav">
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#configuration">Configuration</a></li>
+                            <li><a href="#first-workflow">Your First Workflow</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#user-guides">User Guides</a>
+                        <ul class="sidebar-subnav">
+                            <li><a href="#marketplace">Marketplace</a></li>
+                            <li><a href="#custom-solutions">Custom Solutions</a></li>
+                            <li><a href="#subscriptions">Subscriptions</a></li>
+                            <li><a href="#ready-solutions">Ready Solutions</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#api-reference">API Reference</a>
+                        <ul class="sidebar-subnav">
+                            <li><a href="#authentication">Authentication</a></li>
+                            <li><a href="#endpoints">Endpoints</a></li>
+                            <li><a href="#webhooks">Webhooks</a></li>
+                            <li><a href="#rate-limits">Rate Limits</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#tutorials">Tutorials</a>
+                        <ul class="sidebar-subnav">
+                            <li><a href="#n8n-basics">n8n Basics</a></li>
+                            <li><a href="#ai-integration">AI Integration</a></li>
+                            <li><a href="#crm-integration">CRM Integration</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#troubleshooting">Troubleshooting</a>
+                        <ul class="sidebar-subnav">
+                            <li><a href="#common-issues">Common Issues</a></li>
+                            <li><a href="#error-codes">Error Codes</a></li>
+                            <li><a href="#support">Support</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="docs-content">
+                <div class="content-header">
+                    <h1 class="content-title">Getting Started with Rensto</h1>
+                    <p class="content-subtitle">Learn how to set up and use Rensto automation platform to transform your business operations.</p>
+                    <div class="content-meta">
+                        <span>📅 Last updated: March 15, 2025</span>
+                        <span>⏱️ 15 min read</span>
+                        <span>👤 Rensto Team</span>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <h2>Introduction</h2>
+                    <p>Welcome to Rensto, the universal automation platform that helps businesses streamline their operations with AI-powered workflows. This guide will walk you through the basics of getting started with our platform.</p>
+
+                    <h2>What is Rensto?</h2>
+                    <p>Rensto is a comprehensive automation platform that offers four main service types:</p>
+                    <ul>
+                        <li><strong>Marketplace:</strong> Pre-built n8n templates and professional installation</li>
+                        <li><strong>Custom Solutions:</strong> Voice AI consultation and tailored automation development</li>
+                        <li><strong>Subscriptions:</strong> Enhanced lead generation with CRM integration</li>
+                        <li><strong>Ready Solutions:</strong> Industry-specific automation packages</li>
+                    </ul>
+
+                    <h2>Quick Start</h2>
+                    <p>To get started with Rensto, follow these simple steps:</p>
+
+                    <div class="info-box">
+                        <h4>💡 Pro Tip</h4>
+                        <p>Start with our Marketplace templates if you're new to automation. They're designed for beginners and come with professional installation.</p>
+                    </div>
+
+                    <h3>Step 1: Choose Your Service Type</h3>
+                    <p>Select the service type that best fits your business needs:</p>
+                    <ul>
+                        <li>For DIY users: <strong>Marketplace</strong> templates</li>
+                        <li>For complex needs: <strong>Custom Solutions</strong></li>
+                        <li>For lead generation: <strong>Subscriptions</strong></li>
+                        <li>For industry-specific needs: <strong>Ready Solutions</strong></li>
+                    </ul>
+
+                    <h3>Step 2: Set Up Your Account</h3>
+                    <p>Create your Rensto account and configure your preferences:</p>
+                    <div class="code-block">
+# Install Rensto CLI
+npm install -g @rensto/cli
+
+# Login to your account
+rensto login
+
+# Configure your workspace
+rensto config --workspace=your-workspace-id
+                    </div>
+
+                    <h3>Step 3: Create Your First Workflow</h3>
+                    <p>Follow our step-by-step tutorial to create your first automation workflow:</p>
+                    <ol>
+                        <li>Access the Rensto dashboard</li>
+                        <li>Choose a template or start from scratch</li>
+                        <li>Configure your workflow nodes</li>
+                        <li>Test and deploy your automation</li>
+                    </ol>
+
+                    <h2>Next Steps</h2>
+                    <p>Once you've completed the getting started guide, explore our advanced features:</p>
+                    <ul>
+                        <li>Learn about <a href="#ai-integration">AI integration</a></li>
+                        <li>Set up <a href="#crm-integration">CRM connections</a></li>
+                        <li>Explore <a href="#api-reference">API endpoints</a></li>
+                        <li>Join our <a href="#community">community forum</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Guide -->
+    <section class="quick-start-section">
+        <div class="quick-start-container">
+            <h2 class="section-title">Quick Start Guides</h2>
+            <p class="section-subtitle">Get up and running quickly with our step-by-step guides</p>
+            
+            <div class="quick-start-grid">
+                <div class="quick-start-card">
+                    <div class="quick-start-icon">🛒</div>
+                    <h3 class="quick-start-title">Marketplace Setup</h3>
+                    <p class="quick-start-description">Learn how to browse, purchase, and install marketplace templates for your business.</p>
+                    <button class="quick-start-button">Start Guide</button>
+                </div>
+                
+                <div class="quick-start-card">
+                    <div class="quick-start-icon">🤖</div>
+                    <h3 class="quick-start-title">Custom Solutions</h3>
+                    <p class="quick-start-description">Get started with custom automation development and Voice AI consultation.</p>
+                    <button class="quick-start-button">Start Guide</button>
+                </div>
+                
+                <div class="quick-start-card">
+                    <div class="quick-start-icon">📈</div>
+                    <h3 class="quick-start-title">Lead Generation</h3>
+                    <p class="quick-start-description">Set up automated lead generation and CRM integration for your business.</p>
+                    <button class="quick-start-button">Start Guide</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Reference -->
+    <section class="api-section">
+        <div class="api-container">
+            <h2 class="section-title">API Reference</h2>
+            <p class="section-subtitle">Complete API documentation for integrating with Rensto</p>
+            
+            <div class="api-grid">
+                <div class="api-card">
+                    <div class="api-method">GET</div>
+                    <div class="api-endpoint">/api/v1/workflows</div>
+                    <p class="api-description">Retrieve all workflows for your account with optional filtering and pagination.</p>
+                    <ul class="api-parameters">
+                        <li>
+                            <span class="parameter-name">limit</span>
+                            <span class="parameter-type">integer</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">offset</span>
+                            <span class="parameter-type">integer</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">status</span>
+                            <span class="parameter-type">string</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="api-card">
+                    <div class="api-method">POST</div>
+                    <div class="api-endpoint">/api/v1/workflows</div>
+                    <p class="api-description">Create a new workflow with the specified configuration and settings.</p>
+                    <ul class="api-parameters">
+                        <li>
+                            <span class="parameter-name">name</span>
+                            <span class="parameter-type">string</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">nodes</span>
+                            <span class="parameter-type">array</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">connections</span>
+                            <span class="parameter-type">object</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="api-card">
+                    <div class="api-method">PUT</div>
+                    <div class="api-endpoint">/api/v1/workflows/{id}</div>
+                    <p class="api-description">Update an existing workflow with new configuration or settings.</p>
+                    <ul class="api-parameters">
+                        <li>
+                            <span class="parameter-name">id</span>
+                            <span class="parameter-type">string</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">name</span>
+                            <span class="parameter-type">string</span>
+                        </li>
+                        <li>
+                            <span class="parameter-name">active</span>
+                            <span class="parameter-type">boolean</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="api-card">
+                    <div class="api-method">DELETE</div>
+                    <div class="api-endpoint">/api/v1/workflows/{id}</div>
+                    <p class="api-description">Delete a workflow and all associated data. This action cannot be undone.</p>
+                    <ul class="api-parameters">
+                        <li>
+                            <span class="parameter-name">id</span>
+                            <span class="parameter-type">string</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Need Help Getting Started?</h2>
+            <p class="cta-subtitle">Our support team is here to help you succeed with Rensto automation.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-button">Contact Support</a>
+                <a href="/community" class="cta-button cta-button-secondary">Join Community</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate docs header
+        gsap.from('.docs-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.docs-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.docs-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate quick start cards
+        gsap.utils.toArray('.quick-start-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate API cards
+        gsap.utils.toArray('.api-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Search functionality
+        function searchDocs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            alert(`Searching for: "${searchTerm}". This would search through all documentation content.`);
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                const section = this.getAttribute('href').substring(1);
+                alert(`Navigating to: ${section}. This would scroll to the section or load new content.`);
+            });
+        });
+
+        // Add hover effects to quick start cards
+        document.querySelectorAll('.quick-start-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Quick start button functionality
+        document.querySelectorAll('.quick-start-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const guide = this.closest('.quick-start-card').querySelector('.quick-start-title').textContent;
+                alert(`Starting guide: "${guide}". This would navigate to the specific guide.`);
+            });
+        });
+    </script>
+</body>
+</html>

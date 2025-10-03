@@ -96,7 +96,6 @@ If a broken deployment goes live:
 
    ```bash
    # Revert to previous working deployment
-   npx vercel --prod --yes
    ```
 
 2. **Investigation**:

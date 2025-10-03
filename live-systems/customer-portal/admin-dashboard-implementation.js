@@ -18,7 +18,11 @@ class AdminDashboardImplementation {
   constructor() {
     this.config = {
       mcp: {
-        url: 'http://173.254.201.134:5678/webhook/mcp'
+        // Updated: MCP servers now use NPX packages instead of VPS HTTP endpoints
+        // n8n-mcp: @modelcontextprotocol/server-n8n
+        // webflow: webflow-mcp-server@0.6.0
+        // make-mcp: @modelcontextprotocol/server-make
+        // Configuration managed through Cursor MCP settings
       },
       projectRoot: process.cwd(),
       webAppPath: 'web/rensto-site',
@@ -607,7 +611,7 @@ interface Customer {
 export default function CustomerManagement() {
   const [customers, setCustomers] = useState<Customer[]>([
     {
-      id: 'ben-ginati',
+      id: 'rensto-system',
       name: 'Ben Ginati',
       email: 'ben@example.com',
       status: 'active',
@@ -616,9 +620,9 @@ export default function CustomerManagement() {
       billingStatus: 'paid'
     },
     {
-      id: 'shelly-mizrahi',
-      name: 'Shelly Mizrahi',
-      email: 'shelly@example.com',
+      id: 'rensto-system',
+      name: 'Rensto System',
+      email: 'system@rensto.com',
       status: 'active',
       successScore: 92,
       lastActivity: '2025-08-18T17:25:00Z',

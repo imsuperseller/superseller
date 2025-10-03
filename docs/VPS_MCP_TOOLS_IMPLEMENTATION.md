@@ -134,20 +134,17 @@ The VPS MCP tools provide comprehensive internal business management capabilitie
   N8N_API_KEY: string;              // n8n API key
   OPENAI_API_KEY: string;           // OpenAI API key
   BASE_URL: string;                 // Application base URL
-  STRIPE_SUBSCRIPTION_PRICE_ID?: string; // Stripe subscription price
 }
 ```
 
 ### **Integration Points**
 - **Racknerd VPS**: `173.254.201.134`
 - **n8n API**: Direct integration for workflow management
-- **Stripe**: Payment processing for tool access
 - **OpenAI**: AI-powered features and analytics
 
 ### **Data Flow**
 1. **Tool Request** → MCP Server
 2. **Authentication** → Google OAuth
-3. **Payment Verification** → Stripe
 4. **API Call** → Racknerd VPS
 5. **Response** → AI Agent
 
@@ -158,7 +155,6 @@ The VPS MCP tools provide comprehensive internal business management capabilitie
 ### **Subscription Pricing**
 - **Price**: $29/month per customer
 - **Access**: All 10 VPS MCP tools
-- **Payment**: Stripe subscription model
 - **Authentication**: Google OAuth required
 
 ### **Revenue Projections**
@@ -213,7 +209,6 @@ Customer analytics: "comprehensive" for customer: "customer_123" with prediction
 
 ### **🔧 Ready for Testing**
 - **Authentication**: Google OAuth configured
-- **Payment**: Stripe integration active
 - **APIs**: All external APIs configured
 - **Documentation**: Complete implementation guide
 
@@ -256,7 +251,6 @@ Customer analytics: "comprehensive" for customer: "customer_123" with prediction
 
 ### **Authentication**
 - Google OAuth required for all tools
-- Stripe payment verification
 - Session management via Cloudflare
 
 ### **Data Protection**
@@ -284,3 +278,6 @@ Customer analytics: "comprehensive" for customer: "customer_123" with prediction
 ---
 
 **🎯 VPS MCP Tools successfully implemented and deployed! Ready for customer onboarding and revenue generation.** 🚀💰
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

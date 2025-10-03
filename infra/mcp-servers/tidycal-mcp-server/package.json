@@ -1,0 +1,12 @@
+{
+  "name": "tidycal-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

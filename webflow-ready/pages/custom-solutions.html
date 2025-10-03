@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Solutions - Rensto Automation Development</title>
+    <meta name="description" content="Get custom automation solutions tailored to your business. Voice AI consultation, custom workflow development, and ongoing optimization. Results in 30 days or less.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(17, 13, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--cyan);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 140px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .page-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumbs {
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item:not(:last-child)::after {
+            content: "›";
+            color: var(--gray-text);
+            margin-left: 0.5rem;
+        }
+        
+        .breadcrumb-link {
+            color: var(--light-text);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .breadcrumb-link:hover {
+            opacity: 1;
+        }
+        
+        .breadcrumb-current {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .page-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .page-meta {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .meta-icon {
+            font-size: 1.1rem;
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .page-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .page-button:hover {
+            background: white;
+            color: var(--dark-bg);
+            transform: translateY(-2px);
+        }
+        
+        .page-button.primary {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        .page-button.primary:hover {
+            background: var(--cyan);
+            color: var(--dark-bg);
+        }
+        
+        /* Process Section */
+        .process-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .process-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .process-step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .process-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--cyan);
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+        
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .step-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .step-duration {
+            font-size: 0.9rem;
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        /* Voice AI Section */
+        .voice-ai-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .voice-ai-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .voice-ai-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--cyan);
+        }
+        
+        .voice-ai-content p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+        
+        .voice-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .voice-features li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.05rem;
+        }
+        
+        .voice-features li:before {
+            content: "🎤";
+            font-size: 1.5rem;
+        }
+        
+        .voice-ai-demo {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.2), rgba(95, 251, 253, 0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .demo-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .demo-description {
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+        }
+        
+        .demo-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Development Timeline */
+        .timeline-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--orange), var(--blue));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin: 0 2rem;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 4rem;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 4rem;
+        }
+        
+        .timeline-week {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .timeline-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-deliverables {
+            list-style: none;
+        }
+        
+        .timeline-deliverables li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--gray-text);
+        }
+        
+        .timeline-deliverables li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        /* Benefits Section */
+        .benefits-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .benefits-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .benefit-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .benefit-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        /* Guarantees Section */
+        .guarantees-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .guarantees-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .guarantee-card {
+            background: linear-gradient(135deg, rgba(95, 251, 253, 0.15), rgba(30, 174, 247, 0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .guarantee-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .guarantee-description {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .guarantee-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .guarantee-feature {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+        
+        .guarantee-feature:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .guarantee-feature-content h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+        }
+        
+        .guarantee-feature-content p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button.secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 2rem 30px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--cyan);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--cyan);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+        }
+        
+        .footer-copyright {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .process-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .process-step:not(:last-child)::after {
+                display: none;
+            }
+            
+            .voice-ai-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .guarantee-features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .page-actions {
+                flex-direction: column;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 2rem;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 4rem;
+            }
+            
+            .timeline-week {
+                left: 2rem;
+                transform: translateX(-50%);
+            }
+            
+            .timeline-content {
+                margin: 0 !important;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/marketplace">Marketplace</a></li>
+                    <li><a href="/custom-solutions" class="active">Custom Solutions</a></li>
+                    <li><a href="/subscriptions">Subscriptions</a></li>
+                    <li><a href="/ready-solutions">Ready Solutions</a></li>
+                    <li><a href="#consultation" class="cta-button">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-container">
+            <nav class="breadcrumbs">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">Custom Solutions</span>
+                    </li>
+                </ol>
+            </nav>
+            
+            <h1 class="page-title">Custom Automation Solutions</h1>
+            <p class="page-subtitle">Get tailored automation solutions designed specifically for your business. Voice AI consultation, custom workflow development, and ongoing optimization. Results in 30 days or less.</p>
+            
+            <div class="page-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">🎯</span>
+                    <span>Tailored to your business</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">⚡</span>
+                    <span>30-day delivery</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🤖</span>
+                    <span>AI-powered</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🔄</span>
+                    <span>Ongoing support</span>
+                </div>
+            </div>
+            
+            <div class="page-actions">
+                <a href="#consultation" class="page-button primary">Book Free Consultation</a>
+                <a href="#process" class="page-button">View Process</a>
+                <a href="#pricing" class="page-button">See Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process-section" id="process">
+        <div class="process-container">
+            <h2 class="section-title">Our 4-Step Development Process</h2>
+            <p class="section-subtitle">From initial consultation to ongoing optimization, we ensure your custom automation delivers maximum ROI</p>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Discovery & Consultation</h3>
+                    <p class="step-description">Free consultation with our automation experts to understand your business needs, current processes, and automation opportunities.</p>
+                    <div class="step-duration">Week 1</div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Design & Planning</h3>
+                    <p class="step-description">Create detailed automation blueprints, select optimal tools and integrations, and plan the implementation timeline.</p>
+                    <div class="step-duration">Week 2</div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Development & Testing</h3>
+                    <p class="step-description">Build your custom automation workflows, integrate with your existing systems, and conduct thorough testing.</p>
+                    <div class="step-duration">Week 3</div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Launch & Optimize</h3>
+                    <p class="step-description">Deploy your automation, provide training, and continuously monitor and optimize for maximum efficiency.</p>
+                    <div class="step-duration">Week 4+</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voice AI Section -->
+    <section class="voice-ai-section">
+        <div class="voice-ai-container">
+            <div class="voice-ai-content">
+                <h2>AI-Powered Voice Consultation</h2>
+                <p>Our advanced AI system conducts intelligent consultations to understand your business processes, identify automation opportunities, and recommend the most effective solutions.</p>
+                
+                <ul class="voice-features">
+                    <li>Natural language processing for complex business analysis</li>
+                    <li>Intelligent workflow mapping and optimization suggestions</li>
+                    <li>Real-time integration recommendations</li>
+                    <li>Automated ROI calculations and projections</li>
+                    <li>Continuous learning from your business patterns</li>
+                </ul>
+                
+                <a href="#consultation" class="cta-button">Start AI Consultation</a>
+            </div>
+            
+            <div class="voice-ai-demo">
+                <div class="demo-placeholder">🎤</div>
+                <h3 class="demo-title">Try Our AI Assistant</h3>
+                <p class="demo-description">Experience how our AI understands your business needs and suggests optimal automation solutions.</p>
+                <button class="demo-button">Launch AI Demo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Timeline -->
+    <section class="timeline-section">
+        <div class="timeline-container">
+            <h2 class="section-title">4-Week Development Timeline</h2>
+            <p class="section-subtitle">Detailed breakdown of your custom automation development process</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-week">W1</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Discovery & Analysis</h3>
+                        <p class="timeline-description">Comprehensive business analysis and automation opportunity identification.</p>
+                        <ul class="timeline-deliverables">
+                            <li>Business process audit</li>
+                            <li>Automation opportunity mapping</li>
+                            <li>ROI projections and cost analysis</li>
+                            <li>Technical requirements assessment</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">W2</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Design & Architecture</h3>
+                        <p class="timeline-description">Create detailed automation blueprints and system architecture.</p>
+                        <ul class="timeline-deliverables">
+                            <li>Custom workflow design</li>
+                            <li>Integration architecture planning</li>
+                            <li>User interface mockups</li>
+                            <li>Security and compliance review</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">W3</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Development & Integration</h3>
+                        <p class="timeline-description">Build and integrate your custom automation solutions.</p>
+                        <ul class="timeline-deliverables">
+                            <li>Custom workflow development</li>
+                            <li>Third-party integrations</li>
+                            <li>API connections and data flows</li>
+                            <li>Quality assurance testing</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-week">W4</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Launch & Training</h3>
+                        <p class="timeline-description">Deploy your automation and provide comprehensive training.</p>
+                        <ul class="timeline-deliverables">
+                            <li>Production deployment</li>
+                            <li>Team training sessions</li>
+                            <li>Documentation and guides</li>
+                            <li>Ongoing support setup</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="benefits-container">
+            <h2 class="section-title">Why Choose Custom Solutions?</h2>
+            <p class="section-subtitle">Tailored automation that perfectly fits your business needs</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3 class="benefit-title">Perfect Fit</h3>
+                    <p class="benefit-description">Automation solutions designed specifically for your business processes, industry requirements, and unique challenges.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3 class="benefit-title">Maximum Efficiency</h3>
+                    <p class="benefit-description">Optimized workflows that eliminate bottlenecks, reduce manual work, and accelerate your business operations.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔧</div>
+                    <h3 class="benefit-title">Seamless Integration</h3>
+                    <p class="benefit-description">Works perfectly with your existing tools, systems, and processes without disrupting your current operations.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h3 class="benefit-title">Scalable Growth</h3>
+                    <p class="benefit-description">Built to grow with your business, easily adapting to new requirements and expanding automation capabilities.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🛡️</div>
+                    <h3 class="benefit-title">Enterprise Security</h3>
+                    <p class="benefit-description">Enterprise-grade security, compliance, and data protection built into every automation solution.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔄</div>
+                    <h3 class="benefit-title">Ongoing Optimization</h3>
+                    <p class="benefit-description">Continuous monitoring, optimization, and updates to ensure your automation delivers maximum value over time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantees Section -->
+    <section class="guarantees-section">
+        <div class="guarantees-container">
+            <div class="guarantee-card">
+                <h2 class="guarantee-title">Our Guarantees</h2>
+                <p class="guarantee-description">We stand behind our custom automation solutions with comprehensive guarantees</p>
+                
+                <div class="guarantee-features">
+                    <div class="guarantee-feature">
+                        <div class="guarantee-feature-content">
+                            <h4>30-Day Results</h4>
+                            <p>See measurable results within 30 days or we'll optimize at no extra cost</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guarantee-feature">
+                        <div class="guarantee-feature-content">
+                            <h4>100% Satisfaction</h4>
+                            <p>Full refund if you're not completely satisfied with your automation solution</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guarantee-feature">
+                        <div class="guarantee-feature-content">
+                            <h4>Lifetime Support</h4>
+                            <p>Ongoing support, updates, and optimization included with every custom solution</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="consultation">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform Your Business?</h2>
+            <p class="cta-subtitle">Book your free consultation today and discover how custom automation can revolutionize your operations.</p>
+            <div class="cta-buttons">
+                <a href="/lead-generator.html" class="cta-button">Book Free Consultation</a>
+                <a href="/pricing.html" class="cta-button secondary">View Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="/marketplace">Marketplace</a></li>
+                        <li><a href="/custom-solutions">Custom Solutions</a></li>
+                        <li><a href="/subscriptions">Subscriptions</a></li>
+                        <li><a href="/ready-solutions">Ready Solutions</a></li>
+                        <li><a href="/api">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help-center">Help Center</a></li>
+                        <li><a href="/documentation">Documentation</a></li>
+                        <li><a href="/contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/cookie-policy">Cookie Policy</a></li>
+                        <li><a href="/security">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-logo">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </div>
+                <div class="footer-copyright">
+                    © 2024 Rensto. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate page header
+        gsap.from('.page-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.page-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.page-meta', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.page-actions', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.6,
+            ease: 'power3.out'
+        });
+
+        // Animate process steps
+        gsap.utils.toArray('.process-step').forEach((step, i) => {
+            gsap.from(step, {
+                scrollTrigger: {
+                    trigger: step,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.2,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate timeline items
+        gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.2,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate benefit cards
+        gsap.utils.toArray('.benefit-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Demo button functionality
+        document.querySelector('.demo-button').addEventListener('click', function() {
+            alert('AI Demo would launch here. This would show an interactive AI consultation experience.');
+        });
+
+        // Add hover effects to benefit cards
+        document.querySelectorAll('.benefit-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to page buttons
+        document.querySelectorAll('.page-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: -2,
+                    ease: 'power2.out'
+                });
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

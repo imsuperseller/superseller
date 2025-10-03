@@ -26,11 +26,7 @@
         "purpose": "Workflow Automation",
         "integration": "excellent"
       },
-      "vercel": {
-        "status": "active",
-        "purpose": "Frontend Deployment",
-        "integration": "good"
-      },
+      
       "cloudflare": {
         "status": "active",
         "purpose": "DNS & CDN",
@@ -56,11 +52,7 @@
         "purpose": "Database",
         "integration": "good"
       },
-      "stripe": {
-        "status": "active",
-        "purpose": "Payment Processing",
-        "integration": "good"
-      },
+      
       "quickbooks": {
         "status": "active",
         "purpose": "Accounting",

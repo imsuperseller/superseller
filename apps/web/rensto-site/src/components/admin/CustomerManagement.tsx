@@ -17,18 +17,18 @@ interface Customer {
 export default function CustomerManagement() {
   const [customers, setCustomers] = useState<Customer[]>([
     {
-      id: 'ben-ginati',
-      name: 'Ben Ginati',
-      email: 'ben@example.com',
+      id: 'customer-001',
+      name: 'Customer A',
+      email: 'customer-a@example.com',
       status: 'active',
       successScore: 85,
       lastActivity: '2025-08-18T17:30:00Z',
       billingStatus: 'paid'
     },
     {
-      id: 'shelly-mizrahi',
-      name: 'Shelly Mizrahi',
-      email: 'shelly@example.com',
+      id: 'customer-002',
+      name: 'Customer B',
+      email: 'customer-b@example.com',
       status: 'active',
       successScore: 92,
       lastActivity: '2025-08-18T17:25:00Z',
@@ -77,7 +77,7 @@ export default function CustomerManagement() {
         <h2 className="text-3xl font-bold tracking-tight">Customer Management</h2>
         <Button>Add New Customer</Button>
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <Input
           placeholder="Search customers..."
@@ -86,7 +86,7 @@ export default function CustomerManagement() {
           className="max-w-sm"
         />
       </div>
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredCustomers.map((customer) => (
           <Card key={customer.id}>
@@ -110,7 +110,7 @@ export default function CustomerManagement() {
                   </Badge>
                 </div>
               </div>
-              
+
               <div className="flex space-x-2">
                 <Button size="sm" onClick={() => viewCustomerPortal(customer.id)}>
                   View Portal

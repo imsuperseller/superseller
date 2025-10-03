@@ -1,0 +1,195 @@
+{
+  "name": "Assets Renewals < 30d",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "45 7 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Daily at 7:45 AM CT",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Assets",
+        "view": "Renewals < 30d",
+        "additionalOptions": {
+          "sort": [
+            {
+              "field": "renewal",
+              "direction": "asc"
+            }
+          ]
+        }
+      },
+      "id": "airtable-get-assets",
+      "name": "Get Assets Renewing Soon",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-assets",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-assets",
+      "name": "Check if assets exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Categorize assets by criticality and days to renewal\nconst assets = $input.all();\nconst today = new Date();\n\nconst categorized = {\n  critical: [],\n  important: [],\n  standard: []\n};\n\nassets.forEach(asset => {\n  const renewalDate = new Date(asset.fields.renewal_date);\n  const daysToRenewal = Math.floor((renewalDate - today) / (1000 * 60 * 60 * 24));\n  const cost = parseFloat(asset.fields.monthly_cost) || 0;\n  const criticality = asset.fields.criticality || 'standard';\n  \n  const enrichedAsset = {\n    ...asset,\n    daysToRenewal,\n    cost,\n    criticality\n  };\n  \n  if (criticality === 'critical' || daysToRenewal <= 7) {\n    categorized.critical.push(enrichedAsset);\n  } else if (criticality === 'important' || daysToRenewal <= 14) {\n    categorized.important.push(enrichedAsset);\n  } else {\n    categorized.standard.push(enrichedAsset);\n  }\n});\n\n// Calculate totals\nconst totalCritical = categorized.critical.reduce((sum, asset) => sum + asset.cost, 0);\nconst totalImportant = categorized.important.reduce((sum, asset) => sum + asset.cost, 0);\nconst totalStandard = categorized.standard.reduce((sum, asset) => sum + asset.cost, 0);\n\n// Create Slack message\nlet slackText = '## 🔄 Assets Renewing Soon (< 30 days)\\n\\n';\n\nif (categorized.critical.length > 0) {\n  slackText += `🚨 **CRITICAL (${categorized.critical.length} assets, $${totalCritical.toFixed(2)}/month)**\\n`;\n  categorized.critical.forEach(asset => {\n    slackText += `• **${asset.fields.asset_name || 'Unnamed Asset'}** - $${asset.cost.toFixed(2)}/month\\n`;\n    slackText += `  📅 Renews in ${asset.daysToRenewal} days\\n`;\n    slackText += `  👤 Owner: ${asset.fields.owner || 'Unassigned'}\\n`;\n    slackText += `  🔗 Provider: ${asset.fields.provider || 'Unknown'}\\n`;\n  });\n  slackText += '\\n';\n}\n\nif (categorized.important.length > 0) {\n  slackText += `⚠️ **IMPORTANT (${categorized.important.length} assets, $${totalImportant.toFixed(2)}/month)**\\n`;\n  categorized.important.forEach(asset => {\n    slackText += `• **${asset.fields.asset_name || 'Unnamed Asset'}** - $${asset.cost.toFixed(2)}/month\\n`;\n    slackText += `  📅 Renews in ${asset.daysToRenewal} days\\n`;\n    slackText += `  👤 Owner: ${asset.fields.owner || 'Unassigned'}\\n`;\n  });\n  slackText += '\\n';\n}\n\nif (categorized.standard.length > 0) {\n  slackText += `📅 **STANDARD (${categorized.standard.length} assets, $${totalStandard.toFixed(2)}/month)**\\n`;\n  categorized.standard.forEach(asset => {\n    slackText += `• **${asset.fields.asset_name || 'Unnamed Asset'}** - $${asset.cost.toFixed(2)}/month\\n`;\n    slackText += `  📅 Renews in ${asset.daysToRenewal} days\\n`;\n  });\n  slackText += '\\n';\n}\n\nslackText += `**Total Monthly Cost: $${(totalCritical + totalImportant + totalStandard).toFixed(2)}**\\n\\n`;\nslackText += '**Action Required:** Review renewal decisions and update asset status in Airtable.';\n\n// Create HTML for email\nlet html = '<h2>🔄 Assets Renewing Soon (< 30 days)</h2>';\n\nif (categorized.critical.length > 0) {\n  html += `<h3 style=\"color: #dc2626;\">🚨 CRITICAL (${categorized.critical.length} assets, $${totalCritical.toFixed(2)}/month)</h3>`;\n  html += '<ul>';\n  categorized.critical.forEach(asset => {\n    html += `<li><strong>${asset.fields.asset_name || 'Unnamed Asset'}</strong> - $${asset.cost.toFixed(2)}/month<br>`;\n    html += `📅 Renews in ${asset.daysToRenewal} days<br>`;\n    html += `👤 Owner: ${asset.fields.owner || 'Unassigned'}<br>`;\n    html += `🔗 Provider: ${asset.fields.provider || 'Unknown'}</li>`;\n  });\n  html += '</ul>';\n}\n\nif (categorized.important.length > 0) {\n  html += `<h3 style=\"color: #ea580c;\">⚠️ IMPORTANT (${categorized.important.length} assets, $${totalImportant.toFixed(2)}/month)</h3>`;\n  html += '<ul>';\n  categorized.important.forEach(asset => {\n    html += `<li><strong>${asset.fields.asset_name || 'Unnamed Asset'}</strong> - $${asset.cost.toFixed(2)}/month<br>`;\n    html += `📅 Renews in ${asset.daysToRenewal} days<br>`;\n    html += `👤 Owner: ${asset.fields.owner || 'Unassigned'}</li>`;\n  });\n  html += '</ul>';\n}\n\nif (categorized.standard.length > 0) {\n  html += `<h3 style=\"color: #ca8a04;\">📅 STANDARD (${categorized.standard.length} assets, $${totalStandard.toFixed(2)}/month)</h3>`;\n  html += '<ul>';\n  categorized.standard.forEach(asset => {\n    html += `<li><strong>${asset.fields.asset_name || 'Unnamed Asset'}</strong> - $${asset.cost.toFixed(2)}/month<br>`;\n    html += `📅 Renews in ${asset.daysToRenewal} days</li>`;\n  });\n  html += '</ul>';\n}\n\nhtml += `<p><strong>Total Monthly Cost: $${(totalCritical + totalImportant + totalStandard).toFixed(2)}</strong></p>`;\nhtml += '<p><strong>Action Required:</strong> Review renewal decisions and update asset status in Airtable.</p>';\n\nreturn [\n  {\n    json: {\n      slackText: slackText,\n      html: html,\n      categorized: categorized,\n      totals: {\n        critical: totalCritical,\n        important: totalImportant,\n        standard: totalStandard,\n        total: totalCritical + totalImportant + totalStandard\n      }\n    }\n  }\n];"
+      },
+      "id": "categorize-assets",
+      "name": "Categorize Assets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "channel": "operations",
+        "text": "={{ $json.slackText }}",
+        "otherOptions": {
+          "username": "Rensto Bot",
+          "icon_emoji": ":gear:"
+        }
+      },
+      "id": "slack-notify",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "toEmail": "service@rensto.com",
+        "subject": "Asset Renewals Alert - ${{ $json.totals.total.toFixed(2) }}/month at risk",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "email-alert",
+      "name": "Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "message": "No assets renewing soon. ✅"
+      },
+      "id": "no-assets-message",
+      "name": "No assets message",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Daily at 7:45 AM CT": {
+      "main": [
+        [
+          {
+            "node": "Get Assets Renewing Soon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Assets Renewing Soon": {
+      "main": [
+        [
+          {
+            "node": "Check if assets exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if assets exist": {
+      "main": [
+        [
+          {
+            "node": "Categorize Assets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No assets message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorize Assets": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-06T12:00:00.000Z",
+      "updatedAt": "2024-01-06T12:00:00.000Z",
+      "id": "assets-renewals",
+      "name": "assets-renewals"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

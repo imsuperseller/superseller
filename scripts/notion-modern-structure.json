@@ -1,0 +1,66 @@
+{
+  "databases": [
+    {
+      "name": "Rensto Business References",
+      "id": "d19df0fe-8284-448a-8ea1-963d2031b9c6",
+      "url": "https://www.notion.so/d19df0fe8284448a8ea1963d2031b9c6",
+      "properties": {
+        "current": [
+          "Name"
+        ],
+        "modern": [
+          "Type",
+          "Description",
+          "Customer",
+          "Status",
+          "Priority",
+          "Platform",
+          "AI Integration Status",
+          "Automation Level",
+          "Smart Sync Status",
+          "Last Updated",
+          "Created By",
+          "RGID",
+          "Airtable Sync",
+          "Sync Status"
+        ]
+      }
+    },
+    {
+      "name": "Rensto Customer Management",
+      "description": "Customer-focused database aligned with Airtable Companies table",
+      "properties": [
+        "Company Name",
+        "Contact Person",
+        "Industry",
+        "Status",
+        "AI Integration Status",
+        "Automation Level",
+        "Looker Studio Integration",
+        "Smart Sync Status",
+        "Total Revenue",
+        "Active Projects",
+        "Last Activity",
+        "RGID"
+      ]
+    },
+    {
+      "name": "Rensto Project Tracking",
+      "description": "Project tracking aligned with Airtable Progress Tracking",
+      "properties": [
+        "Project Name",
+        "Customer",
+        "BMAD Phase",
+        "Status",
+        "Progress Percentage",
+        "Start Date",
+        "End Date",
+        "AI Integration Status",
+        "Automation Level",
+        "Last Updated",
+        "Created By",
+        "RGID"
+      ]
+    }
+  ]
+}

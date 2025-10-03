@@ -1,0 +1,3 @@
+# Ignore npm global binaries from TypeScript analysis
+/Users/shaifriedman/.npm-global/bin/claude
+/Users/shaifriedman/.npm-global/bin/*

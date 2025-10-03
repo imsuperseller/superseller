@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "created": "2025-09-25T17:51:27.163Z",
+    "version": "1.0.0",
+    "totalPackages": 4
+  },
+  "packages": [
+    {
+      "id": "self-service",
+      "name": "Self-Service Package",
+      "price": 0,
+      "setupTime": "2-8 hours",
+      "support": "Community support",
+      "includes": [
+        "Downloadable workflow files (JSON)",
+        "Step-by-step setup guides (PDF)",
+        "Video tutorials (MP4)",
+        "Configuration templates",
+        "Community support access",
+        "Basic documentation"
+      ]
+    },
+    {
+      "id": "assisted-setup",
+      "name": "Assisted Setup Package",
+      "price": 297,
+      "setupTime": "1-2 hours",
+      "support": "Priority email support",
+      "includes": [
+        "Everything in Self-Service Package",
+        "2-hour setup consultation (video call)",
+        "Initial configuration assistance",
+        "Testing and validation",
+        "Priority email support",
+        "7-day optimization support"
+      ]
+    },
+    {
+      "id": "full-service",
+      "name": "Full Service Package",
+      "price": 797,
+      "setupTime": "0 hours",
+      "support": "Dedicated support",
+      "includes": [
+        "Everything in Assisted Setup Package",
+        "Complete deployment by Rensto team",
+        "Custom configuration",
+        "Training session (1 hour)",
+        "30-day optimization support",
+        "Performance monitoring setup"
+      ]
+    },
+    {
+      "id": "white-label",
+      "name": "White-Label Package",
+      "price": 1497,
+      "setupTime": "0 hours",
+      "support": "Dedicated account manager",
+      "includes": [
+        "Everything in Full Service Package",
+        "White-label branding",
+        "Custom domain setup",
+        "Reseller training",
+        "Ongoing support",
+        "Revenue sharing options"
+      ]
+    }
+  ],
+  "successRates": {
+    "self-service": 85,
+    "assisted-setup": 95,
+    "full-service": 99,
+    "white-label": 100
+  },
+  "customerSatisfaction": {
+    "self-service": 4.2,
+    "assisted-setup": 4.6,
+    "full-service": 4.8,
+    "white-label": 4.9
+  }
+}

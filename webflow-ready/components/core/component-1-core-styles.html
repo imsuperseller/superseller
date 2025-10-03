@@ -1,0 +1,170 @@
+<!-- Component 1: Core Styles & Header -->
+<!-- Character Count: ~25,000 -->
+<!-- Purpose: Base styles, navigation, mobile menu -->
+
+<style>
+/* CSS Variables */
+:root {
+    --red: #fe3d51;
+    --orange: #bf5700;
+    --blue: #1eaef7;
+    --cyan: #5ffbfd;
+    --dark-bg: #110d28;
+    --light-text: #ffffff;
+    --gray-text: #a0a0a0;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header Styles */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(17, 13, 40, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+}
+
+nav a {
+    color: var(--light-text);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: var(--cyan);
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--orange), var(--blue));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: inline-block;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+}
+
+.cta-button-secondary {
+    background: transparent;
+    border: 2px solid var(--blue);
+    color: var(--blue);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.cta-button-secondary:hover {
+    background: var(--blue);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Mobile Menu */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Responsive Base */
+@media (max-width: 768px) {
+    nav ul {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .header-container {
+        padding: 0 1rem;
+    }
+}
+</style>
+
+<!-- Header HTML -->
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <a href="/">
+                <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/marketplace">Marketplace</a></li>
+                <li><a href="/custom-solutions">Custom Solutions</a></li>
+                <li><a href="/subscriptions">Subscriptions</a></li>
+                <li><a href="/ready-solutions">Ready Solutions</a></li>
+                <li><a href="#lead-magnet" class="cta-button">Get Started</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-toggle">☰</button>
+    </div>
+</header>
+
+<script>
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    const nav = document.querySelector('nav ul');
+    
+    if (mobileToggle && nav) {
+        mobileToggle.addEventListener('click', function() {
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        });
+    }
+});
+</script>

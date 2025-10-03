@@ -1,0 +1,856 @@
+<!-- 📚 BLOG COMPONENT -->
+<!-- Contains: Blog post grid, categories, and content management -->
+<!-- Character Count: ~11,000 chars -->
+<!-- Business Model: Content marketing for Universal Automation Platform -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Blog - Automation Insights & Tutorials</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Blog Header */
+        .blog-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .blog-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .blog-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Categories Filter */
+        .categories-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .categories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .category-button:hover,
+        .category-button.active {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Blog Posts Grid */
+        .posts-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .posts-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .post-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            border-color: var(--cyan);
+        }
+        
+        .post-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .post-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .post-content {
+            padding: 2rem;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .post-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .post-excerpt {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-tag {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            color: var(--cyan);
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        
+        .read-more {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .read-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Featured Post */
+        .featured-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .featured-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .featured-post {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .featured-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .featured-content p {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        
+        .featured-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .featured-image {
+            height: 300px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        /* Newsletter Signup */
+        .newsletter-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .newsletter-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .newsletter-button {
+            background: var(--dark-bg);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .featured-post {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .blog-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Blog Header -->
+    <section class="blog-header">
+        <div class="blog-container">
+            <h1 class="blog-title">Automation Insights & Tutorials</h1>
+            <p class="blog-subtitle">Learn how to transform your business with automation. Expert insights, tutorials, and case studies from the Rensto team.</p>
+            
+            <div class="blog-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Expert Articles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Monthly Readers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Reader Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Filter -->
+    <section class="categories-section">
+        <div class="categories-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search articles..." id="searchInput">
+                <button class="search-button" onclick="searchPosts()">Search</button>
+            </div>
+            
+            <div class="categories-grid">
+                <button class="category-button active" data-category="all">All</button>
+                <button class="category-button" data-category="tutorials">Tutorials</button>
+                <button class="category-button" data-category="case-studies">Case Studies</button>
+                <button class="category-button" data-category="automation">Automation</button>
+                <button class="category-button" data-category="n8n">n8n</button>
+                <button class="category-button" data-category="ai">AI & ML</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Post -->
+    <section class="featured-section">
+        <div class="featured-container">
+            <div class="featured-post">
+                <div class="featured-content">
+                    <h2>The Complete Guide to Business Automation in 2025</h2>
+                    <p>Discover the latest automation trends, tools, and strategies that are transforming businesses across industries. Learn how to implement automation that delivers real results.</p>
+                    <div class="featured-meta">
+                        <span>📅 March 15, 2025</span>
+                        <span>⏱️ 12 min read</span>
+                        <span>👤 Sarah Johnson</span>
+                    </div>
+                    <button class="read-more">Read Full Article</button>
+                </div>
+                <div class="featured-image">📖</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Posts Grid -->
+    <section class="posts-section">
+        <div class="posts-container">
+            <div class="posts-grid">
+                <!-- Post 1 -->
+                <div class="post-card" data-category="tutorials">
+                    <div class="post-image">
+                        <div class="post-category">Tutorial</div>
+                        🎯
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 12, 2025</div>
+                            <div class="post-read-time">⏱️ 8 min</div>
+                        </div>
+                        <h3 class="post-title">Building Your First n8n Workflow: A Step-by-Step Guide</h3>
+                        <p class="post-excerpt">Learn how to create your first automation workflow using n8n. From setup to deployment, we'll walk you through every step.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">n8n</span>
+                            <span class="post-tag">Tutorial</span>
+                            <span class="post-tag">Beginner</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">SJ</div>
+                                <span>Sarah Johnson</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 2 -->
+                <div class="post-card" data-category="case-studies">
+                    <div class="post-image">
+                        <div class="post-category">Case Study</div>
+                        📊
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 10, 2025</div>
+                            <div class="post-read-time">⏱️ 6 min</div>
+                        </div>
+                        <h3 class="post-title">How HealthcareCorp Automated Patient Management</h3>
+                        <p class="post-excerpt">See how a healthcare provider saved 20 hours per week and increased patient satisfaction by 45% with automation.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">Healthcare</span>
+                            <span class="post-tag">Case Study</span>
+                            <span class="post-tag">ROI</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">MJ</div>
+                                <span>Mike Chen</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 3 -->
+                <div class="post-card" data-category="automation">
+                    <div class="post-image">
+                        <div class="post-category">Automation</div>
+                        🤖
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 8, 2025</div>
+                            <div class="post-read-time">⏱️ 10 min</div>
+                        </div>
+                        <h3 class="post-title">10 Automation Mistakes That Cost Businesses Money</h3>
+                        <p class="post-excerpt">Avoid these common automation pitfalls that can hurt your ROI and learn how to implement automation the right way.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">Best Practices</span>
+                            <span class="post-tag">Mistakes</span>
+                            <span class="post-tag">ROI</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">AL</div>
+                                <span>Alex Liu</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 4 -->
+                <div class="post-card" data-category="ai">
+                    <div class="post-image">
+                        <div class="post-category">AI</div>
+                        🧠
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 5, 2025</div>
+                            <div class="post-read-time">⏱️ 7 min</div>
+                        </div>
+                        <h3 class="post-title">AI-Powered Voice Agents: The Future of Customer Service</h3>
+                        <p class="post-excerpt">Explore how AI voice agents are revolutionizing customer service and learn how to implement them in your business.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">AI</span>
+                            <span class="post-tag">Voice Agents</span>
+                            <span class="post-tag">Customer Service</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">EK</div>
+                                <span>Emma Kim</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 5 -->
+                <div class="post-card" data-category="n8n">
+                    <div class="post-image">
+                        <div class="post-category">n8n</div>
+                        ⚡
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 3, 2025</div>
+                            <div class="post-read-time">⏱️ 9 min</div>
+                        </div>
+                        <h3 class="post-title">Advanced n8n Techniques for Complex Workflows</h3>
+                        <p class="post-excerpt">Master advanced n8n features like error handling, conditional logic, and data transformation for complex automation scenarios.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">n8n</span>
+                            <span class="post-tag">Advanced</span>
+                            <span class="post-tag">Workflows</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">DJ</div>
+                                <span>David Park</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post 6 -->
+                <div class="post-card" data-category="case-studies">
+                    <div class="post-image">
+                        <div class="post-category">Case Study</div>
+                        💼
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <div class="post-date">📅 March 1, 2025</div>
+                            <div class="post-read-time">⏱️ 5 min</div>
+                        </div>
+                        <h3 class="post-title">E-commerce Automation: From 0 to $100K Revenue</h3>
+                        <p class="post-excerpt">How a small e-commerce business scaled to $100K monthly revenue using strategic automation and workflow optimization.</p>
+                        <div class="post-tags">
+                            <span class="post-tag">E-commerce</span>
+                            <span class="post-tag">Case Study</span>
+                            <span class="post-tag">Scaling</span>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-author">
+                                <div class="author-avatar">LT</div>
+                                <span>Lisa Thompson</span>
+                            </div>
+                            <button class="read-more">Read More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2 class="newsletter-title">Stay Updated with Automation Insights</h2>
+            <p class="newsletter-subtitle">Get the latest automation tips, tutorials, and case studies delivered to your inbox weekly.</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate blog header
+        gsap.from('.blog-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.blog-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.blog-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate featured post
+        gsap.from('.featured-post', {
+            scrollTrigger: {
+                trigger: '.featured-post',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate post cards
+        gsap.utils.toArray('.post-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Category filtering
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                filterPosts(category);
+            });
+        });
+
+        function filterPosts(category) {
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                if (category === 'all' || post.getAttribute('data-category') === category) {
+                    post.style.display = 'block';
+                    gsap.from(post, {
+                        duration: 0.5,
+                        y: 30,
+                        opacity: 0,
+                        ease: 'power3.out'
+                    });
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+
+        // Search functionality
+        function searchPosts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                const excerpt = post.querySelector('.post-excerpt').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+
+        // Add hover effects to post cards
+        document.querySelectorAll('.post-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Newsletter form handling
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.newsletter-input').value;
+            alert(`Thank you for subscribing! We'll send automation insights to ${email}`);
+            this.reset();
+        });
+
+        // Read more button functionality
+        document.querySelectorAll('.read-more').forEach(button => {
+            button.addEventListener('click', function() {
+                const postTitle = this.closest('.post-card')?.querySelector('.post-title')?.textContent || 
+                                this.closest('.featured-post')?.querySelector('h2')?.textContent;
+                alert(`Opening article: "${postTitle}". This would navigate to the full article.`);
+            });
+        });
+    </script>
+</body>
+</html>

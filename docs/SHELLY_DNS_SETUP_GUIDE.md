@@ -33,7 +33,6 @@
 
 ## 🏗️ **RECOMMENDED SETUP OPTIONS**
 
-### **Option A: Cloudflare + Vercel (RECOMMENDED)**
 
 #### **Benefits:**
 - ✅ Free SSL certificates
@@ -44,17 +43,13 @@
 
 #### **DNS Configuration:**
 ```bash
-# Main website (Vercel)
 shellyover.co.il      A       76.76.21.21
-www.shellyover.co.il  CNAME   cname.vercel-dns.com
 
 # Email (if using external email service)
 @                    MX      10 mail.shellyover.co.il
 mail.shellyover.co.il A      [email-server-ip]
 
 # Subdomains (optional)
-portal.shellyover.co.il CNAME cname.vercel-dns.com
-api.shellyover.co.il   CNAME  cname.vercel-dns.com
 ```
 
 ### **Option B: Direct VPS Hosting**
@@ -96,7 +91,6 @@ mail.shellyover.co.il A      173.254.201.134
 
 ### **Step 2: Choose Hosting Platform**
 
-#### **Vercel (Recommended)**
 - **Cost**: Free tier available
 - **Features**: SSL, CDN, easy deployment
 - **Setup**: 15 minutes
@@ -154,7 +148,6 @@ mail.shellyover.co.il A      173.254.201.134
 
 ### **Immediate Actions:**
 1. **Contact Shelly**: Ask for DNS access and preferences
-2. **Choose Platform**: Decide between Vercel or VPS
 3. **Plan Website**: Define features and content
 4. **Set Timeline**: Establish development schedule
 

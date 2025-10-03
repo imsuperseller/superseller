@@ -1,0 +1,107 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "n8n AI Analysis Results"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "hook": 1326647
+      }
+    },
+    {
+      "id": 2,
+      "module": "surense:UpdateLead",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "leadId": "{{1.leadId || 1.id}}",
+        "notes": "{{1.analysisHtml}}",
+        "priority": "{{1.priority || 'medium'}}",
+        "customFields": {
+          "riskScore": "{{1.riskScore}}",
+          "riskCategory": "{{1.category}}",
+          "recommendedProducts": "{{1.recommendedProducts}}",
+          "dataQuality": "{{1.dataQuality}}",
+          "aiAnalysisDate": "{{1.processedAt}}"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "surense:UploadDocument",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "leadId": "{{1.leadId || 1.id}}",
+        "documentType": "AI Insurance Analysis",
+        "file": "{{1.pdfData}}",
+        "fileName": "insurance-analysis-{{1.familyId || 1.id}}.pdf",
+        "description": "AI-generated insurance profile analysis with risk assessment"
+      }
+    },
+    {
+      "id": 4,
+      "module": "surense:CreateActivity",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "leadId": "{{1.leadId || 1.id}}",
+        "activityType": "AI Analysis Completed",
+        "description": "Insurance profile analysis completed. Risk Score: {{1.riskScore}}, Category: {{1.category}}, Data Quality: {{1.dataQuality}}%",
+        "priority": "{{1.priority}}"
+      }
+    }
+  ],
+  "name": "n8n AI Analysis to Surense Lead Update",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

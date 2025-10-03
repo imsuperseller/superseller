@@ -267,3 +267,6 @@ const advancedFeatures = {
 ---
 
 **This comprehensive integration ensures Ben Ginati's Tax4Us portal has full WordPress automation capabilities while maintaining security, performance, and scalability.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

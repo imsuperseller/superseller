@@ -17,7 +17,7 @@ import path from 'path';
 
 class MagicalDisappearingEffects {
     constructor() {
-        this.customerId = 'shelly-mizrahi';
+        this.customerId = 'rensto-system';
         this.effects = [];
         this.animations = [];
     }

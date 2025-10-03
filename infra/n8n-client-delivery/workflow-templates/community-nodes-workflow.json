@@ -1,0 +1,338 @@
+{
+  "name": "Community Nodes Integration Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "community-automation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Community Automation Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "community-automation-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "query": "={{ $json.searchQuery }}",
+        "num": 10,
+        "location": "={{ $json.location || 'United States' }}"
+      },
+      "id": "serpapi-search",
+      "name": "SerpAPI Search",
+      "type": "n8n-nodes-serpapi",
+      "typeVersion": 1,
+      "position": [460, 200],
+      "credentials": {
+        "serpApi": {
+          "id": "jxHMlk8kx412vnJs",
+          "name": "SerpAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "query": "={{ $json.searchQuery }}",
+        "maxResults": 10,
+        "includeAnswer": true,
+        "includeImages": false,
+        "includeRawContent": false
+      },
+      "id": "tavily-search",
+      "name": "Tavily AI Search",
+      "type": "@tavily/n8n-nodes-tavily",
+      "typeVersion": 1,
+      "position": [460, 400],
+      "credentials": {
+        "tavilyApi": {
+          "id": "bA3URPqTVIB7lX5M",
+          "name": "Tavily"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "query": "={{ $json.searchQuery }}",
+        "maxResults": 10,
+        "returnCitations": true,
+        "returnImages": false,
+        "returnRelatedQuestions": true
+      },
+      "id": "perplexity-search",
+      "name": "Perplexity AI Search",
+      "type": "@watzon/n8n-nodes-perplexity",
+      "typeVersion": 1,
+      "position": [460, 600],
+      "credentials": {
+        "perplexityApi": {
+          "id": "TuWKvKJ10l1MhdTT",
+          "name": "Perplexity.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Combine search results from multiple sources\nconst serpResults = $('SerpAPI Search').all();\nconst tavilyResults = $('Tavily AI Search').all();\nconst perplexityResults = $('Perplexity AI Search').all();\n\n// Process SerpAPI results\nconst serpData = serpResults.map(item => ({\n  source: 'SerpAPI',\n  title: item.json.title || item.json.link,\n  url: item.json.link,\n  snippet: item.json.snippet || '',\n  position: item.json.position || 0\n}));\n\n// Process Tavily results\nconst tavilyData = tavilyResults.map(item => ({\n  source: 'Tavily',\n  title: item.json.title || '',\n  url: item.json.url || '',\n  snippet: item.json.content || '',\n  answer: item.json.answer || ''\n}));\n\n// Process Perplexity results\nconst perplexityData = perplexityResults.map(item => ({\n  source: 'Perplexity',\n  title: item.json.title || '',\n  url: item.json.url || '',\n  snippet: item.json.content || '',\n  citations: item.json.citations || []\n}));\n\n// Combine and deduplicate results\nconst allResults = [...serpData, ...tavilyData, ...perplexityData];\nconst seen = new Set();\nconst deduplicated = [];\n\nfor (const result of allResults) {\n  const key = result.url || result.title;\n  if (!seen.has(key) && key) {\n    seen.add(key);\n    deduplicated.push(result);\n  }\n}\n\nreturn [{\n  json: {\n    searchQuery: $json.searchQuery,\n    totalResults: deduplicated.length,\n    serpCount: serpData.length,\n    tavilyCount: tavilyData.length,\n    perplexityCount: perplexityData.length,\n    results: deduplicated,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "combine-search-results",
+      "name": "Combine Search Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "scrape",
+        "urls": "={{ $json.results.slice(0, 5).map(r => r.url).filter(url => url) }}",
+        "formats": ["markdown"],
+        "onlyMainContent": true,
+        "maxPages": 5
+      },
+      "id": "firecrawl-scrape",
+      "name": "Firecrawl Content Scraper",
+      "type": "@mendable/n8n-nodes-firecrawl",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "firecrawlApi": {
+          "id": "ZNwylTDDAKXSBhhB",
+          "name": "Firecrawl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "runActor",
+        "actorId": "y1bjlVpn2Kkdd2mi7",
+        "waitForFinish": false,
+        "input": "={\n  \"urls\": {{ $json.results.slice(0, 3).map(r => r.url).filter(url => url) }},\n  \"extractEmails\": true,\n  \"extractPhones\": true,\n  \"extractSocialMedia\": true,\n  \"maxResults\": 50\n}"
+      },
+      "id": "apify-data-extractor",
+      "name": "Apify Data Extractor",
+      "type": "n8n-nodes-apify",
+      "typeVersion": 1,
+      "position": [900, 500],
+      "credentials": {
+        "apifyApi": {
+          "id": "YAejSPPe9kH85mYN",
+          "name": "Apify API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "record",
+        "baseId": "appSearchResultsBase",
+        "tableId": "tblSearchResults",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Search Query": "={{ $json.searchQuery }}",
+            "Total Results": "={{ $json.totalResults }}",
+            "Results Data": "={{ JSON.stringify($json.results) }}",
+            "Timestamp": "={{ $json.timestamp }}",
+            "Status": "Completed"
+          }
+        }
+      },
+      "id": "save-to-airtable",
+      "name": "Save to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [1120, 400],
+      "credentials": {
+        "airtableApi": {
+          "id": "3lTwFd8waEI1UQEW",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "resource": "message",
+        "chatId": "={{ $json.telegramChatId }}",
+        "text": "🔍 Search Results for: {{ $json.searchQuery }}\n\n📊 Found {{ $json.totalResults }} results:\n- SerpAPI: {{ $json.serpCount }}\n- Tavily: {{ $json.tavilyCount }}\n- Perplexity: {{ $json.perplexityCount }}\n\n📋 Top Results:\n{{ $json.results.slice(0, 3).map((r, i) => `${i+1}. ${r.title}\\n   ${r.url}`).join('\\n') }}\n\n✅ Data saved to Airtable and processed with Firecrawl & Apify"
+      },
+      "id": "send-telegram-notification",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "bLHttNk6uvckgrcO",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "channel": "={{ $json.slackChannel }}",
+        "text": "🔍 *Search Automation Complete*\n\n*Query:* {{ $json.searchQuery }}\n*Results Found:* {{ $json.totalResults }}\n\n*Sources:*\n• SerpAPI: {{ $json.serpCount }} results\n• Tavily: {{ $json.tavilyCount }} results\n• Perplexity: {{ $json.perplexityCount }} results\n\n*Top Results:*\n{{ $json.results.slice(0, 3).map((r, i) => `${i+1}. <${r.url}|${r.title}>`).join('\\n') }}\n\n✅ Data processed and saved to Airtable",
+        "blocks": []
+      },
+      "id": "send-slack-notification",
+      "name": "Send Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1340, 500],
+      "credentials": {
+        "slackApi": {
+          "id": "ktLP7QexI9Hpgz73",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Community nodes automation completed successfully\", \"searchQuery\": $json.searchQuery, \"totalResults\": $json.totalResults, \"sources\": { \"serpapi\": $json.serpCount, \"tavily\": $json.tavilyCount, \"perplexity\": $json.perplexityCount }, \"timestamp\": $json.timestamp } }}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 400]
+    }
+  ],
+  "connections": {
+    "Community Automation Webhook": {
+      "main": [
+        [
+          {
+            "node": "SerpAPI Search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tavily AI Search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Perplexity AI Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI Search": {
+      "main": [
+        [
+          {
+            "node": "Combine Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily AI Search": {
+      "main": [
+        [
+          {
+            "node": "Combine Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity AI Search": {
+      "main": [
+        [
+          {
+            "node": "Combine Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Search Results": {
+      "main": [
+        [
+          {
+            "node": "Firecrawl Content Scraper",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Apify Data Extractor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Notification": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Slack Notification": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-14T20:00:00.000Z",
+      "updatedAt": "2025-01-14T20:00:00.000Z",
+      "id": "community-nodes",
+      "name": "Community Nodes"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-14T20:00:00.000Z",
+  "versionId": "1"
+}

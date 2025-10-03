@@ -16,17 +16,17 @@ class ProductionDeployment {
             environment: 'production',
             domain: 'rensto.com',
             customers: {
-                'ben-ginati': {
+                'rensto-system': {
                     name: 'Ben Ginati',
                     company: 'Tax4Us',
-                    subdomain: 'tax4us.rensto.com',
-                    portalUrl: 'https://tax4us.rensto.com'
+                    subdomain: 'rensto-system.rensto.com',
+                    portalUrl: 'https://rensto-system.rensto.com'
                 },
-                'shelly-mizrahi': {
-                    name: 'Shelly Mizrahi',
+                'rensto-system': {
+                    name: 'Rensto System',
                     company: 'Insurance Services',
-                    subdomain: 'shelly-mizrahi.rensto.com',
-                    portalUrl: 'https://shelly-mizrahi.rensto.com'
+                    subdomain: 'rensto-system.rensto.com',
+                    portalUrl: 'https://rensto-system.rensto.com'
                 }
             },
             deploymentSteps: [
@@ -68,8 +68,8 @@ class ProductionDeployment {
             customDomains: [
                 'rensto.com',
                 'www.rensto.com',
-                'tax4us.rensto.com',
-                'shelly-mizrahi.rensto.com'
+                'rensto-system.rensto.com',
+                'rensto-system.rensto.com'
             ]
         };
 
@@ -200,17 +200,17 @@ class ProductionDeployment {
                 },
                 {
                     type: 'CNAME',
-                    name: 'ben-ginati',
+                    name: 'rensto-system',
                     value: 'rensto-business-system.vercel.app',
                     ttl: 3600,
                     description: 'Ben Ginati customer portal'
                 },
                 {
                     type: 'CNAME',
-                    name: 'shelly-mizrahi',
+                    name: 'rensto-system',
                     value: 'rensto-business-system.vercel.app',
                     ttl: 3600,
-                    description: 'Shelly Mizrahi customer portal'
+                    description: 'Rensto System customer portal'
                 }
             ],
             sslConfiguration: {
@@ -330,8 +330,8 @@ class ProductionDeployment {
             ],
             urls: {
                 'main-domain': 'https://rensto.com',
-                'tax4us': 'https://tax4us.rensto.com',
-                'shelly-mizrahi': 'https://shelly-mizrahi.rensto.com'
+                'rensto-system': 'https://rensto-system.rensto.com',
+                'rensto-system': 'https://rensto-system.rensto.com'
             },
             support: {
                 documentation: 'docs/PHASE_2_COMPLETION_SUMMARY.md',

@@ -1,0 +1,1688 @@
+{
+  "timestamp": "2025-09-25T01:50:00.455Z",
+  "bmad": {
+    "phase": "brainstorming",
+    "status": "completed"
+  },
+  "currentStructure": {
+    ".DS_Store": {
+      "type": "file",
+      "size": 12292,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    ".cursor": {
+      "type": "directory",
+      "size": 3672,
+      "files": 2,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    ".git": {
+      "type": "directory",
+      "size": 48595398,
+      "files": 14,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    ".github": {
+      "type": "directory",
+      "size": 26505,
+      "files": 4,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    ".gitignore": {
+      "type": "file",
+      "size": 3401,
+      "purpose": {
+        "category": "root",
+        "subcategory": "project"
+      }
+    },
+    ".vscode": {
+      "type": "directory",
+      "size": 395,
+      "files": 1,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    ".wrangler": {
+      "type": "directory",
+      "size": 0,
+      "files": 1,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "BMAD_MASTER_STATUS_SINGLE_SOURCE_OF_TRUTH.md": {
+      "type": "file",
+      "size": 8577,
+      "purpose": {
+        "category": "project",
+        "subcategory": "management"
+      }
+    },
+    "COMPREHENSIVE_AIRTABLE_AUDIT_REPORT.md": {
+      "type": "file",
+      "size": 4930,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "COMPREHENSIVE_DATA_VERIFICATION_AND_FIX_PLAN.md": {
+      "type": "file",
+      "size": 6232,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "CONFLICTS_AND_CONTRADICTIONS_AUDIT_REPORT.md": {
+      "type": "file",
+      "size": 10645,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "Customers": {
+      "type": "directory",
+      "size": 67033666,
+      "files": 5,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      }
+    },
+    "DEPLOYMENT_CHECKLIST.md": {
+      "type": "file",
+      "size": 4146,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "LEAD_GENERATION_STRATEGY.md": {
+      "type": "file",
+      "size": 6234,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "LINKEDIN_PAGE_CONTENT_RECOMMENDATIONS.md": {
+      "type": "file",
+      "size": 7169,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "LINKEDIN_PROFILE_CONTENT_2025.md": {
+      "type": "file",
+      "size": 4271,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "Leads": {
+      "type": "directory",
+      "size": 22076,
+      "files": 3,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "LeadsExport_21-9-2025_21-56-03.xlsx": {
+      "type": "file",
+      "size": 31719,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      }
+    },
+    "MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md": {
+      "type": "file",
+      "size": 10138,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "MCP_SINGLE_SOURCE_OF_TRUTH.md": {
+      "type": "file",
+      "size": 21940,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "MCP_SYSTEMATIC_FIX_PROGRESS.md": {
+      "type": "file",
+      "size": 2567,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "N8N_WORKFLOW_CREATION_REFERENCES_STATUS.md": {
+      "type": "file",
+      "size": 3815,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "N8N_WORKFLOW_TEST_RESULTS_AND_FIXES.md": {
+      "type": "file",
+      "size": 2628,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "PROJECT_SUPER_PROMPT_DATABASE.md": {
+      "type": "file",
+      "size": 15631,
+      "purpose": {
+        "category": "project",
+        "subcategory": "management"
+      }
+    },
+    "QUICK_STATUS_REFERENCE.md": {
+      "type": "file",
+      "size": 1000,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "README.md": {
+      "type": "file",
+      "size": 24513,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "SUPER_PROMPT_DATABASE_REFERENCE_MAP.md": {
+      "type": "file",
+      "size": 5402,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "WEBHOOK_MASTER_CONTROL_SYSTEM.md": {
+      "type": "file",
+      "size": 13451,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "WEBHOOK_SYSTEM_FINAL_STATUS.md": {
+      "type": "file",
+      "size": 7092,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "active": {
+      "type": "directory",
+      "size": 1238,
+      "files": 4,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "apply_router_filters.js": {
+      "type": "file",
+      "size": 4174,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "apply_router_filters_final.js": {
+      "type": "file",
+      "size": 5769,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "apps": {
+      "type": "directory",
+      "size": 1574688291,
+      "files": 2,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "archived": {
+      "type": "directory",
+      "size": 1303515,
+      "files": 8,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "archives": {
+      "type": "directory",
+      "size": 2136574,
+      "files": 5,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "assets": {
+      "type": "directory",
+      "size": 1546932,
+      "files": 2,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "cleanup_duplicates.js": {
+      "type": "file",
+      "size": 2684,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "cloudflare-tunnel-n8n.sh": {
+      "type": "file",
+      "size": 2165,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "cloudflare-tunnel-quickbooks-oauth.sh": {
+      "type": "file",
+      "size": 2298,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "cloudflare-workers": {
+      "type": "directory",
+      "size": 11960,
+      "files": 4,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "complete_apitemplate_config.json": {
+      "type": "file",
+      "size": 4707,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "complete_data_processor_code.js": {
+      "type": "file",
+      "size": 3972,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "complete_insurance_scenario_blueprint.json": {
+      "type": "file",
+      "size": 12375,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "complete_insurance_template.html": {
+      "type": "file",
+      "size": 24309,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "comprehensive_audit_report.js": {
+      "type": "file",
+      "size": 4972,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "config.json": {
+      "type": "file",
+      "size": 5861,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "configs": {
+      "type": "directory",
+      "size": 1683409,
+      "files": 15,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "data": {
+      "type": "directory",
+      "size": 1814410,
+      "files": 34,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      }
+    },
+    "designs": {
+      "type": "directory",
+      "size": 1636,
+      "files": 1,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "docs": {
+      "type": "directory",
+      "size": 29446683,
+      "files": 381,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "document_creator_config.json": {
+      "type": "file",
+      "size": 1750,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "event_filter_config.json": {
+      "type": "file",
+      "size": 753,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "examples": {
+      "type": "directory",
+      "size": 603,
+      "files": 1,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "exports": {
+      "type": "directory",
+      "size": 3980222,
+      "files": 4,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      }
+    },
+    "file.txt": {
+      "type": "file",
+      "size": 229504,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "final_verification.js": {
+      "type": "file",
+      "size": 3024,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "infra": {
+      "type": "directory",
+      "size": 206444572,
+      "files": 10,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "investigate_what_i_did_wrong.js": {
+      "type": "file",
+      "size": 4255,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "live-systems": {
+      "type": "directory",
+      "size": 2485724,
+      "files": 4,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "logs": {
+      "type": "directory",
+      "size": 564495,
+      "files": 27,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "make_mcp_client.js": {
+      "type": "file",
+      "size": 3413,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "mcp-server-cloudflare": {
+      "type": "directory",
+      "size": 10467151,
+      "files": 24,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "monitor_workflow.sh": {
+      "type": "file",
+      "size": 3136,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "n8n": {
+      "type": "directory",
+      "size": 2493,
+      "files": 2,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "n8n-update-instructions.md": {
+      "type": "file",
+      "size": 7848,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "n8n_nodes_catalog.md": {
+      "type": "file",
+      "size": 1459,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      }
+    },
+    "node_modules": {
+      "type": "directory",
+      "size": 6779431,
+      "files": 78,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "notion-final-execution-guide.json": {
+      "type": "file",
+      "size": 7030,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "notion-final-status-report.json": {
+      "type": "file",
+      "size": 1389,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "notion-hybrid-integration-config.json": {
+      "type": "file",
+      "size": 4231,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "notion_comprehensive_population.js": {
+      "type": "file",
+      "size": 13831,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "notion_deep_investigation.js": {
+      "type": "file",
+      "size": 4908,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "openapi.json": {
+      "type": "file",
+      "size": 694006,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "ops": {
+      "type": "directory",
+      "size": 17065,
+      "files": 5,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "package-lock.json": {
+      "type": "file",
+      "size": 37099,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "package.json": {
+      "type": "file",
+      "size": 663,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "packages": {
+      "type": "directory",
+      "size": 20696,
+      "files": 4,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "production-ready-webhook-security-workflow.json": {
+      "type": "file",
+      "size": 10169,
+      "purpose": {
+        "category": "workflows",
+        "subcategory": "automation"
+      }
+    },
+    "rensto-landing": {
+      "type": "directory",
+      "size": 19928,
+      "files": 6,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "sample_csv_contacts-2.csv": {
+      "type": "file",
+      "size": 621,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      }
+    },
+    "scripts": {
+      "type": "directory",
+      "size": 64917972,
+      "files": 356,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "shelly_apitemplate_config.json": {
+      "type": "file",
+      "size": 4707,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      }
+    },
+    "shelly_pdf_generation_workflow.json": {
+      "type": "file",
+      "size": 7249,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      }
+    },
+    "shelly_workflow_fixed.json": {
+      "type": "file",
+      "size": 23884,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      }
+    },
+    "test-production-webhook-workflow.js": {
+      "type": "file",
+      "size": 8912,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "try_old_api_version.js": {
+      "type": "file",
+      "size": 3171,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "update_request.json": {
+      "type": "file",
+      "size": 29377,
+      "purpose": {
+        "category": "config",
+        "subcategory": "system"
+      }
+    },
+    "verify_router_filters.js": {
+      "type": "file",
+      "size": 7184,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      }
+    },
+    "workflows": {
+      "type": "directory",
+      "size": 805298,
+      "files": 25,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    },
+    "~": {
+      "type": "directory",
+      "size": 981,
+      "files": 1,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      }
+    }
+  },
+  "scatteredFiles": [
+    {
+      "name": ".DS_Store",
+      "size": 12292,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      },
+      "suggestedLocation": "system/misc/"
+    },
+    {
+      "name": "BMAD_MASTER_STATUS_SINGLE_SOURCE_OF_TRUTH.md",
+      "size": 8577,
+      "purpose": {
+        "category": "project",
+        "subcategory": "management"
+      },
+      "suggestedLocation": "Projects/"
+    },
+    {
+      "name": "COMPREHENSIVE_AIRTABLE_AUDIT_REPORT.md",
+      "size": 4930,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "COMPREHENSIVE_DATA_VERIFICATION_AND_FIX_PLAN.md",
+      "size": 6232,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "CONFLICTS_AND_CONTRADICTIONS_AUDIT_REPORT.md",
+      "size": 10645,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "DEPLOYMENT_CHECKLIST.md",
+      "size": 4146,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "LEAD_GENERATION_STRATEGY.md",
+      "size": 6234,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "LINKEDIN_PAGE_CONTENT_RECOMMENDATIONS.md",
+      "size": 7169,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "LINKEDIN_PROFILE_CONTENT_2025.md",
+      "size": 4271,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "LeadsExport_21-9-2025_21-56-03.xlsx",
+      "size": 31719,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      },
+      "suggestedLocation": "data/"
+    },
+    {
+      "name": "MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md",
+      "size": 10138,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "MCP_SINGLE_SOURCE_OF_TRUTH.md",
+      "size": 21940,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "MCP_SYSTEMATIC_FIX_PROGRESS.md",
+      "size": 2567,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "N8N_WORKFLOW_CREATION_REFERENCES_STATUS.md",
+      "size": 3815,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "N8N_WORKFLOW_TEST_RESULTS_AND_FIXES.md",
+      "size": 2628,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "PROJECT_SUPER_PROMPT_DATABASE.md",
+      "size": 15631,
+      "purpose": {
+        "category": "project",
+        "subcategory": "management"
+      },
+      "suggestedLocation": "Projects/"
+    },
+    {
+      "name": "QUICK_STATUS_REFERENCE.md",
+      "size": 1000,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "README.md",
+      "size": 24513,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "SUPER_PROMPT_DATABASE_REFERENCE_MAP.md",
+      "size": 5402,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "WEBHOOK_MASTER_CONTROL_SYSTEM.md",
+      "size": 13451,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "WEBHOOK_SYSTEM_FINAL_STATUS.md",
+      "size": 7092,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "apply_router_filters.js",
+      "size": 4174,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "apply_router_filters_final.js",
+      "size": 5769,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "cleanup_duplicates.js",
+      "size": 2684,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "cloudflare-tunnel-n8n.sh",
+      "size": 2165,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "cloudflare-tunnel-quickbooks-oauth.sh",
+      "size": 2298,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "complete_data_processor_code.js",
+      "size": 3972,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "complete_insurance_template.html",
+      "size": 24309,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      },
+      "suggestedLocation": "system/misc/"
+    },
+    {
+      "name": "comprehensive_audit_report.js",
+      "size": 4972,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "document_creator_config.json",
+      "size": 1750,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "file.txt",
+      "size": 229504,
+      "purpose": {
+        "category": "unknown",
+        "subcategory": "misc"
+      },
+      "suggestedLocation": "system/misc/"
+    },
+    {
+      "name": "final_verification.js",
+      "size": 3024,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "investigate_what_i_did_wrong.js",
+      "size": 4255,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "make_mcp_client.js",
+      "size": 3413,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "monitor_workflow.sh",
+      "size": 3136,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "n8n-update-instructions.md",
+      "size": 7848,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "n8n_nodes_catalog.md",
+      "size": 1459,
+      "purpose": {
+        "category": "documentation",
+        "subcategory": "knowledge"
+      },
+      "suggestedLocation": "docs/"
+    },
+    {
+      "name": "notion_comprehensive_population.js",
+      "size": 13831,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "notion_deep_investigation.js",
+      "size": 4908,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "production-ready-webhook-security-workflow.json",
+      "size": 10169,
+      "purpose": {
+        "category": "workflows",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "workflows/"
+    },
+    {
+      "name": "sample_csv_contacts-2.csv",
+      "size": 621,
+      "purpose": {
+        "category": "data",
+        "subcategory": "files"
+      },
+      "suggestedLocation": "data/"
+    },
+    {
+      "name": "shelly_apitemplate_config.json",
+      "size": 4707,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      },
+      "suggestedLocation": "Customers/"
+    },
+    {
+      "name": "shelly_pdf_generation_workflow.json",
+      "size": 7249,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      },
+      "suggestedLocation": "Customers/"
+    },
+    {
+      "name": "shelly_workflow_fixed.json",
+      "size": 23884,
+      "purpose": {
+        "category": "customer",
+        "subcategory": "data"
+      },
+      "suggestedLocation": "Customers/"
+    },
+    {
+      "name": "test-production-webhook-workflow.js",
+      "size": 8912,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "try_old_api_version.js",
+      "size": 3171,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    },
+    {
+      "name": "verify_router_filters.js",
+      "size": 7184,
+      "purpose": {
+        "category": "scripts",
+        "subcategory": "automation"
+      },
+      "suggestedLocation": "scripts/"
+    }
+  ],
+  "reorganizationPlan": {
+    "phase1": {
+      "name": "Create Optimal Structure",
+      "steps": [
+        "Create main category directories",
+        "Create subcategory directories",
+        "Set up monitoring structure"
+      ]
+    },
+    "phase2": {
+      "name": "Move Scattered Files",
+      "steps": [
+        "Move documentation files to docs/",
+        "Move scripts to scripts/",
+        "Move configs to configs/",
+        "Move workflows to workflows/"
+      ]
+    },
+    "phase3": {
+      "name": "Align with Data Structure",
+      "steps": [
+        "Create customer-specific directories",
+        "Create project-specific directories",
+        "Create system-specific directories"
+      ]
+    },
+    "phase4": {
+      "name": "Implement Monitoring",
+      "steps": [
+        "Create monitoring scripts",
+        "Set up automated checks",
+        "Create maintenance procedures"
+      ]
+    }
+  },
+  "executionResults": {
+    "filesMoved": 47,
+    "directoriesCreated": 15,
+    "errors": []
+  },
+  "dataStructure": {
+    "airtable": {
+      "bases": [
+        {
+          "name": "Rensto Business Operations",
+          "tables": [
+            "Companies",
+            "Projects",
+            "Tasks",
+            "Progress Tracking"
+          ]
+        },
+        {
+          "name": "Customer Management",
+          "tables": [
+            "Customers",
+            "Leads",
+            "Communications"
+          ]
+        },
+        {
+          "name": "Financial Operations",
+          "tables": [
+            "Invoices",
+            "Payments",
+            "Expenses"
+          ]
+        },
+        {
+          "name": "System Administration",
+          "tables": [
+            "Users",
+            "Permissions",
+            "Audit Logs"
+          ]
+        }
+      ]
+    },
+    "notion": {
+      "databases": [
+        {
+          "name": "Customer Management",
+          "purpose": "Customer data and interactions"
+        },
+        {
+          "name": "Project Tracking",
+          "purpose": "Project management and progress"
+        },
+        {
+          "name": "Task Management",
+          "purpose": "Task tracking and assignments"
+        },
+        {
+          "name": "Documentation",
+          "purpose": "Knowledge base and documentation"
+        }
+      ]
+    }
+  },
+  "conflicts": [
+    {
+      "type": "duplicate_purpose",
+      "category": "unknown",
+      "items": [
+        ".DS_Store",
+        ".cursor",
+        ".git",
+        ".github",
+        ".vscode",
+        ".wrangler",
+        "Leads",
+        "active",
+        "apps",
+        "archived",
+        "archives",
+        "assets",
+        "cloudflare-workers",
+        "complete_insurance_template.html",
+        "designs",
+        "examples",
+        "file.txt",
+        "infra",
+        "live-systems",
+        "logs",
+        "mcp-server-cloudflare",
+        "n8n",
+        "node_modules",
+        "ops",
+        "packages",
+        "rensto-landing",
+        "workflows",
+        "~"
+      ],
+      "suggestion": "Consolidate .DS_Store, .cursor, .git, .github, .vscode, .wrangler, Leads, active, apps, archived, archives, assets, cloudflare-workers, complete_insurance_template.html, designs, examples, file.txt, infra, live-systems, logs, mcp-server-cloudflare, n8n, node_modules, ops, packages, rensto-landing, workflows, ~ into single unknown directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "project",
+      "items": [
+        "BMAD_MASTER_STATUS_SINGLE_SOURCE_OF_TRUTH.md",
+        "PROJECT_SUPER_PROMPT_DATABASE.md"
+      ],
+      "suggestion": "Consolidate BMAD_MASTER_STATUS_SINGLE_SOURCE_OF_TRUTH.md, PROJECT_SUPER_PROMPT_DATABASE.md into single project directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "documentation",
+      "items": [
+        "COMPREHENSIVE_AIRTABLE_AUDIT_REPORT.md",
+        "COMPREHENSIVE_DATA_VERIFICATION_AND_FIX_PLAN.md",
+        "CONFLICTS_AND_CONTRADICTIONS_AUDIT_REPORT.md",
+        "DEPLOYMENT_CHECKLIST.md",
+        "LEAD_GENERATION_STRATEGY.md",
+        "LINKEDIN_PAGE_CONTENT_RECOMMENDATIONS.md",
+        "LINKEDIN_PROFILE_CONTENT_2025.md",
+        "MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md",
+        "MCP_SINGLE_SOURCE_OF_TRUTH.md",
+        "MCP_SYSTEMATIC_FIX_PROGRESS.md",
+        "N8N_WORKFLOW_CREATION_REFERENCES_STATUS.md",
+        "N8N_WORKFLOW_TEST_RESULTS_AND_FIXES.md",
+        "QUICK_STATUS_REFERENCE.md",
+        "README.md",
+        "SUPER_PROMPT_DATABASE_REFERENCE_MAP.md",
+        "WEBHOOK_MASTER_CONTROL_SYSTEM.md",
+        "WEBHOOK_SYSTEM_FINAL_STATUS.md",
+        "docs",
+        "document_creator_config.json",
+        "n8n-update-instructions.md",
+        "n8n_nodes_catalog.md"
+      ],
+      "suggestion": "Consolidate COMPREHENSIVE_AIRTABLE_AUDIT_REPORT.md, COMPREHENSIVE_DATA_VERIFICATION_AND_FIX_PLAN.md, CONFLICTS_AND_CONTRADICTIONS_AUDIT_REPORT.md, DEPLOYMENT_CHECKLIST.md, LEAD_GENERATION_STRATEGY.md, LINKEDIN_PAGE_CONTENT_RECOMMENDATIONS.md, LINKEDIN_PROFILE_CONTENT_2025.md, MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md, MCP_SINGLE_SOURCE_OF_TRUTH.md, MCP_SYSTEMATIC_FIX_PROGRESS.md, N8N_WORKFLOW_CREATION_REFERENCES_STATUS.md, N8N_WORKFLOW_TEST_RESULTS_AND_FIXES.md, QUICK_STATUS_REFERENCE.md, README.md, SUPER_PROMPT_DATABASE_REFERENCE_MAP.md, WEBHOOK_MASTER_CONTROL_SYSTEM.md, WEBHOOK_SYSTEM_FINAL_STATUS.md, docs, document_creator_config.json, n8n-update-instructions.md, n8n_nodes_catalog.md into single documentation directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "customer",
+      "items": [
+        "Customers",
+        "shelly_apitemplate_config.json",
+        "shelly_pdf_generation_workflow.json",
+        "shelly_workflow_fixed.json"
+      ],
+      "suggestion": "Consolidate Customers, shelly_apitemplate_config.json, shelly_pdf_generation_workflow.json, shelly_workflow_fixed.json into single customer directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "data",
+      "items": [
+        "LeadsExport_21-9-2025_21-56-03.xlsx",
+        "data",
+        "exports",
+        "sample_csv_contacts-2.csv"
+      ],
+      "suggestion": "Consolidate LeadsExport_21-9-2025_21-56-03.xlsx, data, exports, sample_csv_contacts-2.csv into single data directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "scripts",
+      "items": [
+        "apply_router_filters.js",
+        "apply_router_filters_final.js",
+        "cleanup_duplicates.js",
+        "cloudflare-tunnel-n8n.sh",
+        "cloudflare-tunnel-quickbooks-oauth.sh",
+        "complete_data_processor_code.js",
+        "comprehensive_audit_report.js",
+        "final_verification.js",
+        "investigate_what_i_did_wrong.js",
+        "make_mcp_client.js",
+        "monitor_workflow.sh",
+        "notion_comprehensive_population.js",
+        "notion_deep_investigation.js",
+        "scripts",
+        "test-production-webhook-workflow.js",
+        "try_old_api_version.js",
+        "verify_router_filters.js"
+      ],
+      "suggestion": "Consolidate apply_router_filters.js, apply_router_filters_final.js, cleanup_duplicates.js, cloudflare-tunnel-n8n.sh, cloudflare-tunnel-quickbooks-oauth.sh, complete_data_processor_code.js, comprehensive_audit_report.js, final_verification.js, investigate_what_i_did_wrong.js, make_mcp_client.js, monitor_workflow.sh, notion_comprehensive_population.js, notion_deep_investigation.js, scripts, test-production-webhook-workflow.js, try_old_api_version.js, verify_router_filters.js into single scripts directory"
+    },
+    {
+      "type": "duplicate_purpose",
+      "category": "config",
+      "items": [
+        "complete_apitemplate_config.json",
+        "complete_insurance_scenario_blueprint.json",
+        "config.json",
+        "configs",
+        "event_filter_config.json",
+        "notion-final-execution-guide.json",
+        "notion-final-status-report.json",
+        "notion-hybrid-integration-config.json",
+        "openapi.json",
+        "package-lock.json",
+        "package.json",
+        "update_request.json"
+      ],
+      "suggestion": "Consolidate complete_apitemplate_config.json, complete_insurance_scenario_blueprint.json, config.json, configs, event_filter_config.json, notion-final-execution-guide.json, notion-final-status-report.json, notion-hybrid-integration-config.json, openapi.json, package-lock.json, package.json, update_request.json into single config directory"
+    }
+  ],
+  "dataSeparation": {
+    "rules": [
+      {
+        "category": "Customer Data",
+        "location": "Customers/",
+        "airtable": "Customer Management base",
+        "notion": "Customer Management database",
+        "purpose": "Customer-specific data and configurations"
+      },
+      {
+        "category": "Project Data",
+        "location": "Projects/",
+        "airtable": "Rensto Business Operations base",
+        "notion": "Project Tracking database",
+        "purpose": "Project-specific data and configurations"
+      },
+      {
+        "category": "System Data",
+        "location": "system/",
+        "airtable": "System Administration base",
+        "notion": "Documentation database",
+        "purpose": "System-wide configurations and data"
+      },
+      {
+        "category": "Documentation",
+        "location": "docs/",
+        "airtable": "System Administration base",
+        "notion": "Documentation database",
+        "purpose": "Knowledge base and documentation"
+      },
+      {
+        "category": "Scripts",
+        "location": "scripts/",
+        "airtable": "System Administration base",
+        "notion": "Documentation database",
+        "purpose": "Automation scripts and utilities"
+      },
+      {
+        "category": "Workflows",
+        "location": "workflows/",
+        "airtable": "System Administration base",
+        "notion": "Documentation database",
+        "purpose": "n8n workflows and automation"
+      }
+    ]
+  },
+  "migrationStrategy": {
+    "steps": [
+      {
+        "step": 1,
+        "name": "Backup Current State",
+        "action": "Create backup of current structure",
+        "safety": "high"
+      },
+      {
+        "step": 2,
+        "name": "Create New Structure",
+        "action": "Create optimal directory structure",
+        "safety": "high"
+      },
+      {
+        "step": 3,
+        "name": "Move Files Systematically",
+        "action": "Move files according to reorganization plan",
+        "safety": "medium"
+      },
+      {
+        "step": 4,
+        "name": "Update References",
+        "action": "Update all file references and imports",
+        "safety": "medium"
+      },
+      {
+        "step": 5,
+        "name": "Verify Structure",
+        "action": "Verify new structure and functionality",
+        "safety": "high"
+      },
+      {
+        "step": 6,
+        "name": "Implement Monitoring",
+        "action": "Set up monitoring and maintenance",
+        "safety": "high"
+      }
+    ]
+  },
+  "optimalStructure": {
+    "apps/": {
+      "purpose": "Application code and services",
+      "subdirectories": {
+        "web/": "Web applications (admin dashboard, customer portals)",
+        "api/": "API services and endpoints",
+        "mobile/": "Mobile applications (future)"
+      }
+    },
+    "Customers/": {
+      "purpose": "Customer-specific data and configurations",
+      "subdirectories": {
+        "ben-ginati/": "Tax4Us customer data",
+        "shelly-mizrahi/": "Shelly customer data",
+        "wonder.care/": "Wonder.care customer data",
+        "local-il/": "Local IL customer data"
+      }
+    },
+    "Projects/": {
+      "purpose": "Project-specific data and configurations",
+      "subdirectories": {
+        "active/": "Currently active projects",
+        "completed/": "Completed projects",
+        "archived/": "Archived projects"
+      }
+    },
+    "system/": {
+      "purpose": "System-wide configurations and data",
+      "subdirectories": {
+        "configs/": "System configurations",
+        "infra/": "Infrastructure code",
+        "monitoring/": "Monitoring and maintenance scripts"
+      }
+    },
+    "docs/": {
+      "purpose": "Documentation and knowledge base",
+      "subdirectories": {
+        "api/": "API documentation",
+        "deployment/": "Deployment guides",
+        "user-guides/": "User documentation",
+        "technical/": "Technical documentation"
+      }
+    },
+    "scripts/": {
+      "purpose": "Automation scripts and utilities",
+      "subdirectories": {
+        "automation/": "Automation scripts",
+        "maintenance/": "Maintenance scripts",
+        "deployment/": "Deployment scripts",
+        "monitoring/": "Monitoring scripts"
+      }
+    },
+    "workflows/": {
+      "purpose": "n8n workflows and automation",
+      "subdirectories": {
+        "production/": "Production workflows",
+        "testing/": "Test workflows",
+        "templates/": "Workflow templates"
+      }
+    },
+    "data/": {
+      "purpose": "Data files and exports",
+      "subdirectories": {
+        "exports/": "Data exports",
+        "imports/": "Data imports",
+        "backups/": "Data backups"
+      }
+    }
+  },
+  "dataFlow": {
+    "paths": [
+      {
+        "name": "Customer Data Flow",
+        "source": "Customers/",
+        "destination": "Airtable Customer Management",
+        "sync": "bidirectional",
+        "monitoring": "real-time"
+      },
+      {
+        "name": "Project Data Flow",
+        "source": "Projects/",
+        "destination": "Airtable Business Operations",
+        "sync": "bidirectional",
+        "monitoring": "real-time"
+      },
+      {
+        "name": "System Data Flow",
+        "source": "system/",
+        "destination": "Airtable System Administration",
+        "sync": "unidirectional",
+        "monitoring": "scheduled"
+      },
+      {
+        "name": "Documentation Flow",
+        "source": "docs/",
+        "destination": "Notion Documentation",
+        "sync": "bidirectional",
+        "monitoring": "real-time"
+      }
+    ]
+  },
+  "monitoringSystem": {
+    "components": [
+      {
+        "name": "Structure Monitor",
+        "purpose": "Monitor codebase structure integrity",
+        "frequency": "daily",
+        "actions": [
+          "check_missing_dirs",
+          "check_scattered_files",
+          "check_conflicts"
+        ]
+      },
+      {
+        "name": "Data Sync Monitor",
+        "purpose": "Monitor data synchronization between systems",
+        "frequency": "real-time",
+        "actions": [
+          "check_airtable_sync",
+          "check_notion_sync",
+          "check_conflicts"
+        ]
+      },
+      {
+        "name": "File Organization Monitor",
+        "purpose": "Monitor file organization and placement",
+        "frequency": "hourly",
+        "actions": [
+          "check_file_placement",
+          "check_naming_conventions",
+          "check_duplicates"
+        ]
+      },
+      {
+        "name": "Maintenance Scheduler",
+        "purpose": "Schedule and execute maintenance tasks",
+        "frequency": "weekly",
+        "actions": [
+          "cleanup_temp_files",
+          "archive_old_files",
+          "update_documentation"
+        ]
+      }
+    ]
+  },
+  "monitoringScripts": [
+    {
+      "name": "monitor-codebase-structure.js",
+      "purpose": "Monitor codebase structure integrity",
+      "location": "scripts/monitoring/"
+    },
+    {
+      "name": "monitor-data-sync.js",
+      "purpose": "Monitor data synchronization",
+      "location": "scripts/monitoring/"
+    },
+    {
+      "name": "maintain-file-organization.js",
+      "purpose": "Maintain file organization",
+      "location": "scripts/maintenance/"
+    }
+  ],
+  "documentation": [
+    {
+      "name": "CODEBASE_STRUCTURE.md",
+      "purpose": "Document the new codebase structure",
+      "location": "docs/"
+    },
+    {
+      "name": "DATA_SEPARATION_STRATEGY.md",
+      "purpose": "Document data separation strategy",
+      "location": "docs/"
+    },
+    {
+      "name": "MONITORING_AND_MAINTENANCE.md",
+      "purpose": "Document monitoring and maintenance procedures",
+      "location": "docs/"
+    }
+  ]
+}

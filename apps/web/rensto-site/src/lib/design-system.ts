@@ -3,7 +3,7 @@
 
 export const BRAND = {
   name: 'Rensto',
-  tagline: 'Automations that ship in days — not months',
+  tagline: 'Strategic automation partner that delivers measurable business outcomes',
   description: 'Transform your manual processes into intelligent workflows',
 
   // Brand Colors

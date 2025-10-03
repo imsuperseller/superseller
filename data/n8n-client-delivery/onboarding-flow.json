@@ -1,0 +1,41 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "name": "Client Registration",
+      "description": "Create client profile in Airtable",
+      "automation": "airtable-mcp",
+      "estimatedTime": "2 minutes"
+    },
+    {
+      "step": 2,
+      "name": "n8n Instance Setup",
+      "description": "Configure n8n cloud instance",
+      "automation": "n8n-mcp",
+      "estimatedTime": "5 minutes"
+    },
+    {
+      "step": 3,
+      "name": "Workflow Deployment",
+      "description": "Deploy initial workflows",
+      "automation": "n8n-mcp",
+      "estimatedTime": "10 minutes"
+    },
+    {
+      "step": 4,
+      "name": "Testing & Validation",
+      "description": "Test workflows and validate functionality",
+      "automation": "n8n-mcp",
+      "estimatedTime": "15 minutes"
+    },
+    {
+      "step": 5,
+      "name": "Client Training",
+      "description": "Provide client training materials",
+      "automation": "webflow-mcp",
+      "estimatedTime": "30 minutes"
+    }
+  ],
+  "totalEstimatedTime": "62 minutes",
+  "automationLevel": "95%"
+}

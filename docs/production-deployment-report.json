@@ -230,14 +230,7 @@
         }
       },
       "payments": {
-        "stripe": {
-          "status": "active",
-          "features": [
-            "Payment processing",
-            "Subscription management",
-            "Webhook handling"
-          ]
-        }
+        
       },
       "accounting": {
         "quickbooks": {

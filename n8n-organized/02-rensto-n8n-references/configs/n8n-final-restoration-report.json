@@ -1,0 +1,76 @@
+{
+    "timestamp": "2025-01-08T21:52:00Z",
+    "status": "SUCCESS",
+    "summary": "n8n credentials and version successfully restored",
+    "actions_completed": [
+        "✅ Upgraded n8n from v1.109.2 to v1.110.1",
+        "✅ Restored all 28 credentials with correct IDs and names",
+        "✅ Fixed deprecation warnings with proper environment variables",
+        "✅ Verified credentials are functional and accessible"
+    ],
+    "credentials_restored": {
+        "total_count": 28,
+        "status": "All credentials restored with correct IDs",
+        "credential_ids": [
+            "3a1hl1Tk0IkpDuOy",
+            "3lTwFd8waEI1UQEW",
+            "5bcb6YlPgGH6b5sg",
+            "8XOSOQHJY8ZV3xLn",
+            "56McxLVAx9PuY3gl",
+            "B9WHEOJGtVQ3KJdv",
+            "bA3URPqTVIB7lX5M",
+            "bLHttNk6uvckgrcO",
+            "CgCX9GgPA7qzDZZ0",
+            "d15JMAyxpZ1Lfm7e",
+            "f2HfMrHSa8iJFb8b",
+            "formq6fOA2bXt5bF",
+            "Hd3fxt3JdAePKYJJ",
+            "iQ84KVgBgSNxlcYD",
+            "iVggZPneSJjNme4f",
+            "jxHMlk8kx412vnJs",
+            "ktLP7QexI9Hpgz73",
+            "p2rBawf0dYiXgwzb",
+            "R4avdBREB7saW2yG",
+            "rRbcV7CsFW8k6uG8",
+            "SwLtiGwfwrsGPYDQ",
+            "tJCQNvfScwtKhEA0",
+            "TuWKvKJ10l1MhdTT",
+            "wRVePO90xJlp2e9u",
+            "WyNBmvWCKVPyjqro",
+            "YAejSPPe9kH85mYN",
+            "YqEfEMlde82yVVcy",
+            "ZNwylTDDAKXSBhhB"
+        ]
+    },
+    "n8n_version": {
+        "previous": "1.109.2",
+        "current": "1.110.1",
+        "status": "Successfully upgraded"
+    },
+    "environment_variables": {
+        "N8N_COMMUNITY_PACKAGES_ENABLED": "true",
+        "N8N_DEFAULT_EXECUTION_MODE": "unrestricted",
+        "N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS": "false",
+        "DB_SQLITE_POOL_SIZE": "10",
+        "N8N_RUNNERS_ENABLED": "true",
+        "N8N_BLOCK_ENV_ACCESS_IN_NODE": "false",
+        "N8N_NODES_INCLUDE": ""
+    },
+    "deprecation_warnings": {
+        "status": "RESOLVED",
+        "warnings_fixed": [
+            "DB_SQLITE_POOL_SIZE deprecation - Set to 10",
+            "N8N_RUNNERS_ENABLED deprecation - Set to true",
+            "N8N_BLOCK_ENV_ACCESS_IN_NODE deprecation - Set to false"
+        ]
+    },
+    "community_nodes": {
+        "status": "PENDING",
+        "note": "Community nodes installation requires manual intervention due to permission issues in Docker container"
+    },
+    "next_steps": [
+        "Community nodes can be installed manually through n8n UI or by fixing Docker permissions",
+        "All credentials are now properly restored and functional",
+        "n8n is running on latest stable version 1.110.1"
+    ]
+}

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto - Universal Automation Platform</title>
+    <meta name="description" content="Transform your business with AI-powered automation. Choose from n8n templates, custom solutions, lead generation, or ready-made packages.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Rensto Brand Colors */
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+            --primary-gradient: linear-gradient(135deg, #bf5700, #1eaef7);
+            --background-light: #f8fafc;
+            --background-dark: #0B1318;
+            --background-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-dark: rgba(255,255,255,0.08);
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #1eaef7;
+            
+            /* Typography */
+            --font-primary: 'Outfit, system-ui, sans-serif';
+            --font-mono: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace';
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            --spacing-3xl: 4rem;
+            --spacing-4xl: 6rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glass: 0 10px 30px rgba(0,0,0,0.25);
+            --shadow-glow: 0 0 20px rgba(47,106,146,0.3);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: var(--font-primary); 
+            background: var(--background-light); 
+            color: var(--text-primary); 
+            line-height: 1.6; 
+        }
+        
+        /* Navigation Styles */
+        .nav { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 1030; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border-bottom: 1px solid var(--border-light); 
+            padding: var(--spacing-md) 0; 
+        }
+        
+        .nav-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 var(--spacing-lg); 
+        }
+        
+        .nav-logo { 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+            color: var(--text-primary); 
+            font-weight: 700; 
+            font-size: 1.5rem; 
+            transition: all 0.3s; 
+        }
+        
+        .nav-logo:hover { 
+            color: var(--primary-orange); 
+            transform: scale(1.05); 
+        }
+        
+        .nav-menu { 
+            display: flex; 
+            align-items: center; 
+            flex: 1; 
+            justify-content: center; 
+            margin: 0 var(--spacing-xl); 
+        }
+        
+        .nav-menu-list { 
+            display: flex; 
+            align-items: center; 
+            list-style: none; 
+            gap: var(--spacing-xl); 
+        }
+        
+        .nav-link { 
+            color: var(--text-secondary); 
+            text-decoration: none; 
+            font-weight: 500; 
+            padding: var(--spacing-sm) var(--spacing-md); 
+            border-radius: var(--radius-lg); 
+            transition: all 0.3s; 
+        }
+        
+        .nav-link:hover { 
+            color: var(--primary-orange); 
+            background: rgba(249, 115, 22, 0.1); 
+        }
+        
+        .nav-cta { 
+            background: var(--primary-gradient); 
+            color: white; 
+            text-decoration: none; 
+            font-weight: 600; 
+            padding: var(--spacing-sm) var(--spacing-lg); 
+            border-radius: var(--radius-lg); 
+            transition: all 0.3s; 
+            box-shadow: var(--shadow-md); 
+        }
+        
+        .nav-cta:hover { 
+            transform: translateY(-2px); 
+            box-shadow: var(--shadow-lg); 
+            color: white; 
+        }
+        
+        /* Hero Section */
+        .hero { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            padding: 8rem var(--spacing-lg) 3rem; 
+            position: relative; 
+            background: var(--background-light); 
+        }
+        
+        .hero::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 70%); 
+            pointer-events: none; 
+        }
+        
+        .hero-content { 
+            max-width: 900px; 
+            z-index: 1; 
+            position: relative; 
+            margin: 0 auto; 
+        }
+        
+        .hero-title { 
+            font-size: 4rem; 
+            font-weight: 700; 
+            color: var(--text-primary); 
+            margin-bottom: var(--spacing-xl); 
+            line-height: 1.1; 
+            background: var(--primary-gradient); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .hero-subtitle { 
+            font-size: 1.5rem; 
+            color: var(--text-secondary); 
+            margin-bottom: var(--spacing-3xl); 
+            line-height: 1.6; 
+            max-width: 700px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        
+        /* Typeform Container */
+        .typeform-container { 
+            background: var(--background-card); 
+            border: 1px solid var(--border-light); 
+            border-radius: var(--radius-xl); 
+            padding: var(--spacing-2xl); 
+            margin: var(--spacing-3xl) auto; 
+            max-width: 600px; 
+            box-shadow: var(--shadow-lg); 
+        }
+        
+        /* Footer */
+        .footer { 
+            background: var(--background-dark); 
+            padding: var(--spacing-3xl) 0 var(--spacing-xl); 
+            border-top: 1px solid var(--border-dark); 
+            margin-top: var(--spacing-3xl); 
+        }
+        
+        .footer-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 var(--spacing-lg); 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: var(--spacing-3xl); 
+        }
+        
+        .footer-section h3 { 
+            color: white; 
+            font-weight: 700; 
+            margin-bottom: var(--spacing-lg); 
+            font-size: 1.25rem; 
+        }
+        
+        .footer-section a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            display: block; 
+            margin-bottom: var(--spacing-md); 
+            transition: color 0.3s; 
+            font-size: 1rem; 
+        }
+        
+        .footer-section a:hover { 
+            color: var(--primary-orange); 
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--border-dark);
+            padding-top: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .footer-bottom .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-logo .rensto-logo {
+            display: flex;
+            align-items: center;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .footer-logo .logo-upper {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+            margin-right: 4px;
+        }
+        
+        .footer-logo .logo-lower {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .footer-logo span {
+            margin-left: var(--spacing-sm);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* Rensto Logo */
+        .rensto-logo {
+            display: flex;
+            align-items: center;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .logo-upper {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+            margin-right: 4px;
+        }
+        
+        .logo-lower {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .nav-menu { display: none; }
+            .section-title { font-size: 2.25rem; }
+            .hero { padding: 6rem var(--spacing-md) 3rem; }
+            .typeform-container { padding: var(--spacing-lg); margin: var(--spacing-xl) var(--spacing-md); }
+            .footer-container { grid-template-columns: 1fr; gap: var(--spacing-xl); }
+            .footer-bottom .footer-container { flex-direction: column; text-align: center; }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title { font-size: 2rem; }
+            .hero-subtitle { font-size: 1.25rem; }
+            .typeform-container { padding: var(--spacing-md); }
+        }
+        
+        /* GSAP Animation Classes */
+        .gsap-fade-in { opacity: 0; transform: translateY(20px); }
+        .gsap-fade-in-up { opacity: 0; transform: translateY(30px); }
+        .gsap-scale-in { opacity: 0; transform: scale(0.8); }
+        .gsap-slide-in-left { opacity: 0; transform: translateX(-30px); }
+        
+        /* Rensto Logo Animation */
+        .rensto-animate-glow {
+            animation: rensto-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes rensto-glow {
+            from { filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.5)); }
+            to { filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8)); }
+        }
+    </style>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-wrapper">
+            <a href="/" class="nav-logo">
+                <div class="rensto-logo">
+                    <div class="logo-upper"></div>
+                    <div class="logo-lower"></div>
+                </div>
+                <span>RENSTO</span>
+            </a>
+            <div class="nav-menu">
+                <ul class="nav-menu-list">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/marketplace" class="nav-link">Marketplace</a></li>
+                    <li><a href="/custom" class="nav-link">Custom Solutions</a></li>
+                    <li><a href="/subscriptions" class="nav-link">Subscriptions</a></li>
+                    <li><a href="/solutions" class="nav-link">Ready Solutions</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/contact" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+            <a href="/lead-generator.html" class="nav-cta">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered Lead Generation</h1>
+            <p class="hero-subtitle">
+                Transform your business with AI-powered lead generation. Get 5-500 qualified leads automatically with our advanced automation platform.
+            </p>
+            
+            <div class="typeform-container">
+                <div data-tf-widget="DyDRE3PD" data-tf-opacity="100" data-tf-iframe-props="title=Rensto Lead Generation" data-tf-transitive-search-params data-tf-medium="snippet" style="width:100%;height:600px;"></div>
+                <script src="//embed.typeform.com/next/embed.js"></script>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Product</h3>
+                <a href="/marketplace">Marketplace</a>
+                <a href="/custom">Custom Solutions</a>
+                <a href="/subscriptions">Subscriptions</a>
+                <a href="/solutions">Ready Solutions</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Company</h3>
+                <a href="/about">About</a>
+                <a href="/blog">Blog</a>
+                <a href="/careers">Careers</a>
+                <a href="/contact">Contact</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Support</h3>
+                <a href="/help">Help Center</a>
+                <a href="/docs">Documentation</a>
+                <a href="/api">API</a>
+                <a href="/status">Status</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/cookies">Cookie Policy</a>
+                <a href="/security">Security</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-container">
+                <div class="footer-logo">
+                    <div class="rensto-logo">
+                        <div class="logo-upper"></div>
+                        <div class="logo-lower"></div>
+                    </div>
+                    <span>RENSTO</span>
+                </div>
+                <p class="footer-copyright">
+                    © 2024 Rensto. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade in hero elements
+            gsap.from('.hero-title', {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+            
+            gsap.from('.hero-subtitle', {
+                opacity: 0,
+                y: 20,
+                duration: 0.8,
+                delay: 0.2,
+                ease: 'power2.out'
+            });
+            
+            gsap.from('.typeform-container', {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                delay: 0.4,
+                ease: 'power2.out'
+            });
+            
+            // Parallax effect for hero background
+            gsap.to('.hero::before', {
+                backgroundPosition: '50% 100%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true
+                }
+            });
+        });
+
+        // Typeform webhook handler
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'form-submit') {
+                // Handle form submission
+                const formData = event.data.form_response;
+                
+                // Parse Typeform response
+                const answers = formData.answers;
+                const parsedData = {
+                    firstName: answers.find(a => a.field.title === 'First Name')?.text || '',
+                    lastName: answers.find(a => a.field.title === 'Last Name')?.text || '',
+                    email: answers.find(a => a.field.title === 'Email Address')?.email || '',
+                    businessDescription: answers.find(a => a.field.title === 'About Your Business')?.text || '',
+                    targetLeads: answers.find(a => a.field.title === 'What type of leads are you looking for?')?.text || '',
+                    pricingTier: answers.find(a => a.field.title === 'Choose Your Plan')?.choice?.label || ''
+                };
+
+                // Send to n8n workflow
+                fetch('http://173.254.201.134:5678/webhook/f7c8e6ff-7a1b-46b0-acbb-348367a8d19d', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(parsedData)
+                }).then(response => {
+                    if (response.ok) {
+                        // Redirect to success page
+                        window.location.href = '/success.html';
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

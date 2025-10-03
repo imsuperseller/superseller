@@ -1,0 +1,122 @@
+[
+  {
+    "id_number": null,
+    "branch": "תחום - בריאות ותאונות אישיות",
+    "subbranch": null,
+    "product_type": null,
+    "carrier": null,
+    "term": null,
+    "policy_no": null,
+    "premium_nis": null,
+    "premium_type": null,
+    "program_type": null
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח סיעודי",
+    "subbranch": "סיעודי עד 3 חודשים",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "מנורה מבטחים ביטוח בע\"מ",
+    "term": "01/01/2024 - 31/12/2025",
+    "policy_no": "806683827",
+    "premium_nis": 0.0,
+    "premium_type": "חודשית",
+    "program_type": "קבוצתי קופת חולים"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "ייעוץ ובדיקות",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 10.29,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "מחלות קשות",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "מגדל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "23153981",
+    "premium_nis": 10.85,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "השתלות",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 9.05,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "ניתוחים אחידה",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 37.17,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "תרופות - בסיס",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 5.28,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "ניתוחים בחו\"ל",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 4.31,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "ביטוח בריאות",
+    "subbranch": "תרופות - הרחבה",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 2.85,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  },
+  {
+    "id_number": "225730662",
+    "branch": "כתב שירות",
+    "subbranch": "כתב שירות רפואה משלימה",
+    "product_type": "פוליסת ביטוח",
+    "carrier": "הראל חברה לביטוח בע\"מ",
+    "term": "מתחדש",
+    "policy_no": "504576535",
+    "premium_nis": 8.11,
+    "premium_type": "חודשית",
+    "program_type": "אישי"
+  }
+]

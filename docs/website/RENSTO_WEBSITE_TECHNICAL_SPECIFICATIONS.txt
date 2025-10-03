@@ -1,0 +1,497 @@
+# 🛠️ RENSTO WEBSITE TECHNICAL SPECIFICATIONS
+
+**Date**: January 16, 2025  
+**Project**: Rensto Universal Automation Platform Website  
+**Purpose**: Complete technical specifications for website development
+
+---
+
+## 🏗️ **TECHNOLOGY STACK**
+
+### **Frontend Framework**
+- **Next.js 14+** with App Router
+- **React 18+** with TypeScript
+- **Tailwind CSS** for styling
+- **shadcn/ui** component library
+- **tweakcn** for enhanced components
+
+### **Backend & Database**
+- **Next.js API Routes** for backend logic
+- **Airtable** for customer data (existing integration)
+- **Supabase** for analytics and user management
+- **Stripe** for subscription billing
+
+### **Authentication & Security**
+- **NextAuth.js** for authentication
+- **JWT tokens** for session management
+- **Role-based access control** (Public, Customer, Admin)
+- **HTTPS** with SSL certificates
+
+### **Deployment & Hosting**
+- **Vercel** for frontend deployment
+- **Racknerd VPS** for backend services
+- **Cloudflare** for CDN and DNS
+- **GitHub** for version control
+
+---
+
+## 🎨 **DESIGN SYSTEM SPECIFICATIONS**
+
+### **Color Palette**
+```css
+:root {
+  --primary: #fe3d51;        /* Primary brand color */
+  --secondary: #bf5700;      /* Secondary brand color */
+  --accent: #1eaef7;         /* Accent color */
+  --highlight: #5ffbfd;      /* Highlight color */
+  --background: #110d28;     /* Dark background */
+  --surface: #1a1a2e;        /* Surface color */
+  --text-primary: #ffffff;   /* Primary text */
+  --text-secondary: #a0a0a0; /* Secondary text */
+  --border: #2d2d44;         /* Border color */
+}
+```
+
+### **Typography**
+```css
+/* Primary Font - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Font Weights */
+--font-light: 300;
+--font-regular: 400;
+--font-medium: 500;
+--font-semibold: 600;
+--font-bold: 700;
+--font-extrabold: 800;
+--font-black: 900;
+
+/* Font Sizes */
+--text-xs: 0.75rem;    /* 12px */
+--text-sm: 0.875rem;   /* 14px */
+--text-base: 1rem;     /* 16px */
+--text-lg: 1.125rem;   /* 18px */
+--text-xl: 1.25rem;    /* 20px */
+--text-2xl: 1.5rem;    /* 24px */
+--text-3xl: 1.875rem;  /* 30px */
+--text-4xl: 2.25rem;   /* 36px */
+--text-5xl: 3rem;      /* 48px */
+--text-6xl: 3.75rem;   /* 60px */
+```
+
+### **Component Specifications**
+
+#### **Button Components**
+```typescript
+// Primary Button
+<Button variant="primary" size="lg">
+  Start Free Trial
+</Button>
+
+// Secondary Button
+<Button variant="secondary" size="lg">
+  View Pricing
+</Button>
+
+// Outline Button
+<Button variant="outline" size="lg">
+  Learn More
+</Button>
+```
+
+#### **Card Components**
+```typescript
+// Feature Card
+<Card className="p-6 hover:shadow-lg transition-shadow">
+  <CardHeader>
+    <CardTitle>Universal Templates</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>Pre-built workflows for any industry</p>
+  </CardContent>
+</Card>
+
+// Pricing Card
+<Card className="p-8 border-2 border-primary">
+  <CardHeader>
+    <CardTitle>Professional</CardTitle>
+    <CardDescription>$197/month</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <ul className="space-y-2">
+      <li>500 AI interactions</li>
+      <li>20 templates</li>
+      <li>Priority support</li>
+    </ul>
+  </CardContent>
+</Card>
+```
+
+---
+
+## 📱 **RESPONSIVE DESIGN SPECIFICATIONS**
+
+### **Breakpoints**
+```css
+/* Mobile First Approach */
+--mobile: 320px;      /* Small mobile */
+--tablet: 768px;      /* Tablet */
+--laptop: 1024px;     /* Laptop */
+--desktop: 1280px;    /* Desktop */
+--wide: 1536px;       /* Wide desktop */
+```
+
+### **Grid System**
+```css
+/* Container */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Grid Layouts */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+### **Mobile Optimization**
+- **Touch-friendly buttons** (minimum 44px height)
+- **Readable text** (minimum 16px font size)
+- **Fast loading** (optimized images and code)
+- **Swipe gestures** for carousels and galleries
+- **Sticky navigation** for easy access
+
+---
+
+## 🔐 **AUTHENTICATION & AUTHORIZATION**
+
+### **User Roles**
+```typescript
+enum UserRole {
+  PUBLIC = 'public',           // No authentication required
+  CUSTOMER = 'customer',       // Subscription customers
+  ADMIN = 'admin'              // Internal team members
+}
+```
+
+### **Protected Routes**
+```typescript
+// Customer App Routes
+const customerRoutes = [
+  '/app/dashboard',
+  '/app/templates',
+  '/app/agents',
+  '/app/billing',
+  '/app/settings',
+  '/app/support'
+];
+
+// Admin Routes
+const adminRoutes = [
+  '/admin/customers',
+  '/admin/revenue',
+  '/admin/system',
+  '/admin/workflows'
+];
+```
+
+### **Authentication Flow**
+1. **Public Access**: Home, pricing, features, about, contact
+2. **Trial Signup**: Email/password registration
+3. **Subscription**: Stripe checkout integration
+4. **Customer Portal**: Full access to app features
+5. **Admin Access**: Internal team management
+
+---
+
+## 💳 **PAYMENT & SUBSCRIPTION INTEGRATION**
+
+### **Stripe Integration**
+```typescript
+// Subscription Plans
+const subscriptionPlans = {
+  starter: {
+    priceId: 'price_starter_monthly',
+    amount: 9700, // $97.00
+    features: ['100 interactions', '5 templates', 'Email support']
+  },
+  professional: {
+    priceId: 'price_professional_monthly',
+    amount: 19700, // $197.00
+    features: ['500 interactions', '20 templates', 'Priority support']
+  },
+  enterprise: {
+    priceId: 'price_enterprise_monthly',
+    amount: 49700, // $497.00
+    features: ['Unlimited interactions', 'All templates', 'White-label']
+  }
+};
+```
+
+### **Usage Tracking**
+```typescript
+// Usage Metrics
+interface UsageMetrics {
+  interactions: number;
+  templates: number;
+  storage: number; // in GB
+  apiCalls: number;
+  lastReset: Date;
+}
+```
+
+### **Billing Features**
+- **Subscription Management**: Upgrade/downgrade plans
+- **Usage Monitoring**: Real-time usage tracking
+- **Invoice Generation**: Automatic billing
+- **Payment Methods**: Credit cards, bank transfers
+- **Billing History**: Complete transaction history
+
+---
+
+## 📊 **ANALYTICS & TRACKING**
+
+### **Performance Metrics**
+```typescript
+// Core Web Vitals
+interface PerformanceMetrics {
+  lcp: number; // Largest Contentful Paint
+  fid: number; // First Input Delay
+  cls: number; // Cumulative Layout Shift
+  ttfb: number; // Time to First Byte
+}
+```
+
+### **Business Metrics**
+```typescript
+// Conversion Tracking
+interface ConversionMetrics {
+  trialSignups: number;
+  paidConversions: number;
+  churnRate: number;
+  mrr: number; // Monthly Recurring Revenue
+  ltv: number; // Customer Lifetime Value
+}
+```
+
+### **User Analytics**
+- **Page Views**: Track all page visits
+- **User Behavior**: Click tracking, scroll depth
+- **Conversion Funnels**: Trial to paid conversion
+- **A/B Testing**: Test different variations
+- **Heatmaps**: Visual user interaction data
+
+---
+
+## 🚀 **PERFORMANCE OPTIMIZATION**
+
+### **Image Optimization**
+```typescript
+// Next.js Image Component
+import Image from 'next/image';
+
+<Image
+  src="/hero-image.jpg"
+  alt="Rensto Platform"
+  width={800}
+  height={600}
+  priority
+  placeholder="blur"
+  blurDataURL="data:image/jpeg;base64,..."
+/>
+```
+
+### **Code Splitting**
+```typescript
+// Dynamic Imports
+const CustomerPortal = dynamic(() => import('./CustomerPortal'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const AdminDashboard = dynamic(() => import('./AdminDashboard'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+```
+
+### **Caching Strategy**
+```typescript
+// API Route Caching
+export async function GET() {
+  return NextResponse.json(data, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+    }
+  });
+}
+```
+
+---
+
+## 🔧 **API INTEGRATIONS**
+
+### **Airtable Integration**
+```typescript
+// Customer Data
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  subscription: SubscriptionPlan;
+  usage: UsageMetrics;
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### **n8n Workflow Integration**
+```typescript
+// Workflow Management
+interface Workflow {
+  id: string;
+  name: string;
+  status: 'active' | 'inactive' | 'error';
+  lastRun: Date;
+  executions: number;
+  successRate: number;
+}
+```
+
+### **Stripe Webhooks**
+```typescript
+// Subscription Events
+const stripeEvents = [
+  'customer.subscription.created',
+  'customer.subscription.updated',
+  'customer.subscription.deleted',
+  'invoice.payment_succeeded',
+  'invoice.payment_failed'
+];
+```
+
+---
+
+## 🧪 **TESTING SPECIFICATIONS**
+
+### **Unit Testing**
+```typescript
+// Component Testing
+import { render, screen } from '@testing-library/react';
+import { PricingCard } from './PricingCard';
+
+test('renders pricing card with correct plan', () => {
+  render(<PricingCard plan="professional" />);
+  expect(screen.getByText('Professional')).toBeInTheDocument();
+  expect(screen.getByText('$197/month')).toBeInTheDocument();
+});
+```
+
+### **Integration Testing**
+```typescript
+// API Testing
+import { createMocks } from 'node-mocks-http';
+import handler from '../pages/api/customers';
+
+test('creates new customer', async () => {
+  const { req, res } = createMocks({
+    method: 'POST',
+    body: { name: 'Test Customer', email: 'test@example.com' }
+  });
+
+  await handler(req, res);
+  expect(res._getStatusCode()).toBe(201);
+});
+```
+
+### **E2E Testing**
+```typescript
+// Playwright E2E Tests
+import { test, expect } from '@playwright/test';
+
+test('user can sign up for trial', async ({ page }) => {
+  await page.goto('/');
+  await page.click('text=Start Free Trial');
+  await page.fill('[name="email"]', 'test@example.com');
+  await page.fill('[name="password"]', 'password123');
+  await page.click('button[type="submit"]');
+  await expect(page).toHaveURL('/app/dashboard');
+});
+```
+
+---
+
+## 📈 **SEO OPTIMIZATION**
+
+### **Meta Tags**
+```typescript
+// Page Metadata
+export const metadata: Metadata = {
+  title: 'Rensto - Universal Automation Platform',
+  description: 'Transform your business with AI-powered automation that works for any industry. Self-service setup, usage-based billing, enterprise-grade reliability.',
+  keywords: 'automation, AI, business operations, workflow, subscription',
+  openGraph: {
+    title: 'Rensto - Universal Automation Platform',
+    description: 'Transform your business with AI-powered automation',
+    images: ['/og-image.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rensto - Universal Automation Platform',
+    description: 'Transform your business with AI-powered automation',
+    images: ['/twitter-image.jpg'],
+  },
+};
+```
+
+### **Structured Data**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Rensto",
+  "description": "Universal automation platform for any industry",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "97",
+    "priceCurrency": "USD",
+    "priceSpecification": {
+      "@type": "RecurringPaymentsPriceSpecification",
+      "billingDuration": "P1M"
+    }
+  }
+}
+```
+
+---
+
+## 🔒 **SECURITY SPECIFICATIONS**
+
+### **Data Protection**
+- **HTTPS**: All traffic encrypted
+- **Input Validation**: Sanitize all user inputs
+- **SQL Injection**: Parameterized queries
+- **XSS Protection**: Content Security Policy
+- **CSRF Protection**: Token-based validation
+
+### **Authentication Security**
+- **Password Hashing**: bcrypt with salt
+- **Session Management**: Secure JWT tokens
+- **Rate Limiting**: Prevent brute force attacks
+- **Two-Factor Auth**: Optional for admin users
+- **Account Lockout**: After failed attempts
+
+---
+
+**📚 Note**: These specifications ensure the website is built with modern best practices, optimal performance, and enterprise-grade security while maintaining the micro-SaaS business model focus.

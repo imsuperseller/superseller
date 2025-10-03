@@ -17,10 +17,7 @@
       "status": "failed",
       "error": "getaddrinfo ENOTFOUND n8n.rensto.com"
     },
-    "webflow": {
-      "status": "failed",
-      "error": "Request failed with status code 401"
-    },
+    
     "lightrag": {
       "status": "failed",
       "error": "Request failed with status code 404"
@@ -60,16 +57,7 @@
             "lightrag"
           ]
         },
-        "webflow": {
-          "content": [
-            "airtable",
-            "n8n"
-          ],
-          "updates": [
-            "airtable",
-            "emailPersonas"
-          ]
-        },
+        
         "lightrag": {
           "insights": [
             "airtable",

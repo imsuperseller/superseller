@@ -198,7 +198,6 @@ interface CustomerPortalArchitecture {
   
   // Infrastructure Layer
   infrastructure: {
-    hosting: 'Vercel',
     cdn: 'Cloudflare',
     monitoring: 'Rollbar',
     analytics: 'Custom analytics'
@@ -234,9 +233,6 @@ interface CustomerPortalArchitecture {
       "customers": "https://[customer].rensto.com"
     },
     "development": {
-      "main": "https://rensto-business-system.vercel.app",
-      "admin": "https://rensto-business-system.vercel.app/admin",
-      "customers": "https://rensto-business-system.vercel.app/portal/[slug]"
     }
   }
 }
@@ -476,3 +472,6 @@ interface ThemeArchitecture {
 ---
 
 **This architecture design provides the technical foundation for systematic implementation of all cleanup and improvement tasks, ensuring scalability, security, and maintainability.** 🚀
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -61,7 +61,7 @@ This repository contains the complete Rensto business intelligence system, inclu
 ## 🏗️ **SYSTEM ARCHITECTURE**
 
 ### **Customer Systems**
-- **Shelly Mizrahi**: Smart Family Profile Generator (n8n + Make.com)
+- **Rensto System**: Smart Family Profile Generator (n8n + Make.com)
 - **Ben Ginati**: Content Automation System (WordPress + Social Media)
 - **Other Customers**: Various automation systems
 

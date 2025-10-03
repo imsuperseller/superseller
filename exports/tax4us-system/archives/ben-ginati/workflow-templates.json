@@ -1,0 +1,102 @@
+[
+  {
+    "name": "WordPress Content Agent",
+    "description": "Automated content generation for tax4us.co.il",
+    "type": "wordpress-content",
+    "priority": "HIGH",
+    "customerId": "ben-ginati",
+    "deploymentInstructions": [
+      "1. Access your n8n cloud instance: https://tax4usllc.app.n8n.cloud",
+      "2. Import this workflow template",
+      "3. Configure your WordPress credentials",
+      "4. Test the workflow",
+      "5. Activate for production use"
+    ],
+    "configuration": {
+      "wordpressSite": "https://tax4us.co.il",
+      "contentTypes": [
+        "blog-posts",
+        "pages",
+        "news"
+      ],
+      "aiModel": "gpt-4o-mini",
+      "language": "Hebrew/English",
+      "taxFocus": true
+    }
+  },
+  {
+    "name": "WordPress Blog Agent",
+    "description": "Blog post creation and publishing automation",
+    "type": "wordpress-blog",
+    "priority": "HIGH",
+    "customerId": "ben-ginati",
+    "deploymentInstructions": [
+      "1. Access your n8n cloud instance: https://tax4usllc.app.n8n.cloud",
+      "2. Import this workflow template",
+      "3. Configure your WordPress credentials",
+      "4. Test the workflow",
+      "5. Activate for production use"
+    ],
+    "configuration": {
+      "wordpressSite": "https://tax4us.co.il",
+      "contentTypes": [
+        "blog-posts",
+        "pages",
+        "news"
+      ],
+      "aiModel": "gpt-4o-mini",
+      "language": "Hebrew/English",
+      "taxFocus": true
+    }
+  },
+  {
+    "name": "Podcast Agent",
+    "description": "Podcast content research and planning",
+    "type": "podcast",
+    "priority": "MEDIUM",
+    "customerId": "ben-ginati",
+    "deploymentInstructions": [
+      "1. Access your n8n cloud instance: https://tax4usllc.app.n8n.cloud",
+      "2. Import this workflow template",
+      "3. Configure your WordPress credentials",
+      "4. Test the workflow",
+      "5. Activate for production use"
+    ],
+    "configuration": {
+      "wordpressSite": "https://tax4us.co.il",
+      "contentTypes": [
+        "blog-posts",
+        "pages",
+        "news"
+      ],
+      "aiModel": "gpt-4o-mini",
+      "language": "Hebrew/English",
+      "taxFocus": true
+    }
+  },
+  {
+    "name": "Social Media Agent",
+    "description": "Multi-platform social media management",
+    "type": "social-media",
+    "priority": "MEDIUM",
+    "customerId": "ben-ginati",
+    "deploymentInstructions": [
+      "1. Access your n8n cloud instance: https://tax4usllc.app.n8n.cloud",
+      "2. Import this workflow template",
+      "3. Configure your WordPress credentials",
+      "4. Test the workflow",
+      "5. Activate for production use"
+    ],
+    "configuration": {
+      "wordpressSite": "https://tax4us.co.il",
+      "contentTypes": [
+        "blog-posts",
+        "pages",
+        "news"
+      ],
+      "aiModel": "gpt-4o-mini",
+      "language": "Hebrew/English",
+      "taxFocus": true
+    }
+  }
+]

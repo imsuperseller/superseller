@@ -13,7 +13,7 @@ const products = [
   {
     name: 'Automation Audit',
     price: 499,
-    description: '2-hour review + roadmap',
+    description: 'I guarantee you\'ll identify $25,000+ in annual savings within 2 hours, or I\'ll refund 100%',
     features: [
       'Current process analysis',
       'Automation opportunities',
@@ -28,7 +28,7 @@ const products = [
   {
     name: 'Sprint Planning',
     price: 1500,
-    description: '5-day sprint with deliverables',
+    description: 'I guarantee you\'ll see ROI within 60 days, or I\'ll continue working for free until you do',
     features: [
       'Detailed workflow design',
       'Technical architecture',
@@ -43,7 +43,7 @@ const products = [
   {
     name: 'AI Content Engine',
     price: 1200,
-    description: 'SEO-optimized content automation',
+    description: 'I guarantee 20% increase in organic traffic within 90 days, or I\'ll continue optimizing for free',
     features: [
       'Content generation workflows',
       'SEO optimization',
@@ -58,7 +58,7 @@ const products = [
   {
     name: 'Lead Intake Agent',
     price: 900,
-    description: 'Smart form processing + CRM sync',
+    description: 'I guarantee 50% reduction in manual lead processing time within 30 days, or full refund plus $500 bonus',
     features: [
       'Form automation',
       'Lead scoring',
@@ -149,11 +149,10 @@ export default function OffersPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {products.map((product, index) => (
-              <div 
+              <div
                 key={index}
-                className={`card relative group hover:scale-105 transition-transform duration-300 ${
-                  product.popular ? 'ring-2 ring-accent2' : ''
-                }`}
+                className={`card relative group hover:scale-105 transition-transform duration-300 ${product.popular ? 'ring-2 ring-accent2' : ''
+                  }`}
               >
                 {product.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -183,7 +182,7 @@ export default function OffersPage() {
                   ))}
                 </ul>
 
-                <Link 
+                <Link
                   href={getStripeLink(product.name) || '/contact'}
                   className="btn-primary w-full text-center block"
                 >
@@ -209,11 +208,10 @@ export default function OffersPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {carePlans.map((plan, index) => (
-              <div 
+              <div
                 key={index}
-                className={`card relative group hover:scale-105 transition-transform duration-300 ${
-                  plan.popular ? 'ring-2 ring-accent2' : ''
-                }`}
+                className={`card relative group hover:scale-105 transition-transform duration-300 ${plan.popular ? 'ring-2 ring-accent2' : ''
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -240,7 +238,7 @@ export default function OffersPage() {
                   ))}
                 </ul>
 
-                <Link 
+                <Link
                   href={getStripeLink(plan.name) || '/contact'}
                   className="btn-primary w-full text-center block"
                 >
@@ -285,6 +283,6 @@ function getStripeLink(productName: string): string | undefined {
     'Growth Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH,
     'Scale Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE,
   };
-  
+
   return links[productName as keyof typeof links];
 }

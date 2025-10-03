@@ -1,0 +1,195 @@
+{
+  "name": "WordPress Content Agent - Tax4Us (Optimized)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wordpress-content-agent",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "parameters": [
+              { "name": "Content-Type", "value": "application/json" },
+              { "name": "Access-Control-Allow-Origin", "value": "*" }
+            ]
+          }
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "WordPress Content Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "wordpress-content-agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "content-type",
+              "leftValue": "={{ $json.contentType }}",
+              "rightValue": "page",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "validate-request",
+      "name": "Validate Content Type",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "prompt": "Generate SEO-optimized WordPress content for a tax services website. Topic: {{ $json.topic }}. Include meta description, keywords, and structured content. Format as JSON with title, content, meta_description, keywords, and seo_score.",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 2000
+        }
+      },
+      "id": "generate-content",
+      "name": "Generate SEO Content",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "ben-openai-api",
+          "name": "Ben OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "post",
+        "title": "={{ $json.title }}",
+        "content": "={{ $json.content }}",
+        "status": "publish",
+        "additionalFields": {
+          "meta": {
+            "description": "={{ $json.meta_description }}",
+            "keywords": "={{ $json.keywords }}"
+          }
+        }
+      },
+      "id": "publish-wordpress",
+      "name": "Publish to WordPress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "wordpressApi": {
+          "id": "ben-wordpress-api",
+          "name": "Ben WordPress API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"WordPress content published successfully\",\n  \"data\": {\n    \"post_id\": \"{{ $json.id }}\",\n    \"title\": \"{{ $json.title }}\",\n    \"url\": \"{{ $json.link }}\",\n    \"seo_score\": \"{{ $json.seo_score }}\",\n    \"published_at\": \"{{ $json.date }}\"\n  }\n}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"Invalid content type. Must be 'page' or 'post'.\",\n  \"data\": {\n    \"received_type\": \"{{ $json.contentType }}\",\n    \"valid_types\": [\"page\", \"post\"]\n  }\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "WordPress Content Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Content Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Content Type": {
+      "main": [
+        [
+          {
+            "node": "Generate SEO Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate SEO Content": {
+      "main": [
+        [
+          {
+            "node": "Publish to WordPress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to WordPress": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "wordpress-content-agent-optimized",
+  "tags": [
+    { "id": "wordpress", "name": "WordPress" },
+    { "id": "content", "name": "Content" },
+    { "id": "seo", "name": "SEO" },
+    { "id": "tax-services", "name": "Tax Services" }
+  ]
+}

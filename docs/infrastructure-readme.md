@@ -34,7 +34,6 @@ infra/
 ├── test-integrations.sh          # 🧪 Integration testing
 ├── fix-workflow-fields.sh        # 🔧 Airtable field fixes
 ├── backup.sh                     # 💾 Backup automation
-├── n8n-workflows/                # 📊 Workflow definitions
 ├── data/                         # 📁 Data storage
 ├── systemd/                      # 🔧 System services
 └── cloudflared/                  # 🌐 Cloudflare tunnel config
@@ -44,16 +43,14 @@ infra/
 
 **✅ 100% OPERATIONAL**
 
-- ✅ Web Application: https://rensto-site.vercel.app
 - ✅ n8n Platform: http://173.254.201.134:5678
 - ✅ All workflows imported and ready
-- ✅ Airtable integration operational
+- ✅ Airtable integration operational (NPX-based MCP)
 - ✅ All APIs and databases working
 
 ## 📖 **DOCUMENTATION**
 
 - **[RENSTO-OPERATIONS-GUIDE.md](RENSTO-OPERATIONS-GUIDE.md)** - Complete operations guide (single source of truth)
-- **[n8n-workflows/README.md](n8n-workflows/README.md)** - Workflow documentation
 
 ## 🔧 **MAINTENANCE**
 

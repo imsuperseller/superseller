@@ -1,0 +1,16 @@
+{
+  
+  },
+  
+    "domains": {
+      "admin": "admin.rensto.com",
+      "portal": "portal.rensto.com",
+      "api": "api.rensto.com",
+      "leadmachine": "leadm.rensto.com"
+    }
+  },
+  "cloudflare": {
+    "zoneId": "031333b77c859d1dd4d4fd4afdc1b9bc",
+    "email": "service@rensto.com"
+  }
+}

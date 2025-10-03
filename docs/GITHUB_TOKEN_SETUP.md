@@ -75,3 +75,6 @@ Once token is set up, test with:
 ---
 
 **✅ Follow these steps to set up your GitHub token and enable full shadcn-ui MCP functionality.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

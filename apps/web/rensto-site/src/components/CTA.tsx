@@ -32,24 +32,24 @@ export function CTA() {
     <section ref={ctaRef} className="section bg-gradient-to-r from-accent1/20 to-accent2/20">
       <div className="container text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">
-          Ready to Automate Your Business?
+          Ready to Transform Your Business?
         </h2>
         <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-          Stop wasting time on manual tasks. Let&apos;s build automations that work for your business, not against it.
+          Join thousands of businesses using our universal automation platform. Works for any industry, any size.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
           <Link 
-            href={env.NEXT_PUBLIC_STRIPE_LINK_AUDIT || '/offers'}
+            href="/pricing"
             className="btn-primary text-lg px-8 py-4"
           >
-            Start with Audit - $499
+            Start Free Trial
           </Link>
           <Link 
             href="/contact"
             className="btn-secondary text-lg px-8 py-4"
           >
-            Talk to Us
+            View Pricing
           </Link>
         </div>
 

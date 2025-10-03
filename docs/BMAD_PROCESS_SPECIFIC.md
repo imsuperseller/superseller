@@ -106,3 +106,6 @@ Build, Measure, Analyze, Deploy (BMAD) process for robust workflow deployment.
 ---
 *Last Updated: 2025-08-22T17:06:41.545Z*
 *Consolidated from 11 files*
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

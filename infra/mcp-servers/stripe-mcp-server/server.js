@@ -1,3 +1,22 @@
+// OBSOLETE: Stripe MCP Server
+// This server is no longer used as Stripe MCP now uses Docker container
+// 
+// Migration: Stripe MCP server now runs via Docker container:
+// docker run --rm -i mcp/stripe
+//
+// Configuration: Managed through Cursor MCP configuration
+// File: /Users/shaifriedman/.cursor/mcp.json
+//
+// Last Updated: 2025-01-10
+// Status: OBSOLETE - Use Docker container instead
+
+console.log('⚠️  OBSOLETE SERVER: Stripe MCP Server');
+console.log('====================================');
+console.log('This server is no longer used.');
+console.log('Stripe MCP now uses Docker container: docker run --rm -i mcp/stripe');
+console.log('Configuration managed through Cursor MCP settings.');
+process.exit(0);
+
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';

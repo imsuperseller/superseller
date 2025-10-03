@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-08-27T03:19:25.344Z",
+  "workflowId": "tlMotaW5i9KhcEyu",
+  "workflowUrl": "https://tax4usllc.app.n8n.cloud/workflow/tlMotaW5i9KhcEyu",
+  "analysis": {
+    "triggerBaseId": true,
+    "isInactive": true
+  },
+  "plan": [
+    {
+      "type": "trigger_fix",
+      "description": "Update trigger baseId to new Airtable base",
+      "target": "Tax4US Content Specs Trigger",
+      "value": "appkZD1ew4aKoBqDM"
+    }
+  ],
+  "results": {
+    "workflowUpdated": false,
+    "workflowActivated": false,
+    "fixesApplied": 0,
+    "errors": [
+      {
+        "step": "mcp_fix",
+        "error": "Cannot get current workflow via MCP: Request failed with status code 404"
+      }
+    ]
+  },
+  "status": "PARTIAL"
+}

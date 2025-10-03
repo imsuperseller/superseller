@@ -1,0 +1,185 @@
+{
+  "businessReference": {
+    "name": "Business Reference Template",
+    "description": "Template for documenting business references and processes",
+    "properties": {
+      "Name": "Title",
+      "Type": "Select (Business Reference, Technical Reference, Component)",
+      "Description": "Rich Text",
+      "Customer": "Rich Text",
+      "Status": "Select (Active, Completed, In Progress, Archived)",
+      "Priority": "Select (High, Medium, Low)",
+      "Platform": "Rich Text",
+      "AI_Integration_Status": "Select (Not Integrated, Planning, In Progress, Integrated, Advanced)",
+      "Automation_Level": "Select (Manual, Basic, Intermediate, Advanced, Fully Automated)",
+      "Smart_Sync_Status": "Select (Not Synced, Basic Sync, Advanced Sync, Real-time Sync)",
+      "Last_Updated": "Date",
+      "Created_By": "Rich Text",
+      "RGID": "Rich Text",
+      "Airtable_Sync": "Checkbox",
+      "Sync_Status": "Rich Text"
+    },
+    "content": {
+      "overview": "## Overview\nBrief description of the business reference",
+      "process": "## Process\nStep-by-step process documentation",
+      "requirements": "## Requirements\nPrerequisites and requirements",
+      "implementation": "## Implementation\nImplementation details and steps",
+      "testing": "## Testing\nTesting procedures and validation",
+      "maintenance": "## Maintenance\nOngoing maintenance and updates",
+      "related": "## Related References\nLinks to related business references"
+    },
+    "implementation": {
+      "steps": [
+        "Create new page in Notion",
+        "Add properties as defined in the template",
+        "Copy content structure from template",
+        "Customize content for specific use case",
+        "Set RGID for cross-system identification"
+      ],
+      "estimatedTime": "15-30 minutes per template"
+    }
+  },
+  "customerOnboarding": {
+    "name": "Customer Onboarding Template",
+    "description": "Template for customer onboarding documentation",
+    "properties": {
+      "Customer_Name": "Title",
+      "Industry": "Rich Text",
+      "Company_Size": "Select (Startup, Small, Medium, Large, Enterprise)",
+      "Onboarding_Status": "Select (Not Started, In Progress, Completed, On Hold)",
+      "AI_Integration_Status": "Select (Not Integrated, Planning, In Progress, Integrated, Advanced)",
+      "Automation_Level": "Select (Manual, Basic, Intermediate, Advanced, Fully Automated)",
+      "Priority": "Select (High, Medium, Low)",
+      "Start_Date": "Date",
+      "Completion_Date": "Date",
+      "Assigned_To": "Rich Text",
+      "RGID": "Rich Text"
+    },
+    "content": {
+      "overview": "## Customer Overview\nCompany information and background",
+      "requirements": "## Requirements\nCustomer requirements and expectations",
+      "onboarding_plan": "## Onboarding Plan\nStep-by-step onboarding process",
+      "deliverables": "## Deliverables\nWhat will be delivered to the customer",
+      "timeline": "## Timeline\nProject timeline and milestones",
+      "resources": "## Resources\nRequired resources and team members",
+      "communication": "## Communication Plan\nHow to communicate with the customer",
+      "success_metrics": "## Success Metrics\nHow to measure onboarding success"
+    },
+    "implementation": {
+      "steps": [
+        "Create new page in Notion",
+        "Add properties as defined in the template",
+        "Copy content structure from template",
+        "Customize content for specific use case",
+        "Set RGID for cross-system identification"
+      ],
+      "estimatedTime": "15-30 minutes per template"
+    }
+  },
+  "projectTracking": {
+    "name": "Project Tracking Template",
+    "description": "Template for project tracking and management",
+    "properties": {
+      "Project_Name": "Title",
+      "Customer": "Rich Text",
+      "BMAD_Phase": "Select (A - Assemble, B - Business Analysis, M - Map Terrain, A - Architecture, D - Development, T - Testing, M - Measurement, D - Deploy)",
+      "Status": "Select (Planning, In Progress, Completed, On Hold, Cancelled)",
+      "Progress_Percentage": "Number",
+      "Start_Date": "Date",
+      "End_Date": "Date",
+      "Priority": "Select (High, Medium, Low)",
+      "AI_Integration_Status": "Select (Not Integrated, Planning, In Progress, Integrated, Advanced)",
+      "Automation_Level": "Select (Manual, Basic, Intermediate, Advanced, Fully Automated)",
+      "Last_Updated": "Date",
+      "Created_By": "Rich Text",
+      "RGID": "Rich Text"
+    },
+    "content": {
+      "overview": "## Project Overview\nProject description and objectives",
+      "scope": "## Scope\nProject scope and boundaries",
+      "deliverables": "## Deliverables\nProject deliverables and outcomes",
+      "timeline": "## Timeline\nProject timeline and milestones",
+      "resources": "## Resources\nRequired resources and team members",
+      "risks": "## Risks and Mitigation\nPotential risks and mitigation strategies",
+      "progress": "## Progress Tracking\nCurrent progress and status updates",
+      "next_steps": "## Next Steps\nImmediate next steps and actions"
+    },
+    "implementation": {
+      "steps": [
+        "Create new page in Notion",
+        "Add properties as defined in the template",
+        "Copy content structure from template",
+        "Customize content for specific use case",
+        "Set RGID for cross-system identification"
+      ],
+      "estimatedTime": "15-30 minutes per template"
+    }
+  },
+  "systemIntegration": {
+    "name": "System Integration Template",
+    "description": "Template for documenting system integrations",
+    "properties": {
+      "Integration_Name": "Title",
+      "System_A": "Rich Text",
+      "System_B": "Rich Text",
+      "Integration_Type": "Select (API, Webhook, Database, File Transfer, Real-time)",
+      "Status": "Select (Planning, In Development, Testing, Live, Deprecated)",
+      "Priority": "Select (High, Medium, Low)",
+      "Last_Updated": "Date",
+      "Created_By": "Rich Text",
+      "RGID": "Rich Text"
+    },
+    "content": {
+      "overview": "## Integration Overview\nDescription of the integration",
+      "architecture": "## Architecture\nTechnical architecture and design",
+      "configuration": "## Configuration\nConfiguration details and settings",
+      "testing": "## Testing\nTesting procedures and validation",
+      "monitoring": "## Monitoring\nMonitoring and alerting setup",
+      "troubleshooting": "## Troubleshooting\nCommon issues and solutions",
+      "maintenance": "## Maintenance\nOngoing maintenance procedures"
+    },
+    "implementation": {
+      "steps": [
+        "Create new page in Notion",
+        "Add properties as defined in the template",
+        "Copy content structure from template",
+        "Customize content for specific use case",
+        "Set RGID for cross-system identification"
+      ],
+      "estimatedTime": "15-30 minutes per template"
+    }
+  },
+  "aiAutomation": {
+    "name": "AI Automation Template",
+    "description": "Template for AI automation documentation",
+    "properties": {
+      "Automation_Name": "Title",
+      "AI_Model": "Rich Text",
+      "Automation_Type": "Select (Workflow, Decision Making, Data Processing, Communication)",
+      "Status": "Select (Planning, In Development, Testing, Live, Deprecated)",
+      "Accuracy_Score": "Number",
+      "Last_Updated": "Date",
+      "Created_By": "Rich Text",
+      "RGID": "Rich Text"
+    },
+    "content": {
+      "overview": "## Automation Overview\nDescription of the AI automation",
+      "ai_model": "## AI Model\nDetails about the AI model used",
+      "workflow": "## Workflow\nStep-by-step automation workflow",
+      "training": "## Training Data\nTraining data and model training process",
+      "performance": "## Performance Metrics\nAccuracy and performance metrics",
+      "monitoring": "## Monitoring\nMonitoring and evaluation procedures",
+      "improvements": "## Continuous Improvement\nPlans for improving the automation"
+    },
+    "implementation": {
+      "steps": [
+        "Create new page in Notion",
+        "Add properties as defined in the template",
+        "Copy content structure from template",
+        "Customize content for specific use case",
+        "Set RGID for cross-system identification"
+      ],
+      "estimatedTime": "15-30 minutes per template"
+    }
+  }
+}

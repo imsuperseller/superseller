@@ -1,0 +1,686 @@
+{
+  "name": "Smart Lead Enrichment & Outreach System - OPTIMIZED",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Webhook - Lead Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-enrichment",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              }
+            ]
+          }
+        }
+      },
+      "onError": "continueRegularOutput",
+      "webhookId": "lead-enrichment-webhook"
+    },
+    {
+      "id": "validate-initialize",
+      "name": "Validate & Initialize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "jsCode": "// Validate and prepare incoming data\nconst requiredFields = ['searchQuery', 'email', 'firstName', 'lastName', 'businessInfo', 'tier'];\nconst missingFields = [];\n\nfor (const field of requiredFields) {\n  if (!$input.first().json[field]) {\n    missingFields.push(field);\n  }\n}\n\nif (missingFields.length > 0) {\n  throw new Error(`Missing required fields: ${missingFields.join(', ')}`);\n}\n\n// Set tier limits\nconst tierLimits = {\n  'basic': { leads: 10, enrichment: 'basic', voiceMessages: false },\n  'professional': { leads: 100, enrichment: 'advanced', voiceMessages: true },\n  'enterprise': { leads: 500, enrichment: 'premium', voiceMessages: true }\n};\n\nconst userTier = $input.first().json.tier || 'basic';\nconst limits = tierLimits[userTier];\n\n// Generate unique identifiers\nconst runId = `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\nconst timestamp = new Date().toISOString();\n\nreturn {\n  ...($input.first().json),\n  runId,\n  limits,\n  timestamp,\n  status: 'initializing'\n};"
+      }
+    },
+    {
+      "id": "log-request",
+      "name": "Log Search Request",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appLeadEnrichment"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblSearchRequests"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "3lTwFd8waEI1UQEW",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "id": "search-linkedin",
+      "name": "Search LinkedIn Profiles",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "parameters": {
+        "query": "={{ $json.searchQuery }} site:linkedin.com/in/",
+        "options": {
+          "num": "={{ $json.limits.leads }}"
+        }
+      },
+      "credentials": {
+        "serpApi": {
+          "id": "T3cDMFPGa0YUPBLk",
+          "name": "shai@superseller.agency"
+        }
+      }
+    },
+    {
+      "id": "search-contact",
+      "name": "Search Contact Info",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "parameters": {
+        "query": "={{ $json.searchQuery }} email contact",
+        "options": {
+          "num": "={{ Math.floor($json.limits.leads / 2) }}"
+        }
+      },
+      "credentials": {
+        "serpApi": {
+          "id": "T3cDMFPGa0YUPBLk",
+          "name": "shai@superseller.agency"
+        }
+      }
+    },
+    {
+      "id": "parse-results",
+      "name": "Parse Search Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "parameters": {
+        "jsCode": "// Combine and parse search results\nconst linkedInResults = $input.all()[0].json.organic_results || [];\nconst contactResults = $input.all()[1].json.organic_results || [];\nconst userData = $input.all()[2].json;\n\nconst leads = [];\nconst processedUrls = new Set();\n\n// Process LinkedIn results\nfor (let i = 0; i < Math.min(linkedInResults.length, userData.limits.leads); i++) {\n  const result = linkedInResults[i];\n  if (result.link && !processedUrls.has(result.link)) {\n    processedUrls.add(result.link);\n    \n    // Extract name from title\n    const nameMatch = result.title.match(/^([^-–]+)/);\n    const name = nameMatch ? nameMatch[1].trim() : 'Unknown';\n    \n    // Parse company from snippet\n    const companyMatch = result.snippet?.match(/at\\s+([^.]+)/i);\n    const company = companyMatch ? companyMatch[1].trim() : '';\n    \n    leads.push({\n      name,\n      title: result.title,\n      company,\n      linkedinUrl: result.link,\n      snippet: result.snippet || '',\n      source: 'linkedin_search',\n      runId: userData.runId,\n      needsEnrichment: true\n    });\n  }\n}\n\n// Add contact search data\ncontactResults.forEach(result => {\n  const emailMatch = result.snippet?.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})/g);\n  if (emailMatch && leads.length < userData.limits.leads) {\n    leads.push({\n      name: result.title.split('-')[0].trim(),\n      email: emailMatch[0],\n      websiteUrl: result.link,\n      snippet: result.snippet,\n      source: 'contact_search',\n      runId: userData.runId,\n      needsEnrichment: true\n    });\n  }\n});\n\nreturn leads.slice(0, userData.limits.leads);"
+      }
+    },
+    {
+      "id": "process-leads",
+      "name": "Process Each Lead",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1340, 300],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "scrape-data",
+      "name": "Scrape Profile/Company Data",
+      "type": "@mendable/n8n-nodes-firecrawl.firecrawlScrape",
+      "typeVersion": 1,
+      "position": [1560, 300],
+      "parameters": {
+        "url": "={{ $json.linkedinUrl || $json.websiteUrl }}",
+        "formats": ["markdown", "html"],
+        "onlyMainContent": true
+      },
+      "credentials": {
+        "firecrawlApi": {
+          "id": "ZNwylTDDAKXSBhhB",
+          "name": "Firecrawl"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "ai-analysis",
+      "name": "AI Profile Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [1780, 300],
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an expert at analyzing professional profiles and company information to extract key insights for B2B outreach. Extract and structure the following information:\n\n1. Professional Details:\n- Full name\n- Current position/title\n- Company name\n- Industry/sector\n- Years of experience\n- Key skills/expertise\n- Recent achievements or projects\n\n2. Company Information:\n- Company size\n- Industry focus\n- Recent news or developments\n- Pain points they might have\n\n3. Personalization Hooks:\n- Recent posts or activities\n- Shared connections or interests\n- Potential challenges they face\n- How our solution could help them\n\nReturn a structured JSON response.",
+              "role": "system"
+            },
+            {
+              "content": "Analyze this profile/company data:\n\n{{ $json.data?.content || $json.snippet }}\n\nOriginal search query context: {{ $node['webhook-trigger'].json.searchQuery }}\nOur business: {{ $node['webhook-trigger'].json.businessInfo }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1500,
+          "temperature": 0.3
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "Hd3fxt3JdAePKJJJ",
+          "name": "OpenAi"
+        }
+      }
+    },
+    {
+      "id": "generate-outreach",
+      "name": "Generate Personalized Outreach",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [2000, 300],
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an expert cold outreach copywriter. Create a highly personalized, compelling outreach message that:\n\n1. Opens with a specific, genuine compliment or observation about their work\n2. Identifies a specific challenge they likely face\n3. Briefly introduces how we can help (without being salesy)\n4. Includes a soft call-to-action\n5. Keeps it under 150 words\n6. Sounds human and conversational\n\nAlso provide:\n- An attention-grabbing subject line (under 50 characters)\n- 3 follow-up message templates\n- Key talking points for a call",
+              "role": "system"
+            },
+            {
+              "content": "Create personalized outreach for:\n\nLead: {{ $json }}\nOur Business: {{ $node['webhook-trigger'].json.businessInfo }}\nValue Proposition: {{ $node['webhook-trigger'].json.valueProposition }}\n\nMake it highly relevant to their specific situation."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "Hd3fxt3JdAePKJJJ",
+          "name": "OpenAi"
+        }
+      }
+    },
+    {
+      "id": "check-voice-tier",
+      "name": "Check Voice Tier",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [2220, 300],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $node['webhook-trigger'].json.limits.voiceMessages }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "withVoice"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      }
+    },
+    {
+      "id": "generate-voice",
+      "name": "Generate Voice Message",
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenlabs",
+      "typeVersion": 1,
+      "position": [2440, 200],
+      "parameters": {
+        "operation": "textToSpeech",
+        "text": "={{ $node['generate-outreach'].json.choices[0].message.content }}",
+        "voiceId": "21m00Tcm4TlvDq8ikWAM",
+        "modelId": "eleven_monolingual_v1"
+      },
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "CgCX9GgPA7qzDZZ0",
+          "name": "ElevenLabs API"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "prepare-data",
+      "name": "Prepare Lead Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2440, 400],
+      "parameters": {
+        "jsCode": "// Prepare lead data for storage\nconst lead = $input.first().json;\nconst enrichmentData = JSON.parse($node['ai-analysis'].json.choices[0].message.content || '{}');\nconst outreachData = JSON.parse($node['generate-outreach'].json.choices[0].message.content || '{}');\n\nconst voiceUrl = $node['generate-voice']?.json?.audio_url || null;\n\nreturn {\n  runId: $node['webhook-trigger'].json.runId,\n  name: enrichmentData.fullName || lead.name,\n  email: lead.email || enrichmentData.email || '',\n  company: enrichmentData.companyName || lead.company,\n  title: enrichmentData.position || lead.title,\n  linkedinUrl: lead.linkedinUrl || '',\n  websiteUrl: lead.websiteUrl || enrichmentData.companyWebsite || '',\n  \n  // Enrichment data\n  industry: enrichmentData.industry || '',\n  companySize: enrichmentData.companySize || '',\n  keyInsights: JSON.stringify(enrichmentData.keyInsights || []),\n  painPoints: JSON.stringify(enrichmentData.painPoints || []),\n  \n  // Outreach content\n  emailSubject: outreachData.subjectLine || '',\n  emailBody: outreachData.primaryMessage || '',\n  followUpTemplates: JSON.stringify(outreachData.followUpTemplates || []),\n  talkingPoints: JSON.stringify(outreachData.talkingPoints || []),\n  \n  // Voice message\n  voiceMessageUrl: voiceUrl,\n  hasVoiceMessage: !!voiceUrl,\n  \n  // Metadata\n  enrichmentQuality: enrichmentData.confidence || 'medium',\n  createdAt: new Date().toISOString(),\n  status: 'enriched'\n};"
+      }
+    },
+    {
+      "id": "store-lead",
+      "name": "Store Enriched Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [2660, 300],
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appLeadEnrichment"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblEnrichedLeads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "runId": "={{ $json.runId }}",
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "company": "={{ $json.company }}",
+            "title": "={{ $json.title }}",
+            "linkedinUrl": "={{ $json.linkedinUrl }}",
+            "websiteUrl": "={{ $json.websiteUrl }}",
+            "industry": "={{ $json.industry }}",
+            "companySize": "={{ $json.companySize }}",
+            "keyInsights": "={{ $json.keyInsights }}",
+            "painPoints": "={{ $json.painPoints }}",
+            "emailSubject": "={{ $json.emailSubject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "followUpTemplates": "={{ $json.followUpTemplates }}",
+            "talkingPoints": "={{ $json.talkingPoints }}",
+            "voiceMessageUrl": "={{ $json.voiceMessageUrl }}",
+            "hasVoiceMessage": "={{ $json.hasVoiceMessage }}",
+            "enrichmentQuality": "={{ $json.enrichmentQuality }}",
+            "status": "={{ $json.status }}",
+            "createdAt": "={{ $json.createdAt }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "3lTwFd8waEI1UQEW",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "id": "aggregate-leads",
+      "name": "Aggregate All Leads",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [2880, 300],
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "create-csv",
+      "name": "Create CSV Export",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3100, 300],
+      "parameters": {
+        "jsCode": "// Create CSV from enriched leads\nconst leads = $input.first().json;\n\n// CSV Headers\nconst headers = [\n  'Name',\n  'Email',\n  'Company',\n  'Title',\n  'LinkedIn URL',\n  'Website',\n  'Industry',\n  'Company Size',\n  'Email Subject',\n  'Email Body',\n  'Voice Message URL',\n  'Key Insights',\n  'Pain Points',\n  'Talking Points'\n];\n\n// Create CSV content\nlet csvContent = headers.join(',') + '\\n';\n\nleads.forEach(lead => {\n  const row = [\n    lead.name || '',\n    lead.email || '',\n    lead.company || '',\n    lead.title || '',\n    lead.linkedinUrl || '',\n    lead.websiteUrl || '',\n    lead.industry || '',\n    lead.companySize || '',\n    `\"${(lead.emailSubject || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.emailBody || '').replace(/\"/g, '\"\"')}\"`,\n    lead.voiceMessageUrl || '',\n    `\"${(lead.keyInsights || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.painPoints || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.talkingPoints || '').replace(/\"/g, '\"\"')}\"`\n  ];\n  csvContent += row.join(',') + '\\n';\n});\n\n// Convert to base64\nconst base64 = Buffer.from(csvContent).toString('base64');\n\nreturn {\n  csvContent,\n  base64,\n  fileName: `enriched_leads_${$node['webhook-trigger'].json.runId}.csv`,\n  leadCount: leads.length,\n  runId: $node['webhook-trigger'].json.runId,\n  userEmail: $node['webhook-trigger'].json.email,\n  userName: $node['webhook-trigger'].json.firstName\n};"
+      }
+    },
+    {
+      "id": "convert-binary",
+      "name": "Convert CSV to Binary",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [3320, 300],
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "id": "send-email",
+      "name": "Send Results Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [3540, 300],
+      "parameters": {
+        "operation": "send",
+        "subject": "=Your {{ $json.leadCount }} Enriched Leads Are Ready! 🚀",
+        "message": "=Hi {{ $json.userName }},\\n\\nYour lead enrichment is complete! Here are your {{ $json.leadCount }} enriched leads.\\n\\nBest regards,\\nRensto Team",
+        "attachments": {
+          "attachments": [
+            {
+              "name": "={{ $json.fileName }}",
+              "data": "={{ $json.base64 }}"
+            }
+          ]
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3a1hl1Tk0IkpDuOy",
+          "name": "Microsoft Outlook OAuth2 API"
+        }
+      }
+    },
+    {
+      "id": "notify-slack",
+      "name": "Notify Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [3540, 500],
+      "parameters": {
+        "operation": "postMessage",
+        "channel": "#lead-enrichment",
+        "text": "=Lead Enrichment Complete 🎯\\n\\n{{ $json.leadCount }} leads enriched for {{ $json.userName }}\\nRun ID: {{ $json.runId }}"
+      },
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "ktLP7QexI9Hpgz73",
+          "name": "Slack API"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "prepare-response",
+      "name": "Prepare Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3760, 300],
+      "parameters": {
+        "jsCode": "// Prepare final response\nconst result = {\n  success: true,\n  runId: $json.runId,\n  message: `Successfully enriched ${$json.leadCount} leads`,\n  summary: {\n    totalLeads: $json.leadCount,\n    withEmail: $node['aggregate-leads'].json.filter(l => l.email).length,\n    withVoiceMessage: $node['aggregate-leads'].json.filter(l => l.hasVoiceMessage).length,\n    tier: $node['webhook-trigger'].json.tier\n  },\n  deliveryEmail: $json.userEmail,\n  timestamp: new Date().toISOString()\n};\n\nreturn result;"
+      }
+    },
+    {
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [3980, 300],
+      "parameters": {
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Lead Request": {
+      "main": [
+        [
+          {
+            "node": "Validate & Initialize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Initialize": {
+      "main": [
+        [
+          {
+            "node": "Log Search Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Search Request": {
+      "main": [
+        [
+          {
+            "node": "Search LinkedIn Profiles",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Contact Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search LinkedIn Profiles": {
+      "main": [
+        [
+          {
+            "node": "Parse Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Contact Info": {
+      "main": [
+        [
+          {
+            "node": "Parse Search Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Parse Search Results": {
+      "main": [
+        [
+          {
+            "node": "Process Each Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Each Lead": {
+      "main": [
+        [
+          {
+            "node": "Scrape Profile/Company Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Profile/Company Data": {
+      "main": [
+        [
+          {
+            "node": "AI Profile Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Profile Analysis": {
+      "main": [
+        [
+          {
+            "node": "Generate Personalized Outreach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Personalized Outreach": {
+      "main": [
+        [
+          {
+            "node": "Check Voice Tier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Voice Tier": {
+      "main": [
+        [
+          {
+            "node": "Generate Voice Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Voice Message": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Store Enriched Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Enriched Lead": {
+      "main": [
+        [
+          {
+            "node": "Aggregate All Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate All Leads": {
+      "main": [
+        [
+          {
+            "node": "Create CSV Export",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create CSV Export": {
+      "main": [
+        [
+          {
+            "node": "Convert CSV to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert CSV to Binary": {
+      "main": [
+        [
+          {
+            "node": "Send Results Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Results Email": {
+      "main": [
+        [
+          {
+            "node": "Prepare Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Slack": {
+      "main": [
+        [
+          {
+            "node": "Prepare Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

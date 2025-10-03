@@ -305,3 +305,6 @@ Tinder Typeform → Decision Tracking → MCP Processing → Portal Update → H
 *Hebrew Support: ✅ Complete RTL Implementation*  
 *Integration: ✅ Seamless Journey Integration*  
 *Demo: ✅ Working Demo Available*
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "created": "2025-09-25T17:51:27.163Z",
+    "version": "1.0.0",
+    "totalTiers": 4
+  },
+  "tiers": [
+    {
+      "id": "starter",
+      "name": "Starter Package",
+      "price": 97,
+      "annualPrice": 997,
+      "target": "Small businesses, freelancers, startups",
+      "features": [
+        "Email Automation Basic (1 persona)",
+        "Simple Business Process Automation",
+        "Basic QuickBooks Integration",
+        "Customer Onboarding Lite",
+        "Email support",
+        "Up to 1,000 email automations/month",
+        "5 workflow templates",
+        "Basic integrations (5 services)",
+        "Standard deployment (2-3 hours)",
+        "Community support"
+      ]
+    },
+    {
+      "id": "professional",
+      "name": "Professional Package",
+      "price": 297,
+      "annualPrice": 2997,
+      "target": "Growing businesses, agencies, medium companies",
+      "features": [
+        "AI-Powered Email Persona System (6 personas)",
+        "Complete Business Process Automation",
+        "Advanced QuickBooks Integration",
+        "Customer Lifecycle Management",
+        "Content Generation Basic",
+        "Priority support",
+        "Up to 10,000 email automations/month",
+        "15 workflow templates",
+        "Advanced integrations (15 services)",
+        "Professional deployment (3-5 hours)",
+        "Priority email support",
+        "Monthly optimization calls"
+      ]
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise Package",
+      "price": 797,
+      "annualPrice": 7997,
+      "target": "Large businesses, enterprise clients, high-volume operations",
+      "features": [
+        "All Professional Package products",
+        "Multi-Language Email Automation",
+        "Advanced Content Generation",
+        "Multi-Currency Financial Automation",
+        "Technical Integration Packages",
+        "White-label options",
+        "Dedicated support",
+        "Unlimited email automations",
+        "All 18 workflow templates",
+        "Unlimited integrations",
+        "Enterprise deployment (5-8 hours)",
+        "Dedicated account manager",
+        "Weekly optimization calls",
+        "Custom development (up to 10 hours/month)"
+      ]
+    },
+    {
+      "id": "custom-enterprise",
+      "name": "Custom Enterprise",
+      "price": 2997,
+      "annualPrice": 29997,
+      "target": "Fortune 500, large enterprises, custom requirements",
+      "features": [
+        "Everything in Enterprise Package",
+        "Custom workflow development",
+        "Industry-specific solutions",
+        "Multi-tenant architecture",
+        "Advanced security features",
+        "24/7 support",
+        "Custom workflow development",
+        "Industry-specific templates",
+        "Multi-tenant support",
+        "Advanced security & compliance",
+        "Dedicated infrastructure",
+        "24/7 phone support",
+        "Custom training programs"
+      ]
+    }
+  ],
+  "bundles": [
+    {
+      "id": "email-automation-bundle",
+      "name": "Email Automation Bundle",
+      "individualPrice": 891,
+      "bundlePrice": 597,
+      "savings": 33,
+      "products": [
+        "email-persona-system",
+        "hebrew-email-automation",
+        "multi-language-email"
+      ]
+    },
+    {
+      "id": "business-process-bundle",
+      "name": "Business Process Bundle",
+      "individualPrice": 1191,
+      "bundlePrice": 797,
+      "savings": 33,
+      "products": [
+        "business-process-automation",
+        "customer-onboarding",
+        "project-management"
+      ]
+    },
+    {
+      "id": "complete-automation-suite",
+      "name": "Complete Automation Suite",
+      "individualPrice": 6972,
+      "bundlePrice": 3997,
+      "savings": 43,
+      "products": "all"
+    }
+  ]
+}

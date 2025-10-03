@@ -44,7 +44,7 @@ export default function AffiliateTracking() {
     },
     {
       customerId: 'customer_002',
-      customerName: 'Shelly Mizrahi',
+      customerName: 'Customer B',
       platform: 'n8n',
       monthlyRevenue: 1800,
       commission: 270,
@@ -96,7 +96,7 @@ export default function AffiliateTracking() {
         },
         {
           customerId: 'customer_002',
-          customerName: 'Shelly Mizrahi',
+          customerName: 'Customer B',
           platform: 'n8n',
           monthlyRevenue: 1800,
           commission: 270,
@@ -160,7 +160,7 @@ export default function AffiliateTracking() {
             <p className="text-xs text-muted-foreground">Generating commissions</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
@@ -170,7 +170,7 @@ export default function AffiliateTracking() {
             <p className="text-xs text-muted-foreground">From affiliate sales</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium">Total Commissions</CardTitle>
@@ -180,7 +180,7 @@ export default function AffiliateTracking() {
             <p className="text-xs text-muted-foreground">15% commission rate</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium">Total Usage</CardTitle>

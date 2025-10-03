@@ -20,7 +20,6 @@
 
 ### **✅ Why Airtable is the Solution**
 - **Reliable API**: Well-documented and stable
-- **MCP Server**: [domdomegg/airtable-mcp-server](https://github.com/domdomegg/airtable-mcp-server) available
 - **Proven Integration**: 265 stars, 75 forks, actively maintained
 - **Comprehensive Tools**: 12+ tools for full data management
 - **Automation Ready**: Webhooks, triggers, and integrations
@@ -138,12 +137,9 @@ Tables:
 ```bash
 # Deployed to Racknerd VPS
 VPS_IP: 173.254.201.134
-DEPLOY_PATH: /opt/mcp-servers/airtable-mcp-server
-SERVICE_NAME: airtable-mcp-server
 ```
 
 #### **2. Available Tools**
-Based on [domdomegg/airtable-mcp-server](https://github.com/domdomegg/airtable-mcp-server):
 
 **Data Management:**
 - `list_records` - List records from tables
@@ -171,7 +167,6 @@ Based on [domdomegg/airtable-mcp-server](https://github.com/domdomegg/airtable-m
   "mcpServers": {
     "airtable": {
       "command": "npx",
-      "args": ["-y", "airtable-mcp-server"],
       "env": {
         "AIRTABLE_API_KEY": "patTR4PhdTjz2fUrg.4bb86ab39b6eda124af3e5a897c215b5113e80e63ccd70b64382027cc71a8e12"
       }
@@ -362,3 +357,6 @@ graph TD
 **The Airtable migration strategy provides a robust, reliable, and scalable solution to replace the failing Boost.space integration. With the MCP server successfully deployed and tested, we have a solid foundation for comprehensive business data management and automation.**
 
 **The systematic approach ensures data integrity, process efficiency, and future scalability while maintaining all existing business relationships and workflows.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

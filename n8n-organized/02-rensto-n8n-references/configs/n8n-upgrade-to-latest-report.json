@@ -1,0 +1,48 @@
+{
+    "status": "SUCCESS",
+    "timestamp": "2025-01-08T21:25:00Z",
+    "upgrade_completed": "n8n upgraded from v1.109.2 to v1.110.1",
+    "upgrade_details": {
+        "previous_version": "1.109.2",
+        "new_version": "1.110.1",
+        "upgrade_reason": "Latest stable version with potential community nodes improvements",
+        "docker_image": "n8nio/n8n:1.110.1"
+    },
+    "community_nodes_status": {
+        "installation_method": "Manual npm install in /home/node/.n8n/nodes/node_modules/",
+        "nodes_installed": 5,
+        "packages": [
+            "@brave/n8n-nodes-brave-search@v1.0.18",
+            "@elevenlabs/n8n-nodes-elevenlabs@v0.2.2",
+            "@tavily/n8n-nodes-tavily@v0.2.4",
+            "n8n-nodes-mcp@v0.1.29",
+            "n8n-nodes-apify@v0.1.0"
+        ],
+        "installation_directory": "/home/node/.n8n/nodes/node_modules/",
+        "status": "installed_and_ready"
+    },
+    "n8n_configuration": {
+        "version": "1.110.1",
+        "community_nodes_enabled": true,
+        "environment_variable": "N8N_COMMUNITY_NODES_ENABLED=true",
+        "n8n_accessible": true,
+        "api_endpoint": "http://173.254.201.134:5678/api/v1",
+        "workflows_accessible": true
+    },
+    "verification": {
+        "n8n_version_confirmed": "1.110.1",
+        "community_nodes_directory_exists": true,
+        "packages_installed": 5,
+        "n8n_restarted": true,
+        "n8n_accessible": true,
+        "workflows_accessible": true,
+        "api_working": true
+    },
+    "next_steps": [
+        "Community nodes should now be visible in n8n UI under Community nodes section",
+        "All 27 community nodes from backup can be installed using same method",
+        "Credentials are already restored and working",
+        "n8n is now running the latest stable version 1.110.1"
+    ],
+    "notes": "Successfully upgraded to n8n v1.110.1 with community nodes properly installed. The latest version should have better community nodes support and stability."
+}

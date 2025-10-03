@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Blog - Rensto Insights & Tutorials</title>
+    <meta name="description" content="Discover the future of automation with expert insights, tutorials, and trend analysis. Learn n8n, Airtable, Apify, and Instantly.ai with step-by-step guides.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(17, 13, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--cyan);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 140px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .page-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumbs {
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item:not(:last-child)::after {
+            content: "›";
+            color: var(--gray-text);
+            margin-left: 0.5rem;
+        }
+        
+        .breadcrumb-link {
+            color: var(--light-text);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .breadcrumb-link:hover {
+            opacity: 1;
+        }
+        
+        .breadcrumb-current {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .page-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Search & Filter Section */
+        .search-filter-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .search-filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 1.5rem 1.25rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .search-input::placeholder {
+            color: var(--gray-text);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            font-size: 1.2rem;
+            color: var(--gray-text);
+        }
+        
+        .search-button {
+            position: absolute;
+            right: 0.5rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light-text);
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--cyan);
+            color: var(--dark-bg);
+        }
+        
+        .filter-dropdowns {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        /* Blog Content */
+        .blog-content-section {
+            padding: 60px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .blog-content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .blog-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .blog-card.featured {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .blog-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .blog-card.featured .blog-image {
+            height: 100%;
+        }
+        
+        .blog-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .blog-content {
+            padding: 2rem;
+        }
+        
+        .blog-card.featured .blog-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .blog-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+            line-height: 1.3;
+        }
+        
+        .blog-card.featured .blog-title {
+            font-size: 1.75rem;
+        }
+        
+        .blog-excerpt {
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .blog-read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .blog-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .blog-tag {
+            background: rgba(30, 174, 247, 0.2);
+            border: 1px solid rgba(30, 174, 247, 0.3);
+            color: var(--cyan);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+        
+        .blog-cta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .blog-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .blog-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .blog-button.secondary {
+            background: transparent;
+            border: 2px solid var(--blue);
+            color: var(--blue);
+        }
+        
+        .blog-button.secondary:hover {
+            background: var(--blue);
+            color: white;
+        }
+        
+        .affiliate-note {
+            font-size: 0.8rem;
+            color: var(--gray-text);
+            font-style: italic;
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .newsletter-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .newsletter-subtitle {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .newsletter-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button.secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 2rem 30px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--cyan);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--cyan);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+        }
+        
+        .footer-copyright {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .blog-card.featured {
+                grid-column: span 1;
+                display: block;
+            }
+            
+            .blog-card.featured .blog-image {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-tab {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+            
+            .filter-dropdowns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/marketplace">Marketplace</a></li>
+                    <li><a href="/custom-solutions">Custom Solutions</a></li>
+                    <li><a href="/subscriptions">Subscriptions</a></li>
+                    <li><a href="/ready-solutions">Ready Solutions</a></li>
+                    <li><a href="#newsletter" class="cta-button">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-container">
+            <nav class="breadcrumbs">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">Blog</span>
+                    </li>
+                </ol>
+            </nav>
+            
+            <h1 class="page-title">Automation Insights & Tutorials</h1>
+            <p class="page-subtitle">Discover the future of business automation with expert insights, step-by-step tutorials, and trend analysis. Learn from real-world implementations and master the tools that transform businesses.</p>
+        </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section class="search-filter-section">
+        <div class="search-filter-container">
+            <div class="search-bar">
+                <div class="search-input-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search automation tutorials, trends, and insights..." id="searchInput">
+                    <button class="search-button">Search</button>
+                </div>
+            </div>
+            
+            <div class="filter-tabs">
+                <a href="#all" class="filter-tab active">All Posts</a>
+                <a href="#trends" class="filter-tab">Trend Analysis</a>
+                <a href="#tutorials" class="filter-tab">Tutorials</a>
+                <a href="#n8n" class="filter-tab">n8n Guides</a>
+                <a href="#airtable" class="filter-tab">Airtable</a>
+                <a href="#apify" class="filter-tab">Apify</a>
+                <a href="#instantly" class="filter-tab">Instantly.ai</a>
+            </div>
+            
+            <div class="filter-dropdowns">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="trends">Trend Analysis</option>
+                    <option value="tutorials">Tutorials</option>
+                    <option value="case-studies">Case Studies</option>
+                    <option value="tools">Tool Reviews</option>
+                </select>
+                
+                <select class="filter-select" id="difficultyFilter">
+                    <option value="">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+                
+                <select class="filter-select" id="sortFilter">
+                    <option value="newest">Newest First</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="trending">Trending</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content Section -->
+    <section class="blog-content-section">
+        <div class="blog-content-container">
+            <div class="blog-grid">
+                <!-- Featured Post -->
+                <article class="blog-card featured">
+                    <div class="blog-image">
+                        <div class="blog-category">Trend Analysis</div>
+                        🚀
+                    </div>
+                    <div class="blog-content">
+                        <h2 class="blog-title">The Future of Business Automation: AI-Powered Workflows That Will Transform Your Operations</h2>
+                        <p class="blog-excerpt">Discover how AI is revolutionizing business automation. From intelligent workflow design to predictive analytics, learn how the next generation of automation tools will make your business 10x more efficient.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 12 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">AI</span>
+                            <span class="blog-tag">Future</span>
+                            <span class="blog-tag">Automation</span>
+                            <span class="blog-tag">Trends</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="#" class="blog-button">Read Full Article</a>
+                            <span class="affiliate-note">*Contains affiliate links</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- n8n Tutorial Post -->
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-category">n8n Tutorial</div>
+                        🔧
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Build Your First n8n Workflow: Complete Beginner's Guide</h3>
+                        <p class="blog-excerpt">Learn how to create powerful automation workflows with n8n. This step-by-step tutorial will have you building your first workflow in under 30 minutes.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 8 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">n8n</span>
+                            <span class="blog-tag">Tutorial</span>
+                            <span class="blog-tag">Beginner</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="https://tinyurl.com/ym3awuke" class="blog-button" target="_blank">Try n8n Free</a>
+                            <a href="#" class="blog-button secondary">Read Tutorial</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Airtable Post -->
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-category">Airtable</div>
+                        📊
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Airtable Automation: From Database to Business Intelligence</h3>
+                        <p class="blog-excerpt">Transform your Airtable into a powerful business intelligence system. Learn advanced automation techniques that turn your data into actionable insights.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 10 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Airtable</span>
+                            <span class="blog-tag">BI</span>
+                            <span class="blog-tag">Intermediate</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="https://tinyurl.com/4xujacz6" class="blog-button" target="_blank">Get Airtable Pro</a>
+                            <a href="#" class="blog-button secondary">Read Guide</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Apify Post -->
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-category">Apify</div>
+                        🕷️
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Web Scraping with Apify: Extract Data Like a Pro</h3>
+                        <p class="blog-excerpt">Master web scraping with Apify's powerful tools. Learn how to extract data from any website and integrate it into your automation workflows.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 15 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Apify</span>
+                            <span class="blog-tag">Scraping</span>
+                            <span class="blog-tag">Data</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="https://tinyurl.com/Rensto" class="blog-button" target="_blank">Start with Apify</a>
+                            <a href="#" class="blog-button secondary">Read Tutorial</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Instantly.ai Post -->
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-category">Instantly.ai</div>
+                        📧
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Cold Email Automation That Actually Works</h3>
+                        <p class="blog-excerpt">Discover the secrets of successful cold email campaigns using Instantly.ai. Learn how to automate your outreach while maintaining personalization.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 12 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Instantly.ai</span>
+                            <span class="blog-tag">Email</span>
+                            <span class="blog-tag">Outreach</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="https://tinyurl.com/rensto-instantly" class="blog-button" target="_blank">Try Instantly.ai</a>
+                            <a href="#" class="blog-button secondary">Read Guide</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Case Study Post -->
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-category">Case Study</div>
+                        📈
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">How We Automated a $2M E-commerce Business</h3>
+                        <p class="blog-excerpt">Real case study: Learn how we helped an e-commerce business save 40 hours per week and increase revenue by 35% using automation.</p>
+                        <div class="blog-meta">
+                            <span>By Rensto Team</span>
+                            <div class="blog-read-time">⏱️ 18 min read</div>
+                        </div>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Case Study</span>
+                            <span class="blog-tag">E-commerce</span>
+                            <span class="blog-tag">ROI</span>
+                        </div>
+                        <div class="blog-cta">
+                            <a href="#" class="blog-button">Read Case Study</a>
+                            <a href="/contact" class="blog-button secondary">Get Similar Results</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section" id="newsletter">
+        <div class="newsletter-container">
+            <h2 class="newsletter-title">Stay Ahead of the Automation Curve</h2>
+            <p class="newsletter-subtitle">Get weekly insights, tutorials, and automation tips delivered to your inbox. Join 10,000+ business owners who are already automating their operations.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Start Automating?</h2>
+            <p class="cta-subtitle">Don't just read about automation - start implementing it. Get personalized recommendations and expert guidance for your business.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-button">Get Free Consultation</a>
+                <a href="/marketplace" class="cta-button secondary">Browse Templates</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="/marketplace">Marketplace</a></li>
+                        <li><a href="/custom-solutions">Custom Solutions</a></li>
+                        <li><a href="/subscriptions">Subscriptions</a></li>
+                        <li><a href="/ready-solutions">Ready Solutions</a></li>
+                        <li><a href="/api">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help-center">Help Center</a></li>
+                        <li><a href="/documentation">Documentation</a></li>
+                        <li><a href="/contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/cookie-policy">Cookie Policy</a></li>
+                        <li><a href="/security">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-logo">
+                    <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+                </div>
+                <div class="footer-copyright">
+                    © 2024 Rensto. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate page header
+        gsap.from('.page-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.page-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        // Animate blog cards
+        gsap.utils.toArray('.blog-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('href').substring(1);
+                filterBlogPosts(filter);
+            });
+        });
+
+        function filterBlogPosts(filter) {
+            const cards = document.querySelectorAll('.blog-card');
+            
+            cards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const category = card.querySelector('.blog-category').textContent.toLowerCase();
+                    if (category.includes(filter) || filter === 'tutorials' && category.includes('tutorial')) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.blog-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.blog-title').textContent.toLowerCase();
+                const excerpt = card.querySelector('.blog-excerpt').textContent.toLowerCase();
+                
+                if (title.includes(query) || excerpt.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Newsletter form
+        document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.newsletter-input').value;
+            alert(`Thank you for subscribing! We'll send automation insights to ${email} every week.`);
+            this.reset();
+        });
+
+        // Add hover effects to blog cards
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to buttons
+        document.querySelectorAll('.blog-button, .cta-button, .newsletter-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: -2,
+                    ease: 'power2.out'
+                });
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    y: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

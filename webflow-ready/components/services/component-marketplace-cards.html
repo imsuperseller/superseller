@@ -1,0 +1,822 @@
+<!-- 🛒 MARKETPLACE COMPONENT -->
+<!-- Contains: Template browsing, filters, and installation services -->
+<!-- Character Count: ~12,000 chars -->
+<!-- Business Model: Marketplace - $29/template with professional installation -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Marketplace - n8n Automation Templates</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Marketplace Header */
+        .marketplace-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .marketplace-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .marketplace-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .marketplace-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .marketplace-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .filters-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--cyan);
+        }
+        
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Templates Grid */
+        .templates-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .templates-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .template-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            border-color: var(--cyan);
+        }
+        
+        .template-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .template-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .template-content {
+            padding: 2rem;
+        }
+        
+        .template-category {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .template-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .template-description {
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .template-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .template-features li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .template-features li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        .template-pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .template-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .template-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .template-button {
+            flex: 1;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .template-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .template-button-secondary {
+            background: transparent;
+            border: 2px solid var(--blue);
+            color: var(--blue);
+        }
+        
+        .template-button-secondary:hover {
+            background: var(--blue);
+            color: white;
+        }
+        
+        /* Installation Services */
+        .installation-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .installation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .installation-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .installation-subtitle {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .installation-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .installation-feature {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 12px;
+        }
+        
+        .installation-feature h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .installation-feature p {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        .installation-cta {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .installation-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .installation-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .marketplace-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Marketplace Header -->
+    <section class="marketplace-header">
+        <div class="marketplace-container">
+            <h1 class="marketplace-title">n8n Automation Templates</h1>
+            <p class="marketplace-subtitle">Browse 100+ ready-to-use automation templates. Professional installation included with every purchase.</p>
+            
+            <div class="marketplace-stats">
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Ready Templates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Included</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30</div>
+                    <div class="stat-label">Day Guarantee</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search templates..." id="searchInput">
+                <button class="search-button" onclick="searchTemplates()">Search</button>
+            </div>
+            
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="lead-generation">Lead Generation</option>
+                        <option value="data-processing">Data Processing</option>
+                        <option value="crm-integration">CRM Integration</option>
+                        <option value="email-automation">Email Automation</option>
+                        <option value="social-media">Social Media</option>
+                        <option value="e-commerce">E-commerce</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Complexity</label>
+                    <select class="filter-select" id="complexityFilter">
+                        <option value="">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <select class="filter-select" id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="0-50">$0 - $50</option>
+                        <option value="50-100">$50 - $100</option>
+                        <option value="100+">$100+</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Rating</label>
+                    <select class="filter-select" id="ratingFilter">
+                        <option value="">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="3">3+ Stars</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Grid -->
+    <section class="templates-section">
+        <div class="templates-container">
+            <div class="templates-grid">
+                <!-- Template 1 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">Popular</div>
+                        📧
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">Email Automation</span>
+                        <h3 class="template-title">Lead Nurturing Sequence</h3>
+                        <p class="template-description">Automated email sequences for lead nurturing with personalization and follow-up triggers.</p>
+                        <ul class="template-features">
+                            <li>5 email templates included</li>
+                            <li>Personalization variables</li>
+                            <li>Follow-up triggers</li>
+                            <li>Analytics dashboard</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$29</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.9)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Buy Now</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template 2 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">New</div>
+                        📊
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">Data Processing</span>
+                        <h3 class="template-title">CRM Data Sync</h3>
+                        <p class="template-description">Sync data between multiple CRM systems with real-time updates and conflict resolution.</p>
+                        <ul class="template-features">
+                            <li>Multi-CRM support</li>
+                            <li>Real-time sync</li>
+                            <li>Conflict resolution</li>
+                            <li>Data validation</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$49</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.8)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Buy Now</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template 3 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">Pro</div>
+                        🤖
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">AI Integration</span>
+                        <h3 class="template-title">AI Content Generator</h3>
+                        <p class="template-description">Generate personalized content using AI with brand voice consistency and quality control.</p>
+                        <ul class="template-features">
+                            <li>AI content generation</li>
+                            <li>Brand voice training</li>
+                            <li>Quality control</li>
+                            <li>Multi-platform posting</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$79</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.9)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Buy Now</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template 4 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">Best Seller</div>
+                        📱
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">Social Media</span>
+                        <h3 class="template-title">Social Media Scheduler</h3>
+                        <p class="template-description">Schedule and automate social media posts across multiple platforms with optimal timing.</p>
+                        <ul class="template-features">
+                            <li>Multi-platform support</li>
+                            <li>Optimal timing</li>
+                            <li>Content calendar</li>
+                            <li>Analytics tracking</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$39</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.7)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Buy Now</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template 5 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">Enterprise</div>
+                        🛒
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">E-commerce</span>
+                        <h3 class="template-title">Order Processing Automation</h3>
+                        <p class="template-description">Automate order processing, inventory management, and customer notifications.</p>
+                        <ul class="template-features">
+                            <li>Order processing</li>
+                            <li>Inventory management</li>
+                            <li>Customer notifications</li>
+                            <li>Shipping integration</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$99</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.8)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Buy Now</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template 6 -->
+                <div class="template-card">
+                    <div class="template-image">
+                        <div class="template-badge">Free</div>
+                        📈
+                    </div>
+                    <div class="template-content">
+                        <span class="template-category">Analytics</span>
+                        <h3 class="template-title">Basic Analytics Dashboard</h3>
+                        <p class="template-description">Basic analytics dashboard with key metrics and automated reporting.</p>
+                        <ul class="template-features">
+                            <li>Key metrics tracking</li>
+                            <li>Automated reports</li>
+                            <li>Custom dashboards</li>
+                            <li>Email alerts</li>
+                        </ul>
+                        <div class="template-pricing">
+                            <span class="template-price">$0</span>
+                            <div class="template-rating">
+                                ⭐⭐⭐⭐⭐ (4.6)
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="template-button">Get Free</button>
+                            <button class="template-button template-button-secondary">Preview</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Services -->
+    <section class="installation-section">
+        <div class="installation-container">
+            <h2 class="installation-title">Professional Installation Included</h2>
+            <p class="installation-subtitle">Every template comes with professional installation service. No technical skills required.</p>
+            
+            <div class="installation-features">
+                <div class="installation-feature">
+                    <h3>Expert Setup</h3>
+                    <p>Our automation experts will set up your template and configure it for your specific business needs.</p>
+                </div>
+                <div class="installation-feature">
+                    <h3>Custom Configuration</h3>
+                    <p>We'll customize the template to match your brand, integrate with your existing tools, and optimize for your workflow.</p>
+                </div>
+                <div class="installation-feature">
+                    <h3>Training & Support</h3>
+                    <p>Get comprehensive training on how to use and maintain your automation, plus ongoing support.</p>
+                </div>
+            </div>
+            
+            <a href="/contact" class="installation-cta">Get Professional Installation</a>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate marketplace header
+        gsap.from('.marketplace-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.marketplace-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.marketplace-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate template cards on scroll
+        gsap.utils.toArray('.template-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate installation features
+        gsap.utils.toArray('.installation-feature').forEach((feature, i) => {
+            gsap.from(feature, {
+                scrollTrigger: {
+                    trigger: feature,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 30,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Search functionality
+        function searchTemplates() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.template-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.template-title').textContent.toLowerCase();
+                const description = card.querySelector('.template-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const complexity = document.getElementById('complexityFilter').value;
+            const price = document.getElementById('priceFilter').value;
+            const rating = document.getElementById('ratingFilter').value;
+            
+            // Filter logic would go here
+            console.log('Applying filters:', { category, complexity, price, rating });
+        }
+
+        // Add event listeners
+        document.getElementById('searchInput').addEventListener('input', searchTemplates);
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('complexityFilter').addEventListener('change', applyFilters);
+        document.getElementById('priceFilter').addEventListener('change', applyFilters);
+        document.getElementById('ratingFilter').addEventListener('change', applyFilters);
+
+        // Add hover effects to template cards
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

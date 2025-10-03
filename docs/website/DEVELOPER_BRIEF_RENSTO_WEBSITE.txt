@@ -1,0 +1,286 @@
+# 🚀 RENSTO WEBSITE DEVELOPMENT BRIEF
+
+**Date**: January 16, 2025  
+**Project**: Rensto Universal Automation Platform Website  
+**Status**: 🎯 **READY FOR DEVELOPMENT**
+
+---
+
+## 📋 **PROJECT OVERVIEW**
+
+### **Business Model Transformation**
+Rensto is transforming from a traditional business operations platform to a **Universal Micro-SaaS Automation Platform**. The new website must reflect this transformation completely.
+
+**Key Changes:**
+- **From**: Custom implementations for specific customers (Tax4Us, Shelly, Ortal)
+- **To**: Universal subscription platform that works for ANY industry/niche
+- **Revenue Model**: Subscription-based with usage billing
+- **Target**: Self-service customers who can set up their own systems
+
+---
+
+## 🎯 **WEBSITE ARCHITECTURE**
+
+### **Public Website Structure**
+```
+/ (Home) - Universal subscription platform landing
+├── /pricing (Subscription Plans)
+├── /features (Universal Platform Features)
+├── /about (Company & Mission)
+├── /contact (Sales & Support)
+├── /legal/privacy (Privacy Policy)
+├── /legal/terms (Terms of Service)
+└── /demo (Platform Demo)
+```
+
+### **Customer App Structure**
+```
+/app (Customer Portal - Protected)
+├── /dashboard (Usage & Analytics)
+├── /templates (Universal Templates)
+├── /agents (AI Agent Management)
+├── /billing (Subscription Management)
+├── /settings (Account Configuration)
+└── /support (Self-Service Support)
+```
+
+### **Admin Dashboard Structure**
+```
+/admin (Internal Management - Protected)
+├── /customers (Customer Management)
+├── /revenue (Revenue Analytics)
+├── /system (System Monitoring)
+└── /workflows (Workflow Management)
+```
+
+---
+
+## 🎨 **DESIGN REQUIREMENTS**
+
+### **Brand Guidelines**
+- **Colors**: #fe3d51 (primary), #bf5700 (secondary), #1eaef7 (accent), #5ffbfd (highlight) on #110d28 (background)
+- **Typography**: Modern, clean, professional
+- **Style**: Bold, confident, tech-forward
+- **Logo**: Rensto logo must be included in all design outputs
+
+### **Design System**
+- Use **shadcn/ui** components as base
+- Implement **tweakcn** for enhanced components
+- Ensure **100% mobile responsiveness**
+- Follow **modern SaaS design patterns**
+
+### **Key Design Elements**
+- **Hero Sections**: Bold, conversion-focused
+- **Feature Cards**: Clear value propositions
+- **Pricing Tables**: Subscription-focused
+- **Testimonials**: Customer success stories
+- **CTAs**: Strong, action-oriented buttons
+
+---
+
+## 📝 **CONTENT STRATEGY**
+
+### **Messaging Transformation**
+| **Old Messaging** | **New Messaging** |
+|------------------|------------------|
+| "Business Operations Platform" | "Universal Automation Platform" |
+| "Custom Implementations" | "Self-Service Setup" |
+| "Agency Services" | "Subscription Plans" |
+| "100+ Workflows" | "Unlimited Workflows" |
+| "Technical Documentation" | "Business Value Content" |
+
+### **Value Propositions**
+1. **Universal**: Works for any industry, any niche
+2. **Self-Service**: Customers set up their own systems
+3. **Scalable**: Pay only for what you use
+4. **Professional**: Enterprise-grade automation
+5. **Fast**: Get started in minutes, not months
+
+---
+
+## 🛠️ **TECHNICAL REQUIREMENTS**
+
+### **Technology Stack**
+- **Framework**: Next.js 14+ with App Router
+- **Styling**: Tailwind CSS + shadcn/ui + tweakcn
+- **Components**: React components with TypeScript
+- **Authentication**: NextAuth.js for protected routes
+- **Database**: Integration with existing Airtable bases
+- **Payments**: Stripe integration for subscriptions
+
+### **Performance Requirements**
+- **Page Load Speed**: < 2 seconds
+- **Mobile Responsiveness**: 100% optimized
+- **SEO**: Fully optimized for search engines
+- **Accessibility**: WCAG 2.1 AA compliant
+
+### **Integration Requirements**
+- **Existing Admin Dashboard**: Integrate with current admin system
+- **Customer Portal**: Connect to existing customer management
+- **Airtable**: Sync with existing customer data
+- **n8n Workflows**: Connect to automation system
+
+---
+
+## 📄 **PAGE SPECIFICATIONS**
+
+### **1. Home Page (`/`)**
+**Purpose**: Convert visitors to trial signups
+**Key Elements**:
+- Hero: "Universal Automation Platform for Any Industry"
+- Value Props: Universal, Self-Service, Scalable
+- Social Proof: Customer logos and testimonials
+- CTA: "Start Free Trial" / "View Pricing"
+- Features: Universal templates, AI agents, real-time analytics
+
+### **2. Pricing Page (`/pricing`)**
+**Purpose**: Convert visitors to paid subscriptions
+**Plans**:
+- **Starter**: $97/month - Basic features, 100 agent interactions
+- **Professional**: $197/month - Advanced features, 500 agent interactions
+- **Enterprise**: $497/month - White-label, unlimited interactions
+**Features**: Usage-based billing, no setup fees, cancel anytime
+
+### **3. Features Page (`/features`)**
+**Purpose**: Educate visitors on platform capabilities
+**Sections**:
+- Universal Templates (works for any industry)
+- AI Agent Management (self-service setup)
+- Real-time Analytics (usage tracking)
+- Self-Service Portal (customer independence)
+- White-label Options (enterprise features)
+
+### **4. About Page (`/about`)**
+**Purpose**: Build trust and credibility
+**Content**:
+- Company mission and vision
+- Team information
+- Customer success stories
+- Industry expertise
+- Technology leadership
+
+### **5. Contact Page (`/contact`)**
+**Purpose**: Generate leads and provide support
+**Elements**:
+- Contact form
+- Support options
+- Sales contact information
+- FAQ section
+- Demo request form
+
+---
+
+## 🔐 **AUTHENTICATION & ACCESS**
+
+### **Public Access**
+- Home, Pricing, Features, About, Contact, Legal pages
+- Demo and trial signup flows
+- Marketing content and resources
+
+### **Customer Access** (`/app/*`)
+- Requires authentication
+- Subscription-based access
+- Usage tracking and billing
+- Self-service configuration
+
+### **Admin Access** (`/admin/*`)
+- Internal team only
+- Customer management
+- Revenue analytics
+- System monitoring
+
+---
+
+## 📊 **SUCCESS METRICS**
+
+### **Conversion Goals**
+- **Trial Signups**: Primary conversion goal
+- **Paid Subscriptions**: Revenue goal
+- **Customer Retention**: Long-term success
+- **Usage Growth**: Platform adoption
+
+### **Performance Metrics**
+- **Page Load Speed**: < 2 seconds
+- **Mobile Experience**: 100% responsive
+- **SEO Rankings**: Top 10 for target keywords
+- **User Engagement**: High time on site
+
+---
+
+## 🚀 **DEVELOPMENT PHASES**
+
+### **Phase 1: Core Website (Week 1)**
+- Home page with new messaging
+- Pricing page with subscription plans
+- Basic navigation and layout
+- Mobile responsiveness
+
+### **Phase 2: Content Pages (Week 2)**
+- Features page with universal value props
+- About page with company story
+- Contact page with lead generation
+- Legal pages with subscription terms
+
+### **Phase 3: Customer App (Week 3)**
+- Customer portal integration
+- Subscription management
+- Usage tracking dashboard
+- Self-service configuration
+
+### **Phase 4: Admin Integration (Week 4)**
+- Admin dashboard integration
+- Revenue analytics
+- Customer management
+- System monitoring
+
+---
+
+## 📋 **DELIVERABLES CHECKLIST**
+
+### **Design Deliverables**
+- [ ] Home page design
+- [ ] Pricing page design
+- [ ] Features page design
+- [ ] About page design
+- [ ] Contact page design
+- [ ] Customer portal design
+- [ ] Admin dashboard design
+- [ ] Mobile responsive designs
+
+### **Development Deliverables**
+- [ ] Next.js application setup
+- [ ] Component library implementation
+- [ ] Authentication system
+- [ ] Database integration
+- [ ] Payment integration
+- [ ] SEO optimization
+- [ ] Performance optimization
+- [ ] Testing and QA
+
+---
+
+## 🎯 **SUCCESS CRITERIA**
+
+### **Technical Success**
+- ✅ All pages load in < 2 seconds
+- ✅ 100% mobile responsive
+- ✅ SEO optimized
+- ✅ Accessibility compliant
+- ✅ Secure authentication
+
+### **Business Success**
+- ✅ Clear subscription value proposition
+- ✅ Strong conversion funnels
+- ✅ Professional brand presentation
+- ✅ Customer self-service capability
+- ✅ Revenue tracking integration
+
+---
+
+**📞 Contact**: For questions or clarifications, reach out to the project team.
+
+**📚 Supporting Documents**: See attached documentation for detailed specifications, content, and technical requirements.
+
+---
+
+*This brief provides complete context for building the new Rensto website aligned with the micro-SaaS business model transformation.*

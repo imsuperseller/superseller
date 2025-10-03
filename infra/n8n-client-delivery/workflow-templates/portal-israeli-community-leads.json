@@ -1,0 +1,567 @@
+{
+  "name": "Portal - Israeli Community Lead Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portal-leads",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              }
+            ]
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      "id": "portal-webhook",
+      "name": "Portal Lead Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [100, 300],
+      "webhookId": "portal-lead-generation"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Portal-specific validation and initialization\nconst requiredFields = ['targetLocation', 'leadCount', 'ageRange', 'clientInfo'];\nconst missingFields = [];\n\nfor (const field of requiredFields) {\n  if (!$input.first().json[field]) {\n    missingFields.push(field);\n  }\n}\n\nif (missingFields.length > 0) {\n  throw new Error(`Missing required fields: ${missingFields.join(', ')}`);\n}\n\n// Portal-specific search queries\nconst searchQueries = {\n  'USA': [\n    'Israeli community groups USA',\n    'Jewish organizations United States',\n    'Israeli professionals LinkedIn USA',\n    'Jewish business owners America',\n    'Israeli immigrants United States',\n    'Hebrew speakers USA',\n    'Jewish community centers USA',\n    'Israeli cultural organizations'\n  ],\n  'NYC': [\n    'Israeli community New York',\n    'Jewish organizations NYC',\n    'Israeli professionals Manhattan',\n    'Jewish business owners Brooklyn',\n    'Israeli immigrants New York',\n    'Hebrew speakers NYC',\n    'Jewish community centers NYC',\n    'Israeli cultural organizations New York'\n  ]\n};\n\nconst targetLocation = $input.first().json.targetLocation;\nconst queries = searchQueries[targetLocation] || searchQueries['USA'];\n\n// Generate unique identifiers\nconst runId = `portal_${targetLocation}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\nconst timestamp = new Date().toISOString();\n\nreturn {\n  ...($input.first().json),\n  runId,\n  searchQueries: queries,\n  timestamp,\n  status: 'initializing',\n  clientType: 'portal',\n  targetDemographics: {\n    ageRange: $input.first().json.ageRange || '24-50',\n    location: targetLocation,\n    community: 'Israeli/Jewish',\n    interests: ['Israeli culture', 'Jewish community', 'Hebrew', 'Israel']\n  }\n};"
+      },
+      "id": "portal-validate",
+      "name": "Portal Validation & Setup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 500]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appLeadEnrichment"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblPortalRequests"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "portal-log-request",
+      "name": "Log Portal Request",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [100, 700],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "portal-split-queries",
+      "name": "Split Search Queries",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [100, 900]
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "location",
+              "value": "={{ $node['Portal Validation & Setup'].json.targetLocation === 'NYC' ? 'New York,NY,United States' : 'United States' }}"
+            },
+            {
+              "name": "num",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "portal-serp-search",
+      "name": "Search Israeli Community",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [100, 1100],
+      "credentials": {
+        "serpApi": {
+          "id": "T3cDMFPGa0YUPBLk",
+          "name": "shai@superseller.agency"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json }} site:linkedin.com"
+            },
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "location",
+              "value": "={{ $node['Portal Validation & Setup'].json.targetLocation === 'NYC' ? 'New York,NY,United States' : 'United States' }}"
+            },
+            {
+              "name": "num",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "portal-linkedin-search",
+      "name": "Search LinkedIn Profiles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [100, 1300],
+      "credentials": {
+        "serpApi": {
+          "id": "T3cDMFPGa0YUPBLk",
+          "name": "shai@superseller.agency"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse and combine Portal search results\nconst communityResults = $input.all()[0].json.organic_results || [];\nconst linkedinResults = $input.all()[1].json.organic_results || [];\nconst userData = $node['Portal Validation & Setup'].json;\n\nconst leads = [];\nconst processedUrls = new Set();\nconst processedEmails = new Set();\n\n// Process community organization results\nfor (let i = 0; i < Math.min(communityResults.length, 50); i++) {\n  const result = communityResults[i];\n  if (result.link && !processedUrls.has(result.link)) {\n    processedUrls.add(result.link);\n    \n    // Extract organization info\n    const nameMatch = result.title.match(/^([^-–|]+)/);\n    const name = nameMatch ? nameMatch[1].trim() : 'Unknown';\n    \n    // Look for contact information in snippet\n    const emailMatch = result.snippet?.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})/g);\n    const phoneMatch = result.snippet?.match(/(\\(?[0-9]{3}\\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4})/g);\n    \n    leads.push({\n      name,\n      organization: name,\n      title: 'Community Member',\n      websiteUrl: result.link,\n      snippet: result.snippet || '',\n      email: emailMatch ? emailMatch[0] : '',\n      phone: phoneMatch ? phoneMatch[0] : '',\n      source: 'community_search',\n      runId: userData.runId,\n      location: userData.targetLocation,\n      community: 'Israeli/Jewish',\n      needsEnrichment: true\n    });\n  }\n}\n\n// Process LinkedIn results\nfor (let i = 0; i < Math.min(linkedinResults.length, 30); i++) {\n  const result = linkedinResults[i];\n  if (result.link && !processedUrls.has(result.link)) {\n    processedUrls.add(result.link);\n    \n    // Extract name from title\n    const nameMatch = result.title.match(/^([^-–|]+)/);\n    const name = nameMatch ? nameMatch[1].trim() : 'Unknown';\n    \n    // Parse company/position from snippet\n    const companyMatch = result.snippet?.match(/at\\s+([^.]+)/i);\n    const company = companyMatch ? companyMatch[1].trim() : '';\n    \n    // Look for location indicators\n    const locationMatch = result.snippet?.match(/(New York|NYC|Manhattan|Brooklyn|Queens|Bronx|Dallas|Houston|Los Angeles|Miami|Chicago)/i);\n    const location = locationMatch ? locationMatch[1] : userData.targetLocation;\n    \n    leads.push({\n      name,\n      organization: company,\n      title: result.title,\n      linkedinUrl: result.link,\n      snippet: result.snippet || '',\n      source: 'linkedin_search',\n      runId: userData.runId,\n      location: location,\n      community: 'Israeli/Jewish',\n      needsEnrichment: true\n    });\n  }\n}\n\n// Remove duplicates and limit results\nconst uniqueLeads = leads.filter((lead, index, self) => \n  index === self.findIndex(l => l.name === lead.name && l.organization === lead.organization)\n);\n\nreturn uniqueLeads.slice(0, userData.leadCount || 1000);"
+      },
+      "id": "portal-parse-results",
+      "name": "Parse Portal Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 1500]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "portal-process-leads",
+      "name": "Process Each Lead",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [100, 1700]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.firecrawl.dev/v0/scrape",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.linkedinUrl || $json.websiteUrl }}"
+            },
+            {
+              "name": "formats",
+              "value": "[\"markdown\", \"html\"]"
+            },
+            {
+              "name": "onlyMainContent",
+              "value": "=true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "portal-scrape-profile",
+      "name": "Scrape Profile Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [100, 1900],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an expert at analyzing Israeli/Jewish community profiles to extract key information for community outreach. Extract and structure the following information:\n\n1. Personal Details:\n- Full name\n- Current position/title\n- Organization/company\n- Location (city, state)\n- Age range (if determinable)\n\n2. Community Involvement:\n- Israeli/Jewish community connections\n- Cultural interests\n- Language skills (Hebrew, English)\n- Community activities\n\n3. Contact Information:\n- Email addresses\n- Phone numbers\n- Social media profiles\n- Professional networks\n\n4. Engagement Opportunities:\n- Community interests\n- Professional networking potential\n- Cultural event participation\n- Business opportunities\n\nReturn a structured JSON response with all available information.",
+              "role": "system"
+            },
+            {
+              "content": "Analyze this Israeli/Jewish community profile:\n\n{{ $json.data?.content || $json.snippet }}\n\nTarget location: {{ $node['Portal Validation & Setup'].json.targetLocation }}\nAge range: {{ $node['Portal Validation & Setup'].json.targetDemographics.ageRange }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1500,
+          "temperature": 0.3
+        }
+      },
+      "id": "portal-ai-analysis",
+      "name": "AI Community Analysis",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [100, 2100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Portal lead data for storage\nconst lead = $input.first().json;\nconst enrichmentData = JSON.parse($node['AI Community Analysis'].json.choices[0].message.content || '{}');\nconst userData = $node['Portal Validation & Setup'].json;\n\nreturn {\n  runId: userData.runId,\n  clientType: 'portal',\n  name: enrichmentData.fullName || lead.name,\n  email: enrichmentData.email || lead.email || '',\n  phone: enrichmentData.phone || lead.phone || '',\n  organization: enrichmentData.organization || lead.organization,\n  title: enrichmentData.title || lead.title,\n  location: enrichmentData.location || lead.location,\n  linkedinUrl: lead.linkedinUrl || '',\n  websiteUrl: lead.websiteUrl || '',\n  \n  // Community-specific data\n  community: 'Israeli/Jewish',\n  hebrewSkills: enrichmentData.hebrewSkills || 'unknown',\n  communityInvolvement: JSON.stringify(enrichmentData.communityInvolvement || []),\n  culturalInterests: JSON.stringify(enrichmentData.culturalInterests || []),\n  \n  // Contact and engagement\n  socialMediaProfiles: JSON.stringify(enrichmentData.socialMediaProfiles || []),\n  engagementOpportunities: JSON.stringify(enrichmentData.engagementOpportunities || []),\n  \n  // Metadata\n  source: lead.source,\n  enrichmentQuality: enrichmentData.confidence || 'medium',\n  createdAt: new Date().toISOString(),\n  status: 'enriched',\n  targetLocation: userData.targetLocation\n};"
+      },
+      "id": "portal-prepare-data",
+      "name": "Prepare Portal Lead Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 2300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appLeadEnrichment"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblPortalLeads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "runId": "={{ $json.runId }}",
+            "clientType": "={{ $json.clientType }}",
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "organization": "={{ $json.organization }}",
+            "title": "={{ $json.title }}",
+            "location": "={{ $json.location }}",
+            "linkedinUrl": "={{ $json.linkedinUrl }}",
+            "websiteUrl": "={{ $json.websiteUrl }}",
+            "community": "={{ $json.community }}",
+            "hebrewSkills": "={{ $json.hebrewSkills }}",
+            "communityInvolvement": "={{ $json.communityInvolvement }}",
+            "culturalInterests": "={{ $json.culturalInterests }}",
+            "socialMediaProfiles": "={{ $json.socialMediaProfiles }}",
+            "engagementOpportunities": "={{ $json.engagementOpportunities }}",
+            "source": "={{ $json.source }}",
+            "enrichmentQuality": "={{ $json.enrichmentQuality }}",
+            "status": "={{ $json.status }}",
+            "createdAt": "={{ $json.createdAt }}",
+            "targetLocation": "={{ $json.targetLocation }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "portal-store-lead",
+      "name": "Store Portal Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [100, 2500],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "portal-aggregate",
+      "name": "Aggregate Portal Leads",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [100, 2700]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create Portal-specific CSV export\nconst leads = $input.first().json;\nconst userData = $node['Portal Validation & Setup'].json;\n\n// CSV Headers for Portal leads\nconst headers = [\n  'Name',\n  'Email',\n  'Phone',\n  'Organization',\n  'Title',\n  'Location',\n  'LinkedIn URL',\n  'Website URL',\n  'Community',\n  'Hebrew Skills',\n  'Community Involvement',\n  'Cultural Interests',\n  'Social Media Profiles',\n  'Engagement Opportunities',\n  'Source',\n  'Quality Score'\n];\n\n// Create CSV content\nlet csvContent = headers.join(',') + '\\n';\n\nleads.forEach(lead => {\n  const row = [\n    lead.name || '',\n    lead.email || '',\n    lead.phone || '',\n    `\"${(lead.organization || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.title || '').replace(/\"/g, '\"\"')}\"`,\n    lead.location || '',\n    lead.linkedinUrl || '',\n    lead.websiteUrl || '',\n    lead.community || '',\n    lead.hebrewSkills || '',\n    `\"${(lead.communityInvolvement || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.culturalInterests || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.socialMediaProfiles || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.engagementOpportunities || '').replace(/\"/g, '\"\"')}\"`,\n    lead.source || '',\n    lead.enrichmentQuality || ''\n  ];\n  csvContent += row.join(',') + '\\n';\n});\n\n// Convert to base64\nconst base64 = Buffer.from(csvContent).toString('base64');\n\nreturn {\n  csvContent,\n  base64,\n  fileName: `portal_${userData.targetLocation}_leads_${userData.runId}.csv`,\n  leadCount: leads.length,\n  runId: userData.runId,\n  clientType: 'portal',\n  targetLocation: userData.targetLocation,\n  userEmail: userData.clientInfo?.email || 'portal@local-il.com',\n  userName: userData.clientInfo?.name || 'Portal Team'\n};"
+      },
+      "id": "portal-create-csv",
+      "name": "Create Portal CSV Export",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 2900]
+    },
+    {
+      "parameters": {
+        "text": "=Portal Lead Generation Complete 🇮🇱\n\nTarget: {{ $json.targetLocation }}\nLeads Generated: {{ $json.leadCount }}\nClient: {{ $json.clientType }}\nRun ID: {{ $json.runId }}",
+        "otherOptions": {}
+      },
+      "id": "portal-slack-notify",
+      "name": "Notify Portal Team",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [100, 3100],
+      "webhookId": "f2e493dd-3e93-4a33-b12b-0119fd1ca5c1",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "subject": "=Portal {{ $json.targetLocation }} Lead Generation Complete! 🇮🇱",
+        "options": {}
+      },
+      "id": "portal-send-email",
+      "name": "Send Portal Results",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [100, 3300],
+      "webhookId": "10f19c7f-19f6-4ea3-ac51-f51303c8a075"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Portal final response\nconst result = {\n  success: true,\n  runId: $json.runId,\n  clientType: 'portal',\n  message: `Successfully generated ${$json.leadCount} Israeli/Jewish community leads for ${$json.targetLocation}`,\n  summary: {\n    totalLeads: $json.leadCount,\n    targetLocation: $json.targetLocation,\n    community: 'Israeli/Jewish',\n    withEmail: $node['Aggregate Portal Leads'].json.filter(l => l.email).length,\n    withPhone: $node['Aggregate Portal Leads'].json.filter(l => l.phone).length,\n    withLinkedIn: $node['Aggregate Portal Leads'].json.filter(l => l.linkedinUrl).length\n  },\n  deliveryEmail: $json.userEmail,\n  timestamp: new Date().toISOString()\n};\n\nreturn result;"
+      },
+      "id": "portal-prepare-response",
+      "name": "Prepare Portal Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 3500]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "portal-respond",
+      "name": "Respond to Portal Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [100, 3700]
+    }
+  ],
+  "connections": {
+    "Portal Lead Request": {
+      "main": [
+        [
+          {
+            "node": "Portal Validation & Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Portal Validation & Setup": {
+      "main": [
+        [
+          {
+            "node": "Log Portal Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Portal Request": {
+      "main": [
+        [
+          {
+            "node": "Split Search Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Search Queries": {
+      "main": [
+        [
+          {
+            "node": "Search Israeli Community",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search LinkedIn Profiles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Israeli Community": {
+      "main": [
+        [
+          {
+            "node": "Parse Portal Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search LinkedIn Profiles": {
+      "main": [
+        [
+          {
+            "node": "Parse Portal Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Portal Results": {
+      "main": [
+        [
+          {
+            "node": "Process Each Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Each Lead": {
+      "main": [
+        [
+          {
+            "node": "Scrape Profile Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Profile Data": {
+      "main": [
+        [
+          {
+            "node": "AI Community Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Community Analysis": {
+      "main": [
+        [
+          {
+            "node": "Prepare Portal Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Portal Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Store Portal Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Portal Lead": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Portal Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Portal Leads": {
+      "main": [
+        [
+          {
+            "node": "Create Portal CSV Export",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Portal CSV Export": {
+      "main": [
+        [
+          {
+            "node": "Notify Portal Team",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Portal Results",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Portal Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Portal Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Portal Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "portal-lead-generation-v1"
+}

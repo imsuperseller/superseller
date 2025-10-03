@@ -1,0 +1,100 @@
+{
+  "analysis": {
+    "workflowInfo": {
+      "error": {
+        "message": "unauthorized"
+      }
+    },
+    "nodeAnalysis": {},
+    "connectionAnalysis": {},
+    "performanceIssues": [],
+    "validationErrors": [],
+    "optimizationOpportunities": [],
+    "testResults": {}
+  },
+  "plan": {
+    "immediate": {
+      "title": "Critical Fixes (Immediate)",
+      "tasks": []
+    },
+    "shortTerm": {
+      "title": "Performance Optimizations (High Priority)",
+      "tasks": []
+    },
+    "longTerm": {
+      "title": "Architecture Improvements (Strategic)",
+      "tasks": []
+    },
+    "testing": {
+      "title": "Comprehensive Testing Plan",
+      "tasks": [
+        {
+          "priority": "High",
+          "action": "Test workflow execution",
+          "target": "workflow",
+          "description": "Execute workflow and validate results"
+        },
+        {
+          "priority": "High",
+          "action": "Test error handling",
+          "target": "workflow",
+          "description": "Test workflow behavior with invalid inputs"
+        },
+        {
+          "priority": "Medium",
+          "action": "Performance testing",
+          "target": "workflow",
+          "description": "Measure execution time and resource usage"
+        }
+      ]
+    }
+  },
+  "architecture": {
+    "nodeOptimizations": [],
+    "connectionOptimizations": [],
+    "errorHandling": [
+      {
+        "type": "global_error_handler",
+        "implementation": "Add error handling nodes",
+        "benefit": "Graceful error recovery"
+      },
+      {
+        "type": "input_validation",
+        "implementation": "Add validation nodes",
+        "benefit": "Prevent invalid data processing"
+      }
+    ],
+    "performanceImprovements": [
+      {
+        "type": "caching_strategy",
+        "implementation": "Implement caching for repeated operations",
+        "benefit": "Reduce API calls and improve speed"
+      },
+      {
+        "type": "parallel_processing",
+        "implementation": "Use parallel execution where possible",
+        "benefit": "Faster workflow execution"
+      }
+    ],
+    "monitoringSetup": [
+      {
+        "type": "execution_logging",
+        "implementation": "Add logging nodes",
+        "benefit": "Track workflow execution and debugging"
+      }
+    ]
+  },
+  "results": {
+    "criticalFixesApplied": 0,
+    "optimizationsCompleted": 0,
+    "testsPassed": 3,
+    "errors": []
+  },
+  "testResults": {
+    "success": false,
+    "error": {
+      "message": "not found"
+    }
+  },
+  "timestamp": "2025-08-26T21:50:41.945Z"
+}

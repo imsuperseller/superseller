@@ -1,0 +1,457 @@
+{
+  "name": "🚀 Optimized Insurance Analysis Workflow - Final",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "svix-insurance-analysis",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🔗 Svix Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        208
+      ],
+      "webhookId": "d97e2bd2-5f4b-48ee-9cca-63f6a31f3381",
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "document-uploaded",
+              "leftValue": "={{ $json.body.body.eventType }}",
+              "rightValue": "document.uploaded",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "harb-uploaded",
+              "leftValue": "={{ $json.body.body.eventType }}",
+              "rightValue": "harb.uploaded",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "lead-created",
+              "leftValue": "={{ $json.body.body.eventType }}",
+              "rightValue": "lead.created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "event-filter",
+      "name": "⚡ Event Type Filter",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        336,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "instructions": "Transform Svix webhook data for insurance analysis",
+        "jsCode": "// Simple Svix Webhook Data Processor\nconst items = $input.all();\nconst processedItems = [];\n\nfor (const item of items) {\n  const webhookData = item.json;\n  \n  // Extract the lead data from the webhook body (simple structure)\n  const leadData = webhookData.body.body || webhookData.body || webhookData;\n  \n  // Process and enrich the lead data\n  const profile = {\n    // Basic Information from Svix\n    id: leadData.leadId || leadData.customerId || `lead-${Date.now()}`,\n    fullName: leadData.fullName || `${leadData.firstName || ''} ${leadData.lastName || ''}`.trim() || 'Unknown',\n    firstName: leadData.firstName || '',\n    lastName: leadData.lastName || '',\n    \n    // Contact Information\n    email: leadData.email || '',\n    phone: leadData.phone || '',\n    \n    // Lead Management Info\n    leadId: leadData.leadId,\n    customerId: leadData.customerId,\n    leadNumber: leadData.leadNumber,\n    assigneeId: leadData.assigneeId,\n    ownerId: leadData.ownerId,\n    ownerName: leadData.ownerName,\n    typeId: leadData.typeId,\n    typeName: leadData.typeName,\n    \n    // Timestamps\n    createdAt: leadData.createdAt,\n    dueAt: leadData.dueAt,\n    dueAtTimeSet: leadData.dueAtTimeSet,\n    \n    // External ID\n    leadExternalId: leadData.leadExternalId,\n    \n    // Webhook Metadata\n    eventType: webhookData.body.body.eventType || webhookData.body.eventType || webhookData.eventType || 'lead.created',\n    receivedAt: new Date().toISOString(),\n    \n    // Default values for insurance analysis\n    age: 35, // Default age since not provided\n    city: 'Unknown', // Default city since not provided\n    income: 15000, // Default income since not provided\n    familySize: 1, // Default family size since not provided\n    profession: 'עובד', // Default profession\n    \n    // Processed Fields\n    dataQuality: calculateDataQuality(leadData),\n    riskFactors: [],\n    insuranceNeeds: [],\n    priority: 'medium',\n    familyId: generateFamilyId(leadData)\n  };\n  \n  // Calculate risk factors and insurance needs\n  calculateRiskProfile(profile);\n  \n  processedItems.push(profile);\n}\n\n// Helper functions\nfunction calculateDataQuality(data) {\n  const fields = ['firstName', 'lastName', 'fullName', 'leadId', 'customerId'];\n  const filledFields = fields.filter(field => data[field] && data[field] !== '');\n  return Math.round((filledFields.length / fields.length) * 100);\n}\n\nfunction generateFamilyId(data) {\n  const name = (data.fullName || `${data.firstName || ''} ${data.lastName || ''}`).replace(/[^a-zA-Z0-9]/g, '');\n  const leadId = (data.leadId || '').replace(/[^0-9]/g, '');\n  return `${name}-${leadId}-${Date.now()}`.substring(0, 20);\n}\n\nfunction calculateRiskProfile(profile) {\n  // Basic risk assessment based on available data\n  profile.riskFactors.push('new_lead');\n  profile.insuranceNeeds.push('basic_coverage');\n  profile.riskScore = 3; // Default risk score\n}\n\nreturn processedItems;"
+      },
+      "id": "data-processor",
+      "name": "🤖 AI Data Processor",
+      "type": "n8n-nodes-base.aiTransform",
+      "typeVersion": 1,
+      "position": [
+        560,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "inputText": "={{ JSON.stringify($json) }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "high_risk",
+              "description": "משפחות בסיכון גבוה - הכנסה גבוהה, משפחה גדולה, גיל מבוגר, או מקצועות בסיכון"
+            },
+            {
+              "category": "medium_risk",
+              "description": "משפחות בסיכון בינוני - הכנסה בינונית, משפחה בינונית, גיל בינוני"
+            },
+            {
+              "category": "low_risk",
+              "description": "משפחות בסיכון נמוך - הכנסה נמוכה, משפחה קטנה, גיל צעיר"
+            }
+          ]
+        },
+        "options": {
+          "multiClass": false,
+          "fallback": "other",
+          "systemPromptTemplate": "נתח את הנתונים המשפחתיים הבאים וסווג אותם לפי רמת הסיכון הביטוחי. השתמש בקטגוריות הבאות: {categories}. החזר רק JSON ללא הסברים. אם הנתונים לא מתאימים לאף קטגוריה, השתמש בקטגוריית \"other\".",
+          "enableAutoFixing": true
+        }
+      },
+      "id": "risk-classifier",
+      "name": "⚖️ Risk Level Classifier",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Risk Level Classifier Output Processor\nconst items = $input.all();\nconst processedItems = [];\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // The data comes from the original input (index 1 from Risk Level Classifier)\n  // We need to determine classification based on the risk factors and data\n  \n  let classification = 'medium_risk';\n  let riskClassification = {\n    high_risk: false,\n    medium_risk: true,\n    low_risk: false,\n    fallback: false\n  };\n  \n  // Determine classification based on risk factors and data\n  if (data.riskFactors && data.riskFactors.length > 0) {\n    if (data.riskFactors.includes('high_income') || data.riskFactors.includes('large_family') || data.riskFactors.includes('senior_citizen')) {\n      classification = 'high_risk';\n      riskClassification = {\n        high_risk: true,\n        medium_risk: false,\n        low_risk: false,\n        fallback: false\n      };\n    } else if (data.riskFactors.includes('young_adult')) {\n      classification = 'low_risk';\n      riskClassification = {\n        high_risk: false,\n        medium_risk: false,\n        low_risk: true,\n        fallback: false\n      };\n    }\n  } else {\n    // Fallback classification based on data analysis\n    if (data.income > 20000 || data.age > 50 || data.familySize > 3) {\n      classification = 'high_risk';\n      riskClassification = {\n        high_risk: true,\n        medium_risk: false,\n        low_risk: false,\n        fallback: false\n      };\n    } else if (data.age < 30 && data.income < 15000) {\n      classification = 'low_risk';\n      riskClassification = {\n        high_risk: false,\n        medium_risk: false,\n        low_risk: true,\n        fallback: false\n      };\n    }\n  }\n  \n  // Add classification to the original data\n  const processedData = {\n    ...data,\n    category: classification,\n    riskClassification: riskClassification\n  };\n  \n  processedItems.push(processedData);\n}\n\nreturn processedItems;"
+      },
+      "id": "risk-processor",
+      "name": "⚖️ Risk Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "נתח את פרופיל הביטוח הבא וצור ניתוח מקיף:\n\n=== נתונים דמוגרפיים ===\nמזהה: {{ $json.id }}\nשם מלא: {{ $json.fullName }}\nגיל: {{ $json.age }}\nעיר: {{ $json.city }}\nאימייל: {{ $json.email }}\nטלפון: {{ $json.phone }}\nהכנסה: {{ $json.income }} ש\"ח\nמקצוע: {{ $json.profession }}\nגודל משפחה: {{ $json.familySize }}\nכתובת: {{ $json.street }}\n\n=== נתונים מעובדים ===\nאיכות נתונים: {{ $json.dataQuality }}%\nרמת סיכון: {{ $json.category }}\nציון סיכון: {{ $json.riskScore }}/10\nגורמי סיכון: {{ $json.riskFactors.join(\", \") }}\nצרכי ביטוח: {{ $json.insuranceNeeds.join(\", \") }}\nעדיפות: {{ $json.priority }}\n\nצור ניתוח מקיף בפורמט HTML המתאים להמרה ל-PDF:\n\n**1. פרופיל אישי** (בפורמט טבלה HTML):\n<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">\n<tr><td>תעודת זהות</td><td>{{ $json.id }}</td></tr>\n<tr><td>שם מלא</td><td>{{ $json.fullName }}</td></tr>\n<tr><td>גיל</td><td>{{ $json.age }}</td></tr>\n<tr><td>עיר</td><td>{{ $json.city }}</td></tr>\n<tr><td>הכנסה</td><td>{{ $json.income }} ש\"ח</td></tr>\n<tr><td>מקצוע</td><td>{{ $json.profession }}</td></tr>\n<tr><td>גודל משפחה</td><td>{{ $json.familySize }}</td></tr>\n<tr><td>איכות נתונים</td><td>{{ $json.dataQuality }}%</td></tr>\n<tr><td>רמת סיכון</td><td>{{ $json.category }}</td></tr>\n<tr><td>ציון סיכון</td><td>{{ $json.riskScore }}/10</td></tr>\n</table>\n\n**2. המלצות ביטוח מותאמות:**\nנתח פערי כיסוי והצע 3-5 מוצרים ספציפיים מחברות ביטוח ישראליות מובילות (הראל, מגדל, מנורה) עם הצדקה מבוססת נתונים.\n\nכלול:\n- ניתוח פערי כיסוי\n- המלצות מוצרים ספציפיות\n- סקריפט מכירות בעברית\n- הזדמנויות upsell\n- הדגשת סיכונים\n- צעדים הבאים\n\nהשתמש בעברית לתוכן. הפלט חייב להיות בפורמט HTML נקי (ללא markdown code blocks) המתאים להמרה ל-PDF.",
+        "options": {
+          "systemMessage": "אתה מומחה לניתוח ביטוח ישראלי. ספק ניתוחים מקצועיים מפורטים בעברית עם המלצות מעשיות למוצרי ביטוח מותאמים אישית."
+        }
+      },
+      "id": "insurance-agent",
+      "name": "🔍 Insurance Analysis Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process HTML output to replace template variables\nconst items = $input.all();\nconst processedItems = [];\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // Process the HTML output to replace template variables with actual values\n  let processedHtml = data.output || '';\n  \n  // Replace template variables with actual values\n  processedHtml = processedHtml\n    .replace(/\\{\\{ \\$json\\.id \\}\\}/g, data.id || '')\n    .replace(/\\{\\{ \\$json\\.fullName \\}\\}/g, data.fullName || '')\n    .replace(/\\{\\{ \\$json\\.age \\}\\}/g, data.age || '')\n    .replace(/\\{\\{ \\$json\\.city \\}\\}/g, data.city || '')\n    .replace(/\\{\\{ \\$json\\.income \\}\\}/g, data.income || '')\n    .replace(/\\{\\{ \\$json\\.profession \\}\\}/g, data.profession || '')\n    .replace(/\\{\\{ \\$json\\.familySize \\}\\}/g, data.familySize || '')\n    .replace(/\\{\\{ \\$json\\.dataQuality \\}\\}/g, data.dataQuality || '')\n    .replace(/\\{\\{ \\$json\\.category \\}\\}/g, data.category || '')\n    .replace(/\\{\\{ \\$json\\.riskScore \\}\\}/g, data.riskScore || '')\n    .replace(/\\{\\{ \\$json\\.phone \\}\\}/g, data.phone || '')\n    .replace(/\\{\\{ \\$json\\.email \\}\\}/g, data.email || '')\n    .replace(/\\{\\{ \\$json\\.riskFactors\\.join\\(\\\", \\\"\\) \\}\\}/g, (data.riskFactors || []).join(', '))\n    .replace(/\\{\\{ \\$json\\.insuranceNeeds\\.join\\(\\\", \\\"\\) \\}\\}/g, (data.insuranceNeeds || []).join(', '))\n    .replace(/\\{\\{ number_format\\(\\$json\\.income\\) \\}\\}/g, (data.income || 0).toLocaleString())\n    .replace(/\\{\\{ date\\(\\'d\\/m\\/Y\\'\\) \\}\\}/g, new Date().toLocaleDateString('he-IL'));\n  \n  // Add processed HTML to the data\n  const processedData = {\n    ...data,\n    processedHtml: processedHtml\n  };\n  \n  processedItems.push(processedData);\n}\n\nreturn processedItems;"
+      },
+      "id": "html-processor",
+      "name": "🔧 HTML Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "pdf",
+        "pdfTemplateId": "73077b23d5577066",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "analysisHtml",
+              "value": "={{ $json.processedHtml }}"
+            }
+          ]
+        }
+      },
+      "id": "document-creator-fixed",
+      "name": "📄 Document Creator",
+      "type": "n8n-nodes-base.apiTemplateIo",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        208
+      ],
+      "credentials": {
+        "apiTemplateIoApi": {
+          "id": "M9AUYVv2Ucwuk8Ou",
+          "name": "APITemplate.io 1shai"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.surense.com/v1/leads/lead-1758502948560/documents",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file_url",
+              "value": "={{ $json.download_url }}"
+            },
+            {
+              "name": "document_type",
+              "value": "insurance_analysis"
+            },
+            {
+              "name": "lead_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "surense-upload-new",
+      "name": "📤 Surense Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\"status\": \"success\", \"message\": \"Insurance analysis completed\", \"lead_id\": $json.id, \"risk_level\": $json.category, \"document_created\": true, \"pdf_url\": $json.download_url, \"processed_at\": new Date().toISOString()}) }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "✅ Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2384,
+        208
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "gemini-model-1",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        856,
+        496
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "NbN9fufTqIImGzWK",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "gemini-model-2",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1432,
+        432
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "NbN9fufTqIImGzWK",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🔗 Svix Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "⚡ Event Type Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚡ Event Type Filter": {
+      "main": [
+        [
+          {
+            "node": "🤖 AI Data Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 AI Data Processor": {
+      "main": [
+        [
+          {
+            "node": "⚖️ Risk Level Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚖️ Risk Level Classifier": {
+      "main": [
+        [
+          {
+            "node": "⚖️ Risk Processor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "⚖️ Risk Processor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "⚖️ Risk Processor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "⚖️ Risk Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚖️ Risk Processor": {
+      "main": [
+        [
+          {
+            "node": "🔍 Insurance Analysis Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Insurance Analysis Agent": {
+      "main": [
+        [
+          {
+            "node": "🔧 HTML Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 HTML Processor": {
+      "main": [
+        [
+          {
+            "node": "📄 Document Creator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 Document Creator": {
+      "main": [
+        [
+          {
+            "node": "📤 Surense Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📤 Surense Upload": {
+      "main": [
+        [
+          {
+            "node": "✅ Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "main": [],
+      "ai_languageModel": [
+        [
+          {
+            "node": "⚖️ Risk Level Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "main": [],
+      "ai_languageModel": [
+        [
+          {
+            "node": "🔍 Insurance Analysis Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "executionTimeout": 3600,
+    "timezone": "Asia/Jerusalem"
+  },
+  "versionId": "c02c541f-bf90-444e-a5b8-5b04a117645d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33575fca1b29f300dda59a8557593dc5141ea54bffd092fa62060703ab1b463a"
+  },
+  "id": "bsl6l4JqVQvarPR1",
+  "tags": []
+}

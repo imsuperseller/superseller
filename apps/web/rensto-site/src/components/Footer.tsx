@@ -18,13 +18,14 @@ export function Footer() {
   const navigation = {
     main: [
       { name: 'Home', href: '/' },
-      { name: 'Process', href: '/process' },
-      { name: 'Offers', href: '/offers' },
+      { name: 'Features', href: '/features' },
+      { name: 'Pricing', href: '/pricing' },
+      { name: 'About', href: '/about' },
       { name: 'Contact', href: '/contact' },
     ],
     business: [
       { name: 'Admin Dashboard', href: '/admin', icon: Settings },
-      { name: 'Customer Portal', href: '/demo-org', icon: Workflow },
+      { name: 'Customer App', href: '/app', icon: Workflow },
       { name: 'Agent Management', href: '/admin/agents', icon: Zap },
       { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     ],

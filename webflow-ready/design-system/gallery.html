@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Design System Gallery</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
+        
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 50%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(95, 251, 253, 0.5);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .gallery {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .design-card {
+            background: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .design-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+        }
+        
+        .design-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 50%, #00bfff 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .design-header {
+            padding: 1.5rem;
+            background: #2d3748;
+        }
+        
+        .design-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .design-description {
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+        
+        .design-preview {
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 8px;
+            background: #1a202c;
+        }
+        
+        .design-actions {
+            padding: 1rem 1.5rem;
+            background: #2d3748;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b35 100%);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #00bfff 0%, #00ffff 100%);
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.6);
+        }
+        
+        .brand-info {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #1a202c;
+            border-radius: 1rem;
+            border: 1px solid #2d3748;
+        }
+        
+        .brand-info h2 {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 1rem;
+        }
+        
+        .brand-info p {
+            color: #a0aec0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Rensto Design System</h1>
+        <p>Authentic brand identity with neon aesthetics and dynamic gradients</p>
+    </div>
+    
+    <div class="gallery">
+        <div class="design-card">
+            <div class="design-header">
+                <div class="design-title">Neon Variation</div>
+                <div class="design-description">High-glow neon aesthetic with pulsing effects</div>
+            </div>
+            <div class="design-preview">
+                <iframe src="infinite_ui_cursor/rensto_1.html"></iframe>
+            </div>
+            <div class="design-actions">
+                <a href="infinite_ui_cursor/rensto_1.html" target="_blank" class="btn btn-primary">Open Full View</a>
+                <button class="btn btn-secondary" onclick="inspectDesign('rensto_1')">Inspect Design</button>
+            </div>
+        </div>
+        
+        <div class="design-card">
+            <div class="design-header">
+                <div class="design-title">Gradient Variation</div>
+                <div class="design-description">Smooth gradient transitions with brand colors</div>
+            </div>
+            <div class="design-preview">
+                <iframe src="infinite_ui_cursor/rensto_2.html"></iframe>
+            </div>
+            <div class="design-actions">
+                <a href="infinite_ui_cursor/rensto_2.html" target="_blank" class="btn btn-primary">Open Full View</a>
+                <button class="btn btn-secondary" onclick="inspectDesign('rensto_2')">Inspect Design</button>
+            </div>
+        </div>
+        
+        <div class="design-card">
+            <div class="design-header">
+                <div class="design-title">Cyberpunk Variation</div>
+                <div class="design-description">Futuristic cyberpunk style with neon accents</div>
+            </div>
+            <div class="design-preview">
+                <iframe src="infinite_ui_cursor/rensto_3.html"></iframe>
+            </div>
+            <div class="design-actions">
+                <a href="infinite_ui_cursor/rensto_3.html" target="_blank" class="btn btn-primary">Open Full View</a>
+                <button class="btn btn-secondary" onclick="inspectDesign('rensto_3')">Inspect Design</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="brand-info">
+        <h2>🎯 Authentic Rensto Brand Identity</h2>
+        <p>These designs use the actual Rensto logo colors: vibrant red-to-orange gradient (upper) and bright blue-to-cyan gradient (lower) on a medium-dark grey background. The neon glow effects and dynamic gradients create the modern, energetic aesthetic that matches your brand perfectly.</p>
+    </div>
+    
+    <script>
+        function inspectDesign(designId) {
+            const designInfo = {
+                rensto_1: { name: 'Neon Variation', file: 'infinite_ui_cursor/rensto_1.html' },
+                rensto_2: { name: 'Gradient Variation', file: 'infinite_ui_cursor/rensto_2.html' },
+                rensto_3: { name: 'Cyberpunk Variation', file: 'infinite_ui_cursor/rensto_3.html' }
+            };
+            
+            const design = designInfo[designId];
+            if (design) {
+                window.open(design.file, '_blank');
+                console.log(`🔍 Inspecting ${design.name}: ${design.file}`);
+            }
+        }
+    </script>
+</body>
+</html>

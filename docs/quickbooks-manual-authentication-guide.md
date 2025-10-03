@@ -128,3 +128,6 @@ node scripts/quickbooks-simple-auth.js YOUR_AUTH_CODE
 # Test the new credentials
 node scripts/test-quickbooks-credentials.js
 ```
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -220,3 +220,6 @@ font-family: 'JetBrains Mono', monospace;
 ✅ **No More "Kids Work" - Professional Quality Achieved**
 
 **The QuickBooks integration now has 3 sophisticated design options that follow the Perfect Design System methodology and maintain Rensto's professional brand identity.** 🚀🎨
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

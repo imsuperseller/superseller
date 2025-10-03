@@ -1,2 +1,0 @@
-"id","content_request_id","workflow_id","status","started_at","completed_at","error_message","execution_data"
-"LOG001","REQ001","jbfZ1GT5Er3vseuW","COMPLETED","2025-08-25 10:00:00","2025-08-25 10:05:00","","{"wp_id": 123, "preview_url": "https://tax4us.co.il/?p=123&preview=true"}"

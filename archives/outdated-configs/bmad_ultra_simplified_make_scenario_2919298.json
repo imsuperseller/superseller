@@ -1,0 +1,596 @@
+{
+  "flow": [
+    {
+      "id": 15,
+      "mapper": {
+        "limit": "50",
+        "order": "desc",
+        "orderBy": "createdDate"
+      },
+      "module": "surense:SearchLeads",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "🔍 חיפוש לידים"
+        }
+      },
+      "parameters": {
+        "__IMTCONN__": 5026390
+      }
+    },
+    {
+      "id": 18,
+      "filter": {
+        "name": "",
+        "conditions": [
+          [
+            {
+              "a": "{{15.idCardIssueDate}}",
+              "o": "exist"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "id": "{{15.id}}",
+        "age": "{{15.age}}",
+        "city": "{{15.city}}",
+        "tags": "{{15.tags}}",
+        "dueAt": "{{15.dueAt}}",
+        "email": "{{15.email}}",
+        "phone": "{{15.phone}}",
+        "gender": "{{15.gender}}",
+        "idType": "{{15.idType}}",
+        "income": "{{15.income}}",
+        "number": "{{15.number}}",
+        "pinned": "{{15.pinned}}",
+        "street": "{{15.street}}",
+        "typeId": "{{15.typeId}}",
+        "unseen": "{{15.unseen}}",
+        "dueDate": "{{15.dueDate}}",
+        "ownerId": "{{15.ownerId}}",
+        "version": "{{15.version}}",
+        "agencyId": "{{15.agencyId}}",
+        "fullName": "{{15.fullName}}",
+        "idNumber": "{{15.idNumber}}",
+        "lastName": "{{15.lastName}}",
+        "sharable": "{{15.sharable}}",
+        "sourceId": "{{15.sourceId}}",
+        "statusId": "{{15.statusId}}",
+        "tenantId": "{{15.tenantId}}",
+        "birthDate": "{{15.birthDate}}",
+        "createdBy": "{{15.createdBy}}",
+        "firstName": "{{15.firstName}}",
+        "ownerName": "{{15.ownerName}}",
+        "postalBox": "{{15.postalBox}}",
+        "riskLevel": "{{15.riskLevel}}",
+        "tromStats": "{{15.tromStats}}",
+        "assignedAt": "{{15.assignedAt}}",
+        "assignedBy": "{{15.assignedBy}}",
+        "assigneeId": "{{15.assigneeId}}",
+        "cellNumber": "{{15.cellNumber}}",
+        "checkLists": "{{15.checkLists}}",
+        "customerId": "{{15.customerId}}",
+        "familySize": "{{15.familySize}}",
+        "hbDataDate": "{{15.hbDataDate}}",
+        "interestId": "{{15.interestId}}",
+        "postalCode": "{{15.postalCode}}",
+        "profession": "{{15.profession}}",
+        "statusDate": "{{15.statusDate}}",
+        "statusName": "{{15.statusName}}",
+        "createdDate": "{{15.createdDate}}",
+        "creatorName": "{{15.creatorName}}",
+        "phoneNumber": "{{15.phoneNumber}}",
+        "__IMTINDEX__": "{{15.`__IMTINDEX__`}}",
+        "assigneeName": "{{15.assigneeName}}",
+        "customFields": "{{15.customFields}}",
+        "dueAtTimeSet": "{{15.dueAtTimeSet}}",
+        "employerName": "{{15.employerName}}",
+        "existingLead": "{{15.existingLead}}",
+        "interestName": "{{15.interestName}}",
+        "lastModified": "{{15.lastModified}}",
+        "phoneNumber1": "{{15.phoneNumber1}}",
+        "phoneNumber2": "{{15.phoneNumber2}}",
+        "statusClosed": "{{15.statusClosed}}",
+        "streetNumber": "{{15.streetNumber}}",
+        "totalSavings": "{{15.totalSavings}}",
+        "__IMTLENGTH__": "{{15.`__IMTLENGTH__`}}",
+        "mailingStatus": "{{15.mailingStatus}}",
+        "maritalStatus": "{{15.maritalStatus}}",
+        "overduePeriod": "{{15.overduePeriod}}",
+        "statusSuccess": "{{15.statusSuccess}}",
+        "totalMortgage": "{{15.totalMortgage}}",
+        "appMailAddress": "{{15.appMailAddress}}",
+        "assignedUserId": "{{15.assignedUserId}}",
+        "hbProxyExpired": "{{15.hbProxyExpired}}",
+        "insuranceNeeds": "{{15.insuranceNeeds}}",
+        "lastActivityBy": "{{15.lastActivityBy}}",
+        "apartmentNumber": "{{15.apartmentNumber}}",
+        "fullNameReverse": "{{15.fullNameReverse}}",
+        "hbProxySignDate": "{{15.hbProxySignDate}}",
+        "idCardIssueDate": "{{15.idCardIssueDate}}",
+        "assignedUserName": "{{15.assignedUserName}}",
+        "customerFullName": "{{15.customerFullName}}",
+        "customerManagers": "{{15.customerManagers}}",
+        "customerStatusId": "{{15.customerStatusId}}",
+        "lastActivityDate": "{{15.lastActivityDate}}",
+        "customerManagerId": "{{15.customerManagerId}}",
+        "hbProxyInviteDate": "{{15.hbProxyInviteDate}}",
+        "lastE9100DataDate": "{{15.lastE9100DataDate}}",
+        "policiesProxySignDate": "{{15.policiesProxySignDate}}",
+        "swiftnessProxyExpired": "{{15.swiftnessProxyExpired}}",
+        "swiftnessProxySignDate": "{{15.swiftnessProxySignDate}}",
+        "customerFullNameReverse": "{{15.customerFullNameReverse}}",
+        "policiesProxyInviteDate": "{{15.policiesProxyInviteDate}}",
+        "swiftnessProxyInviteDate": "{{15.swiftnessProxyInviteDate}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "🔍 חיפוש לידים - Search Leads [15]"
+            },
+            "target": {
+              "label": "Custom"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "📊 איסוף נתוני לידים"
+        }
+      },
+      "parameters": {
+        "feeder": 15
+      }
+    },
+    {
+      "id": 25,
+      "mapper": {
+        "ca": "",
+        "qs": [],
+        "url": "http://173.254.201.134:5678/webhook-test/family-insurance-analysis",
+        "data": "{{18.array}}",
+        "gzip": true,
+        "method": "post",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "X-Source",
+            "value": "Make.com-Surense-Integration"
+          }
+        ],
+        "timeout": "60",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
+      },
+      "module": "http:ActionSendData",
+      "version": 3,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "🔄 שליחה לעבודה - Enhanced"
+        }
+      },
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompress": true
+      }
+    },
+    {
+      "id": 26,
+      "filter": {
+        "name": "HTTP Success Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{25.statusCode}}",
+              "o": "between",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{25.statusCode}}",
+        "responseData": "{{25.data}}",
+        "headers": "{{25.headers}}",
+        "success": true,
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0,
+          "name": "✅ הצלחה - HTTP Success"
+        }
+      },
+      "parameters": {
+        "feeder": 25
+      }
+    },
+    {
+      "id": 27,
+      "filter": {
+        "name": "HTTP Error Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{25.statusCode}}",
+              "o": "notBetween",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{25.statusCode}}",
+        "errorMessage": "{{25.error.message}}",
+        "errorType": "{{25.error.name}}",
+        "url": "{{25.url}}",
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 200,
+          "name": "❌ שגיאה - HTTP Error"
+        }
+      },
+      "parameters": {
+        "feeder": 25
+      }
+    },
+    {
+      "id": 28,
+      "mapper": {
+        "ca": "",
+        "qs": [],
+        "url": "http://173.254.201.134:5678/webhook-test/family-insurance-analysis",
+        "data": "{{18.array}}",
+        "gzip": true,
+        "method": "post",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "X-Retry-Attempt",
+            "value": "2"
+          },
+          {
+            "name": "X-Source",
+            "value": "Make.com-Surense-Integration-Retry"
+          }
+        ],
+        "timeout": "90",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
+      },
+      "module": "http:ActionSendData",
+      "version": 3,
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 200,
+          "name": "🔄 ניסיון חוזר - Retry HTTP"
+        }
+      },
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompress": true
+      }
+    },
+    {
+      "id": 29,
+      "filter": {
+        "name": "Retry Success Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{28.statusCode}}",
+              "o": "between",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{28.statusCode}}",
+        "responseData": "{{28.data}}",
+        "headers": "{{28.headers}}",
+        "success": true,
+        "retrySuccess": true,
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 200,
+          "name": "✅ הצלחה בניסיון חוזר"
+        }
+      },
+      "parameters": {
+        "feeder": 28
+      }
+    },
+    {
+      "id": 30,
+      "filter": {
+        "name": "Retry Error Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{28.statusCode}}",
+              "o": "notBetween",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{28.statusCode}}",
+        "errorMessage": "{{28.error.message}}",
+        "errorType": "{{28.error.name}}",
+        "url": "{{28.url}}",
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}",
+        "retryAttempt": "2",
+        "finalFailure": true
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 400,
+          "name": "❌ כשל סופי - Final Failure"
+        }
+      },
+      "parameters": {
+        "feeder": 28
+      }
+    },
+    {
+      "id": 31,
+      "mapper": {
+        "ca": "",
+        "qs": [],
+        "url": "https://hook.us2.make.com/xy5hisxpbyd4wucio7jcwvlofsjmpoqg",
+        "data": "{{18.array}}",
+        "gzip": true,
+        "method": "post",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "X-Fallback-Source",
+            "value": "Make.com-Surense-Fallback"
+          },
+          {
+            "name": "X-Original-Error",
+            "value": "{{30.errorMessage}}"
+          }
+        ],
+        "timeout": "120",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
+      },
+      "module": "http:ActionSendData",
+      "version": 3,
+      "metadata": {
+        "designer": {
+          "x": 1800,
+          "y": 400,
+          "name": "🆘 מנגנון גיבוי - Fallback"
+        }
+      },
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompress": true
+      }
+    },
+    {
+      "id": 32,
+      "filter": {
+        "name": "Fallback Success Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{31.statusCode}}",
+              "o": "between",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{31.statusCode}}",
+        "responseData": "{{31.data}}",
+        "headers": "{{31.headers}}",
+        "success": true,
+        "fallbackSuccess": true,
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}",
+        "originalError": "{{30.errorMessage}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 400,
+          "name": "✅ הצלחה בגיבוי"
+        }
+      },
+      "parameters": {
+        "feeder": 31
+      }
+    },
+    {
+      "id": 33,
+      "filter": {
+        "name": "Fallback Error Filter",
+        "conditions": [
+          [
+            {
+              "a": "{{31.statusCode}}",
+              "o": "notBetween",
+              "b": "200,299"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "statusCode": "{{31.statusCode}}",
+        "errorMessage": "{{31.error.message}}",
+        "errorType": "{{31.error.name}}",
+        "url": "{{31.url}}",
+        "timestamp": "{{execution.createdAt}}",
+        "leadCount": "{{18.__IMTAGGLENGTH__}}",
+        "executionId": "{{execution.id}}",
+        "fallbackFailure": true,
+        "allSystemsDown": true
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 600,
+          "name": "🚨 כשל מערכת כולל"
+        }
+      },
+      "parameters": {
+        "feeder": 31
+      }
+    },
+    {
+      "id": 34,
+      "mapper": {
+        "ca": "",
+        "qs": [],
+        "url": "https://hook.us2.make.com/xy5hisxpbyd4wucio7jcwvlofsjmpoqg",
+        "data": "{\"error\": \"Complete system failure\", \"executionId\": \"{{execution.id}}\", \"leadCount\": \"{{18.__IMTAGGLENGTH__}}\", \"statusCode\": \"{{33.statusCode}}\", \"errorMessage\": \"{{33.errorMessage}}\", \"errorType\": \"{{33.errorType}}\", \"url\": \"{{33.url}}\", \"fallbackFailure\": \"{{33.fallbackFailure}}\", \"allSystemsDown\": \"{{33.allSystemsDown}}\"}",
+        "gzip": true,
+        "method": "post",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "X-Emergency-Log",
+            "value": "true"
+          },
+          {
+            "name": "X-System-Failure",
+            "value": "complete"
+          }
+        ],
+        "timeout": "30",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
+      },
+      "module": "http:ActionSendData",
+      "version": 3,
+      "metadata": {
+        "designer": {
+          "x": 2400,
+          "y": 600,
+          "name": "📝 Emergency Logging"
+        }
+      },
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDeCompress": true
+      }
+    }
+  ],
+  "name": "📥 העלאת לידים לנ8ן - BMAD Ultra Simplified",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 5,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

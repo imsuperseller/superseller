@@ -1,0 +1,156 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "name": "SUR_LAST_RUN_ISO"
+      },
+      "module": "util:GetVariable2",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "name",
+            "type": "text",
+            "label": "Variable name",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "condition": "empty(1.value)"
+      },
+      "module": "builtin:Router",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "condition",
+            "type": "text",
+            "label": "Condition",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 200,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "name": "SUR_LAST_RUN_ISO",
+        "value": "{{ addDays(now; -1) }}"
+      },
+      "module": "util:SetVariable2",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "name",
+            "type": "text",
+            "label": "Variable name",
+            "required": true
+          },
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Variable value"
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 400,
+          "y": -100
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "name": "SUR_LAST_RUN_ISO"
+      },
+      "module": "util:GetVariable2",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "name",
+            "type": "text",
+            "label": "Variable name",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 6,
+      "mapper": {
+        "connection": 5026390,
+        "quickSearch": "",
+        "sortOrder": "desc",
+        "sortBy": "createdDate",
+        "limit": 200
+      },
+      "module": "surense:SearchLeads",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "connection",
+            "type": "connection",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 800,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "__IMTCONN__": 5026390
+      }
+    }
+  ],
+  "name": "Daily Surense Insurance Profile Agent - Fixed",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

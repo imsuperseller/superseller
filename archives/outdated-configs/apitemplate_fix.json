@@ -1,0 +1,10 @@
+{
+  "resource": "pdf",
+  "pdfTemplateId": "1b977b23de56ab70",
+  "jsonParameters": true,
+  "download": true,
+  "propertiesJson": "{\n  \"template\": \"1b977b23de56ab70\",\n  \"layers\": {\n    \"family-name\": {\n      \"text\": \"{{ $json.familyName || $json.fullName || 'משפחה לא ידועה' }}\"\n    },\n    \"family-id\": {\n      \"text\": \"{{ $json.familyId || 'ID-' + $json.id }}\"\n    },\n    \"total-income\": {\n      \"text\": \"{{ $json.totalIncome || $json.income || '0' }} ש\\\"ח\"\n    },\n    \"family-size\": {\n      \"text\": \"{{ $json.familySize || '1' }}\"\n    },\n    \"city\": {\n      \"text\": \"{{ $json.city || 'לא צוין' }}\"\n    },\n    \"street\": {\n      \"text\": \"{{ $json.street || 'לא צוין' }}\"\n    },\n    \"risk-score\": {\n      \"text\": \"{{ $json.riskScore || $json.category || 'בינונית' }}\"\n    },\n    \"recommended-products\": {\n      \"text\": \"{{ $json.recommendedProducts ? $json.recommendedProducts.join(', ') : 'ביטוח חיים בסיסי' }}\"\n    },\n    \"analysis-html\": {\n      \"html\": \"{{ $json.analysisHtml || $json.analysis || '<p>ניתוח לא זמין</p>' }}\"\n    },\n    \"data-quality\": {\n      \"text\": \"{{ $json.dataQuality || '85' }}%\"\n    },\n    \"processed-date\": {\n      \"text\": \"{{ new Date().toLocaleDateString('he-IL') }}\"\n    }\n  }\n}",
+  "options": {
+    "fileName": "family-insurance-analysis-{{ $json.familyId || 'unknown' }}-{{ new Date().toISOString().split('T')[0] }}.pdf"
+  }
+}

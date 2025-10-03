@@ -1,0 +1,28 @@
+{
+    "name": "rensto-gateway-worker",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "wrangler dev apps/gateway-worker/src/index.ts --local",
+        "deploy:staging": "wrangler deploy --env staging",
+        "deploy:prod": "wrangler deploy --env production",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "test": "vitest run",
+        "lint": "eslint .",
+        "tenant:get": "node scripts/tenant-admin.ts get",
+        "tenant:set": "node scripts/tenant-admin.ts set",
+        "tenant:list": "node scripts/tenant-admin.ts list",
+        "tenant:delete": "node scripts/tenant-admin.ts delete"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.2025.1.15",
+        "@types/node": "^20.12.12",
+        "typescript": "^5.6.3",
+        "vitest": "^1.6.0",
+        "wrangler": "^3.80.0",
+        "eslint": "^9.1.0",
+        "@typescript-eslint/eslint-plugin": "^8.0.0",
+        "@typescript-eslint/parser": "^8.0.0"
+    }
+}

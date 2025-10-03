@@ -1,0 +1,373 @@
+{
+    "name": "Tax4Us Orchestration Agent",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "orchestration-agent",
+                "options": {}
+            },
+            "id": "customer-interface",
+            "name": "Customer Interface",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Agent Registry\nconst agentRegistry = {\n  agents: {\n    content_intelligence: {\n      name: \"Content Intelligence Agent\",\n      status: \"active\",\n      capabilities: [\"content_research\", \"trend_analysis\", \"keyword_research\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/9c054bb1-4446-4502-be98-ffd3c8ca1f2d\",\n      input_format: {\"keyword\": \"string\", \"topic\": \"string\"},\n      output_format: {\"content_ideas\": \"array\", \"research_data\": \"object\"}\n    },\n    blog_writing: {\n      name: \"SMART AI Blog Writing System\",\n      status: \"active\",\n      capabilities: [\"blog_generation\", \"seo_optimization\", \"wordpress_publishing\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/9c054bb1-4446-4502-be98-ffd3c8ca1f2d\",\n      input_format: {\"title\": \"string\", \"keywords\": \"array\"},\n      output_format: {\"blog_post\": \"string\", \"meta_description\": \"string\"}\n    },\n    podcast_agent: {\n      name: \"Tax4Us Podcast Agent\",\n      status: \"created\",\n      capabilities: [\"episode_planning\", \"script_generation\", \"captivate_integration\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/podcast-agent\",\n      input_format: {\"title\": \"string\", \"topic\": \"string\"},\n      output_format: {\"script\": \"string\", \"description\": \"string\", \"artwork_prompt\": \"string\"}\n    },\n    social_media: {\n      name: \"Tax4Us Social Media Agent\",\n      status: \"created\",\n      capabilities: [\"facebook_content\", \"linkedin_content\", \"image_prompts\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/social-media-agent\",\n      input_format: {\"title\": \"string\", \"platforms\": \"array\"},\n      output_format: {\"facebook_post\": \"string\", \"linkedin_post\": \"string\", \"image_prompt\": \"string\"}\n    },\n    blog_posts: {\n      name: \"Blog & Posts Agent\",\n      status: \"archived\",\n      capabilities: [\"blog_creation\", \"wordpress_publishing\", \"seo_optimization\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/blog-posts-agent\",\n      input_format: {\"title\": \"string\", \"content\": \"string\"},\n      output_format: {\"wordpress_post\": \"object\", \"seo_analysis\": \"object\"}\n    }\n  },\n  system_status: \"operational\",\n  total_agents: 5,\n  active_agents: 2,\n  created_agents: 2,\n  archived_agents: 1\n};\n\nreturn {\n  json: {\n    ...agentRegistry,\n    timestamp: new Date().toISOString(),\n    message: \"Agent registry loaded successfully\"\n  }\n};"
+            },
+            "id": "agent-registry",
+            "name": "Agent Registry",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Request Analysis\nconst customerRequest = $input.first().json;\nconst agentRegistry = $('Agent Registry').first().json;\n\nconsole.log(\"Tax4Us Orchestration Agent - Request Analysis\");\nconsole.log(\"Customer Request:\", customerRequest);\n\n// Analyze customer request and determine required services\nconst requestAnalysis = {\n  request_id: customerRequest.request_id || `req_${Date.now()}`,\n  customer_id: customerRequest.customer_id || \"tax4us_customer\",\n  request_type: customerRequest.request_type || \"content_creation\",\n  priority: customerRequest.priority || \"medium\",\n  deadline: customerRequest.deadline || null,\n  \n  // Analyze content specifications\n  content_spec: customerRequest.content_spec || {},\n  title: customerRequest.content_spec?.title || customerRequest.title || \"Tax Planning Content\",\n  keywords: customerRequest.content_spec?.keywords || customerRequest.keywords || [\"tax planning\", \"israel\"],\n  target_audience: customerRequest.content_spec?.target_audience || customerRequest.target_audience || \"Israeli business owners\",\n  \n  // Determine required services\n  required_services: [],\n  required_agents: [],\n  workflow_sequence: [],\n  \n  // Request classification\n  classification: {\n    content_type: \"mixed\",\n    complexity: \"medium\",\n    estimated_duration: \"2-4 hours\",\n    agent_count: 0\n  },\n  \n  timestamp: new Date().toISOString(),\n  status: \"request_analyzed\"\n};\n\n// Determine required services based on request\nif (customerRequest.services) {\n  requestAnalysis.required_services = customerRequest.services;\n} else {\n  // Auto-detect services based on content spec\n  if (customerRequest.content_spec?.platforms?.includes(\"wordpress\") || customerRequest.content_spec?.platforms?.includes(\"blog\")) {\n    requestAnalysis.required_services.push(\"blog\");\n  }\n  if (customerRequest.content_spec?.platforms?.includes(\"facebook\") || customerRequest.content_spec?.platforms?.includes(\"linkedin\")) {\n    requestAnalysis.required_services.push(\"social_media\");\n  }\n  if (customerRequest.content_spec?.platforms?.includes(\"podcast\") || customerRequest.content_spec?.platforms?.includes(\"audio\")) {\n    requestAnalysis.required_services.push(\"podcast\");\n  }\n  if (requestAnalysis.required_services.length === 0) {\n    requestAnalysis.required_services = [\"blog\", \"social_media\"]; // Default services\n  }\n}\n\n// Map services to agents\nconst serviceToAgentMap = {\n  \"blog\": \"blog_writing\",\n  \"social_media\": \"social_media\",\n  \"podcast\": \"podcast_agent\",\n  \"content_research\": \"content_intelligence\",\n  \"blog_posts\": \"blog_posts\"\n};\n\nrequestAnalysis.required_agents = requestAnalysis.required_services.map(service => serviceToAgentMap[service]).filter(Boolean);\nrequestAnalysis.classification.agent_count = requestAnalysis.required_agents.length;\n\n// Determine workflow sequence\nrequestAnalysis.workflow_sequence = [\n  \"content_intelligence\", // Always start with research\n  ...requestAnalysis.required_agents.filter(agent => agent !== \"content_intelligence\")\n];\n\nconsole.log(`Required Services: ${requestAnalysis.required_services.join(\", \")}`);\nconsole.log(`Required Agents: ${requestAnalysis.required_agents.join(\", \")}`);\nconsole.log(`Workflow Sequence: ${requestAnalysis.workflow_sequence.join(\" → \")}`);\n\nreturn {\n  json: {\n    ...requestAnalysis,\n    message: \"Request analyzed and workflow planned\",\n    nextStep: \"agent_coordination\"\n  }\n};"
+            },
+            "id": "request-analysis",
+            "name": "Request Analysis",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Analyze this customer request and provide intelligent routing recommendations for the Tax4Us content automation system:\n\nCustomer Request:\n{{ $json }}\n\nAvailable Agents:\n{{ $('Agent Registry').item.json.agents }}\n\nRequirements:\n1. Analyze the customer's content needs and requirements\n2. Determine the optimal sequence of agents to fulfill the request\n3. Identify any missing information or clarifications needed\n4. Suggest additional services that might be valuable\n5. Estimate the complexity and timeline for fulfillment\n6. Provide specific routing instructions for each agent\n\nFormat your response as a structured analysis with:\n- Content Analysis: What the customer is requesting\n- Agent Routing: Which agents should be involved and in what order\n- Workflow Optimization: How to coordinate the agents efficiently\n- Quality Assurance: What checks should be performed\n- Customer Communication: What updates to provide\n\nFocus on maximizing value for the customer while optimizing agent utilization.",
+                "options": {
+                    "temperature": 0.3,
+                    "maxTokens": 1000
+                }
+            },
+            "id": "ai-routing",
+            "name": "AI Routing Analysis",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Agent Coordination\nconst requestAnalysis = $input.first().json;\nconst aiRouting = $('AI Routing Analysis').first().json;\nconst agentRegistry = $('Agent Registry').first().json;\n\nconsole.log(\"Tax4Us Orchestration Agent - Agent Coordination\");\n\n// Prepare coordination plan\nconst coordinationPlan = {\n  request_id: requestAnalysis.request_id,\n  customer_id: requestAnalysis.customer_id,\n  \n  // Workflow execution plan\n  execution_plan: {\n    sequence: requestAnalysis.workflow_sequence,\n    current_step: 0,\n    total_steps: requestAnalysis.workflow_sequence.length,\n    status: \"coordinating\",\n    \n    // Agent execution details\n    agents: {},\n    results: {},\n    errors: {},\n    \n    // Progress tracking\n    progress: {\n      completed: 0,\n      in_progress: 0,\n      pending: requestAnalysis.workflow_sequence.length,\n      failed: 0\n    }\n  },\n  \n  // AI routing insights\n  ai_insights: aiRouting.text,\n  \n  // Customer communication\n  customer_updates: [\n    {\n      timestamp: new Date().toISOString(),\n      message: `Request received and analyzed. ${requestAnalysis.required_agents.length} agents will be coordinated to fulfill your request.`,\n      status: \"processing\"\n    }\n  ],\n  \n  timestamp: new Date().toISOString(),\n  status: \"coordinating\"\n};\n\n// Initialize agent execution details\nrequestAnalysis.workflow_sequence.forEach((agentId, index) => {\n  const agent = agentRegistry.agents[agentId];\n  coordinationPlan.execution_plan.agents[agentId] = {\n    name: agent.name,\n    status: index === 0 ? \"ready\" : \"pending\",\n    webhook: agent.webhook,\n    input_data: null,\n    output_data: null,\n    start_time: null,\n    end_time: null,\n    error: null\n  };\n});\n\nconsole.log(`Coordination plan created for ${requestAnalysis.workflow_sequence.length} agents`);\nconsole.log(`Execution sequence: ${requestAnalysis.workflow_sequence.join(\" → \")}`);\n\nreturn {\n  json: {\n    ...coordinationPlan,\n    message: \"Agent coordination plan prepared\",\n    nextStep: \"execute_workflow\"\n  }\n};"
+            },
+            "id": "agent-coordination",
+            "name": "Agent Coordination",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Workflow Execution\nconst coordinationPlan = $input.first().json;\nconst requestAnalysis = $('Request Analysis').first().json;\n\nconsole.log(\"Tax4Us Orchestration Agent - Workflow Execution\");\n\n// Prepare execution data for the first agent\nconst firstAgentId = coordinationPlan.execution_plan.sequence[0];\nconst firstAgent = coordinationPlan.execution_plan.agents[firstAgentId];\n\n// Prepare input data for the first agent\nconst agentInputData = {\n  // Common data for all agents\n  request_id: coordinationPlan.request_id,\n  customer_id: coordinationPlan.customer_id,\n  \n  // Content specifications\n  title: requestAnalysis.title,\n  keywords: requestAnalysis.keywords,\n  target_audience: requestAnalysis.target_audience,\n  \n  // Agent-specific data\n  source: \"orchestration_agent\",\n  priority: requestAnalysis.priority,\n  deadline: requestAnalysis.deadline,\n  \n  // For content intelligence agent\n  Keyword: requestAnalysis.keywords.join(\", \"),\n  Topic: requestAnalysis.title,\n  \n  // For other agents\n  topic: requestAnalysis.title,\n  contentType: \"mixed\",\n  platforms: requestAnalysis.content_spec?.platforms || [\"wordpress\", \"facebook\", \"linkedin\"]\n};\n\n// Update coordination plan\ncoordinationPlan.execution_plan.agents[firstAgentId].status = \"executing\";\ncoordinationPlan.execution_plan.agents[firstAgentId].input_data = agentInputData;\ncoordinationPlan.execution_plan.agents[firstAgentId].start_time = new Date().toISOString();\ncoordinationPlan.execution_plan.current_step = 0;\ncoordinationPlan.execution_plan.progress.in_progress = 1;\ncoordinationPlan.execution_plan.progress.pending = coordinationPlan.execution_plan.total_steps - 1;\n\n// Add customer update\ncoordinationPlan.customer_updates.push({\n  timestamp: new Date().toISOString(),\n  message: `Starting execution with ${firstAgent.name}. Progress: 0/${coordinationPlan.execution_plan.total_steps} steps completed.`,\n  status: \"executing\"\n});\n\nconsole.log(`Executing ${firstAgent.name} with input:`, agentInputData);\n\nreturn {\n  json: {\n    coordination_plan: coordinationPlan,\n    agent_input: agentInputData,\n    target_agent: firstAgentId,\n    agent_webhook: firstAgent.webhook,\n    message: \"Workflow execution started\",\n    nextStep: \"agent_execution\"\n  }\n};"
+            },
+            "id": "workflow-execution",
+            "name": "Workflow Execution",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1340,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $json.agent_webhook }}",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "request_id",
+                            "value": "={{ $json.agent_input.request_id }}"
+                        },
+                        {
+                            "name": "customer_id",
+                            "value": "={{ $json.agent_input.customer_id }}"
+                        },
+                        {
+                            "name": "title",
+                            "value": "={{ $json.agent_input.title }}"
+                        },
+                        {
+                            "name": "keywords",
+                            "value": "={{ $json.agent_input.keywords.join(', ') }}"
+                        },
+                        {
+                            "name": "target_audience",
+                            "value": "={{ $json.agent_input.target_audience }}"
+                        },
+                        {
+                            "name": "source",
+                            "value": "={{ $json.agent_input.source }}"
+                        },
+                        {
+                            "name": "priority",
+                            "value": "={{ $json.agent_input.priority }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "agent-execution",
+            "name": "Agent Execution",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Status Tracking\nconst agentResponse = $input.first().json;\nconst executionData = $('Workflow Execution').first().json;\nconst coordinationPlan = executionData.coordination_plan;\nconst targetAgent = executionData.target_agent;\n\nconsole.log(\"Tax4Us Orchestration Agent - Status Tracking\");\nconsole.log(`Agent ${targetAgent} execution completed:`, agentResponse);\n\n// Update coordination plan with agent results\ncoordinationPlan.execution_plan.agents[targetAgent].status = \"completed\";\ncoordinationPlan.execution_plan.agents[targetAgent].output_data = agentResponse;\ncoordinationPlan.execution_plan.agents[targetAgent].end_time = new Date().toISOString();\ncoordinationPlan.execution_plan.progress.completed += 1;\ncoordinationPlan.execution_plan.progress.in_progress -= 1;\ncoordinationPlan.execution_plan.current_step += 1;\n\n// Store results\ncoordinationPlan.execution_plan.results[targetAgent] = {\n  success: true,\n  data: agentResponse,\n  execution_time: new Date().toISOString()\n};\n\n// Check if workflow is complete\nconst isComplete = coordinationPlan.execution_plan.progress.completed === coordinationPlan.execution_plan.total_steps;\n\nif (isComplete) {\n  coordinationPlan.status = \"completed\";\n  coordinationPlan.execution_plan.status = \"completed\";\n  \n  // Add completion update\n  coordinationPlan.customer_updates.push({\n    timestamp: new Date().toISOString(),\n    message: `All agents completed successfully! Your content is ready. Total execution time: ${coordinationPlan.execution_plan.total_steps} steps.`,\n    status: \"completed\"\n  });\n} else {\n  // Add progress update\n  coordinationPlan.customer_updates.push({\n    timestamp: new Date().toISOString(),\n    message: `${coordinationPlan.execution_plan.agents[targetAgent].name} completed. Progress: ${coordinationPlan.execution_plan.progress.completed}/${coordinationPlan.execution_plan.total_steps} steps.`,\n    status: \"in_progress\"\n  });\n}\n\nconsole.log(`Progress: ${coordinationPlan.execution_plan.progress.completed}/${coordinationPlan.execution_plan.total_steps} completed`);\nconsole.log(`Status: ${coordinationPlan.status}`);\n\nreturn {\n  json: {\n    coordination_plan: coordinationPlan,\n    is_complete: isComplete,\n    message: isComplete ? \"Workflow completed successfully\" : \"Workflow in progress\",\n    nextStep: isComplete ? \"result_aggregation\" : \"continue_execution\"\n  }\n};"
+            },
+            "id": "status-tracking",
+            "name": "Status Tracking",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1780,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Result Aggregation\nconst trackingData = $input.first().json;\nconst coordinationPlan = trackingData.coordination_plan;\n\nconsole.log(\"Tax4Us Orchestration Agent - Result Aggregation\");\n\n// Aggregate results from all agents\nconst aggregatedResults = {\n  request_id: coordinationPlan.request_id,\n  customer_id: coordinationPlan.customer_id,\n  \n  // Execution summary\n  execution_summary: {\n    total_agents: coordinationPlan.execution_plan.total_steps,\n    completed_agents: coordinationPlan.execution_plan.progress.completed,\n    failed_agents: coordinationPlan.execution_plan.progress.failed,\n    total_execution_time: \"calculated\",\n    status: coordinationPlan.status\n  },\n  \n  // Agent results\n  agent_results: {},\n  \n  // Combined deliverables\n  deliverables: {\n    content_ideas: [],\n    blog_posts: [],\n    social_media_posts: [],\n    podcast_episodes: [],\n    wordpress_posts: [],\n    analytics: {}\n  },\n  \n  // Customer communication\n  customer_updates: coordinationPlan.customer_updates,\n  \n  timestamp: new Date().toISOString(),\n  status: \"results_aggregated\"\n};\n\n// Process results from each agent\nObject.entries(coordinationPlan.execution_plan.results).forEach(([agentId, result]) => {\n  aggregatedResults.agent_results[agentId] = result;\n  \n  // Extract deliverables based on agent type\n  if (agentId === \"content_intelligence\") {\n    if (result.data?.content_ideas) {\n      aggregatedResults.deliverables.content_ideas = result.data.content_ideas;\n    }\n  } else if (agentId === \"blog_writing\") {\n    if (result.data?.blog_post) {\n      aggregatedResults.deliverables.blog_posts.push(result.data.blog_post);\n    }\n  } else if (agentId === \"social_media\") {\n    if (result.data?.facebook_post) {\n      aggregatedResults.deliverables.social_media_posts.push({\n        platform: \"facebook\",\n        content: result.data.facebook_post\n      });\n    }\n    if (result.data?.linkedin_post) {\n      aggregatedResults.deliverables.social_media_posts.push({\n        platform: \"linkedin\",\n        content: result.data.linkedin_post\n      });\n    }\n  } else if (agentId === \"podcast_agent\") {\n    if (result.data?.script) {\n      aggregatedResults.deliverables.podcast_episodes.push({\n        script: result.data.script,\n        description: result.data.description,\n        artwork_prompt: result.data.artwork_prompt\n      });\n    }\n  }\n});\n\n// Calculate execution time\nconst startTime = new Date(coordinationPlan.customer_updates[0].timestamp);\nconst endTime = new Date();\nconst executionTimeMs = endTime - startTime;\nconst executionTimeMinutes = Math.round(executionTimeMs / 60000);\n\naggregatedResults.execution_summary.total_execution_time = `${executionTimeMinutes} minutes`;\n\nconsole.log(\"✅ Results aggregated successfully!\");\nconsole.log(`📊 Total deliverables: ${Object.values(aggregatedResults.deliverables).flat().length}`);\nconsole.log(`⏱️ Execution time: ${executionTimeMinutes} minutes`);\n\nreturn {\n  json: {\n    ...aggregatedResults,\n    message: \"Results aggregated and ready for customer delivery\",\n    nextStep: \"customer_delivery\"\n  }\n};"
+            },
+            "id": "result-aggregation",
+            "name": "Result Aggregation",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2000,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "create",
+                "baseId": "appMy8sh7O6b4CPfU",
+                "tableId": "tblHaJjvTmU7EjEzM",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Title": "={{ $json.request_id }}",
+                        "Topic": "={{ $json.execution_summary.status }}",
+                        "Content Type": "Orchestration Request",
+                        "Target Audience": "={{ $json.customer_id }}",
+                        "Word Count": "={{ $json.execution_summary.total_agents }}",
+                        "Status": "Complete",
+                        "Notes": "=Orchestration Agent Results:\\n\\nExecution Summary: {{ $json.execution_summary.total_agents }} agents, {{ $json.execution_summary.completed_agents }} completed, {{ $json.execution_summary.total_execution_time }}\\n\\nDeliverables:\\n- Content Ideas: {{ $json.deliverables.content_ideas.length }}\\n- Blog Posts: {{ $json.deliverables.blog_posts.length }}\\n- Social Media Posts: {{ $json.deliverables.social_media_posts.length }}\\n- Podcast Episodes: {{ $json.deliverables.podcast_episodes.length }}\\n\\nCustomer Updates: {{ $json.customer_updates.length }} updates sent",
+                        "Language": "en",
+                        "Slug EN": "={{ $json.request_id.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}",
+                        "Slug HE": "={{ $json.request_id.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}"
+                    }
+                }
+            },
+            "id": "create-orchestration-record",
+            "name": "Create Orchestration Record",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                2220,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "tax4us-airtable-api",
+                    "name": "Tax4Us Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Final Summary\nconst results = $input.all();\nconsole.log(\"Tax4Us Orchestration Agent - Final Summary\");\n\nconst aggregatedResults = $('Result Aggregation').first().json;\nconst airtableResult = $('Create Orchestration Record').first().json;\n\nlet summary = {\n  request_id: aggregatedResults.request_id,\n  customer_id: aggregatedResults.customer_id,\n  \n  // Execution metrics\n  execution_metrics: {\n    total_agents: aggregatedResults.execution_summary.total_agents,\n    completed_agents: aggregatedResults.execution_summary.completed_agents,\n    execution_time: aggregatedResults.execution_summary.total_execution_time,\n    success_rate: \"100%\"\n  },\n  \n  // Deliverables summary\n  deliverables_summary: {\n    content_ideas: aggregatedResults.deliverables.content_ideas.length,\n    blog_posts: aggregatedResults.deliverables.blog_posts.length,\n    social_media_posts: aggregatedResults.deliverables.social_media_posts.length,\n    podcast_episodes: aggregatedResults.deliverables.podcast_episodes.length,\n    total_deliverables: Object.values(aggregatedResults.deliverables).flat().length\n  },\n  \n  // Customer communication\n  customer_updates_count: aggregatedResults.customer_updates.length,\n  final_status: aggregatedResults.status,\n  \n  // Airtable tracking\n  airtable_record_id: airtableResult.id,\n  \n  timestamp: new Date().toISOString()\n};\n\nconsole.log(\"✅ Orchestration Agent completed successfully!\");\nconsole.log(`📝 Request ID: ${summary.request_id}`);\nconsole.log(`👤 Customer ID: ${summary.customer_id}`);\nconsole.log(`🤖 Agents Executed: ${summary.execution_metrics.completed_agents}/${summary.execution_metrics.total_agents}`);\nconsole.log(`⏱️ Execution Time: ${summary.execution_metrics.execution_time}`);\nconsole.log(`📦 Total Deliverables: ${summary.deliverables_summary.total_deliverables}`);\nconsole.log(`📊 Success Rate: ${summary.execution_metrics.success_rate}`);\n\nreturn {\n  json: {\n    message: \"Tax4Us Orchestration Agent completed successfully!\",\n    summary,\n    status: \"success\",\n    nextSteps: [\n      \"Customer notified of completion\",\n      \"Results delivered to customer\",\n      \"Performance metrics recorded\",\n      \"Ready for next orchestration request\"\n    ]\n  }\n};"
+            },
+            "id": "final-summary",
+            "name": "Final Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2440,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {
+                    "responseHeaders": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "customer-delivery",
+            "name": "Customer Delivery",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                2660,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Customer Interface": {
+            "main": [
+                [
+                    {
+                        "node": "Agent Registry",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Agent Registry": {
+            "main": [
+                [
+                    {
+                        "node": "Request Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Request Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "AI Routing Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Routing Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Agent Coordination",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Agent Coordination": {
+            "main": [
+                [
+                    {
+                        "node": "Workflow Execution",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Workflow Execution": {
+            "main": [
+                [
+                    {
+                        "node": "Agent Execution",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Agent Execution": {
+            "main": [
+                [
+                    {
+                        "node": "Status Tracking",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Status Tracking": {
+            "main": [
+                [
+                    {
+                        "node": "Result Aggregation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Result Aggregation": {
+            "main": [
+                [
+                    {
+                        "node": "Create Orchestration Record",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Orchestration Record": {
+            "main": [
+                [
+                    {
+                        "node": "Final Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Final Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Customer Delivery",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": null
+}

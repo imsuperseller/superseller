@@ -1,0 +1,119 @@
+<!-- Pricing Card Component -->
+<div class="pricing-card {{CARD_CLASS}}">
+    {{POPULAR_BADGE}}
+    <div class="pricing-title">{{CARD_TITLE}}</div>
+    <div class="price">{{CARD_PRICE}}</div>
+    <p class="card-description">{{CARD_DESCRIPTION}}</p>
+    <ul class="pricing-features">
+        {{CARD_FEATURES}}
+    </ul>
+    <a href="{{CARD_LINK}}" class="btn-primary">{{CARD_BUTTON}}</a>
+</div>
+
+<style>
+.pricing-card { 
+    background: var(--background-card); 
+    border: 1px solid var(--border-light); 
+    border-radius: var(--radius-xl); 
+    padding: var(--spacing-2xl); 
+    text-align: center; 
+    transition: all 0.3s; 
+    position: relative; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100%; 
+    box-shadow: var(--shadow-md); 
+}
+
+.pricing-card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: var(--shadow-xl); 
+    border-color: var(--primary-orange); 
+}
+
+.pricing-card.popular { 
+    border-color: var(--primary-orange); 
+    box-shadow: var(--shadow-lg); 
+    position: relative; 
+}
+
+.pricing-card.popular::before { 
+    content: 'Most Popular'; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    background: var(--primary-gradient); 
+    color: white; 
+    padding: var(--spacing-sm); 
+    font-size: 0.875rem; 
+    font-weight: 600; 
+}
+
+.pricing-title { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: var(--text-primary); 
+    margin-bottom: var(--spacing-lg); 
+}
+
+.price { 
+    font-size: 3rem; 
+    font-weight: 700; 
+    color: var(--primary-orange); 
+    margin: var(--spacing-xl) 0; 
+}
+
+.pricing-features { 
+    list-style: none; 
+    padding: 0; 
+    margin: var(--spacing-xl) 0; 
+    text-align: left; 
+    flex-grow: 1; 
+}
+
+.pricing-features li { 
+    color: var(--text-secondary); 
+    margin-bottom: var(--spacing-md); 
+    font-size: 0.95rem; 
+    line-height: 1.4; 
+}
+
+.pricing-features li:before { 
+    content: "✓"; 
+    color: var(--success); 
+    font-weight: bold; 
+    margin-right: var(--spacing-sm); 
+}
+
+.btn-primary { 
+    background: var(--primary-gradient); 
+    color: white; 
+    padding: var(--spacing-md) var(--spacing-xl); 
+    border: none; 
+    border-radius: var(--radius-lg); 
+    font-weight: 600; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    box-shadow: var(--shadow-md); 
+    text-align: center; 
+    min-width: 180px; 
+    height: 56px; 
+    line-height: 1.2; 
+    white-space: nowrap; 
+    margin-top: auto; 
+    align-self: flex-start; 
+}
+
+.btn-primary:hover { 
+    transform: translateY(-2px); 
+    box-shadow: var(--shadow-lg); 
+    color: white; 
+}
+</style>

@@ -58,3 +58,6 @@ Any additional context or requirements:
 **Priority**: [High/Medium/Low]
 **Estimated Effort**: [Small/Medium/Large]
 **Dependencies**: [List any dependencies]
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -115,7 +115,6 @@
 
 ### PCI DSS (If Processing Payments)
 
-- Use Stripe Payment Links (PCI burden on Stripe)
 - Never store card details
 - Use tokenization only
 

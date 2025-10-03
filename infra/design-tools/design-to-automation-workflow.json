@@ -1,0 +1,389 @@
+{
+  "name": "Design-to-Automation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "design-request",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "design-request-webhook",
+      "name": "Design Request Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "design-request-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "design",
+        "prompt": "={{ $json.designPrompt }}",
+        "type": "={{ $json.designType }}",
+        "clientId": "={{ $json.clientId }}",
+        "status": "pending"
+      },
+      "id": "create-design-request",
+      "name": "Create Design Request",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "airtableApi": {
+          "id": "design-airtable",
+          "name": "Design Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "content": "You are a design assistant. Generate a detailed design specification based on the user's request.\n\nUser Request: {{ $json.designPrompt }}\nDesign Type: {{ $json.designType }}\nClient: {{ $json.clientId }}\n\nPlease provide:\n1. Design concept description\n2. Required components list\n3. Layout specifications\n4. Color scheme recommendations\n5. Responsive design considerations\n\nFormat as JSON for easy parsing.",
+              "role": "user"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 1000
+        }
+      },
+      "id": "generate-design-spec",
+      "name": "Generate Design Specification",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "browse",
+        "resource": "components",
+        "registry": "shadcn",
+        "query": "={{ $json.designSpec.components }}"
+      },
+      "id": "browse-shadcn-components",
+      "name": "Browse shadcn Components",
+      "type": "n8n-nodes-base.shadcn",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "shadcnApi": {
+          "id": "shadcn-mcp",
+          "name": "shadcn MCP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "generate",
+        "resource": "mockup",
+        "prompt": "={{ $json.designPrompt }}",
+        "type": "={{ $json.designType }}",
+        "style": "modern",
+        "outputFormat": "html"
+      },
+      "id": "generate-superdesign-mockup",
+      "name": "Generate SuperDesign Mockup",
+      "type": "n8n-nodes-base.superdesign",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "credentials": {
+        "superdesignApi": {
+          "id": "superdesign-api",
+          "name": "SuperDesign API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "merge",
+        "resource": "design-assets",
+        "components": "={{ $json.shadcnComponents }}",
+        "mockup": "={{ $json.superdesignMockup }}",
+        "specification": "={{ $json.designSpec }}"
+      },
+      "id": "merge-design-assets",
+      "name": "Merge Design Assets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "parameters": {
+        "jsCode": "// Merge design assets into comprehensive design package\nconst components = $input.first().json.shadcnComponents;\nconst mockup = $input.first().json.superdesignMockup;\nconst spec = $input.first().json.designSpec;\n\nconst designPackage = {\n  specification: spec,\n  components: components,\n  mockup: mockup,\n  implementation: {\n    nextjs: {\n      components: components.map(c => c.name),\n      dependencies: components.map(c => c.dependencies).flat(),\n      installation: `npx shadcn@latest add ${components.map(c => c.name).join(' ')}`\n    },\n    webflow: {\n      mockup: mockup.html,\n      components: components.map(c => c.webflowEquivalent)\n    }\n  },\n  status: 'ready_for_implementation',\n  createdAt: new Date().toISOString()\n};\n\nreturn [{ json: designPackage }];"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "workflow",
+        "name": "={{ $json.clientId }} - Design Implementation Workflow",
+        "active": true,
+        "nodes": [
+          {
+            "parameters": {
+              "httpMethod": "POST",
+              "path": "implement-design",
+              "responseMode": "responseNode"
+            },
+            "name": "Design Implementation Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [240, 300]
+          },
+          {
+            "parameters": {
+              "operation": "install",
+              "resource": "components",
+              "components": "={{ $json.designPackage.components }}",
+              "targetPath": "={{ $json.targetPath }}"
+            },
+            "name": "Install shadcn Components",
+            "type": "n8n-nodes-base.shadcn",
+            "typeVersion": 1,
+            "position": [460, 300]
+          },
+          {
+            "parameters": {
+              "operation": "deploy",
+              "resource": "webflow",
+              "siteId": "={{ $json.webflowSiteId }}",
+              "pageId": "={{ $json.webflowPageId }}",
+              "content": "={{ $json.designPackage.mockup }}"
+            },
+            "name": "Deploy to Webflow",
+            "type": "n8n-nodes-base.webflow",
+            "typeVersion": 1,
+            "position": [680, 300]
+          }
+        ],
+        "connections": {
+          "Design Implementation Webhook": {
+            "main": [
+              [
+                {
+                  "node": "Install shadcn Components",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "Install shadcn Components": {
+            "main": [
+              [
+                {
+                  "node": "Deploy to Webflow",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "create-implementation-workflow",
+      "name": "Create Implementation Workflow",
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8n-api",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "resource": "record",
+        "baseId": "appDesignBase",
+        "tableId": "tblDesignRequests",
+        "recordId": "={{ $json.designRequestId }}",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Completed",
+            "Design Package": "={{ JSON.stringify($json.designPackage) }}",
+            "Implementation Workflow": "={{ $json.implementationWorkflowId }}",
+            "Completed Date": "={{ $now }}"
+          }
+        }
+      },
+      "id": "update-design-request",
+      "name": "Update Design Request",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [1560, 300],
+      "credentials": {
+        "airtableApi": {
+          "id": "design-airtable",
+          "name": "Design Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "resource": "email",
+        "to": "={{ $json.clientEmail }}",
+        "subject": "Your Design is Ready! 🎨",
+        "message": "Hi {{ $json.clientName }},\n\nYour design request has been completed!\n\nDesign Package Includes:\n- Design specification\n- Component recommendations\n- Interactive mockup\n- Implementation workflow\n\nView your design: https://design.rensto.com/{{ $json.designRequestId }}\n\nNext steps:\n1. Review the design\n2. Approve for implementation\n3. Schedule development call\n\nBest regards,\nThe Rensto Design Team",
+        "options": {}
+      },
+      "id": "send-design-completion-email",
+      "name": "Send Design Completion Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1780, 300],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Design request processed successfully\", \"designRequestId\": $json.designRequestId, \"designPackage\": $json.designPackage, \"implementationWorkflowId\": $json.implementationWorkflowId } }}"
+      },
+      "id": "design-success-response",
+      "name": "Design Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2000, 300]
+    }
+  ],
+  "connections": {
+    "Design Request Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create Design Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Design Request": {
+      "main": [
+        [
+          {
+            "node": "Generate Design Specification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Design Specification": {
+      "main": [
+        [
+          {
+            "node": "Browse shadcn Components",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate SuperDesign Mockup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Browse shadcn Components": {
+      "main": [
+        [
+          {
+            "node": "Merge Design Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate SuperDesign Mockup": {
+      "main": [
+        [
+          {
+            "node": "Merge Design Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Design Assets": {
+      "main": [
+        [
+          {
+            "node": "Create Implementation Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Implementation Workflow": {
+      "main": [
+        [
+          {
+            "node": "Update Design Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Design Request": {
+      "main": [
+        [
+          {
+            "node": "Send Design Completion Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Design Completion Email": {
+      "main": [
+        [
+          {
+            "node": "Design Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-14T20:00:00.000Z",
+      "updatedAt": "2025-01-14T20:00:00.000Z",
+      "id": "design-automation",
+      "name": "Design Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-14T20:00:00.000Z",
+  "versionId": "1"
+}

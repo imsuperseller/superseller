@@ -29,8 +29,6 @@ NEXTAUTH_URL=https://your-domain.com
 NEXTAUTH_SECRET=your-super-secret-key-here
 
 # External Services (Optional)
-STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key
 SENDGRID_API_KEY=your_sendgrid_api_key
 
 # Security
@@ -43,26 +41,20 @@ RATE_LIMIT_WINDOW_MS=900000
 
 ## **🚀 Deployment Options**
 
-### **Option 1: Vercel (Recommended - Easiest)**
 
-**Step 1: Install Vercel CLI**
 ```bash
-npm i -g vercel
 ```
 
 **Step 2: Deploy**
 ```bash
 cd web/rensto-site
-vercel --prod
 ```
 
 **Step 3: Configure Environment Variables**
-- Go to Vercel Dashboard
 - Navigate to your project
 - Add environment variables in Settings > Environment Variables
 
 **Step 4: Custom Domain (Optional)**
-- Add your domain in Vercel Dashboard
 - Configure DNS records as instructed
 
 ### **Option 2: Netlify**
@@ -151,8 +143,6 @@ npm start
    - Verify admin dashboard access
 
 ### **✅ External Services (Optional)**
-1. **Stripe Integration**
-   - Set up Stripe account
    - Configure webhook endpoints
    - Test payment processing
 
@@ -171,7 +161,6 @@ npm start
 ## **🛡️ Security Hardening**
 
 ### **✅ SSL/TLS Configuration**
-- Most platforms (Vercel, Netlify) provide automatic SSL
 - For manual deployment, configure SSL certificates
 - Enable HTTPS redirects
 

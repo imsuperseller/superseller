@@ -255,3 +255,6 @@ Use this server to automate data operations and integrate with other systems.
 ## Support
 
 If you need help with the setup, refer to the Airtable documentation or contact the development team.
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

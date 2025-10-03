@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto - AI-Powered Lead Generation</title>
+    <meta name="description" content="Transform your business with AI-powered lead generation. Get 5-500 qualified leads automatically with our advanced automation platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #fe3d51;
+            --secondary: #bf5700;
+            --cyan: #5ffbfd;
+            --bg: #110d28;
+            --bg2: #1a162f;
+            --text: #fffff3;
+            --text2: #b0bec5;
+            --font: 'Outfit', sans-serif;
+            --radius: 0.5rem;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; padding-top: 80px; }
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 999; background: rgba(17,13,40,0.98); backdrop-filter: blur(15px); border-bottom: 2px solid rgba(254,61,81,0.3); padding: 1rem 0; }
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .nav-logo { display: flex; align-items: center; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.5rem; transition: all 0.3s; }
+        .nav-logo:hover { color: var(--cyan); transform: scale(1.05); }
+        .nav-menu { display: flex; align-items: center; flex: 1; justify-content: center; margin: 0 2rem; }
+        .nav-menu-list { display: flex; align-items: center; list-style: none; gap: 2rem; }
+        .nav-link { color: var(--text); text-decoration: none; font-weight: 600; padding: 0.5rem 1rem; border-radius: var(--radius); transition: all 0.3s; }
+        .nav-link:hover { color: var(--primary); background: rgba(254,61,81,0.1); }
+        .nav-cta { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; text-decoration: none; font-weight: 700; padding: 0.75rem 1.5rem; border-radius: var(--radius); transition: all 0.3s; }
+        .nav-cta:hover { transform: translateY(-2px); color: white; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8rem 1.5rem 3rem; position: relative; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 50%, rgba(254,61,81,0.1) 0%, transparent 70%); pointer-events: none; }
+        .hero-content { max-width: 900px; z-index: 1; position: relative; margin: 0 auto; }
+        .hero-title { font-size: 4rem; font-weight: 700; color: var(--cyan); margin-bottom: 2rem; line-height: 1.1; text-shadow: 0 0 20px rgba(95,251,253,0.3); }
+        .hero-subtitle { font-size: 1.5rem; color: var(--text2); margin-bottom: 3rem; line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .typeform-container { background: rgba(26,22,47,0.9); border: 2px solid rgba(254,61,81,0.2); border-radius: 1rem; padding: 3rem; margin: 3rem auto; max-width: 800px; backdrop-filter: blur(10px); }
+        .typeform-embed { width: 100%; height: 600px; border: none; border-radius: var(--radius); }
+        .footer { background: var(--bg); padding: 3rem 0 2rem; border-top: 2px solid rgba(254,61,81,0.2); margin-top: 3rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; text-align: center; }
+        .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+        .footer-logo .logo { display: flex; align-items: center; }
+        .footer-logo .logo-upper { width: 20px; height: 20px; background: var(--primary); border-radius: 2px; margin-right: 8px; }
+        .footer-logo .logo-lower { width: 20px; height: 20px; background: var(--cyan); border-radius: 2px; }
+        .footer-logo span { margin-left: 8px; font-weight: 700; font-size: 1.5rem; color: var(--text); }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .footer-links a { color: var(--text2); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--primary); }
+        .footer-copyright { color: var(--text2); font-size: 0.9rem; }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .nav-menu { display: none; }
+            .hero { padding: 6rem 1rem 3rem; }
+            .typeform-container { padding: 2rem; margin: 2rem 1rem; }
+            .footer-links { flex-direction: column; gap: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .hero-title { font-size: 2rem; }
+            .hero-subtitle { font-size: 1.25rem; }
+            .typeform-container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-wrapper">
+            <a href="/" class="nav-logo">
+                <div class="logo">
+                    <div class="logo-upper"></div>
+                    <div class="logo-lower"></div>
+                </div>
+                <span>RENSTO</span>
+            </a>
+            <div class="nav-menu">
+                <ul class="nav-menu-list">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/services" class="nav-link">Services</a></li>
+                    <li><a href="/contact" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+            <a href="/dashboard" class="nav-cta">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered Lead Generation</h1>
+            <p class="hero-subtitle">
+                Transform your business with AI-powered lead generation. Get 5-500 qualified leads automatically with our advanced automation platform.
+            </p>
+            
+            <div class="typeform-container">
+                <div data-tf-widget="YOUR_TYPEFORM_ID" data-tf-opacity="100" data-tf-iframe-props="title=Rensto Lead Generation" data-tf-transitive-search-params data-tf-medium="snippet" style="width:100%;height:600px;"></div>
+                <script src="//embed.typeform.com/next/embed.js"></script>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo">
+                    <div class="logo-upper"></div>
+                    <div class="logo-lower"></div>
+                </div>
+                <span>RENSTO</span>
+            </div>
+            <div class="footer-links">
+                <a href="/about">About</a>
+                <a href="/services">Services</a>
+                <a href="/contact">Contact</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Rensto. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Typeform webhook handler
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'form-submit') {
+                // Handle form submission
+                const formData = event.data.form_response;
+                
+                // Parse Typeform response
+                const answers = formData.answers;
+                const parsedData = {
+                    firstName: answers.find(a => a.field.title === 'First Name')?.text || '',
+                    lastName: answers.find(a => a.field.title === 'Last Name')?.text || '',
+                    email: answers.find(a => a.field.title === 'Email Address')?.email || '',
+                    businessDescription: answers.find(a => a.field.title === 'About Your Business')?.text || '',
+                    targetLeads: answers.find(a => a.field.title === 'What type of leads are you looking for?')?.text || '',
+                    pricingTier: answers.find(a => a.field.title === 'Choose Your Plan')?.choice?.label || ''
+                };
+
+                // Send to n8n workflow
+                fetch('http://173.254.201.134:5678/webhook/f7c8e6ff-7a1b-46b0-acbb-348367a8d19d', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(parsedData)
+                }).then(response => {
+                    if (response.ok) {
+                        // Redirect to success page
+                        window.location.href = '/success.html';
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

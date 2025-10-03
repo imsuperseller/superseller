@@ -1,0 +1,18 @@
+{
+  "name": "notion-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["notion", "mcp", "server"],
+  "author": "Rensto",
+  "license": "ISC",
+  "description": "Notion MCP Server for Rensto Business Operations",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.1",
+    "@notionhq/client": "^5.1.0"
+  }
+}

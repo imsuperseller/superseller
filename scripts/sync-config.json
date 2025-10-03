@@ -1,0 +1,71 @@
+{
+  "notion": {
+    "token": "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",
+    "databases": {
+      "businessReferences": "6f3c687f-91b4-46fc-a54e-193b0951d1a5",
+      "customerManagement": "7840ad47-64dc-4e8a-982c-cb3a0dcc3a14",
+      "projectTracking": "2123596d-d33c-40bb-91d9-3d2983dbfb23"
+    }
+  },
+  "airtable": {
+    "apiKey": "YOUR_AIRTABLE_API_KEY",
+    "baseId": "YOUR_AIRTABLE_BASE_ID",
+    "tables": {
+      "businessReferences": "YOUR_BUSINESS_REF_TABLE_ID",
+      "customerManagement": "YOUR_CUSTOMER_MGMT_TABLE_ID",
+      "projectTracking": "YOUR_PROJECT_TRACK_TABLE_ID"
+    }
+  },
+  "sync": {
+    "frequency": "realtime",
+    "conflictResolution": "notion_wins",
+    "fields": {
+      "businessReferences": [
+        "Name",
+        "Type",
+        "Description",
+        "Status",
+        "Priority",
+        "Platform",
+        "RGID",
+        "Created By",
+        "Last Updated",
+        "AI Integration Status",
+        "Airtable Sync",
+        "Automation Level",
+        "Sync Status"
+      ],
+      "customerManagement": [
+        "Name",
+        "Company Name",
+        "Contact Email",
+        "Phone Number",
+        "Industry",
+        "Customer Status",
+        "Subscription Plan",
+        "Monthly Revenue",
+        "Onboarding Date",
+        "Last Contact Date",
+        "Customer Success Manager",
+        "Notes",
+        "RGID"
+      ],
+      "projectTracking": [
+        "Name",
+        "Project Name",
+        "Customer",
+        "Project Type",
+        "Status",
+        "Priority",
+        "Start Date",
+        "Due Date",
+        "Budget",
+        "Progress",
+        "Project Manager",
+        "Team Members",
+        "Description",
+        "RGID"
+      ]
+    }
+  }
+}

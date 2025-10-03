@@ -49,3 +49,6 @@ Racknerd VPS configuration and deployment management.
 ---
 *Last Updated: 2025-08-22T17:06:41.545Z*
 *Consolidated from 4 files*
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

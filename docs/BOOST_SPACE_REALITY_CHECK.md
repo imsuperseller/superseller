@@ -196,3 +196,6 @@
 **Boost.space is NOT working as expected. The API has significant issues that prevent proper integration. While the web interface is functional, the programmatic access needed for automation is broken.**
 
 **Immediate action required: Contact Boost.space support for proper API documentation and fixes, or consider alternative solutions for business automation needs.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

@@ -1,0 +1,375 @@
+{
+  "business_references": {
+    "database": "Business References",
+    "notion_records": [
+      {
+        "id": "27830b70-a044-8194-beef-c82947392411",
+        "name": "Website Transformation Strategy",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_001"
+      },
+      {
+        "id": "27830b70-a044-810c-9be9-d40c7dfde094",
+        "name": "Airtable Data Architecture",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_002"
+      },
+      {
+        "id": "27830b70-a044-8181-a579-d229357146b1",
+        "name": "Tax4Us Onboarding Process",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_003"
+      },
+      {
+        "id": "27830b70-a044-8102-b182-f42b69af5844",
+        "name": "Wonder.care Healthcare Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_004"
+      },
+      {
+        "id": "27830b70-a044-81b1-857e-ccd12231f974",
+        "name": "Rensto Micro-SaaS Business Model",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_006"
+      },
+      {
+        "id": "27830b70-a044-8159-b93a-eb9d900608c0",
+        "name": "Local-il.com Leads Generation Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_006"
+      },
+      {
+        "id": "27830b70-a044-81c2-89cd-f898bd9f30e3",
+        "name": "N8N Workflow Architecture",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_005"
+      },
+      {
+        "id": "27830b70-a044-81cc-bf4d-d8a07e332b37",
+        "name": "Shelly Insurance Agent Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_008"
+      },
+      {
+        "id": "27830b70-a044-81b0-adff-e1184b5c927c",
+        "name": "Revenue Analytics Dashboard",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_021"
+      },
+      {
+        "id": "27830b70-a044-81e5-92e2-ef5c1c9443c0",
+        "name": "Customer Success Tracking",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_020"
+      },
+      {
+        "id": "27830b70-a044-812a-ac8d-f6ca6992a17f",
+        "name": "MCP Server Management",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_019"
+      },
+      {
+        "id": "27830b70-a044-81b2-93c7-dfdd8281df3b",
+        "name": "Cloudflare Tunnel Management",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_018"
+      },
+      {
+        "id": "27830b70-a044-8164-8a5d-c16e998f7d21",
+        "name": "Vercel Deployment System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_017"
+      },
+      {
+        "id": "27830b70-a044-8105-9154-e61e011e7d99",
+        "name": "Supabase Database Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_016"
+      },
+      {
+        "id": "27830b70-a044-8153-868f-dcc0f5f0c8b3",
+        "name": "Typeform Integration System",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_015"
+      },
+      {
+        "id": "27830b70-a044-8117-8c22-eb2a9bfab765",
+        "name": "Stripe Payment Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_014"
+      },
+      {
+        "id": "27830b70-a044-818d-9b41-f91eba452493",
+        "name": "Webflow MCP Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_013"
+      },
+      {
+        "id": "27830b70-a044-8104-bfa0-f55762e79356",
+        "name": "Notion Integration Setup",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_012"
+      },
+      {
+        "id": "27830b70-a044-81c1-85ec-eb059712c2df",
+        "name": "Codebase Cleanup System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_011"
+      },
+      {
+        "id": "27830b70-a044-8149-9e84-c9748ea94a5b",
+        "name": "BMAD Testing Framework",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_010"
+      },
+      {
+        "id": "27830b70-a044-8127-ab75-c7261eda1fd3",
+        "name": "Smart Sync System",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_009"
+      },
+      {
+        "id": "27830b70-a044-8126-8024-d3756093898e",
+        "name": "Airtable Optimization System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_008"
+      },
+      {
+        "id": "27830b70-a044-8197-8330-e212c1ed23df",
+        "name": "QuickBooks OAuth Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_007"
+      },
+      {
+        "id": "27830b70-a044-81de-977c-c2c39103a059",
+        "name": "Rensto Admin Dashboard",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_006"
+      },
+      {
+        "id": "27830b70-a044-8135-99b4-e7388bc139aa",
+        "name": "Local IL Leads Services",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_005"
+      },
+      {
+        "id": "27830b70-a044-8191-97ac-f038e59405c1",
+        "name": "Wonder Care Sheets to Monday Integration",
+        "rgid": "RGID_NOTION_COMPONENT_20240922_004"
+      },
+      {
+        "id": "27830b70-a044-81de-bc9f-dba015faea75",
+        "name": "Tax4us AI Agent System",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_003"
+      },
+      {
+        "id": "27830b70-a044-81ed-b5c0-d5ecdb6c33e1",
+        "name": "Enhanced Error Handling Templates",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_002"
+      },
+      {
+        "id": "27830b70-a044-81c1-95ff-dd01df91b386",
+        "name": "Shelly Insurance Agent Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_001"
+      },
+      {
+        "id": "27630b70-a044-8101-a23d-e278cff027fd",
+        "name": "Website Transformation Strategy",
+        "rgid": "RGID_NOTION_BUSINESS_1758754980311_websitetransformationstrategy"
+      },
+      {
+        "id": "27630b70-a044-817b-9225-c61d8cb6b49d",
+        "name": "Airtable Data Architecture",
+        "rgid": "RGID_NOTION_BUSINESS_1758754980715_airtabledataarchitecture"
+      },
+      {
+        "id": "27630b70-a044-8129-a113-c9f229e7d62a",
+        "name": "BMAD Customer App Architecture Design",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_003"
+      },
+      {
+        "id": "27630b70-a044-8135-9e38-c8291065a1d1",
+        "name": "BMAD Admin Dashboard Implementation",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_004"
+      },
+      {
+        "id": "27630b70-a044-816e-80c3-c03002fe30b2",
+        "name": "N8N Workflow Architecture",
+        "rgid": "RGID_NOTION_BUSINESS_1758754981038_n8nworkflowarchitecture"
+      },
+      {
+        "id": "27630b70-a044-815a-adff-d393ebbabe88",
+        "name": "Rensto Micro-SaaS Business Model",
+        "rgid": "RGID_NOTION_BUSINESS_1758754981330_renstomicrosaasbusinessmodel"
+      }
+    ],
+    "airtable_records": [
+      {
+        "id": "rec8AEBdc1xa4Z733",
+        "name": "Shelly Insurance Agent Onboarding",
+        "rgid": "RGID-SHELLY-ONBOARDING-001"
+      },
+      {
+        "id": "rec9bp1LKF66Ax1mw",
+        "name": "N8N Workflow Architecture",
+        "rgid": "RGID_N8N_ARCHITECTURE_20250116_001"
+      },
+      {
+        "id": "recCaPZU5zn5hSBEb",
+        "name": "Local-il.com Leads Generation Onboarding",
+        "rgid": "RGID-LOCAL-IL-ONBOARDING-001"
+      },
+      {
+        "id": "recKKmuaaUryu79Th",
+        "name": "Rensto Micro-SaaS Business Model",
+        "rgid": "RGID_MICROSAAS_MODEL_20250116_001"
+      },
+      {
+        "id": "recV2Qq4N5wLr6ILG",
+        "name": "Wonder.care Healthcare Onboarding",
+        "rgid": "RGID-WONDER-CARE-ONBOARDING-001"
+      },
+      {
+        "id": "recgZWmOsfl6sv9Oa",
+        "name": "Tax4Us Onboarding Process",
+        "rgid": "RGID-TAX4US-ONBOARDING-001"
+      },
+      {
+        "id": "recijJOtHUHcgAkQE",
+        "name": "Airtable Data Architecture",
+        "rgid": "RGID_AIRTABLE_ARCHITECTURE_20250116_001"
+      },
+      {
+        "id": "recp7xqYAJfKRGYde",
+        "name": "Website Transformation Strategy",
+        "rgid": "RGID_WEBSITE_TRANSFORMATION_20250116_001"
+      }
+    ]
+  },
+  "customers": [],
+  "projects": [],
+  "customer_management": {
+    "database": "Customer Management",
+    "notion_records": [
+      {
+        "id": "27830b70-a044-81a2-ae92-eb65f948497f",
+        "name": "Ortal Flanary",
+        "rgid": "RGID_CUSTOMERS_1758754017232_localilcom"
+      },
+      {
+        "id": "27830b70-a044-81f9-9ba6-f8857f552b14",
+        "name": "Ortal Flanary",
+        "rgid": "RGID_CUSTOMERS_1758754017027_wondercare"
+      },
+      {
+        "id": "27830b70-a044-8184-8de1-cedfc8151b3d",
+        "name": "Rensto",
+        "rgid": "RGID_CUSTOMERS_1758754016737_renstotechnologies"
+      },
+      {
+        "id": "27830b70-a044-8163-a5ad-c3b42a770b18",
+        "name": "Ben Ginati",
+        "rgid": "RGID_CUSTOMERS_1757258475043_ben001"
+      },
+      {
+        "id": "27830b70-a044-81b3-89b1-ee6e6882bf05",
+        "name": "Shelly Mizrahi",
+        "rgid": "RGID_CUSTOMERS_1757258475043_shelly001"
+      },
+      {
+        "id": "27830b70-a044-8174-bdbe-ec21eb40c75c",
+        "name": "Ortal Flanary",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-81f1-8229-cbce024141c3",
+        "name": "Ben Ginati",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-81b2-bc57-f57d9ec91006",
+        "name": "Ortal Flanary",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-81ed-80a6-e3c87be1cd75",
+        "name": "Shelly Mizrahi",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-8154-b78b-ca2cebfb6255",
+        "name": "Rensto",
+        "rgid": "TBD"
+      }
+    ],
+    "airtable_records": [
+      {
+        "id": "rec1UEu53goUAV1JA",
+        "name": "Rensto",
+        "rgid": "RGID_CUSTOMERS_1758754016737_renstotechnologies"
+      },
+      {
+        "id": "rec2vLhdlQ8ij3BpI",
+        "name": "Shelly Mizrahi",
+        "rgid": "RGID_CUSTOMERS_1757258475043_shelly001"
+      },
+      {
+        "id": "rec75N7CQnJIbeFLy",
+        "name": "Ortal Flanary",
+        "rgid": "RGID_CUSTOMERS_1758754017027_wondercare"
+      },
+      {
+        "id": "recD2aFBDwjYnpBcL",
+        "name": "Ben Ginati",
+        "rgid": "RGID_CUSTOMERS_1757258475043_ben001"
+      },
+      {
+        "id": "recjeEqxD3ASI2obr",
+        "name": "Ortal Flanary",
+        "rgid": "RGID_CUSTOMERS_1758754017232_localilcom"
+      }
+    ]
+  },
+  "project_tracking": {
+    "database": "Project Tracking",
+    "notion_records": [
+      {
+        "id": "27830b70-a044-8161-a6ce-e8b93324fd44",
+        "name": "Shelly Mizrahi Excel Processor",
+        "rgid": "RGID_PROJECTS_1758754018223_shellymizrahiexcelprocessor"
+      },
+      {
+        "id": "27830b70-a044-81ff-98b0-e83fd8c9de93",
+        "name": "Tax4Us Automation System",
+        "rgid": "RGID_PROJECTS_1758754018023_tax4usautomationsystem"
+      },
+      {
+        "id": "27830b70-a044-8138-bb37-d7d1a1865ba1",
+        "name": "Wonder.care Healthcare Sync",
+        "rgid": "RGID_PROJECTS_1758754017812_wondercarehealthcaresync"
+      },
+      {
+        "id": "27830b70-a044-814c-8921-e9e7db4b137f",
+        "name": "Local-il Lead Generation",
+        "rgid": "RGID_PROJECTS_1758754017569_localilleadgeneration"
+      },
+      {
+        "id": "27830b70-a044-811b-a1ba-c670f0011521",
+        "name": "Shelly Mizrahi Excel Processor",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-817d-bf95-e15db2dfe7bb",
+        "name": "Tax4Us Automation System",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-8151-ab41-dcfc34d37252",
+        "name": "Wonder.care Healthcare Sync",
+        "rgid": "TBD"
+      },
+      {
+        "id": "27830b70-a044-81f1-a7a6-e0e7e24c5d2f",
+        "name": "Local-il Lead Generation",
+        "rgid": "TBD"
+      }
+    ],
+    "airtable_records": [
+      {
+        "id": "rec0SWBAmgpz9KMVh",
+        "name": "Local-il Lead Generation",
+        "rgid": "RGID_PROJECTS_1758754017569_localilleadgeneration"
+      },
+      {
+        "id": "recH6xYFiSPUTUoYO",
+        "name": "Wonder.care Healthcare Sync",
+        "rgid": "RGID_PROJECTS_1758754017812_wondercarehealthcaresync"
+      },
+      {
+        "id": "recZCZiZMRiJAinAd",
+        "name": "Tax4Us Automation System",
+        "rgid": "RGID_PROJECTS_1758754018023_tax4usautomationsystem"
+      },
+      {
+        "id": "recdvmfcQUGAzQ72S",
+        "name": "Shelly Mizrahi Excel Processor",
+        "rgid": "RGID_PROJECTS_1758754018223_shellymizrahiexcelprocessor"
+      }
+    ]
+  }
+}

@@ -46,8 +46,6 @@
 ### **✅ Complete MCP Server Architecture**
 ```
 infra/mcp-servers/
-├── n8n-mcp-server/              # Workflow automation ✅
-├── stripe-mcp-server/           # Payment processing ✅
 ├── analytics-reporting-mcp/     # Analytics and reporting ✅
 ├── email-communication-mcp/     # Email automation ✅
 ├── financial-billing-mcp/       # Financial management ✅
@@ -221,3 +219,6 @@ Customer Agent Development Workflow:
 - Enhance workflow automation
 
 **🎯 The enhanced MCP ecosystem is ready to revolutionize customer development workflows!**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

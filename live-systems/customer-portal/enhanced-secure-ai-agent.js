@@ -44,12 +44,12 @@ class EnhancedSecureAIAgent {
         requestsPerDay: 2000
       },
       customers: {
-        'ben-ginati': {
+        'rensto-system': {
           requestsPerMinute: 30,
           requestsPerHour: 300,
           requestsPerDay: 3000
         },
-        'shelly-mizrahi': {
+        'rensto-system': {
           requestsPerMinute: 10,
           requestsPerHour: 100,
           requestsPerDay: 1000
@@ -69,8 +69,8 @@ class EnhancedSecureAIAgent {
     this.usageTracking = {
       rensto: {},
       customers: {
-        'ben-ginati': {},
-        'shelly-mizrahi': {}
+        'rensto-system': {},
+        'rensto-system': {}
       }
     };
     
@@ -111,8 +111,8 @@ class EnhancedSecureAIAgent {
 
   getCustomerUseCases(customerId) {
     const useCaseMap = {
-      'ben-ginati': ['wordpress', 'social', 'podcast', 'content-generation'],
-      'shelly-mizrahi': ['excel', 'data-processing', 'analysis']
+      'rensto-system': ['wordpress', 'social', 'podcast', 'content-generation'],
+      'rensto-system': ['excel', 'data-processing', 'analysis']
     };
     return useCaseMap[customerId] || ['general'];
   }
@@ -562,7 +562,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     input: 'Hello, this is a customer test.',
     model: 'gpt-3.5-turbo',
     useCase: 'wordpress',
-    customerId: 'ben-ginati',
+    customerId: 'rensto-system',
     authToken: 'user_ben123',
     ipAddress: '127.0.0.1',
     userAgent: 'test-agent'
@@ -577,7 +577,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     input: 'Hello, this is Shelly\'s test.',
     model: 'gpt-3.5-turbo',
     useCase: 'excel',
-    customerId: 'shelly-mizrahi',
+    customerId: 'rensto-system',
     authToken: 'user_shelly123',
     ipAddress: '127.0.0.1',
     userAgent: 'test-agent'

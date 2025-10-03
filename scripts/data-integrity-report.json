@@ -1,0 +1,101 @@
+{
+  "overall_status": "NEEDS_ATTENTION",
+  "databases": [
+    {
+      "name": "Business References",
+      "notion_records": 35,
+      "airtable_records": 8,
+      "consistent_records": 0,
+      "inconsistent_records": 0,
+      "missing_rgids": 0,
+      "orphaned_notion_records": 35,
+      "orphaned_airtable_records": 8,
+      "issues": [
+        "Notion record \"Website Transformation Strategy\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_001) has no corresponding Airtable record",
+        "Notion record \"Airtable Data Architecture\" (RGID: RGID_NOTION_TECHNICAL_REF_20250116_002) has no corresponding Airtable record",
+        "Notion record \"Tax4Us Onboarding Process\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_003) has no corresponding Airtable record",
+        "Notion record \"Wonder.care Healthcare Onboarding\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_004) has no corresponding Airtable record",
+        "Notion record \"Rensto Micro-SaaS Business Model\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_006) has no corresponding Airtable record",
+        "Notion record \"Local-il.com Leads Generation Onboarding\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_006) has no corresponding Airtable record",
+        "Notion record \"N8N Workflow Architecture\" (RGID: RGID_NOTION_TECHNICAL_REF_20250116_005) has no corresponding Airtable record",
+        "Notion record \"Shelly Insurance Agent Onboarding\" (RGID: RGID_NOTION_BUSINESS_REF_20250116_008) has no corresponding Airtable record",
+        "Notion record \"Revenue Analytics Dashboard\" (RGID: RGID_NOTION_BUSINESS_REF_20240922_021) has no corresponding Airtable record",
+        "Notion record \"Customer Success Tracking\" (RGID: RGID_NOTION_BUSINESS_REF_20240922_020) has no corresponding Airtable record",
+        "Notion record \"MCP Server Management\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_019) has no corresponding Airtable record",
+        "Notion record \"Cloudflare Tunnel Management\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_018) has no corresponding Airtable record",
+        "Notion record \"Vercel Deployment System\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_017) has no corresponding Airtable record",
+        "Notion record \"Supabase Database Integration\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_016) has no corresponding Airtable record",
+        "Notion record \"Typeform Integration System\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_015) has no corresponding Airtable record",
+        "Notion record \"Stripe Payment Integration\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_014) has no corresponding Airtable record",
+        "Notion record \"Webflow MCP Integration\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_013) has no corresponding Airtable record",
+        "Notion record \"Notion Integration Setup\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_012) has no corresponding Airtable record",
+        "Notion record \"Codebase Cleanup System\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_011) has no corresponding Airtable record",
+        "Notion record \"BMAD Testing Framework\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_010) has no corresponding Airtable record",
+        "Notion record \"Smart Sync System\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_009) has no corresponding Airtable record",
+        "Notion record \"Airtable Optimization System\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_008) has no corresponding Airtable record",
+        "Notion record \"QuickBooks OAuth Integration\" (RGID: RGID_NOTION_SYSTEM_INTEGRATION_20240922_007) has no corresponding Airtable record",
+        "Notion record \"Rensto Admin Dashboard\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_006) has no corresponding Airtable record",
+        "Notion record \"Local IL Leads Services\" (RGID: RGID_NOTION_BUSINESS_REF_20240922_005) has no corresponding Airtable record",
+        "Notion record \"Wonder Care Sheets to Monday Integration\" (RGID: RGID_NOTION_COMPONENT_20240922_004) has no corresponding Airtable record",
+        "Notion record \"Tax4us AI Agent System\" (RGID: RGID_NOTION_BUSINESS_REF_20240922_003) has no corresponding Airtable record",
+        "Notion record \"Enhanced Error Handling Templates\" (RGID: RGID_NOTION_TECHNICAL_REF_20240922_002) has no corresponding Airtable record",
+        "Notion record \"Shelly Insurance Agent Onboarding\" (RGID: RGID_NOTION_BUSINESS_REF_20240922_001) has no corresponding Airtable record",
+        "Notion record \"Website Transformation Strategy\" (RGID: RGID_NOTION_BUSINESS_1758754980311_websitetransformationstrategy) has no corresponding Airtable record",
+        "Notion record \"Airtable Data Architecture\" (RGID: RGID_NOTION_BUSINESS_1758754980715_airtabledataarchitecture) has no corresponding Airtable record",
+        "Notion record \"BMAD Customer App Architecture Design\" (RGID: RGID_NOTION_TECHNICAL_REF_20250116_003) has no corresponding Airtable record",
+        "Notion record \"BMAD Admin Dashboard Implementation\" (RGID: RGID_NOTION_TECHNICAL_REF_20250116_004) has no corresponding Airtable record",
+        "Notion record \"N8N Workflow Architecture\" (RGID: RGID_NOTION_BUSINESS_1758754981038_n8nworkflowarchitecture) has no corresponding Airtable record",
+        "Notion record \"Rensto Micro-SaaS Business Model\" (RGID: RGID_NOTION_BUSINESS_1758754981330_renstomicrosaasbusinessmodel) has no corresponding Airtable record",
+        "Airtable record \"Shelly Insurance Agent Onboarding\" (RGID: RGID-SHELLY-ONBOARDING-001) has no corresponding Notion record",
+        "Airtable record \"N8N Workflow Architecture\" (RGID: RGID_N8N_ARCHITECTURE_20250116_001) has no corresponding Notion record",
+        "Airtable record \"Local-il.com Leads Generation Onboarding\" (RGID: RGID-LOCAL-IL-ONBOARDING-001) has no corresponding Notion record",
+        "Airtable record \"Rensto Micro-SaaS Business Model\" (RGID: RGID_MICROSAAS_MODEL_20250116_001) has no corresponding Notion record",
+        "Airtable record \"Wonder.care Healthcare Onboarding\" (RGID: RGID-WONDER-CARE-ONBOARDING-001) has no corresponding Notion record",
+        "Airtable record \"Tax4Us Onboarding Process\" (RGID: RGID-TAX4US-ONBOARDING-001) has no corresponding Notion record",
+        "Airtable record \"Airtable Data Architecture\" (RGID: RGID_AIRTABLE_ARCHITECTURE_20250116_001) has no corresponding Notion record",
+        "Airtable record \"Website Transformation Strategy\" (RGID: RGID_WEBSITE_TRANSFORMATION_20250116_001) has no corresponding Notion record"
+      ]
+    },
+    {
+      "name": "Customer Management",
+      "notion_records": 10,
+      "airtable_records": 5,
+      "consistent_records": 5,
+      "inconsistent_records": 0,
+      "missing_rgids": 0,
+      "orphaned_notion_records": 5,
+      "orphaned_airtable_records": 0,
+      "issues": [
+        "Notion record \"Ortal Flanary\" (RGID: RGID_NOTION_CUSTOMER_1758755062757_ortalflanary) has no corresponding Airtable record",
+        "Notion record \"Ben Ginati\" (RGID: RGID_NOTION_CUSTOMER_1758755063449_benginati) has no corresponding Airtable record",
+        "Notion record \"Ortal Flanary\" (RGID: RGID_NOTION_CUSTOMER_1758755063739_ortalflanary) has no corresponding Airtable record",
+        "Notion record \"Shelly Mizrahi\" (RGID: RGID_NOTION_CUSTOMER_1758755064227_shellymizrahi) has no corresponding Airtable record",
+        "Notion record \"Rensto\" (RGID: RGID_NOTION_CUSTOMER_1758755067860_rensto) has no corresponding Airtable record"
+      ]
+    },
+    {
+      "name": "Project Tracking",
+      "notion_records": 8,
+      "airtable_records": 4,
+      "consistent_records": 4,
+      "inconsistent_records": 0,
+      "missing_rgids": 0,
+      "orphaned_notion_records": 4,
+      "orphaned_airtable_records": 0,
+      "issues": [
+        "Notion record \"Shelly Mizrahi Excel Processor\" (RGID: RGID_NOTION_PROJECT_1758755069296_shellymizrahiexcelprocessor) has no corresponding Airtable record",
+        "Notion record \"Tax4Us Automation System\" (RGID: RGID_NOTION_PROJECT_1758755078716_tax4usautomationsystem) has no corresponding Airtable record",
+        "Notion record \"Wonder.care Healthcare Sync\" (RGID: RGID_NOTION_PROJECT_1758755079036_wondercarehealthcaresync) has no corresponding Airtable record",
+        "Notion record \"Local-il Lead Generation\" (RGID: RGID_NOTION_PROJECT_1758755079467_localilleadgeneration) has no corresponding Airtable record"
+      ]
+    }
+  ],
+  "summary": {
+    "total_notion_records": 53,
+    "total_airtable_records": 17,
+    "consistent_records": 9,
+    "inconsistent_records": 0,
+    "missing_rgids": 0,
+    "orphaned_records": 52
+  }
+}

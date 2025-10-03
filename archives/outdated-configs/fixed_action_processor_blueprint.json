@@ -1,0 +1,192 @@
+{
+  "code": "OK",
+  "response": {
+    "blueprint": {
+      "flow": [
+        {
+          "id": 1,
+          "mapper": {},
+          "module": "gateway:CustomWebHook",
+          "version": 1,
+          "metadata": {
+            "restore": {
+              "parameters": {
+                "hook": {
+                  "data": {
+                    "editable": "true"
+                  },
+                  "label": "Surense Action Processor"
+                }
+              }
+            },
+            "designer": {
+              "x": 0,
+              "y": 0
+            },
+            "parameters": [
+              {
+                "name": "hook",
+                "type": "hook:gateway-webhook",
+                "label": "Webhook",
+                "required": true
+              },
+              {
+                "name": "maxResults",
+                "type": "number",
+                "label": "Maximum number of results"
+              }
+            ]
+          },
+          "parameters": {
+            "hook": 1326648,
+            "maxResults": 1
+          }
+        },
+        {
+          "id": 8,
+          "mapper": {
+            "object": "{{1.familyProfiles}}"
+          },
+          "module": "json:TransformToJSON",
+          "version": 1,
+          "metadata": {
+            "expect": [
+              {
+                "name": "object",
+                "type": "any",
+                "label": "Object"
+              }
+            ],
+            "restore": {
+              "parameters": {
+                "space": {
+                  "label": "Empty"
+                }
+              }
+            },
+            "designer": {
+              "x": 300,
+              "y": 0
+            },
+            "parameters": [
+              {
+                "name": "space",
+                "type": "select",
+                "label": "Indentation",
+                "validate": {
+                  "enum": ["tab", "2", "4"]
+                }
+              }
+            ]
+          },
+          "parameters": {
+            "space": ""
+          }
+        },
+        {
+          "id": 3,
+          "module": "builtin:BasicFeeder",
+          "version": 1,
+          "metadata": {
+            "designer": {
+              "x": 600,
+              "y": 0
+            }
+          }
+        },
+        {
+          "id": 4,
+          "module": "surense:SearchLeads",
+          "version": 1,
+          "metadata": {
+            "designer": {
+              "x": 900,
+              "y": 0
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": "surense",
+            "customerId": "{{3.customerId}}"
+          }
+        },
+        {
+          "id": 5,
+          "module": "surense:GetLead",
+          "version": 1,
+          "metadata": {
+            "designer": {
+              "x": 1200,
+              "y": 0
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": "surense",
+            "leadId": "{{4.leadId}}"
+          }
+        },
+        {
+          "id": 6,
+          "module": "surense:createDocument",
+          "version": 1,
+          "metadata": {
+            "designer": {
+              "x": 1500,
+              "y": 0
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": "surense",
+            "leadId": "{{5.leadId}}",
+            "fileName": "{{1.generatedFiles[0].fileName}}",
+            "mimeType": "{{1.generatedFiles[0].mimeType}}",
+            "content": "{{1.generatedFiles[0].content}}"
+          }
+        }
+      ],
+      "name": "Surense Action Processor - Fixed",
+      "metadata": {
+        "instant": true,
+        "version": 1,
+        "designer": {
+          "orphans": [],
+          "samples": {
+            "1": {
+              "message": "{{ (() => { const f = ($json.families || []); const tf = f.length; const tp = f.reduce((s,x)=>s+(x.familySize||0), 0); const vp = f.filter(x => x.phoneValidated).length; const files = $binary.file ? 1 : 0; const rd = $json.summary?.riskDistribution || {}; return 'פרופילי משפחה עובדו בהצלחה - ' + tf + ' משפחות ו-' + tp + ' אנשים עובדו. ' + vp + ' מספרי טלפון תקינים. ' + files + ' קבצי פרופיל ביטוח נוצרו. חלוקת סיכון: ' + (rd.high_risk||0) + ' גבוה, ' + (rd.medium_risk||0) + ' בינוני, ' + (rd.low_risk||0) + ' נמוך, ' + (rd.other||0) + ' אחר.'; })() }}",
+              "success": true,
+              "summary": {
+                "totalPeople": 0,
+                "totalFamilies": 0
+              },
+              "timestamp": "2025-09-16T01:54:46.123Z",
+              "familyProfiles": []
+            }
+          }
+        },
+        "scenario": {
+          "dlq": false,
+          "slots": null,
+          "dataloss": false,
+          "maxErrors": 3,
+          "autoCommit": true,
+          "roundtrips": 1,
+          "sequential": false,
+          "confidential": false,
+          "freshVariables": false,
+          "autoCommitTriggerLast": true
+        }
+      }
+    },
+    "scheduling": {
+      "type": "immediately",
+      "maximum_runs_per_minute": null
+    },
+    "concept": false,
+    "created": "2025-09-11T22:23:01.641Z",
+    "last_edit": "2025-09-17T06:20:19.690Z",
+    "metadata": {
+      "input_spec": [],
+      "output_spec": []
+    },
+    "idSequence": 9
+  }
+}

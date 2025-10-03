@@ -1,0 +1,25 @@
+name: deploy
+on:
+  push:
+    tags:
+      - "staging-*"
+      - "prod-*"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - name: Install
+        run: pnpm i --frozen-lockfile
+      - name: Deploy (staging or prod)
+        working-directory: apps/gateway-worker
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == staging-* ]]; then
+            pnpm deploy:staging
+          elif [[ "${GITHUB_REF_NAME}" == prod-* ]]; then
+            pnpm deploy:prod
+          fi

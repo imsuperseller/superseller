@@ -1,0 +1,328 @@
+{
+    "name": "Healthcare Appointment Processor - Dynamic MCP AI Agent",
+    "flow": [
+        {
+            "id": 1,
+            "module": "googleSheets:WatchRows",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "spreadsheetId": "1PzOGo098DA-otmdg9CuUexrLXzsQQA-OQd4kNPJ8r58",
+                "sheetName": "הזמנות טסט",
+                "range": "A:Q",
+                "watchFor": "newRows"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "monday:ListBoardItems",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "boardId": "9021789808",
+                "limit": "100"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "makeAiToolkit:ExtractInformation",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "text": "{{1}}",
+                "extractionType": "structured_data",
+                "schema": {
+                    "patient_name": "string",
+                    "appointment_date": "date",
+                    "nurse_name": "string",
+                    "treatment_type": "string",
+                    "check_in_time": "datetime",
+                    "check_out_time": "datetime",
+                    "duration": "string",
+                    "payment_amount": "number",
+                    "residence": "string",
+                    "patient_age": "number",
+                    "district": "string",
+                    "appointment_number": "string",
+                    "status": "string",
+                    "client_name": "string"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "makeAiToolkit:StandardizeText",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "text": "{{3.extracted_data}}",
+                "standardizationType": "healthcare_data",
+                "rules": {
+                    "date_format": "YYYY-MM-DD",
+                    "currency_format": "numeric",
+                    "name_format": "title_case",
+                    "time_format": "HH:MM"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 5,
+            "module": "makeAiToolkit:CategorizeText",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "text": "{{4.standardized_data}}",
+                "categories": [
+                    "duplicate_detection",
+                    "data_quality_assessment",
+                    "status_classification",
+                    "priority_assignment"
+                ],
+                "customCategories": {
+                    "duplicate_detection": "Check if patient_name + appointment_date exists in Monday.com board",
+                    "data_quality_assessment": "Evaluate completeness and accuracy of extracted data",
+                    "status_classification": "Classify appointment status (CANCELLED, CLOSED, APPROVED, PENDING)",
+                    "priority_assignment": "Assign priority based on patient age, treatment type, and status"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "makeAiAgents:RunAnAgent",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "agentId": "healthcare_processor_agent",
+                "messages": [
+                    "Process this healthcare appointment data using the extracted, standardized, and categorized information. Use the Monday.com board data for duplicate detection and create a comprehensive analysis.\n\nExtracted Data: {{3.extracted_data}}\nStandardized Data: {{4.standardized_data}}\nCategorized Data: {{5.categorized_data}}\nExisting Monday.com Records: {{2}}"
+                ],
+                "model": "gpt-4o-mini",
+                "maxOutputTokens": 2000,
+                "stepsPerAgentCall": 8,
+                "maxAgentRunsInThreadHistory": 5,
+                "mcpTools": [
+                    {
+                        "toolName": "monday_search_duplicates",
+                        "description": "Search for duplicate records in Monday.com board",
+                        "parameters": {
+                            "boardId": "9021789808",
+                            "searchCriteria": "{{3.extracted_data.patient_name}} + {{3.extracted_data.appointment_date}}"
+                        }
+                    },
+                    {
+                        "toolName": "monday_create_item",
+                        "description": "Create new item in Monday.com board",
+                        "parameters": {
+                            "boardId": "9021789808",
+                            "itemData": "{{4.standardized_data}}"
+                        }
+                    },
+                    {
+                        "toolName": "data_validation",
+                        "description": "Validate healthcare data quality and completeness",
+                        "parameters": {
+                            "data": "{{4.standardized_data}}",
+                            "validationRules": "healthcare_appointment_standards"
+                        }
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 7,
+            "module": "monday:ListItemsByColumnValues",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "filter": {
+                "name": "Check for duplicates",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{6.response.status}}",
+                            "o": "text:equal",
+                            "b": "NEW"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "boardId": "9021789808",
+                "columnId": "text_mkqa8gn7",
+                "columnValue": "{{6.response.patient_name}}",
+                "limit": "10"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 8,
+            "module": "monday:CreateAnItem",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "filter": {
+                "name": "Only create if no duplicates",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{7.length}}",
+                            "o": "number:equal",
+                            "b": "0"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "boardId": "9021789808",
+                "groupId": "new_group",
+                "name": "{{6.response.client_name}} - {{6.response.patient_name}}",
+                "columnValues": {
+                    "text_mkrvvskv": "{{6.response.appointment_date}}",
+                    "text_mkqa8gn7": "{{6.response.patient_name}}",
+                    "text_mkqaez78": "{{6.response.nurse_name}}",
+                    "color_mkqayybh": "{{6.response.treatment_type}}",
+                    "text_mkrvxt8f": "{{6.response.check_in_time}}",
+                    "text_mktdxhvb": "{{6.response.check_out_time}}",
+                    "text_mkqayhnj": "{{6.response.duration}}",
+                    "numeric_mkqa8924": "{{6.response.payment_amount}}",
+                    "text_mkqa4ecf": "{{6.response.residence}}",
+                    "numeric_mkqa4enf": "{{6.response.patient_age}}",
+                    "color_mkqaa2nm": "{{6.response.district}}",
+                    "text_mksqd4m0": "{{6.response.appointment_number}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2100,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 9,
+            "module": "makeAiToolkit:SummarizeText",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "text": "{{6.response}}",
+                "summaryType": "processing_report",
+                "maxLength": 500,
+                "includeMetrics": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2400,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 10,
+            "module": "webhooks:RespondToAWebhook",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": {
+                    "status": "{{6.response.status}}",
+                    "message": "{{6.response.message}}",
+                    "data_quality": "{{6.response.data_quality}}",
+                    "duplicate_detected": "{{6.response.duplicate_detected}}",
+                    "item_created": "{{8.id}}",
+                    "processing_summary": "{{9.summary}}",
+                    "ai_insights": "{{6.response.ai_insights}}",
+                    "processing_time": "{{6.response.processing_time}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2700,
+                    "y": 0
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": [
+            "Healthcare Appointment Processor with Dynamic MCP AI Agent",
+            "Uses Make AI Toolkit for data processing",
+            "Dynamic context through MCP tools",
+            "Real-time duplicate detection and data validation",
+            "Advanced AI processing with multiple toolkit functions"
+        ]
+    }
+}

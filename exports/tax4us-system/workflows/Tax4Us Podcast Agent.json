@@ -1,0 +1,264 @@
+{
+    "name": "Tax4Us Podcast Agent",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "podcast-agent",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Podcast Agent Trigger",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Podcast Agent - Episode Planning\nconst input = $input.first().json;\nconsole.log(\"Tax4Us Podcast Agent - Episode Planning\");\n\n// Generate episode plan based on input\nconst episodePlan = {\n  title: input.title || \"Tax Planning Strategies for Israeli Businesses\",\n  topic: input.topic || \"tax planning\",\n  duration: input.duration || \"20 minutes\",\n  segments: [\n    \"Introduction (2 min)\",\n    \"Main Content (15 min)\",\n    \"Q&A (3 min)\"\n  ],\n  targetAudience: \"Israeli business owners\",\n  keywords: [\"tax planning\", \"israel\", \"business\", \"tax optimization\"],\n  timestamp: new Date().toISOString(),\n  status: \"episode_planned\"\n};\n\nreturn {\n  json: {\n    ...episodePlan,\n    message: \"Episode plan generated successfully\",\n    nextStep: \"script_generation\"\n  }\n};"
+            },
+            "id": "episode-planning",
+            "name": "Episode Planning",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create a professional podcast script for Tax4Us based on the following episode plan:\n\nTitle: {{ $json.title }}\nTopic: {{ $json.topic }}\nDuration: {{ $json.duration }}\nTarget Audience: {{ $json.targetAudience }}\nKeywords: {{ $json.keywords.join(\", \") }}\n\nRequirements:\n1. Write in a conversational, professional tone\n2. Include natural speaking patterns and transitions\n3. Structure with clear segments as outlined\n4. Include relevant examples and case studies\n5. Add call-to-action for Tax4Us services\n6. Optimize for audio delivery\n7. Include timestamps for each segment\n\nFormat the script with:\n- Clear speaker directions\n- Natural conversation flow\n- Engaging hooks and transitions\n- Professional tax advice content\n- Call-to-action elements\n\nStart with an engaging introduction and structure the content for optimal listener engagement.",
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 3000
+                }
+            },
+            "id": "script-generation",
+            "name": "Script Generation",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                680,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create an SEO-optimized podcast episode description for the following episode:\n\nTitle: {{ $json.title }}\nScript: {{ $(\"Script Generation\").item.json.text }}\nKeywords: {{ $json.keywords.join(\", \") }}\n\nRequirements:\n- Keep it between 200-300 words\n- Include primary keywords naturally\n- Make it compelling and click-worthy\n- Summarize the main value proposition\n- Include a call to action for Tax4Us services\n- Optimize for podcast platform discovery\n\nReturn only the episode description text, no additional formatting.",
+                "options": {
+                    "temperature": 0.5,
+                    "maxTokens": 500
+                }
+            },
+            "id": "episode-description",
+            "name": "Episode Description",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create a detailed image prompt for an AI image generation tool to create podcast episode artwork for this episode:\n\nTitle: {{ $json.title }}\nTopic: {{ $json.topic }}\nDescription: {{ $(\"Episode Description\").item.json.text }}\n\nRequirements:\n- Create professional podcast episode artwork\n- Include relevant visual elements (microphone, tax documents, business imagery)\n- Use Tax4Us brand colors and style\n- Make it engaging and relevant to the topic\n- Specify the style (professional, modern, clean)\n- Include aspect ratio 1:1 for podcast platforms\n- Ensure it stands out in podcast directories\n\nReturn only the image prompt text, no additional formatting.",
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 300
+                }
+            },
+            "id": "artwork-prompt",
+            "name": "Artwork Prompt",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                1120,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "create",
+                "baseId": "appMy8sh7O6b4CPfU",
+                "tableId": "tblHaJjvTmU7EjEzM",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Title": "={{ $json.title }}",
+                        "Topic": "={{ $json.topic }}",
+                        "Content Type": "Podcast Episode",
+                        "Target Audience": "={{ $json.targetAudience }}",
+                        "Word Count": "={{ $(\"Script Generation\").item.json.text.split(\" \").length }}",
+                        "Status": "New",
+                        "Notes": "=Podcast Episode: {{ $(\"Episode Description\").item.json.text }}\\n\\nArtwork Prompt: {{ $(\"Artwork Prompt\").item.json.text }}\\n\\nDuration: {{ $json.duration }}\\n\\nKeywords: {{ $json.keywords.join(\", \") }}",
+                        "Language": "en",
+                        "Slug EN": "={{ $json.title.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}",
+                        "Slug HE": "={{ $json.title.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}"
+                    }
+                }
+            },
+            "id": "create-podcast-request",
+            "name": "Create Podcast Request",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "tax4us-airtable-api",
+                    "name": "Tax4Us Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Log successful podcast episode planning\nconst results = $input.all();\nconsole.log(\"Tax4Us Podcast Agent Results:\");\n\nlet summary = {\n  episodePlan: $json,\n  script: $(\"Script Generation\").item.json.text,\n  description: $(\"Episode Description\").item.json.text,\n  artworkPrompt: $(\"Artwork Prompt\").item.json.text,\n  scriptLength: $(\"Script Generation\").item.json.text.length,\n  wordCount: $(\"Script Generation\").item.json.text.split(\" \").length,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log(\"✅ Podcast episode planned successfully!\");\nconsole.log(`📝 Title: ${summary.episodePlan.title}`);\nconsole.log(`⏱️ Duration: ${summary.episodePlan.duration}`);\nconsole.log(`📊 Word Count: ${summary.wordCount}`);\nconsole.log(`📈 Script Length: ${summary.scriptLength} characters`);\n\nreturn {\n  json: {\n    message: \"Podcast episode planned and script generated successfully!\",\n    summary,\n    status: \"success\",\n    nextSteps: [\n      \"Script ready for review\",\n      \"Audio production pending\",\n      \"Captivate.fm upload pending\",\n      \"Distribution to Apple Podcasts and Spotify pending\"\n    ]\n  }\n};"
+            },
+            "id": "log-success",
+            "name": "Log Success & Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {
+                    "responseHeaders": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "respond",
+            "name": "Respond",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1780,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Podcast Agent Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Episode Planning",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Episode Planning": {
+            "main": [
+                [
+                    {
+                        "node": "Script Generation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Script Generation": {
+            "main": [
+                [
+                    {
+                        "node": "Episode Description",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Episode Description": {
+            "main": [
+                [
+                    {
+                        "node": "Artwork Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Artwork Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Create Podcast Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Podcast Request": {
+            "main": [
+                [
+                    {
+                        "node": "Log Success & Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Log Success & Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Respond",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": null
+}

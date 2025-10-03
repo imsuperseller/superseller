@@ -1,0 +1,83 @@
+<!-- Hero Section Component -->
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">{{HERO_TITLE}}</h1>
+        <p class="hero-subtitle">{{HERO_SUBTITLE}}</p>
+        <div class="hero-buttons">
+            {{HERO_BUTTONS}}
+        </div>
+    </div>
+</section>
+
+<style>
+.hero { 
+    min-height: 100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    padding: 8rem var(--spacing-lg) 3rem; 
+    position: relative; 
+    background: var(--background-light); 
+}
+
+.hero::before { 
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 70%); 
+    pointer-events: none; 
+}
+
+.hero-content { 
+    max-width: 900px; 
+    z-index: 1; 
+    position: relative; 
+    margin: 0 auto; 
+}
+
+.hero-title { 
+    font-size: 4rem; 
+    font-weight: 700; 
+    color: var(--text-primary); 
+    margin-bottom: var(--spacing-xl); 
+    line-height: 1.1; 
+    background: var(--primary-gradient); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    background-clip: text; 
+}
+
+.hero-subtitle { 
+    font-size: 1.5rem; 
+    color: var(--text-secondary); 
+    margin-bottom: var(--spacing-3xl); 
+    line-height: 1.6; 
+    max-width: 700px; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+.hero-buttons { 
+    display: flex; 
+    gap: var(--spacing-xl); 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    margin-top: var(--spacing-xl); 
+    align-items: center; 
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-buttons { flex-direction: column; align-items: center; gap: var(--spacing-md); }
+    .hero { padding: 6rem var(--spacing-md) 3rem; }
+}
+
+@media (max-width: 480px) {
+    .hero-title { font-size: 2rem; }
+    .hero-subtitle { font-size: 1.25rem; }
+}
+</style>

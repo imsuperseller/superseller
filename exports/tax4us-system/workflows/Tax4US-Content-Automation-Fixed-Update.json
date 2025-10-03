@@ -1,0 +1,580 @@
+{
+  "name": "Tax4US Content Specification to WordPress Draft Automation - FIXED",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1CwlwvoJyR5MbYQ8pFA64f2pp0g5S1WHpZem8nHcsUbU",
+          "mode": "list",
+          "cachedResultName": "TAX4US Wordpress (Except Blog & Posts) Content",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwlwvoJyR5MbYQ8pFA64f2pp0g5S1WHpZem8nHcsUbU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 729221200,
+          "mode": "list",
+          "cachedResultName": "pages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwlwvoJyR5MbYQ8pFA64f2pp0g5S1WHpZem8nHcsUbU/edit#gid=729221200"
+        },
+        "event": "rowUpdate",
+        "options": {
+          "columnsToWatch": [
+            "status"
+          ]
+        }
+      },
+      "id": "ad19140a-90c2-45da-8359-9e27e566788d",
+      "name": "Google Sheets Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        72
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "vDOALjyGm0hgeTmz",
+          "name": "shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const lang = $input.item.json.language;\nconst slug = $input.item.json.slug;\nconst ep = ($input.item.json.type === 'page') ? 'pages' : $input.item.json.type;\n\nreturn {\n  lang,\n  slug,\n  ep,\n  ...($input.item.json)\n};"
+      },
+      "id": "6a7587aa-0e6e-43c2-b2c9-d75ae5105c1d",
+      "name": "FN Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://tax4us.co.il/wp-json/wp/v2/pages?slug=\" + ($json.lang === \"he\" ? $json.slug_he : $json.slug_en) + \"&lang=\" + $json.lang }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {}
+      },
+      "id": "d85c9b0a-f9eb-4113-8811-499695528914",
+      "name": "HTTP SlugCheck",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        72
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.body }}",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d8bf0a42-f088-4d19-97f1-10ed2d4cd248",
+      "name": "IF Slug Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const arr = $json.body; if (!Array.isArray(arr) || !arr[0]) { throw new Error('Slug not found'); } return { ...$json, wp_id: arr[0].id };"
+      },
+      "id": "extract-found-page-id",
+      "name": "Extract Found Page ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o"
+        },
+        "options": {
+          "maxTokens": 4000,
+          "temperature": 0.3
+        }
+      },
+      "id": "e92fa2f4-db3b-4846-b6da-a79c280428f7",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        232,
+        296
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"language\":{\"type\":\"string\"},\"slug\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"sections\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"h\":{\"type\":\"string\"},\"body_html\":{\"type\":\"string\"}}}},\"faqs\":{\"type\":\"array\"},\"schema\":{\"type\":\"object\"},\"og\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"image_url\":{\"type\":\"string\"}}},\"internal_links\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"anchor\":{\"type\":\"string\"},\"to_slug\":{\"type\":\"string\"}}}},\"cta\":{\"type\":\"string\"}}}"
+      },
+      "id": "d4a8ca7f-227a-4aae-8842-471a1b62f845",
+      "name": "JSON Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        360,
+        296
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const data = $input.item.json; const sections = data.sections.map(s => `<section><h2>${s.h}</h2>${s.body_html}</section>`).join(''); const content = `<main>${sections}</main><script type='application/ld+json'>${JSON.stringify(data.schema)}</script>`; return { title: data.title, slug: data.slug, status: 'draft', content, excerpt: data.og.description, ...data };"
+      },
+      "id": "95e8a568-ff3e-4207-a9c2-681bfeaa71f5",
+      "name": "FN Html to Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://tax4us.co.il/wp-json/wp/v2/{{ $json.ep }}?lang={{ $json.lang }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordPressApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "slug",
+              "value": "={{ $json.slug }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "excerpt",
+              "value": "={{ $json.excerpt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8ea3f097-ef1b-4c6f-aee4-425f03e1c2d2",
+      "name": "HTTP WP Create",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://www.tax4us.co.il/wp-json/wp/v2/pages/{{$json.wp_id}}?lang={{$json.lang}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "excerpt",
+              "value": "={{ $json.excerpt || '' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-wp-update",
+      "name": "HTTP WP Update",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        72
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://tax4us.co.il/wp-json/acf/v3/{{ $json.ep }}/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordPressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"fields\": {\n    \"sections\": $json.sections,\n    \"faqs\": $json.faqs,\n    \"schema\": $json.schema,\n    \"og_title\": $json.og.title,\n    \"og_description\": $json.og.description,\n    \"og_image_url\": $json.og.image_url,\n    \"internal_links\": $json.internal_links,\n    \"cta\": $json.cta\n  }\n} }}",
+        "options": {}
+      },
+      "id": "842f46c3-022c-4535-8a02-5251ca5139cf",
+      "name": "HTTP ACF Update",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1024,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1CwlwvoJyR5MbYQ8pFA64f2pp0g5S1WHpZem8nHcsUbU",
+          "mode": "list",
+          "cachedResultName": "TAX4US Wordpress (Except Blog & Posts) Content",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwlwvoJyR5MbYQ8pFA64f2pp0g5S1WHpZem8nHcsUbU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "pages"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "id": "={{ $json.id }}",
+            "wp_id": "={{ $json.id }}",
+            "preview_url": "=https://tax4us.co.il/?p={{ $json.id }}&preview=true",
+            "acf_ready": "true",
+            "status": "Drafted"
+          },
+          "matchingColumns": [
+            {
+              "field": "id",
+              "column": "id"
+            }
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "wp_id",
+              "displayName": "wp_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "preview_url",
+              "displayName": "preview_url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "acf_ready",
+              "displayName": "acf_ready",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "3fe0970c-8acf-488c-9291-bf50f25aa36b",
+      "name": "Update Sheets Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        72
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "WscSgRUIVuAJBcyb",
+          "name": "shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "1shaifriedman@gmail.com",
+        "subject": "=Content Draft Ready for Review: {{ $json.title }}",
+        "emailType": "text",
+        "message": "=A new content draft is ready for review. Preview: {{ $json.preview_url }}. Reply with APPROVE {{ $json.id }} or CHANGES {{ $json.id }}: [feedback]",
+        "options": {}
+      },
+      "id": "3065b803-b8f5-4eb0-bbb4-f515be352f78",
+      "name": "Send Preview Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1472,
+        72
+      ],
+      "webhookId": "2a128e4a-a980-4a7d-b02d-ea47529d8a9b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IcCnuN7tSKdtbOGM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate comprehensive content draft based on the provided specifications. Create detailed sections with HTML content, FAQs, schema markup, and internal links as specified in the JSON schema.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "612eaf3f-1a1b-4b0a-b604-d1a69b331bc1",
+      "name": "AI Draft Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        72
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "FN Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FN Normalize": {
+      "main": [
+        [
+          {
+            "node": "HTTP SlugCheck",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP SlugCheck": {
+      "main": [
+        [
+          {
+            "node": "IF Slug Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Slug Exists": {
+      "main": [
+        [
+          {
+            "node": "Extract Found Page ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Draft Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Found Page ID": {
+      "main": [
+        [
+          {
+            "node": "AI Draft Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FN Html to Payload": {
+      "main": [
+        [
+          {
+            "node": "HTTP WP Update",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP WP Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP WP Create": {
+      "main": [
+        [
+          {
+            "node": "HTTP ACF Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP WP Update": {
+      "main": [
+        [
+          {
+            "node": "HTTP ACF Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP ACF Update": {
+      "main": [
+        [
+          {
+            "node": "Update Sheets Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sheets Status": {
+      "main": [
+        [
+          {
+            "node": "Send Preview Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Draft Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Draft Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Draft Generator": {
+      "main": [
+        [
+          {
+            "node": "FN Html to Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "040b63a6-686e-463d-82e5-09cd41c6ee78",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "debc7feccc354e86e5a53344362b691cecb5d65ac2ba67b45cdccf9a516514d6"
+  },
+  "id": "jbfZ1GT5Er3vseuW",
+  "tags": []
+}

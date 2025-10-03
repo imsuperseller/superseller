@@ -8,12 +8,7 @@
       "health": 200,
       "apiKey": "valid"
     },
-    "webflow": {
-      "status": "working",
-      "sites": 1,
-      "siteId": "66c7e551a317e0e9c9f906d8",
-      "apiKey": "valid"
-    },
+    
     "lightrag": {
       "status": "not_found",
       "error": "404 - Endpoint not found",

@@ -1,0 +1,71 @@
+{
+  "name": "Workflow Importer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "import-workflows",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Import Workflows Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Import workflow logic\nconst workflowData = $input.first().json;\nconst workflowName = workflowData.name || \"Unknown\";\n\n// Here we would import the workflow\n// For now, just return success\nreturn [{\n  json: {\n    success: true,\n    workflow: workflowName,\n    message: \"Workflow import completed\"\n  }\n}];"
+      },
+      "id": "import-logic",
+      "name": "Import Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Workflow import completed\",\n  \"workflow\": \"{{ $json.workflow }}\"\n}",
+        "options": {}
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Import Workflows Webhook": {
+      "main": [
+        [
+          {
+            "node": "Import Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Import Logic": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,997 @@
+<!-- 📊 CASE STUDY COMPONENT -->
+<!-- Contains: Success story cards and detailed case studies -->
+<!-- Character Count: ~10,000 chars -->
+<!-- Business Model: Social proof and success stories for Universal Automation Platform -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Case Studies - Success Stories & ROI Proof</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Case Studies Header */
+        .case-studies-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .case-studies-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .case-studies-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .case-studies-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .case-studies-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Industry Filter */
+        .industry-filter {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .filter-button:hover,
+        .filter-button.active {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+        
+        /* Case Studies Grid */
+        .case-studies-section {
+            padding: 60px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .case-studies-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .case-studies-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+        
+        .case-study-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .case-study-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            border-color: var(--cyan);
+        }
+        
+        .case-study-image {
+            height: 250px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+        
+        .case-study-industry {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--cyan);
+            color: var(--dark-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .case-study-content {
+            padding: 2.5rem;
+        }
+        
+        .case-study-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .case-study-company {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--light-text);
+        }
+        
+        .case-study-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .case-study-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-item {
+            background: rgba(30, 174, 247, 0.1);
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--gray-text);
+        }
+        
+        .case-study-challenges {
+            margin-bottom: 2rem;
+        }
+        
+        .challenges-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--light-text);
+        }
+        
+        .challenges-list {
+            list-style: none;
+        }
+        
+        .challenges-list li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .challenges-list li:before {
+            content: "⚠️";
+            font-size: 0.8rem;
+        }
+        
+        .case-study-solutions {
+            margin-bottom: 2rem;
+        }
+        
+        .solutions-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--light-text);
+        }
+        
+        .solutions-list {
+            list-style: none;
+        }
+        
+        .solutions-list li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .solutions-list li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        .case-study-cta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .case-study-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .case-study-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        .case-study-duration {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        /* Featured Case Study */
+        .featured-case-study {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .featured-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .featured-case {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .featured-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .featured-content p {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        
+        .featured-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .featured-metric {
+            text-align: center;
+        }
+        
+        .featured-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .featured-metric-label {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        .featured-image {
+            height: 400px;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+        
+        /* Testimonials */
+        .testimonials-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .testimonial-quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .author-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button-secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .case-studies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .featured-case {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .case-studies-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Case Studies Header -->
+    <section class="case-studies-header">
+        <div class="case-studies-container">
+            <h1 class="case-studies-title">Success Stories & ROI Proof</h1>
+            <p class="case-studies-subtitle">Real results from real businesses. See how our automation solutions have transformed operations and delivered measurable ROI.</p>
+            
+            <div class="case-studies-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Success Stories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">300%</div>
+                    <div class="stat-label">Average ROI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Hours Saved/Week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Client Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Industry Filter -->
+    <section class="industry-filter">
+        <div class="filter-container">
+            <div class="filter-grid">
+                <button class="filter-button active" data-industry="all">All Industries</button>
+                <button class="filter-button" data-industry="healthcare">Healthcare</button>
+                <button class="filter-button" data-industry="professional">Professional Services</button>
+                <button class="filter-button" data-industry="ecommerce">E-commerce</button>
+                <button class="filter-button" data-industry="real-estate">Real Estate</button>
+                <button class="filter-button" data-industry="education">Education</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Case Study -->
+    <section class="featured-case-study">
+        <div class="featured-container">
+            <div class="featured-case">
+                <div class="featured-content">
+                    <h2>HealthcareCorp: 75% Time Savings with Patient Management Automation</h2>
+                    <p>See how a healthcare provider transformed their patient management process, saving 20 hours per week and increasing patient satisfaction by 45%.</p>
+                    
+                    <div class="featured-metrics">
+                        <div class="featured-metric">
+                            <div class="featured-metric-value">75%</div>
+                            <div class="featured-metric-label">Time Savings</div>
+                        </div>
+                        <div class="featured-metric">
+                            <div class="featured-metric-value">45%</div>
+                            <div class="featured-metric-label">Patient Satisfaction</div>
+                        </div>
+                        <div class="featured-metric">
+                            <div class="featured-metric-value">$50K</div>
+                            <div class="featured-metric-label">Cost Savings</div>
+                        </div>
+                    </div>
+                    
+                    <button class="case-study-button">Read Full Case Study</button>
+                </div>
+                <div class="featured-image">🏥</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Grid -->
+    <section class="case-studies-section">
+        <div class="case-studies-grid">
+            <!-- Case Study 1 -->
+            <div class="case-study-card" data-industry="professional">
+                <div class="case-study-image">
+                    <div class="case-study-industry">Professional Services</div>
+                    💼
+                </div>
+                <div class="case-study-content">
+                    <h3 class="case-study-title">Client Management Automation</h3>
+                    <div class="case-study-company">Professional Services Inc.</div>
+                    <p class="case-study-description">Automated client onboarding, project tracking, and billing processes resulting in 3x revenue increase and 50% reduction in administrative time.</p>
+                    
+                    <div class="case-study-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">3x</div>
+                            <div class="metric-label">Revenue Increase</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">50%</div>
+                            <div class="metric-label">Time Reduction</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-challenges">
+                        <div class="challenges-title">Challenges:</div>
+                        <ul class="challenges-list">
+                            <li>Manual client onboarding process</li>
+                            <li>Time tracking inefficiencies</li>
+                            <li>Billing delays and errors</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-solutions">
+                        <div class="solutions-title">Solutions:</div>
+                        <ul class="solutions-list">
+                            <li>Automated client intake forms</li>
+                            <li>Project management integration</li>
+                            <li>Automated invoicing system</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <button class="case-study-button">View Details</button>
+                        <span class="case-study-duration">30 days</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 2 -->
+            <div class="case-study-card" data-industry="ecommerce">
+                <div class="case-study-image">
+                    <div class="case-study-industry">E-commerce</div>
+                    🛒
+                </div>
+                <div class="case-study-content">
+                    <h3 class="case-study-title">Order Processing Automation</h3>
+                    <div class="case-study-company">E-commerce Plus</div>
+                    <p class="case-study-description">Streamlined order processing, inventory management, and customer service automation leading to 90% customer satisfaction and 2x order processing speed.</p>
+                    
+                    <div class="case-study-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">90%</div>
+                            <div class="metric-label">Customer Satisfaction</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">2x</div>
+                            <div class="metric-label">Processing Speed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-challenges">
+                        <div class="challenges-title">Challenges:</div>
+                        <ul class="challenges-list">
+                            <li>Manual order processing</li>
+                            <li>Inventory management issues</li>
+                            <li>Customer service bottlenecks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-solutions">
+                        <div class="solutions-title">Solutions:</div>
+                        <ul class="solutions-list">
+                            <li>Automated order workflows</li>
+                            <li>Real-time inventory sync</li>
+                            <li>AI-powered customer service</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <button class="case-study-button">View Details</button>
+                        <span class="case-study-duration">45 days</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 3 -->
+            <div class="case-study-card" data-industry="real-estate">
+                <div class="case-study-image">
+                    <div class="case-study-industry">Real Estate</div>
+                    🏠
+                </div>
+                <div class="case-study-content">
+                    <h3 class="case-study-title">Lead Management Automation</h3>
+                    <div class="case-study-company">Real Estate Pro</div>
+                    <p class="case-study-description">Automated lead qualification, property management, and client communication resulting in 60% more qualified leads and 40% faster deal closure.</p>
+                    
+                    <div class="case-study-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">60%</div>
+                            <div class="metric-label">More Qualified Leads</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">40%</div>
+                            <div class="metric-label">Faster Closure</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-challenges">
+                        <div class="challenges-title">Challenges:</div>
+                        <ul class="challenges-list">
+                            <li>Unqualified lead volume</li>
+                            <li>Manual follow-up processes</li>
+                            <li>Property listing management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-solutions">
+                        <div class="solutions-title">Solutions:</div>
+                        <ul class="solutions-list">
+                            <li>AI-powered lead scoring</li>
+                            <li>Automated follow-up sequences</li>
+                            <li>Property management system</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <button class="case-study-button">View Details</button>
+                        <span class="case-study-duration">35 days</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 4 -->
+            <div class="case-study-card" data-industry="education">
+                <div class="case-study-image">
+                    <div class="case-study-industry">Education</div>
+                    🎓
+                </div>
+                <div class="case-study-content">
+                    <h3 class="case-study-title">Student Management Automation</h3>
+                    <div class="case-study-company">EduTech Academy</div>
+                    <p class="case-study-description">Streamlined student enrollment, course management, and administrative processes leading to 80% reduction in administrative workload and 95% student satisfaction.</p>
+                    
+                    <div class="case-study-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">80%</div>
+                            <div class="metric-label">Workload Reduction</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">95%</div>
+                            <div class="metric-label">Student Satisfaction</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-study-challenges">
+                        <div class="challenges-title">Challenges:</div>
+                        <ul class="challenges-list">
+                            <li>Manual enrollment processes</li>
+                            <li>Course management complexity</li>
+                            <li>Administrative bottlenecks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-solutions">
+                        <div class="solutions-title">Solutions:</div>
+                        <ul class="solutions-list">
+                            <li>Automated enrollment system</li>
+                            <li>Course management platform</li>
+                            <li>Administrative workflow automation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-study-cta">
+                        <button class="case-study-button">View Details</button>
+                        <span class="case-study-duration">40 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <p class="section-subtitle">Real testimonials from businesses that have transformed their operations with Rensto automation.</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"Rensto's automation solutions transformed our healthcare practice. We're saving 20 hours per week and our patients love the streamlined experience."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SJ</div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>COO, HealthcareCorp</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"The ROI was immediate. We tripled our revenue in 6 months with their custom automation solutions. Best investment we've ever made."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MC</div>
+                        <div class="author-info">
+                            <h4>Mike Chen</h4>
+                            <p>CEO, Professional Services Inc.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"Our e-commerce operations are now 90% automated. Customer satisfaction is at an all-time high and we're processing 2x more orders."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LT</div>
+                        <div class="author-info">
+                            <h4>Lisa Thompson</h4>
+                            <p>Operations Director, E-commerce Plus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Create Your Success Story?</h2>
+            <p class="cta-subtitle">Join 500+ businesses that have transformed their operations with Rensto automation.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-button">Start Your Success Story</a>
+                <a href="/pricing" class="cta-button cta-button-secondary">View Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate case studies header
+        gsap.from('.case-studies-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.case-studies-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.case-studies-stats', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate featured case study
+        gsap.from('.featured-case', {
+            scrollTrigger: {
+                trigger: '.featured-case',
+                start: 'top 80%',
+            },
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate case study cards
+        gsap.utils.toArray('.case-study-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate testimonials
+        gsap.utils.toArray('.testimonial-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 30,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Industry filtering
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const industry = this.getAttribute('data-industry');
+                filterCaseStudies(industry);
+            });
+        });
+
+        function filterCaseStudies(industry) {
+            const caseStudies = document.querySelectorAll('.case-study-card');
+            
+            caseStudies.forEach(card => {
+                if (industry === 'all' || card.getAttribute('data-industry') === industry) {
+                    card.style.display = 'block';
+                    gsap.from(card, {
+                        duration: 0.5,
+                        y: 30,
+                        opacity: 0,
+                        ease: 'power3.out'
+                    });
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Add hover effects to case study cards
+        document.querySelectorAll('.case-study-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Case study button functionality
+        document.querySelectorAll('.case-study-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const caseStudy = this.closest('.case-study-card')?.querySelector('.case-study-title')?.textContent || 
+                                this.closest('.featured-case')?.querySelector('h2')?.textContent;
+                alert(`Opening case study: "${caseStudy}". This would navigate to the detailed case study page.`);
+            });
+        });
+    </script>
+</body>
+</html>

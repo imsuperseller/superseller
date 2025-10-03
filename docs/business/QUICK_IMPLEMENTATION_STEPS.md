@@ -1,0 +1,337 @@
+# Quick Implementation Steps - New Business Model
+
+## 🚀 **IMMEDIATE ACTION PLAN**
+
+### **Step 1: Access Webflow Designer**
+```
+URL: https://rensto.design.webflow.com/
+Page: Homepage (for new business model)
+```
+
+### **Step 2: Add Code Component**
+1. **Drag "Code Component"** from Elements panel
+2. **Position** on the homepage
+3. **Configure** component settings
+
+### **Step 3: Copy & Paste React Code**
+```jsx
+import React from 'react';
+
+export default function ServiceTypesPage() {
+  return (
+    <div className="service-types-page">
+      <div className="hero-section">
+        <h1>Choose Your Automation Path</h1>
+        <p>Four distinct ways to transform your business with AI-powered automation. From ready-made solutions to custom development.</p>
+      </div>
+      
+      <div className="service-type-cards">
+        <div className="service-card">
+          <div className="card-header">
+            <h3>Marketplace</h3>
+            <div className="service-type">
+              <span className="type">Templates & Installation</span>
+            </div>
+            <p>Download n8n templates or let us install them for you</p>
+          </div>
+          <div className="card-content">
+            <ul className="features">
+              <li><span className="checkmark">✓</span> Template downloads</li>
+              <li><span className="checkmark">✓</span> Installation services</li>
+              <li><span className="checkmark">✓</span> Self-service options</li>
+              <li><span className="checkmark">✓</span> User reviews</li>
+              <li><span className="checkmark">✓</span> Service booking</li>
+              <li><span className="checkmark">✓</span> Installation tracking</li>
+            </ul>
+            <button className="cta-button secondary">Browse Templates</button>
+          </div>
+        </div>
+
+        <div className="service-card popular">
+          <div className="popular-badge">Most Popular</div>
+          <div className="card-header">
+            <h3>Custom Solutions</h3>
+            <div className="service-type">
+              <span className="type">Voice AI Consultation</span>
+            </div>
+            <p>Free voice AI consultation builds your tailored automation plan</p>
+          </div>
+          <div className="card-content">
+            <ul className="features">
+              <li><span className="checkmark">✓</span> Voice AI consultation</li>
+              <li><span className="checkmark">✓</span> Tailored business plans</li>
+              <li><span className="checkmark">✓</span> Technical implementation</li>
+              <li><span className="checkmark">✓</span> Automated onboarding</li>
+              <li><span className="checkmark">✓</span> Requirements gathering</li>
+              <li><span className="checkmark">✓</span> Proposal generation</li>
+            </ul>
+            <button className="cta-button primary">Book Free Consultation</button>
+          </div>
+        </div>
+
+        <div className="service-card">
+          <div className="card-header">
+            <h3>Subscriptions</h3>
+            <div className="service-type">
+              <span className="type">Enhanced Hot Leads</span>
+            </div>
+            <p>Enhanced hot leads service with CRM integration</p>
+          </div>
+          <div className="card-content">
+            <ul className="features">
+              <li><span className="checkmark">✓</span> Niche selection</li>
+              <li><span className="checkmark">✓</span> Lead volume control</li>
+              <li><span className="checkmark">✓</span> CRM integration</li>
+              <li><span className="checkmark">✓</span> Lead quality scoring</li>
+              <li><span className="checkmark">✓</span> Usage tracking</li>
+              <li><span className="checkmark">✓</span> Delivery scheduling</li>
+            </ul>
+            <button className="cta-button secondary">Start Subscription</button>
+          </div>
+        </div>
+
+        <div className="service-card">
+          <div className="card-header">
+            <h3>Ready Solutions</h3>
+            <div className="service-type">
+              <span className="type">Niche-Specific Packages</span>
+            </div>
+            <p>Niche-specific automation packages for your industry</p>
+          </div>
+          <div className="card-content">
+            <ul className="features">
+              <li><span className="checkmark">✓</span> Industry-specific solutions</li>
+              <li><span className="checkmark">✓</span> 5 solutions per niche</li>
+              <li><span className="checkmark">✓</span> Complete packages</li>
+              <li><span className="checkmark">✓</span> HVAC, Roofer, Realtor solutions</li>
+              <li><span className="checkmark">✓</span> Insurance, Synagogue solutions</li>
+              <li><span className="checkmark">✓</span> Individual or complete packages</li>
+            </ul>
+            <button className="cta-button secondary">Browse Solutions</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="additional-info">
+        <p>Choose your automation path • No setup fees • Cancel anytime</p>
+        <p>Need a custom solution? <a href="/custom">Book a free consultation</a></p>
+      </div>
+    </div>
+  );
+}
+```
+
+### **Step 4: Add CSS Styling**
+```css
+.pricing-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 4rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+}
+
+.pricing-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.popular {
+  border: 2px solid #3b82f6;
+  transform: scale(1.05);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.card-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.price {
+  margin-bottom: 1rem;
+}
+
+.amount {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.period {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin-left: 0.25rem;
+}
+
+.card-header p {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.checkmark {
+  color: #10b981;
+  font-weight: 600;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.cta-button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cta-button.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.cta-button.primary:hover {
+  background: #2563eb;
+}
+
+.cta-button.secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.cta-button.secondary:hover {
+  background: #e2e8f0;
+}
+
+.additional-info {
+  text-align: center;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.additional-info p {
+  margin-bottom: 0.5rem;
+}
+
+.additional-info a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.additional-info a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-section p {
+    font-size: 1rem;
+  }
+  
+  .pricing-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .pricing-card.popular {
+    transform: none;
+  }
+  
+  .amount {
+    font-size: 2.5rem;
+  }
+}
+```
+
+### **Step 5: Deploy**
+1. **Test** the component in preview
+2. **Publish** the site
+3. **Verify** on live site
+
+## ✅ **RESULT**
+- **Modern React component** with 4 service types (Marketplace, Custom, Subscriptions, Ready Solutions)
+- **Responsive design** for all devices
+- **Professional styling** with hover effects
+- **No CLI issues** - direct Webflow implementation
+- **Easy maintenance** - update in Designer
+
+**Ready to implement!** 🚀

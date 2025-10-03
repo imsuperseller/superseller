@@ -45,8 +45,6 @@ DATABASE_URL=postgresql://user:pass@host:port/db
 MONGODB_URI=mongodb://user:pass@host:port/db
 
 # External Service Secrets
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
 QUICKBOOKS_CLIENT_ID=your_quickbooks_client_id
 QUICKBOOKS_CLIENT_SECRET=your_quickbooks_client_secret
 
@@ -117,3 +115,6 @@ done
 - [ ] Test protection rules
 - [ ] Document access procedures
 - [ ] Train team on security practices
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

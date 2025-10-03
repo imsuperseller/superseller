@@ -1,0 +1,195 @@
+{
+  "name": "Finance Unpaid Invoices",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "15 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Daily at 9:15 AM CT",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Finance",
+        "view": "📄 Unpaid",
+        "additionalOptions": {
+          "sort": [
+            {
+              "field": "due_date",
+              "direction": "asc"
+            }
+          ]
+        }
+      },
+      "id": "airtable-get-invoices",
+      "name": "Get Unpaid Invoices",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-invoices",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-invoices",
+      "name": "Check if invoices exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate days overdue and categorize urgency\nconst invoices = $input.all();\nconst today = new Date();\n\nconst categorized = {\n  urgent: [],\n  overdue: [],\n  dueSoon: []\n};\n\ninvoices.forEach(invoice => {\n  const dueDate = new Date(invoice.fields.due_date);\n  const daysDiff = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));\n  \n  // Calculate amount\n  const amount = parseFloat(invoice.fields.amount) || 0;\n  \n  if (daysDiff > 30) {\n    categorized.urgent.push({ ...invoice, daysOverdue: daysDiff, amount });\n  } else if (daysDiff > 0) {\n    categorized.overdue.push({ ...invoice, daysOverdue: daysDiff, amount });\n  } else if (daysDiff >= -7) {\n    categorized.dueSoon.push({ ...invoice, daysOverdue: daysDiff, amount });\n  }\n});\n\n// Calculate totals\nconst totalUrgent = categorized.urgent.reduce((sum, inv) => sum + inv.amount, 0);\nconst totalOverdue = categorized.overdue.reduce((sum, inv) => sum + inv.amount, 0);\nconst totalDueSoon = categorized.dueSoon.reduce((sum, inv) => sum + inv.amount, 0);\n\n// Create Slack message\nlet slackText = '## 📄 Unpaid Invoices Alert\\n\\n';\n\nif (categorized.urgent.length > 0) {\n  slackText += `🚨 **URGENT (${categorized.urgent.length} invoices, $${totalUrgent.toFixed(2)})**\\n`;\n  categorized.urgent.forEach(invoice => {\n    slackText += `• **${invoice.fields.client_name || 'Unknown Client'}** - $${invoice.amount.toFixed(2)}\\n`;\n    slackText += `  📅 ${invoice.daysOverdue} days overdue\\n`;\n    slackText += `  📧 ${invoice.fields.client_email || 'No email'}\\n`;\n  });\n  slackText += '\\n';\n}\n\nif (categorized.overdue.length > 0) {\n  slackText += `⚠️ **OVERDUE (${categorized.overdue.length} invoices, $${totalOverdue.toFixed(2)})**\\n`;\n  categorized.overdue.forEach(invoice => {\n    slackText += `• **${invoice.fields.client_name || 'Unknown Client'}** - $${invoice.amount.toFixed(2)}\\n`;\n    slackText += `  📅 ${invoice.daysOverdue} days overdue\\n`;\n  });\n  slackText += '\\n';\n}\n\nif (categorized.dueSoon.length > 0) {\n  slackText += `📅 **DUE SOON (${categorized.dueSoon.length} invoices, $${totalDueSoon.toFixed(2)})**\\n`;\n  categorized.dueSoon.forEach(invoice => {\n    slackText += `• **${invoice.fields.client_name || 'Unknown Client'}** - $${invoice.amount.toFixed(2)}\\n`;\n    slackText += `  📅 Due in ${Math.abs(invoice.daysOverdue)} days\\n`;\n  });\n  slackText += '\\n';\n}\n\nslackText += `**Total Outstanding: $${(totalUrgent + totalOverdue + totalDueSoon).toFixed(2)}**\\n\\n`;\nslackText += '**Action Required:** Follow up with clients and update invoice status in Airtable.';\n\n// Create HTML for email\nlet html = '<h2>📄 Unpaid Invoices Alert</h2>';\n\nif (categorized.urgent.length > 0) {\n  html += `<h3 style=\"color: #dc2626;\">🚨 URGENT (${categorized.urgent.length} invoices, $${totalUrgent.toFixed(2)})</h3>`;\n  html += '<ul>';\n  categorized.urgent.forEach(invoice => {\n    html += `<li><strong>${invoice.fields.client_name || 'Unknown Client'}</strong> - $${invoice.amount.toFixed(2)}<br>`;\n    html += `📅 ${invoice.daysOverdue} days overdue<br>`;\n    html += `📧 ${invoice.fields.client_email || 'No email'}</li>`;\n  });\n  html += '</ul>';\n}\n\nif (categorized.overdue.length > 0) {\n  html += `<h3 style=\"color: #ea580c;\">⚠️ OVERDUE (${categorized.overdue.length} invoices, $${totalOverdue.toFixed(2)})</h3>`;\n  html += '<ul>';\n  categorized.overdue.forEach(invoice => {\n    html += `<li><strong>${invoice.fields.client_name || 'Unknown Client'}</strong> - $${invoice.amount.toFixed(2)}<br>`;\n    html += `📅 ${invoice.daysOverdue} days overdue</li>`;\n  });\n  html += '</ul>';\n}\n\nif (categorized.dueSoon.length > 0) {\n  html += `<h3 style=\"color: #ca8a04;\">📅 DUE SOON (${categorized.dueSoon.length} invoices, $${totalDueSoon.toFixed(2)})</h3>`;\n  html += '<ul>';\n  categorized.dueSoon.forEach(invoice => {\n    html += `<li><strong>${invoice.fields.client_name || 'Unknown Client'}</strong> - $${invoice.amount.toFixed(2)}<br>`;\n    html += `📅 Due in ${Math.abs(invoice.daysOverdue)} days</li>`;\n  });\n  html += '</ul>';\n}\n\nhtml += `<p><strong>Total Outstanding: $${(totalUrgent + totalOverdue + totalDueSoon).toFixed(2)}</strong></p>`;\nhtml += '<p><strong>Action Required:</strong> Follow up with clients and update invoice status in Airtable.</p>';\n\nreturn [\n  {\n    json: {\n      slackText: slackText,\n      html: html,\n      categorized: categorized,\n      totals: {\n        urgent: totalUrgent,\n        overdue: totalOverdue,\n        dueSoon: totalDueSoon,\n        total: totalUrgent + totalOverdue + totalDueSoon\n      }\n    }\n  }\n];"
+      },
+      "id": "categorize-invoices",
+      "name": "Categorize Invoices",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "channel": "finance",
+        "text": "={{ $json.slackText }}",
+        "otherOptions": {
+          "username": "Rensto Bot",
+          "icon_emoji": ":money_with_wings:"
+        }
+      },
+      "id": "slack-notify",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "toEmail": "service@rensto.com",
+        "subject": "Unpaid Invoices Alert - ${{ $json.totals.total.toFixed(2) }} outstanding",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "email-alert",
+      "name": "Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "message": "No unpaid invoices today. ✅"
+      },
+      "id": "no-invoices-message",
+      "name": "No invoices message",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Daily at 9:15 AM CT": {
+      "main": [
+        [
+          {
+            "node": "Get Unpaid Invoices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unpaid Invoices": {
+      "main": [
+        [
+          {
+            "node": "Check if invoices exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if invoices exist": {
+      "main": [
+        [
+          {
+            "node": "Categorize Invoices",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No invoices message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorize Invoices": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-06T12:00:00.000Z",
+      "updatedAt": "2024-01-06T12:00:00.000Z",
+      "id": "finance-invoices",
+      "name": "finance-invoices"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

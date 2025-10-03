@@ -260,3 +260,6 @@
 ---
 
 **This project brief provides the foundation for systematic execution using the BMAD method v4.33.1, ensuring comprehensive cleanup and improvement of the Rensto system.** 🚀
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

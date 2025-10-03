@@ -1,0 +1,170 @@
+{
+  "name": "Leads Daily Follow-ups",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Daily at 8:00 AM CT",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "application": "appQijHhqqP4z6wGe",
+        "table": "Leads",
+        "view": "🔥 Active",
+        "additionalOptions": {
+          "filterByFormula": "next_action_at <= TODAY()",
+          "sort": [
+            {
+              "field": "next_action_at",
+              "direction": "asc"
+            }
+          ]
+        }
+      },
+      "id": "airtable-get-leads",
+      "name": "Get Active Leads",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-records",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-leads",
+      "name": "Check if leads exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "channel": "alerts",
+        "text": "=## 🔥 Daily Lead Follow-ups\n\n**{{ $json.length }} leads need attention today:**\n\n{{ $json.map(lead => `• **${lead.fields.company || 'Unknown Company'}** - ${lead.fields.contact_name || 'Unknown Contact'}\n  📧 ${lead.fields.email || 'No email'}\n  📅 Next action: ${lead.fields.next_action_at || 'Not set'}\n  📊 Status: ${lead.fields.status || 'Unknown'}`).join('\n\n') }}\n\n**Action Required:** Review and update lead status in Airtable.",
+        "otherOptions": {
+          "username": "Rensto Bot",
+          "icon_emoji": ":robot_face:"
+        }
+      },
+      "id": "slack-notify",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "toEmail": "service@rensto.com",
+        "subject": "Daily Lead Follow-ups - {{ $json.length }} leads need attention",
+        "emailType": "html",
+        "message": "<h2>🔥 Daily Lead Follow-ups</h2><p><strong>{{ $json.length }} leads need attention today:</strong></p><ul>{{ $json.map(lead => `<li><strong>${lead.fields.company || 'Unknown Company'}</strong> - ${lead.fields.contact_name || 'Unknown Contact'}<br>📧 ${lead.fields.email || 'No email'}<br>📅 Next action: ${lead.fields.next_action_at || 'Not set'}<br>📊 Status: ${lead.fields.status || 'Unknown'}</li>`).join('') }}</ul><p><strong>Action Required:</strong> Review and update lead status in Airtable.</p>",
+        "options": {}
+      },
+      "id": "email-fallback",
+      "name": "Email Fallback",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "message": "No leads need follow-up today. ✅"
+      },
+      "id": "no-leads-message",
+      "name": "No leads message",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Daily at 8:00 AM CT": {
+      "main": [
+        [
+          {
+            "node": "Get Active Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Active Leads": {
+      "main": [
+        [
+          {
+            "node": "Check if leads exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if leads exist": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No leads message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-06T12:00:00.000Z",
+      "updatedAt": "2024-01-06T12:00:00.000Z",
+      "id": "leads-followups",
+      "name": "leads-followups"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-06T12:00:00.000Z",
+  "versionId": "1"
+}

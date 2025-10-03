@@ -1,0 +1,52 @@
+{
+    "name": "Tax4US Content Automation - Airtable Trigger",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "tax4us-content-trigger",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Webhook Trigger",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                -896,
+                272
+            ],
+            "webhookId": "2b0d9e8f-5403-494f-bf19-9c8219eaddfb"
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "return { json: { message: 'Tax4US Content Automation is now active!', status: 'operational', timestamp: new Date().toISOString() } };"
+            },
+            "id": "simple-response",
+            "name": "Simple Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -672,
+                272
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Simple Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}

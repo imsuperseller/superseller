@@ -1,0 +1,647 @@
+{
+  "analysis": {
+    "redundantFieldsToClean": [
+      {
+        "base": "coreBusiness",
+        "table": "Companies",
+        "redundantFields": [
+          {
+            "field": "Name",
+            "keep": true,
+            "remove": [
+              "Company Name",
+              "Legal Name"
+            ]
+          },
+          {
+            "field": "Phone",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Email",
+            "keep": true,
+            "remove": []
+          }
+        ],
+        "action": "Consolidate naming conventions"
+      },
+      {
+        "base": "coreBusiness",
+        "table": "Contacts",
+        "redundantFields": [
+          {
+            "field": "Name",
+            "keep": true,
+            "remove": [
+              "First Name",
+              "Last Name",
+              "Full Name"
+            ]
+          },
+          {
+            "field": "Email",
+            "keep": true,
+            "remove": [
+              "Email Sent",
+              "Email Opened",
+              "Email Clicked"
+            ]
+          },
+          {
+            "field": "Phone",
+            "keep": true,
+            "remove": [
+              "Direct Phone"
+            ]
+          },
+          {
+            "field": "Company Name",
+            "keep": true,
+            "remove": []
+          }
+        ],
+        "action": "Consolidate contact fields"
+      },
+      {
+        "base": "coreBusiness",
+        "table": "Projects",
+        "redundantFields": [
+          {
+            "field": "Name",
+            "keep": true,
+            "remove": [
+              "Project Name"
+            ]
+          },
+          {
+            "field": "Company Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Contact Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Email",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Phone",
+            "keep": true,
+            "remove": []
+          }
+        ],
+        "action": "Consolidate project fields"
+      },
+      {
+        "base": "financial",
+        "table": "Invoices",
+        "redundantFields": [
+          {
+            "field": "Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Company Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Contact Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Email",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Client Phone",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Project Name",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Billing Email",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Billing Phone",
+            "keep": true,
+            "remove": []
+          }
+        ],
+        "action": "Consolidate invoice fields"
+      },
+      {
+        "base": "customerSuccess",
+        "table": "Success Metrics",
+        "redundantFields": [
+          {
+            "field": "Name",
+            "keep": true,
+            "remove": [
+              "Metric Name"
+            ]
+          }
+        ],
+        "action": "Consolidate metric naming"
+      },
+      {
+        "base": "marketingSales",
+        "table": "Leads",
+        "redundantFields": [
+          {
+            "field": "Email",
+            "keep": true,
+            "remove": []
+          },
+          {
+            "field": "Phone",
+            "keep": true,
+            "remove": []
+          }
+        ],
+        "action": "Standardize contact fields"
+      }
+    ],
+    "unlinkedRelationshipsToCreate": [
+      {
+        "base": "rensto",
+        "table": "Customers",
+        "field": "Company",
+        "targetTable": "Companies",
+        "targetBase": "coreBusiness",
+        "type": "company_relationship"
+      },
+      {
+        "base": "coreBusiness",
+        "table": "Companies",
+        "field": "Company Type",
+        "targetTable": "Companies",
+        "targetBase": "coreBusiness",
+        "type": "self_reference"
+      },
+      {
+        "base": "coreBusiness",
+        "table": "Projects",
+        "field": "Client Contact Name",
+        "targetTable": "Contacts",
+        "targetBase": "coreBusiness",
+        "type": "contact_relationship"
+      },
+      {
+        "base": "financial",
+        "table": "Invoices",
+        "field": "Client Company Name",
+        "targetTable": "Companies",
+        "targetBase": "coreBusiness",
+        "type": "company_relationship"
+      },
+      {
+        "base": "financial",
+        "table": "Invoices",
+        "field": "Client Contact Name",
+        "targetTable": "Contacts",
+        "targetBase": "coreBusiness",
+        "type": "contact_relationship"
+      },
+      {
+        "base": "financial",
+        "table": "Invoices",
+        "field": "Project Name",
+        "targetTable": "Projects",
+        "targetBase": "coreBusiness",
+        "type": "project_relationship"
+      }
+    ],
+    "fieldTypeOptimizations": [],
+    "baseHealth": {
+      "rensto": {
+        "accessible": true,
+        "tableCount": 8,
+        "totalFields": 59
+      },
+      "coreBusiness": {
+        "accessible": true,
+        "tableCount": 6,
+        "totalFields": 289
+      },
+      "integrations": {
+        "accessible": true,
+        "tableCount": 4,
+        "totalFields": 14
+      },
+      "entities": {
+        "accessible": true,
+        "tableCount": 1,
+        "totalFields": 1
+      },
+      "customerSuccess": {
+        "accessible": true,
+        "tableCount": 6,
+        "totalFields": 79
+      },
+      "idempotency": {
+        "accessible": true,
+        "tableCount": 3,
+        "totalFields": 15
+      },
+      "rgid": {
+        "accessible": true,
+        "tableCount": 2,
+        "totalFields": 2
+      },
+      "operations": {
+        "accessible": true,
+        "tableCount": 9,
+        "totalFields": 102
+      },
+      "financial": {
+        "accessible": true,
+        "tableCount": 6,
+        "totalFields": 135
+      },
+      "marketingSales": {
+        "accessible": true,
+        "tableCount": 6,
+        "totalFields": 77
+      },
+      "analytics": {
+        "accessible": true,
+        "tableCount": 3,
+        "totalFields": 13
+      }
+    }
+  },
+  "plan": {
+    "phase1": {
+      "title": "Remove Redundant Fields (Immediate)",
+      "tasks": [
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Companies.Company Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Companies.Legal Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.First Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Last Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Full Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Email Sent",
+          "reason": "Redundant with Email",
+          "keepField": "Email"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Email Opened",
+          "reason": "Redundant with Email",
+          "keepField": "Email"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Email Clicked",
+          "reason": "Redundant with Email",
+          "keepField": "Email"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Contacts.Direct Phone",
+          "reason": "Redundant with Phone",
+          "keepField": "Phone"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "coreBusiness.Projects.Project Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        },
+        {
+          "priority": "Critical",
+          "action": "Remove redundant field",
+          "target": "customerSuccess.Success Metrics.Metric Name",
+          "reason": "Redundant with Name",
+          "keepField": "Name"
+        }
+      ]
+    },
+    "phase2": {
+      "title": "Create Linked Relationships (High Priority)",
+      "tasks": [
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "rensto.Customers.Company",
+          "targetTable": "coreBusiness.Companies",
+          "type": "company_relationship"
+        },
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "coreBusiness.Companies.Company Type",
+          "targetTable": "coreBusiness.Companies",
+          "type": "self_reference"
+        },
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "coreBusiness.Projects.Client Contact Name",
+          "targetTable": "coreBusiness.Contacts",
+          "type": "contact_relationship"
+        },
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "financial.Invoices.Client Company Name",
+          "targetTable": "coreBusiness.Companies",
+          "type": "company_relationship"
+        },
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "financial.Invoices.Client Contact Name",
+          "targetTable": "coreBusiness.Contacts",
+          "type": "contact_relationship"
+        },
+        {
+          "priority": "High",
+          "action": "Create linked field",
+          "target": "financial.Invoices.Project Name",
+          "targetTable": "coreBusiness.Projects",
+          "type": "project_relationship"
+        }
+      ]
+    },
+    "phase3": {
+      "title": "Optimize Field Types (Medium Priority)",
+      "tasks": []
+    }
+  },
+  "architecture": {
+    "fieldNamingStandards": [
+      {
+        "standard": "Company Names",
+        "rule": "Use \"Name\" field for primary company name",
+        "examples": [
+          "Name",
+          "Company Name",
+          "Legal Name"
+        ],
+        "recommendation": "Consolidate to single \"Name\" field"
+      },
+      {
+        "standard": "Contact Information",
+        "rule": "Use \"Email\" and \"Phone\" for contact fields",
+        "examples": [
+          "Email",
+          "Phone",
+          "Direct Phone"
+        ],
+        "recommendation": "Standardize to \"Email\" and \"Phone\""
+      },
+      {
+        "standard": "Person Names",
+        "rule": "Use \"Name\" field for full person name",
+        "examples": [
+          "Name",
+          "First Name",
+          "Last Name",
+          "Full Name"
+        ],
+        "recommendation": "Consolidate to single \"Name\" field"
+      }
+    ],
+    "relationshipArchitecture": [
+      {
+        "from": "rensto.Customers",
+        "to": "coreBusiness.Companies",
+        "field": "Company",
+        "type": "company_relationship",
+        "benefit": "Improved data relationships and integrity"
+      },
+      {
+        "from": "coreBusiness.Companies",
+        "to": "coreBusiness.Companies",
+        "field": "Company Type",
+        "type": "self_reference",
+        "benefit": "Improved data relationships and integrity"
+      },
+      {
+        "from": "coreBusiness.Projects",
+        "to": "coreBusiness.Contacts",
+        "field": "Client Contact Name",
+        "type": "contact_relationship",
+        "benefit": "Improved data relationships and integrity"
+      },
+      {
+        "from": "financial.Invoices",
+        "to": "coreBusiness.Companies",
+        "field": "Client Company Name",
+        "type": "company_relationship",
+        "benefit": "Improved data relationships and integrity"
+      },
+      {
+        "from": "financial.Invoices",
+        "to": "coreBusiness.Contacts",
+        "field": "Client Contact Name",
+        "type": "contact_relationship",
+        "benefit": "Improved data relationships and integrity"
+      },
+      {
+        "from": "financial.Invoices",
+        "to": "coreBusiness.Projects",
+        "field": "Project Name",
+        "type": "project_relationship",
+        "benefit": "Improved data relationships and integrity"
+      }
+    ],
+    "dataValidationRules": [],
+    "crossBaseOptimizations": []
+  },
+  "results": {
+    "redundantFieldsRemoved": 0,
+    "linkedFieldsCreated": 0,
+    "fieldTypesOptimized": 0,
+    "errors": [
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Companies.Company Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Companies.Legal Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.First Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Last Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Full Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Email Sent",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Email Opened",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Email Clicked",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Contacts.Direct Phone",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "coreBusiness.Projects.Project Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Remove redundant field",
+        "target": "customerSuccess.Success Metrics.Metric Name",
+        "error": {
+          "error": "NOT_FOUND"
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "rensto.Customers.Company",
+        "error": {
+          "error": {
+            "type": "INVALID_FIELD_TYPE_OPTIONS_FOR_CREATE",
+            "message": "column config schema is not valid: foreignTableId does not exist"
+          }
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "coreBusiness.Companies.Company Type",
+        "error": {
+          "error": {
+            "type": "DUPLICATE_OR_EMPTY_FIELD_NAME"
+          }
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "coreBusiness.Projects.Client Contact Name",
+        "error": {
+          "error": {
+            "type": "DUPLICATE_OR_EMPTY_FIELD_NAME"
+          }
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "financial.Invoices.Client Company Name",
+        "error": {
+          "error": {
+            "type": "INVALID_FIELD_TYPE_OPTIONS_FOR_CREATE",
+            "message": "column config schema is not valid: foreignTableId does not exist"
+          }
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "financial.Invoices.Client Contact Name",
+        "error": {
+          "error": {
+            "type": "INVALID_FIELD_TYPE_OPTIONS_FOR_CREATE",
+            "message": "column config schema is not valid: foreignTableId does not exist"
+          }
+        }
+      },
+      {
+        "task": "Create linked field",
+        "target": "financial.Invoices.Project Name",
+        "error": {
+          "error": {
+            "type": "INVALID_FIELD_TYPE_OPTIONS_FOR_CREATE",
+            "message": "column config schema is not valid: foreignTableId does not exist"
+          }
+        }
+      }
+    ]
+  },
+  "timestamp": "2025-09-07T06:20:48.261Z"
+}

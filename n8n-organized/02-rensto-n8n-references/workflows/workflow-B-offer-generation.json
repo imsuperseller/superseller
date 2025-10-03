@@ -1,0 +1,512 @@
+{
+    "name": "Nir Sheinbein - Workflow B - Offer Generation & Validation",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "generate-offer",
+                "responseMode": "lastNode"
+            },
+            "id": "webhookTrigger",
+            "name": "Webhook - Trigger Offer",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "baseId": "appQijHhqqP4z6wGe",
+                "tableId": "tbl7W7k5SpIlaAJom",
+                "recordId": "{{$json.query.recordId}}"
+            },
+            "id": "airtableGetOffer",
+            "name": "Airtable - Get Offer Data",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                460,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "3lTwFd8waEI1UQEW",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appQijHhqqP4z6wGe",
+                "tableId": "tbl7W7k5SpIlaAJom",
+                "records": [
+                    {
+                        "id": "{{$json.id}}",
+                        "fields": {
+                            "Status": "Validating"
+                        }
+                    }
+                ]
+            },
+            "id": "airtableSetValidating",
+            "name": "Airtable - Set Status to Validating",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                680,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "3lTwFd8waEI1UQEW",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "code": "const offer = $json.fields; const pct = parseFloat(offer['Down Payment %']) || 0.35; const amount = parseFloat(offer['Offer Amount (USD)']) || 0; const down = Math.round(amount * pct * 100) / 100; const remainder = Math.round((amount - down) * 100) / 100; return { downPaymentUSD: down, remainderUSD: remainder };"
+            },
+            "id": "calculateFinancials",
+            "name": "Calculate Financials",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://date.nager.at/api/v3/PublicHolidays/{{$now.year}}/US",
+                "responseFormat": "json"
+            },
+            "id": "getHolidays",
+            "name": "HTTP - Get US Holidays",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "code": "const offer = $items('Airtable - Get Offer Data')[0].json.fields; const holidays = $items('HTTP - Get US Holidays')[0].json.map(h => h.date); let closingDate = new Date(offer['Proposed Closing Date']); while (closingDate.getDay() === 0 || closingDate.getDay() === 6 || holidays.includes(closingDate.toISOString().split('T')[0])) { closingDate.setDate(closingDate.getDate() + 1); } return { adjustedClosingDate: closingDate.toISOString().split('T')[0] };"
+            },
+            "id": "adjustClosingDate",
+            "name": "Adjust Closing Date",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appQijHhqqP4z6wGe",
+                "tableId": "tbl7W7k5SpIlaAJom",
+                "records": [
+                    {
+                        "id": "{{$items('Airtable - Get Offer Data')[0].json.id}}",
+                        "fields": {
+                            "Down Payment (USD)": "{{$items('Calculate Financials')[0].json.downPaymentUSD}}",
+                            "Remainder (USD)": "{{$items('Calculate Financials')[0].json.remainderUSD}}",
+                            "Adjusted Closing Date": "{{$items('Adjust Closing Date')[0].json.adjustedClosingDate}}"
+                        }
+                    }
+                ]
+            },
+            "id": "airtableUpdateCalculations",
+            "name": "Airtable - Update Calculations",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                1560,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "3lTwFd8waEI1UQEW",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "{{$items('Airtable - Get Offer Data')[0].json.fields['Year Built']}}",
+                            "operation": "smaller",
+                            "value2": 1978
+                        }
+                    ]
+                }
+            },
+            "id": "ifLeadPaint",
+            "name": "If Year Built < 1978",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                1560,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "{{$items('Airtable - Get Offer Data')[0].json.fields['Is Rented']}}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "id": "ifTenant",
+            "name": "If Rented",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                1560,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "code": "const addenda = []; if ($items('If Year Built < 1978').length > 0) { addenda.push('Lead-Based Paint'); } if ($items('If Rented').length > 0) { addenda.push('Tenant'); } return { addendaList: addenda, addendaString: addenda.join(', ') || 'None' };"
+            },
+            "id": "assembleAddenda",
+            "name": "Assemble Addenda List",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                1780,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appQijHhqqP4z6wGe",
+                "tableId": "tbl7W7k5SpIlaAJom",
+                "records": [
+                    {
+                        "id": "{{$items('Airtable - Get Offer Data')[0].json.id}}",
+                        "fields": {
+                            "Addenda Required": "{{$json.addendaList}}"
+                        }
+                    }
+                ]
+            },
+            "id": "airtableUpdateAddenda",
+            "name": "Airtable - Update Addenda",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                2000,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "3lTwFd8waEI1UQEW",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "fileId": "YOUR_GOOGLE_DOC_TEMPLATE_ID_HERE",
+                "newFileName": "TREC Contract - {{$items('Airtable - Get Offer Data')[0].json.fields['MLS ID']}}"
+            },
+            "id": "googleDriveCopy",
+            "name": "Google Drive - Copy Template",
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 1,
+            "position": [
+                2220,
+                300
+            ],
+            "credentials": {
+                "googleApi": "YOUR_GOOGLE_API_CREDENTIALS"
+            }
+        },
+        {
+            "parameters": {
+                "documentId": "{{$json.id}}",
+                "replacements": {
+                    "values": [
+                        {
+                            "key": "{{SELLER_NAME}}",
+                            "value": "{{$items('Airtable - Get Offer Data')[0].json.fields['Seller Name']}}"
+                        },
+                        {
+                            "key": "{{BUYER_NAME}}",
+                            "value": "{{$items('Airtable - Get Offer Data')[0].json.fields['Buyer Name']}}"
+                        },
+                        {
+                            "key": "{{STREET_ADDRESS}}",
+                            "value": "{{$items('Airtable - Get Offer Data')[0].json.fields['Street Address']}}"
+                        },
+                        {
+                            "key": "{{CITY}}",
+                            "value": "{{$items('Airtable - Get Offer Data')[0].json.fields['City']}}"
+                        },
+                        {
+                            "key": "{{OFFER_AMOUNT}}",
+                            "value": "{{$items('Airtable - Get Offer Data')[0].json.fields['Offer Amount (USD)']}}"
+                        },
+                        {
+                            "key": "{{DOWN_PAYMENT_USD}}",
+                            "value": "{{$items('Calculate Financials')[0].json.downPaymentUSD}}"
+                        },
+                        {
+                            "key": "{{REMAINDER_USD}}",
+                            "value": "{{$items('Calculate Financials')[0].json.remainderUSD}}"
+                        },
+                        {
+                            "key": "{{ADJUSTED_CLOSING_DATE}}",
+                            "value": "{{$items('Adjust Closing Date')[0].json.adjustedClosingDate}}"
+                        },
+                        {
+                            "key": "{{ADDENDA_LIST}}",
+                            "value": "{{$items('Assemble Addenda List')[0].json.addendaString}}"
+                        }
+                    ]
+                }
+            },
+            "id": "googleDocsReplace",
+            "name": "Google Docs - Replace Text",
+            "type": "n8n-nodes-base.googleDocs",
+            "typeVersion": 1,
+            "position": [
+                2440,
+                300
+            ],
+            "credentials": {
+                "googleApi": "YOUR_GOOGLE_API_CREDENTIALS"
+            }
+        },
+        {
+            "parameters": {
+                "fileId": "{{$items('Google Drive - Copy Template')[0].json.id}}",
+                "format": "pdf"
+            },
+            "id": "googleDriveExportPdf",
+            "name": "Google Drive - Export as PDF",
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 1,
+            "position": [
+                2660,
+                300
+            ],
+            "credentials": {
+                "googleApi": "YOUR_GOOGLE_API_CREDENTIALS"
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appQijHhqqP4z6wGe",
+                "tableId": "tbl7W7k5SpIlaAJom",
+                "records": [
+                    {
+                        "id": "{{$items('Airtable - Get Offer Data')[0].json.id}}",
+                        "fields": {
+                            "Status": "Ready",
+                            "Contract PDF": [
+                                {
+                                    "url": "{{$json.webViewLink}}"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "id": "airtableFinalUpdate",
+            "name": "Airtable - Final Update",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                2880,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "3lTwFd8waEI1UQEW",
+                    "name": "Airtable API"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "webhookTrigger": {
+            "main": [
+                [
+                    {
+                        "node": "airtableGetOffer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "airtableGetOffer": {
+            "main": [
+                [
+                    {
+                        "node": "airtableSetValidating",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "airtableSetValidating": {
+            "main": [
+                [
+                    {
+                        "node": "calculateFinancials",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "calculateFinancials": {
+            "main": [
+                [
+                    {
+                        "node": "getHolidays",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "getHolidays": {
+            "main": [
+                [
+                    {
+                        "node": "adjustClosingDate",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "adjustClosingDate": {
+            "main": [
+                [
+                    {
+                        "node": "airtableUpdateCalculations",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "airtableUpdateCalculations": {
+            "main": [
+                [
+                    {
+                        "node": "ifLeadPaint",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "ifTenant",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ifLeadPaint": {
+            "main": [
+                [
+                    {
+                        "node": "assembleAddenda",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ifTenant": {
+            "main": [
+                [
+                    {
+                        "node": "assembleAddenda",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "assembleAddenda": {
+            "main": [
+                [
+                    {
+                        "node": "airtableUpdateAddenda",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "airtableUpdateAddenda": {
+            "main": [
+                [
+                    {
+                        "node": "googleDriveCopy",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "googleDriveCopy": {
+            "main": [
+                [
+                    {
+                        "node": "googleDocsReplace",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "googleDocsReplace": {
+            "main": [
+                [
+                    {
+                        "node": "googleDriveExportPdf",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "googleDriveExportPdf": {
+            "main": [
+                [
+                    {
+                        "node": "airtableFinalUpdate",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionTimeout": 300
+    }
+}

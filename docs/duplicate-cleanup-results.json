@@ -16,20 +16,6 @@
         "email": "info@tax4us.co.il",
         "status": "Active"
       },
-      {
-        "id": "recF9ZVkME2otLTwO",
-        "name": "David Levy",
-        "company": "Levy Accounting Solutions",
-        "email": "david@levyaccounting.com",
-        "status": "Lead"
-      },
-      {
-        "id": "reclEVrM8hzMDtADk",
-        "name": "Sarah Cohen",
-        "company": "Cohen Legal Services",
-        "email": "sarah@cohenlegal.co.il",
-        "status": "Prospect"
-      }
     ],
     "projects": [
       {
@@ -44,12 +30,6 @@
         "customer": "Shelly Mizrahi",
         "status": "In Progress"
       },
-      {
-        "id": "reckmebU8AETR8vOs",
-        "name": "Cohen Legal Document Automation",
-        "customer": "Sarah Cohen",
-        "status": "Planning"
-      }
     ],
     "tasks": [
       {

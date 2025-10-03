@@ -1,0 +1,317 @@
+{
+    "name": "Tax4Us Social Media Agent",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "social-media-agent",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Social Media Agent Trigger",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Social Media Agent - Content Analysis\nconst input = $input.first().json;\nconsole.log(\"Tax4Us Social Media Agent - Content Analysis\");\n\n// Analyze content and determine platform strategy\nconst contentAnalysis = {\n  source: input.source || \"content_intelligence_agent\",\n  contentType: input.contentType || \"blog_post\",\n  title: input.title || input.Keyword || \"Tax Planning Tips\",\n  topic: input.topic || input.Keyword || \"tax planning\",\n  targetAudience: input.targetAudience || \"Israeli business owners\",\n  keywords: input.keywords || input.Keyword ? [input.Keyword] : [\"tax planning\", \"israel\", \"business\"],\n  platforms: [\"facebook\", \"linkedin\"],\n  contentStrategy: {\n    facebook: {\n      tone: \"friendly\",\n      format: \"visual\",\n      hashtags: [\"#TaxTips\", \"#Israel\", \"#Business\", \"#Tax4Us\"],\n      optimalLength: \"100-200 words\"\n    },\n    linkedin: {\n      tone: \"professional\",\n      format: \"text\",\n      hashtags: [\"#TaxPlanning\", \"#BusinessStrategy\", \"#Israel\", \"#Tax4Us\"],\n      optimalLength: \"200-300 words\"\n    }\n  },\n  timestamp: new Date().toISOString(),\n  status: \"content_analyzed\"\n};\n\nreturn {\n  json: {\n    ...contentAnalysis,\n    message: \"Content analyzed for social media platforms\",\n    nextStep: \"platform_specific_content_generation\"\n  }\n};"
+            },
+            "id": "content-analysis",
+            "name": "Content Analysis",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create engaging Facebook content for Tax4Us based on the following specifications:\n\nTitle: {{ $json.title }}\nTopic: {{ $json.topic }}\nTarget Audience: {{ $json.targetAudience }}\nKeywords: {{ $json.keywords.join(\", \") }}\n\nFacebook Requirements:\n- Tone: {{ $json.contentStrategy.facebook.tone }}\n- Format: {{ $json.contentStrategy.facebook.format }}\n- Length: {{ $json.contentStrategy.facebook.optimalLength }}\n- Hashtags: {{ $json.contentStrategy.facebook.hashtags.join(\", \") }}\n\nContent Guidelines:\n1. Start with an engaging hook or question\n2. Provide valuable tax tips or insights\n3. Include a clear call-to-action for Tax4Us services\n4. Use emojis strategically for visual appeal\n5. Make it shareable and relatable\n6. Focus on Israeli business context\n7. Include relevant hashtags naturally\n\nCreate content that encourages engagement, comments, and shares while positioning Tax4Us as the expert tax advisor for Israeli businesses.",
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 500
+                }
+            },
+            "id": "facebook-content",
+            "name": "Facebook Content Generation",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                680,
+                200
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create professional LinkedIn content for Tax4Us based on the following specifications:\n\nTitle: {{ $json.title }}\nTopic: {{ $json.topic }}\nTarget Audience: {{ $json.targetAudience }}\nKeywords: {{ $json.keywords.join(\", \") }}\n\nLinkedIn Requirements:\n- Tone: {{ $json.contentStrategy.linkedin.tone }}\n- Format: {{ $json.contentStrategy.linkedin.format }}\n- Length: {{ $json.contentStrategy.linkedin.optimalLength }}\n- Hashtags: {{ $json.contentStrategy.linkedin.hashtags.join(\", \") }}\n\nContent Guidelines:\n1. Start with a compelling business insight or statistic\n2. Provide professional tax advice and industry analysis\n3. Include thought leadership perspective\n4. Add a professional call-to-action\n5. Use LinkedIn's professional tone\n6. Focus on business value and ROI\n7. Include relevant professional hashtags\n8. Encourage networking and discussion\n\nCreate content that positions Tax4Us as a thought leader in Israeli tax planning and business strategy.",
+                "options": {
+                    "temperature": 0.6,
+                    "maxTokens": 600
+                }
+            },
+            "id": "linkedin-content",
+            "name": "LinkedIn Content Generation",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                680,
+                400
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-2024-11-20",
+                "prompt": "Create a detailed image prompt for an AI image generation tool to create engaging social media graphics for this Facebook post:\n\nTitle: {{ $json.title }}\nTopic: {{ $json.topic }}\nContent: {{ $(\"Facebook Content Generation\").item.json.text }}\n\nRequirements:\n- Create professional, business-focused social media graphics\n- Include relevant visual elements (tax documents, charts, business people, Israeli context)\n- Use Tax4Us brand colors and style\n- Make it engaging and shareable\n- Include text overlay space for key points\n- Specify the style (modern, professional, clean)\n- Include aspect ratio 1:1 for Facebook\n- Ensure it stands out in social media feeds\n\nReturn only the image prompt text, no additional formatting.",
+                "options": {
+                    "temperature": 0.7,
+                    "maxTokens": 300
+                }
+            },
+            "id": "facebook-image-prompt",
+            "name": "Facebook Image Prompt",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                200
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "ben-openai-api",
+                    "name": "Ben OpenAI API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Prepare Facebook post data\nconst facebookContent = $(\"Facebook Content Generation\").item.json.text;\nconst imagePrompt = $(\"Facebook Image Prompt\").item.json.text;\nconst analysis = $json;\n\nconst facebookPost = {\n  platform: \"facebook\",\n  content: facebookContent,\n  imagePrompt: imagePrompt,\n  hashtags: analysis.contentStrategy.facebook.hashtags,\n  tone: analysis.contentStrategy.facebook.tone,\n  format: analysis.contentStrategy.facebook.format,\n  targetAudience: analysis.targetAudience,\n  topic: analysis.topic,\n  timestamp: new Date().toISOString(),\n  status: \"facebook_ready\"\n};\n\nreturn {\n  json: facebookPost\n};"
+            },
+            "id": "facebook-post-prep",
+            "name": "Facebook Post Preparation",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Prepare LinkedIn post data\nconst linkedinContent = $(\"LinkedIn Content Generation\").item.json.text;\nconst analysis = $json;\n\nconst linkedinPost = {\n  platform: \"linkedin\",\n  content: linkedinContent,\n  hashtags: analysis.contentStrategy.linkedin.hashtags,\n  tone: analysis.contentStrategy.linkedin.tone,\n  format: analysis.contentStrategy.linkedin.format,\n  targetAudience: analysis.targetAudience,\n  topic: analysis.topic,\n  timestamp: new Date().toISOString(),\n  status: \"linkedin_ready\"\n};\n\nreturn {\n  json: linkedinPost\n};"
+            },
+            "id": "linkedin-post-prep",
+            "name": "LinkedIn Post Preparation",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "create",
+                "baseId": "appMy8sh7O6b4CPfU",
+                "tableId": "tblHaJjvTmU7EjEzM",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Title": "={{ $json.title }}",
+                        "Topic": "={{ $json.topic }}",
+                        "Content Type": "Social Media Post",
+                        "Target Audience": "={{ $json.targetAudience }}",
+                        "Word Count": "={{ $(\"Facebook Content Generation\").item.json.text.split(\" \").length + $(\"LinkedIn Content Generation\").item.json.text.split(\" \").length }}",
+                        "Status": "New",
+                        "Notes": "=Facebook Content: {{ $(\"Facebook Content Generation\").item.json.text }}\\n\\nLinkedIn Content: {{ $(\"LinkedIn Content Generation\").item.json.text }}\\n\\nFacebook Image Prompt: {{ $(\"Facebook Image Prompt\").item.json.text }}\\n\\nPlatforms: {{ $json.platforms.join(\", \") }}\\n\\nKeywords: {{ $json.keywords.join(\", \") }}",
+                        "Language": "en",
+                        "Slug EN": "={{ $json.title.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}",
+                        "Slug HE": "={{ $json.title.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\") }}"
+                    }
+                }
+            },
+            "id": "create-social-request",
+            "name": "Create Social Media Request",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "tax4us-airtable-api",
+                    "name": "Tax4Us Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Log successful social media content creation\nconst results = $input.all();\nconsole.log(\"Tax4Us Social Media Agent Results:\");\n\nlet summary = {\n  contentAnalysis: $json,\n  facebookContent: $(\"Facebook Content Generation\").item.json.text,\n  linkedinContent: $(\"LinkedIn Content Generation\").item.json.text,\n  facebookImagePrompt: $(\"Facebook Image Prompt\").item.json.text,\n  facebookLength: $(\"Facebook Content Generation\").item.json.text.length,\n  linkedinLength: $(\"LinkedIn Content Generation\").item.json.text.length,\n  totalWordCount: $(\"Facebook Content Generation\").item.json.text.split(\" \").length + $(\"LinkedIn Content Generation\").item.json.text.split(\" \").length,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log(\"✅ Social media content created successfully!\");\nconsole.log(`📝 Title: ${summary.contentAnalysis.title}`);\nconsole.log(`📘 Facebook Content: ${summary.facebookLength} characters`);\nconsole.log(`💼 LinkedIn Content: ${summary.linkedinLength} characters`);\nconsole.log(`📊 Total Word Count: ${summary.totalWordCount} words`);\nconsole.log(`🎯 Platforms: ${summary.contentAnalysis.platforms.join(\", \")}`);\n\nreturn {\n  json: {\n    message: \"Social media content created successfully!\",\n    summary,\n    status: \"success\",\n    nextSteps: [\n      \"Content ready for review\",\n      \"Facebook post with image prompt ready\",\n      \"LinkedIn professional post ready\",\n      \"Airtable tracking activated\",\n      \"Ready for platform publishing\"\n    ]\n  }\n};"
+            },
+            "id": "log-success",
+            "name": "Log Success & Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {
+                    "responseHeaders": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "respond",
+            "name": "Respond",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1780,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Social Media Agent Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Content Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Content Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Facebook Content Generation",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "LinkedIn Content Generation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Facebook Content Generation": {
+            "main": [
+                [
+                    {
+                        "node": "Facebook Image Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Facebook Image Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Facebook Post Preparation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "LinkedIn Content Generation": {
+            "main": [
+                [
+                    {
+                        "node": "LinkedIn Post Preparation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Facebook Post Preparation": {
+            "main": [
+                [
+                    {
+                        "node": "Create Social Media Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "LinkedIn Post Preparation": {
+            "main": [
+                [
+                    {
+                        "node": "Create Social Media Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Social Media Request": {
+            "main": [
+                [
+                    {
+                        "node": "Log Success & Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Log Success & Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Respond",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": null
+}

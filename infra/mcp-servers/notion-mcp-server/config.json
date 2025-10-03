@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "notion-mcp-server": {
+      "command": "node",
+      "args": ["server.js"],
+      "cwd": "/Users/shaifriedman/New Rensto/rensto/infra/mcp-servers/notion-mcp-server",
+      "env": {
+        "NOTION_API_KEY": "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"
+      }
+    }
+  }
+}

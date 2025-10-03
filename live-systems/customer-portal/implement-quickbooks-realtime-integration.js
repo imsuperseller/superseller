@@ -183,8 +183,8 @@ async function demonstrateQuickBooksIntegration() {
 
   // Simulate customer IDs
   const customers = [
-    { id: 'ben-ginati', name: 'Ben Ginati', expectedPayment: 5000 },
-    { id: 'shelly-mizrahi', name: 'Shelly Mizrahi', expectedPayment: 250 },
+    { id: 'rensto-system', name: 'Ben Ginati', expectedPayment: 5000 },
+    { id: 'rensto-system', name: 'Rensto System', expectedPayment: 250 },
     { id: 'ortal-flanary', name: 'Ortal Flanary', expectedPayment: 3000 }
   ];
 

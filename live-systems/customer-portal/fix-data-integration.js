@@ -195,8 +195,8 @@ class DataIntegrationFixer {
   extractCustomerIdFromWorkflow(workflowData) {
     const name = workflowData.name?.toLowerCase() || '';
 
-    if (name.includes('shelly')) return 'shelly-mizrahi';
-    if (name.includes('ben')) return 'ben-ginati';
+    if (name.includes('shelly')) return 'rensto-system';
+    if (name.includes('ben')) return 'rensto-system';
     if (name.includes('ortal')) return 'ortal';
 
     return null;

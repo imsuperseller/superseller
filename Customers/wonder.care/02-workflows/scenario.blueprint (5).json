@@ -1,0 +1,119 @@
+{
+    "name": "Healthcare Appointment Processor - Simple",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-sheets:watchRows",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 1713566,
+                "mode": "fromAll",
+                "includesHeaders": true,
+                "limit": 10000,
+                "valueRenderOption": "FORMATTED_VALUE",
+                "dateTimeRenderOption": "FORMATTED_STRING",
+                "spreadsheetId": "1PzOGo098DA-otmdg9CuUexrLXzsQQA-OQd4kNPJ8r58",
+                "sheetId": "דוח למאנדיי",
+                "tableFirstRow": "A1:Z1"
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "monday:ListItemsByColumnValues",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "mapper": {
+                "limit": "10",
+                "boardId": "9021789808",
+                "columnId": "text_mkqa8gn7",
+                "columnValue": "{{1.`4`}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "monday:createItem2",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1713803
+            },
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{2.length}}",
+                            "o": "number:equal",
+                            "b": "0"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "name": "{{1.`3`}} - {{1.`4`}}",
+                "boardId": "9021789808",
+                "groupId": "group_mktdgg32",
+                "columnValues": {
+                    "text_mkrvvskv": "{{1.`2`}}",
+                    "text_mkqa8gn7": "{{1.`4`}}",
+                    "text_mkqaez78": "{{1.`5`}}",
+                    "color_mkqayybh": "{{1.`6`}}",
+                    "text_mkrvxt8f": "{{1.`7`}}",
+                    "text_mktdxhvb": "{{1.`8`}}",
+                    "text_mkqayhnj": "{{1.`9`}}",
+                    "numeric_mkqa8924": "{{1.`11`}}",
+                    "text_mkqa4ecf": "{{1.`12`}}",
+                    "numeric_mkqa4enf": "{{1.`13`}}",
+                    "color_mkqaa2nm": "{{1.`14`}}",
+                    "text_mksqd4m0": "{{1.`16`}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            }
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2
+        },
+        {
+            "from": 2,
+            "to": 3
+        }
+    ],
+    "settings": {
+        "executionOrder": "v1",
+        "timezone": "UTC",
+        "saveDataErrorExecution": "all",
+        "saveDataSuccessExecution": "all",
+        "saveManualExecutions": true,
+        "saveExecutionProgress": true,
+        "executionTimeout": 3600
+    },
+    "metadata": {
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": []
+    }
+}

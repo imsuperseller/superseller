@@ -1,0 +1,958 @@
+<!-- 🎯 READY SOLUTIONS COMPONENT -->
+<!-- Contains: Industry-specific packages and solutions -->
+<!-- Character Count: ~13,000 chars -->
+<!-- Business Model: Ready Solutions - $297/month with industry-specific packages -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Ready Solutions - Industry-Specific Automation Packages</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Ready Solutions Header */
+        .ready-header {
+            padding: 120px 2rem 80px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+            text-align: center;
+        }
+        
+        .ready-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .ready-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .ready-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .ready-highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .highlight-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .highlight-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .highlight-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Industry Categories */
+        .industries-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .industries-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 2.75rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .industries-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .industry-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .industry-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            border-color: var(--cyan);
+        }
+        
+        .industry-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .industry-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+        
+        .industry-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .industry-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .industry-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .industry-features li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        .industry-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .industry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Solution Packages */
+        .packages-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .packages-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+        
+        .package-card {
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+            border: 1px solid rgba(30, 174, 247, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        
+        .package-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .package-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .package-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--cyan);
+        }
+        
+        .package-subtitle {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+        }
+        
+        .package-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .package-solutions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .solution-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .solution-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .solution-description {
+            font-size: 0.8rem;
+            color: var(--gray-text);
+        }
+        
+        .package-benefits {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .package-benefits li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .package-benefits li:before {
+            content: "✓";
+            color: var(--cyan);
+            font-weight: 700;
+        }
+        
+        .package-pricing {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .package-period {
+            color: var(--gray-text);
+            margin-bottom: 1rem;
+        }
+        
+        .package-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .package-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+        }
+        
+        /* Implementation Process */
+        .implementation-section {
+            padding: 80px 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .implementation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .implementation-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .implementation-step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .implementation-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            right: -1rem;
+            width: 2rem;
+            height: 2px;
+            background: linear-gradient(90deg, var(--orange), var(--blue));
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .step-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        /* Success Stories */
+        .success-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .success-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .success-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .success-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .success-metric {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-label {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-description {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: white;
+            color: var(--dark-bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .cta-button-secondary:hover {
+            background: white;
+            color: var(--dark-bg);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .industries-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .implementation-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .success-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .industries-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .implementation-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .success-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ready-highlights {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ready Solutions Header -->
+    <section class="ready-header">
+        <div class="ready-container">
+            <h1 class="ready-title">Industry-Specific Automation Packages</h1>
+            <p class="ready-subtitle">15+ niche-specific packages with 5 complete automation solutions per industry. Quick 30-day implementation with industry-proven workflows.</p>
+            
+            <div class="ready-highlights">
+                <div class="highlight-card">
+                    <div class="highlight-icon">🎯</div>
+                    <h3 class="highlight-title">Industry-Specific</h3>
+                    <p class="highlight-description">Tailored solutions for your specific industry and business model</p>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">⚡</div>
+                    <h3 class="highlight-title">30-Day Setup</h3>
+                    <p class="highlight-description">Quick implementation with industry-proven workflows</p>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">🛡️</div>
+                    <h3 class="highlight-title">Industry Guarantees</h3>
+                    <p class="highlight-description">Specific guarantees for your industry and use case</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Industry Categories -->
+    <section class="industries-section">
+        <div class="industries-container">
+            <h2 class="section-title">Choose Your Industry</h2>
+            <p class="section-subtitle">Select from 15+ industry-specific packages designed for your business needs</p>
+            
+            <div class="industries-grid">
+                <div class="industry-card">
+                    <div class="industry-icon">🏥</div>
+                    <h3 class="industry-title">Healthcare</h3>
+                    <p class="industry-description">Patient management, appointment scheduling, and medical record automation.</p>
+                    <ul class="industry-features">
+                        <li>Patient intake automation</li>
+                        <li>Appointment scheduling</li>
+                        <li>Medical record management</li>
+                        <li>Insurance processing</li>
+                    </ul>
+                    <button class="industry-button">View Healthcare Solutions</button>
+                </div>
+                
+                <div class="industry-card">
+                    <div class="industry-icon">🏢</div>
+                    <h3 class="industry-title">Professional Services</h3>
+                    <p class="industry-description">Client management, project tracking, and billing automation for service businesses.</p>
+                    <ul class="industry-features">
+                        <li>Client onboarding</li>
+                        <li>Project management</li>
+                        <li>Time tracking</li>
+                        <li>Invoice automation</li>
+                    </ul>
+                    <button class="industry-button">View Professional Solutions</button>
+                </div>
+                
+                <div class="industry-card">
+                    <div class="industry-icon">🛒</div>
+                    <h3 class="industry-title">E-commerce</h3>
+                    <p class="industry-description">Order processing, inventory management, and customer service automation.</p>
+                    <ul class="industry-features">
+                        <li>Order processing</li>
+                        <li>Inventory management</li>
+                        <li>Customer service</li>
+                        <li>Shipping automation</li>
+                    </ul>
+                    <button class="industry-button">View E-commerce Solutions</button>
+                </div>
+                
+                <div class="industry-card">
+                    <div class="industry-icon">🏠</div>
+                    <h3 class="industry-title">Real Estate</h3>
+                    <p class="industry-description">Lead management, property listings, and client communication automation.</p>
+                    <ul class="industry-features">
+                        <li>Lead qualification</li>
+                        <li>Property management</li>
+                        <li>Client communication</li>
+                        <li>Document automation</li>
+                    </ul>
+                    <button class="industry-button">View Real Estate Solutions</button>
+                </div>
+                
+                <div class="industry-card">
+                    <div class="industry-icon">🎓</div>
+                    <h3 class="industry-title">Education</h3>
+                    <p class="industry-description">Student management, course delivery, and administrative automation.</p>
+                    <ul class="industry-features">
+                        <li>Student enrollment</li>
+                        <li>Course management</li>
+                        <li>Grade tracking</li>
+                        <li>Communication automation</li>
+                    </ul>
+                    <button class="industry-button">View Education Solutions</button>
+                </div>
+                
+                <div class="industry-card">
+                    <div class="industry-icon">💰</div>
+                    <h3 class="industry-title">Financial Services</h3>
+                    <p class="industry-description">Client onboarding, compliance tracking, and financial reporting automation.</p>
+                    <ul class="industry-features">
+                        <li>Client onboarding</li>
+                        <li>Compliance tracking</li>
+                        <li>Financial reporting</li>
+                        <li>Risk management</li>
+                    </ul>
+                    <button class="industry-button">View Financial Solutions</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Packages -->
+    <section class="packages-section">
+        <div class="packages-container">
+            <h2 class="section-title">Complete Solution Packages</h2>
+            <p class="section-subtitle">Each package includes 5 complete automation solutions for your industry</p>
+            
+            <div class="packages-grid">
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-icon">🏥</div>
+                        <h3 class="package-title">Healthcare Complete</h3>
+                        <p class="package-subtitle">5 automation solutions for healthcare providers</p>
+                    </div>
+                    <p class="package-description">Comprehensive automation package designed specifically for healthcare providers, including patient management, appointment scheduling, and medical record automation.</p>
+                    
+                    <div class="package-solutions">
+                        <div class="solution-item">
+                            <div class="solution-name">Patient Intake</div>
+                            <div class="solution-description">Automated patient registration and information collection</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Appointment Scheduling</div>
+                            <div class="solution-description">Smart scheduling with conflict resolution</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Medical Records</div>
+                            <div class="solution-description">Automated record management and updates</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Insurance Processing</div>
+                            <div class="solution-description">Automated insurance verification and claims</div>
+                        </div>
+                    </div>
+                    
+                    <ul class="package-benefits">
+                        <li>HIPAA compliant workflows</li>
+                        <li>Integration with major EMR systems</li>
+                        <li>Automated compliance reporting</li>
+                        <li>Patient communication automation</li>
+                        <li>Revenue cycle optimization</li>
+                    </ul>
+                    
+                    <div class="package-pricing">
+                        <div class="package-price">$297</div>
+                        <div class="package-period">per month</div>
+                    </div>
+                    <button class="package-button">Get Healthcare Package</button>
+                </div>
+                
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-icon">🏢</div>
+                        <h3 class="package-title">Professional Services Complete</h3>
+                        <p class="package-subtitle">5 automation solutions for service businesses</p>
+                    </div>
+                    <p class="package-description">Complete automation package for professional service providers, including client management, project tracking, and billing automation.</p>
+                    
+                    <div class="package-solutions">
+                        <div class="solution-item">
+                            <div class="solution-name">Client Onboarding</div>
+                            <div class="solution-description">Automated client intake and setup</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Project Management</div>
+                            <div class="solution-description">Automated project tracking and updates</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Time Tracking</div>
+                            <div class="solution-description">Automated time and expense tracking</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-name">Invoice Automation</div>
+                            <div class="solution-description">Automated invoicing and payment processing</div>
+                        </div>
+                    </div>
+                    
+                    <ul class="package-benefits">
+                        <li>Client portal integration</li>
+                        <li>Automated project updates</li>
+                        <li>Time tracking automation</li>
+                        <li>Invoice generation and follow-up</li>
+                        <li>Revenue optimization</li>
+                    </ul>
+                    
+                    <div class="package-pricing">
+                        <div class="package-price">$297</div>
+                        <div class="package-period">per month</div>
+                    </div>
+                    <button class="package-button">Get Professional Package</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Process -->
+    <section class="implementation-section">
+        <div class="implementation-container">
+            <h2 class="section-title">30-Day Implementation Process</h2>
+            <p class="section-subtitle">Get your industry-specific automation up and running in just 30 days</p>
+            
+            <div class="implementation-steps">
+                <div class="implementation-step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Week 1: Assessment</h3>
+                    <p class="step-description">Analyze your current processes and identify automation opportunities.</p>
+                </div>
+                <div class="implementation-step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Week 2: Configuration</h3>
+                    <p class="step-description">Configure your industry-specific automation workflows.</p>
+                </div>
+                <div class="implementation-step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Week 3: Testing</h3>
+                    <p class="step-description">Test and optimize your automation workflows.</p>
+                </div>
+                <div class="implementation-step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Week 4: Launch</h3>
+                    <p class="step-description">Deploy and train your team on the new automation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section class="success-section">
+        <div class="success-container">
+            <h2 class="section-title">Proven Results</h2>
+            <p class="section-subtitle">Real results from businesses using our industry-specific packages</p>
+            
+            <div class="success-grid">
+                <div class="success-card">
+                    <div class="success-metric">75%</div>
+                    <div class="success-label">Time Savings</div>
+                    <div class="success-description">HealthcareCorp reduced administrative time by 75% with our healthcare automation package.</div>
+                </div>
+                <div class="success-card">
+                    <div class="success-metric">3x</div>
+                    <div class="success-label">Revenue Increase</div>
+                    <div class="success-description">Professional Services Inc. tripled their revenue with automated client management.</div>
+                </div>
+                <div class="success-card">
+                    <div class="success-metric">90%</div>
+                    <div class="success-label">Customer Satisfaction</div>
+                    <div class="success-description">E-commerce Plus achieved 90% customer satisfaction with automated order processing.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform Your Industry?</h2>
+            <p class="cta-subtitle">Get your industry-specific automation package and see results in 30 days.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-button">Get Your Package</a>
+                <a href="/case-studies" class="cta-button cta-button-secondary">View Industry Case Studies</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate ready header
+        gsap.from('.ready-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.ready-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.ready-highlights', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.4,
+            ease: 'power3.out'
+        });
+
+        // Animate industry cards
+        gsap.utils.toArray('.industry-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate package cards
+        gsap.utils.toArray('.package-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate implementation steps
+        gsap.utils.toArray('.implementation-step').forEach((step, i) => {
+            gsap.from(step, {
+                scrollTrigger: {
+                    trigger: step,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate success cards
+        gsap.utils.toArray('.success-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                },
+                duration: 0.8,
+                y: 30,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Add hover effects to industry cards
+        document.querySelectorAll('.industry-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to package cards
+        document.querySelectorAll('.package-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Industry button functionality
+        document.querySelectorAll('.industry-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const industry = this.closest('.industry-card').querySelector('.industry-title').textContent;
+                alert(`Viewing ${industry} solutions. This would navigate to the specific industry page.`);
+            });
+        });
+
+        // Package button functionality
+        document.querySelectorAll('.package-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const package = this.closest('.package-card').querySelector('.package-title').textContent;
+                alert(`Getting ${package}. This would start the purchase process.`);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "apps/web/rensto-site/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1"
+    },
+    {
+      "src": "/portal/(.*)",
+      "dest": "/portal/$1"
+    }
+  ],
+  "env": {
+    "MCP_RACKNERD_URL": "http://173.254.201.134:4000",
+    "MCP_CLOUDFLARE_URL": "https://customer-portal-mcp.service-46a.workers.dev",
+    "WEBSOCKET_URL": "ws://173.254.201.134:4000/ws"
+  }
+}

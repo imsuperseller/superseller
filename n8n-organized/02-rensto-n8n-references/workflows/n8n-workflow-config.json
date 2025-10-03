@@ -1,0 +1,298 @@
+{
+  "name": "Ortal Israeli Lead Generator SaaS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ortal-lead-generator",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - Receive Form Data",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "name": "={{ $json.firstName }} {{ $json.lastName }} - {{ $json.leadType }} - {{ $json.location }}",
+        "options": {
+          "templateId": "your-google-sheet-template-id"
+        }
+      },
+      "id": "create-sheet",
+      "name": "Create Google Sheet for User",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [460, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "execute",
+        "actorId": "apify/facebook-scraper",
+        "input": {
+          "searchQueries": [
+            "={{ $json.leadType }} {{ $json.location }} Israeli community"
+          ],
+          "maxResults": "={{ $json.pricingTier }}",
+          "includeGroups": true,
+          "includePages": false
+        }
+      },
+      "id": "scrape-leads",
+      "name": "Scrape Israeli Leads",
+      "type": "n8n-nodes-base.apify",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "apifyApi": {
+          "id": "apify-credentials",
+          "name": "Apify API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "={{ $('Create Google Sheet for User').item.json.id }}",
+        "sheetName": "Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "firstName": "={{ $json.firstName }}",
+            "lastName": "={{ $json.lastName }}",
+            "email": "={{ $json.email }}",
+            "location": "={{ $json.location }}",
+            "company": "={{ $json.company }}",
+            "jobTitle": "={{ $json.jobTitle }}",
+            "linkedinUrl": "={{ $json.linkedinUrl }}",
+            "phone": "={{ $json.phone }}",
+            "extractedDate": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "store-leads",
+      "name": "Store Leads in Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [900, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "content": "You are an expert in personalized outreach for Israeli business professionals. Create a personalized message for each lead based on their profile and the sender's business information.\n\nSender Business Info: {{ $('Webhook - Receive Form Data').item.json.about }}\n\nLead Information:\n- Name: {{ $json.firstName }} {{ $json.lastName }}\n- Company: {{ $json.company }}\n- Job Title: {{ $json.jobTitle }}\n- Location: {{ $json.location }}\n\nCreate a personalized message that:\n1. References their specific company/role\n2. Connects to the sender's business value\n3. Is warm and professional\n4. Includes a clear call-to-action\n5. Is under 150 words\n\nFormat as: Subject: [Subject Line]\n\nMessage: [Personalized message]",
+              "role": "user"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "generate-messages",
+      "name": "Generate Personalized Messages",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "={{ $('Create Google Sheet for User').item.json.id }}",
+        "sheetName": "Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "personalizedMessage": "={{ $json.message }}",
+            "subjectLine": "={{ $json.subject }}"
+          }
+        }
+      },
+      "id": "update-messages",
+      "name": "Update Sheet with Messages",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1340, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $('Create Google Sheet for User').item.json.id }}",
+        "options": {
+          "format": "csv"
+        }
+      },
+      "id": "download-csv",
+      "name": "Download CSV",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1560, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "leads@ortal-israeli-leads.com",
+        "toEmail": "={{ $('Webhook - Receive Form Data').item.json.email }}",
+        "subject": "Your Israeli Leads Are Ready! - {{ $('Webhook - Receive Form Data').item.json.firstName }}",
+        "message": "Hi {{ $('Webhook - Receive Form Data').item.json.firstName }},\n\nYour {{ $('Webhook - Receive Form Data').item.json.pricingTier }} Israeli leads are ready!\n\nDownload the attached CSV file to get started with your outreach. Each lead includes:\n- Contact information\n- Company details\n- Personalized message templates\n- LinkedIn profiles\n\nBest of luck with your outreach!\n\nBest regards,\nThe Israeli Lead Generator Team",
+        "attachments": {
+          "values": [
+            {
+              "name": "israeli-leads-{{ $('Webhook - Receive Form Data').item.json.firstName }}-{{ $('Webhook - Receive Form Data').item.json.lastName }}.csv",
+              "data": "={{ $('Download CSV').item.binary.data }}"
+            }
+          ]
+        }
+      },
+      "id": "send-email",
+      "name": "Send Email with CSV",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1780, 300],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Your leads are being generated and will be delivered to your email within 5-10 minutes.\", \"customerEmail\": $('Webhook - Receive Form Data').item.json.email } }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2000, 300]
+    }
+  ],
+  "connections": {
+    "Webhook - Receive Form Data": {
+      "main": [
+        [
+          {
+            "node": "Create Google Sheet for User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Google Sheet for User": {
+      "main": [
+        [
+          {
+            "node": "Scrape Israeli Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Israeli Leads": {
+      "main": [
+        [
+          {
+            "node": "Store Leads in Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Leads in Sheet": {
+      "main": [
+        [
+          {
+            "node": "Generate Personalized Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Personalized Messages": {
+      "main": [
+        [
+          {
+            "node": "Update Sheet with Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sheet with Messages": {
+      "main": [
+        [
+          {
+            "node": "Download CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download CSV": {
+      "main": [
+        [
+          {
+            "node": "Send Email with CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email with CSV": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

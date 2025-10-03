@@ -1,0 +1,29 @@
+{
+  "name": "rensto-webflow-designer-extension",
+  "version": "1.0.0",
+  "description": "Enhanced MCP server with Designer API for full content management",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step required'",
+    "test": "echo 'No tests specified'"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "keywords": [
+    "webflow",
+    "designer-api",
+    "mcp",
+    "automation"
+  ],
+  "author": "Rensto",
+  "license": "MIT"
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "created": "2025-09-24T23:09:40.710Z",
+  "monitoring": {
+    "sync_frequency_minutes": 5,
+    "health_check_interval_minutes": 1,
+    "alert_thresholds": {
+      "sync_failure_rate": 10,
+      "response_time_ms": 5000,
+      "error_count": 5
+    },
+    "notifications": {
+      "email": "admin@rensto.com",
+      "slack_webhook": null
+    }
+  },
+  "metrics": {
+    "sync_success_rate": 0,
+    "average_response_time": 0,
+    "total_syncs": 0,
+    "last_sync": null,
+    "errors": []
+  }
+}

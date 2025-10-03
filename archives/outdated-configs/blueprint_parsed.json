@@ -1,0 +1,2572 @@
+✅ Scenario 3022209 blueprint: {
+  "code": "OK",
+  "response": {
+    "blueprint": {
+      "flow": [
+        {
+          "id": 1,
+          "mapper": {},
+          "module": "gateway:CustomWebHook",
+          "version": 1,
+          "metadata": {
+            "restore": {
+              "parameters": {
+                "hook": {
+                  "data": {
+                    "editable": "true"
+                  },
+                  "label": "on demand"
+                }
+              }
+            },
+            "designer": {
+              "x": 0,
+              "y": 450
+            },
+            "parameters": [
+              {
+                "name": "hook",
+                "type": "hook:gateway-webhook",
+                "label": "Webhook",
+                "required": true
+              },
+              {
+                "name": "maxResults",
+                "type": "number",
+                "label": "Maximum number of results"
+              }
+            ]
+          },
+          "parameters": {
+            "hook": 1346648,
+            "maxResults": 1
+          }
+        },
+        {
+          "id": 2,
+          "mapper": null,
+          "module": "builtin:BasicRouter",
+          "routes": [
+            {
+              "flow": [
+                {
+                  "id": 3,
+                  "mapper": {
+                    "name": "SUR_LAST_RUN_ISO",
+                    "scope": "roundtrip",
+                    "value": "{{addDays(now; -1; \"YYYY-MM-DDTHH:mm:ss[Z]\")}}"
+                  },
+                  "module": "util:SetVariable2",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                      },
+                      {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                          "enum": [
+                            "roundtrip",
+                            "execution"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                      }
+                    ],
+                    "restore": {
+                      "expect": {
+                        "scope": {
+                          "label": "One cycle"
+                        }
+                      }
+                    },
+                    "designer": {
+                      "x": 600,
+                      "y": 150
+                    },
+                    "interface": [
+                      {
+                        "name": "SUR_LAST_RUN_ISO",
+                        "type": "any",
+                        "label": "SUR_LAST_RUN_ISO"
+                      }
+                    ]
+                  },
+                  "parameters": {}
+                },
+                {
+                  "id": 5,
+                  "mapper": {
+                    "limit": "200",
+                    "order": "desc",
+                    "orderBy": "createdDate"
+                  },
+                  "module": "surense:SearchLeads",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "quickFilter",
+                        "type": "text",
+                        "label": "חיפוש מהיר"
+                      },
+                      {
+                        "name": "order",
+                        "type": "select",
+                        "label": "סדר",
+                        "required": true,
+                        "validate": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "orderBy",
+                        "type": "select",
+                        "label": "מיון לפי",
+                        "required": true,
+                        "validate": {
+                          "enum": [
+                            "createdDate",
+                            "lastActivityDate"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "limit",
+                        "type": "number",
+                        "label": "מספר תוצאות",
+                        "required": true
+                      }
+                    ],
+                    "restore": {
+                      "expect": {
+                        "order": {
+                          "mode": "chose",
+                          "label": "יורד"
+                        },
+                        "orderBy": {
+                          "mode": "chose",
+                          "label": "תאריך יצירה"
+                        }
+                      },
+                      "parameters": {
+                        "__IMTCONN__": {
+                          "data": {
+                            "scoped": "true",
+                            "connection": "surense"
+                          },
+                          "label": "Shelly Surense connection (office@shellycover.co.il)"
+                        }
+                      }
+                    },
+                    "designer": {
+                      "x": 900,
+                      "y": 150
+                    },
+                    "parameters": [
+                      {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                      }
+                    ]
+                  },
+                  "parameters": {
+                    "__IMTCONN__": 5026390
+                  }
+                },
+                {
+                  "id": 7,
+                  "module": "builtin:BasicFeeder",
+                  "version": 1,
+                  "metadata": {
+                    "designer": {
+                      "x": 1200,
+                      "y": 150
+                    }
+                  }
+                },
+                {
+                  "id": 9,
+                  "mapper": {
+                    "id": "{{5.customerId}}"
+                  },
+                  "module": "surense:GetLead",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "id",
+                        "type": "uuid",
+                        "label": "מזהה ליד",
+                        "required": true
+                      }
+                    ],
+                    "restore": {
+                      "parameters": {
+                        "__IMTCONN__": {
+                          "data": {
+                            "scoped": "true",
+                            "connection": "surense"
+                          },
+                          "label": "Shelly Surense connection (office@shellycover.co.il)"
+                        }
+                      }
+                    },
+                    "designer": {
+                      "x": 1500,
+                      "y": 150
+                    },
+                    "parameters": [
+                      {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                      }
+                    ]
+                  },
+                  "parameters": {
+                    "__IMTCONN__": 5026390
+                  }
+                },
+                {
+                  "id": 11,
+                  "mapper": null,
+                  "module": "builtin:BasicRouter",
+                  "routes": [
+                    {
+                      "flow": [
+                        {
+                          "id": 12,
+                          "mapper": {
+                            "lead": {
+                              "ID": "",
+                              "Tags": [],
+                              "Number": "",
+                              "Cell Number": "",
+                              "Status Name": "",
+                              "Created Date": "",
+                              "Interest Name": "",
+                              "Phone Number 1": ""
+                            },
+                            "customer": {
+                              "gender": {
+                                "description": ""
+                              },
+                              "ID Number": "",
+                              "birthDate": "",
+                              "Customer Full Name": ""
+                            },
+                            "policies": [],
+                            "context_notes": ""
+                          },
+                          "module": "json:CreateJSON",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "lead",
+                                "spec": [
+                                  {
+                                    "name": "ID",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "name": "Number",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "name": "Created Date",
+                                    "type": "text",
+                                    "label": "Created date"
+                                  },
+                                  {
+                                    "name": "Interest Name",
+                                    "type": "text",
+                                    "label": "Interest name"
+                                  },
+                                  {
+                                    "name": "Status Name",
+                                    "type": "text",
+                                    "label": "Status name"
+                                  },
+                                  {
+                                    "name": "Cell Number",
+                                    "type": "text",
+                                    "label": "Cell number"
+                                  },
+                                  {
+                                    "name": "Phone Number 1",
+                                    "type": "text",
+                                    "label": "Phone number 1"
+                                  },
+                                  {
+                                    "name": "Tags",
+                                    "spec": {
+                                      "name": "value",
+                                      "type": "text"
+                                    },
+                                    "type": "array"
+                                  }
+                                ],
+                                "type": "collection",
+                                "label": "Lead"
+                              },
+                              {
+                                "name": "customer",
+                                "spec": [
+                                  {
+                                    "name": "Customer Full Name",
+                                    "type": "text",
+                                    "label": "Customer full name"
+                                  },
+                                  {
+                                    "name": "ID Number",
+                                    "type": "text",
+                                    "label": "ID number"
+                                  },
+                                  {
+                                    "name": "birthDate",
+                                    "type": "text",
+                                    "label": "Birth date"
+                                  },
+                                  {
+                                    "name": "gender",
+                                    "spec": [
+                                      {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "Description"
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Gender"
+                                  }
+                                ],
+                                "type": "collection",
+                                "label": "Customer"
+                              },
+                              {
+                                "name": "policies",
+                                "spec": {
+                                  "name": "value",
+                                  "type": "text"
+                                },
+                                "type": "array",
+                                "label": "Policies"
+                              },
+                              {
+                                "name": "context_notes",
+                                "type": "text",
+                                "label": "Context notes"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "lead": {
+                                  "nested": {
+                                    "Tags": {
+                                      "mode": "chose"
+                                    }
+                                  }
+                                },
+                                "policies": {
+                                  "mode": "chose"
+                                }
+                              },
+                              "parameters": {
+                                "type": {
+                                  "label": "My data structure"
+                                },
+                                "space": {
+                                  "label": "Empty"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 2100,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "type",
+                                "type": "udt",
+                                "label": "Data structure",
+                                "required": true
+                              },
+                              {
+                                "name": "space",
+                                "type": "select",
+                                "label": "Indentation",
+                                "validate": {
+                                  "enum": [
+                                    "tab",
+                                    "2",
+                                    "4"
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "type": 192440,
+                            "space": ""
+                          }
+                        },
+                        {
+                          "id": 13,
+                          "mapper": {
+                            "agent": "46804de6-4024-481a-9a7b-1dc262201f10",
+                            "timeout": "",
+                            "messages": [
+                              "Use the exact tags <PROFILE_TEXT>…</PROFILE_TEXT> and <PROFILE_JSON>…</PROFILE_JSON>.\nHere is the JSON: {{12.json}}"
+                            ],
+                            "threadID": "{{7.ID}}",
+                            "outputType": "",
+                            "additionalSystemPrompt": ""
+                          },
+                          "module": "ai-agent:RunAnAIAgent",
+                          "version": 0,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "agent",
+                                "type": "aiagent",
+                                "label": "Agent",
+                                "required": true
+                              },
+                              {
+                                "name": "threadID",
+                                "type": "text",
+                                "label": "Thread ID"
+                              },
+                              {
+                                "name": "additionalSystemPrompt",
+                                "type": "text",
+                                "label": "Additional system instructions"
+                              },
+                              {
+                                "name": "messages",
+                                "spec": {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Message"
+                                },
+                                "type": "array",
+                                "label": "Messages"
+                              },
+                              {
+                                "name": "timeout",
+                                "type": "number",
+                                "label": "Timeout",
+                                "validate": {
+                                  "max": 600,
+                                  "min": 120
+                                }
+                              },
+                              {
+                                "name": "outputType",
+                                "type": "select",
+                                "label": "Output schema",
+                                "validate": {
+                                  "enum": [
+                                    "text",
+                                    "make-schema"
+                                  ]
+                                }
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "agent": {
+                                  "label": "InsuranceProfileAgent"
+                                },
+                                "messages": {
+                                  "mode": "chose",
+                                  "items": [
+                                    null
+                                  ]
+                                },
+                                "outputType": {
+                                  "label": "Empty"
+                                }
+                              }
+                            },
+                            "advanced": true,
+                            "designer": {
+                              "x": 2400,
+                              "y": 0
+                            }
+                          },
+                          "parameters": {}
+                        },
+                        {
+                          "id": 14,
+                          "mapper": {
+                            "input": "{{13.answer}}",
+                            "fields": [
+                              {
+                                "name": "profile_text",
+                                "type": "string",
+                                "description": "return only between <PROFILE_TEXT> … </PROFILE_TEXT>"
+                              },
+                              {
+                                "name": "profile_json",
+                                "type": "string",
+                                "description": "return only between <PROFILE_JSON> … </PROFILE_JSON>"
+                              }
+                            ]
+                          },
+                          "module": "ai-tools:Extract",
+                          "version": 2,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "input",
+                                "type": "text",
+                                "label": "Text",
+                                "required": true
+                              },
+                              {
+                                "name": "fields",
+                                "spec": {
+                                  "name": "value",
+                                  "spec": [
+                                    {
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "name": "description",
+                                      "type": "text",
+                                      "label": "Description",
+                                      "required": true
+                                    },
+                                    {
+                                      "name": "type",
+                                      "type": "select",
+                                      "label": "Type",
+                                      "options": [
+                                        {
+                                          "label": "Text",
+                                          "value": "string"
+                                        },
+                                        {
+                                          "label": "Number",
+                                          "value": "number"
+                                        },
+                                        {
+                                          "label": "Boolean",
+                                          "value": "boolean"
+                                        }
+                                      ],
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Information"
+                                },
+                                "type": "array",
+                                "label": "Information",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "fields": {
+                                  "items": [
+                                    {
+                                      "type": {
+                                        "mode": "chose",
+                                        "label": "Text"
+                                      }
+                                    },
+                                    {
+                                      "type": {
+                                        "mode": "chose",
+                                        "label": "Text"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "parameters": {
+                                "model": {
+                                  "mode": "chose",
+                                  "label": "Medium (GPT OSS 120B)"
+                                },
+                                "makeConnectionId": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "ai-provider"
+                                  },
+                                  "label": "My Make's AI Provider connection",
+                                  "nested": [
+                                    {
+                                      "name": "model",
+                                      "type": "select",
+                                      "label": "Model",
+                                      "options": {
+                                        "store": "rpc://ai-tools/2/RpcGetModels?connectionId={{makeConnectionId}}&teamId=1300459"
+                                      },
+                                      "mappable": true,
+                                      "required": true
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 2700,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "makeConnectionId",
+                                "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
+                                "label": "Connection",
+                                "required": true
+                              },
+                              {
+                                "name": "model",
+                                "type": "select",
+                                "label": "Model",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "model": "medium",
+                            "makeConnectionId": 5202277
+                          }
+                        },
+                        {
+                          "id": 15,
+                          "mapper": {
+                            "json": "{{13.profile_json}}"
+                          },
+                          "module": "json:ParseJSON",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "json",
+                                "type": "text",
+                                "label": "JSON string",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "parameters": {
+                                "type": {
+                                  "label": "Choose a data structure"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3000,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "type",
+                                "type": "udt",
+                                "label": "Data structure"
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "type": ""
+                          }
+                        },
+                        {
+                          "id": 16,
+                          "mapper": {
+                            "value": "פרופיל ביטוח — {{14.full_name}} (ת\"ז {{14.id_number}}), גיל {{14.age}}\nעניין: {{14.interest}} | נוצר אוטומטית: {{formatDate(now; \"YYYY-MM-DD HH:mm\")}}\n------------------------------------------------------------\n{{13.profile_text}}\n------------------------------------------------------------\nJSON (פנימי):\n{{13.profile_json}}"
+                          },
+                          "module": "util:ComposeTransformer",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Text"
+                              }
+                            ],
+                            "restore": {},
+                            "designer": {
+                              "x": 3300,
+                              "y": 0
+                            }
+                          },
+                          "parameters": {}
+                        },
+                        {
+                          "id": 18,
+                          "mapper": {
+                            "id": "{{9.ID}}",
+                            "data": "{{16.value}}",
+                            "idType": "lid",
+                            "filename": "insurance_profile_{{9.Number}}_{{formatDate(now; \"YYYYMMDD\")}}.txt"
+                          },
+                          "module": "surense:createDocument",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "id",
+                                "type": "uuid",
+                                "label": "מזהה",
+                                "required": true
+                              },
+                              {
+                                "name": "idType",
+                                "type": "select",
+                                "label": "סוג מזהה",
+                                "required": true,
+                                "validate": {
+                                  "enum": [
+                                    "cid",
+                                    "lid",
+                                    "wid",
+                                    "employerId",
+                                    "meetingId"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "קובץ",
+                                "required": true
+                              },
+                              {
+                                "name": "filename",
+                                "type": "filename",
+                                "label": "שם הקובץ",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "idType": {
+                                  "mode": "chose",
+                                  "label": "ליד"
+                                }
+                              },
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3600,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 19,
+                          "mapper": {
+                            "notes": "PROFILE_UPLOADED",
+                            "leadId": "{{7.ID}}"
+                          },
+                          "module": "surense:UpdateLead",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "leadId",
+                                "type": "uuid",
+                                "label": "Lead ID",
+                                "required": true
+                              },
+                              {
+                                "name": "pinned",
+                                "type": "boolean",
+                                "label": "Pinned"
+                              },
+                              {
+                                "name": "priority",
+                                "type": "select",
+                                "label": "Priority",
+                                "validate": {
+                                  "enum": [
+                                    "1",
+                                    "2",
+                                    "3"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "notes",
+                                "type": "text",
+                                "label": "Notes"
+                              },
+                              {
+                                "name": "closedReason",
+                                "type": "text",
+                                "label": "Closed Reason"
+                              },
+                              {
+                                "name": "typeId",
+                                "type": "select",
+                                "label": "Type ID"
+                              },
+                              {
+                                "name": "statusId",
+                                "type": "select",
+                                "label": "Status ID"
+                              },
+                              {
+                                "name": "agencyId",
+                                "type": "select",
+                                "label": "Agency ID"
+                              },
+                              {
+                                "name": "ownerId",
+                                "type": "select",
+                                "label": "Owner ID"
+                              },
+                              {
+                                "name": "assigneeId",
+                                "type": "select",
+                                "label": "Assignee ID"
+                              },
+                              {
+                                "name": "sourceId",
+                                "type": "select",
+                                "label": "Source ID"
+                              },
+                              {
+                                "name": "leadDate",
+                                "type": "date",
+                                "label": "Lead Date"
+                              },
+                              {
+                                "name": "dueAt",
+                                "type": "date",
+                                "label": "Due At"
+                              },
+                              {
+                                "name": "dueAtTimeSet",
+                                "type": "boolean",
+                                "label": "Due At Time Set"
+                              },
+                              {
+                                "name": "firstName",
+                                "type": "text",
+                                "label": "First Name"
+                              },
+                              {
+                                "name": "lastName",
+                                "type": "text",
+                                "label": "Last Name"
+                              },
+                              {
+                                "name": "idType",
+                                "type": "select",
+                                "label": "סוג מזהה לקוח",
+                                "validate": {
+                                  "enum": [
+                                    1,
+                                    2,
+                                    3,
+                                    4
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "idNumber",
+                                "type": "text",
+                                "label": "ID Number"
+                              },
+                              {
+                                "name": "idCardIssueDate",
+                                "type": "date",
+                                "label": "ID Card Issue Date"
+                              },
+                              {
+                                "name": "cellNumber",
+                                "type": "text",
+                                "label": "Cell Number"
+                              },
+                              {
+                                "name": "phoneNumber",
+                                "type": "text",
+                                "label": "Phone Number"
+                              },
+                              {
+                                "name": "phoneNumber1",
+                                "type": "text",
+                                "label": "Phone Number 1"
+                              },
+                              {
+                                "name": "phoneNumber2",
+                                "type": "text",
+                                "label": "Phone Number 2"
+                              },
+                              {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                              },
+                              {
+                                "name": "street",
+                                "type": "text",
+                                "label": "Street"
+                              },
+                              {
+                                "name": "streetNumber",
+                                "type": "number",
+                                "label": "Street Number"
+                              },
+                              {
+                                "name": "apartmentNumber",
+                                "type": "number",
+                                "label": "Apartment Number"
+                              },
+                              {
+                                "name": "postalBox",
+                                "type": "number",
+                                "label": "Postal Box"
+                              },
+                              {
+                                "name": "city",
+                                "type": "text",
+                                "label": "City"
+                              },
+                              {
+                                "name": "postalCode",
+                                "type": "number",
+                                "label": "Postal Code"
+                              },
+                              {
+                                "name": "country",
+                                "type": "text",
+                                "label": "Country"
+                              },
+                              {
+                                "name": "gender",
+                                "type": "select",
+                                "label": "Gender",
+                                "validate": {
+                                  "enum": [
+                                    2,
+                                    3
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "birthDate",
+                                "type": "date",
+                                "label": "Birth Date"
+                              },
+                              {
+                                "name": "age",
+                                "type": "number",
+                                "label": "Age"
+                              },
+                              {
+                                "name": "death",
+                                "type": "boolean",
+                                "label": "Deceased"
+                              },
+                              {
+                                "name": "maritalStatus",
+                                "type": "select",
+                                "label": "Marital Status",
+                                "validate": {
+                                  "enum": [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "smoker",
+                                "type": "boolean",
+                                "label": "Smoker"
+                              },
+                              {
+                                "name": "childCount",
+                                "type": "number",
+                                "label": "Number of Children"
+                              },
+                              {
+                                "name": "monthlyIncome",
+                                "type": "number",
+                                "label": "Monthly Income"
+                              },
+                              {
+                                "name": "employerName",
+                                "type": "text",
+                                "label": "Employer Name"
+                              },
+                              {
+                                "name": "meetingDate",
+                                "type": "date",
+                                "label": "Meeting Date"
+                              },
+                              {
+                                "name": "meetingTime",
+                                "type": "time",
+                                "label": "Meeting Time"
+                              },
+                              {
+                                "name": "meetingLocation",
+                                "type": "text",
+                                "label": "Meeting Location"
+                              },
+                              {
+                                "name": "meetingCoordinatorId",
+                                "type": "select",
+                                "label": "Meeting Coordinator ID"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "death": {
+                                  "mode": "chose"
+                                },
+                                "gender": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "idType": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "pinned": {
+                                  "mode": "chose"
+                                },
+                                "smoker": {
+                                  "mode": "chose"
+                                },
+                                "typeId": {
+                                  "mode": "chose"
+                                },
+                                "ownerId": {
+                                  "mode": "chose"
+                                },
+                                "agencyId": {
+                                  "mode": "chose"
+                                },
+                                "priority": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "sourceId": {
+                                  "mode": "chose"
+                                },
+                                "statusId": {
+                                  "mode": "chose"
+                                },
+                                "assigneeId": {
+                                  "mode": "chose"
+                                },
+                                "dueAtTimeSet": {
+                                  "mode": "chose"
+                                },
+                                "maritalStatus": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "meetingCoordinatorId": {
+                                  "mode": "chose"
+                                }
+                              },
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3900,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 20,
+                          "mapper": {
+                            "leadId": "{{7.ID}}",
+                            "htmlContent": "פרופיל ביטוח נוצר והועלה - {{19.customerFullName}}"
+                          },
+                          "module": "surense:CreateActivity",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "htmlContent",
+                                "type": "text",
+                                "label": "טקסט",
+                                "required": true
+                              },
+                              {
+                                "name": "customerId",
+                                "type": "text",
+                                "label": "מזהה לקוח"
+                              },
+                              {
+                                "name": "leadId",
+                                "type": "text",
+                                "label": "מזהה ליד"
+                              },
+                              {
+                                "name": "workflowId",
+                                "type": "text",
+                                "label": "מזהה תהליך"
+                              },
+                              {
+                                "name": "employerId",
+                                "type": "text",
+                                "label": "מזהה מעסיק"
+                              },
+                              {
+                                "name": "meetingId",
+                                "type": "text",
+                                "label": "מזהה פגישה"
+                              }
+                            ],
+                            "restore": {
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 4200,
+                              "y": 0
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 21,
+                          "mapper": {
+                            "name": "SUR_LAST_RUN_ISO",
+                            "scope": "roundtrip",
+                            "value": "{{now}}"
+                          },
+                          "module": "util:SetVariable2",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                              },
+                              {
+                                "name": "scope",
+                                "type": "select",
+                                "label": "Variable lifetime",
+                                "required": true,
+                                "validate": {
+                                  "enum": [
+                                    "roundtrip",
+                                    "execution"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "scope": {
+                                  "label": "One cycle"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 4500,
+                              "y": 0
+                            },
+                            "interface": [
+                              {
+                                "name": "SUR_LAST_RUN_ISO",
+                                "type": "any",
+                                "label": "SUR_LAST_RUN_ISO"
+                              }
+                            ]
+                          },
+                          "parameters": {}
+                        }
+                      ]
+                    },
+                    {
+                      "flow": [
+                        {
+                          "id": null,
+                          "module": "placeholder:Placeholder",
+                          "metadata": {
+                            "designer": {
+                              "x": 2100,
+                              "y": 300
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "version": 1,
+                  "metadata": {
+                    "designer": {
+                      "x": 1800,
+                      "y": 150,
+                      "name": "Eligibility"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "flow": [
+                {
+                  "id": 4,
+                  "mapper": {
+                    "name": "SUR_LAST_RUN_ISO"
+                  },
+                  "module": "util:GetVariable2",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                      }
+                    ],
+                    "restore": {},
+                    "designer": {
+                      "x": 600,
+                      "y": 750
+                    },
+                    "interface": [
+                      {
+                        "name": "SUR_LAST_RUN_ISO",
+                        "type": "any",
+                        "label": "SUR_LAST_RUN_ISO"
+                      }
+                    ]
+                  },
+                  "parameters": {}
+                },
+                {
+                  "id": 6,
+                  "mapper": {
+                    "limit": "200",
+                    "order": "desc",
+                    "orderBy": "createdDate"
+                  },
+                  "module": "surense:SearchLeads",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "quickFilter",
+                        "type": "text",
+                        "label": "חיפוש מהיר"
+                      },
+                      {
+                        "name": "order",
+                        "type": "select",
+                        "label": "סדר",
+                        "required": true,
+                        "validate": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "orderBy",
+                        "type": "select",
+                        "label": "מיון לפי",
+                        "required": true,
+                        "validate": {
+                          "enum": [
+                            "createdDate",
+                            "lastActivityDate"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "limit",
+                        "type": "number",
+                        "label": "מספר תוצאות",
+                        "required": true
+                      }
+                    ],
+                    "restore": {
+                      "expect": {
+                        "order": {
+                          "mode": "chose",
+                          "label": "יורד"
+                        },
+                        "orderBy": {
+                          "mode": "chose",
+                          "label": "תאריך יצירה"
+                        }
+                      },
+                      "parameters": {
+                        "__IMTCONN__": {
+                          "data": {
+                            "scoped": "true",
+                            "connection": "surense"
+                          },
+                          "label": "Shelly Surense connection (office@shellycover.co.il)"
+                        }
+                      }
+                    },
+                    "designer": {
+                      "x": 900,
+                      "y": 750
+                    },
+                    "parameters": [
+                      {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                      }
+                    ]
+                  },
+                  "parameters": {
+                    "__IMTCONN__": 5026390
+                  }
+                },
+                {
+                  "id": 8,
+                  "module": "builtin:BasicFeeder",
+                  "version": 1,
+                  "metadata": {
+                    "designer": {
+                      "x": 1200,
+                      "y": 750
+                    }
+                  }
+                },
+                {
+                  "id": 10,
+                  "mapper": {
+                    "id": "{{6.customerId}}"
+                  },
+                  "module": "surense:GetLead",
+                  "version": 1,
+                  "metadata": {
+                    "expect": [
+                      {
+                        "name": "id",
+                        "type": "uuid",
+                        "label": "מזהה ליד",
+                        "required": true
+                      }
+                    ],
+                    "restore": {
+                      "parameters": {
+                        "__IMTCONN__": {
+                          "data": {
+                            "scoped": "true",
+                            "connection": "surense"
+                          },
+                          "label": "Shelly Surense connection (office@shellycover.co.il)"
+                        }
+                      }
+                    },
+                    "designer": {
+                      "x": 1500,
+                      "y": 750
+                    },
+                    "parameters": [
+                      {
+                        "name": "__IMTCONN__",
+                        "type": "account:surense",
+                        "label": "Connection",
+                        "required": true
+                      }
+                    ]
+                  },
+                  "parameters": {
+                    "__IMTCONN__": 5026390
+                  }
+                },
+                {
+                  "id": 22,
+                  "mapper": null,
+                  "module": "builtin:BasicRouter",
+                  "routes": [
+                    {
+                      "flow": [
+                        {
+                          "id": 23,
+                          "mapper": {
+                            "lead": {
+                              "ID": "",
+                              "Tags": [],
+                              "Number": "",
+                              "Cell Number": "",
+                              "Status Name": "",
+                              "Created Date": "",
+                              "Interest Name": "",
+                              "Phone Number 1": ""
+                            },
+                            "customer": {
+                              "gender": {
+                                "description": ""
+                              },
+                              "ID Number": "",
+                              "birthDate": "",
+                              "Customer Full Name": ""
+                            },
+                            "policies": [],
+                            "context_notes": ""
+                          },
+                          "module": "json:CreateJSON",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "lead",
+                                "spec": [
+                                  {
+                                    "name": "ID",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "name": "Number",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "name": "Created Date",
+                                    "type": "text",
+                                    "label": "Created date"
+                                  },
+                                  {
+                                    "name": "Interest Name",
+                                    "type": "text",
+                                    "label": "Interest name"
+                                  },
+                                  {
+                                    "name": "Status Name",
+                                    "type": "text",
+                                    "label": "Status name"
+                                  },
+                                  {
+                                    "name": "Cell Number",
+                                    "type": "text",
+                                    "label": "Cell number"
+                                  },
+                                  {
+                                    "name": "Phone Number 1",
+                                    "type": "text",
+                                    "label": "Phone number 1"
+                                  },
+                                  {
+                                    "name": "Tags",
+                                    "spec": {
+                                      "name": "value",
+                                      "type": "text"
+                                    },
+                                    "type": "array"
+                                  }
+                                ],
+                                "type": "collection",
+                                "label": "Lead"
+                              },
+                              {
+                                "name": "customer",
+                                "spec": [
+                                  {
+                                    "name": "Customer Full Name",
+                                    "type": "text",
+                                    "label": "Customer full name"
+                                  },
+                                  {
+                                    "name": "ID Number",
+                                    "type": "text",
+                                    "label": "ID number"
+                                  },
+                                  {
+                                    "name": "birthDate",
+                                    "type": "text",
+                                    "label": "Birth date"
+                                  },
+                                  {
+                                    "name": "gender",
+                                    "spec": [
+                                      {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "Description"
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Gender"
+                                  }
+                                ],
+                                "type": "collection",
+                                "label": "Customer"
+                              },
+                              {
+                                "name": "policies",
+                                "spec": {
+                                  "name": "value",
+                                  "type": "text"
+                                },
+                                "type": "array",
+                                "label": "Policies"
+                              },
+                              {
+                                "name": "context_notes",
+                                "type": "text",
+                                "label": "Context notes"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "lead": {
+                                  "nested": {
+                                    "Tags": {
+                                      "mode": "chose"
+                                    }
+                                  }
+                                },
+                                "policies": {
+                                  "mode": "chose"
+                                }
+                              },
+                              "parameters": {
+                                "type": {
+                                  "label": "My data structure"
+                                },
+                                "space": {
+                                  "label": "Empty"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 2100,
+                              "y": 600
+                            },
+                            "parameters": [
+                              {
+                                "name": "type",
+                                "type": "udt",
+                                "label": "Data structure",
+                                "required": true
+                              },
+                              {
+                                "name": "space",
+                                "type": "select",
+                                "label": "Indentation",
+                                "validate": {
+                                  "enum": [
+                                    "tab",
+                                    "2",
+                                    "4"
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "type": 192440,
+                            "space": ""
+                          }
+                        },
+                        {
+                          "id": 24,
+                          "mapper": {
+                            "agent": "46804de6-4024-481a-9a7b-1dc262201f10",
+                            "timeout": "",
+                            "messages": [
+                              "Use the exact tags <PROFILE_TEXT>…</PROFILE_TEXT> and <PROFILE_JSON>…</PROFILE_JSON>.\nHere is the JSON: {{23.json}}"
+                            ],
+                            "threadID": "{{8.ID}}",
+                            "outputType": "",
+                            "additionalSystemPrompt": ""
+                          },
+                          "module": "ai-agent:RunAnAIAgent",
+                          "version": 0,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "agent",
+                                "type": "aiagent",
+                                "label": "Agent",
+                                "required": true
+                              },
+                              {
+                                "name": "threadID",
+                                "type": "text",
+                                "label": "Thread ID"
+                              },
+                              {
+                                "name": "additionalSystemPrompt",
+                                "type": "text",
+                                "label": "Additional system instructions"
+                              },
+                              {
+                                "name": "messages",
+                                "spec": {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Message"
+                                },
+                                "type": "array",
+                                "label": "Messages"
+                              },
+                              {
+                                "name": "timeout",
+                                "type": "number",
+                                "label": "Timeout",
+                                "validate": {
+                                  "max": 600,
+                                  "min": 120
+                                }
+                              },
+                              {
+                                "name": "outputType",
+                                "type": "select",
+                                "label": "Output schema",
+                                "validate": {
+                                  "enum": [
+                                    "text",
+                                    "make-schema"
+                                  ]
+                                }
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "agent": {
+                                  "label": "InsuranceProfileAgent"
+                                },
+                                "messages": {
+                                  "mode": "chose",
+                                  "items": [
+                                    null
+                                  ]
+                                },
+                                "outputType": {
+                                  "label": "Empty"
+                                }
+                              }
+                            },
+                            "advanced": true,
+                            "designer": {
+                              "x": 2400,
+                              "y": 600
+                            }
+                          },
+                          "parameters": {}
+                        },
+                        {
+                          "id": 32,
+                          "mapper": {
+                            "input": "{{24.answer}}",
+                            "fields": [
+                              {
+                                "name": "profile_text",
+                                "type": "string",
+                                "description": "return only between <PROFILE_TEXT> … </PROFILE_TEXT>"
+                              },
+                              {
+                                "name": "profile_json",
+                                "type": "string",
+                                "description": "return only between <PROFILE_JSON> … </PROFILE_JSON>"
+                              }
+                            ]
+                          },
+                          "module": "ai-tools:Extract",
+                          "version": 2,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "input",
+                                "type": "text",
+                                "label": "Text",
+                                "required": true
+                              },
+                              {
+                                "name": "fields",
+                                "spec": {
+                                  "name": "value",
+                                  "spec": [
+                                    {
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "name": "description",
+                                      "type": "text",
+                                      "label": "Description",
+                                      "required": true
+                                    },
+                                    {
+                                      "name": "type",
+                                      "type": "select",
+                                      "label": "Type",
+                                      "options": [
+                                        {
+                                          "label": "Text",
+                                          "value": "string"
+                                        },
+                                        {
+                                          "label": "Number",
+                                          "value": "number"
+                                        },
+                                        {
+                                          "label": "Boolean",
+                                          "value": "boolean"
+                                        }
+                                      ],
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Information"
+                                },
+                                "type": "array",
+                                "label": "Information",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "fields": {
+                                  "items": [
+                                    {
+                                      "type": {
+                                        "mode": "chose",
+                                        "label": "Text"
+                                      }
+                                    },
+                                    {
+                                      "type": {
+                                        "mode": "chose",
+                                        "label": "Text"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "parameters": {
+                                "model": {
+                                  "mode": "chose",
+                                  "label": "Medium (GPT OSS 120B)"
+                                },
+                                "makeConnectionId": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "ai-provider"
+                                  },
+                                  "label": "My Make's AI Provider connection",
+                                  "nested": [
+                                    {
+                                      "name": "model",
+                                      "type": "select",
+                                      "label": "Model",
+                                      "options": {
+                                        "store": "rpc://ai-tools/2/RpcGetModels?connectionId={{makeConnectionId}}&teamId=1300459"
+                                      },
+                                      "mappable": true,
+                                      "required": true
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 2733,
+                              "y": 583
+                            },
+                            "parameters": [
+                              {
+                                "name": "makeConnectionId",
+                                "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
+                                "label": "Connection",
+                                "required": true
+                              },
+                              {
+                                "name": "model",
+                                "type": "select",
+                                "label": "Model",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "model": "medium",
+                            "makeConnectionId": 5202277
+                          }
+                        },
+                        {
+                          "id": 26,
+                          "mapper": {
+                            "json": "{{24.profile_json}}"
+                          },
+                          "module": "json:ParseJSON",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "json",
+                                "type": "text",
+                                "label": "JSON string",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "parameters": {
+                                "type": {
+                                  "label": "Choose a data structure"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3000,
+                              "y": 600
+                            },
+                            "parameters": [
+                              {
+                                "name": "type",
+                                "type": "udt",
+                                "label": "Data structure"
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "type": ""
+                          }
+                        },
+                        {
+                          "id": 27,
+                          "mapper": {
+                            "value": "פרופיל ביטוח — {{32.full_name}} (ת\"ז {{32.id_number}}), גיל {{32.age}}\nעניין: {{32.interest}} | נוצר אוטומטית: {{formatDate(now; \"YYYY-MM-DD HH:mm\")}}\n------------------------------------------------------------\n{{24.profile_text}}\n------------------------------------------------------------\nJSON (פנימי):\n{{24.profile_json}}"
+                          },
+                          "module": "util:ComposeTransformer",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Text"
+                              }
+                            ],
+                            "restore": {},
+                            "designer": {
+                              "x": 3300,
+                              "y": 600
+                            }
+                          },
+                          "parameters": {}
+                        },
+                        {
+                          "id": 33,
+                          "mapper": {
+                            "id": "{{10.ID}}",
+                            "data": "{{24.value}}",
+                            "idType": "lid",
+                            "filename": "insurance_profile_{{10.Number}}_{{formatDate(now; \"YYYYMMDD\")}}.txt"
+                          },
+                          "module": "surense:createDocument",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "id",
+                                "type": "uuid",
+                                "label": "מזהה",
+                                "required": true
+                              },
+                              {
+                                "name": "idType",
+                                "type": "select",
+                                "label": "סוג מזהה",
+                                "required": true,
+                                "validate": {
+                                  "enum": [
+                                    "cid",
+                                    "lid",
+                                    "wid",
+                                    "employerId",
+                                    "meetingId"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "קובץ",
+                                "required": true
+                              },
+                              {
+                                "name": "filename",
+                                "type": "filename",
+                                "label": "שם הקובץ",
+                                "required": true
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "idType": {
+                                  "mode": "chose",
+                                  "label": "ליד"
+                                }
+                              },
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3641,
+                              "y": 577
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 29,
+                          "mapper": {
+                            "notes": "PROFILE_UPLOADED",
+                            "leadId": "{{8.ID}}"
+                          },
+                          "module": "surense:UpdateLead",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "leadId",
+                                "type": "uuid",
+                                "label": "Lead ID",
+                                "required": true
+                              },
+                              {
+                                "name": "pinned",
+                                "type": "boolean",
+                                "label": "Pinned"
+                              },
+                              {
+                                "name": "priority",
+                                "type": "select",
+                                "label": "Priority",
+                                "validate": {
+                                  "enum": [
+                                    "1",
+                                    "2",
+                                    "3"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "notes",
+                                "type": "text",
+                                "label": "Notes"
+                              },
+                              {
+                                "name": "closedReason",
+                                "type": "text",
+                                "label": "Closed Reason"
+                              },
+                              {
+                                "name": "typeId",
+                                "type": "select",
+                                "label": "Type ID"
+                              },
+                              {
+                                "name": "statusId",
+                                "type": "select",
+                                "label": "Status ID"
+                              },
+                              {
+                                "name": "agencyId",
+                                "type": "select",
+                                "label": "Agency ID"
+                              },
+                              {
+                                "name": "ownerId",
+                                "type": "select",
+                                "label": "Owner ID"
+                              },
+                              {
+                                "name": "assigneeId",
+                                "type": "select",
+                                "label": "Assignee ID"
+                              },
+                              {
+                                "name": "sourceId",
+                                "type": "select",
+                                "label": "Source ID"
+                              },
+                              {
+                                "name": "leadDate",
+                                "type": "date",
+                                "label": "Lead Date"
+                              },
+                              {
+                                "name": "dueAt",
+                                "type": "date",
+                                "label": "Due At"
+                              },
+                              {
+                                "name": "dueAtTimeSet",
+                                "type": "boolean",
+                                "label": "Due At Time Set"
+                              },
+                              {
+                                "name": "firstName",
+                                "type": "text",
+                                "label": "First Name"
+                              },
+                              {
+                                "name": "lastName",
+                                "type": "text",
+                                "label": "Last Name"
+                              },
+                              {
+                                "name": "idType",
+                                "type": "select",
+                                "label": "סוג מזהה לקוח",
+                                "validate": {
+                                  "enum": [
+                                    1,
+                                    2,
+                                    3,
+                                    4
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "idNumber",
+                                "type": "text",
+                                "label": "ID Number"
+                              },
+                              {
+                                "name": "idCardIssueDate",
+                                "type": "date",
+                                "label": "ID Card Issue Date"
+                              },
+                              {
+                                "name": "cellNumber",
+                                "type": "text",
+                                "label": "Cell Number"
+                              },
+                              {
+                                "name": "phoneNumber",
+                                "type": "text",
+                                "label": "Phone Number"
+                              },
+                              {
+                                "name": "phoneNumber1",
+                                "type": "text",
+                                "label": "Phone Number 1"
+                              },
+                              {
+                                "name": "phoneNumber2",
+                                "type": "text",
+                                "label": "Phone Number 2"
+                              },
+                              {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                              },
+                              {
+                                "name": "street",
+                                "type": "text",
+                                "label": "Street"
+                              },
+                              {
+                                "name": "streetNumber",
+                                "type": "number",
+                                "label": "Street Number"
+                              },
+                              {
+                                "name": "apartmentNumber",
+                                "type": "number",
+                                "label": "Apartment Number"
+                              },
+                              {
+                                "name": "postalBox",
+                                "type": "number",
+                                "label": "Postal Box"
+                              },
+                              {
+                                "name": "city",
+                                "type": "text",
+                                "label": "City"
+                              },
+                              {
+                                "name": "postalCode",
+                                "type": "number",
+                                "label": "Postal Code"
+                              },
+                              {
+                                "name": "country",
+                                "type": "text",
+                                "label": "Country"
+                              },
+                              {
+                                "name": "gender",
+                                "type": "select",
+                                "label": "Gender",
+                                "validate": {
+                                  "enum": [
+                                    2,
+                                    3
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "birthDate",
+                                "type": "date",
+                                "label": "Birth Date"
+                              },
+                              {
+                                "name": "age",
+                                "type": "number",
+                                "label": "Age"
+                              },
+                              {
+                                "name": "death",
+                                "type": "boolean",
+                                "label": "Deceased"
+                              },
+                              {
+                                "name": "maritalStatus",
+                                "type": "select",
+                                "label": "Marital Status",
+                                "validate": {
+                                  "enum": [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "smoker",
+                                "type": "boolean",
+                                "label": "Smoker"
+                              },
+                              {
+                                "name": "childCount",
+                                "type": "number",
+                                "label": "Number of Children"
+                              },
+                              {
+                                "name": "monthlyIncome",
+                                "type": "number",
+                                "label": "Monthly Income"
+                              },
+                              {
+                                "name": "employerName",
+                                "type": "text",
+                                "label": "Employer Name"
+                              },
+                              {
+                                "name": "meetingDate",
+                                "type": "date",
+                                "label": "Meeting Date"
+                              },
+                              {
+                                "name": "meetingTime",
+                                "type": "time",
+                                "label": "Meeting Time"
+                              },
+                              {
+                                "name": "meetingLocation",
+                                "type": "text",
+                                "label": "Meeting Location"
+                              },
+                              {
+                                "name": "meetingCoordinatorId",
+                                "type": "select",
+                                "label": "Meeting Coordinator ID"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "death": {
+                                  "mode": "chose"
+                                },
+                                "gender": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "idType": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "pinned": {
+                                  "mode": "chose"
+                                },
+                                "smoker": {
+                                  "mode": "chose"
+                                },
+                                "typeId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "ownerId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "agencyId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "priority": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "sourceId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "statusId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "assigneeId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "dueAtTimeSet": {
+                                  "mode": "chose"
+                                },
+                                "maritalStatus": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                },
+                                "meetingCoordinatorId": {
+                                  "mode": "chose",
+                                  "label": "Empty"
+                                }
+                              },
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 3900,
+                              "y": 600
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 30,
+                          "mapper": {
+                            "leadId": "{{8.ID}}",
+                            "htmlContent": "פרופיל ביטוח נוצר והועלה - {{29.customerFullName}}"
+                          },
+                          "module": "surense:CreateActivity",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "htmlContent",
+                                "type": "text",
+                                "label": "טקסט",
+                                "required": true
+                              },
+                              {
+                                "name": "customerId",
+                                "type": "text",
+                                "label": "מזהה לקוח"
+                              },
+                              {
+                                "name": "leadId",
+                                "type": "text",
+                                "label": "מזהה ליד"
+                              },
+                              {
+                                "name": "workflowId",
+                                "type": "text",
+                                "label": "מזהה תהליך"
+                              },
+                              {
+                                "name": "employerId",
+                                "type": "text",
+                                "label": "מזהה מעסיק"
+                              },
+                              {
+                                "name": "meetingId",
+                                "type": "text",
+                                "label": "מזהה פגישה"
+                              }
+                            ],
+                            "restore": {
+                              "parameters": {
+                                "__IMTCONN__": {
+                                  "data": {
+                                    "scoped": "true",
+                                    "connection": "surense"
+                                  },
+                                  "label": "Shelly Surense connection (office@shellycover.co.il)"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 4200,
+                              "y": 600
+                            },
+                            "parameters": [
+                              {
+                                "name": "__IMTCONN__",
+                                "type": "account:surense",
+                                "label": "Connection",
+                                "required": true
+                              }
+                            ]
+                          },
+                          "parameters": {
+                            "__IMTCONN__": 5026390
+                          }
+                        },
+                        {
+                          "id": 31,
+                          "mapper": {
+                            "name": "SUR_LAST_RUN_ISO",
+                            "scope": "roundtrip",
+                            "value": "{{now}}"
+                          },
+                          "module": "util:SetVariable2",
+                          "version": 1,
+                          "metadata": {
+                            "expect": [
+                              {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                              },
+                              {
+                                "name": "scope",
+                                "type": "select",
+                                "label": "Variable lifetime",
+                                "required": true,
+                                "validate": {
+                                  "enum": [
+                                    "roundtrip",
+                                    "execution"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                              }
+                            ],
+                            "restore": {
+                              "expect": {
+                                "scope": {
+                                  "label": "One cycle"
+                                }
+                              }
+                            },
+                            "designer": {
+                              "x": 4500,
+                              "y": 600
+                            },
+                            "interface": [
+                              {
+                                "name": "SUR_LAST_RUN_ISO",
+                                "type": "any",
+                                "label": "SUR_LAST_RUN_ISO"
+                              }
+                            ]
+                          },
+                          "parameters": {}
+                        }
+                      ]
+                    },
+                    {
+                      "flow": [
+                        {
+                          "id": null,
+                          "module": "placeholder:Placeholder",
+                          "metadata": {
+                            "designer": {
+                              "x": 2100,
+                              "y": 900
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "version": 1,
+                  "metadata": {
+                    "designer": {
+                      "x": 1800,
+                      "y": 750,
+                      "name": "Eligibility"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "version": 1,
+          "metadata": {
+            "designer": {
+              "x": 300,
+              "y": 450,
+              "name": "Is watermark empty?"
+            }
+          }
+        }
+      ],
+      "name": "change name when all working",
+      "metadata": {
+        "instant": false,
+        "version": 1,
+        "designer": {
+          "orphans": []
+        },
+        "scenario": {
+          "dlq": false,
+          "slots": null,
+          "dataloss": false,
+          "maxErrors": 3,
+          "autoCommit": true,
+          "roundtrips": 1,
+          "sequential": false,
+          "confidential": false,
+          "freshVariables": false,
+          "autoCommitTriggerLast": true
+        }
+      }
+    },
+    "scheduling": {
+      "type": "on-demand"
+    },
+    "concept": false,
+    "created": "2025-09-17T05:34:05.790Z",
+    "last_edit": "2025-09-21T04:07:03.634Z",
+    "metadata": {
+      "input_spec": [],
+      "output_spec": []
+    },
+    "idSequence": 34
+  }
+}

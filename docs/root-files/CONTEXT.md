@@ -6,7 +6,7 @@
 **Location**: Plano, TX  
 **Owner**: Shai Friedman  
 **Email**: service@rensto.com  
-**Positioning**: "Automations that ship in days — not months"
+**Positioning**: "Strategic automation partner that delivers measurable business outcomes"
 
 ## Target Market (ICP)
 
@@ -23,7 +23,6 @@
    - Value: 80% reduction in manual tasks
 
 3. **Content-Heavy Sites**
-   - ✅ Completed: Migration from WordPress/Webflow, content workflows
    - Pain: Slow sites, expensive developers, version chaos
    - Value: 3x faster loads, easy updates
 
@@ -31,16 +30,16 @@
 
 ### Discovery & Planning
 
-- **Automation Audit** ($499): 2-hour review + roadmap
-- **Sprint Planning** ($1,500): 5-day sprint with deliverables
+- **Automation Audit** ($499): I guarantee you'll identify $25,000+ in annual savings within 2 hours, or I'll refund 100%
+- **Sprint Planning** ($1,500): I guarantee you'll see ROI within 60 days, or I'll continue working for free until you do
 
 ### Implementation
 
-- **AI Content Engine** ($1,200): SEO-optimized content automation
-- **Lead Intake Agent** ($900): Smart form processing + CRM sync
-- **Voice Agent System** ($2,500): Phone call automation with AI scripts
-- **Advanced Offer Crafting** ($1,800): AI-powered proposal generation
-- **System Monitoring** ($1,200): Automated bug detection and monitoring
+- **AI Content Engine** ($1,200): I guarantee 20% increase in organic traffic within 90 days, or I'll continue optimizing for free
+- **Lead Intake Agent** ($900): I guarantee 50% reduction in manual lead processing time within 30 days, or full refund plus $500 bonus
+- **Voice Agent System** ($2,500): I guarantee 100% call coverage with zero missed calls, or I'll refund 100% and pay you $1,000 for the inconvenience
+- **Advanced Offer Crafting** ($1,800): I guarantee 40% increase in proposal acceptance rates within 60 days, or I'll continue optimizing for free
+- **System Monitoring** ($1,200): I guarantee 99.9% system uptime or I'll refund 100% of your investment
 
 ### Ongoing Support
 
@@ -90,7 +89,6 @@
 - **AI Integration**: OpenAI GPT-4, Twilio Voice API
 - **Databases**: PostgreSQL (n8n), MongoDB (app data)
 - **CRM**: MongoDB (primary database)
-- **Payments**: Stripe Payment Links, Multi-provider support
 - **Infrastructure**: Docker, Cloudflare Tunnel, Racknerd VPS
 - **Backups**: Automated to Icedrive
 - **Monitoring**: Comprehensive system monitoring, Bug detection, Security scanning

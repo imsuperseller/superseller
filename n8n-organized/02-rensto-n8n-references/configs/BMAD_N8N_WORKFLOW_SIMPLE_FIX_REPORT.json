@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "message": {
+    "message": "request/body must NOT have additional properties"
+  },
+  "timestamp": "2025-08-27T02:10:17.016Z"
+}

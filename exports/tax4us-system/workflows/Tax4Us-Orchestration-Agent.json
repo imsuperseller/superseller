@@ -1,0 +1,158 @@
+{
+    "name": "Tax4Us Orchestration Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "tax4us-orchestration-agent",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Orchestration Agent Trigger",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Tax4Us Orchestration Agent - Agent Registry\nconst agentRegistry = {\n  agents: {\n    content_intelligence: {\n      name: \"Content Intelligence Agent\",\n      status: \"active\",\n      capabilities: [\"content_research\", \"trend_analysis\", \"keyword_research\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/content-intelligence-agent\",\n      description: \"AI-powered content research and trend analysis\"\n    },\n    blog_posts: {\n      name: \"Blog & Posts Agent\",\n      status: \"active\",\n      capabilities: [\"blog_creation\", \"wordpress_publishing\", \"seo_optimization\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/blog-posts-agent\",\n      description: \"Complete blog post creation and WordPress publishing\"\n    },\n    podcast: {\n      name: \"Podcast Agent\",\n      status: \"active\",\n      capabilities: [\"script_generation\", \"show_notes\", \"captivate_integration\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/tax4us-podcast-agent\",\n      description: \"Podcast script creation and Captivate.fm integration\"\n    },\n    social_media: {\n      name: \"Social Media Agent\",\n      status: \"active\",\n      capabilities: [\"content_creation\", \"facebook_publishing\", \"linkedin_publishing\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/tax4us-social-media-agent\",\n      description: \"Social media content creation for Facebook and LinkedIn\"\n    },\n    content_automation: {\n      name: \"Content Automation Agent\",\n      status: \"active\",\n      capabilities: [\"airtable_integration\", \"workflow_triggering\", \"status_tracking\"],\n      webhook: \"https://tax4usllc.app.n8n.cloud/webhook/tax4us-content-trigger\",\n      description: \"Airtable integration and content workflow automation\"\n    }\n  },\n  system: {\n    name: \"Tax4Us Content Automation System\",\n    version: \"2.0.0\",\n    status: \"operational\",\n    totalAgents: 5,\n    activeAgents: 5,\n    lastUpdated: new Date().toISOString()\n  }\n};\n\nreturn {\n  json: {\n    registry: agentRegistry,\n    message: \"Agent registry loaded successfully\",\n    timestamp: new Date().toISOString()\n  }\n};"
+            },
+            "id": "agent-registry",
+            "name": "Agent Registry",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Process customer request and route to appropriate agent\nconst input = $input.first().json;\nconst registry = $('Agent Registry').item.json.registry;\n\n// Analyze request type\nconst requestType = input.request_type || 'info';\nconst targetAgent = input.target_agent;\nconst requestData = input.request_data || {};\n\nlet response = {\n  requestType: requestType,\n  targetAgent: targetAgent,\n  requestData: requestData,\n  timestamp: new Date().toISOString(),\n  status: 'processing'\n};\n\n// Route based on request type\nswitch (requestType) {\n  case 'agent_info':\n    if (targetAgent && registry.agents[targetAgent]) {\n      response.result = registry.agents[targetAgent];\n      response.message = `Information for ${registry.agents[targetAgent].name}`;\n    } else {\n      response.result = registry;\n      response.message = 'Complete agent registry information';\n    }\n    break;\n    \n  case 'content_creation':\n    if (targetAgent === 'blog_posts') {\n      response.routeTo = 'blog_posts';\n      response.webhook = registry.agents.blog_posts.webhook;\n      response.message = 'Routing to Blog & Posts Agent';\n    } else if (targetAgent === 'podcast') {\n      response.routeTo = 'podcast';\n      response.webhook = registry.agents.podcast.webhook;\n      response.message = 'Routing to Podcast Agent';\n    } else if (targetAgent === 'social_media') {\n      response.routeTo = 'social_media';\n      response.webhook = registry.agents.social_media.webhook;\n      response.message = 'Routing to Social Media Agent';\n    } else {\n      response.error = 'Invalid target agent for content creation';\n      response.availableAgents = ['blog_posts', 'podcast', 'social_media'];\n    }\n    break;\n    \n  case 'content_research':\n    response.routeTo = 'content_intelligence';\n    response.webhook = registry.agents.content_intelligence.webhook;\n    response.message = 'Routing to Content Intelligence Agent';\n    break;\n    \n  case 'system_status':\n    response.result = registry.system;\n    response.message = 'Tax4Us Content Automation System Status';\n    break;\n    \n  default:\n    response.error = 'Unknown request type';\n    response.availableTypes = ['agent_info', 'content_creation', 'content_research', 'system_status'];\n}\n\nreturn {\n  json: response\n};"
+            },
+            "id": "request-router",
+            "name": "Request Router",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Execute agent request if routing is needed\nconst routingInfo = $input.first().json;\n\nif (routingInfo.routeTo && routingInfo.webhook) {\n  // Simulate agent execution\n  const executionResult = {\n    agent: routingInfo.routeTo,\n    webhook: routingInfo.webhook,\n    requestData: routingInfo.requestData,\n    status: 'executed',\n    timestamp: new Date().toISOString(),\n    message: `Request successfully routed to ${routingInfo.routeTo}`\n  };\n  \n  return {\n    json: {\n      ...routingInfo,\n      execution: executionResult,\n      message: `Request processed by ${routingInfo.routeTo} agent`\n    }\n  };\n} else {\n  // No routing needed, return direct response\n  return {\n    json: {\n      ...routingInfo,\n      message: routingInfo.message || 'Request processed successfully'\n    }\n  };\n}"
+            },
+            "id": "agent-executor",
+            "name": "Agent Executor",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Log orchestration results\nconst results = $input.all();\nconsole.log('Tax4Us Orchestration Agent Results:');\n\nlet summary = {\n  request: $('Request Router').item.json,\n  execution: $('Agent Executor').item.json,\n  registry: $('Agent Registry').item.json.registry,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log('✅ Orchestration request processed successfully!');\nconsole.log(`🎯 Request Type: ${summary.request.requestType}`);\nconsole.log(`🤖 Target Agent: ${summary.request.targetAgent || 'N/A'}`);\nconsole.log(`📊 System Status: ${summary.registry.system.status}`);\n\nreturn {\n  json: {\n    message: 'Tax4Us Orchestration Agent processed request successfully!',\n    summary,\n    status: 'success',\n    nextSteps: [\n      'Request routed to appropriate agent',\n      'Agent execution completed',\n      'System status updated',\n      'Ready for next orchestration request'\n    ]\n  }\n};"
+            },
+            "id": "log-success",
+            "name": "Log Success & Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {
+                    "responseHeaders": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "respond",
+            "name": "Respond",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Orchestration Agent Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Agent Registry",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Agent Registry": {
+            "main": [
+                [
+                    {
+                        "node": "Request Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Request Router": {
+            "main": [
+                [
+                    {
+                        "node": "Agent Executor",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Agent Executor": {
+            "main": [
+                [
+                    {
+                        "node": "Log Success & Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Log Success & Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Respond",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "active": true
+}

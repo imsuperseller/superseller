@@ -1,0 +1,123 @@
+{
+  "blueprint": {
+    "flow": [
+      {
+        "id": 15,
+        "mapper": {
+          "limit": "50",
+          "order": "desc",
+          "orderBy": "createdDate"
+        },
+        "module": "surense:SearchLeads",
+        "version": 1,
+        "metadata": {
+          "designer": {
+            "x": 0,
+            "y": 0,
+            "name": "🔍 חיפוש לידים"
+          }
+        },
+        "parameters": {
+          "__IMTCONN__": 5026390
+        }
+      },
+      {
+        "id": 18,
+        "filter": {
+          "name": "",
+          "conditions": [
+            [
+              {
+                "a": "{{15.idCardIssueDate}}",
+                "o": "exist"
+              }
+            ]
+          ]
+        },
+        "mapper": {
+          "id": "{{15.id}}",
+          "age": "{{15.age}}",
+          "city": "{{15.city}}",
+          "email": "{{15.email}}",
+          "phone": "{{15.phone}}",
+          "income": "{{15.income}}",
+          "fullName": "{{15.fullName}}",
+          "lastName": "{{15.lastName}}",
+          "firstName": "{{15.firstName}}",
+          "customerId": "{{15.customerId}}",
+          "familySize": "{{15.familySize}}",
+          "postalCode": "{{15.postalCode}}",
+          "profession": "{{15.profession}}",
+          "statusName": "{{15.statusName}}",
+          "createdDate": "{{15.createdDate}}",
+          "tromStats": "{{15.tromStats}}"
+        },
+        "module": "builtin:BasicAggregator",
+        "version": 1,
+        "metadata": {
+          "designer": {
+            "x": 300,
+            "y": 0,
+            "name": "📊 איסוף נתוני לידים"
+          }
+        },
+        "parameters": {
+          "feeder": 15
+        }
+      },
+      {
+        "id": 42,
+        "mapper": {
+          "object": "{{18.array}}"
+        },
+        "module": "json:TransformToJSON",
+        "version": 1,
+        "metadata": {
+          "designer": {
+            "x": 600,
+            "y": 0
+          }
+        },
+        "parameters": {
+          "space": ""
+        }
+      },
+      {
+        "id": 25,
+        "mapper": {
+          "url": "https://shellyins.app.n8n.cloud/webhook/family-insurance",
+          "data": "{{42.json}}",
+          "method": "post",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "raw",
+          "contentType": "application/json",
+          "parseResponse": true
+        },
+        "module": "http:ActionSendData",
+        "version": 3,
+        "metadata": {
+          "designer": {
+            "x": 900,
+            "y": 0,
+            "name": "שליחה לעבודה"
+          }
+        },
+        "parameters": {
+          "handleErrors": true
+        }
+      }
+    ],
+    "name": "📥 העלאת לידים לנ8ן - Fixed",
+    "metadata": {
+      "version": 1,
+      "designer": {
+        "orphans": []
+      }
+    }
+  }
+}

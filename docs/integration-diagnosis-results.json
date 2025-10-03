@@ -5,11 +5,7 @@
       "status": "not_found",
       "action": "Need to check Racknerd VPS setup and get correct URL"
     },
-    "webflow": {
-      "status": "api_error",
-      "error": "Request failed with status code 401",
-      "action": "Check API token and permissions"
-    },
+    
     "lightrag": {
       "status": "not_found",
       "error": "404 - Endpoint not found",
@@ -33,16 +29,7 @@
         "4. Test n8n API endpoints"
       ]
     },
-    "webflow": {
-      "issue": "api_error",
-      "fix": "Need to investigate",
-      "steps": [
-        "1. Use correct site ID from Webflow account",
-        "2. Update configuration with site ID",
-        "3. Test Webflow API endpoints",
-        "4. Verify API permissions"
-      ]
-    },
+    
     "lightrag": {
       "issue": "not_found",
       "fix": "Need to investigate",

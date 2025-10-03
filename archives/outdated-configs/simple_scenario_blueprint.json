@@ -1,0 +1,51 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": 1326657,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 8,
+      "mapper": {
+        "object": "{{1.familyProfiles}}"
+      },
+      "module": "json:TransformToJSON",
+      "version": 1,
+      "parameters": {
+        "space": ""
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "array": "{{8.json}}"
+      },
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {}
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "notes": "{{3.analysisHtml}}",
+        "leadId": "{{3.leadId || 3.familyId || 3.id}}",
+        "priority": "{{3.priority}}"
+      },
+      "module": "surense:UpdateLead",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 5026390
+      }
+    }
+  ],
+  "name": "Surense Action Processor Fixed",
+  "scheduling": {
+    "type": "immediately"
+  }
+}

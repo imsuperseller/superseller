@@ -13,7 +13,8 @@ class VoiceAIImplementation {
             deploy: {}
         };
         this.boostSpaceConfig = {
-            mcpServer: 'http://173.254.201.134:3001'
+            // Updated: MCP servers now use NPX packages instead of VPS HTTP endpoints
+            mcpServer: 'NPX_PACKAGE_METHOD' // OBSOLETE: VPS HTTP endpoint
         };
     }
 

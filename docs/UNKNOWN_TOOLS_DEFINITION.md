@@ -198,3 +198,6 @@ Implementation: Documentation and enhancement
 ---
 
 **🎯 This definition resolves the "unknown tools" issue identified in the BMAD audit. Hyperise will be replaced with a custom solution, and eSignatures will be enhanced. This will result in cost savings, better integration, and improved automation capabilities.**
+
+
+> **📚 MCP Reference**: For current MCP server status and configurations, see [MCP_SERVERS_AUTHORITATIVE.md](./MCP_SERVERS_AUTHORITATIVE.md)

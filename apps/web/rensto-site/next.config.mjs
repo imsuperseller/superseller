@@ -22,6 +22,20 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
+  // Portal routing configuration
+  async rewrites() {
+    return [
+      {
+        source: '/ben-ginati-portal',
+        destination: '/portal/tax4us',
+      },
+      {
+        source: '/portal/:customer*',
+        destination: '/portal/[customer]/:customer*',
+      },
+    ];
+  },
+
   // Disable webpack optimizations that might cause SSR issues
   webpack: (config, { isServer }) => {
     // Only handle server-side issues

@@ -1,0 +1,112 @@
+<!-- Rensto Footer Component -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>Product</h3>
+            <a href="/marketplace">Marketplace</a>
+            <a href="/custom">Custom Solutions</a>
+            <a href="/subscriptions">Subscriptions</a>
+            <a href="/solutions">Ready Solutions</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Company</h3>
+            <a href="/about">About</a>
+            <a href="/blog">Blog</a>
+            <a href="/careers">Careers</a>
+            <a href="/contact">Contact</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Support</h3>
+            <a href="/help">Help Center</a>
+            <a href="/docs">Documentation</a>
+            <a href="/api">API</a>
+            <a href="/status">Status</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/cookies">Cookie Policy</a>
+            <a href="/security">Security</a>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="rensto-logo">
+                    <div class="logo-upper"></div>
+                    <div class="logo-lower"></div>
+                </div>
+                <span>RENSTO</span>
+            </div>
+            <p class="footer-copyright">
+                © 2024 Rensto. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.footer-bottom {
+    border-top: 1px solid var(--border-dark);
+    padding-top: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+.footer-bottom .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+}
+
+.footer-logo .rensto-logo {
+    display: flex;
+    align-items: center;
+    margin-right: var(--spacing-sm);
+}
+
+.footer-logo .logo-upper {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-orange);
+    border-radius: 2px;
+    margin-right: 4px;
+}
+
+.footer-logo .logo-lower {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-blue);
+    border-radius: 2px;
+}
+
+.footer-logo span {
+    margin-left: var(--spacing-sm);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.footer-copyright {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .footer-bottom .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>

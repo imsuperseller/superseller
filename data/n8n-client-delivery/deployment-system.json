@@ -1,0 +1,20 @@
+{
+  "capabilities": [
+    "Bulk workflow deployment",
+    "Environment-specific configurations",
+    "Rollback capabilities",
+    "Deployment status tracking",
+    "Automated testing",
+    "Error handling and recovery"
+  ],
+  "supportedFormats": [
+    "n8n workflow JSON",
+    "Template-based workflows",
+    "Custom configurations"
+  ],
+  "deploymentTargets": [
+    "n8n Cloud instances",
+    "Self-hosted n8n",
+    "Docker containers"
+  ]
+}

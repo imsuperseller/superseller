@@ -1,0 +1,311 @@
+# 📝 RENSTO WEBSITE CONTENT SPECIFICATIONS
+
+**Date**: January 16, 2025  
+**Project**: Rensto Universal Automation Platform Website  
+**Purpose**: Complete content specifications for all website pages
+
+---
+
+## 🏠 **HOME PAGE CONTENT**
+
+### **Hero Section**
+**Headline**: "Universal Automation Platform for Any Industry"
+**Subheadline**: "Transform your business with AI-powered automation that works for any niche. Set up in minutes, scale infinitely, pay only for what you use."
+**Primary CTA**: "Start Free Trial"
+**Secondary CTA**: "View Pricing Plans"
+
+### **Value Propositions**
+1. **Universal Templates**
+   - **Title**: "Works for Any Industry"
+   - **Description**: "Pre-built automation templates that adapt to your business, whether you're in healthcare, finance, e-commerce, or any other industry."
+   - **Icon**: 🌐
+
+2. **Self-Service Setup**
+   - **Title**: "Set Up in Minutes"
+   - **Description**: "No technical expertise required. Our intuitive platform lets you configure and deploy automations without waiting for developers."
+   - **Icon**: ⚡
+
+3. **Usage-Based Billing**
+   - **Title**: "Pay Only for What You Use"
+   - **Description**: "Scale your automation as you grow. Pay per interaction, per workflow, or per feature - no hidden fees or unused capacity."
+   - **Icon**: 💰
+
+4. **Enterprise Grade**
+   - **Title**: "Professional & Reliable"
+   - **Description**: "Built for businesses that need reliability. 99.9% uptime, enterprise security, and white-label options for agencies."
+   - **Icon**: 🏢
+
+### **Social Proof Section**
+**Headline**: "Trusted by Businesses Worldwide"
+**Testimonials**:
+- "Rensto transformed our operations in 48 hours. What used to take weeks now happens automatically." - Sarah Chen, Operations Director
+- "The universal templates saved us months of development time. It just works for our industry." - Michael Rodriguez, CEO
+- "Finally, an automation platform that scales with our business without breaking the bank." - Jennifer Park, CTO
+
+### **Features Preview**
+**Headline**: "Everything You Need to Automate Your Business"
+- **AI Agent Management**: Create and manage intelligent automation agents
+- **Universal Templates**: Pre-built workflows for any industry
+- **Real-time Analytics**: Track performance and optimize results
+- **Self-Service Portal**: Manage everything from one dashboard
+- **White-label Options**: Brand the platform as your own
+
+---
+
+## 💰 **PRICING PAGE CONTENT**
+
+### **Page Header**
+**Headline**: "Simple, Transparent Pricing"
+**Subheadline**: "Choose the plan that fits your business. Upgrade or downgrade anytime."
+
+### **Pricing Plans**
+
+#### **Starter Plan - $97/month**
+**Target**: Small businesses getting started
+**Features**:
+- ✅ 100 AI agent interactions/month
+- ✅ 5 universal templates
+- ✅ Basic analytics dashboard
+- ✅ Email support
+- ✅ Self-service setup
+- ✅ Mobile app access
+**CTA**: "Start Free Trial"
+
+#### **Professional Plan - $197/month**
+**Target**: Growing businesses
+**Features**:
+- ✅ 500 AI agent interactions/month
+- ✅ 20 universal templates
+- ✅ Advanced analytics & reporting
+- ✅ Priority support
+- ✅ Custom integrations
+- ✅ Team collaboration (up to 5 users)
+- ✅ API access
+**CTA**: "Start Free Trial"
+**Popular Badge**: "Most Popular"
+
+#### **Enterprise Plan - $497/month**
+**Target**: Large businesses and agencies
+**Features**:
+- ✅ Unlimited AI agent interactions
+- ✅ All universal templates
+- ✅ White-label platform
+- ✅ Custom branding
+- ✅ Dedicated support
+- ✅ Unlimited team members
+- ✅ Advanced API access
+- ✅ Custom integrations
+- ✅ SLA guarantee
+**CTA**: "Contact Sales"
+
+### **Usage-Based Add-ons**
+**Additional Interactions**: $0.10 per interaction beyond plan limits
+**Additional Templates**: $25/month per template pack
+**Additional Users**: $15/month per user (Professional plan)
+
+### **FAQ Section**
+**Q**: "Can I change plans anytime?"
+**A**: "Yes, upgrade or downgrade your plan at any time. Changes take effect immediately."
+
+**Q**: "What happens if I exceed my usage limits?"
+**A**: "We'll notify you when you're approaching limits. Additional usage is billed at $0.10 per interaction."
+
+**Q**: "Is there a setup fee?"
+**A**: "No setup fees. Start with a free trial and only pay when you're ready to go live."
+
+---
+
+## 🚀 **FEATURES PAGE CONTENT**
+
+### **Page Header**
+**Headline**: "Universal Automation Platform"
+**Subheadline**: "Everything you need to automate your business, regardless of industry or size."
+
+### **Core Features**
+
+#### **Universal Templates**
+**Description**: "Pre-built automation workflows that work for any industry. From lead generation to customer support, we have templates that adapt to your business needs."
+**Benefits**:
+- No coding required
+- Industry-agnostic design
+- Customizable to your needs
+- Regular updates and improvements
+
+#### **AI Agent Management**
+**Description**: "Create and manage intelligent automation agents that handle complex business processes with human-like decision making."
+**Benefits**:
+- Natural language processing
+- Context-aware responses
+- Learning and improvement
+- Multi-channel communication
+
+#### **Self-Service Portal**
+**Description**: "Complete control over your automation setup. Configure, deploy, and manage everything from one intuitive dashboard."
+**Benefits**:
+- No technical expertise required
+- Real-time configuration changes
+- Instant deployment
+- Comprehensive monitoring
+
+#### **Real-time Analytics**
+**Description**: "Track performance, monitor usage, and optimize your automations with detailed analytics and reporting."
+**Benefits**:
+- Live performance metrics
+- Usage tracking and billing
+- ROI analysis
+- Custom reporting
+
+#### **White-label Options**
+**Description**: "Brand the platform as your own. Perfect for agencies and consultants who want to offer automation services."
+**Benefits**:
+- Custom branding and colors
+- Your domain and logo
+- Client management tools
+- Revenue sharing options
+
+### **Industry Applications**
+**Healthcare**: Patient scheduling, insurance processing, appointment reminders
+**Finance**: Loan processing, compliance monitoring, customer onboarding
+**E-commerce**: Order processing, inventory management, customer support
+**Real Estate**: Lead qualification, property matching, document processing
+**Professional Services**: Client onboarding, project management, billing automation
+
+---
+
+## 🏢 **ABOUT PAGE CONTENT**
+
+### **Page Header**
+**Headline**: "Transforming Business Operations Through Universal Automation"
+**Subheadline**: "We believe every business deserves access to powerful automation, regardless of size or industry."
+
+### **Our Mission**
+"To democratize business automation by providing universal, self-service tools that work for any industry. We're eliminating the barriers between businesses and the power of AI-driven automation."
+
+### **Our Story**
+"Rensto was born from the frustration of seeing businesses struggle with expensive, custom automation solutions that took months to implement and required ongoing technical support. We set out to create something different - a universal platform that works for any business, in any industry, with self-service capabilities that put control back in the hands of business owners."
+
+### **Our Values**
+- **Universal**: Our platform works for any industry, any size business
+- **Self-Service**: You control your automation, not the other way around
+- **Transparent**: Clear pricing, no hidden fees, honest communication
+- **Scalable**: Grow with your business, pay only for what you use
+- **Reliable**: Enterprise-grade infrastructure with 99.9% uptime
+
+### **Team**
+**Shai Friedman - Founder & CEO**
+"Passionate about making automation accessible to every business. 10+ years in business operations and automation."
+
+### **Customer Success Stories**
+**Tax4Us**: "Reduced content creation time by 70% with automated blog posts and social media management."
+**Shelly Insurance**: "Streamlined client onboarding and document processing, saving 20 hours per week."
+**Wonder.care**: "Automated lead qualification and follow-up, increasing conversion rates by 40%."
+
+### **Technology Leadership**
+- **AI-First Approach**: Built on cutting-edge AI and machine learning
+- **Universal Architecture**: Works across industries and use cases
+- **Self-Service Design**: No technical expertise required
+- **Enterprise Security**: Bank-level security and compliance
+
+---
+
+## 📞 **CONTACT PAGE CONTENT**
+
+### **Page Header**
+**Headline**: "Ready to Transform Your Business?"
+**Subheadline**: "Get in touch with our team to discuss how Rensto can revolutionize your operations."
+
+### **Contact Options**
+
+#### **Sales Inquiries**
+**For**: New customers, enterprise deals, partnership opportunities
+**Email**: sales@rensto.com
+**Response Time**: Within 2 hours during business hours
+
+#### **Support**
+**For**: Existing customers, technical questions, account issues
+**Email**: support@rensto.com
+**Response Time**: Within 4 hours
+**Self-Service**: Available 24/7 in your customer portal
+
+#### **Partnerships**
+**For**: Integration partners, resellers, white-label opportunities
+**Email**: partnerships@rensto.com
+**Response Time**: Within 24 hours
+
+### **Contact Form**
+**Fields**:
+- Name (required)
+- Email (required)
+- Company
+- Phone
+- Inquiry Type (Sales, Support, Partnership, Other)
+- Message (required)
+- How did you hear about us?
+
+### **FAQ Section**
+**Q**: "How quickly can I get started?"
+**A**: "Most customers are up and running within 24 hours of signup. Our self-service setup makes it incredibly fast."
+
+**Q**: "Do you offer custom integrations?"
+**A**: "Yes, our Professional and Enterprise plans include custom integration support."
+
+**Q**: "What kind of support do you provide?"
+**A**: "Email support for all plans, priority support for Professional, and dedicated support for Enterprise customers."
+
+**Q**: "Can I try before I buy?"
+**A**: "Absolutely! Start with a free trial and only pay when you're ready to go live."
+
+### **Office Information**
+**Address**: [Your Business Address]
+**Phone**: [Your Phone Number]
+**Business Hours**: Monday-Friday, 9 AM - 6 PM EST
+
+---
+
+## 📋 **LEGAL PAGES CONTENT**
+
+### **Privacy Policy**
+**Key Sections**:
+- Information we collect
+- How we use your information
+- Data sharing and protection
+- Your rights and choices
+- Cookie policy
+- Contact information
+
+### **Terms of Service**
+**Key Sections**:
+- Service description
+- Subscription terms
+- Usage limits and billing
+- User responsibilities
+- Intellectual property
+- Limitation of liability
+- Termination and cancellation
+
+---
+
+## 🎯 **CALL-TO-ACTION STRATEGY**
+
+### **Primary CTAs**
+- "Start Free Trial" (Home, Features, About)
+- "View Pricing Plans" (Home, Features)
+- "Contact Sales" (Pricing Enterprise, Contact)
+- "Get Started" (Various pages)
+
+### **Secondary CTAs**
+- "Learn More" (Home)
+- "See Features" (Pricing)
+- "View Demo" (Features)
+- "Contact Support" (Support pages)
+
+### **CTA Placement**
+- Hero sections (primary)
+- Feature sections (secondary)
+- Pricing tables (primary)
+- Page footers (secondary)
+- Sidebar (contextual)
+
+---
+
+**📚 Note**: All content is optimized for the micro-SaaS business model and focuses on universal appeal, self-service capabilities, and subscription value propositions.

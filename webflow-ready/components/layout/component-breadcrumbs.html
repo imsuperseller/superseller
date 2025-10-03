@@ -1,0 +1,574 @@
+<!-- 🍞 BREADCRUMBS COMPONENT -->
+<!-- Contains: Navigation breadcrumbs, path indicators, and back navigation -->
+<!-- Character Count: ~4,000 chars -->
+<!-- Business Model: Universal Automation Platform with Navigation -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensto Breadcrumbs - Navigation Path</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        /* Breadcrumbs Container */
+        .breadcrumbs-container {
+            padding: 2rem;
+            background: var(--dark-bg);
+        }
+        
+        .breadcrumbs-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Breadcrumbs */
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item:not(:last-child)::after {
+            content: "›";
+            color: var(--gray-text);
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .breadcrumb-link {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-link:hover {
+            opacity: 1;
+            color: var(--cyan);
+        }
+        
+        .breadcrumb-icon {
+            font-size: 1rem;
+        }
+        
+        .breadcrumb-current {
+            color: var(--cyan);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-current-icon {
+            font-size: 1rem;
+        }
+        
+        /* Back Button */
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light-text);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+        
+        .back-button:hover {
+            background: rgba(95, 251, 253, 0.2);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        .back-button-icon {
+            font-size: 0.9rem;
+        }
+        
+        /* Breadcrumb Variations */
+        .breadcrumbs-minimal {
+            background: transparent;
+            padding: 1rem 0;
+        }
+        
+        .breadcrumbs-minimal .breadcrumb-link {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .breadcrumbs-minimal .breadcrumb-current {
+            font-size: 0.8rem;
+        }
+        
+        .breadcrumbs-with-icons {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .breadcrumbs-with-icons .breadcrumb-link {
+            font-size: 0.95rem;
+        }
+        
+        .breadcrumbs-with-icons .breadcrumb-current {
+            font-size: 0.95rem;
+        }
+        
+        /* Breadcrumb with Actions */
+        .breadcrumbs-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .breadcrumb-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        .breadcrumb-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light-text);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-action:hover {
+            background: rgba(95, 251, 253, 0.2);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        .breadcrumb-action-icon {
+            font-size: 0.9rem;
+        }
+        
+        /* Breadcrumb with Search */
+        .breadcrumbs-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .breadcrumb-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-search-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 200px;
+        }
+        
+        .breadcrumb-search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        .breadcrumb-search-input::placeholder {
+            color: var(--gray-text);
+        }
+        
+        .breadcrumb-search-button {
+            background: linear-gradient(135deg, var(--orange), var(--blue));
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .breadcrumb-search-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(191, 87, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .breadcrumbs-container {
+                padding: 1rem;
+            }
+            
+            .breadcrumbs-actions,
+            .breadcrumbs-search {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .breadcrumb-search-input {
+                width: 100%;
+            }
+            
+            .breadcrumb-list {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Standard Breadcrumbs -->
+    <section class="breadcrumbs-container">
+        <div class="breadcrumbs-wrapper">
+            <nav class="breadcrumbs">
+                <a href="#" class="back-button">
+                    <span class="back-button-icon">←</span>
+                    Back
+                </a>
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">🏠</span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/services" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">⚙️</span>
+                            Services
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/marketplace" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">🛒</span>
+                            Marketplace
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">
+                            <span class="breadcrumb-current-icon">📋</span>
+                            Automation Templates
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Minimal Breadcrumbs -->
+    <section class="breadcrumbs-container breadcrumbs-minimal">
+        <div class="breadcrumbs-wrapper">
+            <nav class="breadcrumbs">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/blog" class="breadcrumb-link">Blog</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/blog/automation" class="breadcrumb-link">Automation</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">Getting Started with n8n</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Breadcrumbs with Icons -->
+    <section class="breadcrumbs-container breadcrumbs-with-icons">
+        <div class="breadcrumbs-wrapper">
+            <nav class="breadcrumbs">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">🏠</span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/custom-solutions" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">⚙️</span>
+                            Custom Solutions
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/custom-solutions/consultation" class="breadcrumb-link">
+                            <span class="breadcrumb-icon">💬</span>
+                            Consultation
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">
+                            <span class="breadcrumb-current-icon">📅</span>
+                            Book Your Session
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Breadcrumbs with Actions -->
+    <section class="breadcrumbs-container">
+        <div class="breadcrumbs-wrapper">
+            <div class="breadcrumbs-actions">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb-list">
+                        <li class="breadcrumb-item">
+                            <a href="/" class="breadcrumb-link">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/subscriptions" class="breadcrumb-link">Subscriptions</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <span class="breadcrumb-current">Lead Generation</span>
+                        </li>
+                    </ol>
+                </nav>
+                <div class="breadcrumb-actions">
+                    <a href="#share" class="breadcrumb-action">
+                        <span class="breadcrumb-action-icon">📤</span>
+                        Share
+                    </a>
+                    <a href="#save" class="breadcrumb-action">
+                        <span class="breadcrumb-action-icon">💾</span>
+                        Save
+                    </a>
+                    <a href="#print" class="breadcrumb-action">
+                        <span class="breadcrumb-action-icon">🖨️</span>
+                        Print
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breadcrumbs with Search -->
+    <section class="breadcrumbs-container">
+        <div class="breadcrumbs-wrapper">
+            <div class="breadcrumbs-search">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb-list">
+                        <li class="breadcrumb-item">
+                            <a href="/" class="breadcrumb-link">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/resources" class="breadcrumb-link">Resources</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <span class="breadcrumb-current">Documentation</span>
+                        </li>
+                    </ol>
+                </nav>
+                <div class="breadcrumb-search">
+                    <input type="text" class="breadcrumb-search-input" placeholder="Search documentation..." id="breadcrumbSearch">
+                    <button class="breadcrumb-search-button">Search</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate breadcrumbs
+        gsap.utils.toArray('.breadcrumb-item').forEach((item, i) => {
+            gsap.from(item, {
+                duration: 0.5,
+                x: -20,
+                opacity: 0,
+                delay: i * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate back button
+        gsap.from('.back-button', {
+            duration: 0.8,
+            x: -30,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+
+        // Animate action buttons
+        gsap.from('.breadcrumb-action', {
+            duration: 0.6,
+            y: 20,
+            opacity: 0,
+            delay: 0.3,
+            ease: 'power3.out'
+        });
+
+        // Breadcrumb link functionality
+        document.querySelectorAll('.breadcrumb-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                alert(`Navigating to: ${href}. This would redirect to the specified page.`);
+            });
+        });
+
+        // Back button functionality
+        document.querySelectorAll('.back-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Going back to previous page. This would use browser history or navigate to parent page.');
+            });
+        });
+
+        // Action button functionality
+        document.querySelectorAll('.breadcrumb-action').forEach(action => {
+            action.addEventListener('click', function(e) {
+                e.preventDefault();
+                const action = this.textContent.trim();
+                alert(`${action}: This would perform the specified action.`);
+            });
+        });
+
+        // Search functionality
+        document.getElementById('breadcrumbSearch').addEventListener('input', function() {
+            const query = this.value;
+            if (query.length > 2) {
+                alert(`Searching documentation for: "${query}". This would filter or search the current section.`);
+            }
+        });
+
+        document.querySelector('.breadcrumb-search-button').addEventListener('click', function() {
+            const query = document.getElementById('breadcrumbSearch').value;
+            if (query) {
+                alert(`Searching for: "${query}". This would perform a full documentation search.`);
+            }
+        });
+
+        // Add hover effects to breadcrumb links
+        document.querySelectorAll('.breadcrumb-link').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    x: 5,
+                    ease: 'power2.out'
+                });
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    x: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to action buttons
+        document.querySelectorAll('.breadcrumb-action').forEach(action => {
+            action.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1.05,
+                    ease: 'power2.out'
+                });
+            });
+            
+            action.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add hover effects to back button
+        document.querySelectorAll('.back-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    x: -5,
+                    ease: 'power2.out'
+                });
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    duration: 0.3,
+                    x: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

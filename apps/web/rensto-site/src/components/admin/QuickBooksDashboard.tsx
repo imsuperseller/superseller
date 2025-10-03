@@ -41,8 +41,8 @@ export default function QuickBooksDashboard() {
   const [customerData, setCustomerData] = useState<CustomerData[]>([
     {
       id: '1',
-      name: 'Ben Ginati',
-      company: 'Tax4Us',
+      name: 'Customer A',
+      company: 'Business Solutions Inc',
       paid: 3000,
       outstanding: 2000,
       monthlyExpenses: 1250,
@@ -50,8 +50,8 @@ export default function QuickBooksDashboard() {
     },
     {
       id: '2',
-      name: 'Shelly Mizrahi',
-      company: 'Insurance',
+      name: 'Customer B',
+      company: 'Professional Services',
       paid: 150,
       outstanding: 100,
       monthlyExpenses: 75,
@@ -59,8 +59,8 @@ export default function QuickBooksDashboard() {
     },
     {
       id: '3',
-      name: 'Ortal Flanary',
-      company: 'Facebook Marketing',
+      name: 'Customer C',
+      company: 'Digital Marketing Co',
       paid: 5198,
       outstanding: 0,
       monthlyExpenses: 450,
@@ -239,7 +239,7 @@ export default function QuickBooksDashboard() {
                   <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-center py-2 border-b border-cyan-500/5">
                 <span className="text-sm text-muted-foreground font-medium">API Connection</span>
                 <div className="flex items-center">
@@ -247,22 +247,22 @@ export default function QuickBooksDashboard() {
                   <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-center py-2 border-b border-cyan-500/5">
                 <span className="text-sm text-muted-foreground font-medium">Last Sync</span>
                 <span className="text-sm font-mono font-semibold text-cyan-400">{quickBooksStatus.lastSync}</span>
               </div>
-              
+
               <div className="flex justify-between items-center py-2 border-b border-cyan-500/5">
                 <span className="text-sm text-muted-foreground font-medium">Realm ID</span>
                 <span className="text-sm font-mono font-semibold text-cyan-400">{quickBooksStatus.realmId}</span>
               </div>
-              
+
               <div className="flex justify-between items-center py-2 border-b border-cyan-500/5">
                 <span className="text-sm text-muted-foreground font-medium">Access Token</span>
                 <span className="text-sm font-mono font-semibold text-cyan-400">{quickBooksStatus.accessToken}</span>
               </div>
-              
+
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-muted-foreground font-medium">Refresh Token</span>
                 <span className="text-sm font-mono font-semibold text-cyan-400">{quickBooksStatus.refreshToken}</span>
@@ -290,7 +290,7 @@ export default function QuickBooksDashboard() {
                   </span>
                 </div>
                 <div className="w-full bg-orange-500/20 rounded-full h-1">
-                  <div 
+                  <div
                     className="bg-orange-500 h-1 rounded-full transition-all duration-300"
                     style={{ width: `${expense.percentage}%` }}
                   ></div>

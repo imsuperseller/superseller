@@ -376,9 +376,9 @@ class BusinessVisualizationGenerator {
 ║  │       │   └── types/                 JSON: ${this.analysis.codebase.languages?.json || 0} files              ║
 ║  │       └── public/                    Markdown: ${this.analysis.codebase.languages?.md || 0} files              ║
 ║  ├── infra/                             YAML: ${this.analysis.codebase.languages?.yml || 0} files              ║
-║  │   ├── mcp-servers/                   SQL: ${this.analysis.codebase.languages?.sql || 0} files              ║
-║  │   ├── n8n-workflows/                 ──────────────────────────────────   ║
-║  │   └── systemd/                       ║
+║  │   ├── mcp-servers/ (OBSOLETE)        SQL: ${this.analysis.codebase.languages?.sql || 0} files              ║
+║  │   ├── n8n-workflows/ (OBSOLETE)      ──────────────────────────────────   ║
+║  │   └── systemd/ (OBSOLETE)            ║
 ║  ├── scripts/                           ║
 ║  │   ├── management/                    ║
 ║  │   ├── testing/                       ║

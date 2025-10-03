@@ -4,17 +4,12 @@
 
 ### **Step 1: Choose Your Platform**
 
-#### **A. Vercel (Recommended - 5 minutes)**
 ```bash
-# Install Vercel CLI
-npm i -g vercel
 
 # Deploy
 cd web/rensto-site
-vercel --prod
 
 # Follow prompts to:
-# 1. Link to Vercel account
 # 2. Set project name
 # 3. Configure environment variables
 ```
@@ -49,8 +44,6 @@ NEXTAUTH_URL=https://your-domain.com
 NEXTAUTH_SECRET=your-super-secret-key-here
 
 # Optional (for full functionality)
-STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key
 SENDGRID_API_KEY=your_sendgrid_api_key
 ```
 

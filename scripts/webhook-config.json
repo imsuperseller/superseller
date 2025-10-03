@@ -1,0 +1,26 @@
+{
+  "webhooks": [
+    {
+      "name": "Shelly Insurance Analysis",
+      "url": "https://shellyins.app.n8n.cloud/webhook/svix-insurance-analysis",
+      "eventType": "HarbDataLoaded",
+      "timeout": 15,
+      "critical": true,
+      "owner": "Shelly"
+    },
+    {
+      "name": "SaaS Lead Enrichment",
+      "url": "http://173.254.201.134:5678/webhook/lead-enrichment-saas",
+      "eventType": "lead.created",
+      "timeout": 10,
+      "critical": true,
+      "owner": "SaaS System"
+    }
+  ],
+  "settings": {
+    "retryAttempts": 3,
+    "retryDelay": 5,
+    "alertThreshold": 2,
+    "healthCheckInterval": 300
+  }
+}

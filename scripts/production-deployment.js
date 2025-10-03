@@ -13,7 +13,8 @@ class ProductionDeployment {
             deploy: {}
         };
         this.boostSpaceConfig = {
-            mcpServer: 'http://173.254.201.134:3001'
+            // Updated: MCP servers now use NPX packages instead of VPS HTTP endpoints
+            mcpServer: 'NPX_PACKAGE_METHOD' // OBSOLETE: VPS HTTP endpoint
         };
         this.systemIntegrations = {
             rollbar: '664394f18bc846aba5f163a4ae6463d7150ff65e68a04b8214cdc06d692ebb47ea9d539b4d5b915e75df71cb96801de7',
