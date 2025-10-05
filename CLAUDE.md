@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 5, 2025 (Evening - Codebase Reorganized + Stripe Complete)
-**Status**: ✅ Files Organized, Payment Flows Ready, Clean Structure
+**Last Updated**: October 5, 2025 (Night - Phase 1 Consolidation Complete)
+**Status**: ✅ Codebase Consolidated (26→19 folders), Payment Flows Ready, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -23,6 +23,7 @@
 13. [Admin Portal](#admin-portal)
 14. [Tech Stack](#tech-stack)
 15. [Quick Reference](#quick-reference)
+16. [Codebase Consolidation](#16-codebase-consolidation-oct-5-2025---phase-1-complete)
 
 ---
 
@@ -861,20 +862,44 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | Webflow | https://rensto.com | Webflow account |
 | Vercel | https://vercel.com/dashboard | Vercel account |
 
-### **Key File Locations**
+### **Key File Locations** (Updated Oct 5, 2025 - Evening)
 
 | Resource | Location |
 |----------|----------|
-| Scripts | `/Users/shaifriedman/New Rensto/rensto/scripts/` |
-| BMAD Scripts | `/scripts/bmad/` (41 files) |
+| **Core Applications** | |
 | Admin Dashboard | `/apps/web/admin-dashboard/` |
 | Rensto Site | `/apps/web/rensto-site/` |
-| MCP Servers | `/infra/mcp-servers/` |
-| Customer Portal | `/live-systems/customer-portal/` |
-| n8n Workflows | `/live-systems/n8n-system/workflows/` |
-| Documentation | 2 root-level .md files (CLAUDE.md, README.md) + organized /docs/ structure (115 files cleaned up Oct 5, 2025) |
-| Data Architecture | `/DATA_ARCHITECTURE_STRATEGY.md` |
-| Sync Architecture | `/COMPLETE_SYNC_ARCHITECTURE_FINAL.md` |
+| **Workflows & Automation** | |
+| Production Workflows | `/workflows/` (consolidated Oct 5) |
+| n8n Functions | `/workflows/n8n-functions/` (was `/n8n/`) |
+| n8n References | `/workflows/n8n-references/` (was `/n8n-organized/`) |
+| Customer Workflows | `/workflows/nir-sheinbein/`, `/workflows/n8n/` |
+| **Customer & Project Data** | |
+| Active Customers | `/Customers/{customer-name}/` (4 customers) |
+| Prospects | `/Customers/prospects/` (was `/Leads/`) |
+| Projects | `/Customers/projects/` (was `/Projects/`) |
+| **Configuration & Infrastructure** | |
+| All Configs | `/configs/` (consolidated Oct 5) |
+| Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`) |
+| MCP Servers | `/infra/mcp-servers/` (22 servers) |
+| MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
+| **Webflow Deployment** | |
+| Webflow Pages | `/webflow/pages/` (23 HTML files, Stripe-integrated) |
+| Webflow Templates | `/webflow/templates/` (5 templates) |
+| Webflow Docs | `/webflow/docs/` |
+| **Data & Scripts** | |
+| Data Files | `/data/json/` (13 JSON files) |
+| Scripts | `/scripts/` (organized by category) |
+| BMAD Scripts | `/scripts/bmad/` (41 files) |
+| **Documentation** | |
+| Master Docs | `/CLAUDE.md` (this file), `/README.md` |
+| Organized Docs | `/docs/` (71 MD files, 83% reduction from 413) |
+| **Operations** | |
+| Admin Scripts | `/live-systems/admin-scripts/` (was `/admin-portal/`) |
+| Customer Portal Scripts | `/live-systems/customer-portal/` |
+| **Product Catalog** | |
+| Product Catalog | `/products/product-catalog.json` (8 products) |
+| Marketplace Config | `/marketplace/` (platform configs) |
 
 ### **Airtable Base IDs**
 
@@ -907,6 +932,80 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 ### **API Keys Location**
 
 All API keys stored in: `~/.cursor/mcp.json`
+
+---
+
+## 16. CODEBASE CONSOLIDATION (Oct 5, 2025 - Phase 1 Complete)
+
+### **Before Consolidation**
+- 🔴 26 directories at root
+- 🔴 Duplicate folders: 5 locations for n8n, 3 locations for customers, 3 locations for configs
+- 🔴 `~/` folder at root (incorrect location)
+- 🔴 Unclear naming (admin-portal vs admin-dashboard)
+
+### **After Consolidation**
+- ✅ 19 directories at root (27% reduction)
+- ✅ All duplicates consolidated
+- ✅ Clear, organized structure
+- ✅ Proper locations for all files
+
+### **Changes Made**
+
+#### **Deleted/Moved:**
+1. **`~/` folder** → Deleted (cloudflared configs moved to `/configs/cloudflare-tunnel/`)
+2. **`n8n/`** → Moved to `/workflows/n8n-functions/`
+3. **`n8n-organized/`** → Moved to `/workflows/n8n-references/`
+4. **`Leads/`** → Merged into `/Customers/prospects/`
+5. **`Projects/`** → Merged into `/Customers/projects/`
+6. **`system/`** → Archived (empty folders deleted, misc archived)
+7. **`mcp-server-cloudflare/`** → Moved to `/infra/mcp-reference/cloudflare/`
+
+#### **Renamed for Clarity:**
+- **`live-systems/admin-portal/`** → **`live-systems/admin-scripts/`**
+  - Reason: Actual admin dashboard code is in `/apps/web/admin-dashboard/`
+  - This folder contains operational scripts, not the portal itself
+
+#### **Clarified (Kept Separate):**
+- **`marketplace/`** = Platform configuration (pricing tiers, checkout system configs)
+- **`products/`** = Individual product catalog (8 products defined)
+- **`webflow-devlink-project/`** = Active Webflow DevLink development project (Sept 30, 2025)
+- **`scripts/node_modules/`** = Correct location (scripts has its own package.json)
+
+### **Current Root Directory Structure** (19 folders)
+```
+/
+├── apps/                  # All application code (admin dashboard, rensto site, APIs)
+├── archives/              # Archived files from consolidation
+├── assets/                # Images and static assets
+├── cloudflare-workers/    # Cloudflare Workers code
+├── configs/               # All configuration files (consolidated)
+├── Customers/             # All customer/prospect/project data (consolidated)
+├── data/                  # Data files (JSON, temp, backups)
+├── docs/                  # Documentation (71 MD files, down from 413)
+├── infra/                 # Infrastructure (MCP servers, n8n client delivery)
+├── live-systems/          # Operational scripts (admin, customer portal, n8n)
+├── marketplace/           # Marketplace platform configs
+├── node_modules/          # Dependencies
+├── ops/                   # Operations specs
+├── packages/              # Monorepo shared packages
+├── products/              # Product catalog
+├── scripts/               # Utility scripts (organized by category)
+├── webflow-devlink-project/ # Webflow DevLink sync project
+├── webflow/               # Webflow deployment files (pages, templates, docs)
+└── workflows/             # All n8n workflows (production, templates, references)
+```
+
+### **Benefits Achieved**
+- ✅ **Clearer navigation**: Each folder has single, clear purpose
+- ✅ **Reduced duplication**: Consolidated 5 n8n locations → 1 workflows folder
+- ✅ **Better organization**: Customer data in one place, configs in one place
+- ✅ **Easier onboarding**: New developers can find files faster
+- ✅ **Reduced confusion**: Renamed folders for clarity (admin-portal → admin-scripts)
+
+### **Next Steps (Phase 2)**
+- 🔄 Deep script organization (currently 89M, many files)
+- 🔄 Further documentation consolidation
+- 🔄 Archive old audit reports (6+ months)
 
 ---
 

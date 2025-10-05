@@ -123,6 +123,7 @@ Thumbs.db
 
 # Cloudflare tunnel credentials
 cloudflared/
+configs/cloudflare-tunnel/
 
 # Rclone configuration
 rclone.conf
