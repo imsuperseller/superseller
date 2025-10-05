@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 5, 2025 (Evening - Stripe Integration Complete)
-**Status**: ✅ Marketplace & Subscriptions Payment Flows Ready for Deployment
+**Last Updated**: October 5, 2025 (Evening - Codebase Reorganized + Stripe Complete)
+**Status**: ✅ Files Organized, Payment Flows Ready, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -548,8 +548,8 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 - Committed: `92557a5 🐛 fix: Make customerEmail optional in Stripe checkout API`
 
 **Files Updated with Stripe Integration**:
-- `WEBFLOW_EMBED_MARKETPLACE_CVJ.html` (v2.0) - 6 pricing buttons integrated
-- `WEBFLOW_EMBED_SUBSCRIPTIONS_CVJ.html` (v2.0) - 3 pricing buttons integrated
+- `webflow/pages/WEBFLOW_EMBED_MARKETPLACE_CVJ.html` (v2.0) - 6 pricing buttons integrated
+- `webflow/pages/WEBFLOW_EMBED_SUBSCRIPTIONS_CVJ.html` (v2.0) - 3 pricing buttons integrated
 
 **Next Step**: User needs to paste files into Webflow Designer and publish
 
@@ -986,3 +986,66 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Next Review**: When any critical system changes
 **Owner**: Shai Friedman
 **Maintained By**: Claude AI (via this document)
+
+---
+
+## 16. FILE ORGANIZATION (Updated Oct 5, 2025)
+
+### **New Directory Structure**
+
+**Root directory is now clean** - only essential files remain.
+
+```
+/
+├── CLAUDE.md                          # Master documentation (THIS FILE)
+├── README.md                          # GitHub entry point
+├── package.json, package-lock.json    # Node.js
+├── .gitignore, .cursorrules, .env     # Config
+│
+├── webflow/                           # ✅ All Webflow files
+│   ├── pages/                         # 23 WEBFLOW_EMBED pages
+│   ├── templates/                     # 5 template files
+│   └── docs/                          # Deployment instructions
+│
+├── data/                              # ✅ All data files
+│   ├── json/                          # JSON data (13 files)
+│   ├── configs/                       # Credentials & configs
+│   └── temp/                          # Temporary files
+│
+├── scripts/                           # Scripts (organized by category)
+│   ├── airtable/
+│   ├── n8n/
+│   ├── webflow/
+│   ├── deployment/
+│   └── archive/
+│
+├── docs/                              # Documentation (413 → ~50 files)
+├── apps/                              # Application code
+├── infra/                             # Infrastructure
+└── archives/                          # Old/archived files
+```
+
+### **Key File Locations**
+
+| Resource | New Location | Old Location |
+|----------|-------------|--------------|
+| Webflow pages | `webflow/pages/` | Root (moved) |
+| Webflow docs | `webflow/docs/` | Root (moved) |
+| Data files | `data/json/` | Root (moved) |
+| Configs | `data/configs/` | Root (moved) |
+| Scripts | `scripts/[category]/` | Root (moved) |
+
+### **Before Reorganization** (Oct 5, 2025):
+- 🔴 70 files at root
+- 🔴 28 HTML files cluttering root
+- 🔴 13 JSON files scattered
+- 🔴 Scripts unorganized
+
+### **After Reorganization** (Oct 5, 2025):
+- ✅ ~15 files at root (essential only)
+- ✅ 0 HTML files at root (all in webflow/)
+- ✅ 0 data files at root (all in data/)
+- ✅ Scripts organized by category
+
+**Reorganization committed**: `1b25274` (Oct 5, 2025)
+
