@@ -999,7 +999,7 @@ All API keys stored in: `~/.cursor/mcp.json`
 /
 ├── apps/                  # All application code (admin dashboard, rensto site, APIs)
 ├── archives/              # Archived files (51M, 17 dirs, retention policy documented)
-├── assets/                # Images and static assets
+├── assets/                # Shared brand assets (0B, hybrid strategy documented)
 ├── cloudflare-workers/    # Cloudflare Workers code
 ├── configs/               # All configuration files (consolidated)
 ├── Customers/             # All customer/prospect/project data (consolidated)
@@ -1059,6 +1059,32 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Documentation**: See `archives/README.md` for full details
 
 **Next Cleanup**: November 2025 (delete expired logs)
+
+### **Asset Management** (`/assets/` - 0B)
+
+**Purpose**: Centralized storage for shared brand assets (logos, fonts, icons)
+
+**Strategy**: Hybrid approach
+- `/assets/` → Shared brand assets (logos, fonts, marketing materials)
+- `apps/{app}/public/` → App-specific assets (icons, page graphics)
+
+**Current Status**: Empty (ready for future brand assets)
+
+**Cleanup (Oct 5, 2025)**:
+- Moved `2025-10-03_18-02-12.png` (1.2MB screenshot) → archives/screenshots/
+- Archived `Rensto-Logo.png` (1.4MB, unused) → archives/screenshots/
+- Result: 2.6MB → 0B (100% cleanup)
+
+**Guidelines**:
+- Optimize before adding (compress, resize)
+- Use SVG for logos/icons (vector, scalable)
+- Target: <100KB for most images, <500KB for photos
+- Remove unused assets after 3 months
+
+**Documentation**: See `assets/README.md` for full guidelines
+
+**App Asset Locations**:
+- `apps/web/rensto-site/public/` (32KB) - Main site assets
 
 ---
 
