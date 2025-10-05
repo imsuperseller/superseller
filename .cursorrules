@@ -1,0 +1,243 @@
+# RENSTO PROJECT RULES - MANDATORY FOR ALL WORK
+
+**Last Updated**: October 5, 2025
+**Purpose**: Prevent architectural mistakes and ensure consistency across all development
+
+---
+
+## 🏗️ ARCHITECTURE - NEVER DEVIATE FROM THIS
+
+### **Domain Architecture** (MEMORIZE THIS):
+```
+rensto.com          → Webflow (main site, marketplace, subscriptions, all public pages)
+admin.rensto.com    → Vercel (admin dashboard only)
+api.rensto.com      → Vercel (ALL API endpoints: Stripe, webhooks, etc.)
+portal.rensto.com   → Vercel (customer portals - planned)
+```
+
+### **Critical Rules**:
+1. ⛔ **NEVER** point rensto.com DNS to Vercel - it MUST point to Webflow
+2. ⛔ **NEVER** create API routes in the main rensto.com app
+3. ✅ **ALWAYS** deploy API routes to api.rensto.com subdomain
+4. ✅ **ALWAYS** check CLAUDE.md before making architectural decisions
+
+---
+
+## 📁 PROJECT STRUCTURE
+
+### **Webflow** (`rensto.com`):
+- Hosted on Webflow, NOT in this repository
+- Contains: Marketplace, Ready Solutions, Subscriptions, Custom, About, all public pages
+- Configuration: Site ID `66c7e551a317e0e9c9f906d8`
+- Custom code: Embedded JavaScript that calls `api.rensto.com` endpoints
+
+### **Vercel** (Multiple Subdomains):
+- **admin.rensto.com**: `/apps/web/admin-dashboard/`
+- **api.rensto.com**: `/apps/web/rensto-site/` (API routes only)
+- **portal.rensto.com**: `/live-systems/customer-portal/` (planned)
+
+### **n8n Workflows**:
+- Hosted on RackNerd VPS: `173.254.201.134:5678`
+- 68 active workflows
+- Naming convention: `{TYPE}-{FUNCTION}-{VERSION}` (e.g., `STRIPE-MARKETPLACE-001`)
+
+---
+
+## 💳 STRIPE INTEGRATION (CORRECT APPROACH)
+
+### **Architecture**:
+1. Webflow pages (rensto.com) contain buttons
+2. Buttons call `https://api.rensto.com/stripe/checkout` via JavaScript
+3. API route creates Stripe session, returns checkout URL
+4. User redirects to Stripe, completes payment
+5. Stripe webhook sends event to `https://api.rensto.com/stripe/webhook`
+6. Webhook handler triggers n8n workflows
+
+### **Workflow**:
+```
+Webflow Button → api.rensto.com/stripe/checkout → Stripe Checkout
+                                                           ↓
+Stripe Webhook → api.rensto.com/stripe/webhook → n8n STRIPE-* workflows
+```
+
+### **Active Stripe n8n Workflows**:
+- `STRIPE-MARKETPLACE-001`: Template purchases
+- `STRIPE-INSTALL-001`: Installation services
+- `STRIPE-READY-001`: Ready Solutions packages
+- `STRIPE-SUBSCRIPTION-001`: Monthly subscriptions
+- `STRIPE-CUSTOM-001`: Custom solutions projects
+- `DEV-FIN-006`: Revenue sync to Airtable
+
+---
+
+## 🔑 ENVIRONMENT VARIABLES
+
+### **Vercel** (api.rensto.com & admin.rensto.com):
+```
+STRIPE_SECRET_KEY         (Production, Preview, Development)
+STRIPE_PUBLISHABLE_KEY    (Production)
+STRIPE_WEBHOOK_SECRET     (Production, Preview, Development)
+NEXT_PUBLIC_APP_URL       (Production, Preview, Development)
+OPENAI_API_KEY           (Production)
+```
+
+### **n8n** (RackNerd VPS):
+- Stored in n8n credentials manager
+- Access via n8n API with Bearer token
+
+---
+
+## 📊 DATA STORAGE HIERARCHY
+
+### **Priority Order** (ALWAYS follow this):
+1. **PRIMARY**: n8n Data Tables (workflow data, leads, logs)
+2. **SECONDARY**: Airtable (dashboards, manual config, reporting)
+3. **TERTIARY**: Notion (documentation only, 15-20 strategic docs)
+
+### **Never Store In**:
+- ❌ MongoDB (unless customer project >50K records)
+- ❌ Supabase (unless custom customer app with real-time requirements)
+
+---
+
+## 🚀 DEPLOYMENT RULES
+
+### **Before ANY Deployment**:
+1. ✅ Read `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md`
+2. ✅ Check current architecture section
+3. ✅ Verify subdomain routing
+4. ✅ Test locally first
+5. ✅ Use `vercel --prod` from correct directory
+
+### **DNS Changes**:
+1. ⛔ **NEVER** change rensto.com A record without explicit approval
+2. ✅ **ALWAYS** use Cloudflare API (token: `UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1`)
+3. ✅ **ALWAYS** enable Cloudflare proxy (orange cloud)
+
+---
+
+## 📝 DOCUMENTATION RULES
+
+### **CLAUDE.md** (Single Source of Truth):
+- Located at `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md`
+- ⚠️ **READ THIS BEFORE EVERY MAJOR CHANGE**
+- Contains: Architecture, active systems, service offerings, tech stack
+- Last Updated: October 5, 2025
+
+### **When Creating New Features**:
+1. Create `/docs/plans/{feature-name}.md` with BMAD phases
+2. Update CLAUDE.md with implementation status
+3. Create `/tmp/{feature-name}_IMPLEMENTATION_GUIDE.md` for execution
+4. Archive old docs to `/docs/archive/{year-month}/`
+
+### **BMAD Process** (Mandatory for Infrastructure Changes):
+- **B**uild: Requirements, PRD, design
+- **M**easure: KPIs, metrics, success criteria
+- **A**nalyze: Data analysis, optimization opportunities
+- **D**eploy: Production deployment, monitoring
+
+---
+
+## 🔧 DEVELOPMENT WORKFLOW
+
+### **Git Commit Messages**:
+```
+{emoji} {type}: {description}
+
+Examples:
+🎉 feat: Connect Marketplace buttons to Stripe API
+🐛 fix: Add missing React import to custom page
+📝 docs: Update CLAUDE.md with new architecture
+🔒 security: Rotate API keys and update webhooks
+```
+
+### **Branch Strategy**:
+- `main`: Production-ready code
+- Feature branches: NOT required for solo developer
+- Direct commits to `main`: ALLOWED
+
+### **Testing**:
+- Manual testing required before production deployment
+- Stripe test cards: `4242 4242 4242 4242`
+- n8n workflow testing: Use test triggers before activating
+
+---
+
+## 🚨 CRITICAL MISTAKES TO AVOID
+
+### **Architecture Mistakes**:
+1. ❌ Pointing rensto.com to Vercel (breaks Webflow site)
+2. ❌ Creating API routes in wrong subdomain
+3. ❌ Not following domain separation
+
+### **Code Mistakes**:
+1. ❌ Missing React import in Next.js files
+2. ❌ Forgetting to add dependencies to package.json
+3. ❌ Not setting environment variables in all environments
+
+### **Documentation Mistakes**:
+1. ❌ Not updating CLAUDE.md after major changes
+2. ❌ Creating duplicate documentation
+3. ❌ Not archiving outdated docs
+
+---
+
+## 🔍 BEFORE EVERY SESSION CHECKLIST
+
+1. ☑️ Read CLAUDE.md sections relevant to your task
+2. ☑️ Check git status and recent commits
+3. ☑️ Verify current branch (usually `main`)
+4. ☑️ Check active deployments on Vercel
+5. ☑️ Review open todos (if TodoWrite tool used)
+6. ☑️ Confirm architecture understanding
+
+---
+
+## 📞 KEY CONTACTS & RESOURCES
+
+### **APIs & Services**:
+- Stripe Dashboard: https://dashboard.stripe.com
+- Vercel Dashboard: https://vercel.com/dashboard
+- Cloudflare Dashboard: https://dash.cloudflare.com
+- Webflow Dashboard: https://webflow.com
+- n8n Instance: http://173.254.201.134:5678
+
+### **Credentials**:
+- Stored in: `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials
+- Cloudflare API Token: `UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1`
+- n8n API Key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (in .env)
+
+---
+
+## 🎯 QUICK DECISION TREE
+
+### "Where should this code go?"
+- Public website content? → **Webflow** (rensto.com)
+- API endpoint? → **Vercel api.rensto.com** (`/apps/web/rensto-site/src/app/api/`)
+- Admin dashboard? → **Vercel admin.rensto.com** (`/apps/web/admin-dashboard/`)
+- Customer portal? → **Vercel portal.rensto.com** (`/live-systems/customer-portal/`)
+- Workflow automation? → **n8n** (173.254.201.134:5678)
+
+### "Which database should I use?"
+- Workflow data? → **n8n Data Tables**
+- Dashboards/config? → **Airtable** (sync from n8n every 15 min)
+- Documentation? → **Notion** (high-level only)
+- >50K records? → **MongoDB** (customer projects only)
+- Real-time app? → **Supabase** (customer projects only)
+
+---
+
+## 📚 ADDITIONAL RESOURCES
+
+- Full architecture: `/docs/RENSTO_WEBFLOW_VERCEL_ARCHITECTURE.md`
+- n8n workflows: `/live-systems/n8n-system/workflows/`
+- BMAD process: `/docs/BMAD_PROCESS_SPECIFIC.md`
+- Tech stack details: CLAUDE.md section 14
+
+---
+
+**🚨 REMEMBER: When in doubt, read CLAUDE.md first. It's the single source of truth.**
+
+---
+
+*This file should be read at the start of every session and consulted before making architectural decisions.*

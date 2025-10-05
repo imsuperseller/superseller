@@ -1,5 +1,28 @@
 # Cursor Rensto Rules (Authoritative)
 
+## 🚨 ARCHITECTURE - READ FIRST (MANDATORY)
+
+### **Domain Architecture** (NEVER DEVIATE):
+```
+rensto.com          → Webflow (main site, marketplace, all public pages)
+admin.rensto.com    → Vercel (admin dashboard ONLY)
+api.rensto.com      → Vercel (ALL API endpoints: Stripe, webhooks, etc.)
+portal.rensto.com   → Vercel (customer portals - planned)
+```
+
+### **Critical Architecture Rules**:
+- ⛔ **NEVER** point rensto.com DNS to Vercel - it MUST stay on Webflow
+- ⛔ **NEVER** create API routes outside of api.rensto.com subdomain
+- ✅ **ALWAYS** check CLAUDE.md before architectural decisions
+- ✅ **ALWAYS** deploy API routes to `/apps/web/rensto-site/src/app/api/` (for api.rensto.com)
+
+### **Single Source of Truth**:
+- Before ANY major change, read: `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md`
+- Contains: Complete architecture, active systems, service offerings, tech stack
+- Last Updated: October 5, 2025
+
+---
+
 ## Core Principles
 1) **Before writing code**: SEARCH repo for an existing function/module that fits; REUSE > EXTEND > REFACTOR; never duplicate.
 2) **Never create new top-level folders**. Allowed top-level: .github, .vscode, apps, packages, services, infra, scripts, docs, tests, assets, examples, experiments, archived.
