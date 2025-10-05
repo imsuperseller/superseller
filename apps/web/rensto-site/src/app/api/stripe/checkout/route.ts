@@ -1,0 +1,204 @@
+import { NextRequest, NextResponse } from 'next/server';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2024-11-20.acacia',
+});
+
+/**
+ * Stripe Checkout API - All 5 Payment Flows
+ *
+ * Flow 1: Marketplace Template Purchase ($29-$197)
+ * Flow 2: Marketplace Full-Service Install ($797-$3,500+)
+ * Flow 3: Ready Solutions Package ($890-$2,990+)
+ * Flow 4: Subscriptions Monthly ($299-$1,499)
+ * Flow 5: Custom Solutions Project ($3,500-$8,000+)
+ */
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const {
+      flowType,
+      productId,
+      tier,
+      subscriptionType,
+      customerEmail,
+      customerName,
+      metadata = {}
+    } = body;
+
+    // Validate required fields
+    // Note: customerEmail is optional - Stripe checkout will collect it
+    if (!flowType) {
+      return NextResponse.json(
+        { error: 'Missing required field: flowType' },
+        { status: 400 }
+      );
+    }
+
+    // Determine pricing and product details based on flow type
+    let priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData;
+    let successUrl: string;
+    let webhookMetadata: any = { ...metadata, flowType, customerEmail, customerName };
+
+    switch (flowType) {
+      case 'marketplace-template':
+        // Flow 1: Marketplace Template Purchase
+        const templatePrices: Record<string, number> = {
+          simple: 29,
+          advanced: 97,
+          complete: 197
+        };
+        const price = templatePrices[tier || 'simple'];
+
+        priceData = {
+          currency: 'usd',
+          product_data: {
+            name: `${tier?.toUpperCase()} Marketplace Template`,
+            description: 'Pre-built n8n workflow template ready to use',
+            metadata: { type: 'marketplace-template', tier, productId }
+          },
+          unit_amount: price * 100
+        };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=marketplace&product=${productId}`;
+        webhookMetadata = { ...webhookMetadata, productId, tier, price };
+        break;
+
+      case 'marketplace-install':
+        // Flow 2: Marketplace Full-Service Install
+        const installPrices: Record<string, number> = {
+          template: 797,
+          system: 1997,
+          enterprise: 3500
+        };
+        const installPrice = installPrices[tier || 'template'];
+
+        priceData = {
+          currency: 'usd',
+          product_data: {
+            name: `${tier?.toUpperCase()} Full-Service Installation`,
+            description: 'Template + professional installation and setup',
+            metadata: { type: 'marketplace-install', tier, productId }
+          },
+          unit_amount: installPrice * 100
+        };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=marketplace-install&product=${productId}`;
+        webhookMetadata = { ...webhookMetadata, productId, tier, price: installPrice };
+        break;
+
+      case 'ready-solutions':
+        // Flow 3: Ready Solutions Package
+        const solutionPrices: Record<string, number> = {
+          single: 890,
+          complete: 2990,
+          'full-service': 3787 // 2990 + 797
+        };
+        const solutionPrice = solutionPrices[tier || 'single'];
+
+        priceData = {
+          currency: 'usd',
+          product_data: {
+            name: `${tier?.toUpperCase()} Ready Solutions Package`,
+            description: 'Industry-specific automation solution',
+            metadata: { type: 'ready-solutions', tier }
+          },
+          unit_amount: solutionPrice * 100
+        };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=ready-solutions&tier=${tier}`;
+        webhookMetadata = { ...webhookMetadata, tier, price: solutionPrice };
+        break;
+
+      case 'subscription':
+        // Flow 4: Subscriptions Monthly
+        const subPrices: Record<string, Record<string, number>> = {
+          'lead-gen': { starter: 299, professional: 599, enterprise: 1499 },
+          'crm': { starter: 299, professional: 599, enterprise: 1499 },
+          'social': { starter: 299, professional: 599, enterprise: 1499 }
+        };
+        const subPrice = subPrices[subscriptionType || 'lead-gen']?.[tier || 'starter'] || 299;
+
+        priceData = {
+          currency: 'usd',
+          product_data: {
+            name: `${subscriptionType?.toUpperCase()} Subscription - ${tier?.toUpperCase()}`,
+            description: 'Monthly recurring subscription service',
+            metadata: { type: 'subscription', subscriptionType, tier }
+          },
+          unit_amount: subPrice * 100,
+          recurring: {
+            interval: 'month'
+          }
+        };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=subscription&plan=${subscriptionType}-${tier}`;
+        webhookMetadata = { ...webhookMetadata, subscriptionType, tier, price: subPrice };
+        break;
+
+      case 'custom-solutions':
+        // Flow 5: Custom Solutions Project
+        const customPrices: Record<string, number> = {
+          simple: 3500,
+          standard: 5500,
+          complex: 8000
+        };
+        const customPrice = customPrices[tier || 'simple'];
+
+        priceData = {
+          currency: 'usd',
+          product_data: {
+            name: `${tier?.toUpperCase()} Custom Solution Build`,
+            description: 'Bespoke automation project with consultation',
+            metadata: { type: 'custom-solutions', tier }
+          },
+          unit_amount: customPrice * 100
+        };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=custom&tier=${tier}`;
+        webhookMetadata = { ...webhookMetadata, tier, price: customPrice };
+        break;
+
+      default:
+        return NextResponse.json(
+          { error: `Invalid flowType: ${flowType}` },
+          { status: 400 }
+        );
+    }
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: priceData,
+          quantity: 1
+        }
+      ],
+      mode: flowType === 'subscription' ? 'subscription' : 'payment',
+      success_url: successUrl,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
+      customer_email: customerEmail,
+      metadata: webhookMetadata,
+      ...(flowType === 'subscription' && {
+        subscription_data: {
+          metadata: webhookMetadata
+        }
+      })
+    });
+
+    return NextResponse.json({
+      success: true,
+      sessionId: session.id,
+      url: session.url,
+      metadata: webhookMetadata
+    });
+
+  } catch (error) {
+    console.error('Stripe Checkout Error:', error);
+    return NextResponse.json(
+      {
+        error: 'Failed to create checkout session',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
+  }
+}
