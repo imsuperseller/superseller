@@ -25,6 +25,7 @@
     "@google/generative-ai": "^0.24.1",
     "@notionhq/client": "^5.1.0",
     "axios": "^1.12.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "stripe": "^19.0.0"
   }
 }

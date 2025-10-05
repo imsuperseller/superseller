@@ -1,0 +1,699 @@
+[
+  {
+    "database": "Business References",
+    "onlyInNotion": [
+      {
+        "name": "Automated Decision Making",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_03_1737820800000_l2m3n4o5",
+        "notionId": "27930b70-a044-81b9-9166-c3679043ee0b",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Predictive Analytics",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_02_1737820800000_k1l2m3n4",
+        "notionId": "27930b70-a044-81a4-a9ee-d41a4bfe7384",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "AI-Powered Customer Analysis",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_01_1737820800000_j0k1l2m3",
+        "notionId": "27930b70-a044-8104-b8c5-d6b3bf94833d",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Quinn Williams - Finance",
+        "rgid": "RGID_WORKFLOW_EMAIL_06_1737820800000_i9j0k1l2",
+        "notionId": "27930b70-a044-814b-b8a8-e765d4b68047",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Alex Rodriguez - Operations",
+        "rgid": "RGID_WORKFLOW_EMAIL_05_1737820800000_h8i9j0k1",
+        "notionId": "27930b70-a044-8102-8791-df43d8072a2a",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Sarah Williams - Marketing",
+        "rgid": "RGID_WORKFLOW_EMAIL_04_1737820800000_g7h8i9j0",
+        "notionId": "27930b70-a044-817f-ae30-c53430ddb092",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Winston Chen - Business Development",
+        "rgid": "RGID_WORKFLOW_EMAIL_03_1737820800000_f6g7h8i9",
+        "notionId": "27930b70-a044-819a-b950-d2855d43a438",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "John Smith - Technical Support",
+        "rgid": "RGID_WORKFLOW_EMAIL_02_1737820800000_e5f6g7h8",
+        "notionId": "27930b70-a044-81d7-893a-e47e3e5a31ee",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Mary Johnson - Customer Success",
+        "rgid": "RGID_WORKFLOW_EMAIL_01_1737820800000_d4e5f6g7",
+        "notionId": "27930b70-a044-81c6-baf5-fa6347cae039",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Customer Onboarding Automation",
+        "rgid": "RGID_WORKFLOW_N8N_03_1737820800000_c3d4e5f6",
+        "notionId": "27930b70-a044-81fe-a83d-dcfcba384c10",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Real-Time Analytics Dashboard",
+        "rgid": "RGID_WORKFLOW_N8N_02_1737820800000_b2c3d4e5",
+        "notionId": "27930b70-a044-81ec-a684-c9738c655486",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Advanced Business Process Automation",
+        "rgid": "RGID_WORKFLOW_N8N_01_1737820800000_a1b2c3d4",
+        "notionId": "27930b70-a044-8165-90aa-d2ab0b03cac0",
+        "created": "2025-09-25T04:47:00.000Z",
+        "modified": "2025-09-25T04:47:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Automated Decision Making",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_03_1737820800000_l2m3n4o5",
+        "notionId": "27930b70-a044-8199-8388-d98f06d848e9",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Predictive Analytics",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_02_1737820800000_k1l2m3n4",
+        "notionId": "27930b70-a044-81c6-8e30-f42198660300",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "AI-Powered Customer Analysis",
+        "rgid": "RGID_WORKFLOW_LIGHTRAG_01_1737820800000_j0k1l2m3",
+        "notionId": "27930b70-a044-810e-95c7-e639cb3c8548",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Quinn Williams - Finance",
+        "rgid": "RGID_WORKFLOW_EMAIL_06_1737820800000_i9j0k1l2",
+        "notionId": "27930b70-a044-8176-8d67-db0e17e2131c",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Alex Rodriguez - Operations",
+        "rgid": "RGID_WORKFLOW_EMAIL_05_1737820800000_h8i9j0k1",
+        "notionId": "27930b70-a044-81d0-97c2-facac548e105",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Sarah Williams - Marketing",
+        "rgid": "RGID_WORKFLOW_EMAIL_04_1737820800000_g7h8i9j0",
+        "notionId": "27930b70-a044-81b9-8c3a-efffa4aae805",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Winston Chen - Business Development",
+        "rgid": "RGID_WORKFLOW_EMAIL_03_1737820800000_f6g7h8i9",
+        "notionId": "27930b70-a044-817a-89b0-e5a9165625e0",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "John Smith - Technical Support",
+        "rgid": "RGID_WORKFLOW_EMAIL_02_1737820800000_e5f6g7h8",
+        "notionId": "27930b70-a044-8186-83eb-e9b858665c57",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Mary Johnson - Customer Success",
+        "rgid": "RGID_WORKFLOW_EMAIL_01_1737820800000_d4e5f6g7",
+        "notionId": "27930b70-a044-81fe-8ccc-c1cd37712c31",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Customer Onboarding Automation",
+        "rgid": "RGID_WORKFLOW_N8N_03_1737820800000_c3d4e5f6",
+        "notionId": "27930b70-a044-8159-878a-caa1805764a6",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Real-Time Analytics Dashboard",
+        "rgid": "RGID_WORKFLOW_N8N_02_1737820800000_b2c3d4e5",
+        "notionId": "27930b70-a044-814c-b371-fcc2257a8c38",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Advanced Business Process Automation",
+        "rgid": "RGID_WORKFLOW_N8N_01_1737820800000_a1b2c3d4",
+        "notionId": "27930b70-a044-81f0-a132-f90735f99a1d",
+        "created": "2025-09-25T04:46:00.000Z",
+        "modified": "2025-09-25T04:46:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Website Transformation Strategy",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_001",
+        "notionId": "27830b70-a044-8194-beef-c82947392411",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Airtable Data Architecture",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_002",
+        "notionId": "27830b70-a044-810c-9be9-d40c7dfde094",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Tax4Us Onboarding Process",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_003",
+        "notionId": "27830b70-a044-8181-a579-d229357146b1",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:42:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Wonder.care Healthcare Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_004",
+        "notionId": "27830b70-a044-8102-b182-f42b69af5844",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:42:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Rensto Micro-SaaS Business Model",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_006",
+        "notionId": "27830b70-a044-81b1-857e-ccd12231f974",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Local-il.com Leads Generation Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_006",
+        "notionId": "27830b70-a044-8159-b93a-eb9d900608c0",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:42:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "N8N Workflow Architecture",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_005",
+        "notionId": "27830b70-a044-81c2-89cd-f898bd9f30e3",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Shelly Insurance Agent Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20250116_008",
+        "notionId": "27830b70-a044-81cc-bf4d-d8a07e332b37",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T22:43:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Revenue Analytics Dashboard",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_021",
+        "notionId": "27830b70-a044-81b0-adff-e1184b5c927c",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T19:09:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Customer Success Tracking",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_020",
+        "notionId": "27830b70-a044-81e5-92e2-ef5c1c9443c0",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "MCP Server Management",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_019",
+        "notionId": "27830b70-a044-812a-ac8d-f6ca6992a17f",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Cloudflare Tunnel Management",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_018",
+        "notionId": "27830b70-a044-81b2-93c7-dfdd8281df3b",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Vercel Deployment System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_017",
+        "notionId": "27830b70-a044-8164-8a5d-c16e998f7d21",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Supabase Database Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_016",
+        "notionId": "27830b70-a044-8105-9154-e61e011e7d99",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Typeform Integration System",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_015",
+        "notionId": "27830b70-a044-8153-868f-dcc0f5f0c8b3",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Stripe Payment Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_014",
+        "notionId": "27830b70-a044-8117-8c22-eb2a9bfab765",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Webflow MCP Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_013",
+        "notionId": "27830b70-a044-818d-9b41-f91eba452493",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Notion Integration Setup",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_012",
+        "notionId": "27830b70-a044-8104-bfa0-f55762e79356",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Codebase Cleanup System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_011",
+        "notionId": "27830b70-a044-81c1-85ec-eb059712c2df",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "BMAD Testing Framework",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_010",
+        "notionId": "27830b70-a044-8149-9e84-c9748ea94a5b",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Smart Sync System",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_009",
+        "notionId": "27830b70-a044-8127-ab75-c7261eda1fd3",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Airtable Optimization System",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_008",
+        "notionId": "27830b70-a044-8126-8024-d3756093898e",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "QuickBooks OAuth Integration",
+        "rgid": "RGID_NOTION_SYSTEM_INTEGRATION_20240922_007",
+        "notionId": "27830b70-a044-8197-8330-e212c1ed23df",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Rensto Admin Dashboard",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_006",
+        "notionId": "27830b70-a044-81de-977c-c2c39103a059",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Local IL Leads Services",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_005",
+        "notionId": "27830b70-a044-8135-99b4-e7388bc139aa",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Wonder Care Sheets to Monday Integration",
+        "rgid": "RGID_NOTION_COMPONENT_20240922_004",
+        "notionId": "27830b70-a044-8191-97ac-f038e59405c1",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Tax4us AI Agent System",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_003",
+        "notionId": "27830b70-a044-81de-bc9f-dba015faea75",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Enhanced Error Handling Templates",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_002",
+        "notionId": "27830b70-a044-81ed-b5c0-d5ecdb6c33e1",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Shelly Insurance Agent Onboarding",
+        "rgid": "RGID_NOTION_BUSINESS_REF_20240922_001",
+        "notionId": "27830b70-a044-81c1-95ff-dd01df91b386",
+        "created": "2025-09-24T18:00:00.000Z",
+        "modified": "2025-09-24T18:12:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Website Transformation Strategy",
+        "rgid": "RGID_NOTION_BUSINESS_1758754980311_websitetransformationstrategy",
+        "notionId": "27630b70-a044-8101-a23d-e278cff027fd",
+        "created": "2025-09-22T18:06:00.000Z",
+        "modified": "2025-09-24T23:03:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Airtable Data Architecture",
+        "rgid": "RGID_NOTION_BUSINESS_1758754980715_airtabledataarchitecture",
+        "notionId": "27630b70-a044-817b-9225-c61d8cb6b49d",
+        "created": "2025-09-22T18:06:00.000Z",
+        "modified": "2025-09-24T23:03:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "BMAD Customer App Architecture Design",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_003",
+        "notionId": "27630b70-a044-8129-a113-c9f229e7d62a",
+        "created": "2025-09-22T18:04:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "BMAD Admin Dashboard Implementation",
+        "rgid": "RGID_NOTION_TECHNICAL_REF_20250116_004",
+        "notionId": "27630b70-a044-8135-9e38-c8291065a1d1",
+        "created": "2025-09-22T18:04:00.000Z",
+        "modified": "2025-09-24T22:57:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "N8N Workflow Architecture",
+        "rgid": "RGID_NOTION_BUSINESS_1758754981038_n8nworkflowarchitecture",
+        "notionId": "27630b70-a044-816e-80c3-c03002fe30b2",
+        "created": "2025-09-22T18:04:00.000Z",
+        "modified": "2025-09-24T23:03:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Rensto Micro-SaaS Business Model",
+        "rgid": "RGID_NOTION_BUSINESS_1758754981330_renstomicrosaasbusinessmodel",
+        "notionId": "27630b70-a044-815a-adff-d393ebbabe88",
+        "created": "2025-09-22T18:04:00.000Z",
+        "modified": "2025-09-24T23:03:00.000Z",
+        "action": "Add to Airtable"
+      }
+    ],
+    "onlyInAirtable": [],
+    "inBoth": [
+      {
+        "rgid": "RGID_WEBSITE_TRANSFORMATION_20250116_001",
+        "name": "Website Transformation Strategy",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T17:31:49.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_AIRTABLE_ARCHITECTURE_20250116_001",
+        "name": "Airtable Data Architecture",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T17:31:34.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID-TAX4US-ONBOARDING-001",
+        "name": "Tax4Us Onboarding Process",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T04:10:51.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID-WONDER-CARE-ONBOARDING-001",
+        "name": "Wonder.care Healthcare Onboarding",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T04:10:54.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_MICROSAAS_MODEL_20250116_001",
+        "name": "Rensto Micro-SaaS Business Model",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T17:31:21.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID-LOCAL-IL-ONBOARDING-001",
+        "name": "Local-il.com Leads Generation Onboarding",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T04:10:55.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_N8N_ARCHITECTURE_20250116_001",
+        "name": "N8N Workflow Architecture",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T17:31:28.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID-SHELLY-ONBOARDING-001",
+        "name": "Shelly Insurance Agent Onboarding",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T04:10:53.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      }
+    ],
+    "duplicatesNoRGID": [],
+    "recommendations": [
+      {
+        "type": "sync_to_airtable",
+        "count": 59,
+        "action": "Add these Notion records to Airtable"
+      },
+      {
+        "type": "update_airtable",
+        "count": 8,
+        "action": "Update Airtable records with newer Notion data"
+      }
+    ]
+  },
+  {
+    "database": "Customer Management",
+    "onlyInNotion": [],
+    "onlyInAirtable": [],
+    "inBoth": [
+      {
+        "rgid": "RGID_CUSTOMERS_1758754017232_localilcom",
+        "name": "Ortal Flanary",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-08T22:45:30.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_CUSTOMERS_1758754017027_wondercare",
+        "name": "Ortal Flanary",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-08T22:45:54.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_CUSTOMERS_1758754016737_renstotechnologies",
+        "name": "Rensto",
+        "notionModified": "2025-09-26T00:42:00.000Z",
+        "airtableModified": "2025-09-22T01:47:05.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_CUSTOMERS_1757258475043_ben001",
+        "name": "Ben Ginati",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-08-25T04:34:57.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_CUSTOMERS_1757258475043_shelly001",
+        "name": "Shelly Mizrahi",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-08-25T04:34:57.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      }
+    ],
+    "duplicatesNoRGID": [],
+    "recommendations": [
+      {
+        "type": "update_airtable",
+        "count": 5,
+        "action": "Update Airtable records with newer Notion data"
+      }
+    ]
+  },
+  {
+    "database": "Project Tracking",
+    "onlyInNotion": [
+      {
+        "name": "Shelly Mizrahi Excel Processor",
+        "rgid": "RGID_NOTION_PROJECT_1758755069296_shellymizrahiexcelprocessor",
+        "notionId": "27830b70-a044-811b-a1ba-c670f0011521",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T23:04:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Tax4Us Automation System",
+        "rgid": "RGID_NOTION_PROJECT_1758755078716_tax4usautomationsystem",
+        "notionId": "27830b70-a044-817d-bf95-e15db2dfe7bb",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T23:04:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Wonder.care Healthcare Sync",
+        "rgid": "RGID_NOTION_PROJECT_1758755079036_wondercarehealthcaresync",
+        "notionId": "27830b70-a044-8151-ab41-dcfc34d37252",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T23:04:00.000Z",
+        "action": "Add to Airtable"
+      },
+      {
+        "name": "Local-il Lead Generation",
+        "rgid": "RGID_NOTION_PROJECT_1758755079467_localilleadgeneration",
+        "notionId": "27830b70-a044-81f1-a7a6-e0e7e24c5d2f",
+        "created": "2025-09-24T21:45:00.000Z",
+        "modified": "2025-09-24T23:04:00.000Z",
+        "action": "Add to Airtable"
+      }
+    ],
+    "onlyInAirtable": [],
+    "inBoth": [
+      {
+        "rgid": "RGID_PROJECTS_1758754018223_shellymizrahiexcelprocessor",
+        "name": "Shelly Mizrahi Excel Processor",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-17T02:46:52.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_PROJECTS_1758754018023_tax4usautomationsystem",
+        "name": "Tax4Us Automation System",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-17T02:46:50.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_PROJECTS_1758754017812_wondercarehealthcaresync",
+        "name": "Wonder.care Healthcare Sync",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T01:39:34.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      },
+      {
+        "rgid": "RGID_PROJECTS_1758754017569_localilleadgeneration",
+        "name": "Local-il Lead Generation",
+        "notionModified": "2025-09-24T23:09:00.000Z",
+        "airtableModified": "2025-09-22T01:39:40.000Z",
+        "newer": "Notion",
+        "action": "Update Airtable from Notion"
+      }
+    ],
+    "duplicatesNoRGID": [],
+    "recommendations": [
+      {
+        "type": "sync_to_airtable",
+        "count": 4,
+        "action": "Add these Notion records to Airtable"
+      },
+      {
+        "type": "update_airtable",
+        "count": 4,
+        "action": "Update Airtable records with newer Notion data"
+      }
+    ]
+  }
+]

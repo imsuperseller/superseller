@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ready Solutions - Industry-Specific Automation | Rensto</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+            --card-bg: #1a1635;
+            --gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+            --gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* H-01: Hero (Promise + Primary + Secondary CTA) */
+        .hero {
+            background: var(--gradient-primary);
+            padding: 120px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(94, 251, 253, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subhead {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: var(--dark-bg);
+            color: var(--light-text);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .cta-secondary:hover {
+            background: white;
+            color: var(--red);
+        }
+
+        /* H-02: Problem → Mechanism → Outcome Strip */
+        .problem-strip {
+            background: rgba(254, 61, 81, 0.05);
+            padding: 80px 20px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid rgba(254, 61, 81, 0.2);
+        }
+
+        .problem-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--red);
+        }
+
+        .problem-card p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* H-03: Segmented "Choose Your Industry" (CVJ: Engage) */
+        .industry-selector {
+            padding: 100px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.3rem;
+            color: var(--gray-text);
+        }
+
+        .industry-filters {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 10px 24px;
+            background: var(--card-bg);
+            border: 2px solid rgba(94, 251, 253, 0.2);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: var(--cyan);
+            color: var(--dark-bg);
+            border-color: var(--cyan);
+        }
+
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .industry-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .industry-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--cyan);
+        }
+
+        .industry-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .industry-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .industry-card p {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .industry-solutions-count {
+            display: inline-block;
+            background: rgba(30, 174, 247, 0.2);
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cyan);
+        }
+
+        /* H-04: Credibility Bar */
+        .credibility {
+            background: var(--card-bg);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .credibility h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--cyan);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-text);
+            font-size: 1rem;
+        }
+
+        /* H-05: Lead Magnet Module (CVJ: Subscribe) */
+        .lead-magnet {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(94, 251, 253, 0.05));
+        }
+
+        .lead-magnet-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px;
+            border: 2px solid rgba(94, 251, 253, 0.2);
+            text-align: center;
+        }
+
+        .lead-magnet h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lead-magnet p {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+
+        .lead-magnet ul {
+            list-style: none;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .lead-magnet li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+
+        .check-icon {
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .lead-magnet-form {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lead-magnet-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(94, 251, 253, 0.3);
+            background: var(--dark-bg);
+            color: var(--light-text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .lead-magnet-form input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        .lead-magnet-form button {
+            padding: 16px 40px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lead-magnet-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.4);
+        }
+
+        /* H-06: Package Pricing (CVJ: Convert) */
+        .pricing-section {
+            padding: 100px 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid rgba(94, 251, 253, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--cyan);
+            transform: scale(1.05);
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(94, 251, 253, 0.05));
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .pricing-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-per {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-description {
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.4);
+        }
+
+        /* H-07: How It Works */
+        .how-it-works {
+            padding: 100px 20px;
+            background: rgba(254, 61, 81, 0.03);
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+            align-items: start;
+        }
+
+        .timeline-number {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-content p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* H-08: Results Showcase */
+        .results-section {
+            padding: 100px 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: rgba(30, 174, 247, 0.2);
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .result-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 2rem 0;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.3rem;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+        }
+
+        .result-quote {
+            font-style: italic;
+            color: var(--gray-text);
+            border-left: 4px solid var(--cyan);
+            padding-left: 20px;
+            margin-top: 1.5rem;
+        }
+
+        /* H-09: FAQ */
+        .faq-section {
+            padding: 100px 20px;
+            background: rgba(30, 174, 247, 0.03);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            color: var(--cyan);
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 30px 25px;
+            color: var(--gray-text);
+            line-height: 1.7;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* H-10: Risk Reversal + CTA */
+        .final-cta {
+            padding: 100px 20px;
+            background: var(--gradient-primary);
+            text-align: center;
+        }
+
+        .final-cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .guarantee-badge {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .final-cta h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .guarantee-text {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .guarantee-text strong {
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .industry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- H-01: Hero (Promise + Primary + Secondary CTA) -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🎯 Industry-Proven Solutions</div>
+            <h1>Get automation that actually works for YOUR industry—in 48 hours</h1>
+            <p class="hero-subhead">
+                Choose from 16 industry-specific solution packages built by operators who understand your pain points. No generic templates, no guesswork.
+            </p>
+            <div class="hero-cta-group">
+                <a href="#industries" class="cta-button cta-primary">Browse 16 Industries</a>
+                <a href="#pricing" class="cta-button cta-secondary">See Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-02: Problem → Mechanism → Outcome Strip -->
+    <section class="problem-strip">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>❌ Problem</h3>
+                    <p>You've tried generic automation tools. They fail because they're not built for your industry's specific workflows and pain points.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>✅ Our Mechanism</h3>
+                    <p>Industry-specific solution packages designed by operators. Each package contains 5 proven automations that solve YOUR exact problems.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>🎯 Your Outcome</h3>
+                    <p>15-40 hours saved per week, 35-70% efficiency increase, and 25-50% revenue growth—all within 48 hours of setup.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-03: Segmented "Choose Your Industry" (CVJ: Engage) -->
+    <section class="industry-selector" id="industries">
+        <div class="container">
+            <div class="section-header">
+                <h2>Choose Your Industry</h2>
+                <p>Each industry gets 5 custom solutions that solve your specific problems. Click to see what's inside.</p>
+            </div>
+
+            <div class="industry-filters">
+                <span class="filter-chip active" onclick="filterIndustry('all')">All Industries</span>
+                <span class="filter-chip" onclick="filterIndustry('home-services')">Home Services</span>
+                <span class="filter-chip" onclick="filterIndustry('professional')">Professional Services</span>
+                <span class="filter-chip" onclick="filterIndustry('retail')">Retail & E-commerce</span>
+                <span class="filter-chip" onclick="filterIndustry('personal')">Personal Services</span>
+            </div>
+
+            <div class="industry-grid" id="industryGrid">
+                <!-- HVAC -->
+                <a href="/solutions/hvac" class="industry-card" data-industry="home-services">
+                    <div class="industry-icon">🔧</div>
+                    <h3>HVAC</h3>
+                    <p>Emergency dispatch, load calculations, permit automation, and maintenance loops</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Roofer -->
+                <a href="/solutions/roofer" class="industry-card" data-industry="home-services">
+                    <div class="industry-icon">🏠</div>
+                    <h3>Roofer</h3>
+                    <p>Storm tracking, aerial takeoff, insurance claims, and neighborhood marketing</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Realtor -->
+                <a href="/solutions/realtor" class="industry-card" data-industry="professional">
+                    <div class="industry-icon">🏘️</div>
+                    <h3>Realtor</h3>
+                    <p>CMA generation, lead response, tour scheduling, and contract tracking</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Insurance Agent -->
+                <a href="/solutions/insurance" class="industry-card" data-industry="professional">
+                    <div class="industry-icon">🛡️</div>
+                    <h3>Insurance Agent</h3>
+                    <p>Quote generation, renewal reminders, claims tracking, and cross-sell opportunities</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Dentist -->
+                <a href="/solutions/dentist" class="industry-card" data-industry="professional">
+                    <div class="industry-icon">🦷</div>
+                    <h3>Dentist</h3>
+                    <p>Appointment reminders, insurance verification, and 6-month recall campaigns</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Locksmith -->
+                <a href="/solutions/locksmith" class="industry-card" data-industry="home-services">
+                    <div class="industry-icon">🔑</div>
+                    <h3>Locksmith</h3>
+                    <p>Emergency dispatch, GPS routing, inventory alerts, and quote generation</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Photographer -->
+                <a href="/solutions/photographer" class="industry-card" data-industry="personal">
+                    <div class="industry-icon">📸</div>
+                    <h3>Photographer</h3>
+                    <p>Booking automation, gallery delivery, client proofing, and print orders</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- E-commerce -->
+                <a href="/solutions/ecommerce" class="industry-card" data-industry="retail">
+                    <div class="industry-icon">🛍️</div>
+                    <h3>E-commerce Store</h3>
+                    <p>Cart recovery, inventory sync, shipping automation, and upsell flows</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Fence Contractor -->
+                <a href="/solutions/fence-contractor" class="industry-card" data-industry="home-services">
+                    <div class="industry-icon">🏗️</div>
+                    <h3>Fence Contractor</h3>
+                    <p>Quote generation, permit tracking, material ordering, and progress photos</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Product Supplier -->
+                <a href="/solutions/product-supplier" class="industry-card" data-industry="retail">
+                    <div class="industry-icon">📦</div>
+                    <h3>Product Supplier</h3>
+                    <p>Order aggregation, demand forecasting, shipping optimization, and invoicing</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Bookkeeping -->
+                <a href="/solutions/bookkeeping" class="industry-card" data-industry="professional">
+                    <div class="industry-icon">📊</div>
+                    <h3>Bookkeeping Service</h3>
+                    <p>Receipt processing, expense categorization, reconciliation, and month-end close</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Lawyer -->
+                <a href="/solutions/lawyer" class="industry-card" data-industry="professional">
+                    <div class="industry-icon">⚖️</div>
+                    <h3>Law Firm</h3>
+                    <p>Client intake, document assembly, deadline tracking, and time tracking</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Amazon Seller -->
+                <a href="/solutions/amazon-seller" class="industry-card" data-industry="retail">
+                    <div class="industry-icon">📦</div>
+                    <h3>Amazon Seller</h3>
+                    <p>Repricing bot, inventory alerts, review requests, and PPC optimization</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Synagogue -->
+                <a href="/solutions/synagogue" class="industry-card" data-industry="personal">
+                    <div class="industry-icon">✡️</div>
+                    <h3>Synagogue</h3>
+                    <p>Event coordination, donation tracking, member portal, and volunteer scheduling</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Torah Teacher -->
+                <a href="/solutions/torah-teacher" class="industry-card" data-industry="personal">
+                    <div class="industry-icon">📚</div>
+                    <h3>Torah Teacher</h3>
+                    <p>Lesson scheduling, progress tracking, recording library, and tuition management</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+
+                <!-- Busy Mom -->
+                <a href="/solutions/busy-mom" class="industry-card" data-industry="personal">
+                    <div class="industry-icon">👩‍👧‍👦</div>
+                    <h3>Busy Mom</h3>
+                    <p>Calendar sync, meal planning, errand batching, and household task management</p>
+                    <span class="industry-solutions-count">5 Solutions</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-04: Credibility Bar -->
+    <section class="credibility">
+        <div class="container">
+            <h3>Trusted by Industry Operators</h3>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Businesses Automated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16</div>
+                    <div class="stat-label">Industry Packages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">80</div>
+                    <div class="stat-label">Proven Solutions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">48hr</div>
+                    <div class="stat-label">Setup Time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-05: Lead Magnet Module (CVJ: Subscribe) -->
+    <section class="lead-magnet">
+        <div class="lead-magnet-content">
+            <h2>Get Your FREE Industry Automation Checklist</h2>
+            <p>Discover exactly which processes to automate first in your industry</p>
+            <ul>
+                <li><span class="check-icon">✓</span> Industry-specific automation opportunities</li>
+                <li><span class="check-icon">✓</span> Quick-win implementations (under 2 hours)</li>
+                <li><span class="check-icon">✓</span> ROI calculator for each automation</li>
+                <li><span class="check-icon">✓</span> Implementation difficulty ratings</li>
+            </ul>
+            <form class="lead-magnet-form" onsubmit="return false;">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Download FREE Checklist</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- H-06: Package Pricing (CVJ: Convert) -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Choose the package that fits your needs. All packages include setup, training, and 30-day support.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-label">Start Small</div>
+                    <h3>Single Solution</h3>
+                    <div class="pricing-price">$890</div>
+                    <div class="pricing-per">one-time</div>
+                    <p class="pricing-description">Pick one automation from your industry package to solve your biggest pain point.</p>
+                    <ul class="pricing-features">
+                        <li><span class="check-icon">✓</span> 1 industry solution</li>
+                        <li><span class="check-icon">✓</span> 48-hour setup</li>
+                        <li><span class="check-icon">✓</span> 1-hour training session</li>
+                        <li><span class="check-icon">✓</span> 30-day support</li>
+                    </ul>
+                    <a href="/checkout?plan=single" class="pricing-button">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-label">Most Popular</div>
+                    <h3>Complete Package</h3>
+                    <div class="pricing-price">$2,990</div>
+                    <div class="pricing-per">one-time</div>
+                    <p class="pricing-description">Get all 5 solutions for your industry and transform your entire operation.</p>
+                    <ul class="pricing-features">
+                        <li><span class="check-icon">✓</span> All 5 industry solutions</li>
+                        <li><span class="check-icon">✓</span> 48-hour setup</li>
+                        <li><span class="check-icon">✓</span> 3-hour training session</li>
+                        <li><span class="check-icon">✓</span> 60-day priority support</li>
+                        <li><span class="check-icon">✓</span> Save $1,460 vs. buying individually</li>
+                    </ul>
+                    <a href="/checkout?plan=complete" class="pricing-button">Get Complete Package</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-label">Full Service</div>
+                    <h3>+ Installation</h3>
+                    <div class="pricing-price">+$797</div>
+                    <div class="pricing-per">add-on</div>
+                    <p class="pricing-description">Add full-service installation, data migration, and team training to any package.</p>
+                    <ul class="pricing-features">
+                        <li><span class="check-icon">✓</span> Professional installation</li>
+                        <li><span class="check-icon">✓</span> Data migration included</li>
+                        <li><span class="check-icon">✓</span> Team training (up to 10 people)</li>
+                        <li><span class="check-icon">✓</span> 90-day priority support</li>
+                    </ul>
+                    <a href="/checkout?plan=full-service" class="pricing-button">Add Installation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-07: How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>From purchase to fully automated—in just 48 hours</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-number">1</div>
+                    <div class="timeline-content">
+                        <h3>Choose Your Industry & Package</h3>
+                        <p>Browse the 16 industries, see what's included, and select Single Solution or Complete Package. Purchase securely online.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">2</div>
+                    <div class="timeline-content">
+                        <h3>Setup & Configuration (24-48 hours)</h3>
+                        <p>Our team installs your solutions, connects to your existing tools, and configures everything to match your workflow. You'll receive login credentials and access to your automation dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">3</div>
+                    <div class="timeline-content">
+                        <h3>Training & Go-Live</h3>
+                        <p>Join a live training session (1-3 hours depending on package) where we walk through each automation, answer questions, and make sure you're confident using the system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-08: Results Showcase -->
+    <section class="results-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Real Results from Real Businesses</h2>
+                <p>See how industry operators are using Ready Solutions to transform their operations</p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-badge">HVAC</div>
+                    <h3>24/7 HVAC & Plumbing</h3>
+                    <div class="result-metrics">
+                        <div class="metric">
+                            <div class="metric-value">18hr</div>
+                            <div class="metric-label">Saved/Week</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">40%</div>
+                            <div class="metric-label">Faster Quotes</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">+28%</div>
+                            <div class="metric-label">Revenue</div>
+                        </div>
+                    </div>
+                    <p class="result-quote">"The Smart Triage system routes emergency calls to our nearest tech in seconds. We've gone from 4-hour response times to same-day service."</p>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-badge">Roofer</div>
+                    <h3>Storm King Roofing</h3>
+                    <div class="result-metrics">
+                        <div class="metric">
+                            <div class="metric-value">72hr</div>
+                            <div class="metric-label">Storm Response</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">3x</div>
+                            <div class="metric-label">More Quotes</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">+45%</div>
+                            <div class="metric-label">Close Rate</div>
+                        </div>
+                    </div>
+                    <p class="result-quote">"The Hail Heatmap alerts us within 72 hours of storms. We're now the first to knock doors in affected neighborhoods—and our close rate went from 22% to 67%."</p>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-badge">Realtor</div>
+                    <h3>Sarah Chen, Keller Williams</h3>
+                    <div class="result-metrics">
+                        <div class="metric">
+                            <div class="metric-value">3min</div>
+                            <div class="metric-label">CMA Time</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5min</div>
+                            <div class="metric-label">Lead Response</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">+35%</div>
+                            <div class="metric-label">Conversions</div>
+                        </div>
+                    </div>
+                    <p class="result-quote">"Market Pulse generates CMAs in under 3 minutes. I used to spend 2 hours per CMA—now I can respond to seller inquiries while they're still hot."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-09: FAQ (Objection-Ordered) -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know before making a decision</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does implementation take?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>24-48 hours from purchase to go-live. We handle setup, configuration, and integration with your existing tools. You'll receive credentials and training within 2 business days.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What if I'm not tech-savvy?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>That's exactly who we built this for. We handle all the technical setup. Your training session is hands-on and we provide video guides for every feature. Plus, you get 30-60 days of support (depending on package).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do these integrate with my existing tools?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. Our solutions integrate with 525+ apps including Salesforce, HubSpot, QuickBooks, Google Calendar, Stripe, and more. During setup, we'll connect everything for you.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What's the difference between Single Solution and Complete Package?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Single Solution gives you 1 automation (your choice) for $890. Complete Package gives you all 5 industry solutions for $2,990 (save $1,460). Most customers start with Single and upgrade within 90 days.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Is there a money-back guarantee?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. 30-day full refund if you're not satisfied. No questions asked. We're confident these solutions will transform your operations—but if they don't, we'll refund 100%.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What kind of ROI can I expect?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Industry operators typically see: 15-40 hours saved per week, 35-70% efficiency increase, and 25-50% revenue growth. Most packages pay for themselves within 30-60 days.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I customize the solutions?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Ready Solutions are pre-built for speed. For custom modifications, check out our Custom Solutions service where we build tailored automation for your exact workflow ($3,500-$8,000).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What happens after the 30/60-day support period?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You own the solutions—they keep running forever. Extended support is available for $197/month if needed. Most customers don't need it since the systems are self-maintaining.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-10: Risk Reversal + Final CTA -->
+    <section class="final-cta">
+        <div class="final-cta-content">
+            <div class="guarantee-badge">🛡️</div>
+            <h2>30-Day Money-Back Guarantee</h2>
+            <p>Try any Ready Solutions package risk-free for 30 days. If you're not satisfied, we'll refund 100%—no questions asked.</p>
+            <div class="guarantee-text">
+                <strong>We're so confident these solutions will transform your business that we're taking all the risk.</strong>
+                <p>If within 30 days you don't see time savings, efficiency gains, or increased revenue, just email us and we'll refund every penny.</p>
+            </div>
+            <div class="hero-cta-group">
+                <a href="#industries" class="cta-button cta-primary">Choose Your Industry</a>
+                <a href="/custom" class="cta-button cta-secondary">Need Custom? Talk to Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate industry cards
+        gsap.from('.industry-card', {
+            scrollTrigger: {
+                trigger: '.industry-selector',
+                start: 'top 80%',
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: 'power2.out'
+        });
+
+        // Filter functionality
+        function filterIndustry(category) {
+            const cards = document.querySelectorAll('.industry-card');
+            const chips = document.querySelectorAll('.filter-chip');
+
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.industry === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // FAQ toggle
+        function toggleFAQ(element) {
+            const item = element.parentElement;
+            const isActive = item.classList.contains('active');
+
+            document.querySelectorAll('.faq-item').forEach(faq => faq.classList.remove('active'));
+
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

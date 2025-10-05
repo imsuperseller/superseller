@@ -1,0 +1,29 @@
+{
+  "forms": [
+    {
+      "id": "siYf8ed7",
+      "title": "Lead Generation Assessment",
+      "url": "https://form.typeform.com/to/siYf8ed7",
+      "webhook": "https://your-n8n-instance.com/webhook/lead-generation-assessment"
+    },
+    {
+      "id": "fkYnNvga",
+      "title": "Custom Solution Request",
+      "url": "https://form.typeform.com/to/fkYnNvga",
+      "webhook": "https://your-n8n-instance.com/webhook/custom-solution-request"
+    },
+    {
+      "id": "ppf08F66",
+      "title": "Subscription Service Signup",
+      "url": "https://form.typeform.com/to/ppf08F66",
+      "webhook": "https://your-n8n-instance.com/webhook/subscription-service-signup"
+    },
+    {
+      "id": "EpEv9A1S",
+      "title": "Industry Solution Inquiry",
+      "url": "https://form.typeform.com/to/EpEv9A1S",
+      "webhook": "https://your-n8n-instance.com/webhook/industry-solution-inquiry"
+    }
+  ],
+  "created_at": "2025-10-03T15:23:32.471Z"
+}

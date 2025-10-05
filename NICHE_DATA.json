@@ -1,0 +1,1300 @@
+{
+  "niches": [
+    {
+      "slug": "hvac",
+      "name": "HVAC",
+      "icon": "🔧",
+      "tagline": "Automate emergency dispatch, quotes, permits, and maintenance—so you can focus on keeping customers comfortable.",
+      "problems": [
+        {
+          "icon": "⚡",
+          "title": "Emergency Call Chaos",
+          "description": "Peak season brings call floods. Techs dispatched inefficiently, customers waiting hours for callbacks."
+        },
+        {
+          "icon": "💰",
+          "title": "Quote Delays Kill Sales",
+          "description": "Load calculations and quote generation take too long. Customers choose faster competitors."
+        },
+        {
+          "icon": "📋",
+          "title": "Permit & Rebate Headaches",
+          "description": "Tracking permits, utility rebates, and warranty registrations manually wastes admin time."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Heatwave/Cold-Snap Surge Radar",
+          "description": "Automatically monitor weather forecasts and trigger surge capacity alerts. Pre-schedule techs, notify customers, and ramp up advertising when demand spikes hit.",
+          "features": [
+            "Weather API integration with temp thresholds",
+            "Auto-schedule tech shifts based on forecast",
+            "Pre-emptive customer outreach campaigns",
+            "Dynamic pricing adjustments for surge periods"
+          ]
+        },
+        {
+          "name": "Smart Triage → Same-Day Dispatch",
+          "description": "AI-powered call intake captures symptoms, urgency, and location. Routes to nearest available tech with real-time GPS optimization for same-day service.",
+          "features": [
+            "AI triage questionnaire for emergency assessment",
+            "Real-time tech GPS tracking and routing",
+            "Auto-notify customers with ETA updates",
+            "Priority queue for emergency vs maintenance"
+          ]
+        },
+        {
+          "name": "Load Calc → Instant Optioned Quote",
+          "description": "Input home specs once, get instant load calculations and 3-tier quote options (Good/Better/Best). Customer receives quote via SMS/email in under 5 minutes.",
+          "features": [
+            "Manual J load calculation automation",
+            "Good/Better/Best equipment recommendations",
+            "Instant quote generation with financing options",
+            "SMS/email delivery with approval button"
+          ]
+        },
+        {
+          "name": "Permit + Utility Rebate + Warranty Pack",
+          "description": "Automatically file permits, track approval status, submit utility rebate forms, and register warranties—all from a single job record.",
+          "features": [
+            "Auto-generate and submit permit applications",
+            "Track permit approval status with reminders",
+            "Utility rebate form population and submission",
+            "Equipment warranty auto-registration"
+          ]
+        },
+        {
+          "name": "Maintenance Plan Growth Loop",
+          "description": "Auto-enroll customers in maintenance plans post-install. Schedule annual visits, send reminders, upsell filter replacements, and track renewal rates.",
+          "features": [
+            "Post-install maintenance plan enrollment",
+            "Annual service scheduling automation",
+            "Filter replacement upsell campaigns",
+            "Renewal reminder emails with 1-click booking"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "15-20",
+        "efficiency": "40%",
+        "revenue": "+25%",
+        "payback": "60 days"
+      }
+    },
+    {
+      "slug": "roofer",
+      "name": "Roofer",
+      "icon": "🏠",
+      "tagline": "Storm tracking, insurance claims, and neighborhood marketing—automated so you can focus on closing deals.",
+      "problems": [
+        {
+          "icon": "🌩️",
+          "title": "Missing Storm Opportunities",
+          "description": "Hail hits a neighborhood, but competitors knock doors first. By the time you react, leads are gone."
+        },
+        {
+          "icon": "📐",
+          "title": "Manual Measurements Waste Time",
+          "description": "Climbing roofs to measure wastes hours. Aerial imagery exists but requires manual takeoff calculations."
+        },
+        {
+          "icon": "📄",
+          "title": "Insurance Claims Bottleneck",
+          "description": "Navigating ACV vs RCV, supplements, and adjuster meetings slows down project starts by weeks."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Hail Heatmap → 72-Hour Neighborhood Blitz",
+          "description": "Monitor storm tracking APIs and hail reports. Instantly generate door-knock routes, mailers, and Facebook ads targeting affected zip codes within 72 hours.",
+          "features": [
+            "Weather API hail detection and tracking",
+            "Auto-generate door-knock routes by severity",
+            "Direct mail campaign triggers for affected areas",
+            "Geo-targeted Facebook ads for storm damage"
+          ]
+        },
+        {
+          "name": "Aerial Takeoff → One-Click Roof System Quote",
+          "description": "Use aerial imagery to calculate roof measurements, material needs, and labor hours. Generate itemized quote with one click—no ladder required.",
+          "features": [
+            "Aerial imagery integration (EagleView, Nearmap)",
+            "Automated square footage and pitch calculations",
+            "Material and labor cost auto-calculation",
+            "One-click quote generation with line items"
+          ]
+        },
+        {
+          "name": "Claim Navigator (ACV/RCV + Supplements Engine)",
+          "description": "Track insurance claim status, calculate ACV vs RCV, auto-generate supplement requests, and schedule adjuster meetings—all synced with your CRM.",
+          "features": [
+            "Insurance claim status tracking dashboard",
+            "ACV vs RCV depreciation calculator",
+            "Auto-generate supplement requests with photos",
+            "Adjuster meeting scheduling automation"
+          ]
+        },
+        {
+          "name": "Permit-Material-Weather Green-Light Scheduler",
+          "description": "Coordinate permit approvals, material delivery, and weather windows. Get 'green-light' alerts when all conditions align for job start.",
+          "features": [
+            "Permit approval status monitoring",
+            "Material delivery confirmation tracking",
+            "Weather API for rain-free windows",
+            "Green-light notifications when conditions align"
+          ]
+        },
+        {
+          "name": "Neighbor Halo & Storm-Ring Retargeting",
+          "description": "After completing a roof, automatically target the 200 nearest neighbors with before/after photos, Nextdoor posts, and yard sign campaigns.",
+          "features": [
+            "Neighbor radius mapping (200 homes)",
+            "Before/after photo showcase automation",
+            "Nextdoor and Facebook geo-targeted ads",
+            "Automated yard sign placement campaigns"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "20-25",
+        "efficiency": "50%",
+        "revenue": "+40%",
+        "payback": "45 days"
+      }
+    },
+    {
+      "slug": "realtor",
+      "name": "Realtor",
+      "icon": "🏘️",
+      "tagline": "Market analysis, listing prep, lead response, and contract management—automated for faster closes.",
+      "problems": [
+        {
+          "icon": "📊",
+          "title": "CMA Takes Too Long",
+          "description": "Pulling comps, analyzing trends, and creating CMAs manually takes hours. Sellers expect instant pricing."
+        },
+        {
+          "icon": "⏰",
+          "title": "Slow Lead Response Loses Deals",
+          "description": "Zillow leads go cold in 5 minutes. Manual follow-up means competitors beat you to the phone."
+        },
+        {
+          "icon": "📝",
+          "title": "Contract Chaos",
+          "description": "Tracking contingencies, deadlines, and document signings across multiple deals is overwhelming."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Market Pulse → Price-Right CMA Engine",
+          "description": "Auto-pull recent comps, calculate price per sqft trends, and generate a polished CMA report in under 3 minutes. Delivered via email or presented live.",
+          "features": [
+            "MLS comp pulling with filters (beds/baths/sqft)",
+            "Price per sqft trend analysis",
+            "Auto-generate CMA report with charts",
+            "Email or live presentation-ready format"
+          ]
+        },
+        {
+          "name": "Listing Prep Green-Light Pack",
+          "description": "Coordinate photographer, stager, inspector, and disclosure deadlines. Get 'green-light' alert when listing is ready to go live.",
+          "features": [
+            "Photographer and stager scheduling",
+            "Pre-listing inspection coordination",
+            "Disclosure document deadline tracking",
+            "Green-light notification when all tasks complete"
+          ]
+        },
+        {
+          "name": "Lead Switchboard & 5-Minute Connect",
+          "description": "Zillow, Realtor.com, and Redfin leads instantly routed to your phone or auto-texted with a calendar link. Connect within 5 minutes, every time.",
+          "features": [
+            "Lead aggregation from Zillow/Realtor/Redfin",
+            "Instant SMS with calendar booking link",
+            "Auto-dial to your phone if preferred",
+            "Lead activity tracking and nurture sequences"
+          ]
+        },
+        {
+          "name": "Buyer Tour Builder → Offer-in-Pocket",
+          "description": "Buyers submit must-haves, get auto-matched listings, and receive tour scheduling links. Pre-approval docs requested before showing.",
+          "features": [
+            "Buyer criteria form with MLS auto-matching",
+            "Tour scheduling with calendar integration",
+            "Pre-approval document request automation",
+            "Post-tour feedback collection and follow-up"
+          ]
+        },
+        {
+          "name": "Contract-to-Close Orchestrator",
+          "description": "Track every contingency deadline, document signature, and milestone from contract to close. Auto-remind clients and vendors at each step.",
+          "features": [
+            "Contract deadline tracking dashboard",
+            "DocuSign integration for e-signatures",
+            "Client and vendor reminder automation",
+            "Close date countdown with task checklist"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "12-15",
+        "efficiency": "35%",
+        "revenue": "+30%",
+        "payback": "60 days"
+      }
+    },
+    {
+      "slug": "insurance",
+      "name": "Insurance Agent",
+      "icon": "🛡️",
+      "tagline": "Quote generation, policy renewals, and claims tracking—automated so you can focus on building relationships.",
+      "problems": [
+        {
+          "icon": "💬",
+          "title": "Quote Requests Sit Too Long",
+          "description": "Leads request quotes but wait hours for responses. By the time you reply, they've already bought elsewhere."
+        },
+        {
+          "icon": "📅",
+          "title": "Renewal Season Overwhelm",
+          "description": "Renewal reminders sent manually. Clients slip through cracks, resulting in lost policies and reduced retention."
+        },
+        {
+          "icon": "📞",
+          "title": "Claims Follow-Up Black Hole",
+          "description": "Tracking claim status across carriers requires constant phone calls. Clients frustrated by lack of updates."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Quote-Right Instant Response Engine",
+          "description": "Lead submits info, AI pre-qualifies, and sends instant quote ranges from top 3 carriers. Agent reviews and sends final quote within 30 minutes.",
+          "features": [
+            "Lead intake form with AI pre-qualification",
+            "Multi-carrier quote API integration",
+            "Instant ballpark quote delivery via email/SMS",
+            "Agent review dashboard for final quote approval"
+          ]
+        },
+        {
+          "name": "Renewal Reminder Cascade",
+          "description": "90-60-30 day renewal reminders with one-click policy review links. Track opens, clicks, and conversions to prevent lapses.",
+          "features": [
+            "90-60-30-7 day reminder sequence automation",
+            "One-click policy review and renewal links",
+            "Open and click tracking analytics",
+            "Lapse prediction alerts for at-risk policies"
+          ]
+        },
+        {
+          "name": "Cross-Sell Opportunity Radar",
+          "description": "Detect life events (new home, marriage, baby) from CRM data and trigger targeted cross-sell campaigns for additional coverage.",
+          "features": [
+            "Life event detection from CRM updates",
+            "Auto-trigger coverage gap analysis",
+            "Personalized cross-sell email campaigns",
+            "Bundle discount calculator and presentation"
+          ]
+        },
+        {
+          "name": "Claims Status Sync Dashboard",
+          "description": "Automatically check claim status across carriers, update clients via SMS, and alert agent when adjuster action needed.",
+          "features": [
+            "Multi-carrier claim status API integration",
+            "Client SMS updates at each claim milestone",
+            "Agent alerts for required actions",
+            "Claims timeline visualization dashboard"
+          ]
+        },
+        {
+          "name": "Referral Loop Growth Engine",
+          "description": "Auto-request referrals after policy purchase and positive claim experiences. Track referral sources and reward top advocates.",
+          "features": [
+            "Post-purchase referral request automation",
+            "Claim satisfaction survey with referral ask",
+            "Referral tracking and attribution system",
+            "Automated thank-you gifts for advocates"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "18-22",
+        "efficiency": "45%",
+        "revenue": "+35%",
+        "payback": "45 days"
+      }
+    },
+    {
+      "slug": "synagogue",
+      "name": "Synagogue",
+      "icon": "✡️",
+      "tagline": "Member engagement, event coordination, and donation tracking—automated so you can focus on community.",
+      "problems": [
+        {
+          "icon": "📧",
+          "title": "Low Event Attendance",
+          "description": "Event announcements get buried in inboxes. Tracking RSVPs manually means last-minute headcount chaos."
+        },
+        {
+          "icon": "💰",
+          "title": "Donation Tracking Nightmare",
+          "description": "High Holiday pledges, yahrzeit donations, and building fund gifts tracked in spreadsheets. Tax receipts delayed."
+        },
+        {
+          "icon": "📞",
+          "title": "Member Communication Gaps",
+          "description": "Reaching members requires email, phone tree, and bulletin. Important updates don't reach everyone."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Shabbat-Smart Event Coordinator",
+          "description": "Schedule Shabbat services, classes, and events with auto-RSVP reminders via SMS and email. Track attendance and send Zoom links if virtual.",
+          "features": [
+            "Event calendar with RSVP automation",
+            "Multi-channel reminders (SMS, email, app)",
+            "Zoom link generation for virtual events",
+            "Attendance tracking and analytics"
+          ]
+        },
+        {
+          "name": "Chai-Giving Donation Dashboard",
+          "description": "Accept online donations with auto-categorization (High Holidays, yahrzeit, building fund). Instant tax receipt generation and donor recognition.",
+          "features": [
+            "Multi-category donation forms",
+            "Recurring donation subscription setup",
+            "Auto-generate IRS-compliant tax receipts",
+            "Donor wall recognition automation"
+          ]
+        },
+        {
+          "name": "Member Portal & Directory App",
+          "description": "Centralized member directory, event calendar, and prayer time updates. Push notifications for urgent announcements.",
+          "features": [
+            "Member directory with privacy controls",
+            "Event calendar with push notifications",
+            "Prayer time and Torah portion updates",
+            "Emergency alert broadcast system"
+          ]
+        },
+        {
+          "name": "Yahrzeit & Life-Cycle Reminder System",
+          "description": "Track yahrzeit dates, bar/bat mitzvah anniversaries, and birthdays. Auto-send remembrance notifications and donation opportunities.",
+          "features": [
+            "Hebrew calendar date tracking",
+            "Yahrzeit reminder emails with donation links",
+            "Bar/Bat Mitzvah anniversary greetings",
+            "Birthday and wedding anniversary wishes"
+          ]
+        },
+        {
+          "name": "Volunteer Coordination Hub",
+          "description": "Schedule Torah readers, greeters, and kiddush hosts with auto-reminders. Track volunteer hours and send appreciation notes.",
+          "features": [
+            "Volunteer scheduling with skills matching",
+            "Auto-reminders and confirmation requests",
+            "Volunteer hour tracking for recognition",
+            "Appreciation email automation"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "10-15",
+        "efficiency": "40%",
+        "revenue": "+30%",
+        "payback": "90 days"
+      }
+    },
+    {
+      "slug": "torah-teacher",
+      "name": "Torah Teacher",
+      "icon": "📚",
+      "tagline": "Student scheduling, lesson tracking, and parent communication—automated for better learning outcomes.",
+      "problems": [
+        {
+          "icon": "📅",
+          "title": "Scheduling Conflicts",
+          "description": "Coordinating bar/bat mitzvah lessons across families with different schedules causes constant rescheduling."
+        },
+        {
+          "icon": "📝",
+          "title": "Progress Tracking Gaps",
+          "description": "No systematic way to track aliyah progress, Haftarah mastery, or D'var Torah prep. Parents request updates constantly."
+        },
+        {
+          "icon": "💳",
+          "title": "Payment Collection Hassles",
+          "description": "Chasing payments, tracking invoices, and managing make-up lessons manually takes hours each month."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Bar/Bat Mitzvah Lesson Scheduler",
+          "description": "Parents book available time slots online. Auto-reminders sent 24 hours before. Zoom links generated for virtual lessons.",
+          "features": [
+            "Online booking calendar with availability",
+            "24-hour lesson reminders via SMS/email",
+            "Zoom link auto-generation for virtual sessions",
+            "Rescheduling and cancellation management"
+          ]
+        },
+        {
+          "name": "Torah Progress Tracker",
+          "description": "Track each student's aliyah, Haftarah, and D'var Torah progress. Auto-generate parent progress reports monthly.",
+          "features": [
+            "Aliyah verse-by-verse mastery tracking",
+            "Haftarah trope proficiency assessment",
+            "D'var Torah outline and draft milestones",
+            "Monthly progress reports to parents"
+          ]
+        },
+        {
+          "name": "Lesson Recording Library",
+          "description": "Auto-record Zoom lessons and upload to student portal. Students can replay tricky sections for practice.",
+          "features": [
+            "Zoom lesson auto-recording",
+            "Student portal with lesson library",
+            "Trope practice audio file uploads",
+            "Annotated Torah portion PDFs"
+          ]
+        },
+        {
+          "name": "Tuition & Make-Up Credit System",
+          "description": "Auto-invoice families monthly, track payments, and manage make-up lesson credits. Stripe integration for online payments.",
+          "features": [
+            "Monthly auto-invoicing with Stripe",
+            "Make-up lesson credit tracking",
+            "Late payment reminder automation",
+            "Tax receipt generation for donations"
+          ]
+        },
+        {
+          "name": "Parsha Prep Resource Hub",
+          "description": "Weekly parsha summaries, discussion questions, and D'var Torah prompts sent to students and parents.",
+          "features": [
+            "Weekly parsha summary emails",
+            "D'var Torah brainstorming prompts",
+            "Discussion question resource library",
+            "Hebrew vocabulary flashcard generator"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "8-12",
+        "efficiency": "35%",
+        "revenue": "+25%",
+        "payback": "60 days"
+      }
+    },
+    {
+      "slug": "locksmith",
+      "name": "Locksmith",
+      "icon": "🔑",
+      "tagline": "Emergency dispatch, mobile service routing, and inventory tracking—automated for faster response times.",
+      "problems": [
+        {
+          "icon": "🚨",
+          "title": "Lost Emergency Calls",
+          "description": "Lockouts happen at 2 AM. Missed calls mean lost revenue and frustrated customers calling competitors."
+        },
+        {
+          "icon": "🗺️",
+          "title": "Inefficient Routing",
+          "description": "Mobile techs drive across town for jobs when closer locations exist. Wasted gas and time."
+        },
+        {
+          "icon": "📦",
+          "title": "Key Blank Stock-Outs",
+          "description": "Arriving at a job without the right key blank kills trust. Manual inventory tracking causes shortages."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "24/7 Emergency Auto-Dispatch",
+          "description": "After-hours calls auto-routed to on-call tech's phone. AI captures location, urgency, and lock type before human pickup.",
+          "features": [
+            "After-hours call forwarding to on-call tech",
+            "AI voice intake for location and urgency",
+            "SMS confirmation with ETA to customer",
+            "Job details sent to tech's mobile app"
+          ]
+        },
+        {
+          "name": "GPS Smart Router",
+          "description": "New job request pings nearest available tech with real-time GPS. Accept/decline in-app with auto-reroute if declined.",
+          "features": [
+            "Real-time tech GPS location tracking",
+            "Proximity-based job assignment",
+            "In-app accept/decline with ETA updates",
+            "Route optimization for multiple jobs"
+          ]
+        },
+        {
+          "name": "Key Blank Inventory Alert System",
+          "description": "Track key blank usage by vehicle. Auto-alert when stock falls below threshold. One-click reorder from supplier.",
+          "features": [
+            "Per-vehicle key blank inventory tracking",
+            "Low-stock alerts with reorder suggestions",
+            "Supplier API integration for one-click orders",
+            "Usage analytics by key type"
+          ]
+        },
+        {
+          "name": "Instant Quote & Photo Estimator",
+          "description": "Customer uploads lock photo, AI identifies type, and generates instant price quote. Reduces no-show rate from price shock.",
+          "features": [
+            "Photo upload with AI lock identification",
+            "Instant price quote generation",
+            "Service description and ETA estimate",
+            "Online booking with deposit option"
+          ]
+        },
+        {
+          "name": "Fleet Maintenance Reminder System",
+          "description": "Track vehicle mileage, tool calibration, and license renewals. Auto-schedule maintenance before breakdowns.",
+          "features": [
+            "Vehicle mileage tracking by job",
+            "Tool calibration expiration alerts",
+            "License and insurance renewal reminders",
+            "Maintenance history log per vehicle"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "12-18",
+        "efficiency": "50%",
+        "revenue": "+35%",
+        "payback": "30 days"
+      }
+    },
+    {
+      "slug": "busy-mom",
+      "name": "Busy Mom",
+      "icon": "👩‍👧‍👦",
+      "tagline": "Family schedules, meal planning, and task coordination—automated so you can reclaim your time.",
+      "problems": [
+        {
+          "icon": "📅",
+          "title": "Calendar Chaos",
+          "description": "Soccer practice, dentist appointments, and school events scattered across multiple calendars. Double bookings happen."
+        },
+        {
+          "icon": "🍽️",
+          "title": "Meal Planning Stress",
+          "description": "Deciding what's for dinner at 5 PM, missing ingredients, and dietary restrictions make cooking a nightly scramble."
+        },
+        {
+          "icon": "🛒",
+          "title": "Errand Overload",
+          "description": "Grocery runs, pharmacy pickups, and Target trips fragment the week. No system to batch errands efficiently."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Family Calendar Command Center",
+          "description": "Sync all family calendars into one view. Color-coded by person, with conflict alerts and shared event notifications.",
+          "features": [
+            "Multi-calendar sync (Google, Apple, Outlook)",
+            "Color-coded events by family member",
+            "Conflict detection and resolution suggestions",
+            "Shared event reminders via SMS"
+          ]
+        },
+        {
+          "name": "Meal Plan Auto-Generator",
+          "description": "Input dietary preferences, get weekly meal plan with recipes and auto-generated grocery list. Repeats favorite meals monthly.",
+          "features": [
+            "Dietary preference and allergy filtering",
+            "Weekly meal plan generation",
+            "Auto-generated grocery list by store aisle",
+            "Recipe card library with cooking times"
+          ]
+        },
+        {
+          "name": "Errand Batching Optimizer",
+          "description": "List all to-dos, AI maps optimal route, and suggests best day/time based on traffic and store hours.",
+          "features": [
+            "To-do list with location tagging",
+            "Route optimization by proximity",
+            "Traffic and store hours consideration",
+            "Errand completion tracking"
+          ]
+        },
+        {
+          "name": "Kid Activity Tracker",
+          "description": "Track each child's activities, practice schedules, and permission slips. Auto-remind about snack duty, carpool, and pickup times.",
+          "features": [
+            "Per-child activity calendar",
+            "Snack duty and carpool rotation tracking",
+            "Permission slip deadline reminders",
+            "Coach and parent contact directory"
+          ]
+        },
+        {
+          "name": "Household Task Auto-Assignment",
+          "description": "Assign chores to kids with age-appropriate tasks. Track completion, award points, and sync to allowance system.",
+          "features": [
+            "Chore assignment by age appropriateness",
+            "Completion tracking with photo proof",
+            "Point system with rewards",
+            "Allowance auto-calculation and payment"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "10-15",
+        "efficiency": "40%",
+        "revenue": "N/A (Time ROI)",
+        "payback": "30 days"
+      }
+    },
+    {
+      "slug": "photographer",
+      "name": "Photographer",
+      "icon": "📸",
+      "tagline": "Booking, gallery delivery, and client proofing—automated so you can focus on creating stunning images.",
+      "problems": [
+        {
+          "icon": "📅",
+          "title": "Booking Coordination Hassles",
+          "description": "Email back-and-forth to find available dates, send contracts, and collect deposits takes days."
+        },
+        {
+          "icon": "📤",
+          "title": "Gallery Delivery Delays",
+          "description": "Editing, exporting, uploading, and organizing galleries manually means clients wait weeks for photos."
+        },
+        {
+          "icon": "💳",
+          "title": "Print Order Chaos",
+          "description": "Tracking print orders, upsells, and payments across multiple clients and labs is overwhelming."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Shoot Booking Calendar",
+          "description": "Clients see real-time availability, book sessions, e-sign contracts, and pay deposits—all in one flow.",
+          "features": [
+            "Real-time availability calendar",
+            "Package selection with pricing",
+            "E-signature contract integration",
+            "Stripe deposit payment processing"
+          ]
+        },
+        {
+          "name": "Gallery Auto-Delivery Pipeline",
+          "description": "Upload edited photos, galleries auto-generated and sent via email with personalized message. Clients download or order prints.",
+          "features": [
+            "Bulk upload with folder organization",
+            "Auto-generate password-protected galleries",
+            "Email delivery with custom message",
+            "Download and print ordering integration"
+          ]
+        },
+        {
+          "name": "Client Proofing & Favorite Selector",
+          "description": "Clients mark favorites, leave feedback, and request edits directly in gallery. Changes tracked and organized.",
+          "features": [
+            "In-gallery favoriting and commenting",
+            "Edit request tracking system",
+            "Client feedback collection",
+            "Final selection export for albums"
+          ]
+        },
+        {
+          "name": "Print Lab Order Sync",
+          "description": "Client orders prints from gallery, order auto-sent to lab with specs. Track fulfillment and shipping status.",
+          "features": [
+            "Print lab API integration",
+            "Order specs auto-populated",
+            "Fulfillment and shipping tracking",
+            "Client delivery notifications"
+          ]
+        },
+        {
+          "name": "Upsell & Referral Engine",
+          "description": "After gallery delivery, trigger album upsells, canvas prints, and referral requests. Track conversion rates.",
+          "features": [
+            "Post-delivery upsell email sequence",
+            "Album and canvas product showcases",
+            "Referral request with incentive",
+            "Conversion tracking analytics"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "15-20",
+        "efficiency": "45%",
+        "revenue": "+40%",
+        "payback": "45 days"
+      }
+    },
+    {
+      "slug": "dentist",
+      "name": "Dentist",
+      "icon": "🦷",
+      "tagline": "Appointment reminders, insurance verification, and recall campaigns—automated for higher patient retention.",
+      "problems": [
+        {
+          "icon": "📞",
+          "title": "No-Show Appointments",
+          "description": "Patients forget appointments despite manual reminder calls. Open slots go unfilled, costing thousands monthly."
+        },
+        {
+          "icon": "📋",
+          "title": "Insurance Verification Bottleneck",
+          "description": "Front desk spends hours calling insurance companies. Patients shocked by out-of-pocket costs after treatment."
+        },
+        {
+          "icon": "📅",
+          "title": "6-Month Recall Slippage",
+          "description": "Patients due for cleanings slip through cracks. Manual recall calls ineffective, resulting in lost hygiene revenue."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Smart Reminder Cascade",
+          "description": "72-hour email, 24-hour SMS, and 2-hour call reminders. Patients confirm with one-click, reducing no-shows by 40%.",
+          "features": [
+            "72-hour email reminder automation",
+            "24-hour SMS with one-click confirm",
+            "2-hour phone call for unconfirmed",
+            "Waitlist auto-fill for cancellations"
+          ]
+        },
+        {
+          "name": "Insurance Verification Autopilot",
+          "description": "Auto-verify benefits before appointments via API. Alert front desk to coverage gaps and co-pay estimates.",
+          "features": [
+            "Pre-appointment insurance verification API",
+            "Coverage gap alerts to front desk",
+            "Co-pay and deductible estimate generation",
+            "Patient notification of out-of-pocket costs"
+          ]
+        },
+        {
+          "name": "6-Month Recall Campaign Engine",
+          "description": "Track last cleaning date, trigger recall emails and SMS at 5.5 months. Offer online booking with hygienist choice.",
+          "features": [
+            "Last visit date tracking per patient",
+            "5.5-month recall trigger automation",
+            "Email and SMS with online booking link",
+            "Hygienist preference selection"
+          ]
+        },
+        {
+          "name": "Treatment Plan Follow-Up Tracker",
+          "description": "Track proposed treatments not yet scheduled. Auto-follow up at 30-60-90 days to convert to booked appointments.",
+          "features": [
+            "Unscheduled treatment plan tracking",
+            "30-60-90 day follow-up sequences",
+            "Financing options and payment plans",
+            "Conversion tracking and analytics"
+          ]
+        },
+        {
+          "name": "Review Request Automation",
+          "description": "After positive appointments, auto-request Google reviews. Track review rate and respond to negative feedback promptly.",
+          "features": [
+            "Post-appointment review request emails",
+            "Google and Yelp review link generation",
+            "Negative feedback alerts to manager",
+            "Review rate tracking dashboard"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "20-25",
+        "efficiency": "50%",
+        "revenue": "+30%",
+        "payback": "30 days"
+      }
+    },
+    {
+      "slug": "ecommerce",
+      "name": "E-commerce Store",
+      "icon": "🛍️",
+      "tagline": "Abandoned cart recovery, inventory sync, and shipping automation—for faster fulfillment and higher conversions.",
+      "problems": [
+        {
+          "icon": "🛒",
+          "title": "Abandoned Cart Revenue Loss",
+          "description": "70% of carts abandoned. Manual follow-up emails sent inconsistently, resulting in thousands in lost sales."
+        },
+        {
+          "icon": "📦",
+          "title": "Inventory Sync Nightmares",
+          "description": "Selling on Shopify, Amazon, and eBay creates oversell chaos. Manual inventory updates cause order cancellations."
+        },
+        {
+          "icon": "🚚",
+          "title": "Shipping Label Bottleneck",
+          "description": "Creating shipping labels one-by-one wastes hours daily. Customers frustrated by delayed fulfillment."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Abandoned Cart Recovery Bot",
+          "description": "Trigger 1-hour, 24-hour, and 72-hour email and SMS sequences. Include discount codes and urgency timers to recover sales.",
+          "features": [
+            "1-hour, 24-hour, 72-hour recovery emails",
+            "SMS reminders with cart links",
+            "Dynamic discount code generation",
+            "Urgency countdown timers"
+          ]
+        },
+        {
+          "name": "Multi-Channel Inventory Sync",
+          "description": "Sync inventory across Shopify, Amazon, eBay, and WooCommerce in real-time. Prevent oversells and stockouts.",
+          "features": [
+            "Real-time inventory sync across platforms",
+            "Low-stock alerts by SKU",
+            "Oversell prevention logic",
+            "Reorder point automation"
+          ]
+        },
+        {
+          "name": "Bulk Shipping Label Generator",
+          "description": "One-click generate shipping labels for all unfulfilled orders. Auto-select cheapest carrier and print batch labels.",
+          "features": [
+            "Bulk label generation for all orders",
+            "Carrier rate comparison and selection",
+            "Batch label printing",
+            "Tracking number upload to platforms"
+          ]
+        },
+        {
+          "name": "Customer Win-Back Campaigns",
+          "description": "Detect customers who haven't purchased in 90 days. Trigger personalized win-back emails with product recommendations.",
+          "features": [
+            "90-day inactive customer detection",
+            "Personalized product recommendation engine",
+            "Win-back discount code automation",
+            "Conversion tracking and A/B testing"
+          ]
+        },
+        {
+          "name": "Post-Purchase Upsell Flow",
+          "description": "After order confirmation, trigger upsell emails for complementary products. Track conversion rates and AOV lift.",
+          "features": [
+            "Post-purchase email sequence",
+            "Complementary product recommendations",
+            "Limited-time discount incentives",
+            "AOV and conversion rate tracking"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "25-30",
+        "efficiency": "60%",
+        "revenue": "+50%",
+        "payback": "30 days"
+      }
+    },
+    {
+      "slug": "fence-contractor",
+      "name": "Fence Contractor",
+      "icon": "🏗️",
+      "tagline": "Quote generation, permit tracking, and material ordering—automated for faster project completion.",
+      "problems": [
+        {
+          "icon": "📏",
+          "title": "Slow Quote Turnaround",
+          "description": "Measuring properties, calculating materials, and pricing takes days. Customers choose faster competitors."
+        },
+        {
+          "icon": "📋",
+          "title": "Permit Application Delays",
+          "description": "HOA approvals and city permits require multiple submissions. Manual tracking causes project delays."
+        },
+        {
+          "icon": "🚚",
+          "title": "Material Ordering Chaos",
+          "description": "Coordinating lumber, posts, and hardware orders across multiple suppliers. Over-ordering wastes money, under-ordering delays jobs."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Aerial Fence Measurement Tool",
+          "description": "Use aerial imagery to measure property lines and calculate linear footage. Generate instant material lists.",
+          "features": [
+            "Aerial imagery property line tracing",
+            "Linear footage calculation automation",
+            "Material quantity estimation by fence type",
+            "Gate and post count auto-calculation"
+          ]
+        },
+        {
+          "name": "Instant Quote Generator",
+          "description": "Input measurements, select fence style, get 3-tier pricing (Good/Better/Best). Customer receives quote via email in under 10 minutes.",
+          "features": [
+            "3-tier pricing option generation",
+            "Material and labor cost breakdown",
+            "Instant quote email delivery",
+            "Online approval and deposit payment"
+          ]
+        },
+        {
+          "name": "Permit & HOA Approval Tracker",
+          "description": "Auto-generate permit applications, track submission status, and alert when approvals received. Sync with project timeline.",
+          "features": [
+            "Permit application auto-generation",
+            "HOA submission tracking",
+            "Approval status alerts",
+            "Project timeline adjustment automation"
+          ]
+        },
+        {
+          "name": "Material Order Sync System",
+          "description": "Generate material orders from quotes, send to suppliers via API, and track delivery dates. Alert crew when materials arrive.",
+          "features": [
+            "Material order generation from quotes",
+            "Supplier API integration for ordering",
+            "Delivery date tracking and alerts",
+            "Crew notification automation"
+          ]
+        },
+        {
+          "name": "Job Site Photo Progress Tracker",
+          "description": "Crew uploads progress photos daily. Auto-organize by project, send updates to customers, and track completion milestones.",
+          "features": [
+            "Crew mobile app for photo uploads",
+            "Auto-organize photos by project",
+            "Customer progress update emails",
+            "Milestone completion tracking"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "18-24",
+        "efficiency": "55%",
+        "revenue": "+35%",
+        "payback": "45 days"
+      }
+    },
+    {
+      "slug": "product-supplier",
+      "name": "Product Supplier",
+      "icon": "📦",
+      "tagline": "Order processing, inventory forecasting, and shipping automation—for faster fulfillment and lower costs.",
+      "problems": [
+        {
+          "icon": "📞",
+          "title": "Manual Order Entry",
+          "description": "Orders arrive via email, phone, and fax. Manual entry into system causes errors and delays."
+        },
+        {
+          "icon": "📊",
+          "title": "Inventory Stockouts",
+          "description": "No demand forecasting. Best-sellers run out while slow-movers accumulate. Capital tied up in wrong inventory."
+        },
+        {
+          "icon": "🚚",
+          "title": "Shipping Cost Overruns",
+          "description": "No carrier rate comparison. Overpaying for shipping eats into margins. Late shipments frustrate customers."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Multi-Channel Order Aggregator",
+          "description": "Auto-import orders from email, EDI, phone, and web portals into one dashboard. Eliminate manual entry errors.",
+          "features": [
+            "Email order parsing and import",
+            "EDI integration with retailers",
+            "Phone order voice-to-text entry",
+            "Web portal API order sync"
+          ]
+        },
+        {
+          "name": "Demand Forecasting Engine",
+          "description": "Analyze sales trends, predict demand by SKU, and auto-generate reorder recommendations. Reduce stockouts by 50%.",
+          "features": [
+            "Historical sales trend analysis",
+            "Seasonal demand prediction by SKU",
+            "Reorder point and quantity suggestions",
+            "Slow-mover discount campaign triggers"
+          ]
+        },
+        {
+          "name": "Carrier Rate Optimizer",
+          "description": "Compare USPS, UPS, FedEx rates in real-time. Auto-select cheapest option based on weight, destination, and speed.",
+          "features": [
+            "Real-time carrier rate comparison",
+            "Auto-select cheapest shipping option",
+            "Bulk label generation",
+            "Delivery guarantee tracking"
+          ]
+        },
+        {
+          "name": "Wholesale Customer Portal",
+          "description": "Customers log in, see real-time inventory, place orders, and track shipments. Reduce phone calls by 70%.",
+          "features": [
+            "Real-time inventory availability",
+            "Online ordering with pricing tiers",
+            "Order history and reorder buttons",
+            "Shipment tracking dashboard"
+          ]
+        },
+        {
+          "name": "Invoice & Payment Automation",
+          "description": "Auto-generate invoices on shipment, send via email, and track payment status. Integrate with QuickBooks.",
+          "features": [
+            "Auto-invoice generation on shipment",
+            "Email delivery with payment link",
+            "Payment status tracking",
+            "QuickBooks sync for accounting"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "30-40",
+        "efficiency": "65%",
+        "revenue": "+35%",
+        "payback": "30 days"
+      }
+    },
+    {
+      "slug": "bookkeeping",
+      "name": "Bookkeeping Service",
+      "icon": "📊",
+      "tagline": "Receipt processing, expense categorization, and report generation—automated for faster close cycles.",
+      "problems": [
+        {
+          "icon": "📧",
+          "title": "Receipt Collection Chaos",
+          "description": "Clients send receipts via email, text, and postal mail. Manual data entry takes hours and causes errors."
+        },
+        {
+          "icon": "🏷️",
+          "title": "Expense Categorization Delays",
+          "description": "Manually categorizing hundreds of transactions monthly. Missing categories cause inaccurate reports."
+        },
+        {
+          "icon": "📅",
+          "title": "Month-End Close Overload",
+          "description": "Reconciliation, report generation, and client delivery done manually. Takes 10+ days past month-end."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Receipt Capture & OCR Engine",
+          "description": "Clients email or text receipts, AI extracts date, vendor, amount, and category. Auto-posts to QuickBooks.",
+          "features": [
+            "Email and SMS receipt ingestion",
+            "OCR data extraction (date, vendor, amount)",
+            "AI-powered category suggestion",
+            "QuickBooks auto-posting"
+          ]
+        },
+        {
+          "name": "Bank Feed Reconciliation Bot",
+          "description": "Auto-match bank transactions to receipts and invoices. Flag unmatched items for review. Reduce reconciliation time by 70%.",
+          "features": [
+            "Bank feed transaction import",
+            "Auto-match to receipts and invoices",
+            "Unmatched transaction alerts",
+            "Reconciliation report generation"
+          ]
+        },
+        {
+          "name": "Expense Categorization AI",
+          "description": "Learn from past categorizations, auto-assign categories to new transactions. Manual review only for exceptions.",
+          "features": [
+            "Machine learning from historical data",
+            "Auto-categorization with confidence scores",
+            "Exception flagging for manual review",
+            "Category rule customization"
+          ]
+        },
+        {
+          "name": "Month-End Close Automation",
+          "description": "Auto-generate P&L, balance sheet, and cash flow reports. Send to clients via email on the 5th of each month.",
+          "features": [
+            "Auto-generate financial statements",
+            "Variance analysis vs prior months",
+            "Client portal upload",
+            "Scheduled email delivery"
+          ]
+        },
+        {
+          "name": "Client Onboarding Workflow",
+          "description": "New clients complete intake form, grant bank/credit card access, and upload historical data—all automated.",
+          "features": [
+            "Client intake form automation",
+            "Bank and credit card connection guides",
+            "Historical data import wizard",
+            "Onboarding progress tracking"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "35-45",
+        "efficiency": "70%",
+        "revenue": "+30%",
+        "payback": "45 days"
+      }
+    },
+    {
+      "slug": "lawyer",
+      "name": "Law Firm",
+      "icon": "⚖️",
+      "tagline": "Intake automation, document assembly, and deadline tracking—for higher billable hours and fewer missed filings.",
+      "problems": [
+        {
+          "icon": "📞",
+          "title": "Slow Client Intake",
+          "description": "Potential clients call, leave voicemails, and get callbacks days later. By then, they've hired another firm."
+        },
+        {
+          "icon": "📄",
+          "title": "Manual Document Drafting",
+          "description": "Creating contracts, motions, and briefs from scratch or templates takes hours. Copy-paste errors cause issues."
+        },
+        {
+          "icon": "📅",
+          "title": "Missed Court Deadlines",
+          "description": "Tracking filing deadlines across dozens of cases manually. Missed deadlines result in malpractice claims."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "24/7 Intake & Qualification Bot",
+          "description": "Website visitors chat with AI to describe legal issue. Qualified leads get calendar link for attorney consult.",
+          "features": [
+            "AI chatbot for legal issue intake",
+            "Conflict check automation",
+            "Calendar booking link for qualified leads",
+            "CRM auto-population with case details"
+          ]
+        },
+        {
+          "name": "Document Assembly Engine",
+          "description": "Select document type, answer questions, generate draft with auto-populated client info. Review and send for signature.",
+          "features": [
+            "Template library by practice area",
+            "Guided questionnaire for data collection",
+            "Auto-populate client and case info",
+            "DocuSign integration for e-signature"
+          ]
+        },
+        {
+          "name": "Court Deadline Tracker",
+          "description": "Import court dates from case management system. Auto-calculate deadlines, set reminders, and alert attorneys 14-7-3 days before.",
+          "features": [
+            "Court date import and sync",
+            "Auto-calculate filing deadlines by jurisdiction",
+            "14-7-3 day reminder cascade",
+            "Missed deadline alerts to managing partner"
+          ]
+        },
+        {
+          "name": "Client Communication Portal",
+          "description": "Secure portal for clients to upload documents, view case status, and message attorneys. Reduce phone calls by 60%.",
+          "features": [
+            "Secure document upload and storage",
+            "Case status dashboard for clients",
+            "Encrypted messaging with attorneys",
+            "Automatic read receipts and follow-ups"
+          ]
+        },
+        {
+          "name": "Time Tracking & Invoicing Autopilot",
+          "description": "Track time in 6-minute increments with one click. Auto-generate invoices monthly and send to clients via email.",
+          "features": [
+            "One-click time entry by task",
+            "Auto-round to 6-minute increments",
+            "Monthly invoice generation",
+            "Email delivery with payment link"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "25-35",
+        "efficiency": "55%",
+        "revenue": "+40%",
+        "payback": "60 days"
+      }
+    },
+    {
+      "slug": "amazon-seller",
+      "name": "Amazon Seller",
+      "icon": "📦",
+      "tagline": "Repricing, inventory alerts, and review requests—automated for higher sales and better rankings.",
+      "problems": [
+        {
+          "icon": "💰",
+          "title": "Lost Buy Box from Manual Pricing",
+          "description": "Competitors adjust prices hourly. Manual repricing means losing Buy Box and sales throughout the day."
+        },
+        {
+          "icon": "📦",
+          "title": "FBA Stockout Disasters",
+          "description": "No visibility into FBA inventory levels. Stockouts kill rankings and sales velocity for weeks."
+        },
+        {
+          "icon": "⭐",
+          "title": "Low Review Count Hurts Conversions",
+          "description": "Manually requesting reviews inconsistently. Products with <10 reviews convert poorly."
+        }
+      ],
+      "solutions": [
+        {
+          "name": "Repricing Bot for Buy Box Dominance",
+          "description": "Monitor competitor prices every 15 minutes. Auto-adjust prices to win Buy Box while protecting margins.",
+          "features": [
+            "Competitor price monitoring (15-min refresh)",
+            "Auto-repricing with margin protection",
+            "Buy Box win rate tracking",
+            "Min/max price guardrails"
+          ]
+        },
+        {
+          "name": "FBA Inventory Forecast & Reorder",
+          "description": "Track sales velocity, predict stockout dates, and auto-generate reorder recommendations. Send to supplier via email.",
+          "features": [
+            "Sales velocity tracking by SKU",
+            "Stockout date prediction",
+            "Reorder quantity recommendations",
+            "Supplier notification automation"
+          ]
+        },
+        {
+          "name": "Amazon Review Request Automation",
+          "description": "Auto-send review requests 7 days after delivery. Track review rate and respond to negative feedback within 24 hours.",
+          "features": [
+            "7-day post-delivery review request",
+            "Amazon messaging compliance",
+            "Review rate tracking by product",
+            "Negative review alerts to support team"
+          ]
+        },
+        {
+          "name": "PPC Campaign Optimizer",
+          "description": "Analyze ad spend by keyword, pause underperformers, and increase bids on winners. Maximize ACoS and profitability.",
+          "features": [
+            "Keyword performance analysis",
+            "Auto-pause low-ROI keywords",
+            "Bid adjustment recommendations",
+            "ACoS and TACoS tracking"
+          ]
+        },
+        {
+          "name": "Competitor Tracking Dashboard",
+          "description": "Monitor competitor prices, review counts, and rankings. Get alerts when competitors change prices or run promotions.",
+          "features": [
+            "Competitor price monitoring",
+            "Review count and rating tracking",
+            "Keyword ranking position tracking",
+            "Promotion alert notifications"
+          ]
+        }
+      ],
+      "roi": {
+        "timeSaved": "20-30",
+        "efficiency": "60%",
+        "revenue": "+45%",
+        "payback": "30 days"
+      }
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+{
+  "timestamp": "2025-10-03T16:45:51.899Z",
+  "dryRun": false,
+  "results": {
+    "phase1": [
+      {
+        "workflowId": "DFmbDYShzzkYgTYc"
+      },
+      {
+        "workflowId": "Cc5FNjAQ5VhYw7U2"
+      },
+      {
+        "workflowId": "KcE2qkNQIgQkwIId"
+      },
+      {
+        "workflowId": "BRod2NyrKagfMISZ"
+      },
+      {
+        "workflowId": "qrXO1Dkd0jUDT8SM"
+      },
+      {
+        "workflowId": "IARf1jWmCtilf4Lb"
+      },
+      {
+        "workflowId": "RwaUpPtmrvFNPpj3"
+      },
+      {
+        "workflowId": "mLhDetXg8HulnXtz"
+      },
+      {
+        "workflowId": "vdIJ3Zm2sIFI6WEI"
+      },
+      {
+        "workflowId": "WrqXChO5x1FxpRHS"
+      },
+      {
+        "workflowId": "G4uUME2uL9emWZ3n"
+      },
+      {
+        "workflowId": "RiPFVDfVbbob8MAj"
+      },
+      {
+        "workflowId": "rawczJckEDeStnVL"
+      },
+      {
+        "workflowId": "yOH1RZI5ZaKc9zy4"
+      },
+      {
+        "workflowId": "xCZBeeWqReLwNCH3"
+      }
+    ],
+    "phase2": [
+      {
+        "workflowId": "Q3E94KHVh44lgVSP",
+        "success": true
+      },
+      {
+        "workflowId": "9JWqzXgEzoD4XKCP",
+        "success": true
+      },
+      {
+        "workflowId": "DqvQyTuWplhycUjh",
+        "success": true
+      },
+      {
+        "workflowId": "L0t86xpKLMmqHQFj",
+        "success": true
+      },
+      {
+        "workflowId": "Q6ujantLJCrvcaUq",
+        "success": true
+      },
+      {
+        "workflowId": "ua4t56fmRCdNIQUk",
+        "success": true
+      },
+      {
+        "workflowId": "MOxiwcLhQMMHCGPM",
+        "success": true
+      },
+      {
+        "workflowId": "OdtoCM2XxiBNtL3L",
+        "success": true
+      },
+      {
+        "workflowId": "WsgveTBcE0Sul907",
+        "success": true
+      },
+      {
+        "workflowId": "gS87LVGWmiraenEg",
+        "success": true
+      },
+      {
+        "workflowId": "h6MfeXa0EMsv6Uih",
+        "success": true
+      },
+      {
+        "workflowId": "htkWSRkCIvootY8q",
+        "success": true
+      },
+      {
+        "workflowId": "kBURLOU888WjFqkX",
+        "success": true
+      },
+      {
+        "workflowId": "0Ss043Wge5zasNWy",
+        "success": true
+      },
+      {
+        "workflowId": "NpZpK8Z414giaLjO",
+        "success": true
+      },
+      {
+        "workflowId": "6Y3EQ6pWyh5enLHG",
+        "success": true
+      },
+      {
+        "workflowId": "UWb1837Pg8Ssubpe",
+        "success": true
+      },
+      {
+        "workflowId": "fIv6GZJ4XhFL59wu",
+        "success": true
+      },
+      {
+        "workflowId": "D3gvVLGWGHNQixIp",
+        "success": true
+      },
+      {
+        "workflowId": "4cg1KYQmBvRqQnoR",
+        "success": true
+      },
+      {
+        "workflowId": "cgk7FI57o6cg3eju",
+        "success": true
+      },
+      {
+        "workflowId": "tnTlHG7pBLgfOxq4",
+        "success": true
+      },
+      {
+        "workflowId": "9lTWZUMP8Rp2Bt98",
+        "success": true
+      },
+      {
+        "workflowId": "tCYSKNvbOGTKgc2N",
+        "success": true
+      },
+      {
+        "workflowId": "A7AjDqvVw3m0kia5",
+        "success": true
+      },
+      {
+        "workflowId": "BZ1wk9DlZncPRN8t",
+        "success": true
+      },
+      {
+        "workflowId": "weEAv47M3DYzJL0n",
+        "success": true
+      },
+      {
+        "workflowId": "yr0tLBk4fFHMUq1U",
+        "success": true
+      },
+      {
+        "workflowId": "Pn7a4h2h3DTsSS6h",
+        "success": true
+      },
+      {
+        "workflowId": "dHmbohbSPAACutey",
+        "success": true
+      },
+      {
+        "workflowId": "ZRGVkpUirNrAF0KL",
+        "success": true
+      }
+    ],
+    "phase3": [
+      {
+        "workflowId": "x7GwugG3fzdpuC4f",
+        "newName": "INT-LEAD-001: Lead Machine Orchestrator v2",
+        "success": true
+      },
+      {
+        "workflowId": "DeUmb1mwj1vaXVBp",
+        "newName": "INT-EMAIL-001: Email Automation System v1",
+        "success": true
+      },
+      {
+        "workflowId": "ffahgxCnZvLLklOv",
+        "newName": "INT-TECH-002: Template Deployment Pipeline v1",
+        "success": true
+      },
+      {
+        "workflowId": "QxfNnhlEXY2mZFM2",
+        "newName": "INT-TECH-003: OAuth Configuration Management v1",
+        "success": true
+      },
+      {
+        "workflowId": "AOYcPkiRurYg8Pji",
+        "newName": "INT-MONITOR-002: Admin Dashboard Data Integration v1",
+        "success": true
+      },
+      {
+        "workflowId": "WiADCj8mBCMPifYe",
+        "newName": "INT-TECH-004: Multi-Tenant SaaS Architecture v1",
+        "success": true
+      },
+      {
+        "workflowId": "BWU6jLuUL3asB9Hk",
+        "newName": "INT-LEAD-002: Lead Machine Webhook Handler v1",
+        "success": true
+      },
+      {
+        "workflowId": "Uu6JdNAsz7cr14XF",
+        "newName": "INT-TECH-005: n8n-Airtable-Notion Integration v1",
+        "success": true
+      },
+      {
+        "workflowId": "9sWsox0nzjtLInKD",
+        "newName": "INT-CUSTOMER-002: Customer-Project Data Sync v1",
+        "success": true
+      },
+      {
+        "workflowId": "Eu0ldg1B04bSSBC0",
+        "newName": "INT-MONITOR-003: Real-Time Data Synchronization v1",
+        "success": true
+      },
+      {
+        "workflowId": "F8Im8Ljty6ndCtop",
+        "newName": "INT-CUSTOMER-003: Project-Task Data Integration v1",
+        "success": true
+      }
+    ],
+    "phase4": [
+      {
+        "workflowId": "THgM79EtvserVMKV",
+        "newName": "SUB-LEAD-001: Israeli Professional Lead Generator v1",
+        "success": true
+      },
+      {
+        "workflowId": "SrgOTg0pZX9b8Jmc",
+        "newName": "SUB-LEAD-002: Facebook Groups Lead Scraper v1",
+        "success": true
+      },
+      {
+        "workflowId": "OqbtExgLG3t8VJz8",
+        "newName": "SUB-LEAD-003: Local Lead Finder & Email Sender v1",
+        "success": true
+      },
+      {
+        "workflowId": "h0gcKRZbgrIVK3Ka",
+        "newName": "SUB-LEAD-004: Smart Lead Enrichment & Outreach v1",
+        "success": true
+      },
+      {
+        "workflowId": "XBy78u2xQbH4DGRE",
+        "newName": "SUB-LEAD-005: DFW Lead Discovery Service v1",
+        "success": true
+      },
+      {
+        "workflowId": "PUadkuAQnHNfwt7D",
+        "newName": "SUB-FINANCE-001: Invoice Automation & QuickBooks Sync v1",
+        "success": true
+      }
+    ],
+    "phase5": [
+      {
+        "workflowId": "0SxNwE2IvN43iFpt",
+        "newName": "MKT-LEAD-001: Lead Generation SaaS Template v1",
+        "success": true
+      },
+      {
+        "workflowId": "6zJDmAgRKpu0qdXJ",
+        "newName": "MKT-CONTENT-001: AI Landing Page Generator v1",
+        "success": true
+      }
+    ]
+  },
+  "summary": {
+    "totalOperations": 65,
+    "totalSuccessful": 50,
+    "successRate": "77%"
+  }
+}

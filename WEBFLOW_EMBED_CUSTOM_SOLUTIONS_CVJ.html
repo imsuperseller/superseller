@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Automation Solutions - Built for Your Exact Workflow | Rensto</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+            --card-bg: #1a1635;
+            --gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+            --gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* H-01: Hero (Promise + Primary + Secondary CTA) */
+        .hero {
+            background: var(--gradient-primary);
+            padding: 120px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(94, 251, 253, 0.1), transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subhead {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .cta-primary {
+            background: var(--dark-bg);
+            color: var(--light-text);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .cta-secondary:hover {
+            background: white;
+            color: var(--red);
+        }
+
+        /* H-02: Problem Strip */
+        .problem-strip {
+            background: rgba(254, 61, 81, 0.05);
+            padding: 80px 20px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid rgba(254, 61, 81, 0.2);
+        }
+
+        .problem-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--red);
+        }
+
+        .problem-card p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* H-03: Mechanism (How We Build) */
+        .mechanism-section {
+            padding: 100px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.3rem;
+            color: var(--gray-text);
+        }
+
+        .mechanism-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .mechanism-step {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            text-align: center;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+
+        .mechanism-step h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .mechanism-step p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* H-04: Credibility (Proof) */
+        .credibility {
+            background: var(--card-bg);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .credibility h3 {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            color: var(--cyan);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-text);
+            font-size: 1rem;
+        }
+
+        /* H-05: Lead Magnet (Automation Readiness Scorecard) */
+        .lead-magnet {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(94, 251, 253, 0.05));
+        }
+
+        .lead-magnet-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px;
+            border: 2px solid rgba(94, 251, 253, 0.2);
+            text-align: center;
+        }
+
+        .lead-magnet h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lead-magnet p {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+
+        .lead-magnet ul {
+            list-style: none;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .lead-magnet li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+
+        .check-icon {
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .lead-magnet-form {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lead-magnet-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(94, 251, 253, 0.3);
+            background: var(--dark-bg);
+            color: var(--light-text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .lead-magnet-form button {
+            padding: 16px 40px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lead-magnet-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.4);
+        }
+
+        /* H-06: Consultation CTA (Voice AI Demo) */
+        .consultation-section {
+            padding: 100px 20px;
+            background: var(--gradient-primary);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .consultation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(94, 251, 253, 0.1), transparent 70%);
+        }
+
+        .consultation-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .consultation-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .consultation-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .consultation-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .consultation-feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .consultation-feature h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* H-07: Sample Projects (Case Studies) */
+        .projects-section {
+            padding: 100px 20px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+        }
+
+        .project-badge {
+            display: inline-block;
+            background: rgba(30, 174, 247, 0.2);
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-challenge {
+            margin-bottom: 2rem;
+        }
+
+        .project-challenge h4 {
+            color: var(--red);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .project-solution h4 {
+            color: var(--cyan);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .project-solution ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .project-solution li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray-text);
+        }
+
+        .project-results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(94, 251, 253, 0.1);
+        }
+
+        .result-metric {
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.3rem;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+        }
+
+        /* H-08: Investment Range */
+        .investment-section {
+            padding: 100px 20px;
+            background: rgba(254, 61, 81, 0.03);
+        }
+
+        .investment-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .investment-range {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 60px;
+            border: 2px solid rgba(94, 251, 253, 0.2);
+            margin-top: 40px;
+        }
+
+        .price-range {
+            font-size: 4rem;
+            font-weight: 700;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .investment-includes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .includes-item {
+            text-align: left;
+        }
+
+        .includes-item h4 {
+            color: var(--cyan);
+            margin-bottom: 0.8rem;
+        }
+
+        .includes-item ul {
+            list-style: none;
+        }
+
+        .includes-item li {
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray-text);
+        }
+
+        /* H-09: FAQ */
+        .faq-section {
+            padding: 100px 20px;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            color: var(--cyan);
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 30px 25px;
+            color: var(--gray-text);
+            line-height: 1.7;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* H-10: Booking Module */
+        .booking-section {
+            padding: 100px 20px;
+            background: var(--gradient-primary);
+            text-align: center;
+        }
+
+        .booking-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .booking-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .booking-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .booking-process {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .booking-step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .booking-step-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .price-range {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- H-01: Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🎨 Custom-Built for You</div>
+            <h1>Custom automation built for your exact workflow—not templates</h1>
+            <p class="hero-subhead">
+                Off-the-shelf tools fail because your business is unique. We build custom automation that fits your exact processes, integrates with your existing tools, and scales with you.
+            </p>
+            <div class="hero-cta-group">
+                <button class="cta-button cta-primary" onclick="openTypeform()">Book FREE Voice AI Consultation</button>
+                <a href="#projects" class="cta-button cta-secondary">See Sample Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-02: Problem Strip -->
+    <section class="problem-strip">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>❌ Why Templates Fail</h3>
+                    <p>Your business has unique workflows, edge cases, and integrations. Pre-built templates force you to change your processes to fit the tool—not the other way around.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>✅ Our Approach</h3>
+                    <p>We start with YOUR workflow. Voice AI consultation captures your exact needs, we build a technical plan, then implement custom automation that fits perfectly.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>🎯 Your Outcome</h3>
+                    <p>Automation that actually works for your business. 20-40 hours saved per week, zero process compromises, and systems that scale as you grow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-03: Mechanism (4-Step Process) -->
+    <section class="mechanism-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>How We Build Your Custom System</h2>
+                <p>From consultation to go-live in 2-4 weeks</p>
+            </div>
+
+            <div class="mechanism-steps">
+                <div class="mechanism-step">
+                    <div class="step-number">1</div>
+                    <h3>Voice AI Consultation</h3>
+                    <p>FREE 20-minute call where our Voice AI captures your workflows, pain points, and requirements. No sales pitch—just discovery.</p>
+                </div>
+
+                <div class="mechanism-step">
+                    <div class="step-number">2</div>
+                    <h3>Technical Plan</h3>
+                    <p>Within 48 hours, receive a detailed technical plan: systems architecture, integrations, timeline, and exact investment.</p>
+                </div>
+
+                <div class="mechanism-step">
+                    <div class="step-number">3</div>
+                    <h3>Custom Build</h3>
+                    <p>Our team builds your custom automation, integrates with your tools, and tests everything before handoff (2-4 weeks).</p>
+                </div>
+
+                <div class="mechanism-step">
+                    <div class="step-number">4</div>
+                    <h3>Training & Support</h3>
+                    <p>Live training for your team, documentation, and 90 days of priority support to ensure smooth adoption.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-04: Credibility -->
+    <section class="credibility">
+        <div class="container">
+            <h3>Trusted by Custom Automation Clients</h3>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">45+</div>
+                    <div class="stat-label">Custom Systems Built</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Go-Live Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2-4wk</div>
+                    <div class="stat-label">Avg. Build Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">90day</div>
+                    <div class="stat-label">Priority Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-05: Lead Magnet (Automation Readiness Scorecard) -->
+    <section class="lead-magnet">
+        <div class="lead-magnet-content">
+            <h2>Get Your FREE Automation Readiness Scorecard</h2>
+            <p>Discover which processes are ready for automation and what ROI to expect</p>
+            <ul>
+                <li><span class="check-icon">✓</span> Process complexity scoring (1-10 scale)</li>
+                <li><span class="check-icon">✓</span> Time savings calculator per process</li>
+                <li><span class="check-icon">✓</span> Implementation difficulty rating</li>
+                <li><span class="check-icon">✓</span> Recommended automation approach</li>
+            </ul>
+            <form class="lead-magnet-form" onsubmit="return false;">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Get FREE Scorecard</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- H-06: Consultation CTA (Voice AI) -->
+    <section class="consultation-section">
+        <div class="consultation-content">
+            <h2>Start with a FREE Voice AI Consultation</h2>
+            <p>No sales pitch. No commitments. Just a 20-minute conversation about your business.</p>
+
+            <div class="consultation-features">
+                <div class="consultation-feature">
+                    <h4>🤖 AI-Powered</h4>
+                    <p>Voice AI captures your requirements with perfect accuracy</p>
+                </div>
+                <div class="consultation-feature">
+                    <h4>⚡ Fast</h4>
+                    <p>20 minutes to map your entire automation opportunity</p>
+                </div>
+                <div class="consultation-feature">
+                    <h4>💰 FREE</h4>
+                    <p>No cost, no obligation, no pressure</p>
+                </div>
+                <div class="consultation-feature">
+                    <h4>📋 Technical Plan</h4>
+                    <p>Receive detailed plan within 48 hours</p>
+                </div>
+            </div>
+
+            <button class="cta-button cta-primary" onclick="openTypeform()">Book My FREE Consultation Now</button>
+        </div>
+    </section>
+
+    <!-- H-07: Sample Projects (Case Studies) -->
+    <section class="projects-section" id="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sample Custom Projects</h2>
+                <p>See what we've built for businesses like yours</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Insurance Agent Case Study -->
+                <div class="project-card">
+                    <div class="project-badge">Insurance Agent</div>
+                    <h3>Multi-Carrier Quote System</h3>
+
+                    <div class="project-challenge">
+                        <h4>The Challenge</h4>
+                        <p>Agent was manually requesting quotes from 12 carriers, taking 2-3 hours per lead. Leads went cold waiting for quotes.</p>
+                    </div>
+
+                    <div class="project-solution">
+                        <h4>What We Built</h4>
+                        <ul>
+                            <li><span class="check-icon">✓</span> API integrations with 12 carriers</li>
+                            <li><span class="check-icon">✓</span> Real-time quote aggregation</li>
+                            <li><span class="check-icon">✓</span> AI-powered quote comparison</li>
+                            <li><span class="check-icon">✓</span> Automated client delivery via SMS/email</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-results">
+                        <div class="result-metric">
+                            <div class="result-value">5min</div>
+                            <div class="result-label">Quote Time</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">18hr</div>
+                            <div class="result-label">Saved/Week</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">+45%</div>
+                            <div class="result-label">Close Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tax Service Case Study -->
+                <div class="project-card">
+                    <div class="project-badge">Tax Service</div>
+                    <h3>Client Document Collection System</h3>
+
+                    <div class="project-challenge">
+                        <h4>The Challenge</h4>
+                        <p>Tax season chaos: clients emailing documents in random formats, missing forms, and constant back-and-forth.</p>
+                    </div>
+
+                    <div class="project-solution">
+                        <h4>What We Built</h4>
+                        <ul>
+                            <li><span class="check-icon">✓</span> Client portal with guided upload</li>
+                            <li><span class="check-icon">✓</span> OCR document scanning + validation</li>
+                            <li><span class="check-icon">✓</span> Missing document auto-reminders</li>
+                            <li><span class="check-icon">✓</span> QuickBooks integration</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-results">
+                        <div class="result-metric">
+                            <div class="result-value">90%</div>
+                            <div class="result-label">Complete First Time</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">25hr</div>
+                            <div class="result-label">Saved/Week</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">2x</div>
+                            <div class="result-label">Capacity</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-commerce Case Study -->
+                <div class="project-card">
+                    <div class="project-badge">E-commerce</div>
+                    <h3>Multi-Channel Inventory Sync</h3>
+
+                    <div class="project-challenge">
+                        <h4>The Challenge</h4>
+                        <p>Selling on Shopify, Amazon, eBay, and Walmart. Constant oversells and manual inventory updates across 4 platforms.</p>
+                    </div>
+
+                    <div class="project-solution">
+                        <h4>What We Built</h4>
+                        <ul>
+                            <li><span class="check-icon">✓</span> Real-time 4-platform inventory sync</li>
+                            <li><span class="check-icon">✓</span> Low-stock alerts by SKU</li>
+                            <li><span class="check-icon">✓</span> Auto-pause listings on stockout</li>
+                            <li><span class="check-icon">✓</span> Supplier reorder automation</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-results">
+                        <div class="result-metric">
+                            <div class="result-value">0</div>
+                            <div class="result-label">Oversells</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">30hr</div>
+                            <div class="result-label">Saved/Week</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">+60%</div>
+                            <div class="result-label">Revenue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-08: Investment Range -->
+    <section class="investment-section">
+        <div class="container">
+            <div class="investment-content">
+                <div class="section-header">
+                    <h2>Investment Range</h2>
+                    <p>Custom automation pricing based on complexity and scope</p>
+                </div>
+
+                <div class="investment-range">
+                    <div class="price-range">$3,500 - $8,000</div>
+                    <p style="font-size: 1.2rem; color: var(--gray-text); margin-bottom: 40px;">
+                        Most projects: $5,500 | Simple builds: $3,500 | Complex systems: $8,000+
+                    </p>
+
+                    <div class="investment-includes">
+                        <div class="includes-item">
+                            <h4>Discovery & Planning</h4>
+                            <ul>
+                                <li><span class="check-icon">✓</span> Voice AI consultation</li>
+                                <li><span class="check-icon">✓</span> Technical plan</li>
+                                <li><span class="check-icon">✓</span> Architecture design</li>
+                                <li><span class="check-icon">✓</span> Timeline & milestones</li>
+                            </ul>
+                        </div>
+
+                        <div class="includes-item">
+                            <h4>Development & Build</h4>
+                            <ul>
+                                <li><span class="check-icon">✓</span> Custom workflow development</li>
+                                <li><span class="check-icon">✓</span> API integrations</li>
+                                <li><span class="check-icon">✓</span> Testing & QA</li>
+                                <li><span class="check-icon">✓</span> Data migration</li>
+                            </ul>
+                        </div>
+
+                        <div class="includes-item">
+                            <h4>Training & Support</h4>
+                            <ul>
+                                <li><span class="check-icon">✓</span> Live team training</li>
+                                <li><span class="check-icon">✓</span> Documentation & guides</li>
+                                <li><span class="check-icon">✓</span> 90-day priority support</li>
+                                <li><span class="check-icon">✓</span> Ongoing optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 1.1rem; color: var(--gray-text);">
+                    💳 Payment plans available | 30-day money-back guarantee
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-09: FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does a custom build take?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>2-4 weeks from technical plan approval to go-live. Simple projects (1-2 workflows): 2 weeks. Complex systems (5+ integrations): 4 weeks. We'll give you an exact timeline in your technical plan.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What if I need changes after the build?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>First 90 days: minor tweaks and optimizations included. Major scope changes: quoted separately. After 90 days: ongoing support available at $197/month or hourly rates.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do I need technical knowledge?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. We handle all technical implementation. You just need to explain your workflow—we translate that into automation. Training included to ensure you're confident using the system.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What if my tools aren't supported?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We integrate with 525+ apps. If your tool has an API, we can connect it. If not, we'll find workarounds (email parsing, webhooks, CSV imports). Feasibility confirmed in technical plan before you pay.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I see the technical plan before committing?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! The Voice AI consultation is FREE. We deliver a detailed technical plan within 48 hours—no payment required. Only pay if you approve the plan and want to move forward.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What's included in the 90-day support?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Bug fixes, performance optimization, minor workflow adjustments, integration troubleshooting, and unlimited email support. Priority response time (under 24 hours).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Is there a money-back guarantee?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>30-day guarantee from go-live. If the system doesn't work as specified in the technical plan, we'll fix it or refund 100%. Your technical plan is our contract—we deliver what we promise.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-10: Booking Module (Final CTA) -->
+    <section class="booking-section">
+        <div class="booking-content">
+            <h2>Ready to Build Your Custom System?</h2>
+            <p>Start with a FREE 20-minute Voice AI consultation. No sales pitch, no commitment.</p>
+
+            <div class="booking-process">
+                <div class="booking-step">
+                    <div class="booking-step-number">1</div>
+                    <p>Book consultation</p>
+                </div>
+                <div class="booking-step">
+                    <div class="booking-step-number">2</div>
+                    <p>Receive technical plan</p>
+                </div>
+                <div class="booking-step">
+                    <div class="booking-step-number">3</div>
+                    <p>Approve & launch</p>
+                </div>
+            </div>
+
+            <button class="cta-button cta-primary" onclick="openTypeform()" style="font-size: 1.3rem; padding: 20px 50px;">
+                Book FREE Voice AI Consultation
+            </button>
+
+            <p style="margin-top: 20px; font-size: 1rem; opacity: 0.9;">
+                Or browse <a href="/solutions" style="color: var(--cyan); text-decoration: underline;">Ready Solutions</a> if you prefer pre-built packages
+            </p>
+        </div>
+    </section>
+
+    <!-- Typeform Modal Script -->
+    <script src="https://embed.typeform.com/next/embed.js"></script>
+    <script>
+        function openTypeform() {
+            window.open('https://form.typeform.com/to/01JKTNHQXKAWM6W90F0A6JQNJ7', '_blank', 'width=800,height=600');
+        }
+    </script>
+
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate project cards
+        gsap.from('.project-card', {
+            scrollTrigger: {
+                trigger: '.projects-section',
+                start: 'top 80%',
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: 'power2.out'
+        });
+
+        // FAQ toggle
+        function toggleFAQ(element) {
+            const item = element.parentElement;
+            const isActive = item.classList.contains('active');
+
+            document.querySelectorAll('.faq-item').forEach(faq => faq.classList.remove('active'));
+
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

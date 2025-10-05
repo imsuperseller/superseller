@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Agent Automation Solutions - Rensto</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+            --card-bg: #1a1635;
+            --gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+            --gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-primary);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(94, 251, 253, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.35rem;
+            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin: 10px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(254, 61, 81, 0.4);
+        }
+
+        /* Problems Section */
+        .problems-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px 30px;
+            border: 2px solid rgba(254, 61, 81, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            border-color: var(--red);
+            transform: translateY(-5px);
+        }
+
+        .problem-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .problem-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--red);
+        }
+
+        .problem-card p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* Solutions Section */
+        .solutions-section {
+            padding: 80px 20px;
+            background: rgba(30, 174, 247, 0.03);
+        }
+
+        .solutions-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .solution-item {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 50px 40px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--gradient-secondary);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .solution-item:hover {
+            transform: translateX(10px);
+            border-color: var(--cyan);
+            box-shadow: 0 20px 60px rgba(94, 251, 253, 0.2);
+        }
+
+        .solution-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .solution-number {
+            display: inline-block;
+            background: var(--gradient-secondary);
+            color: var(--dark-bg);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .solution-item h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-description {
+            color: var(--gray-text);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .solution-features {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .solution-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--gray-text);
+        }
+
+        .solution-features li::before {
+            content: '→';
+            color: var(--cyan);
+            font-size: 1.3rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 35px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--cyan);
+            box-shadow: 0 20px 60px rgba(94, 251, 253, 0.2);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, rgba(254, 61, 81, 0.15), rgba(191, 87, 0, 0.15));
+            border-color: var(--red);
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin: 20px 0;
+        }
+
+        .pricing-description {
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* ROI Section */
+        .roi-section {
+            padding: 80px 20px;
+            background: rgba(254, 61, 81, 0.03);
+        }
+
+        .roi-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .roi-calculator {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 50px 40px;
+            margin-top: 50px;
+            border: 2px solid rgba(94, 251, 253, 0.2);
+        }
+
+        .roi-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .roi-metric {
+            text-align: center;
+        }
+
+        .roi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .roi-label {
+            font-size: 1.1rem;
+            color: var(--gray-text);
+        }
+
+        /* Implementation Section */
+        .implementation-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-secondary);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+        }
+
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-content p {
+            color: var(--gray-text);
+            line-height: 1.7;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 20px;
+            background: rgba(30, 174, 247, 0.03);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(94, 251, 253, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--cyan);
+        }
+
+        .faq-question {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            color: var(--gray-text);
+            line-height: 1.8;
+            margin-top: 15px;
+        }
+
+        .faq-toggle {
+            color: var(--cyan);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            padding: 100px 20px;
+            background: var(--gradient-primary);
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .final-cta p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.15rem;
+            }
+
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .roi-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-marker {
+                left: 20px;
+                transform: translateX(0);
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 80px;
+            }
+
+            .timeline-item:nth-child(even) {
+                flex-direction: column;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .final-cta h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Animation classes for GSAP */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <div class="hero-icon">🛡️</div>
+            <div class="hero-badge">5 Ready Automation Solutions</div>
+            <h1>Insurance Agent Automation Solutions</h1>
+            <p>Quote generation, policy renewals, and claims tracking—automated so you can focus on building relationships.</p>
+            <div>
+                <a href="#solutions" class="cta-button">See Solutions</a>
+                <a href="#pricing" class="cta-button" style="background: transparent; border: 2px solid white;">Get Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problems Section -->
+    <section class="problems-section">
+        <div class="section-header fade-in">
+            <h2>Common Challenges for Insurance Agent Businesses</h2>
+            <p>Sound familiar? These are the pain points we solve.</p>
+        </div>
+
+        <div class="problems-grid">
+            <div class="problem-card scale-in">
+                <div class="problem-icon">💬</div>
+                <h3>Quote Requests Sit Too Long</h3>
+                <p>Leads request quotes but wait hours for responses. By the time you reply, they've already bought elsewhere.</p>
+            </div>
+
+            <div class="problem-card scale-in">
+                <div class="problem-icon">📅</div>
+                <h3>Renewal Season Overwhelm</h3>
+                <p>Renewal reminders sent manually. Clients slip through cracks, resulting in lost policies and reduced retention.</p>
+            </div>
+
+            <div class="problem-card scale-in">
+                <div class="problem-icon">📞</div>
+                <h3>Claims Follow-Up Black Hole</h3>
+                <p>Tracking claim status across carriers requires constant phone calls. Clients frustrated by lack of updates.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section id="solutions" class="solutions-section">
+        <div class="solutions-container">
+            <div class="section-header fade-in">
+                <h2>5 Ready Solutions</h2>
+                <p>Pre-built automations designed specifically for Insurance Agent businesses</p>
+            </div>
+
+            <!-- Solution 1 -->
+            <div class="solution-item slide-in-left">
+                <div class="solution-number">1</div>
+                <h3>Quote-Right Instant Response Engine</h3>
+                <p class="solution-description">Lead submits info, AI pre-qualifies, and sends instant quote ranges from top 3 carriers. Agent reviews and sends final quote within 30 minutes.</p>
+                <ul class="solution-features">
+                    <li>Lead intake form with AI pre-qualification</li>
+                    <li>Multi-carrier quote API integration</li>
+                    <li>Instant ballpark quote delivery via email/SMS</li>
+                    <li>Agent review dashboard for final quote approval</li>
+                </ul>
+            </div>
+
+            <!-- Solution 2 -->
+            <div class="solution-item slide-in-right">
+                <div class="solution-number">2</div>
+                <h3>Renewal Reminder Cascade</h3>
+                <p class="solution-description">90-60-30 day renewal reminders with one-click policy review links. Track opens, clicks, and conversions to prevent lapses.</p>
+                <ul class="solution-features">
+                    <li>90-60-30-7 day reminder sequence automation</li>
+                    <li>One-click policy review and renewal links</li>
+                    <li>Open and click tracking analytics</li>
+                    <li>Lapse prediction alerts for at-risk policies</li>
+                </ul>
+            </div>
+
+            <!-- Solution 3 -->
+            <div class="solution-item slide-in-left">
+                <div class="solution-number">3</div>
+                <h3>Cross-Sell Opportunity Radar</h3>
+                <p class="solution-description">Detect life events (new home, marriage, baby) from CRM data and trigger targeted cross-sell campaigns for additional coverage.</p>
+                <ul class="solution-features">
+                    <li>Life event detection from CRM updates</li>
+                    <li>Auto-trigger coverage gap analysis</li>
+                    <li>Personalized cross-sell email campaigns</li>
+                    <li>Bundle discount calculator and presentation</li>
+                </ul>
+            </div>
+
+            <!-- Solution 4 -->
+            <div class="solution-item slide-in-right">
+                <div class="solution-number">4</div>
+                <h3>Claims Status Sync Dashboard</h3>
+                <p class="solution-description">Automatically check claim status across carriers, update clients via SMS, and alert agent when adjuster action needed.</p>
+                <ul class="solution-features">
+                    <li>Multi-carrier claim status API integration</li>
+                    <li>Client SMS updates at each claim milestone</li>
+                    <li>Agent alerts for required actions</li>
+                    <li>Claims timeline visualization dashboard</li>
+                </ul>
+            </div>
+
+            <!-- Solution 5 -->
+            <div class="solution-item slide-in-left">
+                <div class="solution-number">5</div>
+                <h3>Referral Loop Growth Engine</h3>
+                <p class="solution-description">Auto-request referrals after policy purchase and positive claim experiences. Track referral sources and reward top advocates.</p>
+                <ul class="solution-features">
+                    <li>Post-purchase referral request automation</li>
+                    <li>Claim satisfaction survey with referral ask</li>
+                    <li>Referral tracking and attribution system</li>
+                    <li>Automated thank-you gifts for advocates</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="section-header fade-in">
+            <h2>Flexible Pricing</h2>
+            <p>Choose the option that fits your needs</p>
+        </div>
+
+        <div class="pricing-cards">
+            <!-- Single Solution -->
+            <div class="pricing-card scale-in">
+                <h3>Single Solution</h3>
+                <div class="pricing-price">$890</div>
+                <p class="pricing-description">Pick one automation to start with</p>
+                <ul class="pricing-features">
+                    <li>1 automation workflow</li>
+                    <li>Full setup & configuration</li>
+                    <li>Training materials</li>
+                    <li>30 days support</li>
+                    <li>Future updates</li>
+                </ul>
+                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Get Started</a>
+            </div>
+
+            <!-- Complete Package (Featured) -->
+            <div class="pricing-card featured scale-in">
+                <div class="pricing-badge">Best Value</div>
+                <h3>Complete Package</h3>
+                <div class="pricing-price">$2,990</div>
+                <p class="pricing-description">All 5 solutions integrated</p>
+                <p style="color: var(--cyan); font-weight: 600; margin-bottom: 20px;">Save $1,460 (33% off)</p>
+                <ul class="pricing-features">
+                    <li>All 5 automation workflows</li>
+                    <li>Integrated system setup</li>
+                    <li>Priority implementation</li>
+                    <li>Live training session</li>
+                    <li>90 days support</li>
+                    <li>Custom adjustments</li>
+                </ul>
+                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Get Started</a>
+            </div>
+
+            <!-- Full Service -->
+            <div class="pricing-card scale-in">
+                <h3>Full Service</h3>
+                <div class="pricing-price">+$797</div>
+                <p class="pricing-description">White-glove implementation</p>
+                <ul class="pricing-features">
+                    <li>Everything in Complete</li>
+                    <li>Full deployment by our team</li>
+                    <li>Custom integrations</li>
+                    <li>Data migration</li>
+                    <li>Ongoing optimization</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Section -->
+    <section class="roi-section">
+        <div class="roi-content fade-in">
+            <h2>Expected ROI for Insurance Agent</h2>
+            <p style="color: var(--gray-text); font-size: 1.2rem;">Based on average customer results</p>
+
+            <div class="roi-calculator scale-in">
+                <div class="roi-metrics">
+                    <div class="roi-metric">
+                        <div class="roi-value">18-22</div>
+                        <div class="roi-label">Hours Saved Per Week</div>
+                    </div>
+                    <div class="roi-metric">
+                        <div class="roi-value">45%</div>
+                        <div class="roi-label">Efficiency Increase</div>
+                    </div>
+                    <div class="roi-metric">
+                        <div class="roi-value">+35%</div>
+                        <div class="roi-label">Revenue Impact</div>
+                    </div>
+                    <div class="roi-metric">
+                        <div class="roi-value">45 days</div>
+                        <div class="roi-label">Payback Period</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Timeline -->
+    <section class="implementation-section">
+        <div class="section-header fade-in">
+            <h2>Implementation Timeline</h2>
+            <p>From purchase to go-live</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-marker">1</div>
+                <div class="timeline-content">
+                    <h3>Day 1: Kickoff</h3>
+                    <p>Initial consultation, requirements review, and account setup. We map your existing processes and integrations.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-marker">2</div>
+                <div class="timeline-content">
+                    <h3>Days 2-3: Configuration</h3>
+                    <p>Workflow deployment, tool integrations, and custom adjustments based on your specific business needs.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-marker">3</div>
+                <div class="timeline-content">
+                    <h3>Day 4: Testing</h3>
+                    <p>Comprehensive testing with your team. We ensure everything works perfectly before going live.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-marker">4</div>
+                <div class="timeline-content">
+                    <h3>Day 5: Training & Launch</h3>
+                    <p>Team training session and go-live. You're now automating with full support for the next 30-90 days.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="section-header fade-in">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-item fade-in" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                Do I need technical skills to use these solutions?
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                No technical skills required! We handle all the setup and configuration. You'll receive training on how to use and monitor the automations. Most customers are up and running in under a week.
+            </div>
+        </div>
+
+        <div class="faq-item fade-in" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                Can I customize the solutions for my specific needs?
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                Yes! While the solutions are pre-built, they're fully customizable. We adjust them during setup to match your specific processes, tools, and requirements. Full-service plans include extensive customization.
+            </div>
+        </div>
+
+        <div class="faq-item fade-in" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                What tools do these solutions integrate with?
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                Our solutions integrate with 500+ tools including CRMs (HubSpot, Salesforce), email platforms (Gmail, Outlook), calendars, payment processors, and Insurance Agent-specific software. Custom integrations available.
+            </div>
+        </div>
+
+        <div class="faq-item fade-in" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                What happens after the support period ends?
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                You own the workflows permanently and can manage them yourself. Optionally, sign up for ongoing support starting at $197/month for maintenance, updates, and optimization.
+            </div>
+        </div>
+
+        <div class="faq-item fade-in" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                Can I start with one solution and add more later?
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                Absolutely! Many customers start with one solution to test the waters, then add more over time. The complete package offers the best value, but you can build gradually if preferred.
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta fade-in">
+        <h2>Ready to Automate Your Insurance Agent Business?</h2>
+        <p>Join hundreds of Insurance Agent businesses already saving time with Rensto.</p>
+        <div>
+            <a href="https://tidycal.com/rensto/consultation" class="cta-button" target="_blank">Book Free Consultation</a>
+            <a href="#pricing" class="cta-button" style="background: transparent; border: 2px solid white;">See Pricing</a>
+        </div>
+    </section>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate elements on scroll
+        gsap.utils.toArray('.fade-in').forEach((element) => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+        });
+
+        gsap.utils.toArray('.scale-in').forEach((element, index) => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.6,
+                delay: (index % 3) * 0.1,
+                ease: 'back.out(1.2)'
+            });
+        });
+
+        gsap.utils.toArray('.slide-in-left').forEach((element) => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                x: -50,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+        });
+
+        gsap.utils.toArray('.slide-in-right').forEach((element) => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                x: 50,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+        });
+
+        // FAQ Toggle Function
+        function toggleFAQ(element) {
+            const answer = element.querySelector('.faq-answer');
+            const isActive = element.classList.contains('active');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.faq-answer').style.display = 'none';
+            });
+
+            // Toggle current FAQ
+            if (!isActive) {
+                element.classList.add('active');
+                answer.style.display = 'block';
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Hero animation on load
+        window.addEventListener('load', () => {
+            gsap.from('.hero-content', {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                ease: 'power3.out'
+            });
+        });
+    </script>
+</body>
+</html>

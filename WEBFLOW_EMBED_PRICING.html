@@ -1,0 +1,534 @@
+<!-- PRICING PAGE - WEBFLOW CODE EMBED -->
+<!-- Copy this entire file and paste into Webflow custom code embed -->
+
+<style>
+    :root {
+        --red: #fe3d51;
+        --orange: #bf5700;
+        --blue: #1eaef7;
+        --cyan: #5ffbfd;
+        --dark-bg: #110d28;
+        --light-text: #ffffff;
+        --gray-text: #a0a0a0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--dark-bg);
+        color: var(--light-text);
+        line-height: 1.6;
+    }
+
+    /* Hero Section */
+    .pricing-hero {
+        padding: 140px 2rem 80px;
+        background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+        text-align: center;
+    }
+
+    .pricing-hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .pricing-hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .pricing-hero p {
+        font-size: 1.25rem;
+        opacity: 0.95;
+        margin-bottom: 2rem;
+    }
+
+    /* Toggle */
+    .pricing-toggle {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .toggle-option {
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .toggle-option.active {
+        background: white;
+        color: var(--dark-bg);
+    }
+
+    /* Pricing Grid */
+    .pricing-section {
+        padding: 80px 2rem;
+        background: var(--dark-bg);
+    }
+
+    .pricing-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .pricing-card {
+        background: linear-gradient(135deg, rgba(30, 174, 247, 0.1), rgba(95, 251, 253, 0.05));
+        border: 2px solid rgba(30, 174, 247, 0.2);
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    .pricing-card.featured {
+        border-color: var(--cyan);
+        border-width: 3px;
+        transform: scale(1.05);
+    }
+
+    .pricing-badge {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, var(--orange), var(--blue));
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .pricing-card h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--cyan);
+    }
+
+    .pricing-amount {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--light-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .pricing-amount span {
+        font-size: 1.5rem;
+        color: var(--gray-text);
+    }
+
+    .pricing-period {
+        color: var(--gray-text);
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+    }
+
+    .pricing-description {
+        color: var(--gray-text);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .pricing-features {
+        list-style: none;
+        text-align: left;
+        margin-bottom: 2rem;
+    }
+
+    .pricing-features li {
+        padding: 0.75rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--gray-text);
+    }
+
+    .pricing-features li:before {
+        content: "✓";
+        color: var(--cyan);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .pricing-button {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--orange), var(--blue));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .pricing-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4);
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 80px 2rem;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .faq-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--cyan);
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .faq-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .faq-question {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--light-text);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        color: var(--gray-text);
+        line-height: 1.6;
+        padding-top: 0;
+    }
+
+    .faq-answer.active {
+        max-height: 500px;
+        padding-top: 1rem;
+    }
+
+    .faq-icon {
+        font-size: 1.5rem;
+        transition: transform 0.3s;
+    }
+
+    .faq-icon.active {
+        transform: rotate(180deg);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .pricing-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .pricing-hero h1 {
+            font-size: 2rem;
+        }
+
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="pricing-hero">
+    <div class="pricing-hero-container">
+        <h1>Choose Your Automation Path</h1>
+        <p>Transparent pricing for every business size. No hidden fees, ever.</p>
+
+        <div class="pricing-toggle">
+            <div class="toggle-option active" onclick="togglePricing('monthly')">Monthly</div>
+            <div class="toggle-option" onclick="togglePricing('yearly')">Yearly <span style="color: var(--cyan); margin-left: 0.5rem;">Save 20%</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Cards -->
+<section class="pricing-section">
+    <div class="pricing-container">
+        <div class="pricing-grid">
+            <!-- Marketplace Card -->
+            <div class="pricing-card">
+                <h3>Marketplace</h3>
+                <div class="pricing-amount">
+                    <span class="monthly-price">$79</span>
+                    <span class="yearly-price" style="display: none;">$790</span>
+                    <span>/mo</span>
+                </div>
+                <div class="pricing-period">Billed monthly or yearly</div>
+                <div class="pricing-description">
+                    Browse and download ready-made n8n workflow templates with full installation support.
+                </div>
+                <ul class="pricing-features">
+                    <li>100+ n8n workflow templates</li>
+                    <li>Self-service installation guides</li>
+                    <li>Community support</li>
+                    <li>Monthly new templates</li>
+                    <li>Lifetime updates</li>
+                </ul>
+                <button class="pricing-button">Browse Templates</button>
+            </div>
+
+            <!-- Custom Solutions Card -->
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Most Popular</div>
+                <h3>Custom Solutions</h3>
+                <div class="pricing-amount">
+                    $3,500<span>+</span>
+                </div>
+                <div class="pricing-period">One-time project fee</div>
+                <div class="pricing-description">
+                    Voice AI consultation and tailored automation solutions built specifically for your business.
+                </div>
+                <ul class="pricing-features">
+                    <li>Free voice AI consultation</li>
+                    <li>Custom workflow development</li>
+                    <li>Dedicated project manager</li>
+                    <li>Full integration support</li>
+                    <li>30 days of maintenance</li>
+                    <li>Training for your team</li>
+                </ul>
+                <button class="pricing-button">Book Consultation</button>
+            </div>
+
+            <!-- Subscriptions Card -->
+            <div class="pricing-card">
+                <h3>Lead Generation</h3>
+                <div class="pricing-amount">
+                    <span class="monthly-price">$299</span>
+                    <span class="yearly-price" style="display: none;">$2,990</span>
+                    <span>/mo</span>
+                </div>
+                <div class="pricing-period">Billed monthly or yearly</div>
+                <div class="pricing-description">
+                    Enhanced hot leads service with CRM integration and automated lead delivery.
+                </div>
+                <ul class="pricing-features">
+                    <li>500+ qualified leads/month</li>
+                    <li>CRM integration</li>
+                    <li>Lead quality scoring</li>
+                    <li>Automated delivery</li>
+                    <li>Usage analytics</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="pricing-button">Start Generating</button>
+            </div>
+
+            <!-- Ready Solutions Card -->
+            <div class="pricing-card">
+                <h3>Ready Solutions</h3>
+                <div class="pricing-amount">
+                    $890<span>+</span>
+                </div>
+                <div class="pricing-period">Per solution package</div>
+                <div class="pricing-description">
+                    Industry-specific automation packages ready to deploy for your niche.
+                </div>
+                <ul class="pricing-features">
+                    <li>5 niche-specific solutions</li>
+                    <li>Pre-configured workflows</li>
+                    <li>Quick deployment (1-3 days)</li>
+                    <li>Industry best practices</li>
+                    <li>90 days of support</li>
+                    <li>Package discounts</li>
+                </ul>
+                <button class="pricing-button">View Solutions</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="faq-container">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>What payment methods do you accept?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                We accept all major credit cards (Visa, MasterCard, AmEx), PayPal, and wire transfer for enterprise customers. All payments are processed securely through Stripe.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>Can I switch plans later?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                Yes! You can upgrade or downgrade your plan at any time. When upgrading, you'll be charged the prorated difference. Downgrades take effect at the end of your current billing period.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>Do you offer refunds?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                Yes! We offer a 30-day money-back guarantee on all subscription plans. For custom solutions, we provide milestone-based payments with satisfaction guarantees at each stage.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>What's included in support?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                All plans include email support with 24-hour response time. Custom Solutions and Lead Generation plans include priority support with dedicated account managers and faster response times.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>Can I try before I buy?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                Yes! The Marketplace offers free preview templates, and Custom Solutions starts with a free voice AI consultation. Lead Generation includes a 7-day trial with 50 free leads.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>Do you offer enterprise pricing?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                Yes! For teams of 10+ or annual contracts over $50,000, we offer custom enterprise pricing with volume discounts, dedicated support, and SLA guarantees. Contact sales@rensto.com for details.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>How long does implementation take?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                Marketplace templates can be deployed in hours. Ready Solutions take 1-3 days. Custom Solutions typically take 2-6 weeks depending on complexity. We provide detailed timelines during consultation.
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <span>What if I need technical help?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                All plans include comprehensive documentation and video tutorials. Marketplace users get community support, while Custom and Lead Generation customers receive dedicated technical support from our team.
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+    // Toggle monthly/yearly pricing
+    function togglePricing(type) {
+        const monthlyPrices = document.querySelectorAll('.monthly-price');
+        const yearlyPrices = document.querySelectorAll('.yearly-price');
+        const toggleOptions = document.querySelectorAll('.toggle-option');
+
+        toggleOptions.forEach(opt => opt.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (type === 'monthly') {
+            monthlyPrices.forEach(p => p.style.display = 'inline');
+            yearlyPrices.forEach(p => p.style.display = 'none');
+        } else {
+            monthlyPrices.forEach(p => p.style.display = 'none');
+            yearlyPrices.forEach(p => p.style.display = 'inline');
+        }
+    }
+
+    // Toggle FAQ
+    function toggleFAQ(element) {
+        const answer = element.querySelector('.faq-answer');
+        const icon = element.querySelector('.faq-icon');
+
+        answer.classList.toggle('active');
+        icon.classList.toggle('active');
+    }
+
+    // GSAP Animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.pricing-card').forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 80%',
+            },
+            duration: 0.8,
+            y: 50,
+            opacity: 0,
+            delay: i * 0.1,
+            ease: 'power3.out'
+        });
+    });
+
+    gsap.utils.toArray('.faq-item').forEach((item, i) => {
+        gsap.from(item, {
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 90%',
+            },
+            duration: 0.6,
+            y: 30,
+            opacity: 0,
+            delay: i * 0.05,
+            ease: 'power3.out'
+        });
+    });
+</script>

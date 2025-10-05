@@ -351,3 +351,4 @@ private_key*
 *.pfx
 *.key
 *.crt
+.env*.local

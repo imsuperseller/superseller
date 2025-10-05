@@ -1,0 +1,1564 @@
+<!--
+FILE: WEBFLOW_EMBED_MARKETPLACE_CVJ.html
+PURPOSE: Full Marketplace landing page with CVJ optimization for Webflow
+DEPLOYED: No - Template ready for deployment
+LAST UPDATED: 2025-10-05
+VERSION: 2.0
+CHANGES:
+  - v2.0 (2025-10-05): Added Stripe checkout integration for all pricing tiers
+  - v1.0 (2025-10-03): Initial CVJ-optimized marketplace page created
+INTEGRATIONS: Stripe Checkout (api.rensto.com/api/stripe/checkout)
+DEPENDENCIES: Stripe API, n8n workflows (6 STRIPE workflows)
+DEPLOYMENT: Paste into Webflow Designer → Marketplace page → Custom Code → Before </body>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Workflow Templates Marketplace | Rensto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #fe3d51;
+            --orange: #bf5700;
+            --blue: #1eaef7;
+            --cyan: #5ffbfd;
+            --dark-bg: #110d28;
+            --light-text: #ffffff;
+            --gray-text: #a0a0a0;
+            --card-bg: #1a1635;
+            --gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+            --gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* H-01: Hero */
+        .hero {
+            position: relative;
+            padding: 120px 20px 80px;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(254, 61, 81, 0.15) 0%, transparent 50%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(31, 174, 247, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(31, 174, 247, 0.1);
+            border: 1px solid rgba(31, 174, 247, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 .highlight {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subhead {
+            font-size: clamp(18px, 2.5vw, 22px);
+            color: var(--gray-text);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .cta-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(254, 61, 81, 0.4);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid var(--cyan);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(31, 174, 247, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* H-02: Problem Strip */
+        .problem-strip {
+            padding: 80px 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(191, 87, 0, 0.05) 100%);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(254, 61, 81, 0.2);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .problem-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .problem-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .problem-card p {
+            color: var(--gray-text);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .problem-card .highlight {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        /* H-03: Template Categories */
+        .categories-section {
+            padding: 80px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(32px, 4vw, 42px);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--gray-text);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(31, 174, 247, 0.2);
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .category-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(31, 174, 247, 0.2);
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .category-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .category-count {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(31, 174, 247, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--cyan);
+            margin-top: 8px;
+        }
+
+        /* H-04: Credibility Bar */
+        .credibility-bar {
+            padding: 60px 20px;
+            background: linear-gradient(90deg, rgba(254, 61, 81, 0.1) 0%, rgba(31, 174, 247, 0.1) 100%);
+        }
+
+        .credibility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .credibility-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .credibility-value {
+            font-size: 42px;
+            font-weight: 800;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .credibility-label {
+            font-size: 16px;
+            color: var(--gray-text);
+        }
+
+        /* H-05: Lead Magnet */
+        .lead-magnet {
+            padding: 80px 20px;
+            background: radial-gradient(circle at center, rgba(31, 174, 247, 0.1) 0%, transparent 70%);
+        }
+
+        .lead-magnet-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .lead-magnet h2 {
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .lead-magnet .highlight {
+            color: var(--cyan);
+            font-size: clamp(32px, 4.5vw, 42px);
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .lead-magnet p {
+            font-size: 18px;
+            color: var(--gray-text);
+            margin-bottom: 32px;
+        }
+
+        .lead-magnet ul {
+            list-style: none;
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .lead-magnet li {
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-left: 32px;
+            position: relative;
+        }
+
+        .check-icon {
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .lead-magnet-form {
+            display: flex;
+            gap: 12px;
+            max-width: 500px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lead-magnet-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 16px;
+            border: 1px solid rgba(95, 251, 253, 0.3);
+            border-radius: 8px;
+            background: rgba(26, 22, 53, 0.5);
+            color: white;
+            font-size: 16px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .lead-magnet-form button {
+            padding: 16px 32px;
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .lead-magnet-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(31, 174, 247, 0.4);
+        }
+
+        /* H-06: Pricing Toggle */
+        .pricing-section {
+            padding: 80px 20px;
+        }
+
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-button {
+            padding: 12px 32px;
+            background: var(--card-bg);
+            border: 2px solid rgba(31, 174, 247, 0.2);
+            border-radius: 8px;
+            color: var(--gray-text);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button.active {
+            background: var(--gradient-secondary);
+            border-color: var(--cyan);
+            color: white;
+        }
+
+        .pricing-content {
+            display: none;
+        }
+
+        .pricing-content.active {
+            display: block;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(31, 174, 247, 0.2);
+            border-radius: 12px;
+            padding: 40px 32px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--cyan);
+            transform: scale(1.05);
+        }
+
+        .pricing-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .pricing-price {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .pricing-per {
+            font-size: 16px;
+            color: var(--gray-text);
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .pricing-card .cta-button {
+            width: 100%;
+        }
+
+        /* H-07: Installation Preview */
+        .installation-section {
+            padding: 80px 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(191, 87, 0, 0.05) 100%);
+        }
+
+        .installation-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: var(--card-bg);
+            border: 2px solid rgba(31, 174, 247, 0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(31, 174, 247, 0.1) 0%, rgba(95, 251, 253, 0.1) 100%);
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 24px rgba(31, 174, 247, 0.4);
+        }
+
+        .installation-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .installation-step {
+            background: var(--card-bg);
+            border: 1px solid rgba(31, 174, 247, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            margin: 0 auto 16px;
+        }
+
+        .installation-step h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .installation-step p {
+            font-size: 14px;
+            color: var(--gray-text);
+        }
+
+        /* H-08: Featured Templates */
+        .featured-section {
+            padding: 80px 20px;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .template-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(31, 174, 247, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(31, 174, 247, 0.2);
+        }
+
+        .template-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(31, 174, 247, 0.2) 0%, rgba(95, 251, 253, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            border-bottom: 1px solid rgba(31, 174, 247, 0.2);
+        }
+
+        .template-content {
+            padding: 24px;
+        }
+
+        .template-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(31, 174, 247, 0.1);
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+
+        .template-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .template-card p {
+            font-size: 14px;
+            color: var(--gray-text);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(31, 174, 247, 0.1);
+        }
+
+        .template-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+        }
+
+        .stars {
+            color: #ffa500;
+        }
+
+        .template-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        /* H-09: FAQ */
+        .faq-section {
+            padding: 80px 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(191, 87, 0, 0.05) 100%);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(31, 174, 247, 0.2);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--cyan);
+        }
+
+        .faq-toggle {
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 24px 24px;
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+
+        /* H-10: Final CTA */
+        .final-cta {
+            padding: 100px 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(31, 174, 247, 0.15) 0%, transparent 70%);
+        }
+
+        .final-cta h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .final-cta p {
+            font-size: 20px;
+            color: var(--gray-text);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .guarantee-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(31, 174, 247, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 8px;
+            margin-top: 32px;
+            font-size: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 20px 60px;
+            }
+
+            .problem-grid,
+            .categories-grid,
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .lead-magnet-form {
+                flex-direction: column;
+            }
+
+            .lead-magnet-form input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- H-01: Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">🚀 525+ Ready-to-Use n8n Templates</div>
+            <h1>Install proven workflows in <span class="highlight">10 minutes</span>—not 40 hours</h1>
+            <p class="hero-subhead">
+                Stop building automation from scratch. Get battle-tested n8n workflow templates for every industry and use case. Install, customize, and launch today.
+            </p>
+            <div class="hero-cta-group">
+                <a href="#categories" class="cta-button cta-primary">Browse Templates</a>
+                <a href="#free-template" class="cta-button cta-secondary">Get FREE Template</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-02: Problem Strip -->
+    <section class="problem-strip">
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">❌</div>
+                <h3>The Problem</h3>
+                <p>Building automation from scratch takes <span class="highlight">40+ hours</span> of trial and error. You waste time debugging, researching APIs, and fixing edge cases.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">✅</div>
+                <h3>Our Approach</h3>
+                <p>Pre-built, tested templates that work out-of-the-box. <span class="highlight">10-minute installation</span> with clear documentation and support included.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🎯</div>
+                <h3>Your Outcome</h3>
+                <p>Production-ready automation launched <span class="highlight">same day</span>. Spend your time on strategy, not debugging code.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-03: Template Categories -->
+    <section class="categories-section" id="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Browse 525+ Templates by Category</h2>
+                <p>Every template includes installation guide, documentation, and support. Choose by industry or use case.</p>
+            </div>
+            <div class="categories-grid">
+                <a href="/marketplace/crm" class="category-card">
+                    <div class="category-icon">📊</div>
+                    <h3>CRM Automation</h3>
+                    <span class="category-count">78 Templates</span>
+                </a>
+                <a href="/marketplace/marketing" class="category-card">
+                    <div class="category-icon">📧</div>
+                    <h3>Email Marketing</h3>
+                    <span class="category-count">92 Templates</span>
+                </a>
+                <a href="/marketplace/social" class="category-card">
+                    <div class="category-icon">📱</div>
+                    <h3>Social Media</h3>
+                    <span class="category-count">64 Templates</span>
+                </a>
+                <a href="/marketplace/ecommerce" class="category-card">
+                    <div class="category-icon">🛒</div>
+                    <h3>E-Commerce</h3>
+                    <span class="category-count">71 Templates</span>
+                </a>
+                <a href="/marketplace/data" class="category-card">
+                    <div class="category-icon">📈</div>
+                    <h3>Data & Analytics</h3>
+                    <span class="category-count">55 Templates</span>
+                </a>
+                <a href="/marketplace/lead-gen" class="category-card">
+                    <div class="category-icon">🎯</div>
+                    <h3>Lead Generation</h3>
+                    <span class="category-count">48 Templates</span>
+                </a>
+                <a href="/marketplace/finance" class="category-card">
+                    <div class="category-icon">💰</div>
+                    <h3>Finance & Billing</h3>
+                    <span class="category-count">42 Templates</span>
+                </a>
+                <a href="/marketplace/operations" class="category-card">
+                    <div class="category-icon">⚙️</div>
+                    <h3>Operations</h3>
+                    <span class="category-count">75 Templates</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-04: Credibility Bar -->
+    <section class="credibility-bar">
+        <div class="credibility-grid">
+            <div class="credibility-item">
+                <div class="credibility-value">3,200+</div>
+                <div class="credibility-label">Templates Sold</div>
+            </div>
+            <div class="credibility-item">
+                <div class="credibility-value">4.8★</div>
+                <div class="credibility-label">Average Rating</div>
+            </div>
+            <div class="credibility-item">
+                <div class="credibility-value">525+</div>
+                <div class="credibility-label">Active Templates</div>
+            </div>
+            <div class="credibility-item">
+                <div class="credibility-value">10min</div>
+                <div class="credibility-label">Avg Install Time</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-05: Lead Magnet -->
+    <section class="lead-magnet" id="free-template">
+        <div class="lead-magnet-container">
+            <h2>Not Sure Where to Start?</h2>
+            <span class="highlight">Get Our FREE Starter Template</span>
+            <p>Try before you buy. Get our most popular workflow template plus installation guide—completely free.</p>
+            <ul>
+                <li><span class="check-icon">✓</span> Lead capture & CRM sync workflow</li>
+                <li><span class="check-icon">✓</span> Works with 15+ CRMs</li>
+                <li><span class="check-icon">✓</span> Step-by-step installation guide</li>
+                <li><span class="check-icon">✓</span> 30 days of email support included</li>
+            </ul>
+            <form class="lead-magnet-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Get FREE Template</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- H-06: Pricing Toggle -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Choose Your Installation Path</h2>
+                <p>DIY with our guides, or let us handle the entire setup for you.</p>
+            </div>
+            <div class="pricing-toggle">
+                <button class="toggle-button active" onclick="togglePricing('diy')">DIY Installation</button>
+                <button class="toggle-button" onclick="togglePricing('full-service')">Full-Service Install</button>
+            </div>
+
+            <!-- DIY Pricing -->
+            <div id="diy-pricing" class="pricing-content active">
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Simple Workflows</h3>
+                        <div class="pricing-price">$29</div>
+                        <div class="pricing-per">one-time</div>
+                        <ul class="pricing-features">
+                            <li>Single-app workflows</li>
+                            <li>Installation guide included</li>
+                            <li>14 days support</li>
+                            <li>Free updates for 6 months</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-download-btn"
+                            data-flow-type="marketplace-template"
+                            data-tier="simple"
+                            data-template-price="29"
+                            data-template-id="marketplace-simple"
+                            data-template-name="Simple Workflow Template">
+                            Buy Template - $29
+                        </button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <h3>Advanced Workflows</h3>
+                        <div class="pricing-price">$97</div>
+                        <div class="pricing-per">one-time</div>
+                        <ul class="pricing-features">
+                            <li>Multi-app integrations</li>
+                            <li>Video installation walkthrough</li>
+                            <li>30 days support</li>
+                            <li>Free updates for 1 year</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-download-btn"
+                            data-flow-type="marketplace-template"
+                            data-tier="advanced"
+                            data-template-price="97"
+                            data-template-id="marketplace-advanced"
+                            data-template-name="Advanced Workflow Template">
+                            Buy Template - $97
+                        </button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Complete Systems</h3>
+                        <div class="pricing-price">$197</div>
+                        <div class="pricing-per">one-time</div>
+                        <ul class="pricing-features">
+                            <li>Multi-workflow systems</li>
+                            <li>Custom configuration guide</li>
+                            <li>90 days support</li>
+                            <li>Lifetime updates</li>
+                            <li>Priority support</li>
+                            <li>1:1 setup call included</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-download-btn"
+                            data-flow-type="marketplace-template"
+                            data-tier="complete"
+                            data-template-price="197"
+                            data-template-id="marketplace-complete"
+                            data-template-name="Complete System Template">
+                            Buy Template - $197
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-Service Pricing -->
+            <div id="full-service-pricing" class="pricing-content">
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Template + Install</h3>
+                        <div class="pricing-price">$797</div>
+                        <div class="pricing-per">one-time</div>
+                        <ul class="pricing-features">
+                            <li>Any template you choose</li>
+                            <li>Complete installation</li>
+                            <li>Custom configuration</li>
+                            <li>Testing & validation</li>
+                            <li>30-minute training session</li>
+                            <li>90 days support</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-install-btn"
+                            data-flow-type="marketplace-install"
+                            data-tier="template"
+                            data-install-price="797"
+                            data-template-id="install-template"
+                            data-template-name="Template Installation Service">
+                            Book Install - $797
+                        </button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <h3>System + Install</h3>
+                        <div class="pricing-price">$1,997</div>
+                        <div class="pricing-per">one-time</div>
+                        <ul class="pricing-features">
+                            <li>Complete workflow system</li>
+                            <li>Full installation & setup</li>
+                            <li>Custom modifications</li>
+                            <li>Integration with your tools</li>
+                            <li>2-hour training session</li>
+                            <li>6 months support</li>
+                            <li>Priority assistance</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-install-btn"
+                            data-flow-type="marketplace-install"
+                            data-tier="system"
+                            data-install-price="1997"
+                            data-template-id="install-system"
+                            data-template-name="System Installation Service">
+                            Book Install - $1,997
+                        </button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Custom Build</h3>
+                        <div class="pricing-price">$3,500+</div>
+                        <div class="pricing-per">project</div>
+                        <ul class="pricing-features">
+                            <li>Custom workflow development</li>
+                            <li>Unique business logic</li>
+                            <li>API integrations</li>
+                            <li>Testing & deployment</li>
+                            <li>Comprehensive training</li>
+                            <li>1 year support</li>
+                            <li>Dedicated success manager</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary marketplace-install-btn"
+                            data-flow-type="marketplace-install"
+                            data-tier="enterprise"
+                            data-install-price="3500"
+                            data-template-id="install-enterprise"
+                            data-template-name="Custom Build Service">
+                            Book Install - $3,500+
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-07: Installation Preview -->
+    <section class="installation-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>See How Easy Installation Is</h2>
+                <p>Watch a real template installation from download to production in under 10 minutes.</p>
+            </div>
+            <div class="installation-container">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <div class="play-button">▶</div>
+                        <p style="color: var(--gray-text);">10-Minute Installation Walkthrough</p>
+                    </div>
+                </div>
+                <div class="installation-steps">
+                    <div class="installation-step">
+                        <div class="step-number">1</div>
+                        <h4>Download</h4>
+                        <p>Get JSON file + docs</p>
+                    </div>
+                    <div class="installation-step">
+                        <div class="step-number">2</div>
+                        <h4>Import</h4>
+                        <p>Import to n8n (1 click)</p>
+                    </div>
+                    <div class="installation-step">
+                        <div class="step-number">3</div>
+                        <h4>Configure</h4>
+                        <p>Add your API keys</p>
+                    </div>
+                    <div class="installation-step">
+                        <div class="step-number">4</div>
+                        <h4>Test & Launch</h4>
+                        <p>Verify and activate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-08: Featured Templates -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Top-Rated Templates</h2>
+                <p>Our most popular workflows, trusted by thousands of users.</p>
+            </div>
+            <div class="templates-grid">
+                <div class="template-card">
+                    <div class="template-image">📊</div>
+                    <div class="template-content">
+                        <span class="template-badge">CRM</span>
+                        <h3>LinkedIn → CRM Sync</h3>
+                        <p>Auto-sync LinkedIn connections to your CRM with enriched data from 5 sources. Updates daily.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.9 (127)</span>
+                            </div>
+                            <div class="template-price">$97</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-image">📧</div>
+                    <div class="template-content">
+                        <span class="template-badge">Marketing</span>
+                        <h3>Email Campaign Suite</h3>
+                        <p>Complete email marketing system with sequences, A/B testing, and analytics across 8 ESPs.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.8 (203)</span>
+                            </div>
+                            <div class="template-price">$197</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-image">🎯</div>
+                    <div class="template-content">
+                        <span class="template-badge">Lead Gen</span>
+                        <h3>Google Maps Scraper</h3>
+                        <p>Extract business leads from Google Maps with email finder, phone validator, and CRM export.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>5.0 (89)</span>
+                            </div>
+                            <div class="template-price">$97</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-image">🛒</div>
+                    <div class="template-content">
+                        <span class="template-badge">E-Commerce</span>
+                        <h3>Shopify Order Automation</h3>
+                        <p>Automated order processing, inventory sync, customer notifications, and fulfillment tracking.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.9 (156)</span>
+                            </div>
+                            <div class="template-price">$97</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-image">📱</div>
+                    <div class="template-content">
+                        <span class="template-badge">Social Media</span>
+                        <h3>Multi-Platform Scheduler</h3>
+                        <p>Post to Facebook, LinkedIn, Twitter, Instagram from one workflow. Queue, schedule, analytics.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.7 (178)</span>
+                            </div>
+                            <div class="template-price">$97</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-image">💰</div>
+                    <div class="template-content">
+                        <span class="template-badge">Finance</span>
+                        <h3>Invoice & Payment System</h3>
+                        <p>Automated invoicing, payment tracking, reminders, and QuickBooks sync. Stripe + PayPal ready.</p>
+                        <div class="template-meta">
+                            <div class="template-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.9 (142)</span>
+                            </div>
+                            <div class="template-price">$197</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-09: FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do templates work with my n8n version?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            All templates are tested with n8n v1.0+. Each template page lists minimum version requirements. If you're on an older version, we provide migration guides. Templates purchased include free updates when n8n releases breaking changes.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does installation actually take?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Simple workflows: 5-10 minutes. Advanced workflows: 15-20 minutes. Complete systems: 30-45 minutes. This includes importing, configuring credentials, and testing. Video guides walk you through every step.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What if I need help customizing a template?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Every template includes support period (14-90 days depending on tier). For custom modifications beyond basic configuration, upgrade to Full-Service Install ($797) and we'll handle all customization for you.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do you offer refunds if template doesn't work?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes. 30-day money-back guarantee, no questions asked. If template has technical issues, we'll fix it or refund 100%. We also offer exchange for different template if first choice doesn't fit your needs.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I use templates on multiple n8n instances?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Personal/single business license: Use on unlimited instances you own. Agency/resale: Requires commercial license (+$300). You cannot resell templates as-is, but can include them in client projects under commercial license.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How are templates different from n8n community workflows?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Our templates are production-tested, fully documented, include error handling, have support included, and receive updates. Community workflows are free but often incomplete, undocumented, or abandoned. We also offer installation support and customization services.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-10: Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Stop Building. Start Launching.</h2>
+            <p>
+                Join 3,200+ users who saved weeks of development time with our templates.
+                Get started in minutes with our FREE starter template, or browse our full catalog.
+            </p>
+            <div class="hero-cta-group">
+                <a href="#free-template" class="cta-button cta-primary">Get FREE Starter Template</a>
+                <a href="#categories" class="cta-button cta-secondary">Browse All Templates</a>
+            </div>
+            <div class="guarantee-badge">
+                <span style="font-size: 24px;">✓</span>
+                <span>30-Day Money-Back Guarantee • Lifetime Updates • Priority Support</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        // GSAP Scroll Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate sections on scroll
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 0.8,
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'top 50%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // Category filtering
+        function filterIndustry(category) {
+            // Add active state to clicked filter
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter cards
+            const cards = document.querySelectorAll('.category-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Pricing toggle
+        function togglePricing(mode) {
+            document.querySelectorAll('.toggle-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.pricing-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(`${mode}-pricing`).classList.add('active');
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Toggle current FAQ
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Lead magnet form handling
+        document.querySelectorAll('.lead-magnet-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+
+                // Here you would integrate with your email service
+                alert(`Thanks! Check ${email} for your FREE Starter Template.`);
+
+                // Reset form
+                this.reset();
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- Stripe Checkout Integration -->
+    <script>
+    (function() {
+      'use strict';
+
+      const API_URL = 'https://api.rensto.com/api/stripe/checkout';
+
+      // Initialize Stripe Checkout for Marketplace
+      function initMarketplaceCheckout() {
+        console.log('🎯 Rensto Marketplace Checkout Initialized');
+
+        // Handle Download Template buttons
+        document.querySelectorAll('.marketplace-download-btn').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleCheckout(this, 'marketplace-template');
+          });
+        });
+
+        // Handle Book Installation buttons
+        document.querySelectorAll('.marketplace-install-btn').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleCheckout(this, 'marketplace-install');
+          });
+        });
+      }
+
+      async function handleCheckout(button, flowType) {
+        // Get data from button attributes
+        const templateId = button.getAttribute('data-template-id');
+        const templateName = button.getAttribute('data-template-name');
+        const tier = button.getAttribute('data-tier') || 'simple';
+
+        let price;
+        if (flowType === 'marketplace-template') {
+          price = parseInt(button.getAttribute('data-template-price')) || 49;
+        } else {
+          price = parseInt(button.getAttribute('data-install-price')) || 797;
+        }
+
+        // Validate required data
+        if (!templateId || !templateName) {
+          console.error('❌ Missing required data attributes on button');
+          alert('Configuration error. Please contact support.');
+          return;
+        }
+
+        // Disable button and show loading state
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Processing...';
+        button.style.opacity = '0.6';
+        button.style.cursor = 'wait';
+
+        try {
+          console.log('💳 Creating checkout session:', {
+            flowType,
+            templateId,
+            templateName,
+            tier,
+            price
+          });
+
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flowType: flowType,
+              productId: templateId,
+              tier: tier,
+              customerEmail: '', // Collected in Stripe checkout
+              metadata: {
+                templateName: templateName,
+                templatePrice: price,
+                source: 'webflow_marketplace'
+              }
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.url) {
+            console.log('✅ Checkout session created, redirecting to Stripe...');
+            // Redirect to Stripe Checkout
+            window.location.href = data.url;
+          } else {
+            throw new Error(data.error || 'Failed to create checkout session');
+          }
+
+        } catch (error) {
+          console.error('❌ Checkout error:', error);
+          alert('Unable to process checkout. Please try again or contact support.');
+
+          // Restore button state
+          button.disabled = false;
+          button.textContent = originalText;
+          button.style.opacity = '1';
+          button.style.cursor = 'pointer';
+        }
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMarketplaceCheckout);
+      } else {
+        initMarketplaceCheckout();
+      }
+
+      // Expose for manual initialization if needed
+      window.RenstoMarketplace = { initMarketplaceCheckout };
+
+    })();
+    </script>
+</body>
+</html>
