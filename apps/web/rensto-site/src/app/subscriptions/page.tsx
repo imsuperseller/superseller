@@ -22,6 +22,7 @@ export default function SubscriptionsPage() {
   const [selectedNiche, setSelectedNiche] = useState('');
   const [leadVolume, setLeadVolume] = useState('medium');
   const [crmIntegration, setCrmIntegration] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const niches = [
     { id: 'hvac', name: 'HVAC', icon: '🔧', description: 'Heating, ventilation, and air conditioning contractors' },
@@ -74,6 +75,53 @@ export default function SubscriptionsPage() {
   ];
 
   const selectedLeadVolume = leadVolumes.find(vol => vol.id === leadVolume);
+
+  // Handle Subscription Checkout
+  const handleSubscriptionCheckout = async () => {
+    if (!selectedNiche || !leadVolume || !crmIntegration) {
+      alert('Please select all options: niche, lead volume, and CRM integration');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          flowType: 'subscription',
+          subscriptionType: 'lead-gen',
+          tier: leadVolume,
+          customerEmail: '', // Stripe checkout will collect this
+          metadata: {
+            niche: selectedNiche,
+            nicheName: niches.find(n => n.id === selectedNiche)?.name,
+            crmIntegration,
+            crmName: crmIntegrations.find(c => c.id === crmIntegration)?.name,
+            leadVolume: selectedLeadVolume?.leads,
+            monthlyPrice: selectedLeadVolume?.price
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        alert(`Error: ${data.error || 'Could not create checkout session'}`);
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Error processing request. Please try again.');
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
@@ -353,10 +401,11 @@ export default function SubscriptionsPage() {
                   <Button
                     size="lg"
                     className="bg-white text-purple-600 hover:bg-purple-50"
-                    disabled={!selectedNiche || !leadVolume || !crmIntegration}
+                    disabled={!selectedNiche || !leadVolume || !crmIntegration || isProcessing}
+                    onClick={handleSubscriptionCheckout}
                   >
                     <Calendar className="w-5 h-5 mr-2" />
-                    Start Subscription
+                    {isProcessing ? 'Processing...' : 'Start Subscription'}
                   </Button>
                   <Button
                     size="lg"
@@ -428,10 +477,11 @@ export default function SubscriptionsPage() {
             <Button
               size="lg"
               className="bg-purple-600 hover:bg-purple-700 text-white"
-              disabled={!selectedNiche || !leadVolume || !crmIntegration}
+              disabled={!selectedNiche || !leadVolume || !crmIntegration || isProcessing}
+              onClick={handleSubscriptionCheckout}
             >
               <Users className="w-5 h-5 mr-2" />
-              Start Subscription
+              {isProcessing ? 'Processing...' : 'Start Subscription'}
             </Button>
             <Link href="/custom">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">

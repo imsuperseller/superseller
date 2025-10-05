@@ -23,6 +23,7 @@ export default function MarketplacePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popular');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const categories = [
     { id: 'all', name: 'All Templates', count: 24 },
@@ -134,6 +135,45 @@ export default function MarketplacePage() {
         return b.downloads - a.downloads; // popular
     }
   });
+
+  // Handle Stripe Checkout
+  const handleCheckout = async (template: any, flowType: 'marketplace-template' | 'marketplace-install') => {
+    setIsProcessing(true);
+
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          flowType,
+          productId: template.id.toString(),
+          tier: 'simple', // Templates are simple tier
+          customerEmail: '', // Stripe checkout will collect this
+          metadata: {
+            templateName: template.name,
+            templateCategory: template.category,
+            templatePrice: template.price
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        alert(`Error: ${data.error || 'Could not create checkout session'}`);
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Error processing request. Please try again.');
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -286,15 +326,24 @@ export default function MarketplacePage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => handleCheckout(template, 'marketplace-template')}
+                      disabled={isProcessing}
+                    >
                       <Download className="w-5 h-5 mr-2" />
-                      Download Template
+                      {isProcessing ? 'Processing...' : 'Download Template'}
                     </Button>
-                    
+
                     {template.installation && (
-                      <Button variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">
+                      <Button
+                        variant="outline"
+                        className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                        onClick={() => handleCheckout(template, 'marketplace-install')}
+                        disabled={isProcessing}
+                      >
                         <Calendar className="w-5 h-5 mr-2" />
-                        Book Installation
+                        {isProcessing ? 'Processing...' : 'Book Installation'}
                       </Button>
                     )}
                   </div>
