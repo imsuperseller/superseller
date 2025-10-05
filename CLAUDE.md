@@ -754,33 +754,56 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 ## 14. TECH STACK
 
-### **Frontend**
+### **Applications** (`/apps/`)
 
-**Webflow** (rensto.com):
-- **URL**: https://rensto.com
-- **Hosting**: Webflow (Pro plan)
-- **CMS**: Webflow CMS for Marketplace, Ready Solutions
-- **Status**: ✅ Live with all service pages
+**Rensto SaaS API** (`apps/api/` - 107M):
+- **Stack**: Express.js + TypeScript + MongoDB + Stripe
+- **Purpose**: Backend API for multi-tenant management, lead generation, subscriptions
+- **Features**: JWT auth, rate limiting, Stripe integration, tenant isolation
+- **Status**: ⚠️ Deployment configuration needed
+- **Endpoints**: Tenant management, lead generation, subscription management
+- **Documentation**: `apps/api/README.md`
 
-**Next.js** (admin.rensto.com):
-- **Framework**: Next.js 14+ with App Router
-- **Styling**: Tailwind CSS + Shadcn UI
+**Gateway Worker** (`apps/gateway-worker/` - 340K):
+- **Platform**: Cloudflare Workers + KV
+- **Purpose**: API gateway, multi-tenant routing, rate limiting, idempotency
+- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter
+- **Status**: ⚠️ KV namespaces need configuration
+- **Security**: HMAC signature validation, per-tenant rate limits
+- **Documentation**: `apps/gateway-worker/README.md`
+- **Deployment**: Cloudflare Workers (gateway.rensto.com - pending config)
+
+**Marketplace App** (`apps/marketplace/` - 489M):
+- **Stack**: Next.js 14+ with TypeScript
+- **Purpose**: Marketplace frontend for template browsing and purchasing
+- **Status**: ✅ Active, see `apps/marketplace/README.md`
+
+**Admin Dashboard** (`apps/web/admin-dashboard/`):
+- **URL**: https://admin.rensto.com
+- **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Shadcn UI
+- **Purpose**: Internal operations dashboard
+- **Features**: Customer mgmt, workflow monitoring, revenue tracking, analytics
+- **Status**: ⚠️ Outdated (last updated Aug 2024, needs redesign for 4 service types)
 - **Hosting**: Vercel
-- **Status**: ⚠️ Outdated, needs redesign
+- **Documentation**: `apps/web/README.md`
 
-**React Components**:
-- Location: `/apps/web/rensto-site/src/components/`
-- Admin components: `/apps/web/rensto-site/src/components/admin/`
-- UI library: Shadcn UI + custom Rensto components
+**Rensto Main Site** (`apps/web/rensto-site/` - 1.8G):
+- **URL**: https://rensto.com
+- **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Webflow DevLink
+- **Purpose**: Public-facing marketing site
+- **Pages**: Homepage, About, 4 service types, niche pages, legal pages
+- **Status**: ✅ Active but missing Stripe checkout connections (0 of 5)
+- **Hosting**: Vercel
+- **Documentation**: `apps/web/README.md`
 
-### **Backend**
+### **Workflow Automation**
 
-**n8n** (Workflow Automation):
+**n8n** (Workflow Engine):
 - **URL**: http://173.254.201.134:5678
 - **Version**: Community Edition v1.113.3
 - **VPS**: RackNerd
 - **API**: REST API with Bearer token
-- **Workflows**: 68 active
+- **Workflows**: 56 active (was 68, cleaned up)
 
 **Airtable** (Database):
 - **API**: REST API with PAT
