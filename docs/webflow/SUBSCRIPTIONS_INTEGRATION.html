@@ -1,0 +1,263 @@
+<!--
+  WEBFLOW SUBSCRIPTIONS PAGE - STRIPE INTEGRATION
+
+  INSTALLATION INSTRUCTIONS:
+  1. Go to Webflow Designer
+  2. Open "Subscriptions" page
+  3. Go to Page Settings → Custom Code
+  4. Paste this ENTIRE code block in "Before </body> tag" section
+  5. Publish the site
+
+  SELECTION ELEMENTS SETUP:
+  - Niche selection buttons should have:
+    * data-niche-id="real-estate" (or other niche ID)
+    * data-niche-name="Real Estate"
+    * class="niche-selector"
+
+  - Lead volume buttons should have:
+    * data-volume-id="starter" (starter/professional/enterprise)
+    * data-volume-leads="100" (number of leads)
+    * data-volume-price="299" (monthly price)
+    * class="volume-selector"
+
+  - CRM selection buttons should have:
+    * data-crm-id="hubspot" (crm identifier)
+    * data-crm-name="HubSpot"
+    * class="crm-selector"
+
+  - Start Subscription buttons should have:
+    * class="start-subscription-btn"
+-->
+
+<script>
+(function() {
+  'use strict';
+
+  const API_URL = 'https://api.rensto.com/api/stripe/checkout';
+
+  // State management
+  let selectedNiche = null;
+  let selectedVolume = null;
+  let selectedCRM = null;
+
+  // Initialize Subscriptions Checkout
+  function initSubscriptionsCheckout() {
+    console.log('🎯 Rensto Subscriptions Checkout Initialized');
+
+    // Handle niche selection
+    document.querySelectorAll('.niche-selector').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectNiche(this);
+      });
+    });
+
+    // Handle volume selection
+    document.querySelectorAll('.volume-selector').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectVolume(this);
+      });
+    });
+
+    // Handle CRM selection
+    document.querySelectorAll('.crm-selector').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectCRM(this);
+      });
+    });
+
+    // Handle Start Subscription buttons
+    document.querySelectorAll('.start-subscription-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleSubscriptionCheckout(this);
+      });
+    });
+
+    updateUIState();
+  }
+
+  function selectNiche(button) {
+    // Remove active class from all niche buttons
+    document.querySelectorAll('.niche-selector').forEach(btn => {
+      btn.classList.remove('is-selected', 'w--current');
+    });
+
+    // Add active class to selected button
+    button.classList.add('is-selected', 'w--current');
+
+    selectedNiche = {
+      id: button.getAttribute('data-niche-id'),
+      name: button.getAttribute('data-niche-name')
+    };
+
+    console.log('✅ Niche selected:', selectedNiche);
+    updateUIState();
+  }
+
+  function selectVolume(button) {
+    // Remove active class from all volume buttons
+    document.querySelectorAll('.volume-selector').forEach(btn => {
+      btn.classList.remove('is-selected', 'w--current');
+    });
+
+    // Add active class to selected button
+    button.classList.add('is-selected', 'w--current');
+
+    selectedVolume = {
+      id: button.getAttribute('data-volume-id'),
+      leads: parseInt(button.getAttribute('data-volume-leads')),
+      price: parseInt(button.getAttribute('data-volume-price'))
+    };
+
+    console.log('✅ Volume selected:', selectedVolume);
+    updateUIState();
+  }
+
+  function selectCRM(button) {
+    // Remove active class from all CRM buttons
+    document.querySelectorAll('.crm-selector').forEach(btn => {
+      btn.classList.remove('is-selected', 'w--current');
+    });
+
+    // Add active class to selected button
+    button.classList.add('is-selected', 'w--current');
+
+    selectedCRM = {
+      id: button.getAttribute('data-crm-id'),
+      name: button.getAttribute('data-crm-name')
+    };
+
+    console.log('✅ CRM selected:', selectedCRM);
+    updateUIState();
+  }
+
+  function updateUIState() {
+    const allSelected = selectedNiche && selectedVolume && selectedCRM;
+
+    // Enable/disable subscription buttons
+    document.querySelectorAll('.start-subscription-btn').forEach(button => {
+      if (allSelected) {
+        button.disabled = false;
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+      } else {
+        button.disabled = true;
+        button.style.opacity = '0.5';
+        button.style.cursor = 'not-allowed';
+      }
+    });
+
+    // Update pricing display if element exists
+    const pricingDisplay = document.querySelector('.subscription-pricing-display');
+    if (pricingDisplay && selectedVolume) {
+      pricingDisplay.textContent = `$${selectedVolume.price}/month`;
+    }
+
+    // Update leads display if element exists
+    const leadsDisplay = document.querySelector('.subscription-leads-display');
+    if (leadsDisplay && selectedVolume) {
+      leadsDisplay.textContent = `${selectedVolume.leads} leads/month`;
+    }
+  }
+
+  async function handleSubscriptionCheckout(button) {
+    // Validate all selections
+    if (!selectedNiche || !selectedVolume || !selectedCRM) {
+      alert('Please select a niche, lead volume, and CRM integration before starting your subscription.');
+      return;
+    }
+
+    // Disable button and show loading state
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Processing...';
+    button.style.opacity = '0.6';
+    button.style.cursor = 'wait';
+
+    try {
+      console.log('💳 Creating subscription checkout:', {
+        niche: selectedNiche,
+        volume: selectedVolume,
+        crm: selectedCRM
+      });
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          flowType: 'subscription',
+          subscriptionType: 'lead-gen',
+          tier: selectedVolume.id,
+          customerEmail: '', // Collected in Stripe checkout
+          metadata: {
+            niche: selectedNiche.id,
+            nicheName: selectedNiche.name,
+            crmIntegration: selectedCRM.id,
+            crmName: selectedCRM.name,
+            leadVolume: selectedVolume.leads,
+            monthlyPrice: selectedVolume.price,
+            source: 'webflow_subscriptions'
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.url) {
+        console.log('✅ Subscription checkout created, redirecting to Stripe...');
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create subscription checkout');
+      }
+
+    } catch (error) {
+      console.error('❌ Subscription checkout error:', error);
+      alert('Unable to process subscription. Please try again or contact support.');
+
+      // Restore button state
+      button.disabled = false;
+      button.textContent = originalText;
+      updateUIState();
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSubscriptionsCheckout);
+  } else {
+    initSubscriptionsCheckout();
+  }
+
+  // Expose for manual initialization if needed
+  window.RenstoSubscriptions = {
+    initSubscriptionsCheckout,
+    getSelectedNiche: () => selectedNiche,
+    getSelectedVolume: () => selectedVolume,
+    getSelectedCRM: () => selectedCRM
+  };
+
+})();
+</script>
+
+<!--
+  SUCCESS! This code is now active and managing subscription selections.
+
+  TESTING:
+  1. Open browser console (F12)
+  2. Look for: "🎯 Rensto Subscriptions Checkout Initialized"
+  3. Select niche, volume, CRM - should see "✅ Niche selected" etc.
+  4. Click "Start Subscription" - should redirect to Stripe
+
+  TROUBLESHOOTING:
+  - If selections don't work: Check data attributes on buttons
+  - If button stays disabled: Check all 3 selections are made
+  - If checkout fails: Check browser console for errors
+
+  NEED HELP? Contact: shai@rensto.com
+-->
