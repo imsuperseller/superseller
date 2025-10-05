@@ -213,6 +213,13 @@ infra/logs/
 .env.*
 !.env.example
 
+# Reorganized directories (Oct 2025)
+# These should be tracked in git:
+# - webflow/pages/ (Webflow HTML files)
+# - webflow/templates/ (Webflow templates)
+# - data/json/ (data files)
+# - data/configs/ (configs - but credentials excluded above)
+
 # MCP server logs
 mcp-servers/*/logs/
 mcp-servers/*/*.log
@@ -246,10 +253,15 @@ tmp/
 # Codebase Cleanup Prevention
 # ===========================
 
-# Archive directories
+# Archive directories (Oct 2025 reorganization)
+archives/
 archived/
 data/archived-files/
 data/backups/
+
+# Data directory temporary files
+data/temp/
+data/temp/*.txt
 
 # Temporary files
 *.tmp
