@@ -998,7 +998,7 @@ All API keys stored in: `~/.cursor/mcp.json`
 ```
 /
 ├── apps/                  # All application code (admin dashboard, rensto site, APIs)
-├── archives/              # Archived files from consolidation
+├── archives/              # Archived files (51M, 17 dirs, retention policy documented)
 ├── assets/                # Images and static assets
 ├── cloudflare-workers/    # Cloudflare Workers code
 ├── configs/               # All configuration files (consolidated)
@@ -1029,6 +1029,36 @@ All API keys stored in: `~/.cursor/mcp.json`
 - 🔄 Deep script organization (currently 89M, many files)
 - 🔄 Further documentation consolidation
 - 🔄 Archive old audit reports (6+ months)
+
+### **Archives Management** (`/archives/` - 51M)
+
+**Purpose**: Historical storage for replaced/deprecated code, docs, and configs
+
+**Size Reduction**: 358M → 51M (86% reduction, deleted 307M node_modules Oct 5, 2025)
+
+**Contents** (17 directories):
+- `docs/` (33M) - 342 archived docs from consolidation
+- `conflicting-docs/` (2.5M) - Resolved documentation conflicts
+- `outdated-website/` (2.5M) - Previous website versions (node_modules deleted)
+- `backups-2025-10-05/` (3.7M) - System backups
+- `exports-2025-10-05/` (3.9M) - Data exports
+- `outdated-configs/` (1.7M) - Old configuration files
+- `outdated-bmad-reports/` (284K) - Completed BMAD phase reports
+- `outdated-webflow-ready-oct1-2025/` (1.4M) - Old Webflow files
+- `logs-2025-10-05/` (604K) - System logs
+- + 8 smaller directories
+
+**Retention Policy**:
+- Logs: 1 month
+- Backups/Exports/Website files: 3 months
+- Configs/Docs: 6 months
+- BMAD Reports: 12 months
+
+**Git Status**: ✅ Excluded from git (via .gitignore)
+
+**Documentation**: See `archives/README.md` for full details
+
+**Next Cleanup**: November 2025 (delete expired logs)
 
 ---
 
