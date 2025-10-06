@@ -19,6 +19,8 @@ The Rensto Gateway Worker is a Cloudflare Worker that acts as an intelligent API
 src/
 ├── index.ts              # Main worker entry point
 ├── handlers/             # Request handlers
+│   ├── typeform-webhook.js      # Typeform webhook handler
+│   └── admin-dashboard-mcp.js   # Admin dashboard MCP handler
 ├── middleware/           # Auth, validation, rate limiting
 ├── services/             # Integration services
 │   ├── stripe/
@@ -160,6 +162,58 @@ npm run tenant:list
 **GET `/health`**
 - Returns worker health status
 - Response: `{ status: "ok", timestamp: "..." }`
+
+## 🎯 Webhook Handlers
+
+The gateway worker includes specialized handlers for different webhook sources:
+
+### **Typeform Webhook Handler** (`src/handlers/typeform-webhook.js`)
+
+Processes Typeform form submissions through the MCP ecosystem.
+
+**Features:**
+- CORS preflight handling
+- Typeform signature verification
+- Routes submissions to n8n, Airtable, or Make.com
+- Parallel processing to multiple destinations
+- Error handling and logging
+
+**Webhook URL:** `/webhook/typeform` (or configure via tenant routing)
+
+**Required Secrets:**
+- `TYPEFORM_WEBHOOK_SECRET` - Typeform webhook secret for signature validation
+- `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID` - For Airtable integration
+- `N8N_BASE_URL`, `N8N_API_KEY` - For n8n integration
+- `MAKE_BASE_URL`, `MAKE_API_KEY` - For Make.com integration
+
+**Use Cases:**
+- Lead capture forms
+- Customer onboarding forms
+- Survey responses
+- Consultation requests
+
+### **Admin Dashboard MCP Handler** (`src/handlers/admin-dashboard-mcp.js`)
+
+Handles Model Context Protocol (MCP) requests for the admin dashboard.
+
+**Features:**
+- Health check endpoint
+- MCP configuration reference
+- Admin dashboard integrations
+
+**Endpoints:**
+- `/health` - Health status
+- `/mcp/admin-dashboard` - MCP requests
+
+**MCP Servers Referenced:**
+- n8n-mcp (Docker, 63 tools)
+- webflow-mcp (NPX, 42 tools)
+- airtable-mcp (NPX)
+- stripe-mcp (Docker)
+- pipedream-mcp
+- supabase-mcp (NPX)
+
+**Note:** This handler was consolidated from the root-level `cloudflare-workers/` directory on Oct 5, 2025.
 
 ## 🔒 Security Features
 

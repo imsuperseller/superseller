@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 5, 2025 (Night - Phase 1 Consolidation Complete)
-**Status**: ✅ Codebase Consolidated (26→19 folders), Payment Flows Ready, Clean Structure
+**Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
+**Status**: ✅ Codebase Consolidated (26→18 folders), 4 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -767,9 +767,10 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 **Gateway Worker** (`apps/gateway-worker/` - 340K):
 - **Platform**: Cloudflare Workers + KV
 - **Purpose**: API gateway, multi-tenant routing, rate limiting, idempotency
-- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter
+- **Handlers**: Typeform webhook, Admin dashboard MCP (consolidated Oct 5, 2025)
+- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter, Typeform, Make.com
 - **Status**: ⚠️ KV namespaces need configuration
-- **Security**: HMAC signature validation, per-tenant rate limits
+- **Security**: HMAC signature validation, per-tenant rate limits, Typeform signature verification
 - **Documentation**: `apps/gateway-worker/README.md`
 - **Deployment**: Cloudflare Workers (gateway.rensto.com - pending config)
 
@@ -982,6 +983,9 @@ All API keys stored in: `~/.cursor/mcp.json`
 5. **`Projects/`** → Merged into `/Customers/projects/`
 6. **`system/`** → Archived (empty folders deleted, misc archived)
 7. **`mcp-server-cloudflare/`** → Moved to `/infra/mcp-reference/cloudflare/`
+8. **`cloudflare-workers/`** → Consolidated into `/apps/gateway-worker/src/handlers/` (Oct 5, 2025)
+   - Moved: `typeform-webhook.js`, `admin-dashboard-mcp.js`
+   - Reason: Duplicate location; all Cloudflare Workers should be in apps/
 
 #### **Renamed for Clarity:**
 - **`live-systems/admin-portal/`** → **`live-systems/admin-scripts/`**
@@ -994,13 +998,12 @@ All API keys stored in: `~/.cursor/mcp.json`
 - **`webflow-devlink-project/`** = Active Webflow DevLink development project (Sept 30, 2025)
 - **`scripts/node_modules/`** = Correct location (scripts has its own package.json)
 
-### **Current Root Directory Structure** (19 folders)
+### **Current Root Directory Structure** (18 folders)
 ```
 /
-├── apps/                  # All application code (admin dashboard, rensto site, APIs)
+├── apps/                  # All application code (admin, site, APIs, gateway-worker)
 ├── archives/              # Archived files (51M, 17 dirs, retention policy documented)
 ├── assets/                # Shared brand assets (0B, hybrid strategy documented)
-├── cloudflare-workers/    # Cloudflare Workers code
 ├── configs/               # All configuration files (consolidated)
 ├── Customers/             # All customer/prospect/project data (consolidated)
 ├── data/                  # Data files (JSON, temp, backups)
