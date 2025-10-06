@@ -1,3 +1,16 @@
+<!--
+FILE: WEBFLOW_EMBED_CUSTOM_SOLUTIONS_CVJ.html
+PURPOSE: Full Custom Solutions landing page with CVJ optimization for Webflow
+DEPLOYED: No - Template ready for deployment
+LAST UPDATED: 2025-10-06
+VERSION: 2.0
+CHANGES:
+  - v2.0 (2025-10-06): Added Stripe checkout integration for entry-level products (Audit $297, Sprint $1,997)
+  - v1.0 (2025-10-03): Initial CVJ-optimized Custom Solutions page created
+INTEGRATIONS: Stripe Checkout (api.rensto.com/api/stripe/checkout), Typeform (Voice AI consultation)
+DEPENDENCIES: Stripe API, Typeform API, n8n workflows (6 STRIPE workflows)
+DEPLOYMENT: Paste into Webflow Designer → Custom Solutions page → Custom Code → Before </body>
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -925,13 +938,80 @@
         </div>
     </section>
 
-    <!-- H-08: Investment Range -->
-    <section class="investment-section">
+    <!-- H-07B: Quick Start Options (Entry-Level Custom Solutions) -->
+    <section class="investment-section" style="padding-top: 60px; padding-bottom: 60px;">
         <div class="container">
             <div class="investment-content">
                 <div class="section-header">
-                    <h2>Investment Range</h2>
-                    <p>Custom automation pricing based on complexity and scope</p>
+                    <h2>Quick Start Options</h2>
+                    <p>Not ready for a full custom build? Start with these entry-level options</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+                    <!-- Business Audit Option -->
+                    <div class="investment-range" style="padding: 40px;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--cyan);">Business Audit</h3>
+                        <div style="font-size: 3rem; font-weight: 700; background: var(--gradient-secondary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem;">$297</div>
+                        <p style="font-size: 1.1rem; color: var(--gray-text); margin-bottom: 2rem;">
+                            Get a comprehensive automation readiness assessment with actionable recommendations
+                        </p>
+                        <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> 1-hour consultation</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> Process analysis report</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> ROI projections</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> Technical recommendations</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> Delivered in 3 business days</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary custom-solutions-button"
+                            data-flow-type="custom-solutions"
+                            data-product="audit"
+                            data-price="297"
+                            style="width: 100%;">
+                            Get Business Audit
+                        </button>
+                    </div>
+
+                    <!-- Automation Sprint Option -->
+                    <div class="investment-range" style="padding: 40px; border: 3px solid var(--cyan);">
+                        <div style="position: absolute; top: 10px; right: 10px; background: var(--cyan); color: var(--dark-bg); padding: 6px 16px; border-radius: 16px; font-size: 0.85rem; font-weight: 600;">MOST POPULAR</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--cyan);">Automation Sprint</h3>
+                        <div style="font-size: 3rem; font-weight: 700; background: var(--gradient-secondary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem;">$1,997</div>
+                        <p style="font-size: 1.1rem; color: var(--gray-text); margin-bottom: 2rem;">
+                            Get one critical workflow automated in just 2 weeks—perfect for testing our process
+                        </p>
+                        <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> 1 workflow automation</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> 2-week delivery</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> Up to 3 integrations</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> Training & documentation</li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 10px;"><span class="check-icon">✓</span> 30-day support</li>
+                        </ul>
+                        <button
+                            class="cta-button cta-primary custom-solutions-button"
+                            data-flow-type="custom-solutions"
+                            data-product="sprint"
+                            data-price="1997"
+                            style="width: 100%;">
+                            Start Automation Sprint
+                        </button>
+                    </div>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 1.1rem; color: var(--gray-text); text-align: center;">
+                    Or book a free consultation for a fully custom solution →
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- H-08: Investment Range (Full Custom Projects) -->
+    <section class="investment-section" style="padding-top: 60px;">
+        <div class="container">
+            <div class="investment-content">
+                <div class="section-header">
+                    <h2>Full Custom Projects</h2>
+                    <p>For complex systems requiring multiple workflows and integrations</p>
                 </div>
 
                 <div class="investment-range">
@@ -1131,6 +1211,103 @@
                 item.classList.add('active');
             }
         }
+    </script>
+
+    <!-- Stripe Checkout Integration -->
+    <script>
+    (function() {
+      'use strict';
+
+      const API_URL = 'https://api.rensto.com/api/stripe/checkout';
+
+      // Initialize Stripe Checkout for Custom Solutions
+      function initCustomSolutionsCheckout() {
+        console.log('🎯 Rensto Custom Solutions Checkout Initialized');
+
+        // Handle custom solutions buttons
+        document.querySelectorAll('.custom-solutions-button').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleCheckout(this);
+          });
+        });
+      }
+
+      async function handleCheckout(button) {
+        // Get data from button attributes
+        const product = button.getAttribute('data-product') || 'audit';
+        const price = parseInt(button.getAttribute('data-price')) || 297;
+
+        // Validate required data
+        if (!product) {
+          console.error('❌ Missing required data attributes on button');
+          alert('Configuration error. Please contact support.');
+          return;
+        }
+
+        // Disable button and show loading state
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Processing...';
+        button.style.opacity = '0.6';
+        button.style.cursor = 'wait';
+
+        try {
+          console.log('💳 Creating Custom Solutions checkout session:', {
+            product,
+            price
+          });
+
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flowType: 'custom-solutions',
+              productId: product,
+              customerEmail: '', // Collected in Stripe checkout
+              metadata: {
+                product: product,
+                price: price,
+                source: 'webflow_custom_solutions'
+              }
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.url) {
+            console.log('✅ Custom Solutions checkout session created, redirecting to Stripe...');
+            // Redirect to Stripe Checkout
+            window.location.href = data.url;
+          } else {
+            throw new Error(data.error || 'Failed to create checkout session');
+          }
+
+        } catch (error) {
+          console.error('❌ Checkout error:', error);
+          alert('Unable to process checkout. Please try again or contact support.');
+
+          // Restore button state
+          button.disabled = false;
+          button.textContent = originalText;
+          button.style.opacity = '1';
+          button.style.cursor = 'pointer';
+        }
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCustomSolutionsCheckout);
+      } else {
+        initCustomSolutionsCheckout();
+      }
+
+      // Expose for manual initialization if needed
+      window.RenstoCustomSolutions = { initCustomSolutionsCheckout };
+
+    })();
     </script>
 </body>
 </html>

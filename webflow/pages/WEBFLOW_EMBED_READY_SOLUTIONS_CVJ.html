@@ -1,3 +1,16 @@
+<!--
+FILE: WEBFLOW_EMBED_READY_SOLUTIONS_CVJ.html
+PURPOSE: Full Ready Solutions landing page with CVJ optimization for Webflow
+DEPLOYED: No - Template ready for deployment
+LAST UPDATED: 2025-10-06
+VERSION: 2.0
+CHANGES:
+  - v2.0 (2025-10-06): Added Stripe checkout integration for all 3 tiers (Starter $890, Pro $2,990, Enterprise $2,990)
+  - v1.0 (2025-10-03): Initial CVJ-optimized Ready Solutions page created
+INTEGRATIONS: Stripe Checkout (api.rensto.com/api/stripe/checkout)
+DEPENDENCIES: Stripe API, n8n workflows (6 STRIPE workflows)
+DEPLOYMENT: Paste into Webflow Designer → Ready Solutions page → Custom Code → Before </body>
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -965,7 +978,13 @@
                         <li><span class="check-icon">✓</span> 1-hour training session</li>
                         <li><span class="check-icon">✓</span> 30-day support</li>
                     </ul>
-                    <a href="/checkout?plan=single" class="pricing-button">Get Started</a>
+                    <button
+                        class="pricing-button ready-solutions-button"
+                        data-flow-type="ready-solutions"
+                        data-tier="starter"
+                        data-price="890">
+                        Get Started
+                    </button>
                 </div>
 
                 <div class="pricing-card featured">
@@ -981,7 +1000,13 @@
                         <li><span class="check-icon">✓</span> 60-day priority support</li>
                         <li><span class="check-icon">✓</span> Save $1,460 vs. buying individually</li>
                     </ul>
-                    <a href="/checkout?plan=complete" class="pricing-button">Get Complete Package</a>
+                    <button
+                        class="pricing-button ready-solutions-button"
+                        data-flow-type="ready-solutions"
+                        data-tier="professional"
+                        data-price="2990">
+                        Get Complete Package
+                    </button>
                 </div>
 
                 <div class="pricing-card">
@@ -996,7 +1021,13 @@
                         <li><span class="check-icon">✓</span> Team training (up to 10 people)</li>
                         <li><span class="check-icon">✓</span> 90-day priority support</li>
                     </ul>
-                    <a href="/checkout?plan=full-service" class="pricing-button">Add Installation</a>
+                    <button
+                        class="pricing-button ready-solutions-button"
+                        data-flow-type="ready-solutions"
+                        data-tier="enterprise"
+                        data-price="2990">
+                        Add Installation
+                    </button>
                 </div>
             </div>
         </div>
@@ -1281,6 +1312,103 @@
                 }
             });
         });
+    </script>
+
+    <!-- Stripe Checkout Integration -->
+    <script>
+    (function() {
+      'use strict';
+
+      const API_URL = 'https://api.rensto.com/api/stripe/checkout';
+
+      // Initialize Stripe Checkout for Ready Solutions
+      function initReadySolutionsCheckout() {
+        console.log('🎯 Rensto Ready Solutions Checkout Initialized');
+
+        // Handle ready solutions buttons
+        document.querySelectorAll('.ready-solutions-button').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleCheckout(this);
+          });
+        });
+      }
+
+      async function handleCheckout(button) {
+        // Get data from button attributes
+        const tier = button.getAttribute('data-tier') || 'starter';
+        const price = parseInt(button.getAttribute('data-price')) || 890;
+
+        // Validate required data
+        if (!tier) {
+          console.error('❌ Missing required data attributes on button');
+          alert('Configuration error. Please contact support.');
+          return;
+        }
+
+        // Disable button and show loading state
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Processing...';
+        button.style.opacity = '0.6';
+        button.style.cursor = 'wait';
+
+        try {
+          console.log('💳 Creating Ready Solutions checkout session:', {
+            tier,
+            price
+          });
+
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flowType: 'ready-solutions',
+              tier: tier,
+              customerEmail: '', // Collected in Stripe checkout
+              metadata: {
+                tier: tier,
+                price: price,
+                source: 'webflow_ready_solutions'
+              }
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.url) {
+            console.log('✅ Ready Solutions checkout session created, redirecting to Stripe...');
+            // Redirect to Stripe Checkout
+            window.location.href = data.url;
+          } else {
+            throw new Error(data.error || 'Failed to create checkout session');
+          }
+
+        } catch (error) {
+          console.error('❌ Checkout error:', error);
+          alert('Unable to process checkout. Please try again or contact support.');
+
+          // Restore button state
+          button.disabled = false;
+          button.textContent = originalText;
+          button.style.opacity = '1';
+          button.style.cursor = 'pointer';
+        }
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initReadySolutionsCheckout);
+      } else {
+        initReadySolutionsCheckout();
+      }
+
+      // Expose for manual initialization if needed
+      window.RenstoReadySolutions = { initReadySolutionsCheckout };
+
+    })();
     </script>
 </body>
 </html>

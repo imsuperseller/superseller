@@ -90,11 +90,15 @@ export async function POST(request: NextRequest) {
       case 'ready-solutions':
         // Flow 3: Ready Solutions Package
         const solutionPrices: Record<string, number> = {
+          starter: 890,
+          professional: 2990,
+          enterprise: 2990, // Enterprise + Installation add-on
+          // Legacy aliases
           single: 890,
           complete: 2990,
-          'full-service': 3787 // 2990 + 797
+          'full-service': 3787
         };
-        const solutionPrice = solutionPrices[tier || 'single'];
+        const solutionPrice = solutionPrices[tier || 'starter'];
 
         priceData = {
           currency: 'usd',
@@ -137,23 +141,36 @@ export async function POST(request: NextRequest) {
       case 'custom-solutions':
         // Flow 5: Custom Solutions Project
         const customPrices: Record<string, number> = {
+          // Entry-level products (use productId)
+          audit: 297,
+          sprint: 1997,
+          // Full custom projects (use tier)
           simple: 3500,
           standard: 5500,
           complex: 8000
         };
-        const customPrice = customPrices[tier || 'simple'];
+
+        // Support both productId (for entry-level) and tier (for full custom)
+        const customKey = productId || tier || 'audit';
+        const customPrice = customPrices[customKey];
+        const customName = productId
+          ? (productId === 'audit' ? 'Business Audit' : 'Automation Sprint')
+          : `${tier?.toUpperCase()} Custom Solution Build`;
+        const customDesc = productId
+          ? (productId === 'audit' ? 'Comprehensive automation readiness assessment' : '2-week workflow automation sprint')
+          : 'Bespoke automation project with consultation';
 
         priceData = {
           currency: 'usd',
           product_data: {
-            name: `${tier?.toUpperCase()} Custom Solution Build`,
-            description: 'Bespoke automation project with consultation',
-            metadata: { type: 'custom-solutions', tier }
+            name: customName,
+            description: customDesc,
+            metadata: { type: 'custom-solutions', product: productId || tier, tier, productId }
           },
           unit_amount: customPrice * 100
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=custom&tier=${tier}`;
-        webhookMetadata = { ...webhookMetadata, tier, price: customPrice };
+        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=custom&product=${customKey}`;
+        webhookMetadata = { ...webhookMetadata, product: customKey, productId, tier, price: customPrice };
         break;
 
       default:
