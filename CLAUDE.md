@@ -1115,6 +1115,35 @@ All API keys stored in: `~/.cursor/mcp.json`
 
 **Documentation**: See `configs/README.md` for detailed usage guide
 
+### **Customer & Project Data** (`/Customers/` - 1.0M)
+
+**Purpose**: Centralized storage for all customer data, workflows, documentation, and project files
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #6)**:
+- ❌ Deleted 3 empty directories: `projects/completed/`, `projects/active/`, `projects/archived/`
+- ✅ Created comprehensive `Customers/README.md` with standards and security guidelines
+- ✅ Documented 4 active customers and 2 prospects
+- ✅ Added data protection guidelines
+
+**Active Customers** (4):
+- `wonder.care/` (508K) - Healthcare appointment automation, 13 files
+- `ben-ginati/` (340K) - Tax4Us content automation, 18+ workflows
+- `m.l.i home improvement/` (92K) - Home improvement services
+- `local-il/` (16K) - LinkedIn lead generation
+
+**Prospects** (2):
+- `prospects/nir-sheinbein/` - Project inquiry
+- `prospects/GarageTec/` - Voice agent inquiry
+
+**Structure Standards**:
+- Recommended: `01-documentation/`, `02-workflows/`, `03-infrastructure/`, `04-live-systems/`, `05-archives/`
+- Security: Customer credentials and PII should be gitignored
+- Integration: Should sync to Airtable "Rensto Client Operations" base (not yet automated)
+
+**Audit Score**: 8/17 (47%) - ⚠️ **FAIR**
+
+**Documentation**: See `Customers/README.md` for customer onboarding and data management
+
 ---
 
 ## 🚨 IMMEDIATE ACTION ITEMS
