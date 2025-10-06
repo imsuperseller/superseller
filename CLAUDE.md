@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 15 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 16 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1473,6 +1473,67 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Documentation**: See `scripts/README.md` for detailed categorization and Phase 3 reorganization plan
 
 **⚠️ WARNING**: This is the WORST-ORGANIZED folder in the codebase. DO NOT delete scripts without careful review - many may be referenced by n8n workflows, cron jobs, or other automation.
+
+### **Webflow Deployment Files** (`/webflow/` - 988K)
+
+**Purpose**: Webflow page embed files, templates, and deployment documentation for rensto.com
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #16)**:
+- ✅ Enhanced existing README.md with comprehensive documentation
+- ✅ No cleanup needed (already well-organized)
+- ✅ Documented all 23 pages and 5 templates
+- ✅ Documented Stripe integration status (2 of 4 service pages complete)
+- ✅ Documented page-to-URL mapping
+
+**Structure**:
+- **pages/** (23 files) - Page embed files (WEBFLOW_EMBED_*.html)
+  - 4 service pages (Marketplace, Subscriptions, Custom Solutions, Ready Solutions)
+  - 16 niche/industry pages (Amazon Seller, HVAC, Realtor, Dentist, etc.)
+  - 3 content pages (About, Pricing, Help Center)
+- **templates/** (5 files) - Reusable templates (Blog Post, Case Study, Docs, Product, etc.)
+- **docs/** (2 files) - Deployment documentation
+
+**Pages by Category**:
+
+**Service Pages** (4):
+1. **Marketplace** - ✅ Stripe integrated (6 buttons, v2.0)
+2. **Subscriptions** - ✅ Stripe integrated (3 buttons, v2.0)
+3. **Custom Solutions** - ⏳ Needs Stripe integration
+4. **Ready Solutions** - ⏳ Needs Stripe integration
+
+**Niche/Industry Pages** (16):
+- Amazon Seller, Busy Mom, Bookkeeping, Dentist, E-commerce, Fence Contractor, HVAC, Insurance, Lawyer, Locksmith, Photographer, Product Supplier, Realtor, Roofer, Synagogue, Torah Teacher
+
+**Content Pages** (3):
+- About, Pricing, Help Center
+
+**Stripe Integration Status**:
+- ✅ **Complete**: Marketplace (6 buttons), Subscriptions (3 buttons)
+- ⏳ **Pending**: Custom Solutions, Ready Solutions, 16 niche pages
+- **Total Buttons**: 9 implemented, many more needed
+
+**Relationship to Other Folders**:
+- **webflow/** = Front-end implementation (HTML embed files with Stripe buttons)
+- **/products/** = Product data (8 products with pricing)
+- **/marketplace/** = Platform config (pricing tiers, deployment packages)
+- **Integration Needed**: Webflow should dynamically load products from /products/ catalog
+
+**Known Issues**:
+- ⏳ **Incomplete Stripe integration**: Only 2 of 4 service pages complete (50%)
+- ⏳ **Static content**: No dynamic product loading from /products/ catalog
+- ⏳ **Niche pages**: 16 pages may be missing Stripe buttons or Typeform links
+- ⏳ **Typeforms & Content AI**: Integration status unknown
+
+**Action Required**:
+- [ ] Add Stripe buttons to Custom Solutions page
+- [ ] Add Stripe buttons to Ready Solutions page
+- [ ] Audit 16 niche pages for Stripe/Typeform integration
+- [ ] Build INT-SYNC-003 workflow (products → Webflow CMS sync)
+- [ ] Verify Typeform and Content AI integration status
+
+**Audit Score**: 13/17 (76%) - ✅ **GOOD**
+
+**Documentation**: See `webflow/README.md` for detailed page inventory, deployment instructions, and integration status
 
 ### **Operations Specifications** (`/ops/` - 20K)
 
