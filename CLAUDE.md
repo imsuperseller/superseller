@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 13 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 14 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1342,6 +1342,61 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 12/17 (71%) - ✅ **GOOD**
 
 **Documentation**: See `marketplace/README.md` for detailed config documentation and usage instructions
+
+### **Product Catalog** (`/products/` - 8K)
+
+**Purpose**: Individual product definitions for Rensto's marketplace offerings, including automation templates, workflow packages, and integration solutions
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #14)**:
+- ✅ Created comprehensive `products/README.md` with detailed product documentation
+- ✅ Verified source files exist (email-automation-system.json, business-process-automation.md)
+- ✅ No empty directories or files to clean up
+- ⚠️ Identified product count mismatch (8 vs 18) with apps/marketplace
+
+**Products** (8 total):
+
+**Email Automation** (2 products):
+1. **AI-Powered Email Persona System** - $197 (6 personas, intelligent routing, Airtable integration)
+2. **Hebrew Email Automation** - $297 (RTL templates, insurance industry specific)
+
+**Business Process** (1 product):
+3. **Complete Business Process Automation** - $497 (Customer onboarding, project mgmt, invoicing, lead nurturing)
+
+**Content Generation** (1 product):
+4. **Tax4Us Content Automation** - $597 (WordPress automation, social media, SEO, tax industry)
+
+**Financial Automation** (1 product):
+5. **QuickBooks Integration Suite** - $297 (Invoice gen, payment tracking, expense mgmt, reporting)
+
+**Customer Management** (1 product):
+6. **Customer Lifecycle Management** - $597 (Lead capture, onboarding, retention, analytics)
+
+**Technical Integration** (2 products):
+7. **n8n Deployment Package** - $797 (VPS deployment, SSL, security, monitoring, backups)
+8. **MCP Server Integration Suite** - $997 (Airtable MCP, Notion MCP, n8n MCP, custom integrations)
+
+**Relationship to Other Folders**:
+- **products/** = Individual product catalog (what's sold - 8 specific items)
+- **marketplace/** = Platform configuration (how marketplace operates - pricing tiers, deployment packages)
+- **apps/marketplace** = Marketplace web application (customer-facing Next.js app - references 18 products)
+
+**Known Issues**:
+- ⚠️ **Product count mismatch**: product-catalog.json has 8 products, apps/marketplace/README.md mentions 18 products
+- ❌ **No Stripe integration**: No stripePriceId field in product-catalog.json
+- ❌ **No Webflow sync**: Products not synced to rensto.com/marketplace via CMS
+- ❌ **Source files not fully verified**: Some implementations (Shelly Mizrahi, Ben Ginati) not confirmed
+- ❌ **No deployment status tracking**: Unknown which products are live on website
+
+**Action Required**:
+- [ ] **Priority 1**: Reconcile product counts (8 vs 18) - determine single source of truth
+- [ ] **Priority 2**: Create Stripe products and add Price IDs to product-catalog.json
+- [ ] **Priority 3**: Build INT-SYNC-003 workflow to sync products → Webflow CMS
+- [ ] **Priority 4**: Verify all source files exist and are current
+- [ ] **Priority 5**: Create "Products" table in Airtable for sales tracking
+
+**Audit Score**: 9/17 (53%) - ⚠️ **NEEDS IMPROVEMENT**
+
+**Documentation**: See `products/README.md` for detailed product specifications and integration status
 
 ### **Operations Specifications** (`/ops/` - 20K)
 
