@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 9 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 10 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1125,9 +1125,10 @@ All API keys stored in: `~/.cursor/mcp.json`
 - ✅ Documented 4 active customers and 2 prospects
 - ✅ Added data protection guidelines
 
-**Active Customers** (4):
+**Active Customers** (5):
 - `wonder.care/` (508K) - Healthcare appointment automation, 13 files
 - `ben-ginati/` (340K) - Tax4Us content automation, 18+ workflows
+- `ortal/` (NEW - Oct 5, 2025) - Facebook lead generation, 9 operational scripts
 - `m.l.i home improvement/` (92K) - Home improvement services
 - `local-il/` (16K) - LinkedIn lead generation
 
@@ -1249,6 +1250,45 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 13/17 (76%) - ✅ **GOOD** (improved from 41%)
 
 **Documentation**: See `infra/README.md` for MCP server management and setup guides
+
+### **Live Systems & Operational Scripts** (`/live-systems/` - 2.6M)
+
+**Purpose**: Production operational scripts, admin tools, customer portal implementations, and live system configurations
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #10)**:
+- ❌ Deleted 4 empty directories: `hyperise-replacement/uploads/`, `hyperise-replacement/logs/`, `admin-scripts/config/n8n/`, `admin-scripts/config/editor/.cursor/`
+- ✅ Moved 9 customer-specific scripts (Ortal) → `/Customers/ortal/03-infrastructure/`
+- ✅ Created comprehensive `live-systems/README.md` with deployment instructions
+- ✅ Documented hyperise-replacement as built but not deployed (saving opportunity: $50-200/month)
+
+**Structure**:
+- `admin-scripts/` (1.4M) - Admin operational scripts (QuickBooks auth, AI agent security, system maintenance)
+- `customer-portal/` (652K) - Customer portal implementation scripts (onboarding, analytics, integrations)
+- `hyperise-replacement/` (328K) - Custom Hyperise replacement API (Express.js + PostgreSQL + Redis)
+- `n8n-system/` (264K) - n8n workflow exports and system integrations
+
+**Key Components**:
+- **Admin Scripts**: QuickBooks authentication, secure AI agent, system monitoring
+- **Customer Portal**: Intelligent onboarding agent, billing automation, churn prediction, health scoring
+- **Hyperise Replacement**: ❌ **Built but NOT deployed** - Potential $50-200/month savings
+  - Tech: Express.js, PostgreSQL, Redis, Sharp, OpenAI integration
+  - Features: Short links, personalized landing pages, analytics, n8n integration
+- **n8n Workflows**: 8 production workflows (leads, projects, invoices, scraping)
+
+**Deployment Status**:
+- ✅ admin-scripts/: Active
+- ⚠️ customer-portal/: Mixed (some active, some experimental)
+- ❌ hyperise-replacement/: Built, not deployed (ACTION REQUIRED)
+- ✅ n8n-system/: Active workflows
+
+**Known Issues**:
+- ⚠️ Hyperise replacement not deployed (costing $50-200/month in Hyperise fees)
+- ⚠️ Customer portal scripts status unclear (active vs experimental)
+- ⚠️ No integration with admin dashboard (scripts run manually)
+
+**Audit Score**: 13/17 (76%) - ✅ **GOOD** (improved from 47%)
+
+**Documentation**: See `live-systems/README.md` for detailed script documentation and deployment instructions
 
 ---
 
