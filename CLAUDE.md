@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 17 folder audits complete, Clean Structure
+**Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits COMPLETE!)
+**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1586,6 +1586,75 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 10/17 (59%) - ⚠️ **NEEDS IMPROVEMENT**
 
 **Documentation**: See `webflow-devlink-project/README.md` for setup instructions, component development, and usage guide
+
+### **n8n Workflows & Automation Templates** (`/workflows/` - 5.2M)
+
+**Purpose**: n8n workflow exports, templates, backups, and automation documentation for Rensto operations
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #18 - FINAL FOLDER!)**:
+- ✅ Created comprehensive `workflows/README.md`
+- ✅ No cleanup performed (clean structure, customer workflows need relocation)
+- ✅ Documented all 103 workflow files and 35 directories
+- ✅ Identified customer workflows needing relocation (nir-sheinbein/, Tax4US)
+- ⏳ CLEANUP_INSTRUCTIONS.md references workflows-organized/ that doesn't exist
+
+**Structure**:
+- **Root-level Workflows** (18 files): Operational, Tax4US, AI Blog, infrastructure
+- **Subdirectories** (12 total):
+  - backup/ - Workflow backups ✅ Active
+  - legacy/ - Archived workflows ✅ Archive
+  - make/ - Make.com integrations ⏳ Status unknown
+  - n8n/ - n8n workflow exports ✅ Active
+  - n8n-functions/ - Custom functions ✅ Active
+  - n8n-references/ - Reference implementations ✅ Active
+  - nir-sheinbein/ - Customer workflows ⚠️ **MOVE TO /Customers/**
+  - production/ - Production workflows ✅ Active
+  - prototypes/ - Experimental workflows ⚠️ Mixed
+  - rensto/ - Internal workflows ✅ Active
+  - templates/ - Workflow templates ✅ Active
+  - testing/ - Test workflows ✅ Active
+
+**Key Workflows** (Root Level):
+1. **Operational** (5): leads-daily-followups, projects-digest, finance-unpaid-invoices, assets-renewals, contact-intake
+2. **Email Automation** (1): email-automation-system (21K) - 6 AI personas
+3. **Tax4US** (5): Content automation workflows ⚠️ **MOVE TO /Customers/tax4us/**
+4. **AI Blog Writing** (2): SMART AI Blog Writing System (111K + 32K)
+5. **Infrastructure** (3): Webhook security, importers
+
+**n8n Production**: http://173.254.201.134:5678
+
+**Known Issues**:
+- ⚠️ **Customer workflows misplaced**: nir-sheinbein/ and 5 Tax4US workflows should be in /Customers/{customer}/02-workflows/
+- ⏳ **CLEANUP_INSTRUCTIONS.md**: References workflows-organized/ that doesn't exist - cleanup never executed
+- ⏳ **Make.com folder status**: Unknown if Make.com integrations still in use
+- ⚠️ **No active vs legacy distinction**: Hard to know which workflows are currently used
+
+**Action Required**:
+- [ ] **Priority 1**: Move nir-sheinbein/ → /Customers/nir-sheinbein/02-workflows/
+- [ ] **Priority 2**: Move 5 Tax4US workflows → /Customers/tax4us/02-workflows/
+- [ ] **Priority 3**: Audit make/ folder (Make.com integration status)
+- [ ] **Priority 4**: Execute cleanup per CLEANUP_INSTRUCTIONS.md OR remove file
+- [ ] **Priority 5**: Document workflow status (✅ Active, ⏳ Legacy, ⚠️ Customer)
+
+**Relationship to Other Folders**:
+- **workflows/** = Workflow JSON files (exports, templates, backups)
+- **/live-systems/n8n-system/** = n8n system workflows and integrations
+- **/scripts/** = Operational scripts (not workflows)
+- **/Customers/{customer}/02-workflows/** = Customer-specific workflows
+
+**Audit Score**: 11/17 (65%) - ⚠️ **NEEDS IMPROVEMENT**
+
+**Documentation**: See `workflows/README.md` for workflow inventory, import/export instructions, and subdirectory details
+
+---
+
+## 🎉 PHASE 2 COMPLETE!
+
+**All 18 folders audited successfully!**
+
+**Phase 2 Status**: ✅ **COMPLETE** - Codebase fully documented and organized
+
+---
 
 ### **Operations Specifications** (`/ops/` - 20K)
 
