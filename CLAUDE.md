@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 16 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 17 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1534,6 +1534,58 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 13/17 (76%) - ✅ **GOOD**
 
 **Documentation**: See `webflow/README.md` for detailed page inventory, deployment instructions, and integration status
+
+### **Webflow Devlink Project** (`/webflow-devlink-project/` - 211M)
+
+**Purpose**: Webflow Devlink integration for custom React components in Webflow Designer
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #17)**:
+- ✅ Created comprehensive `webflow-devlink-project/README.md`
+- ✅ No cleanup needed (clean project structure)
+- ✅ Verified node_modules/ (210M) is properly gitignored
+- ⚠️ Identified status unclear - needs clarification if active or deprecated
+
+**Project Details**:
+- **Name**: rensto-webflow-devlink
+- **Total Size**: 211M (210M node_modules, ~1M source code)
+- **Components**: 1 (PricingPage.tsx)
+- **Technology**: React 18 + TypeScript 5 + Webflow CLI
+- **Purpose**: Build custom React components for Webflow Designer
+- **Created**: September 30, 2025
+
+**Components**:
+- **PricingPage** (PricingPage.tsx, PricingPage.css) - Custom pricing page component
+
+**Dependencies**:
+- `@webflow/webflow-cli` ^1.8.44 - Webflow CLI tools
+- `react` ^18.2.0 - React library
+- `typescript` ^5.0.0 - TypeScript compiler
+
+**Relationship to Other Folders**:
+- **webflow-devlink-project/** = Custom React components for Webflow (complex, 1 component)
+- **/webflow/** = Page embed files (simple, 23 pages)
+- **/apps/marketplace** = Full Next.js application
+
+**Known Issues**:
+- ⚠️ **Status unclear**: Only 1 component built - Is this active or a prototype?
+- ⚠️ **Integration unknown**: Unclear if PricingPage component is used in Webflow Designer
+- ⚠️ **Underutilized**: Webflow Devlink setup but only 1 component
+- ⚠️ **Redundancy question**: Two systems for Webflow customization (embed code vs Devlink)
+
+**Action Required**:
+- [ ] **Decision**: Determine if project is active or can be archived
+- [ ] **Verification**: Check if PricingPage component is deployed in Webflow Designer
+- [ ] **Clarification**: Define when to use Devlink vs embed code
+- [ ] **Optional**: If keeping active, expand with more components
+
+**Recommendation**:
+- **If not actively used**: Archive to `archives/webflow-devlink-2025-09/`
+- **If actively used**: Document component usage and expand with more components
+- **Strategy**: Use `/webflow/` embed code for most pages, Devlink only for advanced interactive components
+
+**Audit Score**: 10/17 (59%) - ⚠️ **NEEDS IMPROVEMENT**
+
+**Documentation**: See `webflow-devlink-project/README.md` for setup instructions, component development, and usage guide
 
 ### **Operations Specifications** (`/ops/` - 20K)
 
