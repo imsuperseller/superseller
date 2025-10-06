@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 11 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 12 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1342,6 +1342,85 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 12/17 (71%) - ✅ **GOOD**
 
 **Documentation**: See `marketplace/README.md` for detailed config documentation and usage instructions
+
+### **Operations Specifications** (`/ops/` - 20K)
+
+**Purpose**: Operational specifications, validation gates, and executable documentation for Rensto infrastructure and applications
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #12)**:
+- ✅ Archived outdated task.yaml (Jan 2024 deadline) → `archives/ops-tasks-2024/`
+- ✅ Created comprehensive `ops/README.md` with detailed spec documentation
+- ✅ Documented implementation status for all specifications
+- ✅ Identified file path mismatches in gates.sh
+
+**Active Files** (2 total):
+- `spec.md` (4.0K) - Executable specifications (web app, n8n workflows, infrastructure, acceptance gates)
+- `gates.sh` (4.2K) - Validation script (BMAD methodology gates)
+
+**Specifications Documented**:
+
+**1. Web Application Spec**:
+- Component graph (Header, Pages, Footer, Analytics)
+- Design tokens (color scheme: #0B1318, #111827, #E5E7EB, #2F6A92, #FF6536)
+- GSAP animations (fade-up, parallax, logo glow)
+- E2E test steps (6 steps)
+- Status: ⚠️ Partially implemented
+
+**2. n8n Workflow Specs** (5 workflows):
+- Leads Daily Follow-ups (Cron 08:00 CT, Airtable → Slack/Email)
+- Projects In Progress Digest (Cron 09:00 CT, HTML digest)
+- Finance Unpaid Invoices (Cron 09:15 CT, urgency alerts)
+- Assets Renewals < 30d (Cron 07:45 CT, proactive reminders)
+- Contact Intake (Webhook /contact, stub only)
+- Status: ⚠️ Verification needed (check which workflows exist in production)
+
+**3. Infrastructure Spec**:
+- Docker Services: PostgreSQL 15-alpine, n8n:latest
+- Cloudflare Tunnel: n8n.rensto.com → http://n8n:5678
+- Backup Process: 5-step backup (workflows, credentials, PostgreSQL, MongoDB, rclone)
+- Status: ✅ Cloudflare tunnel implemented, ⚠️ Backup process needs verification
+
+**4. Acceptance Gates**:
+- Required checks: format, lint, type check, unit tests, E2E tests, build, security scan
+- Coverage thresholds: 85% statements, 80% branches, 85% functions/lines
+- Performance metrics: Lighthouse ≥95 (Performance, Accessibility, Best Practices), 100 (SEO)
+- Status: ⚠️ Not all checks automated
+
+**5. Validation Rules**:
+- Environment variables (NEXT_PUBLIC_* optional, N8N_ENCRYPTION_KEY required)
+- Security requirements (no exposed ports, HTTPS only, encrypted credentials)
+- Data consistency (America/Chicago timezone, service@rensto.com default, kebab-case naming)
+- Status: ✅ Generally followed
+
+**6. Testing Matrix**:
+- Web Pages: Unit ✓, Integration ✓, E2E ✓
+- API Routes: Unit ✓, Integration ✓
+- Components: Unit ✓, E2E ✓
+- Workflows: Integration ✓, E2E ✓
+- Backup: Integration ✓
+
+**Validation Gates (gates.sh)** (10 gates):
+- Repository Structure, Documentation, Infrastructure Files, CI/CD, Web App, Docker, Security, Environment, Backup, Taskfile
+- Status: ⚠️ Most gates skipped with warnings ("verified manually")
+- Exit code: 0 = all pass, 1+ = number of failed gates
+
+**Known Issues**:
+- ⚠️ gates.sh file paths don't match current structure (expects ops/plan.md, ops/checklist.md, etc.)
+- ⚠️ Most gates skipped instead of validating (Docker, security, environment checks)
+- ⚠️ Workflow implementation status unknown (need to audit n8n production)
+- ⚠️ References outdated terminology ("Unified Working Methodology" instead of BMAD)
+- ⚠️ task.yaml dated Jan 2024 (archived Oct 5, 2025)
+
+**Action Required**:
+- [ ] Update gates.sh file paths to match current codebase structure
+- [ ] Enable skipped gates or remove them
+- [ ] Verify which n8n workflow specs are implemented in production
+- [ ] Add gates for current business model (5 service types, Stripe integration)
+- [ ] Update terminology to reference BMAD and CLAUDE.md
+
+**Audit Score**: 8/17 (47%) - ⚠️ **FAIR**
+
+**Documentation**: See `ops/README.md` for detailed spec documentation and usage instructions
 
 ---
 
