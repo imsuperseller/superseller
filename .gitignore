@@ -368,3 +368,7 @@ private_key*
 
 # Docker runtime data (databases, logs, state)
 configs/docker/data/
+
+# SQLite database files (generated/temporary)
+data/*.db
+data/*.db-*
