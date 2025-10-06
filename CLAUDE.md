@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 12 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 13 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1421,6 +1421,100 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 8/17 (47%) - ⚠️ **FAIR**
 
 **Documentation**: See `ops/README.md` for detailed spec documentation and usage instructions
+
+### **Monorepo Shared Packages** (`/packages/` - 36K)
+
+**Purpose**: Shared TypeScript packages for Rensto monorepo featuring RGID (Rensto Global ID) system and Zero-Dupes architecture
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #13)**:
+- ❌ Deleted 2 empty packages: `schema/`, `utils/` (including empty src/ directories)
+- ✅ Created comprehensive `packages/README.md` with RGID system documentation
+- ✅ Documented Zero-Dupes architecture and all package functions
+- ✅ Added usage examples and database schema documentation
+
+**Active Packages** (2 total):
+- `@rensto/db` (24K) - Database package with Zero-Dupes architecture (PostgreSQL, CUID2)
+- `@rensto/identity` (12K) - Identity and key generation utilities (17 provider normalizations)
+
+**RGID System (Rensto Global ID)**:
+- **Purpose**: Universal identification system ensuring global uniqueness across all Rensto systems
+- **Format**: CUID2-based, 24-32 characters, lowercase alphanumeric starting with letter
+- **Example**: `clh7xk9p000001n8j8f9h3n8p`
+- **Principle**: Single Source of Truth - one entity (customer, workflow, agent) = one canonical RGID
+- **Mapping**: Multiple external IDs (Airtable, Webflow, n8n, MongoDB) → single RGID
+
+**Zero-Dupes Architecture**:
+- Prevents duplicate data across all systems
+- Idempotency keys for webhooks, jobs, API calls
+- External identity mapping (provider + external_id → RGID)
+- Automatic deduplication for usage events
+
+**@rensto/db Package**:
+
+**Key Functions**:
+1. `upsertByIdentity()` - Canonical upsert with global uniqueness (returns RGID)
+2. `checkIdempotency()` - Prevent duplicate processing (webhooks, jobs, APIs)
+3. `generateIdempotencyKey()` - Deterministic idempotency key generation
+4. `recordUsageEvent()` - Usage tracking with automatic deduplication
+
+**Database Schema** (PostgreSQL):
+- **entities** - Single source of truth (rgid, kind, slug)
+- **external_identities** - Provider → RGID mapping (airtable, webflow, n8n, etc.)
+- **idempotency_keys** - Dedupe ledger (scope, key, payload_hash)
+- **customers**, **agents**, **workflows** - Business tables with RGID references
+- **usage_events** - Usage tracking with deduplication
+- **bmad_projects** - BMAD project tracking
+- **raw_ingestions**, **normalizations** - Data ingestion tracking
+
+**@rensto/identity Package**:
+
+**Key Functions**:
+- Content normalization: `slugify()`, `hashContent()`
+- Idempotency keys: `generateEventKey()`, `generateJobId()`, `generateApiKey()`, `generateWebhookKey()`
+- Concurrency: `generateLockKey()` (Redis lock keys)
+- Provider management: `normalizeProvider()` (17 providers: airtable, webflow, n8n, stripe, openai, etc.)
+- RGID management: `isValidRgid()`, `generateRgid()`, `createEntityKey()`, `parseEntityKey()`
+
+**Supported Providers** (17 total):
+- airtable, webflow, n8n, sellerassistant, junglescout, amazon-ads
+- stripe, quickbooks, mongodb, openai, openrouter
+- typeform, esignatures, vercel, github, cloudflare
+
+**Usage Example**:
+```typescript
+// Customer from multiple systems → single RGID
+const airtableResult = await upsertByIdentity(db, 'customer', 'acme-corp',
+  { provider: 'airtable', external_id: 'recABC123' });
+const n8nResult = await upsertByIdentity(db, 'customer', 'acme-corp',
+  { provider: 'n8n', external_id: 'node_xyz' });
+// Both return same RGID: 'clh7xk9p000001n8j8f9h3n8p'
+
+// Webhook deduplication
+const isDuplicate = await checkIdempotency(db, 'webhook:stripe', eventId, payloadHash);
+if (isDuplicate) return; // Skip duplicate webhook
+```
+
+**Implementation Status**:
+- ✅ Packages built and functional
+- ⚠️ Not yet used in production applications
+- ⚠️ Database migrations exist but not deployed
+- ⚠️ @rensto/identity generateRgid() should use CUID2 library (currently uses crypto.randomUUID)
+
+**Known Issues**:
+- ⚠️ No automated build process for monorepo
+- ⚠️ Not integrated with admin dashboard (should show RGID stats)
+- ⚠️ Not integrated with Boost.space, Airtable, Notion (metadata tracking only)
+
+**Action Required**:
+- [ ] Deploy database migrations to production PostgreSQL
+- [ ] Integrate RGID system with existing applications
+- [ ] Update @rensto/identity to use CUID2 library
+- [ ] Add RGID stats to admin dashboard
+- [ ] Set up monorepo build automation (Turborepo or similar)
+
+**Audit Score**: 13/17 (76%) - ✅ **GOOD** (improved from 59%)
+
+**Documentation**: See `packages/README.md` for detailed RGID documentation, usage examples, and schema details
 
 ---
 
