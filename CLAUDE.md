@@ -1176,6 +1176,46 @@ All API keys stored in: `~/.cursor/mcp.json`
 
 **Documentation**: See `data/README.md` for data file management guidelines
 
+### **Documentation** (`/docs/` - 1.0M)
+
+**Purpose**: Comprehensive technical and business documentation organized by topic
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #8)**:
+- ❌ Deleted 1 empty directory: `api/`
+- ✅ Moved `infrastructure-readme.md` → `infrastructure/README.md`
+- ✅ Created comprehensive `docs/README.md` with directory guide
+- ✅ Already reduced from 413 to 71 files in Phase 1 (83% reduction)
+
+**Structure** (15 subdirectories):
+- `business/` (268K) - Business strategy, roadmaps, competitive analysis
+- `n8n/` (224K) - n8n workflow documentation and implementation guides
+- `workflows/` (144K) - Workflow patterns, templates, best practices
+- `webflow/` (96K) - Webflow CMS implementation and deployment
+- `legal-pages/` (64K) - Legal documentation and compliance
+- `mcp/` (60K) - MCP server documentation (17+ servers)
+- `products/` (32K) - Product specifications and catalog
+- `ai-agents/` (32K) - AI agent configurations and patterns
+- `technical/` (28K) - Technical specs and architecture
+- `deployment/` (20K) - Deployment guides and procedures
+- `infrastructure/` (16K) - Infrastructure setup and management
+- `RUNBOOKS/` (12K) - Operational runbooks and procedures
+- `integrations/` (8K) - Third-party integration guides
+- `security/` (8K) - Security policies and incident response
+- `architecture/` (4K) - System architecture documentation
+
+**Documentation Philosophy**:
+- **CLAUDE.md** = "What and Where" (overview, navigation)
+- **docs/** = "How and Why" (implementation details)
+
+**Maintenance**:
+- Monthly: Review recent changes
+- Quarterly: Full audit, archive outdated docs
+- Yearly: Major overhaul
+
+**Audit Score**: 14/17 (82%) - ✅ **GOOD** (improved from 71%)
+
+**Documentation**: See `docs/README.md` for directory guide and standards
+
 ---
 
 ## 🚨 IMMEDIATE ACTION ITEMS
