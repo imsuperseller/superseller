@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HVAC Automation Solutions - Rensto</title>
+    <!-- Version: 2.0 - Ready Solutions Stripe Integration - Oct 6, 2025 -->
     <style>
         /* Design System Variables */
         :root {
@@ -612,8 +613,8 @@
             <h1>HVAC Automation Solutions</h1>
             <p>Automate emergency dispatch, quotes, permits, and maintenance—so you can focus on keeping customers comfortable.</p>
             <div>
-                <a href="#solutions" class="cta-button">See Solutions</a>
-                <a href="#pricing" class="cta-button" style="background: transparent; border: 2px solid white;">Get Pricing</a>
+                <a href="#ready-solutions" class="cta-button">See Packages</a>
+                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="background: transparent; border: 2px solid white;" target="_blank">Need Custom Solution?</a>
             </div>
         </div>
     </section>
@@ -721,62 +722,97 @@
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing-section">
+    <!-- Ready Solutions Pricing Section -->
+    <section id="ready-solutions" class="pricing-section">
         <div class="section-header fade-in">
-            <h2>Flexible Pricing</h2>
-            <p>Choose the option that fits your needs</p>
+            <h2>Ready-to-Deploy Packages</h2>
+            <p>Industry-specific HVAC automation solutions, deployed in 1-2 weeks</p>
         </div>
 
         <div class="pricing-cards">
-            <!-- Single Solution -->
+            <!-- Starter Package -->
             <div class="pricing-card scale-in">
-                <h3>Single Solution</h3>
+                <h3>Starter Package</h3>
                 <div class="pricing-price">$890</div>
-                <p class="pricing-description">Pick one automation to start with</p>
+                <p class="pricing-description">Perfect for getting started with automation</p>
                 <ul class="pricing-features">
-                    <li>1 automation workflow</li>
-                    <li>Full setup & configuration</li>
+                    <li>1-2 core workflows</li>
+                    <li>Basic integrations</li>
+                    <li>Email support</li>
+                    <li>1-week deployment</li>
                     <li>Training materials</li>
-                    <li>30 days support</li>
                     <li>Future updates</li>
                 </ul>
-                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Get Started</a>
+                <button
+                    class="cta-button ready-solutions-button"
+                    data-flow-type="ready-solutions"
+                    data-tier="starter"
+                    data-price="890"
+                    data-industry="hvac"
+                    data-product-name="HVAC Starter Package"
+                    style="width: 100%; display: block; text-align: center; margin-top: 20px;">
+                    Get Started
+                </button>
             </div>
 
-            <!-- Complete Package (Featured) -->
+            <!-- Professional Package (Featured) -->
             <div class="pricing-card featured scale-in">
-                <div class="pricing-badge">Best Value</div>
-                <h3>Complete Package</h3>
+                <div class="pricing-badge">Most Popular</div>
+                <h3>Professional Package</h3>
                 <div class="pricing-price">$2,990</div>
-                <p class="pricing-description">All 5 solutions integrated</p>
-                <p style="color: var(--cyan); font-weight: 600; margin-bottom: 20px;">Save $1,460 (33% off)</p>
+                <p class="pricing-description">All 5 solutions integrated and optimized</p>
                 <ul class="pricing-features">
-                    <li>All 5 automation workflows</li>
-                    <li>Integrated system setup</li>
-                    <li>Priority implementation</li>
+                    <li>3-5 advanced workflows</li>
+                    <li>Full integrations</li>
+                    <li>Priority support</li>
+                    <li>2-week deployment</li>
                     <li>Live training session</li>
-                    <li>90 days support</li>
-                    <li>Custom adjustments</li>
+                    <li>Custom reports</li>
                 </ul>
-                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Get Started</a>
+                <button
+                    class="cta-button ready-solutions-button"
+                    data-flow-type="ready-solutions"
+                    data-tier="professional"
+                    data-price="2990"
+                    data-industry="hvac"
+                    data-product-name="HVAC Professional Package"
+                    style="width: 100%; display: block; text-align: center; margin-top: 20px;">
+                    Get Professional
+                </button>
             </div>
 
-            <!-- Full Service -->
+            <!-- Enterprise Package -->
             <div class="pricing-card scale-in">
-                <h3>Full Service</h3>
-                <div class="pricing-price">+$797</div>
+                <h3>Enterprise Package</h3>
+                <div class="pricing-price">$2,990</div>
+                <p class="pricing-description" style="margin-bottom: 10px;">+ $797 per additional workflow</p>
                 <p class="pricing-description">White-glove implementation</p>
                 <ul class="pricing-features">
-                    <li>Everything in Complete</li>
-                    <li>Full deployment by our team</li>
-                    <li>Custom integrations</li>
-                    <li>Data migration</li>
-                    <li>Ongoing optimization</li>
+                    <li>Unlimited workflows</li>
+                    <li>Advanced integrations</li>
                     <li>Dedicated support</li>
+                    <li>3-week deployment</li>
+                    <li>White-label options</li>
+                    <li>Ongoing optimization</li>
                 </ul>
-                <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="width: 100%; display: block; text-align: center; margin-top: 20px;" target="_blank">Contact Sales</a>
+                <button
+                    class="cta-button ready-solutions-button"
+                    data-flow-type="ready-solutions"
+                    data-tier="enterprise"
+                    data-price="2990"
+                    data-industry="hvac"
+                    data-product-name="HVAC Enterprise Package"
+                    style="width: 100%; display: block; text-align: center; margin-top: 20px;">
+                    Contact Sales
+                </button>
             </div>
+        </div>
+
+        <!-- Consultation CTA -->
+        <div style="text-align: center; margin-top: 60px; padding: 40px 20px; background: var(--card-bg); border-radius: 20px; border: 2px solid rgba(254, 61, 81, 0.2);">
+            <h3 style="font-size: 2rem; margin-bottom: 15px; color: var(--red);">Need Something More Complex?</h3>
+            <p style="font-size: 1.2rem; color: var(--gray-text); margin-bottom: 30px;">Book a free consultation to discuss custom automation solutions tailored to your specific needs.</p>
+            <a href="https://tidycal.com/rensto/consultation" class="cta-button" target="_blank">Book Free Consultation</a>
         </div>
     </section>
 
@@ -913,8 +949,8 @@
         <h2>Ready to Automate Your HVAC Business?</h2>
         <p>Join hundreds of HVAC businesses already saving time with Rensto.</p>
         <div>
-            <a href="https://tidycal.com/rensto/consultation" class="cta-button" target="_blank">Book Free Consultation</a>
-            <a href="#pricing" class="cta-button" style="background: transparent; border: 2px solid white;">See Pricing</a>
+            <a href="#ready-solutions" class="cta-button">See Packages</a>
+            <a href="https://tidycal.com/rensto/consultation" class="cta-button" style="background: transparent; border: 2px solid white;" target="_blank">Book Consultation</a>
         </div>
     </section>
 
@@ -1026,5 +1062,10 @@
             });
         });
     </script>
+
+    <!-- Rensto Stripe Checkout (External) -->
+    <!-- Replace YOUR-VERCEL-URL with your actual Vercel production URL after deployment -->
+    <script src="https://YOUR-VERCEL-URL/shared/stripe-core.js"></script>
+    <script src="https://YOUR-VERCEL-URL/ready-solutions/checkout.js"></script>
 </body>
 </html>
