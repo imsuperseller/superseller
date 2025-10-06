@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 4 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 9 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1215,6 +1215,40 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 14/17 (82%) - ✅ **GOOD** (improved from 71%)
 
 **Documentation**: See `docs/README.md` for directory guide and standards
+
+### **Infrastructure** (`/infra/` - 330M)
+
+**Purpose**: Infrastructure code, MCP servers, system configurations, and deployment tools
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #9)**:
+- ❌ Deleted 2 empty directories: `mcp-servers/mcp-use-server/`, `mcp-servers/ui-component-library-mcp/`
+- ✅ Created comprehensive `infra/README.md` with MCP server inventory
+- ✅ Documented 13 active MCP servers (6 local, 7 NPX/Docker)
+- ✅ Classified 11 prototype/development MCP servers with status labels
+
+**Structure**:
+- `mcp-servers/` (284M) - 22 MCP servers (13 active, 11 prototypes)
+- `logging-database/` (39M) - PostgreSQL logging system for workflows
+- `mcp-reference/` (6.7M) - Reference MCP implementations
+- `n8n-client-delivery/` (60K) - Workflow templates for customer delivery
+- `saas-frontend/` (60K) - Lead enrichment SaaS prototype (Next.js)
+- `systemd/` (12K) - systemd service configurations for VPS
+
+**Active MCP Servers** (13 total):
+- **Local (6)**: webflow (48M), make (31M), typeform (22M), boost-space (16M), quickbooks (7.6M), tidycal (7.4M)
+- **NPX/Docker (7)**: n8n-mcp, airtable-mcp, notion, stripe, supabase, context7, shadcn
+
+**Prototype Servers** (11 total):
+- airtable-mcp-server (130M), notion-mcp-server (22M), email-communication-mcp, financial-billing-mcp, analytics-reporting-mcp, stripe-mcp-server, rensto-mcp-template, mongodb-mcp-server, github-mcp-server, vercel-mcp-server, boost-space-mcp-server.js
+
+**Known Issues**:
+- ⚠️ logging-database status unclear (verify if in production)
+- ⚠️ saas-frontend may be obsolete (superseded by apps/web/rensto-site/)
+- ⚠️ Prototype MCP servers (airtable-mcp-server 130M, notion-mcp-server 22M) - consider archiving
+
+**Audit Score**: 13/17 (76%) - ✅ **GOOD** (improved from 41%)
+
+**Documentation**: See `infra/README.md` for MCP server management and setup guides
 
 ---
 
