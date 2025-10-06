@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 14 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 15 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1397,6 +1397,82 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 9/17 (53%) - ⚠️ **NEEDS IMPROVEMENT**
 
 **Documentation**: See `products/README.md` for detailed product specifications and integration status
+
+### **Scripts & Automation Tools** (`/scripts/` - 89M)
+
+**Purpose**: Operational scripts, automation tools, BMAD workflows, deployment utilities, and system maintenance scripts
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #15)**:
+- ✅ Created comprehensive `scripts/README.md` with detailed categorization
+- ✅ Deleted 2 empty subdirectories (monitoring/, scripts/)
+- ✅ Documented all 22 subdirectories with sizes and purposes
+- ⚠️ Identified 372 root-level scripts needing organization (MAJOR ISSUE)
+- ⚠️ Identified boost-space/ (13M) as largest subdirectory - needs audit
+
+**Statistics**:
+- **Total Files**: 5,645
+- **Total Size**: 89M (69M node_modules gitignored, 20M source code)
+- **Root-level Scripts**: 372 (.js, .cjs, .md) ⚠️ **NEEDS ORGANIZATION**
+- **Subdirectories**: 22 (now 20 after cleanup)
+
+**Key Subdirectories**:
+- **bmad/** (752K, 41 files) - BMAD methodology scripts ✅ Active
+- **airtable/** (532K) - Airtable automation and integration ✅ Active
+- **boost-space/** (13M) - Boost.space integration ⚠️ **LARGEST - Needs audit**
+- **utilities/** (308K) - General utility scripts ✅ Active
+- **deployment/** (152K) - Deployment automation ✅ Active
+- **business/** (108K) - Business process scripts ✅ Active
+- **root-cleanup/** (80K) - Root cleanup scripts ⚠️ Ironic - part of the mess
+- **n8n/** (48K) - n8n workflow utilities ✅ Active
+- **agents/** (48K) - AI agent scripts ✅ Active
+- **optimization/** (48K) - Performance optimization ✅ Active
+- +10 more smaller subdirectories
+
+**Root-Level Script Categories** (372 total):
+- ~50 Airtable management scripts
+- ~30 BMAD workflow scripts
+- ~20 n8n operations scripts
+- ~20 Data sync scripts
+- ~15 Customer management scripts
+- ~15 Deployment & infrastructure scripts
+- ~10 QuickBooks integration scripts
+- ~15 Testing & validation scripts
+- ~5 Security & SSH scripts
+- ~192 Miscellaneous/experimental scripts
+
+**Critical Operational Scripts** (DO NOT DELETE):
+1. `backup-n8n-workflows.js` - Backs up all n8n workflows
+2. `audit-airtable-all-bases.cjs` - Audits Airtable bases
+3. `audit-notion-airtable-sync.cjs` - Checks sync status
+4. `archive-remaining-workflows.cjs` - Archives old workflows
+5. `analyze-and-fix-workflows.js` - Workflow troubleshooting
+6. `automated-ssh-recovery-system.js` - SSH recovery automation
+7. `add-tax4us-credentials.js` - Tax4Us credential management
+8. `activate-quickbooks-integration.js` - QuickBooks setup
+
+**Known Issues**:
+- ❌ **372 root-level scripts** - Extremely difficult to navigate, needs organization
+- ⚠️ **boost-space/ (13M)** - Largest subdirectory, likely contains unnecessary files
+- ❌ **No categorization** - Mix of active, legacy, experimental scripts with no distinction
+- ⚠️ **Duplicates likely** - Multiple similar scripts with slight variations
+- ❌ **No version control** - Hard to know which scripts are current vs outdated
+
+**Action Required**:
+- [ ] **Phase 3 Project**: Complete scripts/ reorganization (1-2 weeks)
+  - Move 372 root scripts into appropriate subdirectories
+  - Archive legacy scripts to archives/scripts-YYYY-MM/
+  - Audit boost-space/ (13M) for cleanup
+  - Create category-based organization
+  - Test all critical operational scripts
+  - Update documentation
+- [ ] **Immediate**: Audit boost-space/ subdirectory (13M investigation)
+- [ ] **Optional**: Delete node_modules/ (69M) if space needed (can reinstall with npm install)
+
+**Audit Score**: 6/17 (35%) - ⚠️ **NEEDS MAJOR IMPROVEMENT**
+
+**Documentation**: See `scripts/README.md` for detailed categorization and Phase 3 reorganization plan
+
+**⚠️ WARNING**: This is the WORST-ORGANIZED folder in the codebase. DO NOT delete scripts without careful review - many may be referenced by n8n workflows, cron jobs, or other automation.
 
 ### **Operations Specifications** (`/ops/` - 20K)
 
