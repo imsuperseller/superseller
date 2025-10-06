@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
 **Last Updated**: October 5, 2025 (Night - Phase 2 Folder Audits in Progress)
-**Status**: ✅ Codebase Consolidated (26→18 folders), 10 folder audits complete, Clean Structure
+**Status**: ✅ Codebase Consolidated (26→18 folders), 11 folder audits complete, Clean Structure
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -1289,6 +1289,59 @@ All API keys stored in: `~/.cursor/mcp.json`
 **Audit Score**: 13/17 (76%) - ✅ **GOOD** (improved from 47%)
 
 **Documentation**: See `live-systems/README.md` for detailed script documentation and deployment instructions
+
+### **Marketplace Platform Configuration** (`/marketplace/` - 12K)
+
+**Purpose**: Platform-level configuration files for marketplace architecture, pricing tiers, and deployment packages
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #11)**:
+- ✅ Created comprehensive `marketplace/README.md` with detailed config documentation
+- ✅ No empty directories or files to clean up
+- ✅ Documented relationship to /products/ folder
+- ✅ Identified business model reconciliation needed
+
+**Configuration Files** (3 total):
+- `marketplace-config.json` (1.7K) - Technical architecture (frontend, backend, hosting, sales, customer mgmt)
+- `pricing-config.json` (3.6K) - Pricing tiers and bundles (4 tiers: $97-$2,997/month)
+- `deployment-packages.json` (2.0K) - Deployment options (Self-Service to White-Label: $0-$1,497)
+
+**Pricing Tiers** (4 tiers):
+- **Starter**: $97/month ($997/year) - Small businesses, 1,000 automations/month
+- **Professional**: $297/month ($2,997/year) - Growing businesses, 10,000 automations/month
+- **Enterprise**: $797/month ($7,997/year) - Large businesses, unlimited automations
+- **Custom Enterprise**: $2,997/month ($29,997/year) - Fortune 500, dedicated infrastructure
+
+**Deployment Packages** (4 options):
+- **Self-Service**: $0 (2-8 hours setup, community support, 85% success rate)
+- **Assisted Setup**: $297 (1-2 hours setup, priority support, 95% success rate)
+- **Full Service**: $797 (0 hours setup, dedicated support, 99% success rate)
+- **White-Label**: $1,497 (reseller options, 100% success rate)
+
+**Product Bundles**:
+- Email Automation Bundle: $597 (33% savings)
+- Business Process Bundle: $797 (33% savings)
+- Complete Automation Suite: $3,997 (43% savings)
+
+**Relationship to Current Business**:
+- ⚠️ **marketplace/** = Platform configs (architecture, pricing strategy, deployment)
+- ⚠️ **/products/** = Individual product catalog (8 specific products)
+- ⚠️ **Webflow marketplace** = Public-facing marketplace using both folders
+
+**Known Issues**:
+- ⚠️ Pricing tiers may not align with current 5-service-type model (Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions)
+- ⚠️ Configs created Sept 25, 2025 - may be planning documents, not active configs
+- ⚠️ Implementation status unclear (many features not yet built: Elasticsearch, review system, white-label)
+- ⚠️ Multiple pricing sources need reconciliation (marketplace/, products/, Stripe, Webflow)
+
+**Action Required**:
+- [ ] Reconcile pricing tiers with current business model in CLAUDE.md
+- [ ] Audit which features are implemented vs planned
+- [ ] Connect pricing to Stripe Price IDs
+- [ ] Sync with Webflow CMS for dynamic pricing
+
+**Audit Score**: 12/17 (71%) - ✅ **GOOD**
+
+**Documentation**: See `marketplace/README.md` for detailed config documentation and usage instructions
 
 ---
 
