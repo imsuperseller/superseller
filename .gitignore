@@ -365,3 +365,6 @@ private_key*
 *.key
 *.crt
 .env*.local
+
+# Docker runtime data (databases, logs, state)
+configs/docker/data/

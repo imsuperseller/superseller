@@ -903,8 +903,8 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | Prospects | `/Customers/prospects/` (was `/Leads/`) |
 | Projects | `/Customers/projects/` (was `/Projects/`) |
 | **Configuration & Infrastructure** | |
-| All Configs | `/configs/` (consolidated Oct 5) |
-| Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`) |
+| All Configs | `/configs/` (consolidated Oct 5, Phase 2 cleaned) |
+| Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`, ignored in git) |
 | MCP Servers | `/infra/mcp-servers/` (22 servers) |
 | MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
 | **Webflow Deployment** | |
@@ -1088,6 +1088,32 @@ All API keys stored in: `~/.cursor/mcp.json`
 
 **App Asset Locations**:
 - `apps/web/rensto-site/public/` (32KB) - Main site assets
+
+### **Configuration Management** (`/configs/` - 1.1M)
+
+**Purpose**: Centralized storage for all system, application, and infrastructure configuration files
+
+**Cleanup (Oct 5, 2025 - Phase 2 Audit #5)**:
+- ❌ Deleted 4 empty directories: `deployment/`, `mcp/`, `n8n/`, `system/`
+- ✅ Added `docker/data/` to .gitignore (584K runtime data)
+- ✅ Removed `docker/data/` from git tracking (SQLite DBs, Redis dumps, logs)
+- ✅ Verified secrets properly ignored: `.env`, `*credentials*.json`, `cloudflare-tunnel/`
+- ✅ Created comprehensive `configs/README.md`
+
+**Structure**:
+- `docker/` - Docker Compose configs (docker-compose.yml tracked, data/ ignored)
+- `cloudflare-tunnel/` - Tunnel configs (❌ NOT tracked - contains secrets)
+- `editor/` - EditorConfig, Prettier settings
+- `environment/` - .env (ignored), .webflowrc, env.example (tracked)
+
+**Security**:
+- ✅ All secrets properly ignored by .gitignore
+- ✅ Runtime data (584K) no longer tracked in git
+- ✅ Template files (.example) tracked for developer setup
+
+**Audit Score**: 14/17 (82%) - ✅ **GOOD** (improved from 35%)
+
+**Documentation**: See `configs/README.md` for detailed usage guide
 
 ---
 
