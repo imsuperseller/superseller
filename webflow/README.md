@@ -34,14 +34,34 @@ webflow/
    - Paste in "Before </body> tag"
    - Save and Publish
 
-## 📋 Files with Stripe Integration
+## 📋 Files with GitHub Scripts Integration
 
-✅ **Ready for deployment**:
+✅ **Updated to v2.0 (Oct 6, 2025)**:
 - `pages/WEBFLOW_EMBED_MARKETPLACE_CVJ.html` (v2.0) - 6 Stripe buttons
 - `pages/WEBFLOW_EMBED_SUBSCRIPTIONS_CVJ.html` (v2.0) - 3 Stripe buttons
+- **All 16 niche pages** (v2.0) - GitHub external scripts ✅
+
+**Niche Pages with v2.0** (16 total):
+1. Amazon Seller ✅
+2. Busy Mom ✅
+3. Bookkeeping ✅
+4. Dentist ✅
+5. E-commerce ✅
+6. Fence Contractor ✅
+7. HVAC ✅
+8. Insurance ✅
+9. Lawyer ✅
+10. Locksmith ✅
+11. Photographer ✅
+12. Product Supplier ✅
+13. Realtor ✅
+14. Roofer ✅
+15. Synagogue ✅
+16. Torah Teacher ✅
 
 ⏳ **Not yet integrated**:
-- All other pages (no Stripe checkout yet)
+- Service pages: Custom Solutions, Ready Solutions (need v2.0 update)
+- Content pages: About, Pricing, Help Center
 
 ## 📖 Documentation
 
@@ -129,12 +149,18 @@ webflow/
 
 ## 📊 Integration Status
 
+### **GitHub Scripts** (Oct 6, 2025):
+- ✅ **16/16 niche pages** updated with external scripts (100%)
+- ✅ **Repository**: https://github.com/imsuperseller/rensto-webflow-scripts
+- ✅ **CDN**: https://rensto-webflow-scripts.vercel.app
+- ⏳ **Deployment**: Ready to paste into Webflow Designer
+
 ### **Stripe Checkout** (9 buttons total):
 - ✅ Marketplace: 6 Stripe buttons (v2.0)
 - ✅ Subscriptions: 3 Stripe buttons (v2.0)
 - ⏳ Custom Solutions: 0 Stripe buttons (needs integration)
 - ⏳ Ready Solutions: 0 Stripe buttons (needs integration)
-- ⏳ Niche pages: 0 Stripe buttons (16 pages need integration)
+- ✅ Niche pages: Ready Solutions checkout integration (16 pages ready for Stripe buttons)
 
 ### **Typeforms**:
 - ⏳ Integration status unknown (needs audit)
