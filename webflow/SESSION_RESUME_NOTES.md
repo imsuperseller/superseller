@@ -89,6 +89,35 @@ When you restart Cursor and Claude loses context:
 
 ---
 
+## 🔧 N8N MULTI-INSTANCE SYSTEM (Oct 8, 2025)
+
+**Status**: 100% safe, Cursor restart required
+
+**3 Instances**:
+- Rensto VPS: http://173.254.201.134:5678 (68 workflows)
+- Tax4Us Cloud: https://tax4usllc.app.n8n.cloud
+- Shelly Cloud: https://shellyins.app.n8n.cloud
+
+**Safety**: ✅ 100% safe
+- Workflows never touched (only ENV vars change)
+- Credentials isolated per instance
+- Community nodes never modified
+- Versions never changed
+
+**How to Switch**:
+```bash
+cd /Users/shaifriedman/New\ Rensto/rensto/infra/n8n-multi-instance-manager
+node n8n-instance-manager.js switch n8n-customer:-tax4us
+# ⚠️ RESTART CURSOR (MCP tools need reload)
+```
+
+**Documentation**:
+- `/infra/n8n-multi-instance-manager/SAFETY_ASSESSMENT.md`
+- `/infra/n8n-multi-instance-manager/INSTANT_SWITCHING_SOLUTION.md`
+- CLAUDE.md Section 4: n8n Multi-Instance Manager
+
+---
+
 ## 📂 KEY FILE LOCATIONS
 
 ### Service Page HTML Files

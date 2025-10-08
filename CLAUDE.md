@@ -162,6 +162,56 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 2. **INT-TECH-005: n8n-Airtable-Notion Integration v1** - Data sync (needs automation)
 3. **TEST-001: BMAD Airtable Test Workflow** - Testing framework
 
+### **n8n Multi-Instance Manager** (Oct 8, 2025)
+
+**Purpose**: Safely switch between Rensto VPS and customer n8n Cloud instances
+
+**Location**: `/infra/n8n-multi-instance-manager/`
+
+**Instances** (3 total):
+| Instance | Type | URL | Status |
+|----------|------|-----|--------|
+| **Rensto VPS** | Self-hosted | http://173.254.201.134:5678 | ✅ Primary (68 workflows) |
+| **Tax4Us Cloud** | n8n Cloud | https://tax4usllc.app.n8n.cloud | ✅ Customer instance |
+| **Shelly Cloud** | n8n Cloud | https://shellyins.app.n8n.cloud | ✅ Customer instance |
+
+**Safety Status**: ✅ **100% SAFE**
+- Workflows: Never touched (switching only changes ENV vars)
+- Credentials: Isolated per instance (never copied)
+- Community Nodes: Never modified (stay on each instance)
+- Versions: Never changed (each instance maintains own version)
+
+**How It Works**:
+```bash
+# Switch to customer instance
+node n8n-instance-manager.js switch n8n-customer:-tax4us
+
+# ⚠️ REQUIRES CURSOR RESTART
+# MCP tools initialized at startup, no hot reload support
+# After restart, MCP connects to new instance
+
+# Switch back to Rensto
+node n8n-instance-manager.js switch n8n-rensto-vps
+
+# ⚠️ REQUIRES CURSOR RESTART AGAIN
+```
+
+**Recommended Workflow**:
+- Keep MCP connected to Rensto VPS (default) for 80% of work
+- Only switch to customer instances when needed for extended work
+- Use direct API calls for quick customer checks (no restart needed)
+
+**Documentation**:
+- `SAFETY_ASSESSMENT.md` - Comprehensive safety analysis (391 lines)
+- `INSTANT_SWITCHING_SOLUTION.md` - MCP limitation explanation
+- `n8n-instances.json` - Instance configuration
+
+**Built-in Safety Features**:
+- Automatic backup before switch
+- Connection validation
+- Safety guard checks (shared credentials, naming violations)
+- Emergency lockdown system
+
 ### **Airtable Bases** (11 Total)
 
 **Primary Bases**:
@@ -902,7 +952,10 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| n8n | http://173.254.201.134:5678 | API key in env |
+| **n8n Rensto VPS** | http://173.254.201.134:5678 | API key in env |
+| n8n Tax4Us Cloud | https://tax4usllc.app.n8n.cloud | API key in n8n-instances.json |
+| n8n Shelly Cloud | https://shellyins.app.n8n.cloud | API key in n8n-instances.json |
+| n8n Instance Manager | `/infra/n8n-multi-instance-manager/` | See SAFETY_ASSESSMENT.md |
 | Boost.space | https://superseller.boost.space | API key in ~/.cursor/mcp.json |
 | Airtable | https://airtable.com | PAT in env |
 | Notion | https://notion.so | Token in env |
@@ -929,6 +982,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | **Configuration & Infrastructure** | |
 | All Configs | `/configs/` (consolidated Oct 5, Phase 2 cleaned) |
 | Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`, ignored in git) |
+| n8n Multi-Instance Manager | `/infra/n8n-multi-instance-manager/` (3 instances, 100% safe) |
 | MCP Servers | `/infra/mcp-servers/` (22 servers) |
 | MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
 | **Webflow Deployment** | |
