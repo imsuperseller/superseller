@@ -1148,3 +1148,142 @@ All API keys stored in: `~/.cursor/mcp.json`
 **📄 Complete Details**: See `/webflow/BMAD_PROJECT_COMPLETION_REPORT.md` for full project overview, metrics, and remaining gaps
 
 ---
+## 19. DEPLOYMENT & SYNC MAP
+
+**Last Updated**: October 7, 2025
+**Purpose**: Track all deployments and prevent local/online divergence
+
+---
+
+### GitHub Repositories
+
+| Repo | Purpose | Deployed To | Status |
+|------|---------|-------------|--------|
+| **rensto** (main) | Documentation, apps, workflows | NOT deployed (docs only) | ✅ Clean (committed all changes) |
+| **rensto-webflow-scripts** | Webflow JavaScript modules | Vercel CDN | ✅ Auto-deploy working |
+| airtable-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified (needs review) |
+| quickbooks-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified (needs review) |
+
+**Repository URLs**:
+- Main: `https://github.com/imsuperseller/rensto`
+- Webflow Scripts: `https://github.com/imsuperseller/rensto-webflow-scripts`
+
+---
+
+### Vercel Deployments
+
+| App | Repo Source | Production URL | Status |
+|-----|-------------|----------------|--------|
+| **rensto-site** | apps/web/rensto-site/ | https://www.rensto.com (Webflow) | ✅ Live (via Webflow hosting) |
+| **admin-dashboard** | apps/web/admin-dashboard/ | https://admin.rensto.com | ✅ Deployed |
+| **webflow-scripts** | rensto-webflow-scripts | https://rensto-webflow-scripts.vercel.app | ✅ Live, auto-deploy from GitHub |
+| **API routes** | apps/web/rensto-site/api/ | https://api.rensto.com | ✅ Live (Stripe webhooks) |
+
+**Note**: Found 3 Vercel deployments for rensto-site (different hashes) - production is Webflow-hosted at www.rensto.com
+
+---
+
+### Webflow Integration
+
+| Component | Source | Deployed To | Sync Method |
+|-----------|--------|-------------|-------------|
+| **HTML Pages** | webflow/ (main repo) | Webflow Designer | Manual copy-paste |
+| **JavaScript** | rensto-webflow-scripts repo | Vercel CDN | Auto-deploy from GitHub |
+| **Script Tags** | Webflow Page Settings | Webflow pages (19 pages) | Manual update (2 lines per page) |
+
+**Script Tag Format** (example):
+```html
+<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
+<script src="https://rensto-webflow-scripts.vercel.app/marketplace/checkout.js"></script>
+```
+
+---
+
+### Sync Rules & Best Practices
+
+**✅ CORRECT Workflow**:
+
+1. **JavaScript Changes**:
+   - Edit files in `rensto-webflow-scripts/` repo
+   - Commit and push to GitHub
+   - Vercel auto-deploys in 30 seconds
+   - All 19 Webflow pages automatically load new version
+   - **NO changes needed in main repo**
+
+2. **HTML/Documentation Changes**:
+   - Edit files in `webflow/` (main repo)
+   - Commit to main repo
+   - Manually copy-paste to Webflow Designer (if needed)
+   - **NO changes needed in scripts repo**
+
+3. **Application Code Changes** (apps/, scripts/, workflows/):
+   - Edit files in main repo
+   - Commit to main repo
+   - Deploy to Vercel/VPS as needed
+   - Update CLAUDE.md if architecture changes
+
+**❌ ANTI-PATTERNS (Avoid These!)**:
+
+- ❌ **Duplicating JavaScript** between main repo and scripts repo
+- ❌ **Editing scripts locally** then forgetting to push to GitHub
+- ❌ **Editing scripts in GitHub** then forgetting to pull locally
+- ❌ **Copying documentation** between repos (reference instead)
+- ❌ **Manual updates** to multiple Webflow pages (use CDN approach)
+
+**⚠️ WARNING Signs**:
+
+- Same filename exists in both repos → **DANGER**
+- Script changes not reflected in Webflow → **Check Vercel deployment**
+- Documentation conflicts between repos → **Audit needed**
+
+---
+
+### Deployment Checklist
+
+**When deploying new features:**
+
+- [ ] Update code in appropriate repo (main or webflow-scripts)
+- [ ] Commit and push to GitHub
+- [ ] Verify auto-deploy succeeded (if Vercel-hosted)
+- [ ] Update CLAUDE.md if architecture changed
+- [ ] Update relevant documentation in main repo
+- [ ] Test in production (staging first if available)
+- [ ] Create deployment note in `/docs/audits/` if major change
+
+**Monthly Audit** (verify sync):
+
+- [ ] Check git status in both repos (should be clean)
+- [ ] Verify no duplicate files between repos
+- [ ] Run automated test suite: `node webflow/automated-test-suite.js`
+- [ ] Check Vercel deployment status
+- [ ] Review CLAUDE.md for accuracy
+
+---
+
+### Emergency Recovery
+
+**If repos diverge**:
+
+1. Identify source of truth (usually: scripts repo for JS, main repo for docs)
+2. Archive conflicting versions: `archives/conflict-YYYY-MM-DD/`
+3. Copy source of truth to correct location
+4. Delete duplicates
+5. Commit clean state
+6. Update this section with lessons learned
+
+**If deployment fails**:
+
+1. Check Vercel deployment logs
+2. Verify GitHub webhook triggered
+3. Check for build errors in Vercel dashboard
+4. Rollback to previous deployment if needed
+5. Fix issue locally and redeploy
+
+---
+
+**📄 Related Documentation**:
+- `/docs/audits/PHASE_3_CODEBASE_AUDIT.md` - Full audit report
+- `/docs/webflow/WEBFLOW_JAVASCRIPT_AUTOMATION.md` - Webflow automation details
+- `rensto-webflow-scripts/README.md` - Scripts repo documentation
+
+---
