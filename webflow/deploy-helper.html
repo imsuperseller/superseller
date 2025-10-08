@@ -217,14 +217,20 @@
         <div class="instructions">
             <h3>📋 Deployment Instructions</h3>
             <ol>
-                <li><strong>Click "Open in Webflow Designer"</strong> for each page below (or <a href="https://webflow.com/design/66c7e551a317e0e9c9f906d8" target="_blank" style="color: #667eea; font-weight: bold;">click here</a> to open manually)</li>
-                <li>In Webflow: Click <strong>Pages (left sidebar)</strong> → Select the page → <strong>Page Settings (gear icon)</strong></li>
+                <li><strong>First time?</strong> Open <a href="https://webflow.com/dashboard" target="_blank" style="color: #667eea; font-weight: bold;">Webflow Dashboard</a> in a new tab and log in</li>
+                <li>Find and click on <strong>"Rensto"</strong> site in your dashboard</li>
+                <li>Click <strong>"Open Designer"</strong> button (blue button, top right)</li>
+                <li>In Designer: Click <strong>"Pages"</strong> (left sidebar) → Select the page you're working on</li>
+                <li>Click the <strong>gear icon (Page Settings)</strong></li>
                 <li>Scroll to <strong>"Custom Code"</strong> section</li>
-                <li>In <strong>"Before &lt;/body&gt; tag"</strong> field: Click "Copy Code" button below and paste</li>
+                <li>Click <strong>"Copy Code"</strong> button below, paste in <strong>"Before &lt;/body&gt; tag"</strong> field</li>
                 <li>Click <strong>"Save"</strong> → Click <strong>"Publish"</strong> (top right)</li>
-                <li>Click <strong>"Mark as Done"</strong> button here to track progress</li>
+                <li>Come back here and click <strong>"Mark as Done"</strong></li>
             </ol>
-            <p style="margin-top: 15px; color: #d68910;"><strong>💡 Tip:</strong> If the button doesn't work, manually open Webflow Designer using the link above, then follow steps 2-6.</p>
+            <p style="margin-top: 15px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                <strong>💡 Pro Tip:</strong> Keep Webflow Designer open in one tab and this helper in another.
+                Copy the code once, then paste it into each page without switching tabs repeatedly.
+            </p>
         </div>
 
         <div id="pages-container"></div>
@@ -289,14 +295,13 @@
         }
 
         function openWebflowDesigner(slug) {
-            // Open Webflow Designer for the Rensto site
-            const siteId = '66c7e551a317e0e9c9f906d8';
-            window.open(`https://webflow.com/design/${siteId}`, '_blank');
+            // Open Webflow dashboard - most reliable approach
+            window.open('https://webflow.com/dashboard', '_blank');
 
-            // Show instructions
+            // Show detailed instructions
             setTimeout(() => {
-                alert(`Webflow Designer opened!\n\nNext steps:\n1. In Webflow: Click "Pages" (left sidebar)\n2. Find and select the "${slug}" page\n3. Click the gear icon (Page Settings)\n4. Scroll to "Custom Code" section\n5. Click "Copy Code" button here and paste in "Before </body> tag"\n6. Click "Save" then "Publish" (top right)\n7. Come back here and click "Mark as Done"`);
-            }, 500);
+                alert(`Webflow Dashboard opened!\n\nNext steps:\n\n1. Log in to Webflow (if needed)\n2. Find and click on the "Rensto" site\n3. Click "Open Designer" button\n4. In Designer: Click "Pages" (left sidebar)\n5. Find and select "${slug}" page\n6. Click gear icon (Page Settings)\n7. Scroll to "Custom Code" section\n8. Click "Copy Code" button here\n9. Paste in "Before </body> tag" field\n10. Save → Publish (top right)\n11. Come back and click "Mark as Done"`);
+            }, 800);
         }
 
         // Generate page cards
