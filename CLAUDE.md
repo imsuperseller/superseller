@@ -197,7 +197,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 7-11. **Supporting Bases**: Entities, Analytics, Integrations, RGID, Idempotency
 
 **Airtable API**:
-- **Token**: `patt[REDACTED]`
+- **Token**: `patt[REDACTED]` (stored in ~/.cursor/mcp.json and scripts use env vars)
 - **Total Records**: 867 across 124 tables
 - **Cleanup Needed**: Delete 53 empty tables, 24 duplicates
 
@@ -226,7 +226,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ### **Notion Databases** (3 Total)
 
-**API Token**: `ntn_[REDACTED]`
+**API Token**: `ntn_[REDACTED]` (stored in ~/.cursor/mcp.json and scripts use env vars)
 
 | Database | Records | Syncs With Airtable | Status |
 |----------|---------|---------------------|--------|

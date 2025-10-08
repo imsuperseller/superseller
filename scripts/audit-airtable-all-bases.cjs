@@ -2,7 +2,7 @@
 
 const https = require('https');
 
-const AIRTABLE_API_KEY = 'process.env.AIRTABLE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY'';
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY';
 
 const BASES = [
   { id: 'appQijHhqqP4z6wGe', name: 'Rensto Client Operations' },

@@ -12,13 +12,13 @@ const axios = require('axios');
 
 const BOOST_SPACE_CONFIG = {
   baseURL: 'https://superseller.boost.space',
-  apiKey: 'process.env.BOOST_SPACE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY'',
+  apiKey: process.env.BOOST_SPACE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY',
   spaceId: 2 // Using Space 2 (Public menu) for visibility
 };
 
 const AIRTABLE_CONFIG = {
   baseId: 'app6saCaH88uK3kCO', // Operations & Automation
-  apiKey: 'process.env.AIRTABLE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY''
+  apiKey: process.env.AIRTABLE_API_KEY || 'REPLACE_WITH_YOUR_API_KEY'
 };
 
 // Create API clients
