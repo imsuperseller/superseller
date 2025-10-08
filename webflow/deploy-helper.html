@@ -217,13 +217,14 @@
         <div class="instructions">
             <h3>📋 Deployment Instructions</h3>
             <ol>
-                <li><strong>Click "Open in Webflow Designer"</strong> for each page below</li>
+                <li><strong>Click "Open in Webflow Designer"</strong> for each page below (or <a href="https://webflow.com/design/66c7e551a317e0e9c9f906d8" target="_blank" style="color: #667eea; font-weight: bold;">click here</a> to open manually)</li>
                 <li>In Webflow: Click <strong>Pages (left sidebar)</strong> → Select the page → <strong>Page Settings (gear icon)</strong></li>
                 <li>Scroll to <strong>"Custom Code"</strong> section</li>
                 <li>In <strong>"Before &lt;/body&gt; tag"</strong> field: Click "Copy Code" button below and paste</li>
                 <li>Click <strong>"Save"</strong> → Click <strong>"Publish"</strong> (top right)</li>
                 <li>Click <strong>"Mark as Done"</strong> button here to track progress</li>
             </ol>
+            <p style="margin-top: 15px; color: #d68910;"><strong>💡 Tip:</strong> If the button doesn't work, manually open Webflow Designer using the link above, then follow steps 2-6.</p>
         </div>
 
         <div id="pages-container"></div>
@@ -288,9 +289,14 @@
         }
 
         function openWebflowDesigner(slug) {
-            // Open Webflow dashboard - user will need to navigate to the specific page
-            window.open('https://webflow.com/dashboard', '_blank');
-            alert(`Opening Webflow Dashboard.\n\nNext steps:\n1. Find and open the "${slug}" page\n2. Go to Page Settings → Custom Code\n3. Paste the code in "Before </body> tag"\n4. Save and Publish`);
+            // Open Webflow Designer for the Rensto site
+            const siteId = '66c7e551a317e0e9c9f906d8';
+            window.open(`https://webflow.com/design/${siteId}`, '_blank');
+
+            // Show instructions
+            setTimeout(() => {
+                alert(`Webflow Designer opened!\n\nNext steps:\n1. In Webflow: Click "Pages" (left sidebar)\n2. Find and select the "${slug}" page\n3. Click the gear icon (Page Settings)\n4. Scroll to "Custom Code" section\n5. Click "Copy Code" button here and paste in "Before </body> tag"\n6. Click "Save" then "Publish" (top right)\n7. Come back here and click "Mark as Done"`);
+            }, 500);
         }
 
         // Generate page cards
