@@ -1,0 +1,109 @@
+{
+  "createdAt": "2025-09-05T05:05:44.609Z",
+  "updatedAt": "2025-09-05T05:05:44.609Z",
+  "id": "aw5B5eNPpyaIT3mB",
+  "name": "Test JavaScript Code Execution",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        100
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "test-code",
+      "name": "Test JavaScript Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        100
+      ],
+      "parameters": {
+        "jsCode": "const execId = `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;const data = {  fields: {    'Title EN': 'Test Post Title',    'Outline': 'This is a comprehensive test outline that is definitely longer than 100 characters to pass the validation checks. The content should be sufficient to trigger the workflow.',    'Type': 'service',    'Status': 'Approved',    'Language': 'en',    'Keywords': 'test, keywords',    'Slug EN': 'test-post-slug'  }};const title = data.fields['Title EN'] || data.fields['Title HE'] || '';const outline = data.fields['Outline'] || '';const postType = data.fields['Type'] || '';const status = data.fields['Status'] || '';const language = data.fields['Language'] || 'en';const keywords = data.fields['Keywords'] || '';const slugRaw = data.fields['Slug EN'] || data.fields['Slug HE'] || title;const slug = (slugRaw || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');// Smart validation with caching logicconst tooShort = outline.trim()"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Test JavaScript Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": false,
+    "timezone": "America/New_York",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "0701711f-1f67-4f1e-b1ec-e30a91c1f12b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-05T05:05:44.610Z",
+      "updatedAt": "2025-09-05T05:05:44.610Z",
+      "role": "workflow:owner",
+      "workflowId": "aw5B5eNPpyaIT3mB",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

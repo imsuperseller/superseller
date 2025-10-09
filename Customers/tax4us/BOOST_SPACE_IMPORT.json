@@ -1,0 +1,182 @@
+{
+  "project": {
+    "name": "Tax4Us AI Agents Project",
+    "client": "Ben @ Tax4Us LLC (info@tax4us.co.il)",
+    "status": "In Progress",
+    "start_date": "2025-10-08",
+    "target_completion": "2025-10-29",
+    "priority": "High",
+    "tags": ["tax4us", "n8n", "ai-agents", "podcast", "thursday-9am-texas"]
+  },
+  "agents": [
+    {
+      "id": "agent-1",
+      "name": "WordPress Blog Content",
+      "status": "Active - Optimization Pending",
+      "workflow_id": "zQIkACTYDgaehp6S",
+      "platform": "n8n Cloud",
+      "description": "Generates blog posts from Airtable specs using Tavily research + OpenAI",
+      "optimizations_needed": [
+        "Add context7 for conversation memory",
+        "Improve research quality with n8n-mcp",
+        "Add Slack notifications",
+        "Add human approval step"
+      ]
+    },
+    {
+      "id": "agent-2",
+      "name": "WordPress Non-Blog Content",
+      "status": "Design Phase",
+      "workflow_id": "TBD",
+      "platform": "n8n Cloud",
+      "description": "Creates WordPress pages: Services, FAQs, Glossary, Case Studies with ACF fields",
+      "estimated_build_time": "6-8 hours"
+    },
+    {
+      "id": "agent-3",
+      "name": "Social Media Multi-Platform",
+      "status": "Active - Adaptation Needed",
+      "workflow_id": "GpFjZNtkwh1prsLT",
+      "platform": "n8n Cloud",
+      "description": "Generates and publishes to 7 platforms: LinkedIn, Facebook, Instagram, Twitter, TikTok, Threads, YouTube Shorts",
+      "adaptation_needed": [
+        "Change trigger from Form to Airtable",
+        "Add Hebrew content generation",
+        "Update branding for Tax4Us",
+        "Route to Tax4Us social accounts"
+      ],
+      "estimated_adaptation_time": "2-3 hours"
+    },
+    {
+      "id": "agent-4",
+      "name": "Autonomous Podcast Production",
+      "status": "Design Phase",
+      "workflow_id": "TBD",
+      "platform": "n8n Cloud",
+      "description": "COMPLETE 7-day autonomous cycle: Research → Create → Approve → Record → Publish",
+      "schedule": "LIVE THURSDAYS 9:00 AM TEXAS TIME (Central/Chicago)",
+      "phases": [
+        "Monday 10am: Research & topic selection (3 proposals) → Ben approves",
+        "Monday 2pm: Generate episode outline → Ben approves",
+        "Tuesday 10am: Write full script → Ben approves",
+        "Wednesday 10am: Generate audio with ElevenLabs (Josh voice) → Ben approves",
+        "Wednesday 2pm: Upload to Captivate.fm, schedule for Thursday 9am → Ben confirms",
+        "Thursday 9am: AUTO-PUBLISH to Apple Podcasts + Spotify",
+        "Thursday 2pm: Generate social promotion → Ben approves"
+      ],
+      "total_approvals_per_episode": 5,
+      "estimated_build_time": "10-12 hours"
+    }
+  ],
+  "schedule": {
+    "critical_deadline": "Thursday 9:00 AM Central Time (America/Chicago)",
+    "timezone": "America/Chicago (Texas)",
+    "podcast_frequency": "Weekly (every Thursday)",
+    "first_episode_target": "2025-10-31 (Thursday)"
+  },
+  "technical_stack": {
+    "platform": "n8n Cloud v1.115.1 (tax4usllc.app.n8n.cloud)",
+    "airtable": {
+      "primary_base": "appkZD1ew4aKoBqDM",
+      "total_bases": 5,
+      "api_token": "patnvGcDyEXcN6zbu.*****"
+    },
+    "ai_models": {
+      "openai": "gpt-4o, gpt-4o-mini, DALL-E 3",
+      "anthropic": "Claude 3.5 Sonnet",
+      "elevenlabs": "Multilingual v2 (Josh voice)"
+    },
+    "integrations": [
+      "WordPress (tax4us.co.il + ACF)",
+      "Captivate.fm (podcast hosting)",
+      "Slack (notifications + approvals)",
+      "Gmail (notifications)",
+      "Facebook Graph API",
+      "LinkedIn API",
+      "Tavily (research)",
+      "context7 (conversation memory)",
+      "n8n-mcp (workflow management)"
+    ]
+  },
+  "timeline": [
+    {
+      "week": 1,
+      "dates": "Oct 8-15, 2025",
+      "focus": "Setup & Agent 2",
+      "tasks": [
+        "Research & Planning (COMPLETED - Oct 8)",
+        "Agent 1 Optimization (Days 2-3)",
+        "Build Agent 2 WordPress Pages (Days 4-6)",
+        "Testing & Documentation (Day 7)"
+      ]
+    },
+    {
+      "week": 2,
+      "dates": "Oct 16-22, 2025",
+      "focus": "Agent 4 Podcast",
+      "tasks": [
+        "Podcast Research Phase (Days 1-2)",
+        "Content Creation Phase (Days 3-4)",
+        "Audio Recording Phase (Days 5-6)",
+        "Publishing & Scheduling (Day 7)"
+      ]
+    },
+    {
+      "week": 3,
+      "dates": "Oct 23-29, 2025",
+      "focus": "Agent 3 & Testing",
+      "tasks": [
+        "Social Media Adaptation (Days 1-2)",
+        "End-to-End Testing (Days 3-4)",
+        "Documentation & Training (Days 5-6)",
+        "Handoff & First Live Podcast (Day 7 - Oct 31 Thursday 9am)"
+      ]
+    }
+  ],
+  "success_metrics": {
+    "operational": {
+      "agent_uptime": "> 99%",
+      "approval_response_time": "< 4 hours",
+      "error_rate": "< 5%",
+      "content_quality_score": "> 8/10"
+    },
+    "business": {
+      "blog_posts_per_month": "8-12",
+      "podcast_episodes_per_month": 4,
+      "social_posts_per_month": "20-30",
+      "time_saved_for_ben": "20+ hours/week"
+    }
+  },
+  "communication": {
+    "slack_channels": [
+      "#ai-agents-status (real-time activity)",
+      "#ai-agents-approvals (all approval requests)",
+      "#ai-agents-errors (error notifications)",
+      "#ai-podcast-production (weekly podcast cycle)"
+    ],
+    "notification_rules": {
+      "success": "Brief message with link",
+      "approval_needed": "Interactive buttons, 24-hour timeout",
+      "error": "Detailed error + retry count",
+      "daily_summary": "6pm Texas time"
+    }
+  },
+  "documentation": {
+    "master_plan": "/Customers/Tax4Us/TAX4US_PROJECT_PLAN.md (450+ lines)",
+    "links": {
+      "website": "https://tax4us.co.il",
+      "n8n": "https://tax4usllc.app.n8n.cloud",
+      "airtable": "https://airtable.com/appkZD1ew4aKoBqDM",
+      "captivate": "https://docs.captivate.fm"
+    }
+  },
+  "notes": [
+    "CRITICAL: Podcast episodes MUST go live Thursdays 9:00 AM Texas time",
+    "All agents require human approval (Ben) before publishing",
+    "Slack is primary notification channel (Gmail as backup)",
+    "context7 integration for conversation memory across all agents",
+    "ElevenLabs voice: 'Josh' (authoritative, clear for tax/finance)",
+    "WordPress ACF v5.11+ for custom fields in pages",
+    "Captivate.fm auto-distributes to Apple Podcasts + Spotify"
+  ]
+}

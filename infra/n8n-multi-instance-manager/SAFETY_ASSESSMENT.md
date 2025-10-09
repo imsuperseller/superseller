@@ -22,6 +22,8 @@ switchEnvironment(instance) {
 
   // ✅ Updates MCP configuration
   updateMCPConfig(instance);
+  // NOTE: Bug fixed Oct 8, 2025 - now properly updates ~/.cursor/mcp.json
+  // Previously was updating wrong file, causing MCP to stay on old instance
 
   // ❌ NEVER touches actual workflows on instances
   // ❌ NEVER moves data between instances
@@ -30,6 +32,8 @@ switchEnvironment(instance) {
 ```
 
 **Result**: Your 68 Rensto workflows stay on Rensto VPS. Customer workflows stay on customer cloud. Forever.
+
+**⚠️ Important Note (Oct 8, 2025)**: A critical bug in `updateMCPConfig()` was fixed today. It was updating the wrong file, so MCP wasn't actually switching. This is now fixed - MCP properly updates `~/.cursor/mcp.json` and switches after Cursor restart.
 
 ---
 

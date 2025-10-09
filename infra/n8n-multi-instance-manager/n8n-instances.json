@@ -1,0 +1,73 @@
+{
+  "instances": {
+    "n8n-rensto-vps": {
+      "id": "n8n-rensto-vps",
+      "name": "Rensto VPS",
+      "type": "vps",
+      "url": "http://173.254.201.134:5678",
+      "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "credentials": {
+        "airtable": "airtable-token",
+        "notion": "notion-token",
+        "stripe": "stripe-secret",
+        "openai": "openai-key"
+      },
+      "safety": {
+        "backupBeforeSwitch": true,
+        "validateConnection": false,
+        "isolationMode": true
+      },
+      "metadata": {
+        "created": "2025-01-27T10:00:00.000Z",
+        "lastUsed": "2025-10-08T17:12:19.891Z",
+        "workflowCount": 0
+      }
+    },
+    "n8n-customer:-tax4us": {
+      "id": "n8n-customer:-tax4us",
+      "name": "Customer: Tax4Us",
+      "type": "cloud",
+      "url": "https://tax4usllc.app.n8n.cloud",
+      "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw",
+      "credentials": {},
+      "safety": {
+        "backupBeforeSwitch": true,
+        "validateConnection": true,
+        "isolationMode": true
+      },
+      "metadata": {
+        "created": "2025-10-08T17:09:20.087Z",
+        "lastUsed": "2025-10-08T23:46:52.587Z",
+        "workflowCount": 0
+      },
+      "customer": {
+        "name": "Tax4Us",
+        "setupDate": "2025-10-08T17:09:20.089Z"
+      }
+    },
+    "n8n-customer:-shelly": {
+      "id": "n8n-customer:-shelly",
+      "name": "Customer: Shelly",
+      "type": "cloud",
+      "url": "https://shellyins.app.n8n.cloud",
+      "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNjUxZWNkZS04Yzc5LTRiMTktYjEzMC04NTJiY2VkYWViY2YiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NDk1MDk3fQ.pDpDBUrHJCiPh1xaaq0p9PmRoGp-i36hiR_Ld_EhtZc",
+      "credentials": {},
+      "safety": {
+        "backupBeforeSwitch": true,
+        "validateConnection": true,
+        "isolationMode": true
+      },
+      "metadata": {
+        "created": "2025-10-08T17:10:54.889Z",
+        "lastUsed": "2025-10-08T17:12:19.704Z",
+        "workflowCount": 0
+      },
+      "customer": {
+        "name": "Shelly",
+        "setupDate": "2025-10-08T17:10:54.890Z"
+      }
+    }
+  },
+  "current": "n8n-customer:-tax4us",
+  "lastBackup": null
+}

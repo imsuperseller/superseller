@@ -1,0 +1,275 @@
+{
+  "createdAt": "2025-09-01T07:45:36.915Z",
+  "updatedAt": "2025-09-01T07:49:05.000Z",
+  "id": "uKHB1oi3z86kSZkz",
+  "name": "Create Multi-Speaker Podcasts with Google Sheets, ElevenLabs v3, and Drive",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9eb580fe-7b75-4d15-92a9-19877abd3a50",
+      "name": "When clicking \u2018Execute workflow\u2019",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        720,
+        176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "name": "=podcast_{{$now.format('yyyyLLddHHmm')}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1J7_S0zPgUukmKWJglMepvf429vfQsidL",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1J7_S0zPgUukmKWJglMepvf429vfQsidL",
+          "cachedResultName": "Elevenlabs"
+        },
+        "options": {}
+      },
+      "id": "4f58a82a-c01d-4f4e-9d79-8569d3c52400",
+      "name": "Upload file",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1616,
+        176
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "E44ohvNvsZZqzm7D",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and transform the structure\nconst transformedItems = [];\n\nfor (const item of $input.all()) {\n  // Create the new structure with text and voice_id fields\n  transformedItems.push({\n    text: item.json.Input,\n    voice_id: item.json[\"Voice ID\"]\n  });\n}\n\n// Store the result in a variable\nconst result = transformedItems;\n\nreturn [{ json: { podcast: result } }];"
+      },
+      "id": "989198ac-709c-442f-b3e8-dca8c6c3d4b0",
+      "name": "Prepare dialogue",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1168,
+        176
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "### Tips\n\nNon-speech audio events examples:\n \nEmotions:\n[happy]\u2003[excited]\u2003[sad]\u2003[angry]\u2003[nervous]\u2003[curious]\u2003[mischievously]\u2003[serious]\u2003[sorrowful]\n\nSpeech Styles / Volume:\n[whispers]\u2003[whispering]\u2003[shouts]\u2003[shouting]\u2003[speaking softly]\u2003[slowly]\u2003[quickly]\u2003[pause]\n\nNonverbal reactions:\n[laughs]\u2003[laughing]\u2003[sighs]\u2003[crying]\u2003[clears throat]\u2003[gulps]\u2003[gasp]\u2003[coughs]\n\nSound/ambient effects:\n[clapping]\u2003[explosion]\u2003[gunshot]\u2003[door creaks]\u2003[bird chirping]",
+        "height": 448,
+        "width": 320,
+        "color": 6
+      },
+      "id": "3d20ed34-a6c2-4bfc-881a-37c5457e9deb",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1392,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Generate Mutlispeaker podcast with Elevenlabs v3\n\nThe ElevenLabs Text to Dialogue API creates natural sounding expressive dialogue from text using the [Eleven v3 model](https://try.elevenlabs.io/ahkbf00hocnu). Popular use cases include:\n- Generating pitch perfect conversations for video games\n- Creating immersive dialogue for podcasts and other audio content\n- Bring audiobooks to life with expressive narration\n\nThe Eleven v3 model allows the use of non-speech audio events to influence the delivery of the dialogue. This is done by inserting the audio events into the text input wrapped in square brackets.",
+        "height": 272,
+        "width": 688,
+        "color": 3
+      },
+      "id": "357c0a82-616e-4b6f-9e64-c2bebcaa320b",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### PRELIMINARY STEP \n- Clone this [sheet](https://docs.google.com/spreadsheets/d/1eB8iUQmhj3xJMpGam_slCS0ivtgTUpbcWAqeutG_HM8/edit?usp=sharing)\n- [Create a FREE account on Elevenlabs](https://try.elevenlabs.io/ahkbf00hocnu) and Set the voice_id by Elevenlabs about speakers (column B)\n- Write the dialogue text for each speaker (column C)\n- Speaker name is optional (column A)\n- Set the \"Auth Header\" in \"Generate podcast\" node. Name 'xi-api-key', Value 'API_KEY'\n",
+        "width": 688
+      },
+      "id": "bda15b17-1cf9-43f0-b2fa-c959f743b002",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        512
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkZD1ew4aKoBqDM",
+          "mode": "list",
+          "cachedResultName": "Tax4US Ops",
+          "cachedResultUrl": "https://airtable.com/appkZD1ew4aKoBqDM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "c53d556c-1f14-4aed-af0a-bddb8241206b",
+      "name": "Get dialogue from Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        944,
+        176
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "XLvXlq3ygEbknytQ",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "ZT9u07TYPVl83ejeLakq",
+          "mode": "id"
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "id": "ae47c472-511d-4029-addd-ad66df26c846",
+      "name": "Generate podcast with ElevenLabs",
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        176
+      ],
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "aPN5bt5OkSAOdI8D",
+          "name": "ElevenLabs account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Prepare dialogue": {
+      "main": [
+        [
+          {
+            "node": "Generate podcast with ElevenLabs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \u2018Execute workflow\u2019": {
+      "main": [
+        [
+          {
+            "node": "Get dialogue from Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get dialogue from Airtable": {
+      "main": [
+        [
+          {
+            "node": "Prepare dialogue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate podcast with ElevenLabs": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "meta": {
+    "templateId": "7883",
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "60f1976a-d252-4299-9ed3-8c5acfa60afe",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-01T07:45:36.920Z",
+      "updatedAt": "2025-09-01T07:45:36.920Z",
+      "role": "workflow:owner",
+      "workflowId": "uKHB1oi3z86kSZkz",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

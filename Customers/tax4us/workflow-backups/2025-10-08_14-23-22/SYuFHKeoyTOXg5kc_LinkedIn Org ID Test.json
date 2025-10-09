@@ -1,0 +1,114 @@
+{
+  "createdAt": "2025-09-12T02:10:36.641Z",
+  "updatedAt": "2025-09-12T02:10:36.641Z",
+  "id": "SYuFHKeoyTOXg5kc",
+  "name": "LinkedIn Org ID Test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        240,
+        300
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "organization",
+        "operation": "getAll",
+        "returnAll": false,
+        "limit": 1
+      },
+      "id": "linkedin-get-orgs",
+      "name": "Get LinkedIn Organizations",
+      "type": "n8n-nodes-base.linkedIn",
+      "position": [
+        460,
+        300
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "VILSGV6OlF9iTslj",
+          "name": "LinkedIn account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get LinkedIn Organizations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "b169f79d-19ac-468b-991a-56f205be75ff",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-12T02:10:36.643Z",
+      "updatedAt": "2025-09-12T02:10:36.643Z",
+      "role": "workflow:owner",
+      "workflowId": "SYuFHKeoyTOXg5kc",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

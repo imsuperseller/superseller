@@ -1,0 +1,256 @@
+{
+  "createdAt": "2025-10-08T16:36:17.727Z",
+  "updatedAt": "2025-10-08T16:49:18.000Z",
+  "id": "rzbeFUVdjMROkMDN",
+  "name": "WP REST Connectivity",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "103579c4-e17f-4899-b930-546b4838aff1",
+      "name": "When clicking \u2018Execute workflow\u2019"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f7ee9f74-ce70-48f2-a776-03f2dc93c375",
+              "name": "base_url",
+              "value": "https://www.tax4us.co.il",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0ed8054b-6358-49cc-8ea6-9e7972731456",
+      "name": "Set Base URL"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Set Base URL').item.json.base_url }}/wp-json/wp/v2/users/me",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7473d54a-4961-478d-a49f-9427cd44acbe",
+      "name": "USERS/ME",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Set Base URL').item.json.base_url }}/wp-json/wp/v2/pages?per_page=5",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "a0136652-7d93-4b5f-b6ce-306523277fc3",
+      "name": "PAGES LIST",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Set Base URL').item.json.base_url }}/wp-json/wp/v2/pages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"title\": \"n8n connectivity test\", \"content\": \"<p>ok</p>\", \"status\": \"draft\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "703f57b6-90ea-46d3-bbef-035638f8c6b3",
+      "name": "CREATE DRAFT PAGE",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking \u2018Execute workflow\u2019": {
+      "main": [
+        [
+          {
+            "node": "Set Base URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Base URL": {
+      "main": [
+        [
+          {
+            "node": "USERS/ME",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "USERS/ME": {
+      "main": [
+        [
+          {
+            "node": "PAGES LIST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PAGES LIST": {
+      "main": [
+        [
+          {
+            "node": "CREATE DRAFT PAGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "95754f7f-1eaf-4030-9d12-8a79fd147ac4",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-08T16:36:17.730Z",
+      "updatedAt": "2025-10-08T16:36:17.730Z",
+      "role": "workflow:owner",
+      "workflowId": "rzbeFUVdjMROkMDN",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

@@ -180,6 +180,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - Credentials: Isolated per instance (never copied)
 - Community Nodes: Never modified (stay on each instance)
 - Versions: Never changed (each instance maintains own version)
+- **Oct 8, 2025, 6:45 PM Update**: Fixed critical bug - now properly updates `~/.cursor/mcp.json` (was updating wrong file)
 
 **How It Works**:
 ```bash

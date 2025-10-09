@@ -1,0 +1,14 @@
+{
+  "n8n": {
+    "apiUrl": "https://tax4usllc.app.n8n.cloud",
+    "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw",
+    "instanceType": "cloud",
+    "instanceId": "n8n-customer:-tax4us"
+  },
+  "credentials": {},
+  "safety": {
+    "backupBeforeSwitch": true,
+    "validateConnection": true,
+    "isolationMode": true
+  }
+}

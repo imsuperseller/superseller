@@ -1,0 +1,570 @@
+{
+  "createdAt": "2025-09-01T06:47:15.575Z",
+  "updatedAt": "2025-09-01T06:48:54.000Z",
+  "id": "Glouz1nIJzgMY5Bm",
+  "name": "Automate Content Generator for WordPress",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b47a4eae-a678-46e3-a203-6e6609110598",
+      "name": "When clicking \u2018Test workflow\u2019",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1008,
+        1344
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e8d2523-66aa-46fe-adcc-39dc78b9161e",
+              "name": "prompt",
+              "type": "string",
+              "value": "={{ $json.PROMPT }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4e9a5db-fdc2-4270-bbb2-b0c2ab2dbb2c",
+      "name": "Set your prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -560,
+        1344
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.message.content }}",
+        "additionalFields": {
+          "content": "={{ $('Generate article with DeepSeek').item.json.message.content }}",
+          "status": "draft"
+        }
+      },
+      "id": "35445c2d-a093-4e3d-95dd-c9ef223fcb35",
+      "name": "Create post on Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        112,
+        1344
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOURSITE.com/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename=\"copertina-{{ $('Create post on Wordpress').item.json.id }}.jpg\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "93af6fba-8ce0-4c8b-88d2-11fcc8f33b2d",
+      "name": "Upload image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        560,
+        1344
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://wp.test.7hype.com/wp-json/wp/v2/posts/{{ $('Create post on Wordpress').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "featured_media",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f8782cf-5e06-4bac-940e-2cbd014016cb",
+      "name": "Set Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        784,
+        1344
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Target\nThis workflow is designed to automatically generate seo-friendly content for wordpress through DeepSeek R1 by giving input ideas on how to structure the article. A cover image is also generated and uploaded with OpenAI DALL-E 3. This flow is designed to be executed automatically (ad \"On a schedule\" node) and thus have a complete editorial plan.\n\nThis process is useful for blog managers who want to automate content creation and publishing.\n\n## Preliminary step\nCreate a google sheet with the following columns:\n- Date\n- Prompt\n- Title\n- Post ID\n\nFill in only the \"Prompt\" column with basic ideas that DeepSeek will work on to generate the content.",
+        "height": 380,
+        "width": 800,
+        "color": 3
+      },
+      "id": "13c6e153-e58c-4668-a850-640cc0474bed",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1040,
+        2288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Connect with your Google Sheet. This node select only rows for which no content has been generated yet in WordPress",
+        "height": 260
+      },
+      "id": "ff56bba2-69fe-4d81-93f4-0a3dfa815cc2",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -848,
+        2752
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "=deepseek-reasoner"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an SEO expert, write an article based on this topic:\n{{ $json.prompt }}\n\nInstructions:\n- In the introduction, introduce the topic that will be explored in the rest of the text\n- The introduction should be about 120 words\n- The conclusions should be about 120 words\n- Use the conclusions to summarize everything said in the article and offer a conclusion to the reader\n- Write a maximum of 4-5 chapters and argue them.\n- The chapters should follow a logical flow and not repeat the same concepts.\n- The chapters should be related to each other and not isolated blocks of text. The text should flow and follow a linear logic.\n- Do not start chapters with \"Chapter 1\", \"Chapter 2\", \"Chapter 3\" ... write only the chapter title\n- For the text, use HTML for formatting, but limit yourself to bold, italics, paragraphs and lists.\n- Don't put the output in ```html but only text\n- Don't use markdown for formatting.\n- Go deeper into the topic you're talking about, don't just throw superficial information there\n- In output I want only the HTML format"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 2048
+        }
+      },
+      "id": "4b235df4-fd11-49fc-a744-5288c16f11e7",
+      "name": "Generate article with DeepSeek",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -336,
+        1344
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "=deepseek-reasoner"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an SEO Copywriter and you need to think of a title of maximum 60 characters for the following article:\n{{ $json.message.content }}\n\nInstructions:\n- Use keywords contained in the article\n- Do not use any HTML characters\n- Output only the string containing the title.\n- Do not use quotation marks. The only special characters allowed are \":\" and \",\""
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 2048
+        }
+      },
+      "id": "bbd02b6c-a726-499b-851f-7b11d9e6566c",
+      "name": "Generate title with DeepSeek",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -112,
+        1344
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Add your DeepSeek API credential. If you want you can change the model with \"deepseek-chat\"",
+        "height": 260,
+        "width": 420
+      },
+      "id": "8af4c9ae-5cdb-49f0-ab17-18c35bd9153b",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -386,
+        1244
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Add your WordPress API credential\n",
+        "height": 260,
+        "width": 160
+      },
+      "id": "10b4bb16-3e46-4900-ba78-c8cca7fe8106",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        1244
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Generate a real photographic image used as a cover for a blog post:\n\nImage prompt:\n{{ $('Generate title with DeepSeek').item.json.message.content }}, photography, realistic, sigma 85mm f/1.4",
+        "options": {
+          "size": "1792x1024",
+          "style": "natural"
+        }
+      },
+      "id": "db125850-8502-48ce-a7b6-91ecea437cc2",
+      "name": "Generate Image with DALL-E",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        336,
+        1344
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Add your OpenAI API credential\n",
+        "height": 260,
+        "width": 160
+      },
+      "id": "6f0793fb-389e-49e6-af93-86fc657d590c",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        1244
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Upload the image on your WordPress via APIs\n",
+        "height": 260,
+        "width": 180
+      },
+      "id": "678e839c-8411-4b4b-8964-95112fed87ec",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        518,
+        1244
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Set the uploaded image with the newly created article\n",
+        "height": 260,
+        "width": 180
+      },
+      "id": "6c26b780-8d6e-47cf-bdb2-71f681e21466",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        742,
+        1244
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkZD1ew4aKoBqDM",
+          "mode": "list",
+          "cachedResultName": "Tax4US Ops",
+          "cachedResultUrl": "https://airtable.com/appkZD1ew4aKoBqDM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "filterByFormula": "NOT({Post ID})",
+        "options": {
+          "fields": [
+            "Date",
+            "Prompt",
+            "Title",
+            "Post ID"
+          ]
+        }
+      },
+      "id": "adce9373-7f2d-4c96-a8ca-d866d571ea07",
+      "name": "Get Ideas from Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -784,
+        1344
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "XLvXlq3ygEbknytQ",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appkZD1ew4aKoBqDM",
+          "mode": "list",
+          "cachedResultName": "Tax4US Ops",
+          "cachedResultUrl": "https://airtable.com/appkZD1ew4aKoBqDM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Record ID": "={{ $('Get Ideas from Airtable').item.json.id }}",
+            "Title": "={{ $('Generate title with DeepSeek').item.json.message.content }}",
+            "Post ID": "={{ $('Create post on Wordpress').item.json.id }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "1d317d7c-196a-49ff-b782-6fddb747c120",
+      "name": "Update Airtable Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        1344
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "XLvXlq3ygEbknytQ",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Set Image": {
+      "main": [
+        [
+          {
+            "node": "Update Airtable Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload image": {
+      "main": [
+        [
+          {
+            "node": "Set Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set your prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate article with DeepSeek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create post on Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Generate Image with DALL-E",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image with DALL-E": {
+      "main": [
+        [
+          {
+            "node": "Upload image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate title with DeepSeek": {
+      "main": [
+        [
+          {
+            "node": "Create post on Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate article with DeepSeek": {
+      "main": [
+        [
+          {
+            "node": "Generate title with DeepSeek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \u2018Test workflow\u2019": {
+      "main": [
+        [
+          {
+            "node": "Get Ideas from Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ideas from Airtable": {
+      "main": [
+        [
+          {
+            "node": "Set your prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7fa45c31-7530-44d5-bdd6-070475855038",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-01T06:47:15.580Z",
+      "updatedAt": "2025-09-01T06:47:15.580Z",
+      "role": "workflow:owner",
+      "workflowId": "Glouz1nIJzgMY5Bm",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

@@ -1,0 +1,867 @@
+{
+  "createdAt": "2025-09-01T06:43:06.849Z",
+  "updatedAt": "2025-09-01T06:45:28.000Z",
+  "id": "xNUZXFvbp7kKI1El",
+  "name": "Easy WordPress Content Creation from PDF Docs + Human in the Loop Gmail",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Upload PDF and Extract Text",
+        "height": 319,
+        "width": 461,
+        "color": 4
+      },
+      "id": "48a0962f-38eb-47a4-af1b-833b0a4a5339",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1417.5,
+        2801
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Create Blog Post",
+        "height": 452,
+        "width": 649,
+        "color": 5
+      },
+      "id": "e6217106-2624-4392-a1d6-df34cbc0bbe7",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1835.5,
+        2876
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "pdf",
+        "formTitle": "PDF2Blog",
+        "formDescription": "Transform PDFs into captivating blog posts",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload PDF File",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bcb49a1f-e2dc-429a-8247-e92237af017e",
+      "name": "Upload PDF",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [
+        1488,
+        2960
+      ],
+      "webhookId": "6c4a4180-7206-469f-a645-f41824ccbf42",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Upload_PDF_File",
+        "options": {}
+      },
+      "id": "617c881b-7995-4daa-a788-ab2ea18d1624",
+      "name": "Extract Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        1712,
+        2960
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseFormat": "text"
+        }
+      },
+      "id": "9a0ffb3e-7120-405b-b48d-b89e163063af",
+      "name": "gpt-4o-mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2008,
+        3184
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://image.pollinations.ai/prompt/{{ $('Get Blog Post').item.json.title }} and avoid adding text and keep the image vibrant.",
+        "options": {}
+      },
+      "id": "87f7eef2-1b6f-4500-95c8-f1b4a7d8bc55",
+      "name": "pollinations.ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3408,
+        3056
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "title": "={{ $('Get Blog Post').item.json.title }}",
+        "additionalFields": {
+          "content": "={{ $('Get Blog Post').item.json.content }}",
+          "status": "draft"
+        }
+      },
+      "id": "de4dd539-b2b6-4b18-861e-80a75a0a1c10",
+      "name": "Create Wordpress Post",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        3184,
+        3056
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://[YOUR-WORDPRESS-SITE.com]/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename=\"cover-image-{{ $('Create Wordpress Post').item.json.id }}.jpeg\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "fe921c4d-5f92-4635-b64a-1620ee9672fa",
+      "name": "Upload Image to Wordpress",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3632,
+        2912
+      ],
+      "typeVersion": 4.2,
+      "alwaysOutputData": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https:/[YOUR-WORDPRESS-SITE.com]/wp-json/wp/v2/posts/{{ $('Create Wordpress Post').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "featured_media",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f2a1073a-9a75-44f6-8b12-2857b8790a7e",
+      "name": "Set Image on Wordpress Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3856,
+        2912
+      ],
+      "typeVersion": 4.2,
+      "alwaysOutputData": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "GjqU4oaqFsD4KT0i",
+          "name": "Wordpress account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Create Wordpress Post and Add New Image\nhttps://docs.n8n.io/integrations/builtin/credentials/wordpress/",
+        "height": 521,
+        "width": 1146,
+        "color": 6
+      },
+      "id": "695c87cc-44b6-4c52-b3b6-ec651cd3518c",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2995,
+        2695
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Create Post Image\nhttps://pollinations.ai/\nhttps://image.pollinations.ai/prompt/[your image description]",
+        "height": 340,
+        "width": 300,
+        "color": 7
+      },
+      "id": "e943a5b7-e6d6-4f23-97a2-5837b83cf321",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3306,
+        2876
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "aaf83c73-65f3-4a88-87f3-25b1acaf93ef",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.title }}",
+              "rightValue": ""
+            },
+            {
+              "id": "d9af5bce-f0fb-4c20-8b6a-b01a3bf3e1d1",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.content }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "37a36171-6cc1-4a49-86a1-3897fa2973f3",
+      "name": "Is there Title & Content?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2512,
+        2960
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "1dc940b1-18d6-4b15-8f78-df375c9b76a0",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        4304,
+        3056
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "html": "={{ $('Get Blog Post').item.json.content }}",
+        "destinationKey": "markdown",
+        "options": {}
+      },
+      "id": "a14a144d-1c7d-4bfc-9ef2-386c35413694",
+      "name": "Markdown",
+      "type": "n8n-nodes-base.markdown",
+      "position": [
+        4080,
+        2912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "joe@example.com",
+        "subject": "=Approval Required for \"{{ $json.title }}\"",
+        "message": "={{ $json.content }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 45,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "id": "aa027076-8225-41a3-aa70-e3892069f82a",
+      "name": "Human In The Loop Approve Blog Post",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        2736,
+        3056
+      ],
+      "webhookId": "48f44283-5f68-4d7a-a2d2-a42209d35032",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IcCnuN7tSKdtbOGM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## \ud83d\udcab\ud83e\udd29 New - Human In The Loop",
+        "height": 340,
+        "width": 400,
+        "color": 4
+      },
+      "id": "8df028a2-6710-4696-996e-5198bbae7f32",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2584,
+        2876
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "316594d7-7ff6-4e39-bea3-45a11b9e750f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b2fa5fb-0fc5-4b3d-bcae-2ae95a157755",
+      "name": "Is Approved?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2960,
+        3056
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "sendTo": "joe@example.com",
+        "subject": "={{ $('Get Blog Post').item.json.title }}",
+        "message": "={{ $('Get Blog Post').item.json.content }}",
+        "options": {}
+      },
+      "id": "a8835651-ef17-4fa1-8314-dae20977042d",
+      "name": "Gmail Final Blog",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        4528,
+        3056
+      ],
+      "webhookId": "07692f3b-4e21-42d3-92dd-3dce5df3112f",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IcCnuN7tSKdtbOGM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## \ud83c\udfaf Description\n\nThis n8n workflow automates the process of transforming PDF documents into engaging, SEO-friendly WordPress blog posts. It incorporates AI-powered text analysis, automatic image generation, and a human review step to ensure quality before publishing.\n\n## \ud83d\ude80 How It Works\n\n### \ud83d\uddc2\ufe0f PDF Upload & Text Extraction  \n- Users upload a PDF document through a form trigger.  \n- The workflow extracts text from the uploaded file, ensuring compatibility with supported formats.\n\n### \ud83e\udd16 AI-Powered Blog Post Generation  \n- The extracted text is analyzed by an AI model (GPT-based) to create a structured blog post.  \n- The AI generates:  \n  - A captivating SEO-friendly title.  \n  - Well-formatted HTML content, including an introduction, chapters with subheadings, and a conclusion.\n\n### \ud83c\udfa8 Image Creation & Integration  \n- An image is generated using **Pollinations.ai** based on the blog post title.  \n- The vibrant image is uploaded to WordPress and set as the featured image for the post.\n\n### \ud83d\udcdd WordPress Draft Creation  \n- A draft blog post is created on WordPress with the AI-generated title, content, and featured image.  \n\n### \u2705 Human-in-the-Loop Approval  \n- The draft content is sent via Gmail to a reviewer for manual approval.  \n- If approved, the post is published on WordPress. If not, an error message is sent for troubleshooting.\n\n### \ud83d\udce2 Multi-Channel Notifications  \n- Once published, notifications are sent via Gmail and Telegram to relevant stakeholders.  \n\n## \ud83d\udd27 Setup Steps\n\n### \ud83d\udd11 Configure API Credentials  \n1. Set up API connections for:  \n   - OpenAI (for AI content generation).  \n   - WordPress (for post creation and media uploads).  \n   - Gmail (for sending approval emails).  \n   - Telegram (for notifications).  \n\n### \u2699\ufe0f Customize Workflow Parameters  \n2. Adjust the AI prompt to match your desired blog structure and tone.  \n3. Modify the image generation parameters to align with your branding needs.\n\n### \ud83e\uddea Test & Deploy  \n3. Test the workflow with sample PDFs to ensure:  \n   - Accurate text extraction.  \n   - Proper formatting of generated content.  \n   - Seamless approval and publishing processes.  \n\n\nThis workflow streamlines content creation while maintaining quality control through human oversight, making it an ideal solution for efficient blog management! \ud83c\udf89\n",
+        "height": 1420,
+        "width": 680,
+        "color": 7
+      },
+      "id": "cd11c6b6-322e-428b-8d1e-7820b9041efd",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1328,
+        4336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# \ud83d\udcc4\u2728 Easy WordPress Content Creation from PDF Document + Human in the Loop with Gmail Approval",
+        "height": 1700,
+        "width": 2520
+      },
+      "id": "7ba4b5d7-90c6-4a51-99a9-967fdb0957cf",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1796,
+        1660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the HTML content from the previous node\nconst htmlContent = $input.first().json.text;\n\n// Use regex to extract the text between the first h1 tags\nconst titleRegex = /<h1>(.*?)<\\/h1>/s;\nconst match = htmlContent.match(titleRegex);\n\n// Extract the title or set to empty string if not found\nconst title = match ? match[1] : '';\n\n// Return the extracted title\nreturn [{\n  json: {\n    title: title,\n    content: htmlContent\n  }\n}];"
+      },
+      "id": "4c2fd54e-5f61-42d7-8fb9-c33e49cfc49b",
+      "name": "Get Blog Post",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2288,
+        2960
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Analyze the provided PDF article and create a compelling blog post. Follow these specifications:  \n\n## Title Requirements \n- Create an engaging, SEO-friendly title under 10 words \n- Must not contain a colon \n- Should capture the article's essence \n- Will be formatted as an H1 in the content  \n\n## Content Structure \n- Introduction (150-200 words)   \n  * Compelling hook   \n  * Topic context and importance   \n  * Preview of main points  \n- Main Content (6-8 chapters)   \n  * Each chapter requires:     \n    - Relevant H2 heading     \n    - 300-400 words of unique content     \n    - Specific topic focus     \n    - Source material quotes/data     \n    - Smooth transitions  \n    - Conclusion (200-250 words)   \n  * Key takeaways   \n  * Final thoughts/implications  \n\n## Formatting Guidelines \n- Use proper HTML tags throughout \n- Structure with <p> tags for paragraphs \n- Include appropriate spacing \n- Use <blockquote> for direct quotes \n- Maintain consistent formatting \n- Write in clear, professional tone \n- Break up long paragraphs \n- Use engaging subheadings \n- Include transitional phrases  \n\nThe content should be original, avoid direct copying, and maintain a consistent voice throughout. \nOnly return the bolg post and avoid any preamble or further explanation."
+            }
+          ]
+        }
+      },
+      "id": "84976d9d-817d-4504-baec-1136e2ef9f76",
+      "name": "Write Blog Post",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1936,
+        2960
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "705b3973-6653-4b66-8641-b323e1cdfeb7",
+      "name": "Get Base64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        3632,
+        3200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expiration",
+              "value": "600"
+            },
+            {
+              "name": "key",
+              "value": "[your-imbgg-api-key-here]"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $json.data }}"
+            },
+            {
+              "name": "name",
+              "value": "="
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "34676ad7-e53e-4a31-b360-b53a30071581",
+      "name": "Save Image to imgbb.com",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3856,
+        3200
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Save Image to imgbb\nhttps://api.imgbb.com/",
+        "height": 300,
+        "width": 560,
+        "color": 7
+      },
+      "id": "30b1cab3-b450-4eb8-8b00-7495a4c96621",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3512,
+        3060
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#general"
+        },
+        "text": "Error: Failed to generate blog post from PDF. Please check the uploaded file and try again.",
+        "otherOptions": {
+          "sendAsUser": "PDF2Blog Bot"
+        }
+      },
+      "id": "9e39ae6e-3faa-48d6-ade5-409b0f731e69",
+      "name": "Send Error Message to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2736,
+        2864
+      ],
+      "webhookId": "d2e10302-a91c-49d9-ac95-a0f6ab85cb96"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#general"
+        },
+        "text": "=New blog post published: {{ $('Get Blog Post').item.json.title }}",
+        "otherOptions": {
+          "sendAsUser": "PDF2Blog Bot"
+        }
+      },
+      "id": "e6da611a-f720-4a53-93e3-b2cf28caf581",
+      "name": "Slack Blog Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        4528,
+        2864
+      ],
+      "webhookId": "c8ca4359-f255-4d05-8c59-5a61f48b176c"
+    }
+  ],
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Gmail Final Blog",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack Blog Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Base64": {
+      "main": [
+        [
+          {
+            "node": "Save Image to imgbb.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Write Blog Post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text": {
+      "main": [
+        [
+          {
+            "node": "Write Blog Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Approved?": {
+      "main": [
+        [
+          {
+            "node": "Create Wordpress Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Blog Post": {
+      "main": [
+        [
+          {
+            "node": "Is there Title & Content?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Blog Post": {
+      "main": [
+        [
+          {
+            "node": "Get Blog Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pollinations.ai": {
+      "main": [
+        [
+          {
+            "node": "Upload Image to Wordpress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Get Base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Wordpress Post": {
+      "main": [
+        [
+          {
+            "node": "pollinations.ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is there Title & Content?": {
+      "main": [
+        [
+          {
+            "node": "Human In The Loop Approve Blog Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Message to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image to Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Set Image on Wordpress Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Image on Wordpress Post": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human In The Loop Approve Blog Post": {
+      "main": [
+        [
+          {
+            "node": "Is Approved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ce945686-e3d9-47df-86d2-383d99b80ff8",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-01T06:43:06.852Z",
+      "updatedAt": "2025-09-01T06:43:06.852Z",
+      "role": "workflow:owner",
+      "workflowId": "xNUZXFvbp7kKI1El",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

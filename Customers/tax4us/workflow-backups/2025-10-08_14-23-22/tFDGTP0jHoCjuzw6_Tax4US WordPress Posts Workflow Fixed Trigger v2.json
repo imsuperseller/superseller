@@ -1,0 +1,135 @@
+{
+  "createdAt": "2025-09-05T05:08:22.522Z",
+  "updatedAt": "2025-09-05T05:08:22.522Z",
+  "id": "tFDGTP0jHoCjuzw6",
+  "name": "Tax4US WordPress Posts Workflow (Fixed Trigger v2)",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "airtable-trigger",
+      "name": "Airtable: Monitor Content_Specs",
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        576
+      ],
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "appkZD1ew4aKoBqDM",
+          "mode": "id"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "tbloWUmXIuBQXa1YQ",
+          "mode": "id"
+        },
+        "triggerField": "Updated At",
+        "additionalFields": {}
+      },
+      "credentials": {
+        "airtableTokenApi": "XLvXlq3ygEbknytQ"
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "smart-prefilter",
+      "name": "Code: Smart Prefilter with Caching",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        576
+      ],
+      "parameters": {
+        "jsCode": "const execId = `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;const data = $input.item.json;const title = data.fields['Title EN'] || data.fields['Title HE'] || '';const outline = data.fields['Outline'] || '';const postType = data.fields['Type'] || '';const status = data.fields['Status'] || '';const language = data.fields['Language'] || 'en';const keywords = data.fields['Keywords'] || '';const slugRaw = data.fields['Slug EN'] || data.fields['Slug HE'] || title;const slug = (slugRaw || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');// Smart validation with caching logicconst tooShort = outline.trim().length < 100 || title.trim().length < 10;const missingType = !postType || postType === '';const notApproved = status !== 'Approved';const notPostType = postType !== 'blog_post' && postType !== 'service' && postType !== 'faq' && postType !== 'glossary' && postType !== 'case_study';// Check if already processed (basic caching) - WP_Posts is a linked reco"
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Airtable: Monitor Content_Specs": {
+      "main": [
+        [
+          {
+            "node": "Code: Smart Prefilter with Caching",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": false,
+    "timezone": "America/New_York",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "49ecdd45-749e-4a65-ab74-a249e8362a81",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-05T05:08:22.524Z",
+      "updatedAt": "2025-09-05T05:08:22.524Z",
+      "role": "workflow:owner",
+      "workflowId": "tFDGTP0jHoCjuzw6",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-08T17:49:15.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-08",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}
