@@ -1,0 +1,675 @@
+{
+  "createdAt": "2025-10-08T20:07:43.684Z",
+  "updatedAt": "2025-10-09T06:00:49.000Z",
+  "id": "3HrunP4OmMNNdNq7",
+  "name": "WF: WordPress Pages - ACF Content Generator",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "320fa55d-48c7-41f2-9e9c-19ea8f3d07ff",
+              "leftValue": "={{ $json.fields['Status'] }}",
+              "rightValue": "Ready for Draft",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "285cd3c8-e76b-4c14-bf13-9190633caafc",
+              "leftValue": "={{ $json.fields['Type'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dc098284-a631-4a60-9b10-d81f4d795cf0",
+      "name": "IF: Should Process?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        240,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $credentials.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"command\": \"LRANGE\", \"args\": [\"tax4us:pages:history\", \"0\", \"19\"]}",
+        "options": {}
+      },
+      "id": "d176ef5b-0e84-471c-a536-cb888426cbe5",
+      "name": "context7: Fetch Page History",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        464,
+        72
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "erMNgELVc3Ftj3Td",
+          "name": "upload post api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({api_key: $credentials.apiKey, query: $json.fields['Title'] + ' tax information', search_depth: 'basic', max_results: 5}) }}",
+        "options": {}
+      },
+      "id": "cb273a8b-4534-4d33-8c08-06f281902e89",
+      "name": "Tavily: Research Topic",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        688,
+        72
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LFS4VZVE8X06q4BK",
+          "name": "Tavily API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst content = $input.item.json.choices[0].message.content;\nconst contentType = $('Airtable Trigger').item.json.fields['Type'];\nconst title = $('Airtable Trigger').item.json.fields['Title'];\n\n// Parse OpenAI JSON response (if JSON format)\nlet acfFields = {};\ntry {\n  const parsed = JSON.parse(content);\n  acfFields = parsed;\n} catch (e) {\n  // If not JSON, structure as simple content\n  acfFields = {\n    content_html: content\n  };\n}\n\nreturn {\n  title,\n  content_type: contentType,\n  acf_fields: acfFields,\n  slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),\n  record_id: $('Airtable Trigger').item.json.id\n};\n"
+      },
+      "id": "e9d2b512-7bfb-490d-b12a-38ca5ed7c053",
+      "name": "Code: Build ACF Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C07MB9G6FLF",
+          "mode": "id"
+        },
+        "text": "={{ '\ud83d\udd35 WordPress Page Ready for Review\\n\\n\ud83d\udcc4 Type: ' + $json.content_type + '\\n\ud83d\udcdd Title: ' + $json.title + '\\n\ud83d\udd17 Slug: tax4us.co.il/' + $json.slug + '\\n\\n' + JSON.stringify($json.acf_fields, null, 2).substring(0, 500) + '...\\n\\n\ud83d\udc49 Reply APPROVE to publish' }}",
+        "otherOptions": {}
+      },
+      "id": "210452d4-60fa-4d38-87ff-ba40d431b633",
+      "name": "Slack: Send Preview",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        72
+      ],
+      "webhookId": "a9cd8027-4a52-4448-8dc5-1c3eb058267e",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Sz76YrXU9gwVGCpF",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "id": "82ed6d77-d839-47b2-8372-7e3d9176a62d",
+      "name": "Wait: Approval (24h)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1712,
+        72
+      ],
+      "webhookId": "46343374-0ce0-4a0e-a4c8-c2cdec4ff4fd"
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/pages?slug=' + $('Code: Build ACF Payload').item.json.slug }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "id": "3275fdfb-400a-4607-86e1-fd0fc3a39d02",
+      "name": "HTTP: Check Page Exists",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1936,
+        72
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a6f442d6-2729-4a23-a169-930f033e5dab",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a4d87fc5-ae8c-40f6-a504-1a033df5cdd6",
+      "name": "IF: Page Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        72
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tax4us.co.il/wp-json/wp/v2/pages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({title: $('Code: Build ACF Payload').item.json.title, slug: $('Code: Build ACF Payload').item.json.slug, status: 'publish', content: ''}) }}",
+        "options": {}
+      },
+      "id": "6b2a861b-f47d-4a20-ba3a-7fd928d7c567",
+      "name": "HTTP: Create WordPress Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2384,
+        0
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/pages/' + $json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({acf: $('Code: Build ACF Payload').item.json.acf_fields}) }}",
+        "options": {}
+      },
+      "id": "b4146eeb-4a00-43c8-9b28-4c86df19ce45",
+      "name": "HTTP: Update ACF Fields",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2608,
+        72
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "cNCucoQyAubbPq4N",
+          "name": "Tax4US WP (AppPwd)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appkZD1ew4aKoBqDM",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloWUmXIuBQXa1YQ",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Published",
+            "URL": "={{ 'https://tax4us.co.il/' + $('Code: Build ACF Payload').item.json.slug }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "891b3c57-0de0-40cf-af2e-7dcad23fc852",
+      "name": "Airtable: Update Published",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        72
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "XLvXlq3ygEbknytQ",
+          "name": "Tax4Us Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $credentials.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({command: 'LPUSH', args: ['tax4us:pages:history', $('Code: Build ACF Payload').item.json.title]}) }}",
+        "options": {}
+      },
+      "id": "aca64fa4-e1ed-4191-a484-22672b5eec20",
+      "name": "context7: Save Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3056,
+        72
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "erMNgELVc3Ftj3Td",
+          "name": "upload post api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C07MB9G6FLF",
+          "mode": "id"
+        },
+        "text": "={{ '\u2705 WordPress Page Published!\\n\\n\ud83d\udcc4 ' + $('Code: Build ACF Payload').item.json.title + '\\n\ud83d\udd17 https://tax4us.co.il/' + $('Code: Build ACF Payload').item.json.slug }}",
+        "otherOptions": {}
+      },
+      "id": "6c9fd66f-23aa-4d30-95d7-536bffc58691",
+      "name": "Slack: Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        3280,
+        72
+      ],
+      "webhookId": "d2b6027e-7886-4d67-b2c6-a1edcf9e30ce",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Sz76YrXU9gwVGCpF",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "appkZD1ew4aKoBqDM"
+        },
+        "tableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "tbloWUmXIuBQXa1YQ"
+        },
+        "triggerField": "Status",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        72
+      ],
+      "id": "05929f8b-0f03-4f20-8fa4-4daae0774f58",
+      "name": "Airtable Trigger",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "XLvXlq3ygEbknytQ",
+          "name": "Tax4Us Airtable"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        72
+      ],
+      "id": "b48c4c19-c908-4364-9516-d55c2f0f5f48",
+      "name": "Generate Page Content"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        984,
+        296
+      ],
+      "id": "c4e1595f-89db-4aac-bb47-d9ee0a37b8b2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "IVfkaQOIs6jCRdyu",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "IF: Should Process?": {
+      "main": [
+        [
+          {
+            "node": "context7: Fetch Page History",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "context7: Fetch Page History": {
+      "main": [
+        [
+          {
+            "node": "Tavily: Research Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily: Research Topic": {
+      "main": [
+        [
+          {
+            "node": "Generate Page Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Build ACF Payload": {
+      "main": [
+        [
+          {
+            "node": "Slack: Send Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack: Send Preview": {
+      "main": [
+        [
+          {
+            "node": "Wait: Approval (24h)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait: Approval (24h)": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Check Page Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Check Page Exists": {
+      "main": [
+        [
+          {
+            "node": "IF: Page Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Page Exists?": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update ACF Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP: Create WordPress Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Create WordPress Page": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update ACF Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Update ACF Fields": {
+      "main": [
+        [
+          {
+            "node": "Airtable: Update Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable: Update Published": {
+      "main": [
+        [
+          {
+            "node": "context7: Save Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "context7: Save Page": {
+      "main": [
+        [
+          {
+            "node": "Slack: Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF: Should Process?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Page Content": {
+      "main": [
+        [
+          {
+            "node": "Code: Build ACF Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Page Content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "errorWorkflow": "TXGZxyglHWOSKvxt"
+  },
+  "staticData": {
+    "node:Airtable Trigger": {
+      "lastTimeChecked": "2025-10-09T06:00:50Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "bc574a96-53d1-4621-ae11-8f0838482b42",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-08T20:07:43.686Z",
+      "updatedAt": "2025-10-08T20:07:43.686Z",
+      "role": "workflow:owner",
+      "workflowId": "3HrunP4OmMNNdNq7",
+      "projectId": "Rs5Pee22xfDdJV5k",
+      "project": {
+        "createdAt": "2025-08-05T21:39:55.834Z",
+        "updatedAt": "2025-08-05T21:39:58.285Z",
+        "id": "Rs5Pee22xfDdJV5k",
+        "name": "Tax4US LLC <info@tax4us.co.il>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-08-05T21:39:55.834Z",
+            "updatedAt": "2025-08-05T21:39:55.834Z",
+            "userId": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+            "projectId": "Rs5Pee22xfDdJV5k",
+            "user": {
+              "createdAt": "2025-08-05T21:39:54.392Z",
+              "updatedAt": "2025-10-09T05:06:55.000Z",
+              "id": "7b60f61d-7d1d-4980-ad53-b9c952e613a1",
+              "email": "info@tax4us.co.il",
+              "firstName": "Tax4US",
+              "lastName": "LLC",
+              "personalizationAnswers": null,
+              "settings": {
+                "userActivated": true,
+                "firstSuccessfulWorkflowId": "mMqcQdZH16A9OQ2I",
+                "userActivatedAt": 1754437746263,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1756111474246
+                },
+                "easyAIWorkflowOnboarded": true
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-10-09",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": []
+}

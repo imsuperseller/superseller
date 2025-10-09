@@ -1,0 +1,53 @@
+---
+description: Rules for building and managing n8n workflows for Tax4Us customer
+globs: ["**/*.json", "Customers/tax4us/**"]
+alwaysApply: false
+---
+
+# n8n Workflow Development Rules
+
+## Core Principles
+1. **Execute tools silently** - No commentary during tool execution
+2. **Parallel execution** - Use parallel tool calls for independent operations
+3. **Template-first approach** - Search existing templates before building from scratch
+4. **Multi-level validation** - Validate nodes AND entire workflow structure
+5. **Never trust defaults** - Always explicitly set all node parameters
+
+## Workflow Process
+1. Start with `tools_documentation` to understand available tools
+2. Use `search_templates` or `list_node_templates` to find existing patterns
+3. Use `search_nodes` to discover nodes by functionality
+4. Use `get_node_essentials` for quick property reference
+5. Use `validate_node_operation` before adding nodes
+6. Use `validate_workflow` before deployment
+7. Use `n8n_autofix_workflow` to fix common errors
+
+## Rensto Project Rules
+- **Default Instance**: Rensto VPS (http://173.254.201.134:5678)
+- **68 Rensto Workflows**: Internal operations, customer templates, testing
+- **Customer Workflows**: Export from customer instances, work locally, re-import
+- **Naming Convention**:
+  - Rensto: `INT-`, `SUB-`, `MKT-`, `DEV-` prefixes
+  - Customer: `WF: [Agent Name] - [Purpose]`
+
+## Node Configuration Best Practices
+- Always use `typeVersion: 1` for Airtable nodes (v2 causes errors)
+- Include `authentication` parameter explicitly
+- Use `{"__rl": true, "mode": "id", "value": "..."}` format for resource selectors
+- Set `onError: "continueRegularOutput"` for error handling
+- Include position coordinates for visual layout
+
+## Validation Checklist
+- [ ] All trigger nodes have proper configuration
+- [ ] All credentials are set correctly
+- [ ] All required parameters are filled
+- [ ] Workflow has proper error handling
+- [ ] Connections are valid (no cycles)
+- [ ] Expressions use correct syntax ({{...}})
+- [ ] Node names are descriptive
+
+## Never Do
+- Don't use typeVersion 2 for Airtable nodes
+- Don't skip validation before deployment
+- Don't assume default values are correct
+- Don't create duplicate workflows (check existing first)

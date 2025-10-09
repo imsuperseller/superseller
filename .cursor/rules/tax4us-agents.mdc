@@ -1,0 +1,80 @@
+---
+description: Rules for Tax4Us 4 AI agent workflows (exported JSON files)
+globs: ["Customers/tax4us/**/*.json", "Customers/tax4us/**/*.md"]
+alwaysApply: false
+---
+
+# Tax4Us Agent System Rules
+
+**Note**: These workflows are exported from Tax4Us Cloud (https://tax4usllc.app.n8n.cloud).
+Work on them locally, then re-import to customer instance.
+
+## Agent 1: Blog Master (zQIkACTYDgaehp6S)
+- 21 nodes total
+- **Key nodes**: Airtable Trigger, context7 Fetch/Save, Tavily Research, OpenAI Generate
+- **Memory system**: context7 (tax4us:blog:history)
+- **Approval flow**: Slack approval with 24-hour timeout
+- **Last execution**: Oct 9, 2025 03:46 AM (SUCCESS)
+- **Status**: ✅ Production-ready and actively executing
+
+## Agent 2: WordPress Pages (3HrunP4OmMNNdNq7)
+- 16 nodes total
+- **Key nodes**: Airtable Trigger, WordPress ACF API
+- **Content types**: Services, FAQs, Glossary, Case Studies
+- **Status**: Active, no executions yet
+- **ACF Fields**: Uses Advanced Custom Fields for structured content
+
+## Agent 3: Social Media (GpFjZNtkwh1prsLT)
+- 39 nodes total
+- **Key nodes**: Form Trigger, LangChain AI Agents (4), SerpAPI
+- **Platforms**: LinkedIn, Facebook (bilingual - Hebrew + English)
+- **Last execution**: Oct 8, 2025 12:21 PM (SUCCESS)
+- **Note**: Some errors on Oct 8, needs investigation
+- **Special**: Uses AI agent architecture with 4 sub-agents
+
+## Agent 4: Podcast Pipeline (GGDoM591l7Pg2fST)
+- 29 nodes total
+- **Key nodes**: Webhook Trigger, ElevenLabs TTS, Captivate API
+- **Schedule**: Thursdays 9:00 AM Texas time
+- **Status**: Active, scheduled (no runs yet)
+- **Voice**: ElevenLabs "Josh" voice
+- **Critical**: Auto-publish on Thursdays - NO manual intervention
+
+## Common Patterns Across Agents
+- All use Airtable base: appkZD1ew4aKoBqDM
+- All have Slack notifications
+- All use OpenAI gpt-4o for content generation
+- All implement approval workflows
+- All use context7 for memory/deduplication
+
+## Airtable Tables Used
+- **Content_Specs** (tbloWUmXIuBQXa1YQ): Used by Agents 1 & 2
+- **Social_Posts**: Used by Agent 3
+- **Podcasts**: Used by Agent 4
+
+## Critical Credentials (Tax4Us Instance)
+- **Airtable**: Tax4Us Airtable (XLvXlq3ygEbknytQ)
+- **WordPress**: Wordpress account (GjqU4oaqFsD4KT0i)
+- **OpenAI**: OpenAi account (IVfkaQOIs6jCRdyu)
+- **Slack**: Slack OAuth2 API (Sz76YrXU9gwVGCpF)
+- **context7**: upload post api (erMNgELVc3Ftj3Td)
+
+## Workflow Naming Convention
+Format: `WF: [Agent Purpose] - [Specific Function]`
+Examples:
+- `WF: Blog Master - AI Content Pipeline`
+- `WF: WordPress Pages - ACF Content Generator`
+- `WF: Podcast Producer - Content Pipeline`
+
+## Error Handling Strategy
+1. All nodes set to `"onError": "continueRegularOutput"`
+2. Slack notifications on failures
+3. Airtable status updates on errors
+4. No workflow should completely fail - partial execution is OK
+
+## Testing Protocol
+- Always test on inactive copy first
+- Verify credentials before activation
+- Check Airtable connections
+- Test webhook URLs
+- Validate context7 memory keys

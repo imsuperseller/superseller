@@ -1,6 +1,6 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 6, 2025 (Phase 2.5 Reality Check COMPLETE!)
+**Last Updated**: October 9, 2025 (MCP Configuration Fixed)
 **Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
@@ -162,56 +162,13 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 2. **INT-TECH-005: n8n-Airtable-Notion Integration v1** - Data sync (needs automation)
 3. **TEST-001: BMAD Airtable Test Workflow** - Testing framework
 
-### **n8n Multi-Instance Manager** (Oct 8, 2025)
+### **Customer n8n Instances**
 
-**Purpose**: Safely switch between Rensto VPS and customer n8n Cloud instances
+**Rensto manages customer workflows on separate n8n Cloud instances**:
+- **Tax4Us Cloud**: https://tax4usllc.app.n8n.cloud (4 AI agent workflows)
+- **Shelly Cloud**: https://shellyins.app.n8n.cloud
 
-**Location**: `/infra/n8n-multi-instance-manager/`
-
-**Instances** (3 total):
-| Instance | Type | URL | Status |
-|----------|------|-----|--------|
-| **Rensto VPS** | Self-hosted | http://173.254.201.134:5678 | ✅ Primary (68 workflows) |
-| **Tax4Us Cloud** | n8n Cloud | https://tax4usllc.app.n8n.cloud | ✅ Customer instance |
-| **Shelly Cloud** | n8n Cloud | https://shellyins.app.n8n.cloud | ✅ Customer instance |
-
-**Safety Status**: ✅ **100% SAFE**
-- Workflows: Never touched (switching only changes ENV vars)
-- Credentials: Isolated per instance (never copied)
-- Community Nodes: Never modified (stay on each instance)
-- Versions: Never changed (each instance maintains own version)
-- **Oct 8, 2025, 6:45 PM Update**: Fixed critical bug - now properly updates `~/.cursor/mcp.json` (was updating wrong file)
-
-**How It Works**:
-```bash
-# Switch to customer instance
-node n8n-instance-manager.js switch n8n-customer:-tax4us
-
-# ⚠️ REQUIRES CURSOR RESTART
-# MCP tools initialized at startup, no hot reload support
-# After restart, MCP connects to new instance
-
-# Switch back to Rensto
-node n8n-instance-manager.js switch n8n-rensto-vps
-
-# ⚠️ REQUIRES CURSOR RESTART AGAIN
-```
-
-**Recommended Workflow**:
-- Keep MCP connected to Rensto VPS (default) for 80% of work
-- Only switch to customer instances when needed for extended work
-- Use direct API calls for quick customer checks (no restart needed)
-
-**Documentation**:
-- `SAFETY_ASSESSMENT.md` - Comprehensive safety analysis (391 lines)
-- `INSTANT_SWITCHING_SOLUTION.md` - MCP limitation explanation
-- `n8n-instances.json` - Instance configuration
-
-**Built-in Safety Features**:
-- Automatic backup before switch
-- Connection validation
-- Safety guard checks (shared credentials, naming violations)
-- Emergency lockdown system
+**Access Method**: Use direct n8n REST API calls with customer instance API keys
 
 ### **Airtable Bases** (11 Total)
 
@@ -219,7 +176,7 @@ node n8n-instance-manager.js switch n8n-rensto-vps
 1. **Operations & Automation** (app6saCaH88uK3kCO) - 185 records
    - n8n Workflows (0) ⚠️ **Empty by design - awaits customer instances**
    - Note: Rensto's 68 internal workflows are in Boost.space Space 45, not Airtable. This table is for CUSTOMER workflows (Tax4Us, Shelly) - Priority 3 work.
-   - MCP Servers (17)
+   - MCP Servers (12)
    - n8n Credentials (36)
    - n8n Nodes (36)
    - Integrations (5)
@@ -545,7 +502,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 4. **BMAD Methodology**: Framework operational, used across all projects
 5. **Airtable Infrastructure**: 11 bases with 867 records (needs cleanup)
 6. **Notion Integration**: 3 databases accessible, needs sync automation
-7. **MCP Servers**: 17+ configured (Airtable, Notion, QuickBooks, Typeform, Make, etc.)
+7. **MCP Servers**: 12 configured (n8n, Airtable, Notion, QuickBooks, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn)
 8. **Webflow Website**: ✅ LIVE - 19 pages with GitHub auto-deploy Stripe checkout (Oct 7, 2025)
 
 ### **⚠️ PARTIALLY IMPLEMENTED**
@@ -903,20 +860,19 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 ### **Integrations**
 
-**MCP Servers** (17 Configured):
-1. Airtable MCP
-2. Notion MCP
-3. QuickBooks MCP
-4. Typeform MCP
-5. Make MCP
-6. Stripe MCP (referenced, not fully connected)
-7. OpenAI MCP
-8. Anthropic MCP
-9. Apify MCP
-10. TidyCal MCP
-11. Hyperise MCP (to be replaced)
-12. eSignatures MCP (not implemented)
-13. +5 more
+**MCP Servers** (12 Configured):
+1. n8n MCP (Docker-based)
+2. Airtable MCP
+3. Notion MCP
+4. QuickBooks MCP
+5. Typeform MCP
+6. Make MCP
+7. Stripe MCP (Docker-based)
+8. TidyCal MCP
+9. Supabase MCP
+10. Webflow MCP
+11. Boost.space MCP
+12. Shadcn MCP
 
 **APIs Used**:
 - OpenAI (GPT-4o, Whisper, TTS)
@@ -953,10 +909,9 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| **n8n Rensto VPS** | http://173.254.201.134:5678 | API key in env |
-| n8n Tax4Us Cloud | https://tax4usllc.app.n8n.cloud | API key in n8n-instances.json |
-| n8n Shelly Cloud | https://shellyins.app.n8n.cloud | API key in n8n-instances.json |
-| n8n Instance Manager | `/infra/n8n-multi-instance-manager/` | See SAFETY_ASSESSMENT.md |
+| **n8n Rensto VPS** | http://173.254.201.134:5678 | API key in ~/.cursor/mcp.json |
+| n8n Tax4Us Cloud | https://tax4usllc.app.n8n.cloud | Use direct API calls with customer key |
+| n8n Shelly Cloud | https://shellyins.app.n8n.cloud | Use direct API calls with customer key |
 | Boost.space | https://superseller.boost.space | API key in ~/.cursor/mcp.json |
 | Airtable | https://airtable.com | PAT in env |
 | Notion | https://notion.so | Token in env |
@@ -983,8 +938,8 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | **Configuration & Infrastructure** | |
 | All Configs | `/configs/` (consolidated Oct 5, Phase 2 cleaned) |
 | Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`, ignored in git) |
-| n8n Multi-Instance Manager | `/infra/n8n-multi-instance-manager/` (3 instances, 100% safe) |
-| MCP Servers | `/infra/mcp-servers/` (22 servers) |
+| MCP Servers | `/infra/mcp-servers/` (12 active) |
+| MCP Docker Cleanup Script | `/.cursor/scripts/mcp-docker-cleanup.sh` |
 | MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
 | **Webflow Deployment** | |
 | Webflow Pages | `/webflow/pages/` (23 HTML files, Stripe-integrated) |
