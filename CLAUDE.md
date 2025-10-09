@@ -176,7 +176,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 1. **Operations & Automation** (app6saCaH88uK3kCO) - 185 records
    - n8n Workflows (0) ⚠️ **Empty by design - awaits customer instances**
    - Note: Rensto's 68 internal workflows are in Boost.space Space 45, not Airtable. This table is for CUSTOMER workflows (Tax4Us, Shelly) - Priority 3 work.
-   - MCP Servers (12)
+   - MCP Servers (11 active, 1 disabled)
    - n8n Credentials (36)
    - n8n Nodes (36)
    - Integrations (5)
@@ -502,7 +502,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 4. **BMAD Methodology**: Framework operational, used across all projects
 5. **Airtable Infrastructure**: 11 bases with 867 records (needs cleanup)
 6. **Notion Integration**: 3 databases accessible, needs sync automation
-7. **MCP Servers**: 12 configured (n8n, Airtable, Notion, QuickBooks, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn)
+7. **MCP Servers**: 11 active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn) + 1 disabled (QuickBooks - needs Node.js wrapper)
 8. **Webflow Website**: ✅ LIVE - 19 pages with GitHub auto-deploy Stripe checkout (Oct 7, 2025)
 
 ### **⚠️ PARTIALLY IMPLEMENTED**
@@ -765,7 +765,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 │    - Income                     • Customer C - Custom        │
 │    - Expenses                   ...                          │
 │    - Invoices                   n8n Status: ✅ All healthy   │
-│  • Integrations                 MCP Servers: ✅ 17 connected │
+│  • Integrations                 MCP Servers: ✅ 11 active │
 │    - MCP Servers                Airtable Sync: ✅ 15 min ago │
 │    - APIs                       ...                          │
 │  • Affiliates                                                │
@@ -860,19 +860,23 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 ### **Integrations**
 
-**MCP Servers** (12 Configured):
+**MCP Servers** (11 Active, 1 Disabled):
+
+**Active Servers**:
 1. n8n MCP (Docker-based)
 2. Airtable MCP
 3. Notion MCP
-4. QuickBooks MCP
-5. Typeform MCP
-6. Make MCP
-7. Stripe MCP (Docker-based)
-8. TidyCal MCP
-9. Supabase MCP
-10. Webflow MCP
-11. Boost.space MCP
-12. Shadcn MCP
+4. Typeform MCP
+5. Make MCP
+6. Stripe MCP (Docker-based)
+7. TidyCal MCP
+8. Supabase MCP
+9. Webflow MCP
+10. Boost.space MCP
+11. Shadcn MCP
+
+**Disabled Servers**:
+- **QuickBooks MCP**: ⚠️ Temporarily disabled (needs Node.js MCP wrapper). OAuth credentials preserved in `~/.cursor/mcp.json` for future implementation. Use existing OAuth scripts in `/scripts/` for now.
 
 **APIs Used**:
 - OpenAI (GPT-4o, Whisper, TTS)
@@ -938,7 +942,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | **Configuration & Infrastructure** | |
 | All Configs | `/configs/` (consolidated Oct 5, Phase 2 cleaned) |
 | Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`, ignored in git) |
-| MCP Servers | `/infra/mcp-servers/` (12 active) |
+| MCP Servers | `/infra/mcp-servers/` (11 active, 1 disabled) |
 | MCP Docker Cleanup Script | `/.cursor/scripts/mcp-docker-cleanup.sh` |
 | MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
 | **Webflow Deployment** | |

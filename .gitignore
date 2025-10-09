@@ -372,3 +372,4 @@ configs/docker/data/
 # SQLite database files (generated/temporary)
 data/*.db
 data/*.db-*
+.cursor/mcp.json

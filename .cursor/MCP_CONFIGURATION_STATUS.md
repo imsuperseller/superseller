@@ -1,24 +1,25 @@
 # MCP Server Configuration Status
 
-**Last Updated**: October 9, 2025, 2:30 AM
-**Status**: ✅ FIXED - All 12 servers configured correctly
+**Last Updated**: October 9, 2025, 3:00 AM
+**Status**: ✅ OPERATIONAL - 11 servers active (QuickBooks temporarily disabled)
 
 ---
 
 ## 🎯 **Executive Summary**
 
-MCP (Model Context Protocol) servers provide Claude Code with direct access to external services like n8n, Airtable, Notion, and more. As of October 9, 2025, all 12 MCP servers are properly configured with valid API keys.
+MCP (Model Context Protocol) servers provide Claude Code with direct access to external services like n8n, Airtable, Notion, and more. As of October 9, 2025, 11 MCP servers are active and properly configured.
 
 **Fixed Issues**:
 - ✅ n8n API key updated (was truncated)
 - ✅ TidyCal API key added (was placeholder)
 - ✅ Context7 removed (not needed for workflow nodes)
 - ✅ Docker container cleanup script created
+- ✅ QuickBooks temporarily disabled (needs Node.js MCP wrapper)
 - ✅ CLAUDE.md updated with accurate status
 
 ---
 
-## 📊 **MCP Servers Overview** (12 Total)
+## 📊 **MCP Servers Overview** (11 Active, 1 Disabled)
 
 ### **Docker-Based Servers** (2)
 
@@ -46,13 +47,20 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 | Server | Location | Status | Purpose |
 |--------|----------|--------|---------|
 | **webflow-mcp** | infra/mcp-servers/webflow-mcp-server/ | ✅ Configured | Webflow site management |
-| **quickbooks-mcp** | infra/mcp-servers/quickbooks-mcp-server/ | ✅ Configured | QuickBooks accounting integration |
 | **make-mcp** | infra/mcp-servers/make-mcp-server/ | ✅ Configured | Make.com workflow automation |
 | **typeform-mcp** | infra/mcp-servers/typeform-mcp-server/ | ✅ Configured | Typeform API (5 forms) |
 | **tidycal-mcp** | infra/mcp-servers/tidycal-mcp-server/ | ✅ Configured | TidyCal scheduling API |
 | **boost-space-mcp** | infra/mcp-servers/boost-space-mcp-server/ | ✅ Configured | Boost.space (110 infrastructure records) |
 
 **Note**: Local servers require Node.js runtime, must be in correct directory.
+
+### **Disabled Servers** (1)
+
+| Server | Location | Status | Reason |
+|--------|----------|--------|--------|
+| **quickbooks-mcp** | infra/mcp-servers/quickbooks-mcp-server/ | ⚠️ **DISABLED** | Needs Node.js MCP wrapper (current directory contains Java-based CData project) |
+
+**Note**: QuickBooks OAuth credentials preserved in mcp.json for future implementation. Use existing OAuth scripts in `/scripts/` for now.
 
 ---
 
@@ -202,6 +210,11 @@ bash /.cursor/scripts/mcp-docker-cleanup.sh
 
 ## 📝 **Change Log**
 
+### October 9, 2025, 3:00 AM
+- ✅ Temporarily disabled QuickBooks MCP (needs Node.js wrapper)
+- ✅ Updated MCP count (12 → 11 active)
+- ✅ Preserved QuickBooks OAuth credentials for future implementation
+
 ### October 9, 2025, 2:30 AM
 - ✅ Fixed n8n MCP API key (was truncated)
 - ✅ Added TidyCal API key (was placeholder)
@@ -227,7 +240,7 @@ bash /.cursor/scripts/mcp-docker-cleanup.sh
 
 **Immediate** (Required):
 1. ⚠️ **RESTART CURSOR** - MCP servers initialize at startup
-2. Run `/mcp` command to verify all 12 servers connect
+2. Run `/mcp` command to verify all 11 active servers connect
 3. Test n8n MCP tools (list workflows, get workflow details)
 
 **Weekly Maintenance**:
@@ -256,16 +269,19 @@ bash /.cursor/scripts/mcp-docker-cleanup.sh
 
 Before marking as complete, verify:
 
-- [ ] All 12 MCP servers listed in `~/.cursor/mcp.json`
-- [ ] No placeholder API keys (e.g., "YOUR_KEY_HERE")
-- [ ] n8n API key is complete (not truncated)
-- [ ] Docker cleanup script is executable
-- [ ] CLAUDE.md updated (removed n8n-multi-instance-manager)
-- [ ] Git changes committed with clear message
+- [x] All 11 active MCP servers listed in `~/.cursor/mcp.json`
+- [x] No placeholder API keys (e.g., "YOUR_KEY_HERE")
+- [x] n8n API key is complete (not truncated)
+- [x] Docker cleanup script is executable
+- [x] QuickBooks temporarily disabled with credentials preserved
+- [x] CLAUDE.md updated (removed n8n-multi-instance-manager)
+- [x] Git changes committed with clear message
 - [ ] Cursor restarted and `/mcp` command works
 
 ---
 
 **Status**: ✅ **READY FOR CURSOR RESTART**
 
-After restart, run `/mcp` to verify all 12 servers connect successfully.
+After restart, run `/mcp` to verify all 11 active servers connect successfully.
+
+**Note**: QuickBooks MCP temporarily disabled - will be reimplemented as Node.js MCP server wrapper.
