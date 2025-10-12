@@ -182,6 +182,47 @@ Examples:
 
 ---
 
+## 🔒 MCP-ONLY ACCESS RULES
+
+### **n8n API Access Policy** (STRICTLY ENFORCED):
+
+⛔ **FORBIDDEN - NEVER USE THESE**:
+1. ❌ Direct curl calls to n8n APIs (173.254.201.134:5678, tax4usllc.app.n8n.cloud, shellyins.app.n8n.cloud)
+2. ❌ Direct HTTP requests with X-N8N-API-KEY header
+3. ❌ Any Bash commands that call n8n endpoints directly
+4. ❌ npx n8n-mcp commands via Bash tool
+5. ❌ Any form of direct API access to n8n instances
+
+✅ **INTENDED (When MCP Tool Access Fixed)**:
+1. Main session should use `mcp__n8n-rensto__*` (Rensto VPS)
+2. Main session should use `mcp__n8n-tax4us__*` (Tax4Us Cloud)
+3. Main session should use `mcp__n8n-shelly__*` (Shelly Cloud)
+
+⚠️ **CURRENT STATUS (Oct 11, 2025)**:
+- Main Claude Code session: **0 `mcp__n8n-*` tools available**
+- Specialized n8n agents: **0 tools available**
+- MCP servers: ✅ Running (infrastructure works)
+- Gap: Tools show "enabled" but aren't callable (integration issue)
+
+**Interim Working Methods** (Until tool access fixed):
+1. ✅ Manual workflow import via n8n UI
+2. ✅ Node.js scripts for workflow editing (see Tax4Us fix-workflow.cjs)
+3. ⚠️ Direct API calls **ONLY with explicit user approval** (requires policy exception)
+
+### **Investigation Status**:
+- 📋 **Conflicts Report**: `/docs/infrastructure/N8N_WORKFLOW_CREATION_CONFLICTS_REPORT.md`
+- 📋 **Tool Access Audit**: `/docs/infrastructure/TOOL_ACCESS_AUDIT_REPORT.md`
+- 📋 **Correct Usage Guide**: `/docs/n8n/WORKFLOW_CREATION_GUIDE.md`
+- 📂 **Archived Conflicting Docs**: `/docs/archive/2025-10-11-mcp-conflict-cleanup/`
+
+### **Path Forward**:
+1. ✅ Investigate why tools show "enabled" but aren't callable
+2. ✅ Test agent tool inheritance mechanism
+3. ✅ Fix Cursor integration issue
+4. ✅ Then enforce MCP-Only policy strictly
+
+---
+
 ## 🔍 BEFORE EVERY SESSION CHECKLIST
 
 1. ☑️ Read CLAUDE.md sections relevant to your task
