@@ -4,14 +4,26 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 async function doPublish(accessToken: string, siteId: string) {
-  // Publish to production environment (by name) – some tenants don't expose env IDs
+  // 1) Read site details (v2) to get customDomains → domain IDs
+  const siteRes = await fetch(`https://api.webflow.com/v2/sites/${siteId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const siteJson = await siteRes.json().catch(() => ({}));
+  if (!siteRes.ok) {
+    return NextResponse.json({ ok: false, step: 'site', status: siteRes.status, data: siteJson });
+  }
+  const domainIds: string[] = (siteJson?.customDomains || [])
+    .map((d: any) => d?.id)
+    .filter(Boolean);
+
+  // 2) Publish to specific domains (v2 requirement)
   const publishRes = await fetch(`https://api.webflow.com/v2/sites/${siteId}/publish`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ environments: ['production'] })
+    body: JSON.stringify({ domains: domainIds })
   });
   const publishJson = await publishRes.json().catch(() => ({}));
   return NextResponse.json({ ok: publishRes.ok, status: publishRes.status, data: publishJson });
