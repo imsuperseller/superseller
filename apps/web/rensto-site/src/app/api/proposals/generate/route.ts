@@ -2,9 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { AirtableApi } from '@/lib/airtable';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Ensure this API route is always dynamic and not statically evaluated at build time
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+// Lazily initialize OpenAI at request time to avoid build-time env access
+function getOpenAI(): OpenAI {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY');
+  }
+  return new OpenAI({ apiKey });
+}
 
 const airtable = new AirtableApi();
 
@@ -228,7 +237,8 @@ async function generateProposalSections(requirementsAnalysis: any, clientInfo: a
 async function generateSection(section: string, requirementsAnalysis: any, clientInfo: any, projectInfo: any) {
   try {
     const prompt = getSectionPrompt(section, requirementsAnalysis, clientInfo, projectInfo);
-    
+    const openai = getOpenAI();
+
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
