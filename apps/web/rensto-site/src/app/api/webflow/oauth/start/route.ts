@@ -31,27 +31,3 @@ export async function GET(_req: NextRequest) {
   return NextResponse.redirect(authUrl.toString(), { status: 302 });
 }
 
-import { NextRequest, NextResponse } from 'next/server';
-
-/**
- * GET /api/webflow/oauth/start
- * Redirects to Webflow OAuth consent page using env-configured client/redirect.
- */
-export async function GET(_req: NextRequest) {
-  const clientId = process.env.WEBFLOW_CLIENT_ID;
-  const redirectUri = process.env.WEBFLOW_REDIRECT_URI;
-
-  if (!clientId || !redirectUri) {
-    return NextResponse.json({ error: 'Missing WEBFLOW_CLIENT_ID or WEBFLOW_REDIRECT_URI' }, { status: 500 });
-  }
-
-  const url = new URL('https://webflow.com/oauth/authorize');
-  url.searchParams.set('client_id', clientId);
-  url.searchParams.set('response_type', 'code');
-  url.searchParams.set('scope', 'sites:read cms:read_write assets:read_write pages:read custom_code:read_write webhooks:read_write publish:write designer');
-  url.searchParams.set('redirect_uri', redirectUri);
-
-  return NextResponse.redirect(url.toString(), { status: 302 });
-}
-
-
