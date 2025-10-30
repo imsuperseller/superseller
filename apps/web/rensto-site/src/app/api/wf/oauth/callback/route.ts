@@ -7,9 +7,16 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state');
+  const oauthError = searchParams.get('error');
+  const oauthErrorDescription = searchParams.get('error_description');
 
   if (!code) {
-    return NextResponse.json({ error: 'Missing code' }, { status: 400 });
+    return NextResponse.json({
+      error: 'Missing code',
+      oauthError,
+      oauthErrorDescription,
+      state
+    }, { status: 400 });
   }
 
   const clientId = process.env.WEBFLOW_CLIENT_ID;
