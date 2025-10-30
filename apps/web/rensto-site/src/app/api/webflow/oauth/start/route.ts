@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 export async function GET(_req: NextRequest) {
   const clientId = process.env.WEBFLOW_CLIENT_ID;
   const redirectUri = process.env.WEBFLOW_REDIRECT_URI || 'https://api.rensto.com/api/webflow/oauth/callback';
-  const scopes = process.env.WEBFLOW_SCOPES || [
+  const scopes = [
     'sites:read',
     'sites:write',
     'cms:read',
@@ -15,9 +15,7 @@ export async function GET(_req: NextRequest) {
     'assets:write',
     'pages:read',
     'custom_code:read',
-    'custom_code:write',
-    'webhooks:read',
-    'webhooks:write'
+    'custom_code:write'
   ].join(' ');
 
   if (!clientId) {
