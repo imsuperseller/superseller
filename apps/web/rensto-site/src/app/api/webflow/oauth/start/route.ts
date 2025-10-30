@@ -8,12 +8,16 @@ export async function GET(_req: NextRequest) {
   const redirectUri = process.env.WEBFLOW_REDIRECT_URI || 'https://api.rensto.com/api/webflow/oauth/callback';
   const scopes = process.env.WEBFLOW_SCOPES || [
     'sites:read',
-    'cms:read_write',
-    'assets:read_write',
+    'sites:write',
+    'cms:read',
+    'cms:write',
+    'assets:read',
+    'assets:write',
     'pages:read',
-    'custom_code:read_write',
-    'webhooks:read_write',
-    'publish:write'
+    'custom_code:read',
+    'custom_code:write',
+    'webhooks:read',
+    'webhooks:write'
   ].join(' ');
 
   if (!clientId) {
