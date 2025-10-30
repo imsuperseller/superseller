@@ -23,7 +23,7 @@ async function doPublish(accessToken: string, siteId: string) {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ domains: domainIds })
+    body: JSON.stringify({ publishTo: domainIds })
   });
   const publishJson = await publishRes.json().catch(() => ({}));
   return NextResponse.json({ ok: publishRes.ok, status: publishRes.status, data: publishJson });
