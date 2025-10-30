@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`https://api.webflow.com/v2/sites/${siteId}/publishes`, {
+    const res = await fetch(`https://api.webflow.com/v2/sites/${siteId}/publish`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
