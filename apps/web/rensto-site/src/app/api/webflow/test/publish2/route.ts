@@ -4,27 +4,14 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 async function doPublish(accessToken: string, siteId: string) {
-  // 1) Get environments
-  const envRes = await fetch(`https://api.webflow.com/v2/sites/${siteId}/environments`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const envJson = await envRes.json();
-  if (!envRes.ok) {
-    return NextResponse.json({ ok: false, step: 'environments', status: envRes.status, data: envJson });
-  }
-  const envIds: string[] = (envJson?.environments || [])
-    .filter((e: any) => e?.type === 'production' || e?.type === 'staging' || e?.slug)
-    .map((e: any) => e.id)
-    .filter(Boolean);
-
-  // 2) Publish to environments
+  // Publish to production environment (by name) – some tenants don't expose env IDs
   const publishRes = await fetch(`https://api.webflow.com/v2/sites/${siteId}/publish`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ environments: envIds })
+    body: JSON.stringify({ environments: ['production'] })
   });
   const publishJson = await publishRes.json().catch(() => ({}));
   return NextResponse.json({ ok: publishRes.ok, status: publishRes.status, data: publishJson });
