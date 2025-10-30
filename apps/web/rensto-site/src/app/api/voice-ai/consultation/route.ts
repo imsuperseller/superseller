@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+function getOpenAI(): OpenAI {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY');
+  }
+  return new OpenAI({ apiKey });
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,6 +58,7 @@ async function transcribeAudio(audioBlob: string) {
     const audioFile = new File([audioBuffer], 'audio.webm', { type: 'audio/webm' });
     
     // Transcribe using OpenAI Whisper
+    const openai = getOpenAI();
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
       model: 'whisper-1',
@@ -76,6 +84,7 @@ async function generateAIResponse(transcription: string, step: string) {
       'timeline-planning': 'The user is discussing their timeline. Acknowledge their timeline and ask about their urgency and priorities.'
     };
     
+    const openai = getOpenAI();
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
@@ -102,6 +111,7 @@ async function generateAIResponse(transcription: string, step: string) {
 
 async function generateTTSAudio(text: string) {
   try {
+    const openai = getOpenAI();
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
       voice: 'alloy',
