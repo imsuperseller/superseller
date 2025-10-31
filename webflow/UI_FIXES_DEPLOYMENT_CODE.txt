@@ -1,0 +1,81 @@
+<!-- UI Alignment Fixes - Paste in Webflow Site Settings → Custom Code → Code in <head> tag -->
+<style>
+/* ============================================
+   LOGO ALIGNMENT FIX
+   Fixes: Logo appears higher than navigation items
+   ============================================ */
+.navbar-brand,
+.navbar-logo,
+.header-logo,
+[class*="logo"],
+.navbar-wrapper > a:first-child img,
+.navbar a img:first-of-type,
+header img:first-of-type,
+.nav-logo img {
+  vertical-align: middle !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  max-height: 100% !important;
+}
+
+/* Navigation Container Alignment */
+.navbar,
+.nav-menu,
+.navbar-wrapper,
+.nav-container,
+header > div:first-child {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Logo Container */
+.navbar-brand-container,
+.logo-container,
+.nav-logo {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* ============================================
+   BUTTON HEIGHT ALIGNMENT FIX
+   Fixes: Payment option buttons have different heights
+   ============================================ */
+.pricing-button,
+.subscription-button,
+[class*="pricing"] button,
+[class*="plan"] button,
+.pricing-card button,
+.plan-card button,
+[data-tier] button,
+.checkout-button {
+  min-height: 48px !important;
+  height: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 12px 24px !important;
+  box-sizing: border-box !important;
+  line-height: 1.4 !important;
+}
+
+/* Ensure all buttons in same row/container are same height */
+.pricing-row button,
+.plan-row button,
+[class*="pricing"] .button-wrapper button,
+[class*="pricing"] .button-container button,
+.pricing-grid button,
+.plan-grid button {
+  height: 48px !important;
+  min-height: 48px !important;
+}
+
+/* Button wrapper alignment */
+.button-wrapper,
+.button-container,
+[class*="button"] {
+  display: flex !important;
+  align-items: center !important;
+}
+</style>
+
