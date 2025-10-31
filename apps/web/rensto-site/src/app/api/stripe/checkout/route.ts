@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -191,7 +191,6 @@ export async function POST(request: NextRequest) {
       mode: flowType === 'subscription' ? 'subscription' : 'payment',
       success_url: successUrl,
       cancel_url: `https://rensto.com/?canceled=true`,
-      customer_email: customerEmail,
       metadata: webhookMetadata,
       // Conservative, broadly compatible options
       billing_address_collection: 'auto',
@@ -202,7 +201,17 @@ export async function POST(request: NextRequest) {
           metadata: webhookMetadata
         }
       })
-    });
+    };
+
+    // Only include customer_email if it's a valid non-empty email
+    // If empty, use default service email (Stripe will allow customers to change it)
+    const emailToUse = (customerEmail && customerEmail.trim() && customerEmail.includes('@')) 
+      ? customerEmail.trim() 
+      : 'service@rensto.com';
+    
+    sessionConfig.customer_email = emailToUse;
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({
       success: true,
