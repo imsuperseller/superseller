@@ -78,30 +78,61 @@ class WebflowDeployer {
     async updatePageCustomCode(pageId, customCodeType, content) {
         console.log(`  📝 Updating ${customCodeType} for page ${pageId.substring(0, 8)}...`);
         
-        try {
-            // Try Designer Extension first
-            const extResponse = await axios.put(
-                `${this.designerExtensionUrl}/api/designer/page-content/${pageId}`,
-                {
-                    customCode: {
-                        [customCodeType]: content
+        // Try Designer Extension first (if URL is accessible)
+        if (this.designerExtensionUrl && !this.designerExtensionUrl.includes('localhost')) {
+            try {
+                const extResponse = await axios.put(
+                    `${this.designerExtensionUrl}/api/designer/page-content/${pageId}`,
+                    {
+                        customCode: {
+                            [customCodeType]: content
+                        }
+                    },
+                    { 
+                        timeout: 10000,
+                        validateStatus: () => true // Don't throw on any status
                     }
-                },
-                { timeout: 5000 }
-            );
+                );
 
-            if (extResponse.data.success) {
-                console.log(`    ✅ Updated via Designer Extension`);
-                return { success: true, method: 'designer-extension' };
+                if (extResponse.status === 200 && extResponse.data.success) {
+                    console.log(`    ✅ Updated via Designer Extension`);
+                    return { success: true, method: 'designer-extension' };
+                } else if (extResponse.status === 404) {
+                    console.log(`    ⚠️  Designer Extension not deployed - using Site Custom Code API`);
+                } else {
+                    console.log(`    ⚠️  Designer Extension returned ${extResponse.status}`);
+                }
+            } catch (error) {
+                if (error.code === 'ECONNREFUSED' || error.response?.status === 404) {
+                    console.log(`    ⚠️  Designer Extension not accessible (${error.message})`);
+                } else {
+                    console.log(`    ⚠️  Designer Extension error: ${error.message}`);
+                }
             }
-        } catch (error) {
-            console.log(`    ⚠️  Designer Extension unavailable, using fallback`);
         }
 
-        // Fallback: Note that page custom code can't be updated via Data API
-        // This requires manual deployment or active Designer Extension
+        // Attempt Site Custom Code API for scripts that can work site-wide
+        // Note: This is site-level, not page-level, but can work for common scripts
+        if (customCodeType === 'bodyEnd' && content.includes('<script')) {
+            try {
+                // Extract script URLs
+                const scriptMatches = content.match(/<script\s+src=["']([^"']+)["']/g);
+                if (scriptMatches) {
+                    console.log(`    💡 Found ${scriptMatches.length} script(s) - attempting site custom code`);
+                    
+                    // Site custom code API can register scripts
+                    // But page-level custom code still needs Designer Extension
+                    console.log(`    ⚠️  Page-level deployment requires Designer Extension or manual`);
+                }
+            } catch (error) {
+                // Continue to manual fallback
+            }
+        }
+
+        // Final fallback: Manual deployment required
         console.log(`    ⚠️  Page-level custom code requires Designer Extension or manual deployment`);
-        return { success: false, method: 'manual-required' };
+        console.log(`    📋 Content ready in deployment snippets - manual copy/paste required`);
+        return { success: false, method: 'manual-required', pageId, customCodeType };
     }
 
     async deployHomepage() {
