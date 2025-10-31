@@ -5,9 +5,13 @@
  * Verifies current state and prepares deployment-ready code snippets
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class WebflowDeploymentHelper {
     constructor() {
@@ -270,10 +274,13 @@ class WebflowDeploymentHelper {
 }
 
 // Execute if run directly
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}` || 
+                     process.argv[1] && process.argv[1].endsWith('execution-helper.js');
+
+if (isMainModule || process.argv[1]?.includes('execution-helper')) {
     const helper = new WebflowDeploymentHelper();
     helper.run().catch(console.error);
 }
 
-module.exports = WebflowDeploymentHelper;
+export default WebflowDeploymentHelper;
 

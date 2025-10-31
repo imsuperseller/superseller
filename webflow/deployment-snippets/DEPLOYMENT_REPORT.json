@@ -1,0 +1,95 @@
+{
+  "timestamp": "2025-10-31T01:52:11.724Z",
+  "cdn": {
+    "subscriptions": {
+      "size": 837,
+      "expected": 2065,
+      "matches": false,
+      "hasPlanExtraction": false,
+      "url": "https://rensto-webflow-scripts.vercel.app/subscriptions/checkout.js"
+    },
+    "marketplace": {
+      "size": 1050,
+      "expected": 1200,
+      "matches": false,
+      "hasPlanExtraction": null,
+      "url": "https://rensto-webflow-scripts.vercel.app/marketplace/checkout.js"
+    },
+    "ready-solutions": {
+      "size": 895,
+      "expected": 1200,
+      "matches": false,
+      "hasPlanExtraction": null,
+      "url": "https://rensto-webflow-scripts.vercel.app/ready-solutions/checkout.js"
+    },
+    "custom-solutions": {
+      "size": 903,
+      "expected": 1200,
+      "matches": false,
+      "hasPlanExtraction": null,
+      "url": "https://rensto-webflow-scripts.vercel.app/custom-solutions/checkout.js"
+    },
+    "stripe-core": {
+      "size": 5188,
+      "expected": 8500,
+      "matches": false,
+      "hasPlanExtraction": null,
+      "url": "https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"
+    }
+  },
+  "ready": [
+    {
+      "page": "Subscriptions",
+      "file": "subscriptions-scripts.txt"
+    },
+    {
+      "page": "Marketplace",
+      "file": "marketplace-scripts.txt"
+    },
+    {
+      "page": "Ready Solutions",
+      "file": "ready-solutions-scripts.txt"
+    },
+    {
+      "page": "Custom Solutions",
+      "file": "custom-solutions-scripts.txt"
+    },
+    {
+      "type": "schema",
+      "file": "/Users/shaifriedman/New Rensto/rensto/webflow/deployment-snippets/marketplace-schema-head-code.txt"
+    },
+    {
+      "type": "schema",
+      "file": "/Users/shaifriedman/New Rensto/rensto/webflow/deployment-snippets/subscriptions-schema-head-code.txt"
+    },
+    {
+      "type": "schema",
+      "file": "/Users/shaifriedman/New Rensto/rensto/webflow/deployment-snippets/ready-solutions-schema-head-code.txt"
+    },
+    {
+      "type": "schema",
+      "file": "/Users/shaifriedman/New Rensto/rensto/webflow/deployment-snippets/custom-solutions-schema-head-code.txt"
+    },
+    {
+      "type": "homepage",
+      "file": "homepage-body-code.txt"
+    }
+  ],
+  "instructions": {
+    "cdnCacheIssue": {
+      "problem": "Subscriptions checkout.js serving old version (843 bytes)",
+      "solution": "Add ?v=2 cache-busting parameter (already included in snippet)",
+      "status": "Ready for deployment"
+    },
+    "homepage": {
+      "problem": "Homepage content missing",
+      "solution": "Deploy homepage-body-code.txt to Webflow",
+      "status": "Snippet ready"
+    },
+    "schemaMarkup": {
+      "problem": "No structured data on service pages",
+      "solution": "Deploy schema markup snippets to head section",
+      "status": "Snippets ready"
+    }
+  }
+}
