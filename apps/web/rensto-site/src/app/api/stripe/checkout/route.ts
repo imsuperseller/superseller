@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia',
-});
+// Use account-default API version for maximum compatibility with Checkout
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY?.trim() || '');
 
 /**
  * Stripe Checkout API - All 5 Payment Flows
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: price * 100
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=marketplace&product=${productId}`;
+        successUrl = `https://rensto.com/success?type=marketplace&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price };
         break;
 
@@ -83,7 +82,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: installPrice * 100
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=marketplace-install&product=${productId}`;
+        successUrl = `https://rensto.com/success?type=marketplace-install&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price: installPrice };
         break;
 
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: solutionPrice * 100
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=ready-solutions&tier=${tier}`;
+        successUrl = `https://rensto.com/success?type=ready-solutions&tier=${tier}`;
         webhookMetadata = { ...webhookMetadata, tier, price: solutionPrice };
         break;
 
@@ -134,7 +133,7 @@ export async function POST(request: NextRequest) {
             interval: 'month'
           }
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=subscription&plan=${subscriptionType}-${tier}`;
+        successUrl = `https://rensto.com/success?type=subscription&plan=${(subscriptionType || 'lead-gen')}-${(tier || 'starter')}`;
         webhookMetadata = { ...webhookMetadata, subscriptionType, tier, price: subPrice };
         break;
 
@@ -169,7 +168,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: customPrice * 100
         };
-        successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/success?type=custom&product=${customKey}`;
+        successUrl = `https://rensto.com/success?type=custom&product=${customKey}`;
         webhookMetadata = { ...webhookMetadata, product: customKey, productId, tier, price: customPrice };
         break;
 
@@ -191,9 +190,13 @@ export async function POST(request: NextRequest) {
       ],
       mode: flowType === 'subscription' ? 'subscription' : 'payment',
       success_url: successUrl,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
+      cancel_url: `https://rensto.com/?canceled=true`,
       customer_email: customerEmail,
       metadata: webhookMetadata,
+      // Conservative, broadly compatible options
+      billing_address_collection: 'auto',
+      allow_promotion_codes: false,
+      phone_number_collection: { enabled: false },
       ...(flowType === 'subscription' && {
         subscription_data: {
           metadata: webhookMetadata
