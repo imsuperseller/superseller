@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-10-31T01:58:46.667Z",
+  "siteId": "66c7e551a317e0e9c9f906d8",
+  "pagesFound": 49,
+  "deployments": [
+    {
+      "page": "homepage",
+      "type": "body-code",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "subscriptions",
+      "type": "scripts",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "marketplace",
+      "type": "scripts",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "ready-solutions",
+      "type": "scripts",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "custom-solutions",
+      "type": "scripts",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "subscriptions",
+      "type": "schema",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "marketplace",
+      "type": "schema",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "ready-solutions",
+      "type": "schema",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    },
+    {
+      "page": "custom-solutions",
+      "type": "schema",
+      "result": {
+        "success": false,
+        "method": "manual-required"
+      }
+    }
+  ],
+  "errors": [
+    {
+      "action": "publish",
+      "error": "Request failed with status code 404"
+    }
+  ]
+}
