@@ -1,4 +1,18 @@
 <!-- Subscriptions Page Scripts -->
 <!-- Paste this in Webflow: Page Settings → Custom Code → Before </body> tag -->
-    <script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
-    <script src="https://rensto-webflow-scripts.vercel.app/subscriptions/checkout.js?v=2"></script>
+<!-- External Scripts from GitHub CDN (v2.0 - Oct 7, 2025) -->
+
+<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
+
+<script src="https://rensto-webflow-scripts.vercel.app/subscriptions/checkout.js?v=2"></script>
+
+<script>
+(function(){
+  if(!window.RenstoStripe){return;}
+  window.RenstoStripe.initCheckoutButtons(
+    '.pricing-button',
+    'subscription',
+    'subscriptions'
+  );
+})();
+</script>
