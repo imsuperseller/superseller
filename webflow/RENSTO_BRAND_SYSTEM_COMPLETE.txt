@@ -1,5 +1,3 @@
-<!-- RENSTO COMPLETE BRAND SYSTEM - Paste in Webflow Site Settings → Custom Code → Code in <head> tag -->
-<!-- Includes: Logo alignment fix, Button height alignment fix, Complete brand system -->
 <style>
 
 /* ===== RENSTO COMPLETE BRAND SYSTEM ===== */
