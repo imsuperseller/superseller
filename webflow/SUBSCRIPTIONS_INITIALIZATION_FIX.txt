@@ -1,0 +1,56 @@
+<!-- ADD THIS to fix initialization -->
+<!-- Paste this AFTER the existing code in Webflow -->
+<script>
+(function(){
+  // Wait a bit longer for everything to load
+  setTimeout(() => {
+    console.log('🔍 Verifying initialization...');
+    
+    if(!window.RenstoStripe){
+      console.error('❌ RenstoStripe still not loaded after delay');
+      return;
+    }
+    
+    if(!window.RenstoStripe.initCheckoutButtons){
+      console.error('❌ initCheckoutButtons method not found');
+      console.log('Available methods:', Object.keys(window.RenstoStripe || {}));
+      return;
+    }
+    
+    // Check if buttons have data attributes
+    const buttons = document.querySelectorAll('.pricing-button, .subscription-button');
+    console.log(`Re-checking: Found ${buttons.length} buttons`);
+    
+    buttons.forEach((btn, i) => {
+      const tier = btn.getAttribute('data-tier');
+      const price = btn.getAttribute('data-price');
+      console.log(`Button ${i+1}: tier=${tier}, price=${price || 'missing'}`);
+    });
+    
+    // Try initialization again
+    try {
+      console.log('🚀 Calling initCheckoutButtons...');
+      window.RenstoStripe.initCheckoutButtons(
+        '.pricing-button',
+        'subscription',
+        'subscriptions'
+      );
+      console.log('✅ initCheckoutButtons called successfully');
+    } catch(error) {
+      console.error('❌ Error calling initCheckoutButtons:', error);
+    }
+    
+    // Verify click handlers attached
+    setTimeout(() => {
+      const testBtn = document.querySelector('.pricing-button');
+      if(testBtn) {
+        console.log('🔍 Checking button click handler...');
+        const hasHandler = testBtn.onclick || testBtn.getAttribute('onclick');
+        console.log('Click handler present:', !!hasHandler);
+      }
+    }, 500);
+    
+  }, 500);
+})();
+</script>
+

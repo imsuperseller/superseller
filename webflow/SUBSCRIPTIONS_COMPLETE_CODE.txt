@@ -75,14 +75,20 @@
     });
 
     // Initialize with pricing-button (override CDN script)
-    window.RenstoStripe.initCheckoutButtons(
-      '.pricing-button',
-      'subscription',
-      'subscriptions'
-    );
-
-    console.log('✅ Subscription buttons initialized and ready');
+    try {
+      console.log('🚀 Calling initCheckoutButtons...');
+      window.RenstoStripe.initCheckoutButtons(
+        '.pricing-button',
+        'subscription',
+        'subscriptions'
+      );
+      console.log('✅ Subscription buttons initialized and ready');
+    } catch(error) {
+      console.error('❌ Error initializing checkout:', error);
+      console.error('Error details:', error.message, error.stack);
+    }
   }, 100);
 })();
 </script>
+
 
