@@ -252,9 +252,23 @@ function listPages() {
   });
 }
 
+// Initialize file if it doesn't exist
+function initializeFile() {
+  if (!fs.existsSync(VERIFICATION_FILE)) {
+    const status = loadVerificationStatus();
+    saveVerificationStatus(status);
+    console.log('✅ Verification file initialized\n');
+  }
+}
+
 // Main CLI
 const args = process.argv.slice(2);
 const command = args[0];
+
+// Initialize file on any command
+if (command && command !== 'help') {
+  initializeFile();
+}
 
 if (!command || command === 'help') {
   printHelp();
@@ -268,6 +282,11 @@ if (!command || command === 'help') {
   markPageVerified(args[1], true);
 } else if (command === 'list') {
   listPages();
+} else if (command === 'init') {
+  initializeFile();
+  console.log('✅ Verification system initialized!');
+  console.log(`   File: ${VERIFICATION_FILE}`);
+  console.log('   Run "progress" or "list" to see status\n');
 } else {
   console.log('❌ Unknown command. Use "help" for usage.');
 }
