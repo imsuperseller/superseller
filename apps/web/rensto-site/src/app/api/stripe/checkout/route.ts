@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Use account-default API version for maximum compatibility with Checkout
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY?.trim() || '');
+// Lazy initialization to avoid build-time errors when env vars aren't available
+function getStripe(): Stripe {
+  const apiKey = process.env.STRIPE_SECRET_KEY?.trim();
+  if (!apiKey) {
+    throw new Error('STRIPE_SECRET_KEY not configured');
+  }
+  return new Stripe(apiKey, {
+    apiVersion: '2024-11-20.acacia'
+  });
+}
 
 /**
  * Stripe Checkout API - All 5 Payment Flows
@@ -60,7 +68,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: price * 100
         };
-        successUrl = `https://rensto.com/?payment=success&type=marketplace&product=${productId}`;
+        successUrl = `https://www.rensto.com/?payment=success&type=marketplace&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price };
         break;
 
@@ -82,7 +90,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: installPrice * 100
         };
-        successUrl = `https://rensto.com/?payment=success&type=marketplace-install&product=${productId}`;
+        successUrl = `https://www.rensto.com/?payment=success&type=marketplace-install&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price: installPrice };
         break;
 
@@ -108,7 +116,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: solutionPrice * 100
         };
-        successUrl = `https://rensto.com/success?type=ready-solutions&tier=${tier}`;
+        successUrl = `https://www.rensto.com/?payment=success&type=ready-solutions&tier=${tier}`;
         webhookMetadata = { ...webhookMetadata, tier, price: solutionPrice };
         break;
 
@@ -133,7 +141,7 @@ export async function POST(request: NextRequest) {
             interval: 'month'
           }
         };
-        successUrl = `https://rensto.com/success?type=subscription&plan=${(subscriptionType || 'lead-gen')}-${(tier || 'starter')}`;
+        successUrl = `https://www.rensto.com/?payment=success&type=subscription&plan=${(subscriptionType || 'lead-gen')}-${(tier || 'starter')}`;
         webhookMetadata = { ...webhookMetadata, subscriptionType, tier, price: subPrice };
         break;
 
@@ -168,7 +176,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: customPrice * 100
         };
-        successUrl = `https://rensto.com/success?type=custom&product=${customKey}`;
+        successUrl = `https://www.rensto.com/?payment=success&type=custom&product=${customKey}`;
         webhookMetadata = { ...webhookMetadata, product: customKey, productId, tier, price: customPrice };
         break;
 
@@ -180,6 +188,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe Checkout Session
+    // Minimal configuration to avoid "page not found" errors
     const sessionConfig: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [
@@ -190,18 +199,31 @@ export async function POST(request: NextRequest) {
       ],
       mode: flowType === 'subscription' ? 'subscription' : 'payment',
       success_url: successUrl,
-      cancel_url: `https://rensto.com/?canceled=true`,
-      metadata: webhookMetadata,
-      // Conservative, broadly compatible options
-      billing_address_collection: 'auto',
-      allow_promotion_codes: false,
-      phone_number_collection: { enabled: false },
-      ...(flowType === 'subscription' && {
-        subscription_data: {
-          metadata: webhookMetadata
-        }
-      })
+      cancel_url: `https://www.rensto.com/?canceled=true`
+      // Only include metadata if it has valid string values (no complex objects)
+      // Remove optional parameters that might cause rejection
     };
+    
+    // Only add metadata if webhookMetadata has valid string values
+    if (webhookMetadata && Object.keys(webhookMetadata).length > 0) {
+      // Convert all metadata values to strings (Stripe requires string values)
+      const stringMetadata: Record<string, string> = {};
+      for (const [key, value] of Object.entries(webhookMetadata)) {
+        if (value !== null && value !== undefined) {
+          stringMetadata[key] = String(value);
+        }
+      }
+      if (Object.keys(stringMetadata).length > 0) {
+        sessionConfig.metadata = stringMetadata;
+      }
+    }
+    
+    // Only add subscription_data for subscriptions
+    if (flowType === 'subscription' && sessionConfig.metadata) {
+      sessionConfig.subscription_data = {
+        metadata: sessionConfig.metadata
+      };
+    }
 
     // Only include customer_email if provided - let Stripe collect it otherwise
     // Setting customer_email can cause "page not found" errors if email is invalid or pre-filled
@@ -210,7 +232,7 @@ export async function POST(request: NextRequest) {
     }
     // If no email provided, Stripe checkout will collect it - don't force a default
 
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    const session = await getStripe().checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({
       success: true,

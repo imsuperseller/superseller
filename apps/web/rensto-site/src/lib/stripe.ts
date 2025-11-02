@@ -1,17 +1,24 @@
 import Stripe from 'stripe';
 
 export class StripeApi {
-  private stripe: Stripe;
+  private stripe: Stripe | null = null;
 
-  constructor() {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      apiVersion: '2023-10-16'
-    });
+  private getStripe(): Stripe {
+    if (!this.stripe) {
+      const apiKey = process.env.STRIPE_SECRET_KEY?.trim();
+      if (!apiKey) {
+        throw new Error('STRIPE_SECRET_KEY not configured');
+      }
+      this.stripe = new Stripe(apiKey, {
+        apiVersion: '2023-10-16'
+      });
+    }
+    return this.stripe;
   }
 
   async createPaymentIntent(amount: number, currency: string = 'usd', metadata: any = {}) {
     try {
-      const paymentIntent = await this.stripe.paymentIntents.create({
+      const paymentIntent = await this.getStripe().paymentIntents.create({
         amount: amount * 100, // Convert to cents
         currency,
         metadata,
@@ -37,7 +44,7 @@ export class StripeApi {
 
   async verifyPayment(paymentIntentId: string) {
     try {
-      const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+      const paymentIntent = await this.getStripe().paymentIntents.retrieve(paymentIntentId);
 
       return {
         success: paymentIntent.status === 'succeeded',
@@ -56,9 +63,27 @@ export class StripeApi {
     }
   }
 
+  async confirmPayment(paymentIntentId: string) {
+    try {
+      const paymentIntent = await this.getStripe().paymentIntents.retrieve(paymentIntentId);
+      
+      return {
+        success: true,
+        status: paymentIntent.status,
+        paymentIntent
+      };
+    } catch (error) {
+      console.error('Stripe confirmPayment error:', error);
+      return {
+        success: false,
+        error: 'Failed to confirm payment'
+      };
+    }
+  }
+
   async createCustomer(email: string, name?: string) {
     try {
-      const customer = await this.stripe.customers.create({
+      const customer = await this.getStripe().customers.create({
         email,
         name,
         metadata: {
@@ -91,7 +116,7 @@ export class StripeApi {
         }
       });
 
-      const priceObject = await this.stripe.prices.create({
+      const priceObject = await this.getStripe().prices.create({
         product: product.id,
         unit_amount: price * 100, // Convert to cents
         currency: 'usd',
@@ -124,7 +149,7 @@ export class StripeApi {
         throw new Error('Webhook secret not configured');
       }
 
-      const event = this.stripe.webhooks.constructEvent(
+      const event = this.getStripe().webhooks.constructEvent(
         payload,
         signature,
         webhookSecret
@@ -189,7 +214,7 @@ export class StripeApi {
 
   async createRefund(paymentIntentId: string, amount?: number) {
     try {
-      const refund = await this.stripe.refunds.create({
+      const refund = await this.getStripe().refunds.create({
         payment_intent: paymentIntentId,
         amount: amount ? amount * 100 : undefined, // Convert to cents
         metadata: {
@@ -214,7 +239,7 @@ export class StripeApi {
 
   async getPaymentMethods(customerId: string) {
     try {
-      const paymentMethods = await this.stripe.paymentMethods.list({
+      const paymentMethods = await this.getStripe().paymentMethods.list({
         customer: customerId,
         type: 'card'
       });

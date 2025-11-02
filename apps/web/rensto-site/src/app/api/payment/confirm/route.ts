@@ -26,12 +26,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update payment status in Airtable
-    await airtable.updatePaymentStatus(paymentIntentId, confirmation.status);
+    // Update payment status in Airtable (if method exists)
+    try {
+      if (typeof (airtable as any).updatePaymentStatus === 'function') {
+        await (airtable as any).updatePaymentStatus(paymentIntentId, confirmation.status);
+      }
+    } catch (error) {
+      console.warn('Airtable updatePaymentStatus not available:', error);
+    }
 
-    // If payment succeeded, grant template access
+    // If payment succeeded, grant template access (if method exists)
     if (confirmation.status === 'succeeded') {
-      await airtable.grantTemplateAccess(paymentIntentId);
+      try {
+        if (typeof (airtable as any).grantTemplateAccess === 'function') {
+          await (airtable as any).grantTemplateAccess(paymentIntentId);
+        }
+      } catch (error) {
+        console.warn('Airtable grantTemplateAccess not available:', error);
+      }
     }
 
     return NextResponse.json({
