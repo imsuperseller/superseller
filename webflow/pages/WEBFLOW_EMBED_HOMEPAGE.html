@@ -1409,34 +1409,24 @@
         button.disabled = true;
         button.textContent = 'Processing...';
 
-        // TODO: Replace with actual n8n webhook endpoint
-        // For now, just simulate success
-        setTimeout(() => {
-            alert('Success! Check your email for the automation guide.');
-            this.reset();
-            button.disabled = false;
-            button.textContent = originalText;
-        }, 1000);
-
-        // PRODUCTION: Use this instead
-        /*
-        fetch('https://n8n.rensto.com/webhook/lead-magnet', {
+        // Send to n8n prod webhook
+        fetch('https://n8n.rensto.com/webhook/customer-data-sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                type: 'lead_magnet_optin',
                 email: email,
                 source: 'homepage_lead_magnet',
                 timestamp: new Date().toISOString()
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Success! Check your email for the automation guide.');
-                this.reset();
-            } else {
-                alert('Error: Unable to process request. Please try again.');
-            }
+        .then(async (response) => {
+            if (!response.ok) throw new Error('Webhook returned non-200');
+            return response.json().catch(() => ({}));
+        })
+        .then(() => {
+            alert('Success! Check your email for the automation guide.');
+            this.reset();
         })
         .catch(error => {
             console.error('Lead magnet error:', error);
@@ -1446,7 +1436,6 @@
             button.disabled = false;
             button.textContent = originalText;
         });
-        */
     });
 
     // GSAP Animations

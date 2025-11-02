@@ -515,6 +515,82 @@ class EnhancedWebflowMCPServer {
                             },
                             required: ['siteId', 'scriptId']
                         }
+                    },
+
+                    // ASSETS MANAGEMENT
+                    {
+                        name: 'upload_webflow_asset',
+                        description: 'Upload an asset to a site (v2 assets API)',
+                        inputSchema: {
+                            type: 'object',
+                            properties: {
+                                siteId: { type: 'string', description: 'Webflow site ID' },
+                                url: { type: 'string', description: 'Public URL of the file to upload' },
+                                fileName: { type: 'string', description: 'Optional override file name' }
+                            },
+                            required: ['siteId', 'url']
+                        }
+                    },
+                    {
+                        name: 'replace_webflow_asset',
+                        description: 'Replace an existing asset by assetId',
+                        inputSchema: {
+                            type: 'object',
+                            properties: {
+                                siteId: { type: 'string', description: 'Webflow site ID' },
+                                assetId: { type: 'string', description: 'Asset ID to replace' },
+                                url: { type: 'string', description: 'Public URL of the replacement file' }
+                            },
+                            required: ['siteId', 'assetId', 'url']
+                        }
+                    },
+
+                    // WEBHOOKS MANAGEMENT
+                    {
+                        name: 'list_webflow_webhooks',
+                        description: 'List site webhooks',
+                        inputSchema: {
+                            type: 'object',
+                            properties: { siteId: { type: 'string', description: 'Webflow site ID' } },
+                            required: ['siteId']
+                        }
+                    },
+                    {
+                        name: 'create_webflow_webhook',
+                        description: 'Create a site webhook',
+                        inputSchema: {
+                            type: 'object',
+                            properties: {
+                                siteId: { type: 'string', description: 'Webflow site ID' },
+                                triggerType: { type: 'string', description: 'Trigger type, e.g., form_submission' },
+                                url: { type: 'string', description: 'Webhook endpoint URL' }
+                            },
+                            required: ['siteId', 'triggerType', 'url']
+                        }
+                    },
+                    {
+                        name: 'create_webflow_form_submission_webhook',
+                        description: 'Create a form_submission webhook to a specified URL',
+                        inputSchema: {
+                            type: 'object',
+                            properties: {
+                                siteId: { type: 'string', description: 'Webflow site ID' },
+                                url: { type: 'string', description: 'Webhook endpoint URL for form submissions' }
+                            },
+                            required: ['siteId', 'url']
+                        }
+                    },
+                    {
+                        name: 'delete_webflow_webhook',
+                        description: 'Delete a site webhook',
+                        inputSchema: {
+                            type: 'object',
+                            properties: {
+                                siteId: { type: 'string', description: 'Webflow site ID' },
+                                webhookId: { type: 'string', description: 'Webhook ID' }
+                            },
+                            required: ['siteId', 'webhookId']
+                        }
                     }
                 ]
             };
@@ -684,6 +760,40 @@ class EnhancedWebflowMCPServer {
                             return await this.deleteWebflowSiteCustomCode(args.siteId, args.scriptId);
                         }
                         throw new Error('siteId and scriptId are required');
+
+                    // ASSETS MANAGEMENT
+                    case 'upload_webflow_asset':
+                        if (args && typeof args.siteId === 'string' && typeof args.url === 'string') {
+                            return await this.uploadWebflowAsset(args.siteId, args.url, args.fileName as string | undefined);
+                        }
+                        throw new Error('siteId and url are required');
+                    case 'replace_webflow_asset':
+                        if (args && typeof args.siteId === 'string' && typeof args.assetId === 'string' && typeof args.url === 'string') {
+                            return await this.replaceWebflowAsset(args.siteId, args.assetId, args.url);
+                        }
+                        throw new Error('siteId, assetId and url are required');
+
+                    // WEBHOOKS MANAGEMENT
+                    case 'list_webflow_webhooks':
+                        if (args && typeof args.siteId === 'string') {
+                            return await this.listWebflowWebhooks(args.siteId);
+                        }
+                        throw new Error('siteId is required and must be a string');
+                    case 'create_webflow_webhook':
+                        if (args && typeof args.siteId === 'string' && typeof args.triggerType === 'string' && typeof args.url === 'string') {
+                            return await this.createWebflowWebhook(args.siteId, args.triggerType, args.url);
+                        }
+                        throw new Error('siteId, triggerType, url are required');
+                    case 'create_webflow_form_submission_webhook':
+                        if (args && typeof args.siteId === 'string' && typeof args.url === 'string') {
+                            return await this.createWebflowWebhook(args.siteId, 'form_submission', args.url);
+                        }
+                        throw new Error('siteId and url are required');
+                    case 'delete_webflow_webhook':
+                        if (args && typeof args.siteId === 'string' && typeof args.webhookId === 'string') {
+                            return await this.deleteWebflowWebhook(args.siteId, args.webhookId);
+                        }
+                        throw new Error('siteId and webhookId are required');
 
                     default:
                         throw new Error(`Unknown tool: ${name}`);
@@ -1261,6 +1371,84 @@ class EnhancedWebflowMCPServer {
                     text: JSON.stringify(response.data, null, 2)
                 }
             ]
+        };
+    }
+
+    // ASSETS
+    private async uploadWebflowAsset(siteId: string, url: string, fileName?: string) {
+        const response = await axios.post(`https://api.webflow.com/v2/sites/${siteId}/assets`, {
+            url,
+            ...(fileName ? { fileName } : {})
+        }, {
+            headers: {
+                'Authorization': `Bearer ${this.webflowApiToken}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return {
+            content: [{ type: 'text', text: JSON.stringify(response.data, null, 2) }]
+        };
+    }
+
+    private async replaceWebflowAsset(siteId: string, assetId: string, url: string) {
+        const response = await axios.patch(`https://api.webflow.com/v2/sites/${siteId}/assets/${assetId}`, {
+            url
+        }, {
+            headers: {
+                'Authorization': `Bearer ${this.webflowApiToken}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return {
+            content: [{ type: 'text', text: JSON.stringify(response.data, null, 2) }]
+        };
+    }
+
+    // WEBHOOKS
+    private async listWebflowWebhooks(siteId: string) {
+        const response = await axios.get(`https://api.webflow.com/v2/sites/${siteId}/webhooks`, {
+            headers: {
+                'Authorization': `Bearer ${this.webflowApiToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        return {
+            content: [{ type: 'text', text: JSON.stringify(response.data, null, 2) }]
+        };
+    }
+
+    private async createWebflowWebhook(siteId: string, triggerType: string, url: string) {
+        const response = await axios.post(`https://api.webflow.com/v2/sites/${siteId}/webhooks`, {
+            triggerType,
+            url
+        }, {
+            headers: {
+                'Authorization': `Bearer ${this.webflowApiToken}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return {
+            content: [{ type: 'text', text: JSON.stringify(response.data, null, 2) }]
+        };
+    }
+
+    private async deleteWebflowWebhook(siteId: string, webhookId: string) {
+        const response = await axios.delete(`https://api.webflow.com/v2/sites/${siteId}/webhooks/${webhookId}`, {
+            headers: {
+                'Authorization': `Bearer ${this.webflowApiToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        return {
+            content: [{ type: 'text', text: JSON.stringify(response.data, null, 2) }]
         };
     }
 

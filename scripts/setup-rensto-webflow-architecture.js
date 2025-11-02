@@ -11,9 +11,10 @@ console.log('==================================================');
 const CONFIG = {
     webflow: {
         siteId: '66c7e551a317e0e9c9f906d8',
-        apiToken: 'fd74dac2e8dc23c2e8047d7854be9e303afe85249301b14a91b657b36d1759ed',
-        clientId: 'b77ecda6a3e0feba68ad9c75c1b18cf0fb71d8859c7e4ada713d228e4da73716',
-        clientSecret: 'fd74dac2e8dc23c2e8047d7854be9e303afe85249301b14a91b657b36d1759ed'
+        // Use Site API Token from environment or MCP config (not hardcoded)
+        apiToken: process.env.WEBFLOW_API_TOKEN || process.env.WEBFLOW_SITE_API_TOKEN || 'USE_ENV_VAR_FROM_MCP_CONFIG',
+        clientId: process.env.WEBFLOW_CLIENT_ID || 'USE_ENV_VAR_FROM_MCP_CONFIG',
+        clientSecret: process.env.WEBFLOW_CLIENT_SECRET || 'USE_ENV_VAR_FROM_MCP_CONFIG'
     },
     cloudflare: {
         email: 'service@rensto.com',

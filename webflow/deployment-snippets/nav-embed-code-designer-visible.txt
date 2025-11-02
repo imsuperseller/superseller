@@ -1,0 +1,148 @@
+<!-- Navigation Component -->
+<!-- Update this in Webflow: Components → Nav Component → Custom Code -->
+<!-- This matches the format of case-studies-page-body-code.txt (working format) -->
+
+<style>
+    :root {
+        --red: #fe3d51;
+        --orange: #bf5700;
+        --blue: #1eaef7;
+        --cyan: #5ffbfd;
+        --dark-bg: #110d28;
+        --light-bg: #1a162f;
+        --light-text: #ffffff;
+        --gray-text: #a0a0a0;
+    }
+
+    .rensto-header {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1000 !important;
+        background: rgba(17, 13, 40, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
+        padding: 1rem 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .header-container {
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 0 2rem !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        min-height: 80px !important;
+    }
+
+    .logo {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    .logo img {
+        height: 50px !important;
+        width: auto !important;
+        display: block !important;
+    }
+
+    .rensto-nav {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    .rensto-nav ul {
+        display: flex !important;
+        list-style: none !important;
+        gap: 2rem !important;
+        align-items: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .rensto-nav li {
+        margin: 0 !important;
+    }
+
+    .rensto-nav a {
+        color: var(--light-text) !important;
+        text-decoration: none !important;
+        font-weight: 400 !important;
+        transition: color 0.3s !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+    }
+
+    .rensto-nav a:hover {
+        color: var(--cyan) !important;
+    }
+
+    .cta-button {
+        background: linear-gradient(135deg, var(--orange), var(--blue)) !important;
+        color: white !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 8px !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        transition: transform 0.3s, box-shadow 0.3s !important;
+        display: inline-block !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(191, 87, 0, 0.4) !important;
+    }
+
+    .mobile-menu-toggle {
+        display: none !important;
+        background: none !important;
+        border: none !important;
+        color: white !important;
+        font-size: 1.5rem !important;
+        cursor: pointer !important;
+        padding: 0.5rem !important;
+        min-height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    @media (max-width: 768px) {
+        .rensto-nav ul {
+            display: none !important;
+        }
+        
+        .mobile-menu-toggle {
+            display: flex !important;
+        }
+    }
+</style>
+
+<header class="rensto-header">
+    <div class="header-container">
+        <div class="logo">
+            <a href="/">
+                <img src="https://cdn.prod.website-files.com/66c7e551a317e0e9c9f906d8/687c63b670404960220198e6_Rensto%20Logo.png" alt="Rensto">
+            </a>
+        </div>
+        <nav class="rensto-nav">
+            <ul id="rensto-nav-menu">
+                <li><a href="/marketplace">Marketplace</a></li>
+                <li><a href="/custom-solutions">Custom Solutions</a></li>
+                <li><a href="/subscriptions">Subscriptions</a></li>
+                <li><a href="/ready-solutions">Ready Solutions</a></li>
+                <li><a href="/case-studies">Case Studies</a></li>
+                <li><a href="#contact" class="cta-button">Get Started</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">☰</button>
+    </div>
+</header>

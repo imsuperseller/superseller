@@ -70,7 +70,7 @@ Name: "INT-LEAD-001: Lead Machine Orchestrator v2"
 const fetch = require('node-fetch');
 
 const N8N_URL = 'http://173.254.201.134:5678';
-const N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+const N8N_API_KEY = '[REDACTED_KEY]';
 
 async function renameWorkflow(workflowId, newName) {
   // Step 1: GET full workflow

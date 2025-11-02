@@ -146,7 +146,7 @@ async switchToInstance(instanceName) {
       "args": ["-y", "n8n-mcp"],
       "env": {
         "N8N_API_URL": "http://173.254.201.134:5678",
-        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2MDkyMDIxfQ.YKPTmHyLr1_kXX2JMY7hsPy4jvnCJDL71mOCltoUbQc",
+        "N8N_API_KEY": "[REDACTED_RENSTO_VPS_KEY]",
         "LOG_LEVEL": "error"
       }
     },
@@ -155,7 +155,7 @@ async switchToInstance(instanceName) {
       "args": ["-y", "n8n-mcp"],
       "env": {
         "N8N_API_URL": "https://tax4usllc.app.n8n.cloud",
-        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw",
+        "N8N_API_KEY": "[REDACTED_TAX4US_KEY]",
         "LOG_LEVEL": "error"
       }
     },
@@ -164,7 +164,7 @@ async switchToInstance(instanceName) {
       "args": ["-y", "n8n-mcp"],
       "env": {
         "N8N_API_URL": "https://shellyins.app.n8n.cloud",
-        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNjUxZWNkZS04Yzc5LTRiMTktYjEzMC04NTJiY2VkYWViY2YiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NDk1MDk3fQ.pDpDBUrHJCiPh1xaaq0p9PmRoGp-i36hiR_Ld_EhtZc",
+        "N8N_API_KEY": "[REDACTED_SHELLY_KEY]",
         "LOG_LEVEL": "error"
       }
     }
@@ -275,7 +275,7 @@ mcp__n8n-shelly__n8n_list_workflows()
 
 **Tool Count Management**:
 - Current: 126 n8n tools (42 × 3 instances)
-- Plus: 11 other MCP servers (airtable, notion, stripe, etc.)
+- Plus: 12 other MCP servers (airtable, notion, stripe, etc.)
 - Total: ~170-200 tools estimated
 - Cursor limit: Unknown (previously thought to be 40, but clearly handles more)
 

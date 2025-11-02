@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 9, 2025 (n8n-MCP Docker → npx Fix Applied)
-**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ n8n MCP Tools Now Functional
+**Last Updated**: October 13, 2025 (MCP Documentation Audit & Optimization)
+**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 12 MCP Servers Active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Context7)
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -177,7 +177,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 1. **Operations & Automation** (app6saCaH88uK3kCO) - 185 records
    - n8n Workflows (0) ⚠️ **Empty by design - awaits customer instances**
    - Note: Rensto's 68 internal workflows are in Boost.space Space 45, not Airtable. This table is for CUSTOMER workflows (Tax4Us, Shelly) - Priority 3 work.
-   - MCP Servers (11 active, 1 disabled)
+   - MCP Servers (12 active, 1 disabled)
    - n8n Credentials (36)
    - n8n Nodes (36)
    - Integrations (5)
@@ -503,7 +503,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 4. **BMAD Methodology**: Framework operational, used across all projects
 5. **Airtable Infrastructure**: 11 bases with 867 records (needs cleanup)
 6. **Notion Integration**: 3 databases accessible, needs sync automation
-7. **MCP Servers**: 11 active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn) + 1 disabled (QuickBooks - needs Node.js wrapper)
+7. **MCP Servers**: 12 active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Context7) + 1 disabled (QuickBooks - needs Node.js wrapper)
 8. **Webflow Website**: ✅ LIVE - 19 pages with GitHub auto-deploy Stripe checkout (Oct 7, 2025)
 
 ### **⚠️ PARTIALLY IMPLEMENTED**
@@ -766,7 +766,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 │    - Income                     • Customer C - Custom        │
 │    - Expenses                   ...                          │
 │    - Invoices                   n8n Status: ✅ All healthy   │
-│  • Integrations                 MCP Servers: ✅ 11 active │
+│  • Integrations                 MCP Servers: ✅ 12 active │
 │    - MCP Servers                Airtable Sync: ✅ 15 min ago │
 │    - APIs                       ...                          │
 │  • Affiliates                                                │
@@ -861,30 +861,33 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 ### **Integrations**
 
-**MCP Servers** (11 Active, 1 Disabled):
+**MCP Servers** (12 Active, 1 Disabled):
 
 **Active Servers**:
-1. **n8n MCP** (npx-based, 3 instances) - ✅ **FIXED Oct 9, 2025**
-   - **Rensto VPS**: http://173.254.201.134:5678
-   - **Tax4Us Cloud**: https://tax4usllc.app.n8n.cloud
-   - **Shelly Cloud**: https://shellyins.app.n8n.cloud
-   - **Fix**: Switched from Docker to npx (stdin lifecycle issue resolved)
-   - **Status**: All tools now functional (health check, executions, workflows, validation)
-2. Airtable MCP
-3. Notion MCP
-4. Typeform MCP
-5. Make MCP
-6. Stripe MCP (Docker-based)
-7. TidyCal MCP
-8. Supabase MCP
-9. Webflow MCP
-10. Boost.space MCP
-11. Shadcn MCP
+1. **n8n MCP** (Docker-based, 3 instances) - ✅ **CURRENT ARCHITECTURE**
+   - **Package**: `ghcr.io/czlonkowski/n8n-mcp:latest` (41 tools each)
+   - **Instances**: Rensto VPS, Tax4Us Cloud, Shelly Cloud
+   - **Status**: Infrastructure 100% working, Cursor integration pending
+2. **Context7 MCP** - ✅ **ACTIVE**
+   - **Package**: `@upstash/context7-mcp`
+   - **Purpose**: Documentation lookup and research for AI agents
+   - **Usage**: Library documentation retrieval, real-time information access
+   - **Integration**: Works with n8n workflows for enhanced AI capabilities
+3. Airtable MCP
+4. Notion MCP
+5. Typeform MCP
+6. Make MCP
+7. Stripe MCP (Docker-based)
+8. TidyCal MCP
+9. Supabase MCP
+10. Webflow MCP
+11. Boost.space MCP
+12. Shadcn MCP
 
 **Disabled Servers**:
 - **QuickBooks MCP**: ⚠️ Temporarily disabled (needs Node.js MCP wrapper). OAuth credentials preserved in `~/.cursor/mcp.json` for future implementation. Use existing OAuth scripts in `/scripts/` for now.
 
-**Recent Fix (Oct 9, 2025)**: n8n-mcp Docker containers were closing stdin prematurely, causing all API calls to fail silently. Solution: Switched all 3 n8n instances from Docker to npx. See `/docs/infrastructure/N8N_MCP_FIX_REPORT.md` for complete analysis.
+**Current Architecture (Oct 13, 2025)**: Using Docker-based `ghcr.io/czlonkowski/n8n-mcp:latest` with 41 tools per instance (123 total tools) covering workflow management, execution monitoring, and validation. Infrastructure 100% working, Cursor integration pending due to routing bug.
 
 **APIs Used**:
 - OpenAI (GPT-4o, Whisper, TTS)
@@ -931,45 +934,18 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 | Webflow | https://rensto.com | Webflow account |
 | Vercel | https://vercel.com/dashboard | Vercel account |
 
-### **Key File Locations** (Updated Oct 5, 2025 - Evening)
+### **Key File Locations**
 
 | Resource | Location |
 |----------|----------|
-| **Core Applications** | |
-| Admin Dashboard | `/apps/web/admin-dashboard/` |
-| Rensto Site | `/apps/web/rensto-site/` |
-| **Workflows & Automation** | |
-| Production Workflows | `/workflows/` (consolidated Oct 5) |
-| n8n Functions | `/workflows/n8n-functions/` (was `/n8n/`) |
-| n8n References | `/workflows/n8n-references/` (was `/n8n-organized/`) |
-| Customer Workflows | `/workflows/nir-sheinbein/`, `/workflows/n8n/` |
-| **Customer & Project Data** | |
-| Active Customers | `/Customers/{customer-name}/` (4 customers) |
-| Prospects | `/Customers/prospects/` (was `/Leads/`) |
-| Projects | `/Customers/projects/` (was `/Projects/`) |
-| **Configuration & Infrastructure** | |
-| All Configs | `/configs/` (consolidated Oct 5, Phase 2 cleaned) |
-| Cloudflare Tunnel | `/configs/cloudflare-tunnel/` (was `/~/`, ignored in git) |
-| MCP Servers | `/infra/mcp-servers/` (11 active, 1 disabled) |
-| MCP Docker Cleanup Script | `/.cursor/scripts/mcp-docker-cleanup.sh` |
-| MCP Reference | `/infra/mcp-reference/cloudflare/` (was `/mcp-server-cloudflare/`) |
-| **Webflow Deployment** | |
-| Webflow Pages | `/webflow/pages/` (23 HTML files, Stripe-integrated) |
-| Webflow Templates | `/webflow/templates/` (5 templates) |
-| Webflow Docs | `/webflow/docs/` |
-| **Data & Scripts** | |
-| Data Files | `/data/json/` (13 JSON files) |
-| Scripts | `/scripts/` (organized by category) |
-| BMAD Scripts | `/scripts/bmad/` (41 files) |
-| **Documentation** | |
-| Master Docs | `/CLAUDE.md` (this file), `/README.md` |
-| Organized Docs | `/docs/` (71 MD files, 83% reduction from 413) |
-| **Operations** | |
-| Admin Scripts | `/live-systems/admin-scripts/` (was `/admin-portal/`) |
-| Customer Portal Scripts | `/live-systems/customer-portal/` |
-| **Product Catalog** | |
-| Product Catalog | `/products/product-catalog.json` (8 products) |
-| Marketplace Config | `/marketplace/` (platform configs) |
+| **Core Applications** | `/apps/web/` |
+| **Workflows** | `/workflows/` |
+| **Customers** | `/Customers/` |
+| **MCP Servers** | `/infra/mcp-servers/` (12 active) |
+| **Webflow** | `/webflow/` |
+| **Scripts** | `/scripts/` |
+| **Documentation** | `/docs/` |
+| **Operations** | `/live-systems/` |
 
 ### **Airtable Base IDs**
 
@@ -1005,500 +981,40 @@ All API keys stored in: `~/.cursor/mcp.json`
 
 ---
 
-## 16. CODEBASE CONSOLIDATION (Oct 5, 2025)
-
-**Status**: ✅ COMPLETE (Phase 1 & 2)
-**Result**: 26 → 19 directories (27% reduction)
-
-**Quick Summary**:
-- ✅ All duplicates consolidated (5 n8n locations → 1)
-- ✅ Clear naming (admin-portal → admin-scripts)
-- ✅ All 18 folders audited with comprehensive READMEs
-- ✅ Archives reduced from 358M → 51M (86% reduction)
-
-**📄 Complete Details**: See `/docs/infrastructure/CODEBASE_CONSOLIDATION.md` for full Phase 1 & 2 documentation (950 lines)
-
----
-
-## 17. PRODUCTION SYSTEMS
+## 16. PRODUCTION SYSTEMS
 
 ✅ **Mobile Optimized**: All pages tested and optimized for mobile devices
-✅ **Clean Codebase**: 53 empty tables deleted, 2 root-level .md files (CLAUDE.md, README.md) + organized /docs/ structure
+✅ **Clean Codebase**: 53 empty tables deleted, organized /docs/ structure
 ✅ **Voice AI Live**: Custom Solutions consultation using OpenAI voice
 ✅ **eSignatures Active**: Legal agreements automated for all service types
 
 ---
 
-**This is the single source of truth. All other documentation is archived or consolidated here.**
-
-**Last Updated**: October 6, 2025
-**Next Review**: When any critical system changes
-**Owner**: Shai Friedman
-**Maintained By**: Claude AI (via this document)
-
----
-
-## 16. FILE ORGANIZATION (Updated Oct 5, 2025)
-
-### **New Directory Structure**
-
-**Root directory is now clean** - only essential files remain.
-
-```
-/
-├── CLAUDE.md                          # Master documentation (THIS FILE)
-├── README.md                          # GitHub entry point
-├── package.json, package-lock.json    # Node.js
-├── .gitignore, .cursorrules, .env     # Config
-│
-├── webflow/                           # ✅ All Webflow files
-│   ├── pages/                         # 23 WEBFLOW_EMBED pages
-│   ├── templates/                     # 5 template files
-│   └── docs/                          # Deployment instructions
-│
-├── data/                              # ✅ All data files
-│   ├── json/                          # JSON data (13 files)
-│   ├── configs/                       # Credentials & configs
-│   └── temp/                          # Temporary files
-│
-├── scripts/                           # Scripts (organized by category)
-│   ├── airtable/
-│   ├── n8n/
-│   ├── webflow/
-│   ├── deployment/
-│   └── archive/
-│
-├── docs/                              # Documentation (413 → ~50 files)
-├── apps/                              # Application code
-├── infra/                             # Infrastructure
-└── archives/                          # Old/archived files
-```
-
-### **Key File Locations**
-
-| Resource | New Location | Old Location |
-|----------|-------------|--------------|
-| Webflow pages | `webflow/pages/` | Root (moved) |
-| Webflow docs | `webflow/docs/` | Root (moved) |
-| Data files | `data/json/` | Root (moved) |
-| Configs | `data/configs/` | Root (moved) |
-| Scripts | `scripts/[category]/` | Root (moved) |
-
-### **Before Reorganization** (Oct 5, 2025):
-- 🔴 70 files at root
-- 🔴 28 HTML files cluttering root
-- 🔴 13 JSON files scattered
-- 🔴 Scripts unorganized
-
-### **After Reorganization** (Oct 5, 2025):
-- ✅ ~15 files at root (essential only)
-- ✅ 0 HTML files at root (all in webflow/)
-- ✅ 0 data files at root (all in data/)
-- ✅ Scripts organized by category
-
-**Reorganization committed**: `1b25274` (Oct 5, 2025)
-
----
-
-## 17. PHASE 2.5 PRODUCTION AUDIT (Oct 6, 2025)
-
-**Status**: ✅ COMPLETE
-**Systems Audited**: 8 components (n8n, VPS, DNS, Vercel, Stripe, Docker, Airtable, Notion)
-**Critical Issues Fixed**: 3
-
-**Quick Summary**:
-- ✅ Fixed rensto.com 403 error (Cloudflare redirect)
-- ✅ Created 18 Stripe products with payment links ($1,997-$1,499/mo)
-- ✅ Rotated all 3 Stripe keys (security issue resolved)
-- ✅ Updated n8n to v1.113.3, verified all VPS services
-- ✅ Verified Airtable (11 bases) and Notion (3 databases) APIs
-- ✅ Documented api.rensto.com (Next.js API routes for Stripe webhooks)
-
-**Production URLs Verified**:
-- https://www.rensto.com (Webflow) ✅
-- https://admin.rensto.com (Vercel) ✅
-- https://n8n.rensto.com (Cloudflare tunnel) ✅
-- https://api.rensto.com (Next.js API) ✅
-
-**📄 Complete Details**: See `/docs/audits/PHASE_2.5_PRODUCTION_AUDIT.md` for full audit findings, all 8 system details, and remaining action items
-
----
-## 17. WEBFLOW JAVASCRIPT AUTOMATION (Oct 6-8, 2025)
-
-**Status**: ✅ COMPLETE (Homepage + Service Pages Ready)
-**Coverage**: 20 of 24 pages ready (83%)
-**Impact**: 87% code reduction, 93% faster updates
-
-**Quick Summary**:
-- ✅ Replaced 5,164+ lines of inline JavaScript with modular code
-- ✅ GitHub + Vercel auto-deploy system (30-second deployment)
-- ✅ Homepage script created (Oct 8, 2025) - GSAP animations, FAQ, lead magnet
-- ✅ All 4 service pages ready for Webflow deployment
-- ✅ Full version control, testing, and documentation
-- ✅ Update 1 file, all pages auto-update via CDN
-
-**Repository**: https://github.com/imsuperseller/rensto-webflow-scripts
-**Production**: https://rensto-webflow-scripts.vercel.app
-
-**Latest Deployment (Oct 8, 2025)**:
-- ✅ Homepage: `/homepage/checkout.js` (295 lines) - LIVE on CDN
-- ✅ Marketplace: Ready for Webflow deployment (6 Stripe buttons)
-- ✅ Subscriptions: Ready for Webflow deployment (3 Stripe buttons)
-- ✅ Custom Solutions: Ready for Webflow deployment (2 Stripe + Typeform)
-- ✅ Ready Solutions: Ready for Webflow deployment (3 Stripe buttons)
-
-**Next Steps**:
-- User deploying service pages to Webflow (manual copy-paste to Custom Code sections)
-- Testing all 14 Stripe checkout buttons post-deployment
-- Remaining 16 niche pages + 3 content pages to follow
-
-**📄 Complete Details**:
-- `/docs/webflow/WEBFLOW_JAVASCRIPT_AUTOMATION.md` - Full architecture
-- `/webflow/DEPLOYMENT_STATUS_TRACKER.md` - Current deployment status
-- `/webflow/DEPLOYMENT_READY_CHECKLIST.md` - Deployment instructions
-
----
-
----
-
-## 18. BMAD DOCUMENTATION PROJECT (Oct 7, 2025)
-
-**Status**: ✅ COMPLETE
-**Method**: BMAD (Build, Measure, Analyze, Deploy)
-**Time**: 5.5 hours
-**Impact**: 95% documentation coverage achieved
-
-**Quick Summary**:
-- ✅ 5 comprehensive documents created (3,583 lines total)
-- ✅ 63 buttons mapped across 19 pages
-- ✅ 4 customer journey stages documented
-- ✅ Post-purchase automation flows mapped
-- ✅ Typeform integration audited (4 forms)
-- ✅ Design consistency measured (72% verified)
-
-**Deliverables**:
-1. `/webflow/TYPEFORM_INTEGRATION_AUDIT.md` (441 lines) - 4 Typeforms documented
-2. `/webflow/BUTTON_FLOW_MAP.md` (1,028 lines) - All 63 buttons mapped to Stripe products
-3. `/docs/workflows/POST_PURCHASE_AUTOMATION.md` (728 lines) - n8n DEV-FIN-006 workflow
-4. `/docs/business/CUSTOMER_JOURNEY_FLOWS.md` (728 lines) - 4 journey stages
-5. `/webflow/DESIGN_CONSISTENCY_AUDIT.md` (658 lines) - Design standards audit
-
-**📄 Complete Details**: See `/webflow/BMAD_PROJECT_COMPLETION_REPORT.md` for full project overview, metrics, and remaining gaps
-
----
-## 19. DEPLOYMENT & SYNC MAP
-
-**Last Updated**: October 7, 2025
-**Purpose**: Track all deployments and prevent local/online divergence
-
----
-
-### GitHub Repositories
-
-| Repo | Purpose | Deployed To | Status |
-|------|---------|-------------|--------|
-| **rensto** (main) | Documentation, apps, workflows | NOT deployed (docs only) | ✅ Clean (committed all changes) |
-| **rensto-webflow-scripts** | Webflow JavaScript modules | Vercel CDN | ✅ Auto-deploy working |
-| airtable-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified (needs review) |
-| quickbooks-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified (needs review) |
-
-**Repository URLs**:
-- Main: `https://github.com/imsuperseller/rensto`
-- Webflow Scripts: `https://github.com/imsuperseller/rensto-webflow-scripts`
-
----
-
-### Vercel Deployments
-
-| App | Repo Source | Production URL | Status |
-|-----|-------------|----------------|--------|
-| **rensto-site** | apps/web/rensto-site/ | https://www.rensto.com (Webflow) | ✅ Live (via Webflow hosting) |
-| **admin-dashboard** | apps/web/admin-dashboard/ | https://admin.rensto.com | ✅ Deployed |
-| **webflow-scripts** | rensto-webflow-scripts | https://rensto-webflow-scripts.vercel.app | ✅ Live, auto-deploy from GitHub |
-| **API routes** | apps/web/rensto-site/api/ | https://api.rensto.com | ✅ Live (Stripe webhooks) |
-
-**Note**: Found 3 Vercel deployments for rensto-site (different hashes) - production is Webflow-hosted at www.rensto.com
-
----
-
-### Webflow Integration
-
-| Component | Source | Deployed To | Sync Method | Status |
-|-----------|--------|-------------|-------------|--------|
-| **HTML Pages** | webflow/ (main repo) | Webflow Designer | Manual copy-paste | ⏳ In Progress |
-| **JavaScript** | rensto-webflow-scripts repo | Vercel CDN | Auto-deploy from GitHub | ✅ Live |
-| **Script Tags** | Webflow Page Settings | Webflow pages | Manual update (2 lines per page) | ✅ Homepage done |
-
-**Script Tag Format** (deployed on homepage):
-```html
-<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
-<script src="https://rensto-webflow-scripts.vercel.app/homepage/checkout.js"></script>
-```
-
-**Deployment Status (Oct 8, 2025)**:
-- ✅ Homepage: Scripts pasted and live (GSAP animations working)
-- ⏳ Marketplace: HTML ready, awaiting Webflow paste
-- ⏳ Subscriptions: HTML ready, awaiting Webflow paste
-- ⏳ Custom Solutions: HTML ready, awaiting Webflow paste
-- ⏳ Ready Solutions: HTML ready, awaiting Webflow paste
-
----
-
-### Sync Rules & Best Practices
-
-**✅ CORRECT Workflow**:
-
-1. **JavaScript Changes**:
-   - Edit files in `rensto-webflow-scripts/` repo
-   - Commit and push to GitHub
-   - Vercel auto-deploys in 30 seconds
-   - All 19 Webflow pages automatically load new version
-   - **NO changes needed in main repo**
-
-2. **HTML/Documentation Changes**:
-   - Edit files in `webflow/` (main repo)
-   - Commit to main repo
-   - Manually copy-paste to Webflow Designer (if needed)
-   - **NO changes needed in scripts repo**
-
-3. **Application Code Changes** (apps/, scripts/, workflows/):
-   - Edit files in main repo
-   - Commit to main repo
-   - Deploy to Vercel/VPS as needed
-   - Update CLAUDE.md if architecture changes
-
-**❌ ANTI-PATTERNS (Avoid These!)**:
-
-- ❌ **Duplicating JavaScript** between main repo and scripts repo
-- ❌ **Editing scripts locally** then forgetting to push to GitHub
-- ❌ **Editing scripts in GitHub** then forgetting to pull locally
-- ❌ **Copying documentation** between repos (reference instead)
-- ❌ **Manual updates** to multiple Webflow pages (use CDN approach)
-
-**⚠️ WARNING Signs**:
-
-- Same filename exists in both repos → **DANGER**
-- Script changes not reflected in Webflow → **Check Vercel deployment**
-- Documentation conflicts between repos → **Audit needed**
-
----
-
-### Deployment Checklist
-
-**When deploying new features:**
-
-- [ ] Update code in appropriate repo (main or webflow-scripts)
-- [ ] Commit and push to GitHub
-- [ ] Verify auto-deploy succeeded (if Vercel-hosted)
-- [ ] Update CLAUDE.md if architecture changed
-- [ ] Update relevant documentation in main repo
-- [ ] Test in production (staging first if available)
-- [ ] Create deployment note in `/docs/audits/` if major change
-
-**Monthly Audit** (verify sync):
-
-- [ ] Check git status in both repos (should be clean)
-- [ ] Verify no duplicate files between repos
-- [ ] Run automated test suite: `node webflow/automated-test-suite.js`
-- [ ] Check Vercel deployment status
-- [ ] Review CLAUDE.md for accuracy
-
----
-
-### Emergency Recovery
-
-**If repos diverge**:
-
-1. Identify source of truth (usually: scripts repo for JS, main repo for docs)
-2. Archive conflicting versions: `archives/conflict-YYYY-MM-DD/`
-3. Copy source of truth to correct location
-4. Delete duplicates
-5. Commit clean state
-6. Update this section with lessons learned
-
-**If deployment fails**:
-
-1. Check Vercel deployment logs
-2. Verify GitHub webhook triggered
-3. Check for build errors in Vercel dashboard
-4. Rollback to previous deployment if needed
-5. Fix issue locally and redeploy
-
----
-
-**📄 Related Documentation**:
-- `/docs/audits/PHASE_3_CODEBASE_AUDIT.md` - Full audit report
-- `/docs/webflow/WEBFLOW_JAVASCRIPT_AUTOMATION.md` - Webflow automation details
-- `rensto-webflow-scripts/README.md` - Scripts repo documentation
-
----
-
-## 18. n8n-MCP Fix (Oct 9, 2025)
-
-**Issue**: Docker-based n8n-mcp servers failing silently (stdin lifecycle issue)
-**Status**: ✅ FIXED
-**Solution**: Switched from Docker to npx for all 3 n8n instances
-**Impact**: All 40+ n8n-mcp tools now fully functional
-
-### Problem Summary
-
-**Symptoms**:
-- ✅ `tools/list` worked (returned available tools)
-- ❌ All API calls failed silently: `n8n_health_check`, `n8n_get_execution`, `n8n_list_workflows`, etc.
-- ❌ Errors: "stdin closed, shutting down..." with no JSON response
-
-**Root Cause**:
-Docker containers using stdio mode exit when stdin closes. When Claude Code sends requests via `echo | docker run`, stdin closes immediately after the echo completes, causing the container to shut down before the n8n API call finishes.
-
-**Verification**:
-Using a named pipe that kept stdin open for 5 seconds proved the issue:
-- With closed stdin: ❌ No response
-- With open stdin: ✅ Full JSON-RPC response with execution data
-
-### Solution Applied
-
-**Changed MCP Configuration** (`~/.cursor/mcp.json`):
-
-**Before (Docker)**:
-```json
-{
-  "n8n-tax4us": {
-    "command": "docker",
-    "args": [
-      "run", "-i", "--rm", "--init",
-      "-e", "MCP_MODE=stdio",
-      "-e", "N8N_API_URL=https://tax4usllc.app.n8n.cloud",
-      "-e", "N8N_API_KEY=...",
-      "ghcr.io/czlonkowski/n8n-mcp:2.18.0"
-    ]
-  }
-}
-```
-
-**After (npx)**:
-```json
-{
-  "n8n-tax4us": {
-    "command": "npx",
-    "args": ["-y", "n8n-mcp"],
-    "env": {
-      "N8N_API_URL": "https://tax4usllc.app.n8n.cloud",
-      "N8N_API_KEY": "...",
-      "LOG_LEVEL": "error"
-    }
-  }
-}
-```
-
-**All 3 Instances Updated**:
-1. ✅ n8n-rensto (Rensto VPS)
-2. ✅ n8n-tax4us (Tax4Us Cloud)
-3. ✅ n8n-shelly (Shelly Cloud)
-
-### Benefits
-
-1. ✅ **All n8n-mcp tools now work**: 40+ tools including `n8n_get_execution`, `n8n_list_workflows`, `n8n_validate_workflow`, etc.
-2. ✅ **Faster startup**: No Docker image pull needed
-3. ✅ **Lower memory usage**: Direct Node.js process vs Docker container
-4. ✅ **Proper stdio handling**: npx manages stdin lifecycle correctly
-5. ✅ **Can analyze execution details**: Full node-level debugging available
-
-### Next Steps
-
-**Immediate** (After Claude Code Restart):
-1. Restart Claude Code to load new MCP config
-2. Test `n8n_health_check` on all 3 instances
-3. Test `n8n_list_workflows` to verify full functionality
-
-**Short-Term**:
-1. Remove unused Docker wrapper scripts (`.cursor/scripts/n8n-mcp-wrapper.*`)
-2. Create MCP health check dashboard
-3. Add automated MCP connectivity tests
-
-### Documentation
-
-**Full Technical Report**: `/docs/infrastructure/N8N_MCP_FIX_REPORT.md`
-
-**Key Insights**:
-- Docker stdio issues are real and common with MCP servers
-- npx is superior for MCP servers (direct Node.js = proper stream handling)
-- Always verify tools work with actual API calls, not just `tools/list`
-- Named pipes can debug stdin lifecycle issues
-
-**Related GitHub Issues**:
-- czlonkowski/n8n-mcp#137: "Running npx n8n-mcp get stuck"
-- czlonkowski/n8n-mcp#262: "Authentication Error with n8n API"
-
----
-
-### MCP-Only Access Policy (Oct 10, 2025)
-
-**Status**: ✅ ENFORCED
-**Purpose**: Force proper debugging of MCP tools instead of degrading to raw API calls
-
-#### Policy Rules
-
-⛔ **FORBIDDEN - Claude Code May NOT**:
-1. ❌ Make direct curl calls to n8n APIs (all 3 instances)
-2. ❌ Use X-N8N-API-KEY headers in HTTP requests
-3. ❌ Execute npx n8n-mcp via Bash tool
-4. ❌ Any form of direct n8n API access
-
-✅ **INTENDED (When Tool Access Fixed)**:
-1. Main session should use `mcp__n8n-rensto__*` tools (41 tools for Rensto VPS)
-2. Main session should use `mcp__n8n-tax4us__*` tools (41 tools for Tax4Us Cloud)
-3. Main session should use `mcp__n8n-shelly__*` tools (41 tools for Shelly Cloud)
-
-⚠️ **CURRENT REALITY (Oct 11, 2025)**:
-- Main Claude Code session: **0 `mcp__n8n-*` tools available**
-- Specialized n8n agents: **0 tools available** (tested via n8n-guide)
-- MCP servers: ✅ Running and responding to JSON-RPC
-- Gap: Tools show "41 enabled" in Cursor UI but aren't callable
-
-**Working Methods (Interim)**:
-1. Manual workflow import via n8n UI
-2. Node.js scripts (see Tax4Us fix-workflow.cjs pattern)
-3. Direct API calls with explicit user approval (requires exception to policy)
-
-#### Reasoning
-
-**Why This Policy Exists**:
-- **Forces proper MCP debugging**: If MCP tools fail, must investigate root cause
-- **Prevents shortcuts**: No degrading to API calls when MCP has issues
-- **Ensures validation**: MCP tools must be truly functional, not just "enabled"
-- **API keys preserved**: Keys remain in `~/.cursor/mcp.json` for MCP servers
-
-#### Enforcement
-
-**When Claude Code Attempts Direct API Access**:
-1. User rejects the tool use immediately
-2. Claude Code must explain why MCP tools are not working
-3. Claude Code must diagnose and fix MCP tool access
-4. Claude Code may NOT bypass MCP tools
-
-**Documented In**:
-- `/.cursorrules` (lines 185-219) - Primary enforcement rules
-- This section - Policy documentation and rationale
-
-#### Validation Status
-
-**Last Validated**: October 10, 2025, 8:17 PM PST
-**Method**: JSON-RPC protocol testing (all 3 instances)
-**Report**: `/docs/infrastructure/N8N_MCP_VALIDATION_REPORT.md`
-
-**MCP Infrastructure Status** (Oct 10, 2025):
-- ✅ All 3 instances showing "41 tools enabled" in Cursor UI
-- ✅ MCP servers respond to JSON-RPC (tested via bash)
-- ✅ Health checks passing (831ms response time, v2.18.10)
-- ✅ APIs return workflow data
-- ✅ Docker → npx fix resolved stdin lifecycle issue
-
-**Tool Accessibility Status** (Oct 11, 2025):
-- ❌ Main Claude Code session: Cannot call `mcp__n8n-*` tools (0 available)
-- ❌ Specialized agents: Cannot call tools (tested n8n-guide = 0 tools)
-- ⚠️ **Gap Identified**: Infrastructure works, integration doesn't
-- 📋 **Investigation Report**: `/docs/infrastructure/N8N_WORKFLOW_CREATION_CONFLICTS_REPORT.md`
-- 📋 **Tool Access Audit**: `/docs/infrastructure/TOOL_ACCESS_AUDIT_REPORT.md`
-- 📋 **Correct Usage Guide**: `/docs/n8n/WORKFLOW_CREATION_GUIDE.md`
+## 18. MCP Architecture (Oct 13, 2025)
+
+**Current Status**: ✅ 12 MCP Servers Active
+**Architecture**: Modern MCP server setup with proper tool integration
+**Performance**: Optimized for <40k character documentation
+
+### **Active MCP Servers (12)**
+
+1. **n8n MCP** - Workflow management (Docker-based, 41 tools per instance)
+2. **Context7 MCP** - Documentation lookup and research
+3. **Airtable MCP** - Database operations
+4. **Notion MCP** - Documentation management
+5. **Typeform MCP** - Form handling
+6. **Make MCP** - Automation platform
+7. **Stripe MCP** - Payment processing
+8. **TidyCal MCP** - Calendar management
+9. **Supabase MCP** - Database operations
+10. **Webflow MCP** - Website management
+11. **Boost.space MCP** - Integration platform
+12. **Shadcn MCP** - UI components
+
+### **Usage Patterns**
+
+**n8n MCP**: Workflow creation, validation, execution monitoring
+**Context7 MCP**: Library documentation, real-time research, AI agent enhancement
+**Combined**: Use Context7 for research → n8n MCP for implementation
 
 ---

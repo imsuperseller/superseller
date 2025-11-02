@@ -798,7 +798,7 @@ class BoostSpaceMCPServer {
       await this.api.post(`/api/${module_id}/${record_id}/comment`, { message });
     } catch (error) {
       // Fallback: just log it
-      console.log(`Comment added to ${module_id}/${record_id}: ${message}`);
+      // console.log(`Comment added to ${module_id}/${record_id}: ${message}`);
     }
 
     return {
@@ -1219,24 +1219,24 @@ class BoostSpaceMCPServer {
       const transport = new StdioServerTransport();
       await this.server.connect(transport);
 
-      console.log('🚀 Boost.space MCP Server COMPLETE v2.0 running');
-      console.log(`📊 Connected to: ${BOOST_SPACE_CONFIG.platform}`);
-      console.log(`🛠️  40+ tools available`);
+      // console.log('🚀 Boost.space MCP Server COMPLETE v2.0 running');
+      // console.log(`📊 Connected to: ${BOOST_SPACE_CONFIG.platform}`);
+      // console.log(`🛠️  40+ tools available`);
 
       process.on('SIGINT', () => {
-        console.log('🛑 Shutting down...');
+        // console.log('🛑 Shutting down...');
         process.exit(0);
       });
 
       process.on('SIGTERM', () => {
-        console.log('🛑 Shutting down...');
+        // console.log('🛑 Shutting down...');
         process.exit(0);
       });
 
-      console.log('✅ Ready to handle requests');
+      // console.log('✅ Ready to handle requests');
 
     } catch (error) {
-      console.error('❌ Failed to start MCP server:', error);
+      // console.error('❌ Failed to start MCP server:', error);
       process.exit(1);
     }
   }

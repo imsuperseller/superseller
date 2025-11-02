@@ -1,0 +1,167 @@
+{
+  "mcpServers": {
+    "rensto-n8n": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "-e",
+        "MCP_MODE=stdio",
+        "-e",
+        "LOG_LEVEL=error",
+        "-e",
+        "DISABLE_CONSOLE_OUTPUT=true",
+        "-e",
+        "N8N_API_URL=http://173.254.201.134:5678",
+        "-e",
+        "N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2MDkyMDIxfQ.YKPTmHyLr1_kXX2JMY7hsPy4jvnCJDL71mOCltoUbQc",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    },
+    "tax4us-n8n": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "-e",
+        "MCP_MODE=stdio",
+        "-e",
+        "LOG_LEVEL=error",
+        "-e",
+        "DISABLE_CONSOLE_OUTPUT=true",
+        "-e",
+        "N8N_API_URL=https://tax4usllc.app.n8n.cloud",
+        "-e",
+        "N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    },
+    "shelly-n8n": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "-e",
+        "MCP_MODE=stdio",
+        "-e",
+        "LOG_LEVEL=error",
+        "-e",
+        "DISABLE_CONSOLE_OUTPUT=true",
+        "-e",
+        "N8N_API_URL=https://shellyins.app.n8n.cloud",
+        "-e",
+        "N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNjUxZWNkZS04Yzc5LTRiMTktYjEzMC04NTJiY2VkYWViY2YiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NDk1MDk3fQ.pDpDBUrHJCiPh1xaaq0p9PmRoGp-i36hiR_Ld_EhtZc",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    },
+    "webflow": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "webflow-mcp-server@latest"
+      ],
+      "env": {
+        "WEBFLOW_TOKEN": "90b67c9892c0067fde5f716f9a95f2e0b863cbbf496465cdeef5ddc817e4124b",
+        "WEBFLOW_SITE_ID": "66c7e551a317e0e9c9f906d8",
+        "WEBFLOW_CLIENT_ID": "b77ecda6a3e0feba68ad9c75c1b18cf0fb71d8859c7e4ada713d228e4da73716",
+        "WEBFLOW_CLIENT_SECRET": "USE_ENV_VAR_OR_MCP_CONFIG"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "ctx7sk-eef283c3-9c8d-4d87-8139-e16e9cd39045"
+      }
+    },
+    "airtable-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "airtable-mcp-server"
+      ],
+      "env": {
+        "AIRTABLE_API_KEY": "pattFjaYM0LkLb0gb.8026a945a8cbcc7b3d6fe7d2085a74f5b019184379f84ccf7bbbca1f65fc55fb"
+      }
+    },
+    "stripe": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/stripe",
+        "--tools=all",
+        "--api-key=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"
+      ]
+    },
+    "tidycal": {
+      "command": "node",
+      "args": [
+        "/Users/shaifriedman/New Rensto/rensto/infra/mcp-servers/tidycal-mcp-server/server-simple.js"
+      ],
+      "env": {
+        "TIDYCAL_API_KEY": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMjliYThhMDk0YzgyOTU4M2IwMTllMTY0ODBhOTE5NDM5NzFhMzY2MWRiYjJjM2EzMTgyMWI3NzQ2YzJkNmY1YTIxY2Y3M2VhZTExMDQ2NmEiLCJpYXQiOjE3NTc3MTA4ODYuNTMzMzg0LCJuYmYiOjE3NTc3MTA4ODYuNTMzMzg2LCJleHAiOjQ5MTMzODQ0ODYuNTIzMTE2LCJzdWIiOiIzMzEzOCIsInNjb3BlcyI6W119.WEkUmJ4XOi_1Cia5jWFUFk6Q30G1A80l2WPNrZa-svMdp4A3Ft_DzsKLfeGkeDZ7B-0lnXaaOV04R9DuX6GbYsKXZZyC8UreNANDn-8wEZmkYOw5Dzt4X_9vHJup3hlexTjTMDSwro4uKQA6YAoZuCtKr1aj32O_8Egop9IjMbrblowRzmiLck2KBn3x11GNfaFR-5xZ3-b-K8QKB0OlERV_ZOfUq25JWRF3XlUJLC1Y8yYQt5qIbX-LnAfk_FahiiHiGGN0jdPHUzJJ5WM9iLqNxTjgMdbdSUvif6lL6vjoaMP_2jLXQCd0ANGH-9LsoqWb92Ze9LFc4Mx-1q7D4WlEvl3bsyeuxfuRoZs0SVLNTiEjGyFZJG2_ChDac9t7RNq7BKTSzHYY9jBFwjeVsq_lxLkaMfKMfZ_hOF83EizIhjc0r4ajDxyWDatA-vr88SIE2vEA0ixzGV7c2NFbtge-HztY-LE0XWO1BZRR0NU3a1K_ihE4L4kBdI1C8US_tVTGYJ1hFWze3ESaYhqNiCyfUemT0S3AXpS3xwI7DuHjR3q-eRco4-fiuTQqVQYMmcemQaULeknP9tMsQMUTIWNbDSBrJL2adO3LIV8F3JgGsJnDhXJmAufLMe8OcweQAQs63kXApZrikPn5w3j0yy-O7SYQcHDCjJxNwYqslYA"
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=yrmdunccqrazqxcwhthn"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "e5362baf-c777-4d57-a609-6eaf1f9e87f6"
+      }
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "notion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_TOKEN": "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"
+      }
+    },
+    "boost-space": {
+      "command": "node",
+      "args": [
+        "/Users/shaifriedman/New Rensto/rensto/infra/mcp-servers/boost-space-mcp-server/server.js"
+      ],
+      "env": {
+        "BOOST_SPACE_PLATFORM": "https://superseller.boost.space",
+        "BOOST_SPACE_API_KEY": "88c5ff57783912fcc05fec10a22d67b5806d48346ab9ef562f17e2188cc07dba",
+        "NODE_ENV": "production",
+        "DISABLE_CONSOLE_OUTPUT": "true"
+      }
+    },
+    "make": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://us2.make.com/mcp/api/v1/u/e5adf952-1215-4272-8855-cf3ee7299870/sse"
+      ]
+    }
+  }
+}
+

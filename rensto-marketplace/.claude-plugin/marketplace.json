@@ -1,0 +1,25 @@
+{
+  "name": "rensto-automation",
+  "owner": {
+    "name": "Rensto Team",
+    "email": "admin@rensto.com"
+  },
+  "metadata": {
+    "description": "Rensto n8n workflow automation agents and tools",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "rensto-n8n-agents",
+      "source": "./plugins/rensto-n8n-agents",
+      "description": "Specialized n8n workflow creation and management agents",
+      "version": "1.0.0",
+      "author": {
+        "name": "Rensto Team"
+      },
+      "keywords": ["n8n", "workflow", "automation", "rensto"],
+      "category": "automation",
+      "strict": false
+    }
+  ]
+}

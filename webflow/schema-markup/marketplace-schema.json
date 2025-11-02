@@ -1,0 +1,58 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "n8n Workflow Templates Marketplace",
+  "description": "525+ ready-to-use n8n workflow templates for every industry and use case. Install proven automation workflows in 10 minutes—not 40 hours.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "url": "https://rensto.com",
+    "logo": "https://rensto.com/logo.png"
+  },
+  "areaServed": "Worldwide",
+  "serviceType": "Software Template Marketplace",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Simple Workflows",
+      "price": "29",
+      "priceCurrency": "USD",
+      "description": "Single-app workflows with installation guide",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "name": "Advanced Workflows",
+      "price": "97",
+      "priceCurrency": "USD",
+      "description": "Multi-app integrations with video walkthrough",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "name": "Complete Systems",
+      "price": "197",
+      "priceCurrency": "USD",
+      "description": "Multi-workflow systems with lifetime updates",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "name": "Full-Service Install",
+      "price": "797",
+      "priceCurrency": "USD",
+      "description": "Professional installation and configuration",
+      "availability": "https://schema.org/InStock"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "3200",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}
+</script>
+

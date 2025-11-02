@@ -288,6 +288,16 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
           ],
         };
 
+      case 'update_webhook_endpoint':
+        const { webhookId, enabled_events, url: webhookUrl } = args;
+        const updatedWebhook = await stripe.webhookEndpoints.update(webhookId, {
+          ...(webhookUrl && { url: webhookUrl }),
+          ...(enabled_events && { enabled_events }),
+        });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(updatedWebhook, null, 2) }],
+        };
+
       case 'create_coupon':
         const { percentOff, duration, couponName } = args;
         const coupon = await stripe.coupons.create({
@@ -615,6 +625,23 @@ server.setRequestHandler('tools/list', async () => {
         inputSchema: {
           type: 'object',
           properties: {},
+        },
+      },
+      {
+        name: 'update_webhook_endpoint',
+        description: 'Update a webhook endpoint (add events, change URL, etc.)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            webhookId: { type: 'string', description: 'Webhook endpoint ID (e.g., we_...)' },
+            enabled_events: { 
+              type: 'array', 
+              description: 'Array of event names to listen for (e.g., ["checkout.session.completed"])',
+              items: { type: 'string' }
+            },
+            url: { type: 'string', description: 'Webhook URL (optional, only if changing URL)' },
+          },
+          required: ['webhookId'],
         },
       },
       {

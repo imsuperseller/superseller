@@ -1,0 +1,738 @@
+<style>
+
+/* ===== RENSTO COMPLETE BRAND SYSTEM ===== */
+
+:root {
+  --rensto-primary: #fe3d51;
+  --rensto-secondary: #bf5700;
+  --rensto-accent-blue: #1eaef7;
+  --rensto-accent-cyan: #5ffbfd;
+  --rensto-bg-primary: #110d28;
+  --rensto-bg-secondary: #1a162f;
+  --rensto-text-primary: #fffff3;
+  --rensto-text-secondary: #b0bec5;
+  --rensto-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
+  --rensto-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+  --rensto-font-primary: 'Outfit', sans-serif;
+  --rensto-font-weight-normal: 400;
+  --rensto-font-weight-semibold: 600;
+  --rensto-font-weight-bold: 700;
+  --rensto-spacing-xs: 0.5rem;
+  --rensto-spacing-sm: 1rem;
+  --rensto-spacing-md: 1.5rem;
+  --rensto-spacing-lg: 2rem;
+  --rensto-spacing-xl: 3rem;
+  --rensto-spacing-xxl: 4rem;
+  --rensto-radius-sm: 0.25rem;
+  --rensto-radius-md: 0.5rem;
+  --rensto-radius-lg: 1rem;
+  --rensto-radius-xl: 1.5rem;
+  --rensto-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --rensto-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --rensto-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --rensto-shadow-glow: 0 0 20px rgba(254, 61, 81, 0.3);
+}
+
+/* ===== GLOBAL RESET ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--rensto-font-primary);
+  background: var(--rensto-bg-primary);
+  color: var(--rensto-text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-top: 80px;
+}
+
+/* ===== NAVIGATION ===== */
+
+.rensto-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(17, 13, 40, 0.98);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(254, 61, 81, 0.3);
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.rensto-nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--rensto-spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rensto-logo-text {
+  font-size: 1.5rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-text-primary);
+  text-decoration: none;
+}
+
+.rensto-nav-links {
+  display: flex;
+  gap: var(--rensto-spacing-lg);
+  align-items: center;
+}
+
+.rensto-nav-link {
+  color: var(--rensto-text-primary) !important;
+  text-decoration: none;
+  font-weight: var(--rensto-font-weight-semibold);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: var(--rensto-radius-sm);
+}
+
+.rensto-nav-link:hover {
+  color: var(--rensto-primary) !important;
+  background: rgba(254, 61, 81, 0.1);
+}
+
+.rensto-cta-button {
+  background: var(--rensto-gradient-primary);
+  color: white !important;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--rensto-radius-md);
+  text-decoration: none;
+  font-weight: var(--rensto-font-weight-bold);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--rensto-shadow-sm);
+  border: none;
+  cursor: pointer;
+}
+
+.rensto-cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--rensto-shadow-lg);
+  color: white !important;
+}
+
+/* ===== HERO SECTION ===== */
+
+.rensto-hero {
+  min-height: 100vh;
+  background: var(--rensto-bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem var(--rensto-spacing-md) var(--rensto-spacing-xxl);
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+  padding-top: 120px !important;
+  padding-bottom: 80px !important;
+}
+
+.rensto-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.rensto-hero-content {
+  max-width: 900px;
+  z-index: 1;
+  position: relative;
+  margin: 0 auto;
+}
+
+.rensto-hero-title {
+  font-size: 4rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-text-primary);
+  margin-bottom: var(--rensto-spacing-lg);
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rensto-hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--rensto-text-secondary);
+  margin-bottom: var(--rensto-spacing-xl);
+  line-height: 1.6;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rensto-hero-buttons {
+  display: flex;
+  gap: var(--rensto-spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--rensto-spacing-lg);
+}
+
+/* ===== SECTIONS ===== */
+
+.rensto-section {
+  padding: var(--rensto-spacing-xxl) 0;
+  background: var(--rensto-bg-secondary);
+  margin: 0;
+  padding: 80px 0 !important;
+}
+
+.rensto-section-alt {
+  background: var(--rensto-bg-primary);
+}
+
+.rensto-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--rensto-spacing-md);
+}
+
+.rensto-section-title {
+  font-size: 3rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-text-primary);
+  text-align: center;
+  margin-bottom: var(--rensto-spacing-lg);
+  line-height: 1.2;
+}
+
+.rensto-section-subtitle {
+  font-size: 1.25rem;
+  color: var(--rensto-text-secondary);
+  text-align: center;
+  margin-bottom: var(--rensto-spacing-xl);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ===== CARDS ===== */
+
+.rensto-card {
+  background: rgba(26, 22, 47, 0.9);
+  border: 2px solid rgba(254, 61, 81, 0.2);
+  border-radius: var(--rensto-radius-lg);
+  padding: var(--rensto-spacing-xl);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  margin-bottom: var(--rensto-spacing-lg);
+  box-shadow: var(--rensto-shadow-sm);
+  margin-bottom: 30px !important;
+}
+
+.rensto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--rensto-shadow-lg);
+  border-color: var(--rensto-primary);
+}
+
+.rensto-card-title {
+  font-size: 1.75rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-text-primary);
+  margin-bottom: var(--rensto-spacing-md);
+  line-height: 1.3;
+}
+
+.rensto-card-description {
+  color: var(--rensto-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--rensto-spacing-lg);
+  font-size: 1.1rem;
+}
+
+.rensto-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--rensto-spacing-lg);
+  margin-top: var(--rensto-spacing-xl);
+}
+
+/* ===== BUTTONS ===== */
+
+.rensto-button-primary {
+  background: var(--rensto-gradient-primary);
+  color: white !important;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: var(--rensto-radius-md);
+  font-weight: var(--rensto-font-weight-bold);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  display: inline-block !important;
+  box-shadow: var(--rensto-shadow-sm);
+}
+
+.rensto-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--rensto-shadow-lg);
+  color: white !important;
+}
+
+.rensto-button-secondary {
+  background: transparent;
+  color: var(--rensto-primary) !important;
+  padding: 1rem 2rem;
+  border: 2px solid var(--rensto-primary);
+  border-radius: var(--rensto-radius-md);
+  font-weight: var(--rensto-font-weight-bold);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+.rensto-button-secondary:hover {
+  background: var(--rensto-primary);
+  color: white !important;
+  transform: translateY(-2px);
+}
+
+/* ===== LOGO STYLING ===== */
+
+.rensto-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.rensto-logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ===== TESTIMONIALS ===== */
+
+.rensto-testimonial {
+  background: rgba(26, 22, 47, 0.8);
+  border: 1px solid rgba(254, 61, 81, 0.2);
+  border-radius: var(--rensto-radius-lg);
+  padding: var(--rensto-spacing-xl);
+  margin: var(--rensto-spacing-md) 0;
+  backdrop-filter: blur(10px);
+}
+
+.rensto-testimonial-text {
+  font-size: 1.1rem;
+  color: var(--rensto-text-secondary);
+  font-style: italic;
+  margin-bottom: var(--rensto-spacing-md);
+  line-height: 1.6;
+}
+
+.rensto-testimonial-author {
+  color: var(--rensto-text-primary);
+  font-weight: var(--rensto-font-weight-bold);
+  font-size: 1rem;
+}
+
+.rensto-stars {
+  color: #ffd700;
+  font-size: 1.2rem;
+  margin-top: var(--rensto-spacing-xs);
+}
+
+/* ===== PRICING ===== */
+
+.rensto-pricing-card {
+  background: rgba(26, 22, 47, 0.9);
+  border: 2px solid rgba(254, 61, 81, 0.2);
+  border-radius: var(--rensto-radius-lg);
+  padding: var(--rensto-spacing-xl);
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.rensto-pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--rensto-shadow-lg);
+  border-color: var(--rensto-primary);
+}
+
+.rensto-pricing-card.popular {
+  border-color: var(--rensto-primary);
+  box-shadow: var(--rensto-shadow-glow);
+}
+
+.rensto-pricing-card.popular::before {
+  content: 'Most Popular';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--rensto-gradient-primary);
+  color: white;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: var(--rensto-font-weight-bold);
+}
+
+.rensto-price {
+  font-size: 3rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-primary);
+  margin: var(--rensto-spacing-lg) 0;
+}
+
+.rensto-pricing-title {
+  font-size: 1.5rem;
+  font-weight: var(--rensto-font-weight-bold);
+  color: var(--rensto-text-primary);
+  margin-bottom: var(--rensto-spacing-md);
+}
+
+/* ===== FOOTER ===== */
+
+.rensto-footer {
+  background: var(--rensto-bg-primary);
+  padding: var(--rensto-spacing-xxl) 0 var(--rensto-spacing-xl);
+  border-top: 2px solid rgba(254, 61, 81, 0.2);
+  margin-top: var(--rensto-spacing-xxl);
+}
+
+.rensto-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--rensto-spacing-md);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--rensto-spacing-xl);
+}
+
+.rensto-footer-section h3 {
+  color: var(--rensto-text-primary);
+  font-weight: var(--rensto-font-weight-bold);
+  margin-bottom: var(--rensto-spacing-md);
+  font-size: 1.25rem;
+}
+
+.rensto-footer-section a {
+  color: var(--rensto-text-secondary);
+  text-decoration: none;
+  display: block;
+  margin-bottom: var(--rensto-spacing-sm);
+  transition: color 0.3s ease;
+  font-size: 1rem;
+}
+
+.rensto-footer-section a:hover {
+  color: var(--rensto-primary);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .rensto-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .rensto-nav-links {
+    display: none;
+  }
+  
+  .rensto-hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--rensto-spacing-sm);
+  }
+  
+  .rensto-section-title {
+    font-size: 2.25rem;
+  }
+  
+  .rensto-hero {
+    padding: 6rem var(--rensto-spacing-sm) var(--rensto-spacing-xl);
+  }
+  
+  .rensto-card-grid {
+    grid-template-columns: 1fr;
+    gap: var(--rensto-spacing-md);
+  }
+  
+  .rensto-footer-container {
+    grid-template-columns: 1fr;
+    gap: var(--rensto-spacing-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .rensto-hero-title {
+    font-size: 2rem;
+  }
+  
+  .rensto-hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .rensto-section-title {
+    font-size: 2rem;
+  }
+  
+  .rensto-card {
+    padding: var(--rensto-spacing-lg);
+  }
+}
+
+/* ============================================
+   CSS ALIGNMENT FIXES (Webflow Elements)
+   Ensures proper alignment on actual Webflow elements
+   ============================================ */
+
+/* Logo Vertical Centering */
+nav .logo,
+.nav-logo,
+header .logo,
+.w-nav-brand,
+nav a[href="/"],
+.header-container a:first-child {
+    display: flex !important;
+    align-items: center !important;
+    height: 100%;
+}
+
+/* Navigation Container - Target actual <nav> element */
+nav,
+.navbar,
+.w-nav,
+.header-container nav,
+[role="navigation"] {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 80px !important;
+}
+
+/* Nav Links Alignment */
+nav a,
+.nav-link,
+.w-nav-link,
+nav li a,
+[role="navigation"] a {
+    display: flex !important;
+    align-items: center !important;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+/* Nav Buttons Standard Height */
+nav button,
+nav .button,
+nav .cta,
+.w-button,
+button.btn-submit,
+button[type="submit"],
+.button,
+.btn {
+    min-height: 48px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.75rem 1.5rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Footer Container - Target actual footer with classes */
+footer,
+.footer,
+footer.footer,
+footer.utility-position-relative,
+footer.inverse-footer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2rem !important;
+}
+
+/* Footer Columns - Equal Heights */
+.footer-column,
+.footer-section {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Footer Links Alignment */
+.footer a,
+.footer-link {
+    line-height: 1.6;
+    padding: 0.25rem 0;
+}
+
+/* Footer Logo/Content Alignment */
+.footer .logo,
+.footer-content {
+    display: flex !important;
+    align-items: flex-start !important;
+}
+
+/* Card Grid Container */
+.card-grid,
+.service-grid,
+.pricing-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch !important;
+}
+
+/* Individual Cards - Target actual service-card class */
+.card,
+.service-card,
+.pricing-card,
+[class*="service-card"],
+[class*="pricing-card"] {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+/* Card Content Alignment */
+.card-content,
+.card-body {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* Card Buttons - Align to Bottom */
+.card-footer,
+.card-cta {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+/* All Buttons - Standard Height */
+button,
+.button,
+.btn,
+[role="button"],
+.w-button {
+    min-height: 48px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.75rem 1.5rem;
+    box-sizing: border-box;
+}
+
+/* Button Groups Alignment */
+.button-group,
+.cta-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Pricing Grid */
+.pricing-grid,
+.pricing-table {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    align-items: stretch !important;
+}
+
+/* Pricing Cards */
+.pricing-card,
+.plan-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+/* Pricing Features List */
+.pricing-features,
+.plan-features {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+}
+
+/* Pricing CTA - Align to Bottom */
+.pricing-cta {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+/* Responsive Alignment */
+@media (max-width: 768px) {
+    .card-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    nav {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    footer,
+    .footer {
+        flex-direction: column !important;
+    }
+}
+
+/* General Flexbox Helpers */
+.flex-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.flex-start {
+    display: flex !important;
+    align-items: flex-start !important;
+}
+
+.flex-between {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.flex-column {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.equal-height {
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+</style>
+

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: price * 100
         };
-        successUrl = `https://rensto.com/success?type=marketplace&product=${productId}`;
+        successUrl = `https://rensto.com/?payment=success&type=marketplace&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price };
         break;
 
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
           },
           unit_amount: installPrice * 100
         };
-        successUrl = `https://rensto.com/success?type=marketplace-install&product=${productId}`;
+        successUrl = `https://rensto.com/?payment=success&type=marketplace-install&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price: installPrice };
         break;
 
@@ -203,13 +203,12 @@ export async function POST(request: NextRequest) {
       })
     };
 
-    // Only include customer_email if it's a valid non-empty email
-    // If empty, use default service email (Stripe will allow customers to change it)
-    const emailToUse = (customerEmail && customerEmail.trim() && customerEmail.includes('@')) 
-      ? customerEmail.trim() 
-      : 'service@rensto.com';
-    
-    sessionConfig.customer_email = emailToUse;
+    // Only include customer_email if provided - let Stripe collect it otherwise
+    // Setting customer_email can cause "page not found" errors if email is invalid or pre-filled
+    if (customerEmail && customerEmail.trim() && customerEmail.includes('@')) {
+      sessionConfig.customer_email = customerEmail.trim();
+    }
+    // If no email provided, Stripe checkout will collect it - don't force a default
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
 

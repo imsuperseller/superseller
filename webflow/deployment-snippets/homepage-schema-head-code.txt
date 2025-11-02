@@ -1,0 +1,63 @@
+<!-- Homepage Schema Markup (Organization + WebSite) -->
+<!-- Paste this in Webflow: Homepage → Page Settings → Custom Code → Code in <head> tag -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Rensto",
+  "alternateName": "Rensto Automation",
+  "url": "https://rensto.com",
+  "logo": "https://rensto.com/logo.png",
+  "description": "Universal Automation Platform delivering AI-powered automation solutions to businesses. Transform your business with n8n templates, custom solutions, lead generation, and ready-made packages.",
+  "foundingDate": "2024",
+  "sameAs": [
+    "https://www.linkedin.com/company/rensto",
+    "https://twitter.com/rensto"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "service@rensto.com",
+    "url": "https://rensto.com/contact"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Worldwide"
+  },
+  "knowsAbout": [
+    "Business Automation",
+    "Workflow Automation",
+    "n8n Templates",
+    "Lead Generation",
+    "AI-Powered Automation",
+    "Process Optimization"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Rensto - AI-Powered Automation Platform",
+  "alternateName": "Rensto",
+  "url": "https://rensto.com",
+  "description": "Transform your business with AI-powered automation. Choose from n8n templates, custom solutions, lead generation, or ready-made packages. Achieve 10x operational efficiency.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rensto.com/logo.png"
+    }
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://rensto.com/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>

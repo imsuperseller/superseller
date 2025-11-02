@@ -255,7 +255,7 @@ const scopes = 'sites:read sites:write cms:read cms:write assets:read assets:wri
 
 ---
 
-### **Issue #6: Webflow v2 Publish API Challenges**
+### **Issue #6: Webflow v2 Publish API Challenges** ✅ **RESOLVED**
 
 **Problem**:
 - Multiple attempts to publish via Webflow v2 API failing
@@ -269,32 +269,40 @@ const scopes = 'sites:read sites:write cms:read cms:write assets:read assets:wri
 4. **Site Object Inspection**: Found `customDomains` array in site object
 5. **Direct Domain IDs**: Used `customDomains[].id` → 400 (wrong ID format)
 6. **Environments Attempt**: `/v2/sites/{id}/environments` → 404
-7. **Final Solution**: Switched to v1 Site API token + explicit domain names
+7. **Final Solution**: ✅ Switched to v1 Site API token + explicit domain names
 
-**Final Solution**:
+**✅ CORRECT SOLUTION (Verified Working)**:
 **File**: `apps/web/rensto-site/src/app/api/webflow/test/v1/publish-direct/route.ts`
+**Script**: `scripts/publish-webflow-site.js` (updated)
 
 **Approach**:
-- Use Webflow Site API token (v1) instead of OAuth token
-- Bypass domain lookup, directly provide domain names
-- Use v1 publish endpoint with explicit domains
+- ✅ **Use Site API Token**: `90b67c9892c0067fde5f716f9a95f2e0b863cbbf496465cdeef5ddc817e4124b` (from `~/.cursor/mcp.json`)
+- ✅ **Do NOT use OAuth token** - OAuth token lacks publishing permissions
+- ✅ **Use v1 API endpoint**: `/sites/{siteId}/publish` with `accept-version: '1.0.0'`
+- ✅ **Provide domain names directly**: `domains: ['rensto.com', 'www.rensto.com']` (not IDs)
 
 **Code**:
 ```typescript
-const response = await fetch(`https://api.webflow.com/v1/sites/${siteId}/publish`, {
+const response = await fetch(`https://api.webflow.com/sites/${siteId}/publish`, {
   method: 'POST',
   headers: {
-    'Authorization': `Bearer ${siteApiToken}`,
-    'Accept-Version': '1.0.0',
+    'Authorization': `Bearer ${siteApiToken}`, // Site API token, NOT OAuth
+    'accept-version': '1.0.0', // v1 API
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    domains: ['rensto.com', 'www.rensto.com']
+    domains: ['rensto.com', 'www.rensto.com'] // Domain names, not IDs
   })
 });
 ```
 
-**Result**: ✅ `{"queued":true}` - Site publish successful
+**Result**: ✅ `{"ok": true, "status": 200, "data": {"queued": true}}` - Site publish successful
+
+**❌ DO NOT USE**:
+- v2 API endpoints for publishing
+- OAuth tokens for publishing
+- Domain ID lookups
+- `/v2/sites/{id}/domains` endpoint
 
 ---
 

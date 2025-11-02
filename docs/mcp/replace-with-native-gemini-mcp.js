@@ -9,7 +9,7 @@ import axios from 'axios';
 const CONFIG = {
     n8n: {
         baseUrl: 'https://shellyins.app.n8n.cloud',
-        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA',
+        apiKey: '[REDACTED_KEY]',
         workflowId: 'Yforc5cqKUDjgBj3',
         geminiCredentialId: 'NbN9fufTqIImGzWK'
     }

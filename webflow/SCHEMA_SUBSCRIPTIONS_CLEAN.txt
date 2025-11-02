@@ -1,0 +1,74 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Lead Generation Subscription Service",
+  "description": "100-2,000 qualified leads per month at $3-$7 per lead. Verified, industry-targeted leads from LinkedIn, Google Maps, Facebook, and Apify—delivered to your CRM monthly.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "url": "https://rensto.com",
+    "logo": "https://rensto.com/logo.png"
+  },
+  "serviceType": "Lead Generation Subscription",
+  "areaServed": "Worldwide",
+  "offers": [
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/subscriptions#starter",
+      "name": "Starter Plan - Small Team",
+      "price": "299",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "299",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "unitText": "month"
+      },
+      "description": "100 leads per month, 1 industry, 1 location/region",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/subscriptions#professional",
+      "name": "Professional Plan",
+      "price": "599",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "599",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "unitText": "month"
+      },
+      "description": "500 leads per month, 3 industries, 3 locations/regions, real-time API access",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/subscriptions#enterprise",
+      "name": "Enterprise Plan - Sales Teams",
+      "price": "1499",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "1499",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "unitText": "month"
+      },
+      "description": "2,000+ leads per month, unlimited industries and locations, dedicated account manager",
+      "availability": "https://schema.org/InStock"
+    }
+  ],
+  "featureList": [
+    "Verified emails & phones",
+    "Exclusive leads (not shared with competitors)",
+    "Industry + geo targeting",
+    "CRM integration",
+    "Monthly CSV export",
+    "Real-time API access"
+  ]
+}
+</script>

@@ -12,7 +12,7 @@ const CONFIG = {
     n8n: {
         workflowId: 'Yforc5cqKUDjgBj3',
         baseUrl: 'https://shellyins.app.n8n.cloud',
-        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA'
+        apiKey: '[REDACTED_KEY]'
     }
 };
 
@@ -21,10 +21,10 @@ async function useActualMCPTools() {
         console.log('🚀 Using Actual MCP Tools to Fix Gemini Node...');
         
         // The actual MCP tools available in this environment are:
-        // - mcp_n8n-mcp-server_fetch_n8n_mcp_server_docs
-        // - mcp_n8n-mcp-server_search_n8n_mcp_server_docs  
-        // - mcp_n8n-mcp-server_search_n8n_mcp_server_code
-        // - mcp_n8n-mcp-server_fetch_generic_url_content
+        // - mcp_rensto-n8n-unified_n8n_get_workflow
+        // - mcp_rensto-n8n-unified_n8n_get_execution
+        // - mcp_rensto-n8n-unified_n8n_update_workflow
+        // - mcp_rensto-n8n-unified_n8n_smart_route
         
         // But I need to use the actual workflow management tools
         // Let me create a script that uses the MCP tools properly

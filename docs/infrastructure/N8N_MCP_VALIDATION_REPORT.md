@@ -178,7 +178,7 @@ ps aux | grep "n8n-mcp"
 **Total**: 123 n8n-MCP tools accessible
 
 **Other MCP Servers Active**:
-- Webflow: 16 tools
+- Webflow: 41 tools
 - Airtable: 13 tools + 130 resources
 - Stripe: 22 tools
 - TidyCal: 5 tools

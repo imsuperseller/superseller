@@ -1,0 +1,86 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Custom Automation Solutions Development",
+  "description": "Custom automation built for your exact workflow—not templates. We build custom automation that fits your exact processes, integrates with your existing tools, and scales with you.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "url": "https://rensto.com",
+    "logo": "https://rensto.com/logo.png",
+    "sameAs": [
+      "https://www.linkedin.com/company/rensto",
+      "https://twitter.com/rensto"
+    ]
+  },
+  "serviceType": "Custom Software Development",
+  "areaServed": "Worldwide",
+  "offers": [
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/custom-solutions#audit",
+      "name": "Automation Readiness Audit",
+      "price": "297",
+      "priceCurrency": "USD",
+      "description": "Process complexity scoring, time savings calculator, implementation difficulty rating, recommended automation approach",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/custom-solutions#sprint",
+      "name": "Custom Build Sprint",
+      "price": "1997",
+      "priceCurrency": "USD",
+      "description": "Custom workflow development, API integrations, testing & QA, data migration",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/custom-solutions#full",
+      "name": "Full Custom System",
+      "price": "5500",
+      "priceCurrency": "USD",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "minPrice": "3500",
+        "maxPrice": "8000",
+        "priceCurrency": "USD"
+      },
+      "description": "Complete custom automation system: discovery & planning, development & build, training & support. 2-4 week delivery, 90-day priority support.",
+      "availability": "https://schema.org/InStock"
+    }
+  ],
+  "process": {
+    "@type": "HowTo",
+    "name": "Custom Automation Development Process",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Voice AI Consultation",
+        "text": "FREE 20-minute call where our Voice AI captures your workflows, pain points, and requirements."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Technical Plan",
+        "text": "Within 48 hours, receive a detailed technical plan: systems architecture, integrations, timeline, and exact investment."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Custom Build",
+        "text": "Our team builds your custom automation, integrates with your tools, and tests everything before handoff (2-4 weeks)."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Training & Support",
+        "text": "Live training for your team, documentation, and 90 days of priority support to ensure smooth adoption."
+      }
+    ]
+  },
+  "audience": {
+    "@type": "BusinessAudience",
+    "audienceType": "Small to mid-size businesses requiring custom automation"
+  }
+}
+</script>
+

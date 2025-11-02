@@ -1,0 +1,214 @@
+{
+  "timestamp": "2025-10-31T18:39:16.458Z",
+  "checks": [
+    {
+      "category": "navigation",
+      "check": "logo",
+      "issue": "Logo not vertically centered in nav",
+      "selector": "nav .logo, .nav-logo, header .logo",
+      "standard": "Logo should be vertically centered",
+      "fix": "Use flexbox: align-items: center; on nav container",
+      "priority": "high"
+    },
+    {
+      "category": "navigation",
+      "check": "buttons",
+      "issue": "Nav buttons have inconsistent heights",
+      "selector": "nav button, nav .button, nav .cta",
+      "standard": "Buttons should be 48px height minimum",
+      "fix": "Standardize button height to 48px",
+      "priority": "high"
+    },
+    {
+      "category": "navigation",
+      "check": "links",
+      "issue": "Nav links not aligned",
+      "selector": "nav a, .nav-link",
+      "standard": "Links should be vertically centered",
+      "fix": "Use flexbox with align-items: center",
+      "priority": "high"
+    },
+    {
+      "category": "footer",
+      "check": "columns",
+      "issue": "Footer columns have unequal heights",
+      "selector": ".footer-column, .footer-section",
+      "standard": "Columns should align at top",
+      "fix": "Use CSS Grid or Flexbox with equal heights",
+      "priority": "high"
+    },
+    {
+      "category": "footer",
+      "check": "links",
+      "issue": "Footer links not aligned",
+      "selector": ".footer a, .footer-link",
+      "standard": "Links should align properly",
+      "fix": "Consistent line-height and spacing",
+      "priority": "high"
+    },
+    {
+      "category": "cards",
+      "check": "grid",
+      "issue": "Cards in grid have unequal heights",
+      "selector": ".card, .service-card, .pricing-card",
+      "standard": "Cards should have equal heights in grid",
+      "fix": "Use CSS Grid or align-items: stretch",
+      "priority": "medium"
+    },
+    {
+      "category": "cards",
+      "check": "content",
+      "issue": "Card content not aligned",
+      "selector": ".card-content, .card-body",
+      "standard": "Content should be aligned within cards",
+      "fix": "Use flexbox with consistent padding",
+      "priority": "medium"
+    },
+    {
+      "category": "buttons",
+      "check": "height",
+      "issue": "Button heights inconsistent",
+      "selector": "button, .button, .btn, [role=\"button\"]",
+      "standard": "All buttons should be 48px height",
+      "fix": "Standardize to 48px (min-height: 48px)",
+      "priority": "medium"
+    },
+    {
+      "category": "buttons",
+      "check": "alignment",
+      "issue": "Buttons not aligned in containers",
+      "selector": ".button-group, .cta-group",
+      "standard": "Buttons should align in groups",
+      "fix": "Use flexbox: align-items: center",
+      "priority": "medium"
+    },
+    {
+      "category": "pricing",
+      "check": "tables",
+      "issue": "Pricing cards have unequal heights",
+      "selector": ".pricing-card, .plan-card",
+      "standard": "All pricing tiers should have equal height",
+      "fix": "Use CSS Grid with grid-template-rows: auto",
+      "priority": "low"
+    },
+    {
+      "category": "pricing",
+      "check": "features",
+      "issue": "Feature lists not aligned across cards",
+      "selector": ".pricing-features, .plan-features",
+      "standard": "Feature lists should align",
+      "fix": "Use flexbox: align-items: flex-start",
+      "priority": "low"
+    }
+  ],
+  "fixes": {
+    "css": "/* CSS Alignment Fixes */\n/* Generated: 2025-10-31T18:39:16.459Z */\n/* Add this to Webflow: Site Settings → Custom Code → Before </body> tag */\n\n/* ============================================\n   NAVIGATION ALIGNMENT FIXES\n   ============================================ */\n\n/* Logo Vertical Centering */\nnav .logo,\n.nav-logo,\nheader .logo,\n.w-nav-brand {\n    display: flex;\n    align-items: center;\n    height: 100%;\n}\n\n/* Navigation Container */\nnav,\n.navbar,\n.w-nav {\n    display: flex;\n    align-items: center;\n    min-height: 80px; /* Adjust based on design */\n}\n\n/* Nav Links Alignment */\nnav a,\n.nav-link,\n.w-nav-link {\n    display: flex;\n    align-items: center;\n    height: 100%;\n    padding: 0 1rem;\n}\n\n/* Nav Buttons Standard Height */\nnav button,\nnav .button,\nnav .cta,\n.w-button {\n    min-height: 48px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0.75rem 1.5rem;\n}\n\n/* ============================================\n   FOOTER ALIGNMENT FIXES\n   ============================================ */\n\n/* Footer Container */\nfooter,\n.footer {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 2rem;\n}\n\n/* Footer Columns - Equal Heights */\n.footer-column,\n.footer-section {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-width: 200px;\n}\n\n/* Footer Links Alignment */\n.footer a,\n.footer-link {\n    line-height: 1.6;\n    padding: 0.25rem 0;\n}\n\n/* Footer Logo/Content Alignment */\n.footer .logo,\n.footer-content {\n    display: flex;\n    align-items: flex-start;\n}\n\n/* ============================================\n   CARD GRID ALIGNMENT FIXES\n   ============================================ */\n\n/* Card Grid Container */\n.card-grid,\n.service-grid,\n.pricing-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n    gap: 2rem;\n    align-items: stretch; /* Equal heights */\n}\n\n/* Individual Cards */\n.card,\n.service-card,\n.pricing-card {\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n}\n\n/* Card Content Alignment */\n.card-content,\n.card-body {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    padding: 1.5rem;\n}\n\n/* Card Buttons - Align to Bottom */\n.card-footer,\n.card-cta {\n    margin-top: auto;\n    padding-top: 1.5rem;\n}\n\n/* ============================================\n   BUTTON STANDARDIZATION\n   ============================================ */\n\n/* All Buttons - Standard Height */\nbutton,\n.button,\n.btn,\n[role=\"button\"],\n.w-button {\n    min-height: 48px;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0.75rem 1.5rem;\n    box-sizing: border-box;\n}\n\n/* Button Groups Alignment */\n.button-group,\n.cta-group {\n    display: flex;\n    align-items: center;\n    gap: 1rem;\n    flex-wrap: wrap;\n}\n\n/* ============================================\n   PRICING TABLE ALIGNMENT\n   ============================================ */\n\n/* Pricing Grid */\n.pricing-grid,\n.pricing-table {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    gap: 2rem;\n    align-items: stretch;\n}\n\n/* Pricing Cards */\n.pricing-card,\n.plan-card {\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 8px;\n    padding: 2rem;\n}\n\n/* Pricing Features List */\n.pricing-features,\n.plan-features {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    gap: 0.75rem;\n    padding: 1.5rem 0;\n}\n\n/* Pricing CTA - Align to Bottom */\n.pricing-cta {\n    margin-top: auto;\n    padding-top: 1.5rem;\n}\n\n/* ============================================\n   RESPONSIVE ALIGNMENT\n   ============================================ */\n\n@media (max-width: 768px) {\n    /* Stack cards on mobile */\n    .card-grid,\n    .pricing-grid {\n        grid-template-columns: 1fr;\n    }\n    \n    /* Nav items stack */\n    nav {\n        flex-direction: column;\n        align-items: flex-start;\n    }\n    \n    /* Footer columns stack */\n    footer,\n    .footer {\n        flex-direction: column;\n    }\n}\n\n/* ============================================\n   GENERAL FLEXBOX HELPERS\n   ============================================ */\n\n.flex-center {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.flex-start {\n    display: flex;\n    align-items: flex-start;\n}\n\n.flex-between {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.flex-column {\n    display: flex;\n    flex-direction: column;\n}\n\n.equal-height {\n    display: flex;\n    align-items: stretch;\n}\n"
+  },
+  "priority": {
+    "high": [
+      {
+        "category": "navigation",
+        "check": "logo",
+        "issue": "Logo not vertically centered in nav",
+        "selector": "nav .logo, .nav-logo, header .logo",
+        "standard": "Logo should be vertically centered",
+        "fix": "Use flexbox: align-items: center; on nav container",
+        "priority": "high"
+      },
+      {
+        "category": "navigation",
+        "check": "buttons",
+        "issue": "Nav buttons have inconsistent heights",
+        "selector": "nav button, nav .button, nav .cta",
+        "standard": "Buttons should be 48px height minimum",
+        "fix": "Standardize button height to 48px",
+        "priority": "high"
+      },
+      {
+        "category": "navigation",
+        "check": "links",
+        "issue": "Nav links not aligned",
+        "selector": "nav a, .nav-link",
+        "standard": "Links should be vertically centered",
+        "fix": "Use flexbox with align-items: center",
+        "priority": "high"
+      },
+      {
+        "category": "footer",
+        "check": "columns",
+        "issue": "Footer columns have unequal heights",
+        "selector": ".footer-column, .footer-section",
+        "standard": "Columns should align at top",
+        "fix": "Use CSS Grid or Flexbox with equal heights",
+        "priority": "high"
+      },
+      {
+        "category": "footer",
+        "check": "links",
+        "issue": "Footer links not aligned",
+        "selector": ".footer a, .footer-link",
+        "standard": "Links should align properly",
+        "fix": "Consistent line-height and spacing",
+        "priority": "high"
+      }
+    ],
+    "medium": [
+      {
+        "category": "cards",
+        "check": "grid",
+        "issue": "Cards in grid have unequal heights",
+        "selector": ".card, .service-card, .pricing-card",
+        "standard": "Cards should have equal heights in grid",
+        "fix": "Use CSS Grid or align-items: stretch",
+        "priority": "medium"
+      },
+      {
+        "category": "cards",
+        "check": "content",
+        "issue": "Card content not aligned",
+        "selector": ".card-content, .card-body",
+        "standard": "Content should be aligned within cards",
+        "fix": "Use flexbox with consistent padding",
+        "priority": "medium"
+      },
+      {
+        "category": "buttons",
+        "check": "height",
+        "issue": "Button heights inconsistent",
+        "selector": "button, .button, .btn, [role=\"button\"]",
+        "standard": "All buttons should be 48px height",
+        "fix": "Standardize to 48px (min-height: 48px)",
+        "priority": "medium"
+      },
+      {
+        "category": "buttons",
+        "check": "alignment",
+        "issue": "Buttons not aligned in containers",
+        "selector": ".button-group, .cta-group",
+        "standard": "Buttons should align in groups",
+        "fix": "Use flexbox: align-items: center",
+        "priority": "medium"
+      }
+    ],
+    "low": [
+      {
+        "category": "pricing",
+        "check": "tables",
+        "issue": "Pricing cards have unequal heights",
+        "selector": ".pricing-card, .plan-card",
+        "standard": "All pricing tiers should have equal height",
+        "fix": "Use CSS Grid with grid-template-rows: auto",
+        "priority": "low"
+      },
+      {
+        "category": "pricing",
+        "check": "features",
+        "issue": "Feature lists not aligned across cards",
+        "selector": ".pricing-features, .plan-features",
+        "standard": "Feature lists should align",
+        "fix": "Use flexbox: align-items: flex-start",
+        "priority": "low"
+      }
+    ]
+  }
+}

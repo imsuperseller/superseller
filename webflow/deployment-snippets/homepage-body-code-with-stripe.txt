@@ -1,0 +1,510 @@
+<!-- Homepage Content -->
+<!-- Copy this ENTIRE file and paste into Webflow: Homepage → Page Settings → Custom Code → Before </body> tag -->
+<!-- HOMEPAGE - WEBFLOW CODE EMBED -->
+<!-- Version: 1.0 - Ryan Deiss CVJ Framework - Oct 8, 2025 -->
+<!-- UPDATED: Oct 31, 2025 - Added Stripe checkout scripts -->
+
+<!-- STRIPE CHECKOUT SCRIPTS (must load first) -->
+<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
+<script src="https://rensto-webflow-scripts.vercel.app/homepage/checkout.js"></script>
+
+<!-- HOMEPAGE CONTENT STARTS HERE -->
+<style>
+    :root {
+        --red: #fe3d51;
+        --orange: #bf5700;
+        --blue: #1eaef7;
+        --cyan: #5ffbfd;
+        --dark-bg: #110d28;
+        --light-text: #ffffff;
+        --gray-text: #a0a0a0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--dark-bg);
+        color: var(--light-text);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    /* H-01: Hero Section */
+    .hero {
+        min-height: 100vh;
+        padding: 140px 2rem 80px;
+        background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(95, 251, 253, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+    }
+
+    .hero-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--cyan);
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: var(--red);
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary:hover {
+        background: #ff4d61;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(254, 61, 81, 0.4);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: 2px solid white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Lead Magnet Section */
+    .lead-magnet {
+        padding: 80px 2rem;
+        background: var(--dark-bg);
+        text-align: center;
+    }
+
+    .lead-magnet-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .lead-magnet h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .lead-magnet p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .email-form {
+        display: flex;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .email-input {
+        flex: 1;
+        padding: 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--blue);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .email-input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-submit {
+        background: var(--blue);
+        color: white;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background: #3fb8ff;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 80px 2rem;
+        background: linear-gradient(180deg, var(--dark-bg) 0%, #1a162f 100%);
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--blue);
+        box-shadow: 0 10px 30px rgba(30, 174, 247, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    /* FAQ Section */
+    .faq {
+        padding: 80px 2rem;
+        background: var(--dark-bg);
+    }
+
+    .faq-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .faq-question {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+    }
+
+    .faq-answer {
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero-stats {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .email-form {
+            flex-direction: column;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- H-01: Hero Section -->
+<div class="hero">
+    <div class="hero-container">
+        <h1>Transform Your Business with AI-Powered Automation</h1>
+        <p class="hero-subtitle">Save 20+ hours per week. Achieve 10x operational efficiency. Get started in minutes.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">525+</span>
+                <span class="stat-label">Workflow Templates</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">10x</span>
+                <span class="stat-label">Efficiency Gain</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">Hours Saved/Week</span>
+            </div>
+        </div>
+        
+        <div class="hero-cta">
+            <a href="/marketplace" class="btn-primary">Browse Templates</a>
+            <a href="/custom-solutions" class="btn-secondary">Get Custom Solution</a>
+        </div>
+    </div>
+</div>
+
+<!-- Lead Magnet Section -->
+<div class="lead-magnet">
+    <div class="lead-magnet-container">
+        <h2>Get Your Free Automation Guide</h2>
+        <p>Learn how to automate your business processes and save 20+ hours per week</p>
+        <form class="email-form">
+            <input type="email" class="email-input" placeholder="Enter your email" required>
+            <button type="submit" class="btn-submit">Get Guide</button>
+        </form>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features">
+    <div class="features-container">
+        <h2>Why Choose Rensto?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Setup</h3>
+                <p>Get up and running in 10 minutes, not 40 hours. Pre-built templates that work out of the box.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Industry-Specific</h3>
+                <p>Solutions built for YOUR industry. HVAC, Real Estate, Legal, Healthcare, and 12+ more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered</h3>
+                <p>Leverage AI to automate complex processes. Voice agents, data processing, lead generation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3>Enterprise Ready</h3>
+                <p>Scale from startup to enterprise. Handles millions of operations without breaking.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Compliant</h3>
+                <p>SOC 2 compliant. Bank-level encryption. Your data is always safe.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Proven ROI</h3>
+                <p>Average customer saves $15,000+ per year in operational costs. ROI in first month.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq">
+    <div class="faq-container">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-question">How quickly can I get started?</div>
+            <div class="faq-answer">Most customers are up and running in under 10 minutes. Download a template, follow the installation guide, and you're done.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Do I need technical skills?</div>
+            <div class="faq-answer">Not at all! Our templates include step-by-step guides. Or choose Full-Service Install and we'll set everything up for you.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">What if I need custom features?</div>
+            <div class="faq-answer">We offer custom solutions starting at $297. Book a free consultation and we'll build exactly what you need.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Can I try before I buy?</div>
+            <div class="faq-answer">Yes! All templates come with a 30-day money-back guarantee. If it doesn't work for you, we'll refund 100%.</div>
+        </div>
+    </div>
+</div>
+
+<!-- GSAP Animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+    // GSAP ScrollTrigger setup
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero animations
+    gsap.from('.hero h1', {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: 'power3.out'
+    });
+
+    gsap.from('.hero-subtitle', {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        delay: 0.2,
+        ease: 'power3.out'
+    });
+
+    // Stats animation
+    gsap.utils.toArray('.stat-item').forEach((item, i) => {
+        gsap.from(item, {
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            delay: 0.4 + (i * 0.1),
+            ease: 'power3.out'
+        });
+    });
+
+    // Feature cards animation
+    gsap.utils.toArray('.feature-card').forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+            },
+            duration: 0.6,
+            y: 30,
+            opacity: 0,
+            delay: i * 0.1,
+            ease: 'power3.out'
+        });
+    });
+
+    // FAQ animation
+    gsap.utils.toArray('.faq-item').forEach((item, i) => {
+        gsap.from(item, {
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 90%',
+            },
+            duration: 0.6,
+            y: 30,
+            opacity: 0,
+            delay: i * 0.05,
+            ease: 'power3.out'
+        });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Console initialization message
+    console.log('🎯 Rensto Homepage Initialized');
+    console.log('📊 Tracking CVJ stages: Aware → Engage → Subscribe → Convert');
+</script>

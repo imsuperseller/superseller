@@ -1,0 +1,27 @@
+<!-- SUBSCRIPTIONS PAGE - META DESCRIPTION & SEO -->
+<!-- Paste this in Webflow: Subscriptions Page → Page Settings → SEO Settings -->
+<!-- Or in Custom Code → Code in <head> tag -->
+
+<!-- Primary Meta Description -->
+<meta name="description" content="Automate lead generation with Rensto's subscription plans. Get 100-500+ qualified leads per month delivered to your CRM. Choose Starter ($299/mo), Professional ($599/mo), or Enterprise ($1,499/mo) plans. Start your free trial today.">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rensto.com/subscriptions">
+<meta property="og:title" content="Lead Generation Subscriptions | Rensto Automation">
+<meta property="og:description" content="Automate lead generation with Rensto's subscription plans. Get 100-500+ qualified leads per month delivered to your CRM. Choose Starter, Professional, or Enterprise plans.">
+<meta property="og:image" content="https://rensto.com/images/subscriptions-og-image.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://rensto.com/subscriptions">
+<meta name="twitter:title" content="Lead Generation Subscriptions | Rensto Automation">
+<meta name="twitter:description" content="Automate lead generation with Rensto's subscription plans. Get 100-500+ qualified leads per month delivered to your CRM.">
+<meta name="twitter:image" content="https://rensto.com/images/subscriptions-twitter-image.jpg">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://rensto.com/subscriptions">
+
+<!-- Page Title (for Webflow SEO Settings) -->
+<!-- Title: Lead Generation Subscriptions | Automated Lead Delivery | Rensto -->
+

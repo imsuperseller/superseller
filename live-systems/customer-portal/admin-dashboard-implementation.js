@@ -192,7 +192,7 @@ class AdminDashboardImplementation {
     
     this.integrationPoints = {
       mcpServers: [
-        'n8n-mcp-server',
+        'rensto-n8n-unified',
         'stripe-mcp-server',
         'analytics-reporting-mcp',
         'financial-billing-mcp'

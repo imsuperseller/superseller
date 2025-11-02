@@ -1,0 +1,244 @@
+/* CSS Alignment Fixes */
+/* Generated: 2025-10-31T18:39:16.459Z */
+/* Add this to Webflow: Site Settings → Custom Code → Before </body> tag */
+
+/* ============================================
+   NAVIGATION ALIGNMENT FIXES
+   ============================================ */
+
+/* Logo Vertical Centering */
+nav .logo,
+.nav-logo,
+header .logo,
+.w-nav-brand {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* Navigation Container */
+nav,
+.navbar,
+.w-nav {
+    display: flex;
+    align-items: center;
+    min-height: 80px; /* Adjust based on design */
+}
+
+/* Nav Links Alignment */
+nav a,
+.nav-link,
+.w-nav-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+/* Nav Buttons Standard Height */
+nav button,
+nav .button,
+nav .cta,
+.w-button {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+}
+
+/* ============================================
+   FOOTER ALIGNMENT FIXES
+   ============================================ */
+
+/* Footer Container */
+footer,
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+/* Footer Columns - Equal Heights */
+.footer-column,
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Footer Links Alignment */
+.footer a,
+.footer-link {
+    line-height: 1.6;
+    padding: 0.25rem 0;
+}
+
+/* Footer Logo/Content Alignment */
+.footer .logo,
+.footer-content {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* ============================================
+   CARD GRID ALIGNMENT FIXES
+   ============================================ */
+
+/* Card Grid Container */
+.card-grid,
+.service-grid,
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch; /* Equal heights */
+}
+
+/* Individual Cards */
+.card,
+.service-card,
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Card Content Alignment */
+.card-content,
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* Card Buttons - Align to Bottom */
+.card-footer,
+.card-cta {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+/* ============================================
+   BUTTON STANDARDIZATION
+   ============================================ */
+
+/* All Buttons - Standard Height */
+button,
+.button,
+.btn,
+[role="button"],
+.w-button {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    box-sizing: border-box;
+}
+
+/* Button Groups Alignment */
+.button-group,
+.cta-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   PRICING TABLE ALIGNMENT
+   ============================================ */
+
+/* Pricing Grid */
+.pricing-grid,
+.pricing-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+}
+
+/* Pricing Cards */
+.pricing-card,
+.plan-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+/* Pricing Features List */
+.pricing-features,
+.plan-features {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+}
+
+/* Pricing CTA - Align to Bottom */
+.pricing-cta {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+/* ============================================
+   RESPONSIVE ALIGNMENT
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Stack cards on mobile */
+    .card-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Nav items stack */
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    /* Footer columns stack */
+    footer,
+    .footer {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
+   GENERAL FLEXBOX HELPERS
+   ============================================ */
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-start {
+    display: flex;
+    align-items: flex-start;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.equal-height {
+    display: flex;
+    align-items: stretch;
+}

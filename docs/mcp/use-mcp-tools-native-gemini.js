@@ -15,7 +15,7 @@ async function replaceWithNativeGeminiMCP() {
     try {
         // 1. Get the current workflow using MCP tools
         console.log('🔍 Getting current workflow using MCP tools...');
-        const workflow = await useMcpTool('n8n-mcp-server', 'workflow_get', { id: WORKFLOW_ID });
+        const workflow = await useMcpTool('rensto-n8n-unified', 'n8n_get_workflow', { id: WORKFLOW_ID });
         console.log('✅ Current workflow retrieved.');
 
         // 2. Find the HTTP Request Gemini node
@@ -100,12 +100,12 @@ async function replaceWithNativeGeminiMCP() {
 
         // 6. Deactivate the workflow before updating
         console.log('⏸️ Deactivating workflow...');
-        await useMcpTool('n8n-mcp-server', 'workflow_deactivate', { id: WORKFLOW_ID });
+        await useMcpTool('rensto-n8n-unified', 'n8n_update_workflow', { id: WORKFLOW_ID, updates: { active: false } });
         console.log('✅ Workflow deactivated.');
 
         // 7. Update the workflow with the native Gemini node
         console.log('💾 Updating workflow with native Gemini node...');
-        const updatedWorkflow = await useMcpTool('n8n-mcp-server', 'workflow_update', {
+        const updatedWorkflow = await useMcpTool('rensto-n8n-unified', 'n8n_update_workflow', {
             id: WORKFLOW_ID,
             nodes: workflow.nodes,
             connections: workflow.connections,
@@ -117,12 +117,12 @@ async function replaceWithNativeGeminiMCP() {
 
         // 8. Reactivate the workflow
         console.log('▶️ Reactivating workflow...');
-        await useMcpTool('n8n-mcp-server', 'workflow_activate', { id: WORKFLOW_ID });
+        await useMcpTool('rensto-n8n-unified', 'n8n_update_workflow', { id: WORKFLOW_ID, updates: { active: true } });
         console.log('✅ Workflow reactivated.');
 
         // 9. Verify the native Gemini node
         console.log('🔍 Verifying the native Gemini node...');
-        const verifiedWorkflow = await useMcpTool('n8n-mcp-server', 'workflow_get', { id: WORKFLOW_ID });
+        const verifiedWorkflow = await useMcpTool('rensto-n8n-unified', 'n8n_get_workflow', { id: WORKFLOW_ID });
         const verifiedGeminiNode = verifiedWorkflow.nodes.find(node =>
             node.name.includes('Gemini') || node.id === 'native-gemini-node-mcp'
         );

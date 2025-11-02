@@ -38,7 +38,7 @@ const nextConfig = {
 
   // Disable webpack optimizations that might cause SSR issues
   webpack: (config, { isServer }) => {
-    // Only handle server-side issues
+    // Handle both server and client-side issues
     if (isServer) {
       // Provide empty modules for browser-only packages
       config.resolve.alias = {
@@ -48,6 +48,26 @@ const nextConfig = {
         'framer-motion': false,
         'recharts': false,
         '@stripe/stripe-js': false,
+      };
+    } else {
+      // Client-side fallbacks for Node.js modules
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        fs: false,
+        child_process: false,
+        'fs/promises': false,
+        dns: false,
+        'timers/promises': false,
+        kerberos: false,
+        '@mongodb-js/zstd': false,
+        '@aws-sdk/credential-providers': false,
+        'gcp-metadata': false,
+        snappy: false,
+        socks: false,
+        aws4: false,
+        'mongodb-client-encryption': false,
       };
     }
 

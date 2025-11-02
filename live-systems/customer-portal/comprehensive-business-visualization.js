@@ -87,7 +87,7 @@ class BusinessVisualizationGenerator {
         data: 'Customer data and analytics'
       },
       keyComponents: {
-        mcpServers: ['n8n-mcp-server', 'analytics-mcp-server', 'email-mcp-server', 'financial-mcp-server'],
+        mcpServers: ['rensto-n8n-unified', 'analytics-mcp-server', 'email-mcp-server', 'financial-mcp-server'],
         workflows: ['customer-onboarding', 'agent-activation', 'billing-automation', 'reporting'],
         databases: ['MongoDB (primary)', 'PostgreSQL (backup)', 'Redis (cache)'],
         apis: ['n8n API', 'MCP Protocol', 'REST APIs', 'WebSocket connections']

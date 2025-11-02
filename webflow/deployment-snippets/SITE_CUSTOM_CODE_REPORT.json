@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-10-31T02:01:53.049Z",
+  "siteId": "66c7e551a317e0e9c9f906d8",
+  "scriptsRegistered": 0,
+  "scripts": [],
+  "errors": [
+    {
+      "script": "https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "script": "https://rensto-webflow-scripts.vercel.app/marketplace/checkout.js",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "script": "https://rensto-webflow-scripts.vercel.app/subscriptions/checkout.js?v=2",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "script": "https://rensto-webflow-scripts.vercel.app/ready-solutions/checkout.js",
+      "error": "Request failed with status code 404"
+    },
+    {
+      "script": "https://rensto-webflow-scripts.vercel.app/custom-solutions/checkout.js",
+      "error": "Request failed with status code 404"
+    }
+  ]
+}

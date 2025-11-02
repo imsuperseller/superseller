@@ -1,0 +1,565 @@
+<!-- Homepage Content - Designer Visible -->
+<!-- Add this as Code Embed element in Designer between Nav and Footer -->
+<!-- Scripts (GSAP, Stripe) should remain in Page Settings → Before </body> tag -->
+<!-- This matches the format of case-studies-page-body-code.txt (working format) -->
+
+<style>
+    :root {
+        --red: #fe3d51;
+        --orange: #bf5700;
+        --blue: #1eaef7;
+        --cyan: #5ffbfd;
+        --dark-bg: #110d28;
+        --light-text: #ffffff;
+        --gray-text: #a0a0a0;
+    }
+
+    /* H-01: Hero Section */
+    .hero {
+        min-height: 100vh;
+        padding: 140px 2rem 80px;
+        background: linear-gradient(135deg, var(--orange) 0%, var(--blue) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(95, 251, 253, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+    }
+
+    .hero-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--cyan);
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: var(--red);
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary:hover {
+        background: #ff4d61;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(254, 61, 81, 0.4);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: 2px solid white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Service Cards Section */
+    .services {
+        padding: 80px 2rem;
+        background: var(--dark-bg);
+    }
+
+    .services-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .services h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .service-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--blue);
+        box-shadow: 0 10px 30px rgba(30, 174, 247, 0.2);
+    }
+
+    .service-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .service-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .service-pricing {
+        font-size: 1.1rem;
+        color: var(--cyan);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .service-card p {
+        opacity: 0.9;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-features {
+        list-style: none;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .service-features li {
+        padding: 0.5rem 0;
+        opacity: 0.9;
+    }
+
+    .service-features li:before {
+        content: '✓ ';
+        color: var(--cyan);
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    /* Lead Magnet Section */
+    .lead-magnet {
+        padding: 80px 2rem;
+        background: linear-gradient(180deg, var(--dark-bg) 0%, #1a162f 100%);
+        text-align: center;
+    }
+
+    .lead-magnet-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .lead-magnet h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .lead-magnet p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .email-form {
+        display: flex;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .email-input {
+        flex: 1;
+        padding: 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--blue);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .email-input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-submit {
+        background: var(--blue);
+        color: white;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background: #3fb8ff;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 80px 2rem;
+        background: var(--dark-bg);
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--blue);
+        box-shadow: 0 10px 30px rgba(30, 174, 247, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    /* FAQ Section */
+    .faq {
+        padding: 80px 2rem;
+        background: linear-gradient(180deg, var(--dark-bg) 0%, #1a162f 100%);
+    }
+
+    .faq-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .faq-question {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+    }
+
+    .faq-answer {
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero-stats {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .email-form {
+            flex-direction: column;
+        }
+        
+        .services-grid,
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- H-01: Hero Section -->
+<div class="hero">
+    <div class="hero-container">
+        <h1>Transform Your Business with AI-Powered Automation</h1>
+        <p class="hero-subtitle">Choose from 525+ templates, 16 industry solutions, custom builds, or automated lead generation. Get started in minutes.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">525+</span>
+                <span class="stat-label">Workflow Templates</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">16</span>
+                <span class="stat-label">Industry Solutions</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">3,200+</span>
+                <span class="stat-label">Templates Sold</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">4.8★</span>
+                <span class="stat-label">Average Rating</span>
+            </div>
+        </div>
+        
+        <div class="hero-cta">
+            <a href="/marketplace" class="btn-primary">Browse Templates</a>
+            <a href="/ready-solutions" class="btn-secondary">See Industry Solutions</a>
+        </div>
+    </div>
+</div>
+
+<!-- Services Overview Section -->
+<div class="services">
+    <div class="services-container">
+        <h2>Choose Your Automation Path</h2>
+        <div class="services-grid">
+            <!-- Marketplace Card -->
+            <div class="service-card">
+                <div class="service-icon">🛍️</div>
+                <h3>Marketplace</h3>
+                <div class="service-pricing">From $29/template</div>
+                <p>525+ ready-to-use n8n workflow templates. Install in 10 minutes with step-by-step guides.</p>
+                <ul class="service-features">
+                    <li>8 categories (CRM, Marketing, E-commerce, etc.)</li>
+                    <li>3 pricing tiers ($29, $97, $197)</li>
+                    <li>30-day money-back guarantee</li>
+                    <li>Lifetime updates on Complete Systems</li>
+                </ul>
+                <a href="/marketplace" class="btn-primary" style="width: 100%; text-align: center;">Browse Templates</a>
+            </div>
+
+            <!-- Ready Solutions Card -->
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3>Ready Solutions</h3>
+                <div class="service-pricing">From $890/package</div>
+                <p>16 industry-specific solution packages. Each includes 5 proven automations for your sector.</p>
+                <ul class="service-features">
+                    <li>HVAC, Realtor, Roofer, Dentist, & 12 more</li>
+                    <li>48-hour setup included</li>
+                    <li>Single ($890) or Complete ($2,990)</li>
+                    <li>Training & 60-day support</li>
+                </ul>
+                <a href="/ready-solutions" class="btn-primary" style="width: 100%; text-align: center;">Browse Industries</a>
+            </div>
+
+            <!-- Subscriptions Card -->
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <h3>Subscriptions</h3>
+                <div class="service-pricing">From $299/month</div>
+                <p>Automated lead generation delivered monthly to your CRM. 100-2,000 qualified leads per month.</p>
+                <ul class="service-features">
+                    <li>4 premium sources (LinkedIn, Google Maps, Facebook, Apify)</li>
+                    <li>3 tiers: Starter ($299), Pro ($599), Enterprise ($1,499)</li>
+                    <li>$3-$7 cost per lead</li>
+                    <li>14-day free trial</li>
+                </ul>
+                <a href="/subscriptions" class="btn-primary" style="width: 100%; text-align: center;">See Plans</a>
+            </div>
+
+            <!-- Custom Solutions Card -->
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3>Custom Solutions</h3>
+                <div class="service-pricing">$3,500-$8,000</div>
+                <p>Bespoke automation built for your exact workflow. Free Voice AI consultation to capture requirements.</p>
+                <ul class="service-features">
+                    <li>FREE 20-minute Voice AI consultation</li>
+                    <li>Technical plan within 48 hours</li>
+                    <li>2-4 week custom build</li>
+                    <li>90-day priority support</li>
+                </ul>
+                <a href="/custom-solutions" class="btn-primary" style="width: 100%; text-align: center;">Book Consultation</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lead Magnet Section -->
+<div class="lead-magnet">
+    <div class="lead-magnet-container">
+        <h2>Get Your Free Automation Guide</h2>
+        <p>Learn how to automate your business processes and save 20+ hours per week</p>
+        <form class="email-form" id="homepage-lead-form">
+            <input type="email" class="email-input" placeholder="Enter your email" required>
+            <button type="submit" class="btn-submit">Get Guide</button>
+        </form>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features">
+    <div class="features-container">
+        <h2>Why Choose Rensto?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Setup</h3>
+                <p>Marketplace templates install in 10 minutes. Ready Solutions go live in 48 hours. Custom builds in 2-4 weeks.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Industry-Specific</h3>
+                <p>16 Ready Solutions packages built for HVAC, Real Estate, Legal, Healthcare, E-commerce, and 12+ more industries.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered</h3>
+                <p>Voice AI consultations, automated lead generation, and intelligent workflows that learn and optimize.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3>Enterprise Ready</h3>
+                <p>From solo entrepreneurs to teams of 50+. Scales from $29 templates to $8,000 custom enterprise systems.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Compliant</h3>
+                <p>Bank-level encryption. SOC 2 compliant infrastructure. Your data is always safe and protected.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Proven ROI</h3>
+                <p>3,200+ templates sold with 4.8★ average rating. Customers save 15-40 hours per week on average.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq">
+    <div class="faq-container">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-question">How quickly can I get started?</div>
+            <div class="faq-answer">Marketplace templates: 10 minutes. Ready Solutions: 48 hours. Custom Solutions: 2-4 weeks after consultation. Subscriptions: Active within 24 hours of signup.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Do I need technical skills?</div>
+            <div class="faq-answer">Not for Marketplace (step-by-step guides) or Ready Solutions (we set everything up). Custom Solutions require minimal input—we handle the technical work.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">What if I need custom features?</div>
+            <div class="faq-answer">Start with a FREE Voice AI consultation for Custom Solutions ($3,500-$8,000). We'll build exactly what you need in 2-4 weeks.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Can I try before I buy?</div>
+            <div class="faq-answer">Yes! Marketplace templates have 30-day money-back guarantee. Subscriptions have 14-day free trial. Ready Solutions include 30-day guarantee.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Which service is right for me?</div>
+            <div class="faq-answer">DIY user? → Marketplace. Industry-specific needs? → Ready Solutions. Need leads? → Subscriptions. Unique workflows? → Custom Solutions.</div>
+        </div>
+    </div>
+</div>
+

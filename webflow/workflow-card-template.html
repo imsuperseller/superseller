@@ -1,0 +1,120 @@
+<!-- ========================================
+   WORKFLOW CARD TEMPLATE FOR MARKETPLACE PAGE
+   ========================================
+   Instructions:
+   1. Copy this entire template
+   2. Replace ALL placeholders in [BRACKETS] with actual values
+   3. Paste into Marketplace page in "Featured Templates" section or "All Workflows" section
+   4. Add corresponding CSS if workflow-card styles don't exist yet
+   ======================================== -->
+
+<div class="workflow-card" data-workflow-id="[WORKFLOW-ID]">
+  <!-- Workflow Header -->
+  <div class="workflow-header">
+    <span class="workflow-category">[CATEGORY]</span>
+    <h3>[WORKFLOW NAME]</h3>
+  </div>
+  
+  <!-- Workflow Description -->
+  <p class="workflow-description">[DESCRIPTION - 1-2 sentences explaining what the workflow does]</p>
+  
+  <!-- Workflow Meta Info -->
+  <div class="workflow-meta">
+    <div class="workflow-rating">
+      <span class="stars">★★★★★</span>
+      <span>[RATING] ([REVIEWS] reviews)</span>
+    </div>
+    <div class="workflow-complexity">
+      <span>Complexity: [Simple | Intermediate | Advanced]</span>
+      <span>Setup Time: [SETUP-TIME]</span>
+    </div>
+  </div>
+
+  <!-- Workflow Features List -->
+  <div class="workflow-features">
+    <ul>
+      <li>✓ [FEATURE 1]</li>
+      <li>✓ [FEATURE 2]</li>
+      <li>✓ [FEATURE 3]</li>
+      <li>✓ [FEATURE 4]</li>
+    </ul>
+  </div>
+
+  <!-- n8n Affiliate Link Notice -->
+  <div class="affiliate-notice">
+    <p>⚡ <strong>Requires n8n Cloud:</strong> 
+    <a href="https://tinyurl.com/ym3awuke" target="_blank" rel="noopener">Get your account here</a> 
+    (Use our affiliate link to support Rensto development)</p>
+  </div>
+
+  <!-- Pricing & Action Buttons -->
+  <div class="workflow-pricing">
+    <!-- Option 1: DIY Download -->
+    <div class="pricing-option download-option">
+      <div class="option-header">
+        <span class="option-type">DIY Download</span>
+        <span class="option-price">$[DOWNLOAD-PRICE]</span>
+      </div>
+      <ul class="option-features">
+        <li>JSON workflow file</li>
+        <li>Step-by-step setup guide</li>
+        <li>[SUPPORT-DAYS] days email support</li>
+        <li>Lifetime updates</li>
+      </ul>
+      <button 
+        class="workflow-btn workflow-download-btn cta-button cta-primary"
+        data-flow-type="marketplace-template"
+        data-tier="[TIER: simple | advanced | complete]"
+        data-template-price="[DOWNLOAD-PRICE]"
+        data-template-id="[WORKFLOW-ID]"
+        data-template-name="[WORKFLOW NAME]">
+        Download - $[DOWNLOAD-PRICE]
+      </button>
+    </div>
+
+    <!-- Option 2: Full-Service Install -->
+    <div class="pricing-option install-option">
+      <div class="option-header">
+        <span class="option-type">Full-Service Install</span>
+        <span class="option-price">$[INSTALL-PRICE]</span>
+      </div>
+      <ul class="option-features">
+        <li>We install & configure workflow</li>
+        <li>Custom setup for your tools</li>
+        <li>End-to-end testing</li>
+        <li>[TRAINING-TIME] training session</li>
+        <li>[SUPPORT-PERIOD] support included</li>
+      </ul>
+      <button 
+        class="workflow-btn workflow-install-btn cta-button cta-primary"
+        data-flow-type="marketplace-install"
+        data-tier="[TIER: template | system | enterprise]"
+        data-install-price="[INSTALL-PRICE]"
+        data-template-id="[WORKFLOW-ID]-install"
+        data-template-name="[WORKFLOW NAME] Installation">
+        Book Install - $[INSTALL-PRICE]
+      </button>
+      <p class="tidycal-note">📅 <strong>Note:</strong> TidyCal booking link will be sent after payment</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+   PLACEHOLDER VALUES TO REPLACE:
+   ========================================
+   [WORKFLOW-ID]           → Unique identifier (e.g., "email-persona-system")
+   [WORKFLOW NAME]         → Display name (e.g., "AI-Powered Email Persona System")
+   [CATEGORY]              → Category badge (e.g., "Email Automation", "Lead Generation")
+   [DESCRIPTION]           → 1-2 sentence description of what workflow does
+   [RATING]                → Star rating (e.g., "4.9")
+   [REVIEWS]               → Number of reviews (e.g., "127")
+   [SETUP-TIME]            → Estimated setup time (e.g., "2-4 hours", "10 minutes")
+   [FEATURE 1-4]           → Key features (list top 4)
+   [DOWNLOAD-PRICE]        → Price for DIY download (e.g., "29", "97", "197")
+   [INSTALL-PRICE]         → Price for full-service install (e.g., "797", "1997", "3500")
+   [TIER]                  → Pricing tier (simple/advanced/complete for download, template/system/enterprise for install)
+   [SUPPORT-DAYS]          → Support period for download option (e.g., "14", "30", "90")
+   [TRAINING-TIME]         → Training duration for install (e.g., "30-minute", "2-hour")
+   [SUPPORT-PERIOD]        → Support period for install (e.g., "90 days", "6 months", "1 year")
+   ======================================== -->
+

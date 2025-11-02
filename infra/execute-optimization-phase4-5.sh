@@ -369,7 +369,7 @@ cat > config/mcp/cursor-config.json << 'EOF'
   "mcpServers": {
     "n8n": {
       "command": "node",
-      "args": ["/path/to/n8n-mcp-server/server.js"],
+      "args": ["/Users/shaifriedman/New Rensto/rensto/rensto-marketplace/plugins/rensto-n8n-agents/mcpServers/n8n-unified-server.js"],
       "env": {
         "N8N_BASE_URL": "http://localhost:5678",
         "N8N_API_KEY": "your-api-key"

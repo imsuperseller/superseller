@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-31T01:58:46.667Z",
+  "timestamp": "2025-10-31T02:00:56.334Z",
   "siteId": "66c7e551a317e0e9c9f906d8",
   "pagesFound": 49,
   "deployments": [
@@ -8,7 +8,9 @@
       "type": "body-code",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "688967be8e345bde39d46152",
+        "customCodeType": "bodyEnd"
       }
     },
     {
@@ -16,7 +18,9 @@
       "type": "scripts",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68dfc41ffedc0a46e687c84b",
+        "customCodeType": "bodyEnd"
       }
     },
     {
@@ -24,7 +28,9 @@
       "type": "scripts",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68ddb0fb5b6408d0687890dd",
+        "customCodeType": "bodyEnd"
       }
     },
     {
@@ -32,7 +38,9 @@
       "type": "scripts",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68dfc5266816931539f098d5",
+        "customCodeType": "bodyEnd"
       }
     },
     {
@@ -40,7 +48,9 @@
       "type": "scripts",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68ddb0642b86f8d1a89ba166",
+        "customCodeType": "bodyEnd"
       }
     },
     {
@@ -48,7 +58,9 @@
       "type": "schema",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68dfc41ffedc0a46e687c84b",
+        "customCodeType": "headCode"
       }
     },
     {
@@ -56,7 +68,9 @@
       "type": "schema",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68ddb0fb5b6408d0687890dd",
+        "customCodeType": "headCode"
       }
     },
     {
@@ -64,7 +78,9 @@
       "type": "schema",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68dfc5266816931539f098d5",
+        "customCodeType": "headCode"
       }
     },
     {
@@ -72,7 +88,9 @@
       "type": "schema",
       "result": {
         "success": false,
-        "method": "manual-required"
+        "method": "manual-required",
+        "pageId": "68ddb0642b86f8d1a89ba166",
+        "customCodeType": "headCode"
       }
     }
   ],

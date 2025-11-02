@@ -48,10 +48,10 @@ fi
 
 # Start n8n MCP Server Extended
 echo "🔗 Starting n8n MCP Server Extended..."
-cd ../n8n-mcp-server-extended/
+cd ../rensto-n8n-agents/mcpServers/
 if [ -f "package.json" ]; then
     npm install
-    nohup node build/index.js > /var/log/n8n-mcp-server.log 2>&1 &
+    nohup node n8n-unified-server.js > /var/log/n8n-unified-server.log 2>&1 &
     echo "✅ n8n MCP Server Extended started (PID: $!)"
 else
     echo "❌ n8n MCP Server Extended not found"
@@ -85,5 +85,5 @@ echo "🎯 MCP servers startup script completed!"
 echo "📋 Check the logs on Racknerd for any issues:"
 echo "   - Make MCP: /var/log/make-mcp-server.log"
 echo "   - Boost Space MCP: /var/log/boost-space-mcp-server.log"
-echo "   - n8n MCP: /var/log/n8n-mcp-server.log"
+echo "   - n8n Unified: /var/log/n8n-unified-server.log"
 echo "   - MCP Proxy: /var/log/mcp-proxy.log"

@@ -86,8 +86,19 @@ In the Page Settings panel (right side):
 
 ---
 
-### **Step 7: Publish** (2 minutes)
+### **Step 7: Publish** (Automated - 30 seconds)
 
+**Option A: Automated via Script** (Recommended):
+```bash
+node scripts/publish-webflow-site.js
+```
+
+**Option B: Automated via API**:
+```bash
+curl "https://api.rensto.com/api/webflow/test/v1/publish-direct?accessToken=90b67c9892c0067fde5f716f9a95f2e0b863cbbf496465cdeef5ddc817e4124b&siteId=66c7e551a317e0e9c9f906d8"
+```
+
+**Option C: Manual** (If automation unavailable):
 1. **Click "Publish" button** (top right, blue button)
 2. **Select all domains** (check rensto.com and www.rensto.com)
 3. **Click "Publish to selected domains"**

@@ -1,0 +1,144 @@
+<!-- Case Studies Schema Markup -->
+<!-- Paste this in Webflow: Page Settings → Custom Code → Code in <head> tag -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Case Studies - Automation Success Stories",
+  "description": "See how businesses achieved 10x efficiency with Rensto automation. Real case studies from insurance, tax services, and healthcare industries. Discover measurable results: 500+ businesses transformed, 75% average time savings, $2.3M total cost savings.",
+  "url": "https://rensto.com/case-studies",
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": 3,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Article",
+          "headline": "Shelly (Insurance) - From Hours of Manual Profiling to Instant Automation",
+          "description": "How Shelly transformed her insurance business from spending hours daily on client profiling to having an intelligent system that does it automatically. Results: 4.5h hours saved daily, 90% faster profiling, 300% more client time.",
+          "url": "https://rensto.com/case-studies#shelly",
+          "author": {
+            "@type": "Organization",
+            "name": "Rensto"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Rensto",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://rensto.com/logo.png"
+            }
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "Insurance Automation",
+            "description": "AI-powered client profiling automation for insurance businesses"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Article",
+          "headline": "Tax4Us (Tax Services) - From Manual Content Creation to AI-Powered Content Agents",
+          "description": "How Ben transformed Tax4Us from manual content creation to having intelligent agents handle WordPress blogs, podcast content, and social media automatically. Results: 20h hours saved weekly, 5x more content output, 150% engagement increase.",
+          "url": "https://rensto.com/case-studies#tax4us",
+          "author": {
+            "@type": "Organization",
+            "name": "Rensto"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Rensto",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://rensto.com/logo.png"
+            }
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "Content Automation",
+            "description": "AI-powered content creation automation for tax services"
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "Article",
+          "headline": "Wonder.care (Healthcare) - From Spreadsheet Chaos to Intelligent Workflow Management",
+          "description": "How Portal transformed Wonder.care from manual spreadsheet management to intelligent workflow automation, allowing employees to focus on patient care instead of data entry. Results: 60% time reduction, 3x more patient focus, 95% accuracy improvement.",
+          "url": "https://rensto.com/case-studies#wonder-care",
+          "author": {
+            "@type": "Organization",
+            "name": "Rensto"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Rensto",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://rensto.com/logo.png"
+            }
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "Healthcare Workflow Automation",
+            "description": "Intelligent workflow automation for healthcare businesses"
+          }
+        }
+      }
+    ]
+  },
+  "about": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "url": "https://rensto.com",
+    "description": "Universal Automation Platform that delivers AI-powered automation solutions to businesses",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "98",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://rensto.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Case Studies",
+        "item": "https://rensto.com/case-studies"
+      }
+    ]
+  }
+}
+</script>
+
+<!-- Additional Meta Tags -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rensto.com/case-studies">
+<meta property="og:title" content="Case Studies - Automation Success Stories | Rensto">
+<meta property="og:description" content="See how businesses achieved 10x efficiency with Rensto automation. Real case studies from insurance, tax services, and healthcare industries.">
+<meta property="og:image" content="https://rensto.com/images/case-studies-og-image.jpg">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://rensto.com/case-studies">
+<meta name="twitter:title" content="Case Studies - Automation Success Stories | Rensto">
+<meta name="twitter:description" content="See how businesses achieved 10x efficiency with Rensto automation. Real case studies from insurance, tax services, and healthcare.">
+<meta name="twitter:image" content="https://rensto.com/images/case-studies-twitter-image.jpg">
+
+<link rel="canonical" href="https://rensto.com/case-studies">
+

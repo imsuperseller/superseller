@@ -1,0 +1,88 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Industry-Specific Automation Solutions",
+  "description": "Get automation that actually works for YOUR industry—in 48 hours. Choose from 16 industry-specific solution packages built by operators who understand your pain points.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Rensto",
+    "url": "https://rensto.com",
+    "logo": "https://rensto.com/logo.png"
+  },
+  "serviceType": "Business Automation Service",
+  "areaServed": "Worldwide",
+  "offers": [
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/ready-solutions#single",
+      "name": "Single Solution Package",
+      "price": "890",
+      "priceCurrency": "USD",
+      "description": "Pick one automation from your industry package. 48-hour setup, 1-hour training, 30-day support.",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/ready-solutions#complete",
+      "name": "Complete Package",
+      "price": "2990",
+      "priceCurrency": "USD",
+      "description": "All 5 solutions for your industry. 48-hour setup, 3-hour training, 60-day priority support.",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "@id": "https://rensto.com/ready-solutions#full-service",
+      "name": "Full-Service Installation Add-on",
+      "price": "797",
+      "priceCurrency": "USD",
+      "description": "Professional installation, data migration, and team training (up to 10 people). 90-day priority support.",
+      "availability": "https://schema.org/InStock"
+    }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Industry Solutions",
+    "itemListElement": [
+      {
+        "@type": "OfferCatalog",
+        "name": "Home Services",
+        "itemListElement": [
+          {"@type": "Offer", "name": "HVAC Solutions"},
+          {"@type": "Offer", "name": "Roofer Solutions"},
+          {"@type": "Offer", "name": "Fence Contractor Solutions"}
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Professional Services",
+        "itemListElement": [
+          {"@type": "Offer", "name": "Realtor Solutions"},
+          {"@type": "Offer", "name": "Insurance Agent Solutions"},
+          {"@type": "Offer", "name": "Law Firm Solutions"},
+          {"@type": "Offer", "name": "Bookkeeping Service Solutions"}
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Personal Services",
+        "itemListElement": [
+          {"@type": "Offer", "name": "Dentist Solutions"},
+          {"@type": "Offer", "name": "Locksmith Solutions"},
+          {"@type": "Offer", "name": "Photographer Solutions"}
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Retail & E-commerce",
+        "itemListElement": [
+          {"@type": "Offer", "name": "E-commerce Store Solutions"},
+          {"@type": "Offer", "name": "Amazon Seller Solutions"},
+          {"@type": "Offer", "name": "Product Supplier Solutions"}
+        ]
+      }
+    ]
+  }
+}
+</script>

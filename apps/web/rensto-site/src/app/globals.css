@@ -343,9 +343,12 @@
 
 @layer base {
   * {
-    @apply border-border;
+    /* Tailwind v4: avoid @apply color tokens here; use variables directly */
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    /* Tailwind v4: set background/text via CSS variables */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
