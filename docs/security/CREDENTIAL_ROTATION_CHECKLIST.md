@@ -72,7 +72,7 @@ The following credentials were committed to git history and need rotation:
 ---
 
 ### **4. Airtable PAT** (Line 93) ⚠️ **MEDIUM PRIORITY**
-- **Token**: `pattFjaYM0LkLb0gb.8026a945a8cbcc7b3d6fe7d2085a74f5b019184379f84ccf7bbbca1f65fc55fb`
+- **Token**: `pattFja...` (redacted - see claude_desktop_config.json:93)
 - **Risk**: Can access all Airtable bases
 
 **Rotation Steps**:
