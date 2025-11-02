@@ -373,3 +373,4 @@ configs/docker/data/
 data/*.db
 data/*.db-*
 .cursor/mcp.json
+claude_desktop_config.json
