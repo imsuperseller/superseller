@@ -45,6 +45,17 @@ async function getWorkflowsFromAirtable(filters: {
       throw new Error('AIRTABLE_API_KEY is empty after sanitization');
     }
     
+    // Validate key format (Airtable PATs start with 'patt' or 'pat' and are ~120 chars)
+    const isValidFormat = sanitizedKey.startsWith('patt') || sanitizedKey.startsWith('pat');
+    if (!isValidFormat || sanitizedKey.length < 50) {
+      console.error('Airtable API key format invalid:', {
+        startsWith: sanitizedKey.substring(0, 4),
+        length: sanitizedKey.length,
+        preview: sanitizedKey.substring(0, 20) + '...'
+      });
+      // Don't throw - let Airtable API reject it for better error message
+    }
+    
     const response = await axios.get(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PRODUCTS_TABLE}`,
       {
