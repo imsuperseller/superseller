@@ -46,7 +46,7 @@ export default function StripeCheckout({
     setError(null);
 
     try {
-      const response = await fetch('/api/stripe/checkout', {
+      const response = await fetch('https://api.rensto.com/api/stripe/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

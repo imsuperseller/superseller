@@ -8,7 +8,7 @@ function getStripe(): Stripe {
     throw new Error('STRIPE_SECRET_KEY not configured');
   }
   return new Stripe(apiKey, {
-    apiVersion: '2024-11-20.acacia'
+    apiVersion: '2023-10-16' // Match working marketplace app exactly
   });
 }
 
@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine pricing and product details based on flow type
-    let priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData;
+    // IMPORTANT: Create Stripe Price objects first (like marketplace app) - ensures account association
+    let priceId: string;
     let successUrl: string;
     let webhookMetadata: any = { ...metadata, flowType, customerEmail, customerName };
 
@@ -59,15 +60,16 @@ export async function POST(request: NextRequest) {
         };
         const price = templatePrices[tier || 'simple'];
 
-        priceData = {
+        // Create price object first (matches marketplace app pattern)
+        const templatePriceObj = await getStripe().prices.create({
+          unit_amount: price * 100,
           currency: 'usd',
           product_data: {
             name: `${tier?.toUpperCase()} Marketplace Template`,
-            description: 'Pre-built n8n workflow template ready to use',
-            metadata: { type: 'marketplace-template', tier, productId }
           },
-          unit_amount: price * 100
-        };
+        });
+        priceId = templatePriceObj.id;
+        
         successUrl = `https://www.rensto.com/?payment=success&type=marketplace&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price };
         break;
@@ -81,43 +83,60 @@ export async function POST(request: NextRequest) {
         };
         const installPrice = installPrices[tier || 'template'];
 
-        priceData = {
+        // Create price object first (matches marketplace app pattern)
+        const installPriceObj = await getStripe().prices.create({
+          unit_amount: installPrice * 100,
           currency: 'usd',
           product_data: {
             name: `${tier?.toUpperCase()} Full-Service Installation`,
-            description: 'Template + professional installation and setup',
-            metadata: { type: 'marketplace-install', tier, productId }
           },
-          unit_amount: installPrice * 100
-        };
+        });
+        priceId = installPriceObj.id;
+        
         successUrl = `https://www.rensto.com/?payment=success&type=marketplace-install&product=${productId}`;
         webhookMetadata = { ...webhookMetadata, productId, tier, price: installPrice };
         break;
 
       case 'ready-solutions':
         // Flow 3: Ready Solutions Package
+        // Support productId (niche ID like 'hvac', 'roofer') or tier pricing
         const solutionPrices: Record<string, number> = {
           starter: 890,
           professional: 2990,
-          enterprise: 2990, // Enterprise + Installation add-on
+          enterprise: 2990,
+          // Niche-specific pricing (from productId)
+          hvac: 499,
+          roofer: 599,
+          realtor: 399,
+          insurance: 449,
+          locksmith: 349,
+          photographer: 299,
           // Legacy aliases
           single: 890,
           complete: 2990,
           'full-service': 3787
         };
-        const solutionPrice = solutionPrices[tier || 'starter'];
+        
+        // Use productId price if it exists (niche-specific), otherwise use tier
+        const nichePrice = productId && solutionPrices[productId] ? solutionPrices[productId] : null;
+        const solutionPrice = nichePrice || solutionPrices[tier || 'starter'];
+        const packageName = metadata.nicheName || `${tier?.toUpperCase()} Ready Solutions Package`;
+        const packageDesc = metadata.nicheName 
+          ? `${metadata.nicheName} automation package with ${metadata.solutionsCount || 5} solutions`
+          : 'Industry-specific automation solution';
 
-        priceData = {
+        // Create price object first (matches marketplace app pattern)
+        const solutionPriceObj = await getStripe().prices.create({
+          unit_amount: solutionPrice * 100,
           currency: 'usd',
           product_data: {
-            name: `${tier?.toUpperCase()} Ready Solutions Package`,
-            description: 'Industry-specific automation solution',
-            metadata: { type: 'ready-solutions', tier }
+            name: packageName,
           },
-          unit_amount: solutionPrice * 100
-        };
-        successUrl = `https://www.rensto.com/?payment=success&type=ready-solutions&tier=${tier}`;
-        webhookMetadata = { ...webhookMetadata, tier, price: solutionPrice };
+        });
+        priceId = solutionPriceObj.id;
+        
+        successUrl = `https://www.rensto.com/?payment=success&type=ready-solutions&niche=${productId || tier}`;
+        webhookMetadata = { ...webhookMetadata, tier, productId, price: solutionPrice, ...metadata };
         break;
 
       case 'subscription':
@@ -129,18 +148,17 @@ export async function POST(request: NextRequest) {
         };
         const subPrice = subPrices[subscriptionType || 'lead-gen']?.[tier || 'starter'] || 299;
 
-        priceData = {
+        // Create recurring price object first (matches marketplace app pattern)
+        const subPriceObj = await getStripe().prices.create({
+          unit_amount: subPrice * 100,
           currency: 'usd',
+          recurring: { interval: 'month' },
           product_data: {
             name: `${subscriptionType?.toUpperCase()} Subscription - ${tier?.toUpperCase()}`,
-            description: 'Monthly recurring subscription service',
-            metadata: { type: 'subscription', subscriptionType, tier }
           },
-          unit_amount: subPrice * 100,
-          recurring: {
-            interval: 'month'
-          }
-        };
+        });
+        priceId = subPriceObj.id;
+        
         successUrl = `https://www.rensto.com/?payment=success&type=subscription&plan=${(subscriptionType || 'lead-gen')}-${(tier || 'starter')}`;
         webhookMetadata = { ...webhookMetadata, subscriptionType, tier, price: subPrice };
         break;
@@ -167,15 +185,16 @@ export async function POST(request: NextRequest) {
           ? (productId === 'audit' ? 'Comprehensive automation readiness assessment' : '2-week workflow automation sprint')
           : 'Bespoke automation project with consultation';
 
-        priceData = {
+        // Create price object first (matches marketplace app pattern)
+        const customPriceObj = await getStripe().prices.create({
+          unit_amount: customPrice * 100,
           currency: 'usd',
           product_data: {
             name: customName,
-            description: customDesc,
-            metadata: { type: 'custom-solutions', product: productId || tier, tier, productId }
           },
-          unit_amount: customPrice * 100
-        };
+        });
+        priceId = customPriceObj.id;
+        
         successUrl = `https://www.rensto.com/?payment=success&type=custom&product=${customKey}`;
         webhookMetadata = { ...webhookMetadata, product: customKey, productId, tier, price: customPrice };
         break;
@@ -187,30 +206,57 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Create Stripe Checkout Session
-    // Minimal configuration to avoid "page not found" errors
+    // ALWAYS create/retrieve customer FIRST (required for publishable key association)
+    // Old working system always had customer attached - this was the key
+    const stripe = getStripe();
+    const emailToUse = (customerEmail && customerEmail.trim() && customerEmail.includes('@')) 
+      ? customerEmail.trim() 
+      : `customer-${Date.now()}@rensto.com`;
+    
+    const existingCustomers = await stripe.customers.list({
+      email: emailToUse,
+      limit: 1,
+    });
+
+    let customerId: string;
+    if (existingCustomers.data.length > 0) {
+      customerId = existingCustomers.data[0].id;
+    } else {
+      const newCustomer = await stripe.customers.create({
+        email: emailToUse,
+        name: customerName || undefined,
+      });
+      customerId = newCustomer.id;
+    }
+
+    // Create Stripe Checkout Session - EXACT MARKETPLACE APP MATCH
+    // Include ALL parameters from working marketplace implementation
     const sessionConfig: Stripe.Checkout.SessionCreateParams = {
+      customer: customerId,
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: priceData,
-          quantity: 1
+          price: priceId,
+          quantity: 1,
         }
       ],
       mode: flowType === 'subscription' ? 'subscription' : 'payment',
       success_url: successUrl,
-      cancel_url: `https://www.rensto.com/?canceled=true`
-      // Only include metadata if it has valid string values (no complex objects)
-      // Remove optional parameters that might cause rejection
+      cancel_url: `https://www.rensto.com/`,
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB', 'AU', 'IL'],
+      },
     };
     
-    // Only add metadata if webhookMetadata has valid string values
+    // Add metadata - Stripe requires all values to be strings
     if (webhookMetadata && Object.keys(webhookMetadata).length > 0) {
-      // Convert all metadata values to strings (Stripe requires string values)
       const stringMetadata: Record<string, string> = {};
       for (const [key, value] of Object.entries(webhookMetadata)) {
         if (value !== null && value !== undefined) {
-          stringMetadata[key] = String(value);
+          // Convert to string - handle objects/arrays by JSON stringifying
+          stringMetadata[key] = typeof value === 'object' ? JSON.stringify(value) : String(value);
         }
       }
       if (Object.keys(stringMetadata).length > 0) {
@@ -218,20 +264,22 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Only add subscription_data for subscriptions
+    // Add payment_intent_data for one-time payments (marketplace pattern)
+    if (flowType !== 'subscription' && sessionConfig.metadata) {
+      sessionConfig.payment_intent_data = {
+        metadata: sessionConfig.metadata
+      };
+    }
+    
+    // Add subscription_data for subscriptions (marketplace pattern)
     if (flowType === 'subscription' && sessionConfig.metadata) {
       sessionConfig.subscription_data = {
         metadata: sessionConfig.metadata
       };
     }
 
-    // Only include customer_email if provided - let Stripe collect it otherwise
-    // Setting customer_email can cause "page not found" errors if email is invalid or pre-filled
-    if (customerEmail && customerEmail.trim() && customerEmail.includes('@')) {
-      sessionConfig.customer_email = customerEmail.trim();
-    }
-    // If no email provided, Stripe checkout will collect it - don't force a default
-
+    // Create session - Stripe automatically uses account from secret key
+    // NOTE: Do NOT use stripeAccount parameter for your own account - that's for Connect only
     const session = await getStripe().checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({

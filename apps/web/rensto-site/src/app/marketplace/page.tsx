@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button-enhanced';
 import { 
@@ -16,103 +16,92 @@ import {
   Users,
   Zap,
   Shield,
-  TrendingUp
+  TrendingUp,
+  Loader2
 } from 'lucide-react';
+
+interface Workflow {
+  id: string;
+  workflowId: string;
+  name: string;
+  category: string;
+  description: string;
+  downloadPrice: number;
+  installPrice: number;
+  downloadTier: string;
+  installTier: string;
+  complexity: string;
+  setupTime: string;
+  features: string[];
+  targetMarket: string;
+  n8nAffiliateLink: string;
+  workflowJsonUrl: string;
+  status: string;
+}
 
 export default function MarketplacePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popular');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const categories = [
-    { id: 'all', name: 'All Templates', count: 24 },
-    { id: 'lead-generation', name: 'Lead Generation', count: 8 },
-    { id: 'customer-management', name: 'Customer Management', count: 6 },
-    { id: 'marketing', name: 'Marketing', count: 5 },
-    { id: 'sales', name: 'Sales', count: 5 }
-  ];
-
-  const templates = [
-    {
-      id: 1,
-      name: 'HVAC Lead Scoring System',
-      description: 'Automatically score and prioritize HVAC leads based on location, budget, and urgency.',
-      category: 'lead-generation',
-      price: 49,
-      rating: 4.9,
-      downloads: 1247,
-      features: ['Lead scoring', 'Priority routing', 'CRM integration', 'Email automation'],
-      image: '/templates/hvac-lead-scoring.jpg',
-      popular: true,
-      installation: true
-    },
-    {
-      id: 2,
-      name: 'Real Estate CRM Automation',
-      description: 'Complete CRM automation for real estate agents with lead tracking and follow-up.',
-      category: 'customer-management',
-      price: 79,
-      rating: 4.8,
-      downloads: 892,
-      features: ['Lead tracking', 'Follow-up automation', 'Document management', 'Reporting'],
-      image: '/templates/real-estate-crm.jpg',
-      popular: false,
-      installation: true
-    },
-    {
-      id: 3,
-      name: 'Insurance Quote Generator',
-      description: 'Automated insurance quote generation and comparison system.',
-      category: 'sales',
-      price: 99,
-      rating: 4.7,
-      downloads: 654,
-      features: ['Quote generation', 'Comparison engine', 'Client portal', 'Payment processing'],
-      image: '/templates/insurance-quotes.jpg',
-      popular: false,
-      installation: false
-    },
-    {
-      id: 4,
-      name: 'Social Media Scheduler',
-      description: 'Automated social media content scheduling and posting across platforms.',
-      category: 'marketing',
-      price: 39,
-      rating: 4.6,
-      downloads: 1123,
-      features: ['Multi-platform posting', 'Content calendar', 'Analytics tracking', 'Hashtag optimization'],
-      image: '/templates/social-scheduler.jpg',
-      popular: true,
-      installation: false
-    },
-    {
-      id: 5,
-      name: 'Roofer Lead Management',
-      description: 'Specialized lead management system for roofing contractors.',
-      category: 'lead-generation',
-      price: 59,
-      rating: 4.8,
-      downloads: 756,
-      features: ['Storm damage leads', 'Insurance coordination', 'Project tracking', 'Customer communication'],
-      image: '/templates/roofer-leads.jpg',
-      popular: false,
-      installation: true
-    },
-    {
-      id: 6,
-      name: 'Photographer Booking System',
-      description: 'Complete booking and scheduling system for photographers.',
-      category: 'customer-management',
-      price: 69,
-      rating: 4.5,
-      downloads: 423,
-      features: ['Online booking', 'Payment processing', 'Contract generation', 'Gallery sharing'],
-      image: '/templates/photographer-booking.jpg',
-      popular: false,
-      installation: true
+  // Fetch workflows from API on component mount
+  useEffect(() => {
+    async function fetchWorkflows() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/marketplace/workflows?status=✅ Active&limit=100');
+        const data = await response.json();
+        
+        if (data.success && data.workflows) {
+          setWorkflows(data.workflows);
+        } else {
+          setError(data.error || 'Failed to load workflows');
+        }
+      } catch (err) {
+        console.error('Error fetching workflows:', err);
+        setError('Failed to load workflows. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
     }
+    
+    fetchWorkflows();
+  }, []);
+
+  // Extract unique categories from workflows
+  const categories = [
+    { id: 'all', name: 'All Templates', count: workflows.length },
+    ...Array.from(new Set(workflows.map(w => w.category)))
+      .filter(Boolean)
+      .map(cat => ({
+        id: cat.toLowerCase().replace(/\s+/g, '-'),
+        name: cat,
+        count: workflows.filter(w => w.category === cat).length
+      }))
   ];
+
+  // Map workflows to template format for compatibility
+  const templates = workflows.map((workflow, index) => ({
+    id: workflow.id,
+    name: workflow.name,
+    description: workflow.description || 'Professional automation workflow',
+    category: workflow.category?.toLowerCase().replace(/\s+/g, '-') || 'other',
+    price: workflow.downloadPrice || 49,
+    rating: 4.5 + (index % 5) * 0.1, // Mock rating based on index
+    downloads: 100 + index * 50, // Mock downloads
+    features: workflow.features || [],
+    image: '/templates/default.jpg',
+    popular: index < 3, // First 3 are popular
+    installation: workflow.installPrice > 0,
+    workflowId: workflow.workflowId,
+    installPrice: workflow.installPrice,
+    n8nAffiliateLink: workflow.n8nAffiliateLink
+  }));
 
   const filteredTemplates = templates.filter(template => {
     const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
@@ -141,7 +130,19 @@ export default function MarketplacePage() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch('/api/stripe/checkout', {
+      // Determine tier based on price for marketplace-template
+      let tier = 'simple';
+      if (template.price >= 197) tier = 'complete';
+      else if (template.price >= 97) tier = 'advanced';
+      
+      // Determine tier based on install price for marketplace-install
+      if (flowType === 'marketplace-install') {
+        if (template.installPrice >= 3500) tier = 'enterprise';
+        else if (template.installPrice >= 1997) tier = 'system';
+        else tier = 'template';
+      }
+
+      const response = await fetch('https://api.rensto.com/api/stripe/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,12 +150,15 @@ export default function MarketplacePage() {
         body: JSON.stringify({
           flowType,
           productId: template.id.toString(),
-          tier: 'simple', // Templates are simple tier
+          tier: tier,
           customerEmail: '', // Stripe checkout will collect this
           metadata: {
             templateName: template.name,
             templateCategory: template.category,
-            templatePrice: template.price
+            templatePrice: template.price,
+            installPrice: template.installPrice,
+            workflowId: template.workflowId || '',
+            n8nAffiliateLink: template.n8nAffiliateLink || 'https://tinyurl.com/ym3awuke'
           }
         }),
       });
@@ -278,9 +282,39 @@ export default function MarketplacePage() {
         </div>
       </section>
 
+      {/* Loading State */}
+      {isLoading && (
+        <section className="py-16 px-4">
+          <div className="container mx-auto text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading workflows...</p>
+          </div>
+        </section>
+      )}
+
+      {/* Error State */}
+      {error && !isLoading && (
+        <section className="py-16 px-4">
+          <div className="container mx-auto text-center">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-red-800 mb-4">{error}</p>
+              <Button onClick={() => window.location.reload()} variant="outline">
+                Retry
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Templates Grid */}
+      {!isLoading && !error && (
       <section className="py-16 px-4">
         <div className="container mx-auto">
+          {sortedTemplates.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-600 text-lg">No workflows found matching your criteria.</p>
+            </div>
+          ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sortedTemplates.map((template) => (
               <div
@@ -351,8 +385,10 @@ export default function MarketplacePage() {
               </div>
             ))}
           </div>
+          )}
         </div>
       </section>
+      )}
 
       {/* Installation Service */}
       <section className="py-16 px-4 bg-white">

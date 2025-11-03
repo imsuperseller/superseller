@@ -19,6 +19,7 @@ import {
 
 export default function SolutionsPage() {
   const [selectedNiche, setSelectedNiche] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const niches = [
     {
@@ -156,6 +157,51 @@ export default function SolutionsPage() {
   ];
 
   const selectedNicheData = niches.find(niche => niche.id === selectedNiche);
+
+  // Handle Ready Solutions Checkout
+  const handleCheckout = async (nicheData: typeof niches[0] | undefined) => {
+    if (!nicheData) {
+      alert('Please select a niche package first');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const response = await fetch('https://api.rensto.com/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          flowType: 'ready-solutions',
+          productId: nicheData.id,
+          tier: 'starter', // Ready Solutions use starter tier
+          customerEmail: '', // Stripe checkout will collect this
+          metadata: {
+            nicheId: nicheData.id,
+            nicheName: nicheData.name,
+            packagePrice: nicheData.price,
+            solutionsCount: nicheData.solutions
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        alert(`Error: ${data.error || 'Could not create checkout session'}`);
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Error processing request. Please try again.');
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100">
@@ -330,9 +376,14 @@ export default function SolutionsPage() {
               
               <div className="text-center mt-12">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white">
+                  <Button 
+                    size="lg" 
+                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                    onClick={() => handleCheckout(selectedNicheData)}
+                    disabled={isProcessing}
+                  >
                     <Package className="w-5 h-5 mr-2" />
-                    Get This Package
+                    {isProcessing ? 'Processing...' : 'Get This Package'}
                   </Button>
                   <Button size="lg" variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-50">
                     <Play className="w-5 h-5 mr-2" />
@@ -459,10 +510,11 @@ export default function SolutionsPage() {
             <Button
               size="lg"
               className="bg-orange-600 hover:bg-orange-700 text-white"
-              disabled={!selectedNiche}
+              disabled={!selectedNiche || isProcessing}
+              onClick={() => handleCheckout(selectedNicheData)}
             >
               <Package className="w-5 h-5 mr-2" />
-              Get {selectedNicheData?.name} Package
+              {isProcessing ? 'Processing...' : `Get ${selectedNicheData?.name} Package`}
             </Button>
             <Link href="/custom">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
