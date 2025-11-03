@@ -18,7 +18,7 @@ async function getWorkflowsFromAirtable(filters: {
   status?: string;
   limit?: number;
 }) {
-  const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || '';
+  const AIRTABLE_API_KEY = (process.env.AIRTABLE_API_KEY || '').trim();
   
   if (!AIRTABLE_API_KEY) {
     throw new Error('AIRTABLE_API_KEY not configured');
@@ -34,11 +34,22 @@ async function getWorkflowsFromAirtable(filters: {
   }
 
   try {
+    // Sanitize API key to ensure no invalid characters in header
+    // Remove all control characters and ensure clean string
+    const sanitizedKey = AIRTABLE_API_KEY
+      .replace(/[\r\n\t\x00-\x1F\x7F-\x9F]/g, '') // Remove all control chars
+      .replace(/\s+/g, '') // Remove all whitespace
+      .trim();
+    
+    if (!sanitizedKey || sanitizedKey.length === 0) {
+      throw new Error('AIRTABLE_API_KEY is empty after sanitization');
+    }
+    
     const response = await axios.get(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PRODUCTS_TABLE}`,
       {
         headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          'Authorization': `Bearer ${sanitizedKey}`,
           'Content-Type': 'application/json'
         },
         params: {
