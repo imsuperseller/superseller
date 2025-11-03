@@ -1,0 +1,300 @@
+{
+  "name": "STRIPE-MARKETPLACE-001: Template Purchase Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "stripe-marketplace-template",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Stripe Webhook - Marketplace",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [240, 304],
+      "webhookId": "0041ed91-9265-4ab6-ab87-124704f6949b"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Stripe webhook data\nconst webhookData = $input.first().json;\n\n// Extract data from webhook payload\nconst customerEmail = webhookData.customerEmail || webhookData.metadata?.customerEmail;\nconst amount = webhookData.amount || 0;\nconst productId = webhookData.productId || webhookData.metadata?.productId;\nconst sessionId = webhookData.sessionId || '';\nconst flowType = webhookData.flowType || 'marketplace-template';\nconst tier = webhookData.tier || webhookData.metadata?.tier || 'simple';\nconst templateName = webhookData.metadata?.templateName || webhookData.metadata?.productName || '';\n\nreturn [{\n  customerEmail,\n  amount,\n  productId, // This should match Workflow ID in Marketplace Products\n  sessionId,\n  flowType,\n  tier,\n  templateName,\n  purchaseType: 'Download',\n  timestamp: new Date().toISOString(),\n  // Store full webhook data for reference\n  webhookData\n}];"
+      },
+      "id": "parse-data",
+      "name": "Parse Webhook Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [464, 304]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appQijHhqqP4z6wGe",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Customers",
+          "mode": "list"
+        },
+        "filterByFormula": "={Email}='{{ $json.customerEmail }}'",
+        "options": {}
+      },
+      "id": "find-customer",
+      "name": "Find Customer",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [688, 304],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "base": {
+          "__rl": true,
+          "value": "appQijHhqqP4z6wGe",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Customers",
+          "mode": "list"
+        },
+        "fields": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Parse Webhook Data').item.json.customerEmail }}",
+            "Name": "={{ $('Parse Webhook Data').item.json.webhookData.customerName || 'Customer' }}",
+            "Last Contact Date": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": ["Email"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "create-customer",
+      "name": "Create/Update Customer",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [912, 304],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app6saCaH88uK3kCO",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Marketplace Products",
+          "mode": "list"
+        },
+        "filterByFormula": "={Workflow ID}='{{ $('Parse Webhook Data').item.json.productId }}'",
+        "options": {}
+      },
+      "id": "find-product",
+      "name": "Find Marketplace Product",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [1136, 304],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "base": {
+          "__rl": true,
+          "value": "app6saCaH88uK3kCO",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Marketplace Purchases",
+          "mode": "list"
+        },
+        "fields": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer Email": "={{ $('Parse Webhook Data').item.json.customerEmail }}",
+            "Product": "={{ $('Find Marketplace Product').first().json.id }}",
+            "Purchase Date": "={{ $now.toISO() }}",
+            "Purchase Type": "Download",
+            "Amount Paid": "={{ $('Parse Webhook Data').item.json.amount }}",
+            "Stripe Session ID": "={{ $('Parse Webhook Data').item.json.sessionId }}",
+            "Status": "⏳ Pending",
+            "Access Granted": false,
+            "Download Count": 0
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "create-purchase",
+      "name": "Create Marketplace Purchase",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [1360, 304],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.rensto.com/api/marketplace/downloads",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"templateId\": \"{{ $('Parse Webhook Data').item.json.productId }}\",\n  \"customerEmail\": \"{{ $('Parse Webhook Data').item.json.customerEmail }}\",\n  \"sessionId\": \"{{ $('Parse Webhook Data').item.json.sessionId }}\",\n  \"purchaseRecordId\": \"{{ $('Create Marketplace Purchase').first().json.id }}\"\n}",
+        "options": {}
+      },
+      "id": "generate-download",
+      "name": "Generate Download Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1584, 304]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app6saCaH88uK3kCO",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Marketplace Purchases",
+          "mode": "list"
+        },
+        "id": "={{ $('Create Marketplace Purchase').first().json.id }}",
+        "fields": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Download Link": "={{ $json.downloadLink || $json.url }}",
+            "Download Link Expiry": "={{ $now.plus({ days: 7 }).toISO() }}",
+            "Status": "📥 Download Link Sent",
+            "Access Granted": true
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "update-purchase",
+      "name": "Update Purchase with Download Link",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [1808, 304],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tilk3s6sK9ATRt9r",
+          "name": "rensto/shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "recipients": "={{ $('Parse Webhook Data').item.json.customerEmail }}",
+        "subject": "Your Template is Ready! 🎉",
+        "message": "=<!DOCTYPE html>\n<html>\n<head><style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}.header{background:#2c5aa0;color:white;padding:20px;text-align:center;}.content{padding:20px;}.button{display:inline-block;padding:12px 24px;background:#28a745;color:white;text-decoration:none;border-radius:5px;margin:20px 0;}</style></head>\n<body>\n<div class=\"header\"><h1>🎉 Your Template is Ready!</h1></div>\n<div class=\"content\">\n<p>Hi {{ $('Parse Webhook Data').item.json.webhookData.customerName || 'Customer' }},</p>\n<p>Thank you for purchasing the <strong>{{ $('Find Marketplace Product').first().json.fields['Workflow Name'] }}</strong> template!</p>\n<h2>📥 Download Your Template</h2>\n<p><a href=\"{{ $('Generate Download Link').json.downloadLink }}\" class=\"button\">Download Now (Expires in 7 days)</a></p>\n<h2>⚡ Need n8n Cloud?</h2>\n<p>We recommend n8n Cloud for the best experience. <a href=\"https://tinyurl.com/ym3awuke\">Get started here</a></p>\n<p><small>Benefits: Automatic updates, cloud hosting, 24/7 support</small></p>\n<h2>📚 Setup Instructions</h2>\n<p>1. Import the workflow JSON file into your n8n instance</p>\n<p>2. Configure credentials (Airtable, Slack, etc.)</p>\n<p>3. Test the workflow</p>\n<p>Need help? Reply to this email or book a setup call.</p>\n<p>Best regards,<br>The Rensto Team<br>service@rensto.com</p>\n</div>\n</body>\n</html>",
+        "options": {
+          "contentType": "html"
+        }
+      },
+      "id": "send-email",
+      "name": "Send Customer Email",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 1,
+      "position": [1920, 304],
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "cG7UVwSbYjSYBg4P",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"success\": true,\n  \"message\": \"Marketplace purchase processed\",\n  \"purchaseId\": $('Create Marketplace Purchase').first().json.id,\n  \"downloadLink\": $('Generate Download Link').json.downloadLink || $('Generate Download Link').json.url,\n  \"customerEmail\": $('Parse Webhook Data').item.json.customerEmail\n} }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [2032, 304]
+    }
+  ],
+  "connections": {
+    "Stripe Webhook - Marketplace": {
+      "main": [[{ "node": "Parse Webhook Data", "type": "main", "index": 0 }]]
+    },
+    "Parse Webhook Data": {
+      "main": [[{ "node": "Find Customer", "type": "main", "index": 0 }]]
+    },
+    "Find Customer": {
+      "main": [[{ "node": "Create/Update Customer", "type": "main", "index": 0 }]]
+    },
+    "Create/Update Customer": {
+      "main": [[{ "node": "Find Marketplace Product", "type": "main", "index": 0 }]]
+    },
+    "Find Marketplace Product": {
+      "main": [[{ "node": "Create Marketplace Purchase", "type": "main", "index": 0 }]]
+    },
+    "Create Marketplace Purchase": {
+      "main": [[{ "node": "Generate Download Link", "type": "main", "index": 0 }]]
+    },
+    "Generate Download Link": {
+      "main": [[{ "node": "Update Purchase with Download Link", "type": "main", "index": 0 }]]
+    },
+    "Update Purchase with Download Link": {
+      "main": [[{ "node": "Send Customer Email", "type": "main", "index": 0 }]]
+    },
+    "Send Customer Email": {
+      "main": [[{ "node": "Respond Success", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
+
