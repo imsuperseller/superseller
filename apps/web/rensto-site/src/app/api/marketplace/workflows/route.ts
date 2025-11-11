@@ -56,27 +56,44 @@ async function getWorkflowsFromAirtable(filters: {
       // Don't throw - let Airtable API reject it for better error message
     }
     
+    // Build Authorization header with proper encoding
+    const authHeader = `Bearer ${sanitizedKey}`;
+    
+    // Validate header doesn't contain invalid characters
+    if (/[\r\n]/.test(authHeader)) {
+      throw new Error('Authorization header contains invalid characters after sanitization');
+    }
+    
     const response = await axios.get(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PRODUCTS_TABLE}`,
       {
         headers: {
-          'Authorization': `Bearer ${sanitizedKey}`,
+          'Authorization': authHeader,
           'Content-Type': 'application/json'
         },
         params: {
           ...(filterFormula && { filterByFormula: filterFormula }),
           maxRecords: filters.limit || 100,
           sort: [{ field: 'Workflow Name', direction: 'asc' }]
-        }
+        },
+        // Add timeout and retry logic for rate limits
+        timeout: 10000,
+        validateStatus: (status) => status < 500 // Don't throw on 429
       }
     );
+    
+    // Handle rate limiting gracefully
+    if (response.status === 429) {
+      const retryAfter = response.headers['retry-after'] || '60';
+      throw new Error(`Airtable rate limit exceeded. Please retry after ${retryAfter} seconds.`);
+    }
 
-    return response.data.records.map((record: any) => {
+    return response.data.records.map((record: { id: string; fields: Record<string, unknown> }) => {
       const fields = record.fields;
       
       // Calculate pricing tiers based on download price
-      const downloadPrice = fields['Download Price'] || 0;
-      const installPrice = fields['Install Price'] || 0;
+      const downloadPrice = (typeof fields['Download Price'] === 'number' ? fields['Download Price'] : 0) as number;
+      const installPrice = (typeof fields['Install Price'] === 'number' ? fields['Install Price'] : 0) as number;
       
       // Determine tier based on price
       let downloadTier = 'simple';
@@ -89,7 +106,7 @@ async function getWorkflowsFromAirtable(filters: {
 
       // Extract features
       const features = fields['Features'] || [];
-      const featuresText = fields['Features Text'] || '';
+      const featuresText = (typeof fields['Features Text'] === 'string' ? fields['Features Text'] : '') as string;
       const featureList = Array.isArray(features) ? features : 
                          featuresText ? featuresText.split(/[,\n]/).map((f: string) => f.trim()).filter(Boolean) : [];
 
@@ -113,9 +130,28 @@ async function getWorkflowsFromAirtable(filters: {
         pricingTiers: fields['Pricing Tiers'] || []
       };
     });
-  } catch (error: any) {
-    console.error('Airtable API error:', error.message);
-    throw new Error(`Failed to fetch workflows: ${error.message}`);
+  } catch (error: unknown) {
+    const axiosError = error as { message?: string; response?: { status?: number; statusText?: string; data?: unknown } };
+    
+    console.error('Airtable API error:', {
+      message: axiosError.message,
+      status: axiosError.response?.status,
+      statusText: axiosError.response?.statusText,
+      data: axiosError.response?.data
+    });
+    
+    // Provide more helpful error messages
+    if (axiosError.response?.status === 429) {
+      throw new Error('Airtable rate limit exceeded. Please try again in a few moments.');
+    } else if (axiosError.response?.status === 401) {
+      throw new Error('Airtable API key is invalid or expired.');
+    } else if (axiosError.response?.status === 404) {
+      throw new Error('Airtable base or table not found. Please verify configuration.');
+    } else if (axiosError.message?.includes('Invalid character')) {
+      throw new Error('API key contains invalid characters. Please check environment variable.');
+    }
+    
+    throw new Error(`Failed to fetch workflows: ${axiosError.message || 'Unknown error'}`);
   }
 }
 
@@ -143,12 +179,13 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Workflows API error:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch workflows',
+        error: errorMessage,
         workflows: []
       },
       { status: 500 }
