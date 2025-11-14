@@ -5,8 +5,8 @@
 /* shadcn/ui CSS Variables */
 @layer base {
   :root {
-    /* Rensto brand default (dark-first) */
-    --background: 266 47% 10%; /* #110d28 */
+    /* Rensto brand default (dark-first) - Matching Webflow Brand System */
+    --background: 266 47% 10%; /* #110d28 - matches Rensto brand */
     --foreground: 210 40% 98%; /* near white */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -355,8 +355,8 @@
     border-color: hsl(var(--border));
   }
   body {
-    /* Tailwind v4: set background/text via CSS variables */
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    /* Use Rensto brand colors directly - matching Webflow brand system */
+    background-color: var(--rensto-bg-primary) !important;
+    color: var(--rensto-text-primary) !important;
   }
 }
