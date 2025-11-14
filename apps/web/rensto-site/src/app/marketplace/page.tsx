@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
 import { 
   Store, 
@@ -195,15 +196,22 @@ export default function MarketplacePage() {
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ background: 'var(--rensto-gradient-primary)' }}
-              >
-                <Store className="w-6 h-6 text-white" />
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/rensto-logo.png"
+                  alt="Rensto Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))'
+                  }}
+                  priority
+                />
               </div>
               <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Marketplace</span>
-            </div>
+            </Link>
             <nav className="hidden md:flex items-center gap-8">
               <Link 
                 href="/" 
