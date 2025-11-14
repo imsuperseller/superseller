@@ -124,51 +124,134 @@ export default function SubscriptionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+    <div className="min-h-screen" style={{ 
+      background: 'var(--rensto-bg-primary)', 
+      color: 'var(--rensto-text-primary)',
+      fontFamily: 'var(--font-outfit), sans-serif'
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-purple-200 sticky top-0 z-50">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+        style={{ 
+          background: 'rgba(17, 13, 40, 0.98)',
+          borderColor: 'rgba(254, 61, 81, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">Subscriptions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Subscriptions</span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
-              <Link href="/marketplace" className="text-gray-600 hover:text-gray-900 transition-colors">Marketplace</Link>
-              <Link href="/custom" className="text-gray-600 hover:text-gray-900 transition-colors">Custom</Link>
-              <Link href="/solutions" className="text-gray-600 hover:text-gray-900 transition-colors">Solutions</Link>
+              <Link 
+                href="/" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/marketplace" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Marketplace
+              </Link>
+              <Link 
+                href="/custom" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Custom
+              </Link>
+              <Link 
+                href="/solutions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Solutions
+              </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm">Sign In</Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)', 
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.3) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Enhanced <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Hot Leads Service</span>
+            <h1 
+              className="text-5xl md:text-6xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Enhanced Hot Leads Service
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get high-quality, niche-specific leads delivered directly to your CRM. 
               Our AI-powered system finds the best prospects for your business.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div className="flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <Target className="w-5 h-5" />
                 <span className="font-semibold">Niche-Specific</span>
               </div>
-              <div className="flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-blue)',
+                  color: 'var(--rensto-accent-blue)',
+                  background: 'transparent'
+                }}
+              >
                 <TrendingUp className="w-5 h-5" />
                 <span className="font-semibold">AI-Powered</span>
               </div>
-              <div className="flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-cyan)',
+                  color: 'var(--rensto-accent-cyan)',
+                  background: 'transparent'
+                }}
+              >
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">CRM Integrated</span>
               </div>
@@ -178,11 +261,13 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* Niche Selection */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Niche</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Choose Your Niche
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Select your industry to get leads specifically targeted for your business type.
             </p>
           </div>
@@ -192,21 +277,32 @@ export default function SubscriptionsPage() {
               <button
                 key={niche.id}
                 onClick={() => setSelectedNiche(niche.id)}
-                className={`p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                className="p-6 rounded-2xl border-2 transition-all duration-300 text-left hover:-translate-y-1"
+                style={
                   selectedNiche === niche.id
-                    ? 'border-purple-500 bg-purple-50 shadow-lg'
-                    : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-                }`}
+                    ? {
+                        borderColor: 'var(--rensto-primary)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        borderColor: 'rgba(254, 61, 81, 0.2)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-accent)'
+                      }
+                }
               >
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-3xl">{niche.icon}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">{niche.name}</h3>
-                    <p className="text-gray-600">{niche.description}</p>
+                    <h3 className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {niche.name}
+                    </h3>
+                    <p style={{ color: 'var(--rensto-text-secondary)' }}>{niche.description}</p>
                   </div>
                 </div>
                 {selectedNiche === niche.id && (
-                  <div className="flex items-center gap-2 text-purple-600">
+                  <div className="flex items-center gap-2" style={{ color: 'var(--rensto-primary)' }}>
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">Selected</span>
                   </div>
@@ -218,11 +314,13 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* Lead Volume Selection */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Lead Volume</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Choose Your Lead Volume
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Select the volume that matches your business capacity and growth goals.
             </p>
           </div>
@@ -232,28 +330,48 @@ export default function SubscriptionsPage() {
               <div
                 key={volume.id}
                 onClick={() => setLeadVolume(volume.id)}
-                className={`relative p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
+                className="relative p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer hover:-translate-y-1"
+                style={
                   leadVolume === volume.id
-                    ? 'border-purple-500 bg-purple-50 shadow-lg'
-                    : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-                } ${volume.popular ? 'ring-2 ring-purple-500' : ''}`}
+                    ? {
+                        borderColor: 'var(--rensto-primary)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        borderColor: 'rgba(254, 61, 81, 0.2)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-accent)'
+                      }
+                }
               >
                 {volume.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    <span 
+                      className="px-4 py-1 rounded-full text-sm font-bold text-white"
+                      style={{ background: 'var(--rensto-gradient-primary)' }}
+                    >
                       Most Popular
                     </span>
                   </div>
                 )}
                 
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{volume.name}</h3>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">${volume.price}</div>
-                  <div className="text-sm text-gray-600 mb-4">{volume.leads}</div>
-                  <p className="text-gray-600 text-sm mb-6">{volume.description}</p>
+                  <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                    {volume.name}
+                  </h3>
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--rensto-primary)' }}>
+                    ${volume.price}
+                  </div>
+                  <div className="text-sm mb-4" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {volume.leads}
+                  </div>
+                  <p className="text-sm mb-6" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {volume.description}
+                  </p>
                   
                   {leadVolume === volume.id && (
-                    <div className="flex items-center justify-center gap-2 text-purple-600">
+                    <div className="flex items-center justify-center gap-2" style={{ color: 'var(--rensto-primary)' }}>
                       <CheckCircle className="w-5 h-5" />
                       <span className="font-semibold">Selected</span>
                     </div>
@@ -266,11 +384,13 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* CRM Integration */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">CRM Integration</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              CRM Integration
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Choose your CRM system for seamless lead delivery and management.
             </p>
           </div>
@@ -280,21 +400,34 @@ export default function SubscriptionsPage() {
               <button
                 key={crm.id}
                 onClick={() => setCrmIntegration(crm.id)}
-                className={`p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                className="p-6 rounded-2xl border-2 transition-all duration-300 text-left hover:-translate-y-1"
+                style={
                   crmIntegration === crm.id
-                    ? 'border-purple-500 bg-purple-50 shadow-lg'
-                    : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'
-                }`}
+                    ? {
+                        borderColor: 'var(--rensto-primary)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        borderColor: 'rgba(254, 61, 81, 0.2)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-accent)'
+                      }
+                }
               >
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-3xl">{crm.logo}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">{crm.name}</h3>
-                    <p className="text-gray-600 text-sm">{crm.description}</p>
+                    <h3 className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {crm.name}
+                    </h3>
+                    <p className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>
+                      {crm.description}
+                    </p>
                   </div>
                 </div>
                 {crmIntegration === crm.id && (
-                  <div className="flex items-center gap-2 text-purple-600">
+                  <div className="flex items-center gap-2" style={{ color: 'var(--rensto-primary)' }}>
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">Selected</span>
                   </div>
@@ -306,11 +439,13 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* Features */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Powerful Features</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Powerful Features
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Our subscription service includes advanced features to maximize your lead generation success.
             </p>
           </div>
@@ -319,22 +454,35 @@ export default function SubscriptionsPage() {
             {features.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
-                <div key={index} className="bg-white rounded-2xl p-8 shadow-lg">
+                <div 
+                  key={index} 
+                  className="rounded-2xl p-8 border-2 transition-all hover:-translate-y-1"
+                  style={{ 
+                    background: 'var(--rensto-bg-card)',
+                    borderColor: 'rgba(254, 61, 81, 0.3)',
+                    boxShadow: 'var(--rensto-glow-accent)'
+                  }}
+                >
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-purple-600" />
+                    <div 
+                      className="w-12 h-12 rounded-xl flex items-center justify-center"
+                      style={{ background: 'var(--rensto-gradient-primary)' }}
+                    >
+                      <IconComponent className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
-                      <p className="text-gray-600">{feature.description}</p>
+                      <h3 className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                        {feature.title}
+                      </h3>
+                      <p style={{ color: 'var(--rensto-text-secondary)' }}>{feature.description}</p>
                     </div>
                   </div>
                   
                   <div className="space-y-3">
                     {feature.benefits.map((benefit, benefitIndex) => (
                       <div key={benefitIndex} className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        <span className="text-gray-700">{benefit}</span>
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-primary)' }}>{benefit}</span>
                       </div>
                     ))}
                   </div>
@@ -346,61 +494,81 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* Pricing Summary */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white">
+            <div 
+              className="rounded-2xl p-8 border-2"
+              style={{ 
+                background: 'var(--rensto-gradient-primary)',
+                borderColor: 'rgba(254, 61, 81, 0.5)',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold mb-4">Your Subscription Summary</h2>
-                <p className="text-xl text-purple-100">
+                <h2 className="text-4xl font-bold mb-4 text-white">Your Subscription Summary</h2>
+                <p className="text-xl" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                   Review your selected options and start your enhanced lead generation service.
                 </p>
               </div>
               
               <div className="grid md:grid-cols-3 gap-8 mb-8">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Target className="w-8 h-8" />
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                    style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+                  >
+                    <Target className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2">Niche</h3>
-                  <p className="text-purple-100">
+                  <h3 className="text-lg font-bold mb-2 text-white">Niche</h3>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                     {selectedNiche ? niches.find(n => n.id === selectedNiche)?.name : 'Not selected'}
                   </p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp className="w-8 h-8" />
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                    style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+                  >
+                    <TrendingUp className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2">Volume</h3>
-                  <p className="text-purple-100">
+                  <h3 className="text-lg font-bold mb-2 text-white">Volume</h3>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                     {selectedLeadVolume ? `${selectedLeadVolume.leads} - $${selectedLeadVolume.price}/month` : 'Not selected'}
                   </p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8" />
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                    style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+                  >
+                    <Users className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2">CRM</h3>
-                  <p className="text-purple-100">
+                  <h3 className="text-lg font-bold mb-2 text-white">CRM</h3>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                     {crmIntegration ? crmIntegrations.find(c => c.id === crmIntegration)?.name : 'Not selected'}
                   </p>
                 </div>
               </div>
 
               <div className="text-center">
-                <div className="text-3xl font-bold mb-4">
+                <div className="text-3xl font-bold mb-4 text-white">
                   {selectedLeadVolume ? `$${selectedLeadVolume.price}/month` : 'Select options above'}
                 </div>
-                <p className="text-purple-100 mb-8">
+                <p className="mb-8" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                   {selectedLeadVolume ? `Includes ${selectedLeadVolume.leads} of high-quality leads` : 'Choose your lead volume to see pricing'}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     size="lg"
-                    className="bg-white text-purple-600 hover:bg-purple-50"
+                    className="font-bold"
+                    style={{ 
+                      background: 'white',
+                      color: 'var(--rensto-primary)'
+                    }}
                     disabled={!selectedNiche || !leadVolume || !crmIntegration || isProcessing}
                     onClick={handleSubscriptionCheckout}
                   >
@@ -410,7 +578,12 @@ export default function SubscriptionsPage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white text-white hover:bg-white/10"
+                    className="border-2 font-bold"
+                    style={{ 
+                      borderColor: 'white',
+                      color: 'white',
+                      background: 'transparent'
+                    }}
                   >
                     <Phone className="w-5 h-5 mr-2" />
                     Speak with Sales
@@ -423,42 +596,59 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Our Lead Service?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Why Choose Our Lead Service?
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Our enhanced lead generation service delivers better results than traditional lead providers.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <BarChart3 className="w-8 h-8 text-purple-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
+                <BarChart3 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Higher Quality Leads</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Higher Quality Leads
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Our AI-powered system identifies and delivers only the highest quality prospects for your business.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-8 h-8 text-blue-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-secondary)' }}
+              >
+                <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Faster Delivery</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Faster Delivery
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Get leads delivered to your CRM in real-time as they're identified and qualified.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Shield className="w-8 h-8 text-green-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-brand)' }}
+              >
+                <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Better ROI</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Better ROI
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Higher conversion rates and better lead quality mean better return on your investment.
               </p>
             </div>
@@ -467,16 +657,32 @@ export default function SubscriptionsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gray-900">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Get Better Leads?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+      <section 
+        className="py-16 px-4 relative overflow-hidden"
+        style={{ background: 'var(--rensto-bg-secondary)' }}
+      >
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.4) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Ready to Get Better Leads?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Start your enhanced lead generation service today and see the difference quality makes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="font-bold"
+              style={{ 
+                background: 'var(--rensto-gradient-primary)',
+                color: 'white',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
               disabled={!selectedNiche || !leadVolume || !crmIntegration || isProcessing}
               onClick={handleSubscriptionCheckout}
             >
@@ -484,7 +690,16 @@ export default function SubscriptionsPage() {
               {isProcessing ? 'Processing...' : 'Start Subscription'}
             </Button>
             <Link href="/custom">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 font-bold"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <ArrowRight className="w-5 h-5 mr-2" />
                 Get Custom Solution
               </Button>

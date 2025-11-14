@@ -147,56 +147,119 @@ export default function CustomSolutionsPage() {
   };
 
   const bookConsultation = () => {
-    // In a real implementation, this would:
-    // 1. Save consultation data
-    // 2. Send to TidyCal for booking
-    // 3. Send confirmation email
-    // 4. Create follow-up workflow
+    // Open Typeform for Custom Solution Request
+    // Form ID: fkYnNvga - "Custom Solution Request"
+    const typeformUrl = 'https://form.typeform.com/to/fkYnNvga';
     
-    console.log('Booking consultation with data:', consultationData);
-    alert('Consultation booked! You will receive a confirmation email shortly.');
+    // Pre-fill form with consultation data if available
+    const params = new URLSearchParams();
+    if (consultationData.businessType) params.append('business_type', consultationData.businessType);
+    if (consultationData.currentChallenges) params.append('challenges', consultationData.currentChallenges);
+    if (consultationData.automationGoals) params.append('goals', consultationData.automationGoals);
+    if (consultationData.budget) params.append('budget', consultationData.budget);
+    if (consultationData.timeline) params.append('timeline', consultationData.timeline);
+    
+    const finalUrl = params.toString() 
+      ? `${typeformUrl}?${params.toString()}`
+      : typeformUrl;
+    
+    window.open(finalUrl, '_blank');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+    <div className="min-h-screen" style={{ 
+      background: 'var(--rensto-bg-primary)', 
+      color: 'var(--rensto-text-primary)',
+      fontFamily: 'var(--font-outfit), sans-serif'
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-green-200 sticky top-0 z-50">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+        style={{ 
+          background: 'rgba(17, 13, 40, 0.98)',
+          borderColor: 'rgba(254, 61, 81, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: 'var(--rensto-gradient-secondary)' }}
+              >
                 <Mic className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">Custom Solutions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Custom Solutions</span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors">← Back to Home</a>
+              <a 
+                href="/" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                ← Back to Home
+              </a>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.3) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Free <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Voice AI Consultation</span>
+            <h1 
+              className="text-5xl md:text-6xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Free Voice AI Consultation
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get a personalized automation plan for your business. Our AI consultant will analyze your needs 
               and create a tailored solution just for you.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-cyan)',
+                  color: 'var(--rensto-accent-cyan)',
+                  background: 'transparent'
+                }}
+              >
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">100% Free</span>
               </div>
-              <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <Clock className="w-5 h-5" />
                 <span className="font-semibold">15 Minutes</span>
               </div>
-              <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-blue)',
+                  color: 'var(--rensto-accent-blue)',
+                  background: 'transparent'
+                }}
+              >
                 <Target className="w-5 h-5" />
                 <span className="font-semibold">Tailored Plan</span>
               </div>
@@ -206,42 +269,62 @@ export default function CustomSolutionsPage() {
       </section>
 
       {/* Consultation Interface */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto max-w-4xl">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div 
+            className="rounded-2xl border-2 p-8"
+            style={{
+              background: 'var(--rensto-bg-card)',
+              borderColor: 'rgba(30, 174, 247, 0.3)',
+              boxShadow: 'var(--rensto-glow-secondary)'
+            }}
+          >
             {consultationStep < consultationSteps.length ? (
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  {React.createElement(consultationSteps[consultationStep].icon, { className: "w-8 h-8 text-green-600" })}
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+                  style={{ background: 'rgba(30, 174, 247, 0.2)' }}
+                >
+                  {React.createElement(consultationSteps[consultationStep].icon, { 
+                    className: "w-8 h-8",
+                    style: { color: 'var(--rensto-accent-blue)' }
+                  })}
                 </div>
                 
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                   {consultationSteps[consultationStep].question}
                 </h2>
                 
-                <p className="text-gray-600 mb-8">
+                <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
                   {consultationSteps[consultationStep].placeholder}
                 </p>
 
                 {/* Voice Input */}
                 <div className="mb-8">
                   <div className="flex items-center justify-center gap-4 mb-4">
-                    <Button
+                    <button
                       onClick={isListening ? stopVoiceConsultation : startVoiceConsultation}
-                      className={`w-16 h-16 rounded-full ${
-                        isListening 
-                          ? 'bg-red-600 hover:bg-red-700 animate-pulse' 
-                          : 'bg-green-600 hover:bg-green-700'
-                      }`}
+                      className={`w-16 h-16 rounded-full transition-all ${isListening ? 'animate-pulse' : ''}`}
+                      style={
+                        isListening
+                          ? {
+                              background: 'var(--rensto-primary)',
+                              boxShadow: 'var(--rensto-glow-primary)'
+                            }
+                          : {
+                              background: 'var(--rensto-gradient-secondary)',
+                              boxShadow: 'var(--rensto-glow-secondary)'
+                            }
+                      }
                     >
-                      {isListening ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
-                    </Button>
-                    <span className="text-lg font-semibold text-gray-700">
+                      {isListening ? <MicOff className="w-6 h-6 text-white" /> : <Mic className="w-6 h-6 text-white" />}
+                    </button>
+                    <span className="text-lg font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>
                       {isListening ? 'Listening...' : 'Click to speak'}
                     </span>
                   </div>
                   
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
                     {isListening 
                       ? 'Speak clearly and we\'ll process your response' 
                       : 'Click the microphone to start voice input'
@@ -255,117 +338,174 @@ export default function CustomSolutionsPage() {
                     value={consultationData[consultationSteps[consultationStep].id as keyof typeof consultationData]}
                     onChange={(e) => handleTextInput(e.target.value)}
                     placeholder={consultationSteps[consultationStep].placeholder}
-                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                    className="w-full p-4 rounded-lg focus:ring-2 focus:outline-none resize-none"
+                    style={{
+                      background: 'var(--rensto-bg-secondary)',
+                      border: '1px solid rgba(30, 174, 247, 0.3)',
+                      color: 'var(--rensto-text-primary)'
+                    }}
                     rows={4}
                   />
                 </div>
 
                 {/* Progress */}
                 <div className="mb-8">
-                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                  <div className="flex justify-between text-sm mb-2" style={{ color: 'var(--rensto-text-secondary)' }}>
                     <span>Step {consultationStep + 1} of {consultationSteps.length}</span>
                     <span>{Math.round(((consultationStep + 1) / consultationSteps.length) * 100)}% Complete</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full rounded-full h-2" style={{ background: 'var(--rensto-bg-secondary)' }}>
                     <div 
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${((consultationStep + 1) / consultationSteps.length) * 100}%` }}
+                      className="h-2 rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${((consultationStep + 1) / consultationSteps.length) * 100}%`,
+                        background: 'var(--rensto-gradient-secondary)',
+                        boxShadow: 'var(--rensto-glow-secondary)'
+                      }}
                     />
                   </div>
                 </div>
 
                 {/* Next Button */}
-                <Button
+                <button
                   onClick={nextStep}
                   disabled={!consultationData[consultationSteps[consultationStep].id as keyof typeof consultationData]}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
+                  className="px-8 py-3 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
+                  style={{
+                    background: 'var(--rensto-gradient-secondary)',
+                    color: '#ffffff',
+                    boxShadow: 'var(--rensto-glow-secondary)'
+                  }}
                 >
                   Continue
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
             ) : (
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+                  style={{ background: 'rgba(30, 174, 247, 0.2)' }}
+                >
+                  <CheckCircle className="w-8 h-8" style={{ color: 'var(--rensto-accent-blue)' }} />
                 </div>
                 
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                   Consultation Complete!
                 </h2>
                 
-                <p className="text-gray-600 mb-8">
+                <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
                   Thank you for providing your information. We'll create a personalized automation plan for your business.
                 </p>
 
                 {/* Consultation Summary */}
-                <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Consultation Summary:</h3>
+                <div 
+                  className="rounded-lg p-6 mb-8 text-left border-2"
+                  style={{
+                    background: 'var(--rensto-bg-secondary)',
+                    borderColor: 'rgba(30, 174, 247, 0.3)'
+                  }}
+                >
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                    Your Consultation Summary:
+                  </h3>
                   <div className="space-y-3">
                     <div>
-                      <span className="font-semibold text-gray-700">Business Type:</span>
-                      <span className="ml-2 text-gray-600">{consultationData.businessType || 'Not specified'}</span>
+                      <span className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Business Type:</span>
+                      <span className="ml-2" style={{ color: 'var(--rensto-text-secondary)' }}>{consultationData.businessType || 'Not specified'}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Challenges:</span>
-                      <span className="ml-2 text-gray-600">{consultationData.currentChallenges || 'Not specified'}</span>
+                      <span className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Challenges:</span>
+                      <span className="ml-2" style={{ color: 'var(--rensto-text-secondary)' }}>{consultationData.currentChallenges || 'Not specified'}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Goals:</span>
-                      <span className="ml-2 text-gray-600">{consultationData.automationGoals || 'Not specified'}</span>
+                      <span className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Goals:</span>
+                      <span className="ml-2" style={{ color: 'var(--rensto-text-secondary)' }}>{consultationData.automationGoals || 'Not specified'}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Budget:</span>
-                      <span className="ml-2 text-gray-600">{consultationData.budget || 'Not specified'}</span>
+                      <span className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Budget:</span>
+                      <span className="ml-2" style={{ color: 'var(--rensto-text-secondary)' }}>{consultationData.budget || 'Not specified'}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Timeline:</span>
-                      <span className="ml-2 text-gray-600">{consultationData.timeline || 'Not specified'}</span>
+                      <span className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Timeline:</span>
+                      <span className="ml-2" style={{ color: 'var(--rensto-text-secondary)' }}>{consultationData.timeline || 'Not specified'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Next Steps */}
-                <div className="bg-green-50 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold text-green-900 mb-4">What Happens Next?</h3>
+                <div 
+                  className="rounded-lg p-6 mb-8 border-2"
+                  style={{
+                    background: 'rgba(30, 174, 247, 0.1)',
+                    borderColor: 'rgba(30, 174, 247, 0.3)'
+                  }}
+                >
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--rensto-accent-blue)' }}>
+                    What Happens Next?
+                  </h3>
                   <div className="space-y-3 text-left">
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <div 
+                        className="w-6 h-6 rounded-full flex items-center justify-center"
+                        style={{ background: 'var(--rensto-gradient-secondary)' }}
+                      >
                         <span className="text-white text-sm font-bold">1</span>
                       </div>
-                      <span className="text-green-800">We'll analyze your requirements and create a custom automation plan</span>
+                      <span style={{ color: 'var(--rensto-text-primary)' }}>
+                        We'll analyze your requirements and create a custom automation plan
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <div 
+                        className="w-6 h-6 rounded-full flex items-center justify-center"
+                        style={{ background: 'var(--rensto-gradient-secondary)' }}
+                      >
                         <span className="text-white text-sm font-bold">2</span>
                       </div>
-                      <span className="text-green-800">Schedule a detailed consultation call with our automation experts</span>
+                      <span style={{ color: 'var(--rensto-text-primary)' }}>
+                        Schedule a detailed consultation call with our automation experts
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <div 
+                        className="w-6 h-6 rounded-full flex items-center justify-center"
+                        style={{ background: 'var(--rensto-gradient-secondary)' }}
+                      >
                         <span className="text-white text-sm font-bold">3</span>
                       </div>
-                      <span className="text-green-800">Receive a comprehensive proposal with implementation timeline</span>
+                      <span style={{ color: 'var(--rensto-text-primary)' }}>
+                        Receive a comprehensive proposal with implementation timeline
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button
+                  <button
                     onClick={bookConsultation}
-                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
+                    className="px-8 py-3 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    style={{
+                      background: 'var(--rensto-gradient-secondary)',
+                      color: '#ffffff',
+                      boxShadow: 'var(--rensto-glow-secondary)'
+                    }}
                   >
-                    <Calendar className="w-5 h-5 mr-2" />
+                    <Calendar className="w-5 h-5" />
                     Book Detailed Consultation
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-green-600 text-green-600 hover:bg-green-50 px-8 py-3 text-lg"
+                  </button>
+                  <button
+                    className="px-8 py-3 text-lg rounded-lg font-bold border-2 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    style={{
+                      borderColor: 'var(--rensto-primary)',
+                      color: 'var(--rensto-primary)',
+                      background: 'transparent'
+                    }}
                   >
-                    <Phone className="w-5 h-5 mr-2" />
+                    <Phone className="w-5 h-5" />
                     Call Now
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}
@@ -374,42 +514,80 @@ export default function CustomSolutionsPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Custom Solutions?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Why Choose Custom Solutions?
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get a tailored automation solution designed specifically for your business needs and goals.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-green-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(30, 174, 247, 0.3)',
+                boxShadow: 'var(--rensto-glow-secondary)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(30, 174, 247, 0.2)' }}
+              >
+                <Target className="w-8 h-8" style={{ color: 'var(--rensto-accent-blue)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Tailored Solutions</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Tailored Solutions
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Every automation is designed specifically for your business processes and requirements.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-8 h-8 text-blue-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(254, 61, 81, 0.2)' }}
+              >
+                <Zap className="w-8 h-8" style={{ color: 'var(--rensto-primary)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Expert Implementation</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Expert Implementation
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Our team handles the entire implementation process from design to deployment.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Shield className="w-8 h-8 text-purple-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(95, 251, 253, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(95, 251, 253, 0.2)' }}
+              >
+                <Shield className="w-8 h-8" style={{ color: 'var(--rensto-accent-cyan)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Ongoing Support</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Ongoing Support
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Continuous monitoring, optimization, and support to ensure your automation delivers results.
               </p>
             </div>
@@ -418,20 +596,26 @@ export default function CustomSolutionsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gray-900">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Ready to Transform Your Business?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Start your free consultation today and discover how automation can revolutionize your operations.
           </p>
-          <Button
+          <button
             onClick={bookConsultation}
-            size="lg"
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto"
+            style={{
+              background: 'var(--rensto-gradient-secondary)',
+              color: '#ffffff',
+              boxShadow: 'var(--rensto-glow-secondary)'
+            }}
           >
-            <Mic className="w-5 h-5 mr-2" />
+            <Mic className="w-5 h-5" />
             Start Free Consultation
-          </Button>
+          </button>
         </div>
       </section>
     </div>

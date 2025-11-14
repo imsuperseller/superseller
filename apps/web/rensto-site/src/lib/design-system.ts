@@ -6,39 +6,46 @@ export const BRAND = {
   tagline: 'Strategic automation partner that delivers measurable business outcomes',
   description: 'Transform your manual processes into intelligent workflows',
 
-  // Brand Colors
+  // Brand Colors - Rensto Official Brand System
   colors: {
     primary: {
-      orange: '#f97316', // Orange-500
-      blue: '#3b82f6', // Blue-500
-      gradient: 'linear-gradient(to right, #f97316, #3b82f6)',
+      red: '#fe3d51', // Rensto Primary Red
+      orange: '#bf5700', // Rensto Secondary Orange
+      blue: '#1eaef7', // Rensto Accent Blue
+      cyan: '#5ffbfd', // Rensto Accent Cyan
+      gradient: 'linear-gradient(135deg, #fe3d51 0%, #bf5700 100%)',
+      gradientSecondary: 'linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%)',
+      gradientBrand: 'linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%)',
     },
     background: {
-      light: '#f8fafc', // Slate-50
-      dark: '#0B1318', // Custom dark
-      card: '#ffffff', // White
+      primary: '#110d28', // Rensto Dark Background
+      secondary: '#1a162f', // Rensto Dark Secondary
+      card: '#1a153f', // Rensto Card Background
+      surface: '#17123a', // Rensto Surface Background
     },
     text: {
-      primary: '#1e293b', // Slate-800
-      secondary: '#64748b', // Slate-500
-      muted: '#94a3b8', // Slate-400
+      primary: '#fffff3', // Rensto Light Text
+      secondary: '#b0bec5', // Rensto Gray Text
+      muted: '#94a3b8', // Rensto Muted Text
+      accent: '#5ffbfd', // Rensto Accent Text (Cyan)
     },
     border: {
-      light: '#e2e8f0', // Slate-200
+      light: 'rgba(254, 61, 81, 0.2)', // Rensto Primary Border
       dark: 'rgba(255,255,255,0.08)',
+      accent: 'rgba(95, 251, 253, 0.3)', // Rensto Cyan Border
     },
     status: {
       success: '#10b981', // Emerald-500
-      error: '#ef4444', // Red-500
+      error: '#fe3d51', // Rensto Red for errors
       warning: '#f59e0b', // Amber-500
-      info: '#3b82f6', // Blue-500
+      info: '#1eaef7', // Rensto Blue for info
     },
   },
 
-  // Typography
+  // Typography - Rensto Official Brand System
   typography: {
     fontFamily: {
-      primary: 'Inter, system-ui, sans-serif',
+      primary: "'Outfit', sans-serif", // Rensto Official Font
       mono: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
     },
     fontSize: {
@@ -88,14 +95,17 @@ export const BRAND = {
     full: '9999px',
   },
 
-  // Shadows
+  // Shadows - Rensto Brand Glow Effects
   shadows: {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
     md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
     glass: '0 10px 30px rgba(0,0,0,0.25)',
-    glow: '0 0 20px rgba(47,106,146,0.3)',
+    glow: '0 0 20px rgba(254, 61, 81, 0.45)', // Rensto Primary Glow
+    glowSecondary: '0 0 20px rgba(30, 174, 247, 0.45)', // Rensto Blue Glow
+    glowAccent: '0 0 20px rgba(95, 251, 253, 0.45)', // Rensto Cyan Glow
+    glowNeon: '0 0 30px rgba(95, 251, 253, 0.7)', // Rensto Neon Glow
   },
 
   // Breakpoints
@@ -120,29 +130,46 @@ export const BRAND = {
 
 // Component-specific design rules
 export const COMPONENTS = {
-  // Button variants
+  // Button variants - Rensto Brand Buttons
   button: {
     primary: {
       background: BRAND.colors.primary.gradient,
       color: '#ffffff',
       padding: `${BRAND.spacing.md} ${BRAND.spacing.xl}`,
       borderRadius: BRAND.borderRadius.lg,
-      fontWeight: BRAND.typography.fontWeight.semibold,
-      shadow: BRAND.shadows.md,
+      fontWeight: BRAND.typography.fontWeight.bold,
+      shadow: BRAND.shadows.glow,
       hover: {
         opacity: 0.9,
-        shadow: BRAND.shadows.lg,
+        shadow: BRAND.shadows.glowNeon,
+        transform: 'translateY(-2px)',
       },
     },
     secondary: {
-      background: 'rgba(17, 24, 39, 0.5)',
+      background: 'transparent',
       backdropFilter: 'blur(10px)',
-      border: `1px solid ${BRAND.colors.border.dark}`,
-      color: BRAND.colors.text.primary,
+      border: `2px solid ${BRAND.colors.primary.red}`,
+      color: BRAND.colors.primary.red,
       padding: `${BRAND.spacing.md} ${BRAND.spacing.xl}`,
       borderRadius: BRAND.borderRadius.lg,
-      fontWeight: BRAND.typography.fontWeight.semibold,
-      shadow: BRAND.shadows.glass,
+      fontWeight: BRAND.typography.fontWeight.bold,
+      hover: {
+        background: BRAND.colors.primary.red,
+        color: '#ffffff',
+        transform: 'translateY(-2px)',
+      },
+    },
+    accent: {
+      background: BRAND.colors.primary.gradientSecondary,
+      color: '#ffffff',
+      padding: `${BRAND.spacing.md} ${BRAND.spacing.xl}`,
+      borderRadius: BRAND.borderRadius.lg,
+      fontWeight: BRAND.typography.fontWeight.bold,
+      shadow: BRAND.shadows.glowSecondary,
+      hover: {
+        shadow: BRAND.shadows.glowNeon,
+        transform: 'translateY(-2px)',
+      },
     },
   },
 
@@ -168,13 +195,18 @@ export const COMPONENTS = {
     },
   },
 
-  // Card components
+  // Card components - Rensto Brand Cards
   card: {
     background: BRAND.colors.background.card,
     border: `1px solid ${BRAND.colors.border.light}`,
     borderRadius: BRAND.borderRadius.xl,
     padding: BRAND.spacing.xl,
-    shadow: BRAND.shadows.md,
+    shadow: BRAND.shadows.glowAccent,
+    hover: {
+      borderColor: BRAND.colors.primary.red,
+      shadow: BRAND.shadows.glow,
+      transform: 'translateY(-4px)',
+    },
   },
 
   // Layout containers
@@ -188,9 +220,9 @@ export const COMPONENTS = {
     },
   },
 
-  // Login page specific
+  // Login page specific - Rensto Dark Theme
   login: {
-    background: BRAND.colors.background.light,
+    background: BRAND.colors.background.primary,
     maxWidth: '28rem', // 448px - max-w-md
     padding: BRAND.spacing.xl,
     centered: true,
@@ -273,9 +305,15 @@ export const utils = {
   getTypography: (type: keyof typeof BRAND.typography.fontSize) =>
     BRAND.typography.fontSize[type],
 
-  // Generate gradient
-  gradient: (direction: 'to-r' | 'to-l' | 'to-t' | 'to-b' = 'to-r') =>
-    `linear-gradient(${direction}, ${BRAND.colors.primary.orange}, ${BRAND.colors.primary.blue})`,
+  // Generate gradient - Rensto Brand Gradients
+  gradient: (direction: 'to-r' | 'to-l' | 'to-t' | 'to-b' = 'to-r', type: 'primary' | 'secondary' | 'brand' = 'primary') => {
+    const gradients = {
+      primary: BRAND.colors.primary.gradient,
+      secondary: BRAND.colors.primary.gradientSecondary,
+      brand: BRAND.colors.primary.gradientBrand,
+    };
+    return gradients[type];
+  },
 
   // Check if color is light or dark
   isLightColor: (color: string) => {

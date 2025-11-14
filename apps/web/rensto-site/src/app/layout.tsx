@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import { RouteAwareLayout } from '@/components/RouteAwareLayout';
 
-const inter = Inter({ subsets: ['latin'] });
+const outfit = Outfit({ 
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-outfit',
+});
 
 export const metadata: Metadata = {
   title: 'Rensto - Business Automation Platform',
@@ -65,14 +69,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#110d28' },
+    { media: '(prefers-color-scheme: dark)', color: '#110d28' },
   ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  colorScheme: 'light dark',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({
@@ -81,8 +85,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={outfit.variable}>
+      <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
         <Providers>
           <RouteAwareLayout>
             {children}

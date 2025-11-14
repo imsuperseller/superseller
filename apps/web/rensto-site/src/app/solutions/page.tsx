@@ -204,51 +204,134 @@ export default function SolutionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100">
+    <div className="min-h-screen" style={{ 
+      background: 'var(--rensto-bg-primary)', 
+      color: 'var(--rensto-text-primary)',
+      fontFamily: 'var(--font-outfit), sans-serif'
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-orange-200 sticky top-0 z-50">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+        style={{ 
+          background: 'rgba(17, 13, 40, 0.98)',
+          borderColor: 'rgba(254, 61, 81, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-red-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
                 <Package className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">Ready Solutions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Ready Solutions</span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
-              <Link href="/marketplace" className="text-gray-600 hover:text-gray-900 transition-colors">Marketplace</Link>
-              <Link href="/custom" className="text-gray-600 hover:text-gray-900 transition-colors">Custom</Link>
-              <Link href="/subscriptions" className="text-gray-600 hover:text-gray-900 transition-colors">Subscriptions</Link>
+              <Link 
+                href="/" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/marketplace" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Marketplace
+              </Link>
+              <Link 
+                href="/custom" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Custom
+              </Link>
+              <Link 
+                href="/subscriptions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Subscriptions
+              </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm">Sign In</Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)', 
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.3) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Niche-Specific <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">Automation Packages</span>
+            <h1 
+              className="text-5xl md:text-6xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Niche-Specific Automation Packages
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Complete automation solutions designed specifically for your industry. 
               Each package includes 5 proven solutions with full implementation.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div className="flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <Target className="w-5 h-5" />
                 <span className="font-semibold">Industry-Specific</span>
               </div>
-              <div className="flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-blue)',
+                  color: 'var(--rensto-accent-blue)',
+                  background: 'transparent'
+                }}
+              >
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">5 Solutions Each</span>
               </div>
-              <div className="flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-cyan)',
+                  color: 'var(--rensto-accent-cyan)',
+                  background: 'transparent'
+                }}
+              >
                 <Zap className="w-5 h-5" />
                 <span className="font-semibold">Complete Packages</span>
               </div>
@@ -258,11 +341,13 @@ export default function SolutionsPage() {
       </section>
 
       {/* Niche Selection */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Industry</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Choose Your Industry
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Select your industry to see the complete automation package designed for your business type.
             </p>
           </div>
@@ -272,15 +357,27 @@ export default function SolutionsPage() {
               <button
                 key={niche.id}
                 onClick={() => setSelectedNiche(niche.id)}
-                className={`relative p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                className="relative p-6 rounded-2xl border-2 transition-all duration-300 text-left hover:-translate-y-1"
+                style={
                   selectedNiche === niche.id
-                    ? 'border-orange-500 bg-orange-50 shadow-lg'
-                    : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
-                } ${niche.popular ? 'ring-2 ring-orange-500' : ''}`}
+                    ? {
+                        borderColor: 'var(--rensto-primary)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        borderColor: 'rgba(254, 61, 81, 0.2)',
+                        background: 'var(--rensto-bg-card)',
+                        boxShadow: 'var(--rensto-glow-accent)'
+                      }
+                }
               >
                 {niche.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    <span 
+                      className="px-4 py-1 rounded-full text-sm font-bold text-white"
+                      style={{ background: 'var(--rensto-gradient-primary)' }}
+                    >
                       Most Popular
                     </span>
                   </div>
@@ -289,32 +386,38 @@ export default function SolutionsPage() {
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-4xl">{niche.icon}</span>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">{niche.name}</h3>
-                    <p className="text-gray-600">{niche.description}</p>
+                    <h3 className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {niche.name}
+                    </h3>
+                    <p style={{ color: 'var(--rensto-text-secondary)' }}>{niche.description}</p>
                   </div>
                 </div>
                 
                 <div className="mb-4">
-                  <div className="text-3xl font-bold text-gray-900 mb-2">${niche.price}</div>
-                  <div className="text-sm text-gray-600">{niche.solutions} solutions included</div>
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--rensto-primary)' }}>
+                    ${niche.price}
+                  </div>
+                  <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {niche.solutions} solutions included
+                  </div>
                 </div>
                 
                 <div className="space-y-2 mb-6">
                   {niche.features.slice(0, 3).map((feature, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-sm text-gray-600">{feature}</span>
+                      <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                      <span className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
                     </div>
                   ))}
                   {niche.features.length > 3 && (
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
                       +{niche.features.length - 3} more features
                     </div>
                   )}
                 </div>
                 
                 {selectedNiche === niche.id && (
-                  <div className="flex items-center gap-2 text-orange-600">
+                  <div className="flex items-center gap-2" style={{ color: 'var(--rensto-primary)' }}>
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-semibold">Selected</span>
                   </div>
@@ -327,31 +430,41 @@ export default function SolutionsPage() {
 
       {/* Selected Niche Details */}
       {selectedNicheData && (
-        <section className="py-16 px-4 bg-white">
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
           <div className="container mx-auto">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <span className="text-5xl">{selectedNicheData.icon}</span>
                   <div>
-                    <h2 className="text-4xl font-bold text-gray-900">{selectedNicheData.name} Automation Package</h2>
-                    <p className="text-xl text-gray-600">{selectedNicheData.description}</p>
+                    <h2 className="text-4xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {selectedNicheData.name} Automation Package
+                    </h2>
+                    <p className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                      {selectedNicheData.description}
+                    </p>
                   </div>
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">${selectedNicheData.price}</div>
-                <p className="text-gray-600">Complete package with {selectedNicheData.solutions} solutions</p>
+                <div className="text-4xl font-bold mb-2" style={{ color: 'var(--rensto-primary)' }}>
+                  ${selectedNicheData.price}
+                </div>
+                <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                  Complete package with {selectedNicheData.solutions} solutions
+                </p>
               </div>
               
               <div className="grid lg:grid-cols-2 gap-12">
                 {/* Features */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">What's Included</h3>
+                  <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>
+                    What's Included
+                  </h3>
                   <div className="space-y-4">
                     {selectedNicheData.features.map((feature, index) => (
                       <div key={index} className="flex items-start gap-3">
-                        <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: 'var(--rensto-accent-cyan)' }} />
                         <div>
-                          <div className="font-semibold text-gray-900">{feature}</div>
+                          <div className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>{feature}</div>
                         </div>
                       </div>
                     ))}
@@ -360,13 +473,15 @@ export default function SolutionsPage() {
                 
                 {/* Benefits */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Expected Results</h3>
+                  <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>
+                    Expected Results
+                  </h3>
                   <div className="space-y-4">
                     {selectedNicheData.benefits.map((benefit, index) => (
                       <div key={index} className="flex items-start gap-3">
-                        <TrendingUp className="w-6 h-6 text-orange-500 flex-shrink-0 mt-0.5" />
+                        <TrendingUp className="w-6 h-6 flex-shrink-0 mt-0.5" style={{ color: 'var(--rensto-primary)' }} />
                         <div>
-                          <div className="font-semibold text-gray-900">{benefit}</div>
+                          <div className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>{benefit}</div>
                         </div>
                       </div>
                     ))}
@@ -378,14 +493,28 @@ export default function SolutionsPage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button 
                     size="lg" 
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                    className="font-bold"
+                    style={{ 
+                      background: 'var(--rensto-gradient-primary)',
+                      color: 'white',
+                      boxShadow: 'var(--rensto-glow-primary)'
+                    }}
                     onClick={() => handleCheckout(selectedNicheData)}
                     disabled={isProcessing}
                   >
                     <Package className="w-5 h-5 mr-2" />
                     {isProcessing ? 'Processing...' : 'Get This Package'}
                   </Button>
-                  <Button size="lg" variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-50">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-2 font-bold"
+                    style={{ 
+                      borderColor: 'var(--rensto-primary)',
+                      color: 'var(--rensto-primary)',
+                      background: 'transparent'
+                    }}
+                  >
                     <Play className="w-5 h-5 mr-2" />
                     Watch Demo
                   </Button>
@@ -397,42 +526,59 @@ export default function SolutionsPage() {
       )}
 
       {/* How It Works */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              How It Works
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get your industry-specific automation package up and running in just a few simple steps.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-orange-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
+                <Target className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">1. Choose Your Package</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                1. Choose Your Package
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Select the automation package designed specifically for your industry and business needs.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-8 h-8 text-blue-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-secondary)' }}
+              >
+                <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">2. Quick Setup</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                2. Quick Setup
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Our team handles the complete setup and configuration of all 5 automation solutions.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <TrendingUp className="w-8 h-8 text-green-600" />
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'var(--rensto-gradient-brand)' }}
+              >
+                <TrendingUp className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">3. Start Automating</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                3. Start Automating
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Begin seeing results immediately with your fully configured automation system.
               </p>
             </div>
@@ -441,75 +587,108 @@ export default function SolutionsPage() {
       </section>
 
       {/* Success Stories */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Success Stories</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Success Stories
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               See how businesses in your industry have transformed with our automation packages.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 rounded-2xl p-6">
+            <div 
+              className="rounded-2xl p-6 border-2"
+              style={{ 
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5" style={{ color: '#fbbf24' }} fill="currentColor" />
+                ))}
               </div>
-              <p className="text-gray-700 mb-4">
+              <p className="mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                 "The HVAC package increased our lead conversion by 40% and reduced our response time to just 2 minutes."
               </p>
-              <div className="font-semibold text-gray-900">Mike Johnson</div>
-              <div className="text-sm text-gray-600">HVAC Solutions Inc.</div>
+              <div className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Mike Johnson</div>
+              <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>HVAC Solutions Inc.</div>
             </div>
             
-            <div className="bg-gray-50 rounded-2xl p-6">
+            <div 
+              className="rounded-2xl p-6 border-2"
+              style={{ 
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5" style={{ color: '#fbbf24' }} fill="currentColor" />
+                ))}
               </div>
-              <p className="text-gray-700 mb-4">
+              <p className="mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                 "Our roofing business now captures storm damage leads automatically and coordinates with insurance companies seamlessly."
               </p>
-              <div className="font-semibold text-gray-900">Sarah Martinez</div>
-              <div className="text-sm text-gray-600">Storm Roofing Co.</div>
+              <div className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>Sarah Martinez</div>
+              <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>Storm Roofing Co.</div>
             </div>
             
-            <div className="bg-gray-50 rounded-2xl p-6">
+            <div 
+              className="rounded-2xl p-6 border-2"
+              style={{ 
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5" style={{ color: '#fbbf24' }} fill="currentColor" />
+                ))}
               </div>
-              <p className="text-gray-700 mb-4">
+              <p className="mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                 "The real estate package helped us nurture leads 24/7 and increased our closing rate by 35%."
               </p>
-              <div className="font-semibold text-gray-900">David Chen</div>
-              <div className="text-sm text-gray-600">Premier Realty Group</div>
+              <div className="font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>David Chen</div>
+              <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>Premier Realty Group</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gray-900">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Automate Your Industry?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+      <section 
+        className="py-16 px-4 relative overflow-hidden"
+        style={{ background: 'var(--rensto-bg-secondary)' }}
+      >
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.4) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Ready to Automate Your Industry?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Choose your industry package and start automating your business processes today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-orange-600 hover:bg-orange-700 text-white"
+              className="font-bold"
+              style={{ 
+                background: 'var(--rensto-gradient-primary)',
+                color: 'white',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
               disabled={!selectedNiche || isProcessing}
               onClick={() => handleCheckout(selectedNicheData)}
             >
@@ -517,7 +696,16 @@ export default function SolutionsPage() {
               {isProcessing ? 'Processing...' : `Get ${selectedNicheData?.name} Package`}
             </Button>
             <Link href="/custom">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 font-bold"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <ArrowRight className="w-5 h-5 mr-2" />
                 Need Custom Solution?
               </Button>
@@ -528,3 +716,4 @@ export default function SolutionsPage() {
     </div>
   );
 }
+

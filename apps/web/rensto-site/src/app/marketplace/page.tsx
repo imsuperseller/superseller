@@ -54,7 +54,7 @@ export default function MarketplacePage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('/api/marketplace/workflows?status=✅ Active&limit=100');
+        const response = await fetch('/api/marketplace/workflows?status=Active&limit=100');
         const data = await response.json();
         
         if (data.success && data.workflows) {
@@ -180,51 +180,134 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen" style={{ 
+      background: 'var(--rensto-bg-primary)', 
+      color: 'var(--rensto-text-primary)',
+      fontFamily: 'var(--font-outfit), sans-serif'
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-blue-200 sticky top-0 z-50">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+        style={{ 
+          background: 'rgba(17, 13, 40, 0.98)',
+          borderColor: 'rgba(254, 61, 81, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
                 <Store className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">Marketplace</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Marketplace</span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
-              <Link href="/custom" className="text-gray-600 hover:text-gray-900 transition-colors">Custom</Link>
-              <Link href="/subscriptions" className="text-gray-600 hover:text-gray-900 transition-colors">Subscriptions</Link>
-              <Link href="/solutions" className="text-gray-600 hover:text-gray-900 transition-colors">Solutions</Link>
+              <Link 
+                href="/" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/custom" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Custom
+              </Link>
+              <Link 
+                href="/subscriptions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Subscriptions
+              </Link>
+              <Link 
+                href="/solutions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Solutions
+              </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm">Sign In</Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)', 
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto text-center">
+      <section className="py-16 px-4 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.3) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Automation <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Template Marketplace</span>
+            <h1 
+              className="text-5xl md:text-6xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Automation Template Marketplace
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Download ready-made n8n templates or let us install them for you. 
               Choose from our curated collection of proven automation solutions.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-blue)',
+                  color: 'var(--rensto-accent-blue)',
+                  background: 'transparent'
+                }}
+              >
                 <Download className="w-5 h-5" />
                 <span className="font-semibold">Instant Download</span>
               </div>
-              <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 <Calendar className="w-5 h-5" />
                 <span className="font-semibold">Installation Service</span>
               </div>
-              <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-accent-cyan)',
+                  color: 'var(--rensto-accent-cyan)',
+                  background: 'transparent'
+                }}
+              >
                 <Star className="w-5 h-5" />
                 <span className="font-semibold">Proven Templates</span>
               </div>
@@ -234,18 +317,30 @@ export default function MarketplacePage() {
       </section>
 
       {/* Filters and Search */}
-      <section className="py-8 px-4 bg-white border-b">
+      <section 
+        className="py-8 px-4 border-b"
+        style={{ 
+          background: 'var(--rensto-bg-secondary)',
+          borderColor: 'rgba(254, 61, 81, 0.2)'
+        }}
+      >
         <div className="container mx-auto">
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'var(--rensto-text-muted)' }} />
               <input
                 type="text"
                 placeholder="Search templates..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-2 focus:outline-none transition-all"
+                style={{
+                  background: 'var(--rensto-bg-card)',
+                  border: '1px solid rgba(254, 61, 81, 0.2)',
+                  color: 'var(--rensto-text-primary)',
+                  focusRingColor: 'var(--rensto-primary)'
+                }}
               />
             </div>
 
@@ -255,11 +350,20 @@ export default function MarketplacePage() {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className="px-4 py-2 rounded-lg font-medium transition-all hover:-translate-y-0.5"
+                  style={
                     selectedCategory === category.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                      ? {
+                          background: 'var(--rensto-gradient-primary)',
+                          color: '#ffffff',
+                          boxShadow: 'var(--rensto-glow-primary)'
+                        }
+                      : {
+                          background: 'var(--rensto-bg-card)',
+                          color: 'var(--rensto-text-secondary)',
+                          border: '1px solid rgba(254, 61, 81, 0.2)'
+                        }
+                  }
                 >
                   {category.name} ({category.count})
                 </button>
@@ -270,7 +374,12 @@ export default function MarketplacePage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 rounded-lg focus:ring-2 focus:outline-none transition-all"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                border: '1px solid rgba(254, 61, 81, 0.2)',
+                color: 'var(--rensto-text-primary)'
+              }}
             >
               <option value="popular">Most Popular</option>
               <option value="rating">Highest Rated</option>
@@ -284,21 +393,36 @@ export default function MarketplacePage() {
 
       {/* Loading State */}
       {isLoading && (
-        <section className="py-16 px-4">
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
           <div className="container mx-auto text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading workflows...</p>
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" style={{ color: 'var(--rensto-primary)' }} />
+            <p style={{ color: 'var(--rensto-text-secondary)' }}>Loading workflows...</p>
           </div>
         </section>
       )}
 
       {/* Error State */}
       {error && !isLoading && (
-        <section className="py-16 px-4">
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
           <div className="container mx-auto text-center">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-red-800 mb-4">{error}</p>
-              <Button onClick={() => window.location.reload()} variant="outline">
+            <div 
+              className="rounded-lg p-6 max-w-md mx-auto border-2"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'var(--rensto-primary)'
+              }}
+            >
+              <p className="mb-4" style={{ color: 'var(--rensto-primary)' }}>{error}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                variant="outline"
+                className="border-2"
+                style={{
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 Retry
               </Button>
             </div>
@@ -308,21 +432,31 @@ export default function MarketplacePage() {
 
       {/* Templates Grid */}
       {!isLoading && !error && (
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           {sortedTemplates.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-gray-600 text-lg">No workflows found matching your criteria.</p>
+              <p className="text-lg" style={{ color: 'var(--rensto-text-secondary)' }}>
+                No workflows found matching your criteria.
+              </p>
             </div>
           ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sortedTemplates.map((template) => (
               <div
                 key={template.id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                className="rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                style={{
+                  background: 'var(--rensto-bg-card)',
+                  borderColor: template.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                  boxShadow: template.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                }}
               >
                 {template.popular && (
-                  <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-2 text-center font-semibold">
+                  <div 
+                    className="px-4 py-2 text-center font-bold text-white"
+                    style={{ background: 'var(--rensto-gradient-primary)' }}
+                  >
                     🔥 Most Popular
                   </div>
                 )}
@@ -330,29 +464,46 @@ export default function MarketplacePage() {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                      <span className="text-sm font-semibold text-gray-700">{template.rating}</span>
+                      <Star className="w-5 h-5 fill-current" style={{ color: '#ffd700' }} />
+                      <span className="text-sm font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>
+                        {template.rating}
+                      </span>
                     </div>
-                    <div className="text-sm text-gray-500">{template.downloads} downloads</div>
+                    <div className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
+                      {template.downloads} downloads
+                    </div>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{template.name}</h3>
-                  <p className="text-gray-600 mb-4">{template.description}</p>
+                  <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                    {template.name}
+                  </h3>
+                  <p className="mb-4" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {template.description}
+                  </p>
 
                   <div className="space-y-2 mb-6">
                     {template.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">{feature}</span>
+                        <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex items-center justify-between mb-6">
-                    <div className="text-3xl font-bold text-gray-900">${template.price}</div>
+                    <div className="text-3xl font-bold" style={{ color: 'var(--rensto-primary)' }}>
+                      ${template.price}
+                    </div>
                     <div className="flex items-center gap-2">
                       {template.installation && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                        <span 
+                          className="px-2 py-1 rounded text-xs font-medium border"
+                          style={{
+                            background: 'rgba(30, 174, 247, 0.2)',
+                            color: 'var(--rensto-accent-blue)',
+                            borderColor: 'var(--rensto-accent-blue)'
+                          }}
+                        >
                           Installation Available
                         </span>
                       )}
@@ -360,25 +511,34 @@ export default function MarketplacePage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Button
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    <button
+                      className="w-full py-3 px-6 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                      style={{
+                        background: 'var(--rensto-gradient-primary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }}
                       onClick={() => handleCheckout(template, 'marketplace-template')}
                       disabled={isProcessing}
                     >
-                      <Download className="w-5 h-5 mr-2" />
+                      <Download className="w-5 h-5" />
                       {isProcessing ? 'Processing...' : 'Download Template'}
-                    </Button>
+                    </button>
 
                     {template.installation && (
-                      <Button
-                        variant="outline"
-                        className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                      <button
+                        className="w-full py-3 px-6 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 border-2 hover:-translate-y-0.5"
+                        style={{
+                          borderColor: 'var(--rensto-accent-blue)',
+                          color: 'var(--rensto-accent-blue)',
+                          background: 'transparent'
+                        }}
                         onClick={() => handleCheckout(template, 'marketplace-install')}
                         disabled={isProcessing}
                       >
-                        <Calendar className="w-5 h-5 mr-2" />
+                        <Calendar className="w-5 h-5" />
                         {isProcessing ? 'Processing...' : 'Book Installation'}
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -391,9 +551,16 @@ export default function MarketplacePage() {
       )}
 
       {/* Installation Service */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
+          <div 
+            className="rounded-2xl p-8 text-white border-2"
+            style={{
+              background: 'var(--rensto-gradient-secondary)',
+              borderColor: 'var(--rensto-accent-cyan)',
+              boxShadow: 'var(--rensto-glow-neon)'
+            }}
+          >
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-4">Need Help Installing?</h2>
               <p className="text-xl text-blue-100 mb-8">
@@ -407,7 +574,7 @@ export default function MarketplacePage() {
                     <Clock className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Quick Setup</h3>
-                  <p className="text-blue-100">Most installations completed within 24 hours</p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Most installations completed within 24 hours</p>
                 </div>
                 
                 <div className="text-center">
@@ -415,7 +582,7 @@ export default function MarketplacePage() {
                     <Users className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Expert Support</h3>
-                  <p className="text-blue-100">Dedicated support team for your installation</p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Dedicated support team for your installation</p>
                 </div>
                 
                 <div className="text-center">
@@ -423,19 +590,33 @@ export default function MarketplacePage() {
                     <Shield className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Quality Guarantee</h3>
-                  <p className="text-blue-100">100% satisfaction guarantee on all installations</p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)' }}>100% satisfaction guarantee on all installations</p>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-                  <Calendar className="w-5 h-5 mr-2" />
+                <button
+                  className="px-6 py-3 rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                  style={{
+                    background: '#ffffff',
+                    color: 'var(--rensto-bg-primary)',
+                    boxShadow: 'var(--rensto-glow-primary)'
+                  }}
+                >
+                  <Calendar className="w-5 h-5" />
                   Book Installation Service
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  <Zap className="w-5 h-5 mr-2" />
+                </button>
+                <button
+                  className="px-6 py-3 rounded-lg font-bold border-2 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                  style={{
+                    borderColor: '#ffffff',
+                    color: '#ffffff',
+                    background: 'transparent'
+                  }}
+                >
+                  <Zap className="w-5 h-5" />
                   View Installation Packages
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -443,42 +624,80 @@ export default function MarketplacePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Our Templates?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Why Choose Our Templates?
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Our templates are built by automation experts and tested in real business environments.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <TrendingUp className="w-8 h-8 text-blue-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(30, 174, 247, 0.3)',
+                boxShadow: 'var(--rensto-glow-secondary)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(30, 174, 247, 0.2)' }}
+              >
+                <TrendingUp className="w-8 h-8" style={{ color: 'var(--rensto-accent-blue)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Proven Results</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Proven Results
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Every template has been tested and proven to deliver measurable business results.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-8 h-8 text-green-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(254, 61, 81, 0.2)' }}
+              >
+                <Zap className="w-8 h-8" style={{ color: 'var(--rensto-primary)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Easy to Use</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Easy to Use
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Simple setup process with detailed documentation and video tutorials.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Shield className="w-8 h-8 text-purple-600" />
+            <div 
+              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(95, 251, 253, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: 'rgba(95, 251, 253, 0.2)' }}
+              >
+                <Shield className="w-8 h-8" style={{ color: 'var(--rensto-accent-cyan)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Secure & Reliable</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Secure & Reliable
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
                 Built with security best practices and designed for enterprise reliability.
               </p>
             </div>
@@ -487,23 +706,39 @@ export default function MarketplacePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gray-900">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Automate Your Business?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Ready to Automate Your Business?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Browse our template marketplace or get a custom solution designed specifically for your needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/custom">
-              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
+              <button
+                className="px-6 py-3 rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                style={{
+                  background: 'var(--rensto-gradient-secondary)',
+                  color: '#ffffff',
+                  boxShadow: 'var(--rensto-glow-secondary)'
+                }}
+              >
                 Get Custom Solution
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
-              <Store className="w-5 h-5 mr-2" />
+            <button
+              className="px-6 py-3 rounded-lg font-bold border-2 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              style={{
+                borderColor: 'var(--rensto-primary)',
+                color: 'var(--rensto-primary)',
+                background: 'transparent'
+              }}
+            >
+              <Store className="w-5 h-5" />
               Browse All Templates
-            </Button>
+            </button>
           </div>
         </div>
       </section>

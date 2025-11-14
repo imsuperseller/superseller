@@ -38,7 +38,7 @@ export default function HomePage() {
       pricing: 'From $29/template',
       cta: 'Browse Templates',
       href: '/marketplace',
-      color: 'blue',
+      gradient: 'primary',
       popular: false
     },
     {
@@ -57,7 +57,7 @@ export default function HomePage() {
       pricing: 'Free consultation',
       cta: 'Book Free Consultation',
       href: '/custom',
-      color: 'green',
+      gradient: 'secondary',
       popular: true
     },
     {
@@ -76,7 +76,7 @@ export default function HomePage() {
       pricing: 'From $199/month',
       cta: 'Start Subscription',
       href: '/subscriptions',
-      color: 'purple',
+      gradient: 'primary',
       popular: false
     },
     {
@@ -95,7 +95,7 @@ export default function HomePage() {
       pricing: 'From $499/package',
       cta: 'Browse Solutions',
       href: '/solutions',
-      color: 'orange',
+      gradient: 'secondary',
       popular: false
     }
   ];
@@ -109,67 +109,103 @@ export default function HomePage() {
     { name: 'Photographer', icon: '📸', solutions: 5 }
   ];
 
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: 'bg-blue-50 border-blue-200 text-blue-900',
-      green: 'bg-green-50 border-green-200 text-green-900',
-      purple: 'bg-purple-50 border-purple-200 text-purple-900',
-      orange: 'bg-orange-50 border-orange-200 text-orange-900'
-    };
-    return colors[color as keyof typeof colors] || colors.blue;
-  };
-
-  const getButtonClasses = (color: string, popular: boolean) => {
-    const baseClasses = 'w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2';
-    
-    if (popular) {
-      return `${baseClasses} bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5`;
-    }
-    
-    const buttonColors = {
-      blue: 'bg-blue-600 text-white hover:bg-blue-700',
-      green: 'bg-green-600 text-white hover:bg-green-700',
-      purple: 'bg-purple-600 text-white hover:bg-purple-700',
-      orange: 'bg-orange-600 text-white hover:bg-orange-700'
-    };
-    
-    return `${baseClasses} ${buttonColors[color as keyof typeof buttonColors] || buttonColors.blue}`;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen" style={{ 
+      background: 'var(--rensto-bg-primary)', 
+      color: 'var(--rensto-text-primary)',
+      fontFamily: 'var(--font-outfit), sans-serif'
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+        style={{ 
+          background: 'rgba(17, 13, 40, 0.98)',
+          borderColor: 'rgba(254, 61, 81, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
                 <Zap className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">Rensto</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/marketplace" className="text-gray-600 hover:text-gray-900 transition-colors">Marketplace</Link>
-              <Link href="/custom" className="text-gray-600 hover:text-gray-900 transition-colors">Custom</Link>
-              <Link href="/subscriptions" className="text-gray-600 hover:text-gray-900 transition-colors">Subscriptions</Link>
-              <Link href="/solutions" className="text-gray-600 hover:text-gray-900 transition-colors">Solutions</Link>
+              <Link 
+                href="/marketplace" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Marketplace
+              </Link>
+              <Link 
+                href="/custom" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Custom
+              </Link>
+              <Link 
+                href="/subscriptions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Subscriptions
+              </Link>
+              <Link 
+                href="/solutions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Solutions
+              </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Link href="/admin" className="text-gray-600 hover:text-gray-900 transition-colors">Admin</Link>
-              <Button variant="outline" size="sm">Sign In</Button>
+              <Link 
+                href="/admin" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-secondary)' }}
+              >
+                Admin
+              </Link>
+              <Button variant="outline" size="sm" className="border-2" style={{ 
+                borderColor: 'var(--rensto-primary)', 
+                color: 'var(--rensto-primary)',
+                background: 'transparent'
+              }}>
+                Sign In
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.3) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Automation Path</span>
+            <h1 
+              className="text-5xl md:text-6xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Choose Your Automation Path
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Four distinct ways to transform your business with AI-powered automation. 
               From ready-made solutions to custom development.
             </p>
@@ -177,7 +213,12 @@ export default function HomePage() {
               {serviceTypes.map((service) => (
                 <span
                   key={service.id}
-                  className={`px-4 py-2 rounded-full text-sm font-medium ${getColorClasses(service.color)}`}
+                  className="px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all hover:scale-105"
+                  style={{ 
+                    borderColor: service.gradient === 'primary' ? 'var(--rensto-primary)' : 'var(--rensto-accent-blue)',
+                    color: service.gradient === 'primary' ? 'var(--rensto-primary)' : 'var(--rensto-accent-blue)',
+                    background: 'transparent'
+                  }}
                 >
                   {service.name}
                 </span>
@@ -188,7 +229,7 @@ export default function HomePage() {
       </section>
 
       {/* Service Type Cards */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {serviceTypes.map((service) => {
@@ -196,15 +237,21 @@ export default function HomePage() {
               return (
                 <div
                   key={service.id}
-                  className={`relative bg-white rounded-2xl border-2 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                    service.popular ? 'border-green-200 shadow-lg' : 'border-gray-200'
-                  } ${selectedService === service.id ? 'ring-2 ring-blue-500' : ''}`}
+                  className="relative rounded-2xl border-2 p-6 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                  style={{
+                    background: 'var(--rensto-bg-card)',
+                    borderColor: service.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                    boxShadow: selectedService === service.id ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                  }}
                   onMouseEnter={() => setSelectedService(service.id)}
                   onMouseLeave={() => setSelectedService(null)}
                 >
                   {service.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                      <span 
+                        className="px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 text-white"
+                        style={{ background: 'var(--rensto-gradient-primary)' }}
+                      >
                         <Star className="w-4 h-4" />
                         Most Popular
                       </span>
@@ -212,25 +259,49 @@ export default function HomePage() {
                   )}
                   
                   <div className="text-center mb-6">
-                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl ${getColorClasses(service.color)} flex items-center justify-center`}>
-                      <IconComponent className="w-8 h-8" />
+                    <div 
+                      className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                      style={{ 
+                        background: service.gradient === 'primary' 
+                          ? 'var(--rensto-gradient-primary)' 
+                          : 'var(--rensto-gradient-secondary)'
+                      }}
+                    >
+                      <IconComponent className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
-                    <p className="text-gray-600 mb-4">{service.description}</p>
-                    <div className="text-lg font-semibold text-gray-900 mb-4">{service.pricing}</div>
+                    <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {service.name}
+                    </h3>
+                    <p className="mb-4" style={{ color: 'var(--rensto-text-secondary)' }}>
+                      {service.description}
+                    </p>
+                    <div className="text-lg font-semibold mb-4" style={{ color: 'var(--rensto-primary)' }}>
+                      {service.pricing}
+                    </div>
                   </div>
 
                   <div className="space-y-3 mb-6">
                     {service.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
                       </div>
                     ))}
                   </div>
 
                   <Link href={service.href}>
-                    <button className={getButtonClasses(service.color, service.popular)}>
+                    <button 
+                      className="w-full py-3 px-6 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                      style={{
+                        background: service.gradient === 'primary' 
+                          ? 'var(--rensto-gradient-primary)' 
+                          : 'var(--rensto-gradient-secondary)',
+                        color: '#ffffff',
+                        boxShadow: service.gradient === 'primary' 
+                          ? 'var(--rensto-glow-primary)' 
+                          : 'var(--rensto-glow-secondary)'
+                      }}
+                    >
                       {service.cta}
                       <ArrowRight className="w-5 h-5" />
                     </button>
@@ -243,11 +314,13 @@ export default function HomePage() {
       </section>
 
       {/* Niche Solutions Preview */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Industry-Specific Solutions</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+              Industry-Specific Solutions
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Ready-made automation packages tailored for your industry. 
               Each niche includes 5 proven solutions with complete implementation.
             </p>
@@ -255,15 +328,26 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {niches.map((niche, index) => (
-              <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <div 
+                key={index} 
+                className="rounded-xl p-6 hover:shadow-lg transition-all duration-300 border-2"
+                style={{
+                  background: 'var(--rensto-bg-card)',
+                  borderColor: 'rgba(254, 61, 81, 0.2)'
+                }}
+              >
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-3xl">{niche.icon}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">{niche.name}</h3>
-                    <p className="text-gray-600">{niche.solutions} solutions available</p>
+                    <h3 className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {niche.name}
+                    </h3>
+                    <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                      {niche.solutions} solutions available
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
                   <Target className="w-4 h-4" />
                   <span>Industry-specific</span>
                 </div>
@@ -273,7 +357,15 @@ export default function HomePage() {
           
           <div className="text-center mt-8">
             <Link href="/solutions">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button 
+                size="lg" 
+                className="font-bold transition-all hover:-translate-y-0.5"
+                style={{
+                  background: 'var(--rensto-gradient-brand)',
+                  color: '#ffffff',
+                  boxShadow: 'var(--rensto-glow-primary)'
+                }}
+              >
                 Explore All Solutions
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -283,58 +375,124 @@ export default function HomePage() {
       </section>
 
       {/* Usage-Based Pricing */}
-      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Usage-Based Pricing</h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Usage-Based Pricing
+          </h2>
+          <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Pay only for what you use beyond your plan limits. No surprises, no hidden fees.
           </p>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
+            <div 
+              className="rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(30, 174, 247, 0.3)',
+                boxShadow: 'var(--rensto-glow-secondary)'
+              }}
+            >
+              <div 
+                className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'rgba(30, 174, 247, 0.2)' }}
+              >
+                <TrendingUp className="w-6 h-6" style={{ color: 'var(--rensto-accent-blue)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Transparent Pricing</h3>
-              <p className="text-gray-600">See exactly what you're paying for with detailed usage reports.</p>
+              <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                Transparent Pricing
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                See exactly what you're paying for with detailed usage reports.
+              </p>
             </div>
             
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-green-600" />
+            <div 
+              className="rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(254, 61, 81, 0.3)',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              <div 
+                className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'rgba(254, 61, 81, 0.2)' }}
+              >
+                <Shield className="w-6 h-6" style={{ color: 'var(--rensto-primary)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No Hidden Fees</h3>
-              <p className="text-gray-600">All pricing is upfront and transparent. No surprise charges.</p>
+              <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                No Hidden Fees
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                All pricing is upfront and transparent. No surprise charges.
+              </p>
             </div>
             
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-6 h-6 text-purple-600" />
+            <div 
+              className="rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'rgba(95, 251, 253, 0.3)',
+                boxShadow: 'var(--rensto-glow-accent)'
+              }}
+            >
+              <div 
+                className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'rgba(95, 251, 253, 0.2)' }}
+              >
+                <Clock className="w-6 h-6" style={{ color: 'var(--rensto-accent-cyan)' }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Flexible Billing</h3>
-              <p className="text-gray-600">Scale up or down based on your actual usage and needs.</p>
+              <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                Flexible Billing
+              </h3>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                Scale up or down based on your actual usage and needs.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gray-900">
+      <section 
+        className="py-16 px-4"
+        style={{ background: 'var(--rensto-bg-primary)' }}
+      >
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Ready to Transform Your Business?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Start with a free consultation or explore our marketplace. 
             Choose the path that's right for your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/custom">
-              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
+              <Button 
+                size="lg" 
+                className="font-bold transition-all hover:-translate-y-0.5"
+                style={{
+                  background: 'var(--rensto-gradient-secondary)',
+                  color: '#ffffff',
+                  boxShadow: 'var(--rensto-glow-secondary)'
+                }}
+              >
                 Book Free Consultation
                 <Mic className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link href="/marketplace">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="font-bold border-2 transition-all hover:-translate-y-0.5"
+                style={{
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
                 Browse Templates
                 <Store className="w-5 h-5 ml-2" />
               </Button>
@@ -344,51 +502,163 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 py-12 px-4">
+      <footer 
+        className="py-12 px-4 border-t"
+        style={{ 
+          background: 'var(--rensto-bg-primary)',
+          borderColor: 'rgba(254, 61, 81, 0.2)'
+        }}
+      >
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <div 
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{ background: 'var(--rensto-gradient-primary)' }}
+                >
                   <Zap className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-gray-900">Rensto</span>
+                <span className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                  Rensto
+                </span>
               </div>
-              <p className="text-gray-600">Universal Automation Platform for Business Operations</p>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                Universal Automation Platform for Business Operations
+              </p>
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Services</h3>
+              <h3 className="font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Services
+              </h3>
               <ul className="space-y-2">
-                <li><Link href="/marketplace" className="text-gray-600 hover:text-gray-900">Marketplace</Link></li>
-                <li><Link href="/custom" className="text-gray-600 hover:text-gray-900">Custom Solutions</Link></li>
-                <li><Link href="/subscriptions" className="text-gray-600 hover:text-gray-900">Subscriptions</Link></li>
-                <li><Link href="/solutions" className="text-gray-600 hover:text-gray-900">Ready Solutions</Link></li>
+                <li>
+                  <Link 
+                    href="/marketplace" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Marketplace
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/custom" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Custom Solutions
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/subscriptions" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Subscriptions
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/solutions" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Ready Solutions
+                  </Link>
+                </li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Resources</h3>
+              <h3 className="font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Resources
+              </h3>
               <ul className="space-y-2">
-                <li><Link href="/docs" className="text-gray-600 hover:text-gray-900">Documentation</Link></li>
-                <li><Link href="/support" className="text-gray-600 hover:text-gray-900">Support</Link></li>
-                <li><Link href="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link></li>
+                <li>
+                  <Link 
+                    href="/docs" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Documentation
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/support" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Support
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/blog" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/contact" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Admin</h3>
+              <h3 className="font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Admin
+              </h3>
               <ul className="space-y-2">
-                <li><Link href="/admin" className="text-gray-600 hover:text-gray-900">Admin Dashboard</Link></li>
-                <li><Link href="/admin/analytics" className="text-gray-600 hover:text-gray-900">Analytics</Link></li>
-                <li><Link href="/admin/settings" className="text-gray-600 hover:text-gray-900">Settings</Link></li>
+                <li>
+                  <Link 
+                    href="/admin" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Admin Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/admin/analytics" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Analytics
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href="/admin/settings" 
+                    className="transition-colors hover:opacity-80"
+                    style={{ color: 'var(--rensto-text-secondary)' }}
+                  >
+                    Settings
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t border-gray-200 mt-8 pt-8 text-center">
-            <p className="text-gray-600">© 2025 Rensto. All rights reserved.</p>
+          <div 
+            className="border-t mt-8 pt-8 text-center"
+            style={{ borderColor: 'rgba(254, 61, 81, 0.2)' }}
+          >
+            <p style={{ color: 'var(--rensto-text-secondary)' }}>
+              © 2025 Rensto. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
