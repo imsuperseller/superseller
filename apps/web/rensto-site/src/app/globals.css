@@ -32,23 +32,27 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Rensto Brand Colors (authoritative) */
-    --rensto-red: #fe3d51;
-    --rensto-orange: #bf5700;
-    --rensto-blue: #1eaef7;
-    --rensto-cyan: #5ffbfd;
+    /* Rensto Brand Colors (authoritative) - Matching Webflow Brand System */
+    --rensto-primary: #fe3d51; /* Primary Red - matches Webflow */
+    --rensto-red: #fe3d51; /* Alias for compatibility */
+    --rensto-secondary: #bf5700; /* Secondary Orange - matches Webflow */
+    --rensto-orange: #bf5700; /* Alias for compatibility */
+    --rensto-accent-blue: #1eaef7; /* Accent Blue - matches Webflow */
+    --rensto-blue: #1eaef7; /* Alias for compatibility */
+    --rensto-accent-cyan: #5ffbfd; /* Accent Cyan - matches Webflow */
+    --rensto-cyan: #5ffbfd; /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
     
-    /* Rensto Background Colors */
-    --rensto-bg-primary: #110d28; /* app background */
-    --rensto-bg-secondary: #17123a; /* panels, surfaces */
+    /* Rensto Background Colors - Matching Webflow Brand System */
+    --rensto-bg-primary: #110d28; /* app background - matches Webflow */
+    --rensto-bg-secondary: #1a162f; /* panels, surfaces - matches Webflow */
     --rensto-bg-card: #1a153f; /* cards */
     --rensto-bg-surface: #17123a;
     
-    /* Rensto Text Colors */
-    --rensto-text-primary: #ffffff;
-    --rensto-text-secondary: #d1d5db;
+    /* Rensto Text Colors - Matching Webflow Brand System */
+    --rensto-text-primary: #fffff3; /* Light text - matches Webflow */
+    --rensto-text-secondary: #b0bec5; /* Gray text - matches Webflow */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
     
@@ -91,23 +95,27 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Rensto Brand Colors (Dark Mode) */
-    --rensto-red: #fe3d51;
-    --rensto-orange: #bf5700;
-    --rensto-blue: #1eaef7;
-    --rensto-cyan: #5ffbfd;
+    /* Rensto Brand Colors (Dark Mode) - Matching Webflow Brand System */
+    --rensto-primary: #fe3d51; /* Primary Red - matches Webflow */
+    --rensto-red: #fe3d51; /* Alias for compatibility */
+    --rensto-secondary: #bf5700; /* Secondary Orange - matches Webflow */
+    --rensto-orange: #bf5700; /* Alias for compatibility */
+    --rensto-accent-blue: #1eaef7; /* Accent Blue - matches Webflow */
+    --rensto-blue: #1eaef7; /* Alias for compatibility */
+    --rensto-accent-cyan: #5ffbfd; /* Accent Cyan - matches Webflow */
+    --rensto-cyan: #5ffbfd; /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
     
-    /* Rensto Background Colors (Dark Mode) */
-    --rensto-bg-primary: #110d28;
-    --rensto-bg-secondary: #17123a;
+    /* Rensto Background Colors (Dark Mode) - Matching Webflow Brand System */
+    --rensto-bg-primary: #110d28; /* matches Webflow */
+    --rensto-bg-secondary: #1a162f; /* matches Webflow */
     --rensto-bg-card: #1a153f;
     --rensto-bg-surface: #17123a;
     
-    /* Rensto Text Colors (Dark Mode) */
-    --rensto-text-primary: #ffffff;
-    --rensto-text-secondary: #d1d5db;
+    /* Rensto Text Colors (Dark Mode) - Matching Webflow Brand System */
+    --rensto-text-primary: #fffff3; /* matches Webflow */
+    --rensto-text-secondary: #b0bec5; /* matches Webflow */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
     
