@@ -28,9 +28,18 @@ export function Header() {
     setCurrentPath(window.location.pathname);
   }, []);
 
-  // Don't render header on dashboard routes
-  if (mounted && currentPath.startsWith('/ortal-dashboard')) {
-    return null;
+  // Don't render header on dashboard routes or service pages (they have their own headers)
+  if (mounted) {
+    const isDashboardRoute = currentPath.startsWith('/ortal-dashboard');
+    const isServicePage = currentPath === '/' || 
+                          currentPath === '/marketplace' || 
+                          currentPath === '/custom' || 
+                          currentPath === '/subscriptions' || 
+                          currentPath === '/solutions';
+    
+    if (isDashboardRoute || isServicePage) {
+      return null;
+    }
   }
 
   const navigation = [
