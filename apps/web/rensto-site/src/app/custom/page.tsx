@@ -201,13 +201,13 @@ export default function CustomSolutionsPage() {
               <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Custom Solutions</span>
             </Link>
             <div className="flex items-center gap-4">
-              <a 
+              <Link 
                 href="/" 
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 ← Back to Home
-              </a>
+              </Link>
             </div>
           </div>
         </div>
