@@ -18,19 +18,19 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Transcribe audio using OpenAI Whisper
     const transcription = await transcribeAudio(audioBlob);
-    
+
     // Step 2: Generate AI response using OpenAI GPT
     const aiResponse = await generateAIResponse(transcription, step);
-    
+
     // Step 3: Generate TTS audio using OpenAI TTS
     const ttsAudio = await generateTTSAudio(aiResponse);
-    
+
     // Step 4: Save consultation data to Airtable
     await saveConsultationData(sessionId, step, transcription, aiResponse);
-    
+
     // Step 5: Update consultation progress
     const progress = updateConsultationProgress(step);
-    
+
     return NextResponse.json({
       success: true,
       transcription,
@@ -53,10 +53,10 @@ async function transcribeAudio(audioBlob: string) {
   try {
     // Convert base64 audio to buffer
     const audioBuffer = Buffer.from(audioBlob, 'base64');
-    
+
     // Create a File object for OpenAI Whisper
     const audioFile = new File([audioBuffer], 'audio.webm', { type: 'audio/webm' });
-    
+
     // Transcribe using OpenAI Whisper
     const openai = getOpenAI();
     const transcription = await openai.audio.transcriptions.create({
@@ -65,9 +65,9 @@ async function transcribeAudio(audioBlob: string) {
       language: 'en',
       prompt: 'This is a business consultation about automation needs.'
     });
-    
+
     return transcription.text;
-    
+
   } catch (error) {
     console.error('Transcription error:', error);
     throw new Error('Failed to transcribe audio');
@@ -83,7 +83,7 @@ async function generateAIResponse(transcription: string, step: string) {
       'budget-assessment': 'The user is discussing their budget. Acknowledge their budget range and ask about their investment priorities.',
       'timeline-planning': 'The user is discussing their timeline. Acknowledge their timeline and ask about their urgency and priorities.'
     };
-    
+
     const openai = getOpenAI();
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -100,9 +100,9 @@ async function generateAIResponse(transcription: string, step: string) {
       max_tokens: 300,
       temperature: 0.7
     });
-    
+
     return response.choices[0].message.content || 'I understand. Let me help you with that.';
-    
+
   } catch (error) {
     console.error('AI response generation error:', error);
     throw new Error('Failed to generate AI response');
@@ -118,12 +118,12 @@ async function generateTTSAudio(text: string) {
       input: text,
       speed: 1.0
     });
-    
+
     const buffer = await mp3.arrayBuffer();
     const base64Audio = Buffer.from(buffer).toString('base64');
-    
+
     return base64Audio;
-    
+
   } catch (error) {
     console.error('TTS generation error:', error);
     throw new Error('Failed to generate TTS audio');
@@ -132,41 +132,47 @@ async function generateTTSAudio(text: string) {
 
 async function saveConsultationData(sessionId: string, step: string, transcription: string, aiResponse: string) {
   try {
-    const airtableApiKey = process.env.AIRTABLE_API_KEY;
-    const baseId = process.env.AIRTABLE_BASE_ID;
-    const consultationsTable = process.env.AIRTABLE_CONSULTATIONS_TABLE;
-    
-    if (!airtableApiKey || !baseId || !consultationsTable) {
-      throw new Error('Airtable configuration missing');
+    // Save to Boost.space using MCP (matching Scorecard implementation)
+    const boostSpaceUrl = process.env.BOOST_SPACE_API_URL;
+    const boostSpaceToken = process.env.BOOST_SPACE_API_TOKEN;
+
+    if (!boostSpaceUrl || !boostSpaceToken) {
+      console.warn('Boost.space configuration missing, skipping save');
+      return { success: false, message: 'Configuration missing' };
     }
-    
-    const response = await fetch(`https://api.airtable.com/v0/${baseId}/${consultationsTable}`, {
+
+    // Create or update consultation record in Boost.space
+    const response = await fetch(`${boostSpaceUrl}/api/v1/spaces/26/modules/contact/records`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${airtableApiKey}`,
+        'Authorization': `Bearer ${boostSpaceToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         fields: {
           'Session ID': sessionId,
-          'Step': step,
-          'Transcription': transcription,
+          'Consultation Step': step,
+          'User Response': transcription,
           'AI Response': aiResponse,
           'Timestamp': new Date().toISOString(),
-          'Status': '🆕 New Consultation'
+          'Status': 'Voice Consultation',
+          'Source': 'Voice AI Consultation'
         }
       })
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to save consultation data');
+      const errorText = await response.text();
+      console.error('Boost.space save error:', errorText);
+      throw new Error(`Failed to save consultation data: ${response.status}`);
     }
-    
+
     return await response.json();
-    
+
   } catch (error) {
-    console.error('Airtable save error:', error);
-    throw new Error('Failed to save consultation data');
+    console.error('Boost.space save error:', error);
+    // Don't throw - allow consultation to continue even if save fails
+    return { success: false, error: String(error) };
   }
 }
 
@@ -174,7 +180,7 @@ function updateConsultationProgress(step: string) {
   const steps = ['business-discovery', 'challenge-identification', 'goal-definition', 'budget-assessment', 'timeline-planning'];
   const currentIndex = steps.indexOf(step);
   const progress = ((currentIndex + 1) / steps.length) * 100;
-  
+
   return {
     currentStep: step,
     progress: Math.round(progress),
@@ -186,11 +192,11 @@ function updateConsultationProgress(step: string) {
 function getNextStep(currentStep: string) {
   const steps = ['business-discovery', 'challenge-identification', 'goal-definition', 'budget-assessment', 'timeline-planning'];
   const currentIndex = steps.indexOf(currentStep);
-  
+
   if (currentIndex < steps.length - 1) {
     return steps[currentIndex + 1];
   }
-  
+
   return 'complete';
 }
 
@@ -203,9 +209,9 @@ export async function GET() {
     },
     features: [
       'OpenAI Whisper transcription',
-      'OpenAI GPT response generation',
+      'OpenAI GPT-4o response generation',
       'OpenAI TTS audio generation',
-      'Airtable consultation data storage',
+      'Boost.space consultation data storage (Space 26, contact module)',
       'Step-by-step consultation flow'
     ]
   });

@@ -392,7 +392,7 @@ export default function CustomSolutionsPage() {
                   <div className="flex items-center justify-center gap-4 mb-4">
                     <button
                       onClick={isListening ? stopVoiceConsultation : startVoiceConsultation}
-                      className={`w-16 h-16 rounded-full transition-all ${isListening ? 'animate-pulse' : ''}`}
+                      className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isListening ? 'animate-pulse' : ''}`}
                       style={
                         isListening
                           ? {
