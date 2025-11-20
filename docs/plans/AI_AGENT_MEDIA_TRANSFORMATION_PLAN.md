@@ -113,6 +113,37 @@ Message Type Router
 
 ## 4. DETAILED AGENT CONFIGURATIONS
 
+### ⚠️ IMPORTANT: Understanding Prompt Configuration
+
+**The AI Agent node has TWO separate prompt fields:**
+
+1. **`promptType`** (Dropdown): How to define the user prompt
+   - `"define"`: Define prompt inline in `text` field ✅ **USE THIS**
+   - `"defineBelow"`: Define in separate field below
+   - `"options"`: Use options object
+
+2. **`text`** (Expression): The USER MESSAGE/PROMPT
+   - This is what the user asks (e.g., "What is in this image?")
+   - Expression: `"={{ $json.textContent || $json.caption || 'default prompt' }}"`
+
+3. **`options.systemMessage`** (String): The AGENT INSTRUCTIONS
+   - This tells the agent HOW to behave
+   - Separate from user prompt
+   - Defines agent role, rules, and behavior
+
+**Example Structure**:
+```javascript
+{
+  "promptType": "define",  // Use inline prompt
+  "text": "={{ $json.question }}",  // USER asks: "What is this?"
+  "options": {
+    "systemMessage": "You are an expert..."  // AGENT instructions
+  }
+}
+```
+
+---
+
 ### Agent 1: Image Analysis Agent
 
 **Position**: After Download Image  
@@ -124,10 +155,32 @@ Message Type Router
 - **Name**: "Image Analysis Agent"
 
 #### Prompt Configuration
-- **promptType**: `"define"`
-- **text**: `"={{ $json.textContent || $json.caption || 'Analyze this image in detail.' }}"`
 
-#### System Message
+**How it works**: The AI Agent node has TWO separate prompt fields:
+
+1. **promptType** (Dropdown): How to define the user prompt
+   - `"define"`: Define prompt inline in the `text` field (RECOMMENDED)
+   - `"defineBelow"`: Define prompt in a separate field below
+   - `"options"`: Use options object for prompt
+
+2. **text** (Expression): The actual user message/prompt sent to the agent
+   - This is what the user is asking about the image
+   - Expression: `"={{ $json.textContent || $json.caption || 'Analyze this image in detail.' }}"`
+   - **Meaning**: Use `textContent` or `caption` from Message Type Router, or fallback to default prompt
+
+**Configuration**:
+```javascript
+{
+  "promptType": "define",  // Use inline prompt definition
+  "text": "={{ $json.textContent || $json.caption || 'Analyze this image in detail.' }}"
+}
+```
+
+**Note**: The `text` field is the USER PROMPT (what the user asks). The SYSTEM MESSAGE (agent instructions) goes in `options.systemMessage` below.
+
+#### System Message (Agent Instructions)
+**Location**: `options.systemMessage` (separate from user prompt)
+
 ```
 You are an expert image analysis AI. Your task is to analyze images and extract:
 1. Visual content description
@@ -143,9 +196,9 @@ You are an expert image analysis AI. Your task is to analyze images and extract:
 - Never add branding or disclaimers
 ```
 
-#### User Prompt
-- **Source**: `$json.textContent` or `$json.caption` from Message Type Router
-- **Fallback**: "Analyze this image and describe what you see. Extract any text visible."
+**Summary**:
+- **User Prompt** (`text` field): What the user asks → `"={{ $json.textContent || $json.caption || 'Analyze this image in detail.' }}"`
+- **System Message** (`options.systemMessage`): Agent instructions → (the system message above)
 
 #### Language Model
 - **Type**: `@n8n/n8n-nodes-langchain.lmChatOpenAi`
@@ -161,6 +214,20 @@ You are an expert image analysis AI. Your task is to analyze images and extract:
 - **TypeVersion**: `1.3`
 - **sessionIdType**: `"customKey"`
 - **sessionKey**: `"={{ $json.userId || $json.sessionId || 'image-analysis' }}"`
+
+**Memory Context Window**:
+- **Type**: BufferWindow (sliding window memory)
+- **Default Window Size**: Typically 10-20 messages (varies by LangChain version)
+- **Behavior**: Keeps the last N messages in memory, discards older ones
+- **Configuration**: Window size may be configurable in newer versions via `options.windowSize` (if available)
+- **Current Implementation**: Uses default window size (check n8n UI for available options)
+
+**Note**: BufferWindow memory is **session-based** and **non-persistent** (cleared after workflow execution). For persistent memory across executions, consider:
+- Redis Memory (fast, persistent)
+- Postgres Memory (persistent, relational)
+- MongoDB Memory (persistent, document-based)
+
+**For Image Analysis**: BufferWindow is sufficient since each image analysis is typically independent. Memory helps if user sends multiple related images in sequence.
 
 #### Tools
 **Tool 1: Image Analysis Tool** (if needed for advanced processing)
@@ -239,6 +306,8 @@ You are an expert video frame analysis AI. Your task is to analyze video frames 
 - **sessionIdType**: `"customKey"`
 - **sessionKey**: `"={{ $json.userId || $json.sessionId || 'video-analysis' }}"`
 
+**Memory Context Window**: Default BufferWindow (typically 10-20 messages). See Memory section above for details.
+
 #### Tools
 **None required** - GPT-4o handles frame analysis directly
 
@@ -311,6 +380,8 @@ You are an expert document analysis AI. Your task is to extract and analyze docu
 - **TypeVersion**: `1.3`
 - **sessionIdType**: `"customKey"`
 - **sessionKey**: `"={{ $json.userId || $json.sessionId || 'document-analysis' }}"`
+
+**Memory Context Window**: Default BufferWindow (typically 10-20 messages). See Memory section above for details.
 
 #### Tools
 **None required** - GPT-4o handles document analysis directly
@@ -532,9 +603,37 @@ You are a voice transcription AI. Your task is to transcribe audio messages accu
 - **Example**: `"={{ $json.sessionId || $json.userId || 'default' }}"`
 - **Required**: Yes (when sessionIdType is "customKey")
 
-#### Additional Memory Parameters (if available in typeVersion 1.3)
-- **windowSize**: Number of messages to remember (if configurable)
-- **returnIntermediateSteps**: Include memory in output (if available)
+#### Memory Context Window Parameters
+
+**BufferWindow Memory (typeVersion 1.3)**:
+- **windowSize** (if available): Number of messages to keep in memory
+  - **Type**: Integer
+  - **Default**: Typically 10-20 messages (LangChain default)
+  - **Range**: 1-100+ (depends on LangChain version)
+  - **Purpose**: Controls how many previous messages are remembered
+  - **Note**: Check n8n UI for this parameter - it may be in `options` object or a direct parameter
+
+**How BufferWindow Works**:
+- Maintains a sliding window of the last N messages
+- Older messages are automatically discarded
+- Memory is session-specific (based on `sessionKey`)
+- Memory is cleared after workflow execution (non-persistent)
+
+**Example Configuration** (if windowSize is available):
+```javascript
+{
+  "sessionIdType": "customKey",
+  "sessionKey": "={{ $json.userId || 'image-analysis' }}",
+  "options": {
+    "windowSize": 10  // Keep last 10 messages (if parameter exists)
+  }
+}
+```
+
+**For Media Analysis Agents**:
+- **Recommended Window Size**: 5-10 messages
+- **Reason**: Media analysis is typically independent, but some context helps if user sends related images
+- **Isolation**: Each agent type (image/video/document) should have separate memory sessions
 
 ---
 

@@ -1,27 +1,28 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
-import { 
-  Mic, 
-  MicOff, 
-  Phone, 
-  Calendar, 
-  CheckCircle, 
+import {
+  Mic,
+  MicOff,
+  Phone,
+  Calendar,
+  CheckCircle,
   ArrowRight,
   Zap,
   Target,
   Clock,
-  Users,
   TrendingUp,
   Shield
 } from 'lucide-react';
 import { TypeformButton } from '@/components/TypeformEmbed';
+import { ScorecardModal } from '@/components/ScorecardModal';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
+  const [isScorecardOpen, setIsScorecardOpen] = useState(false);
   const [consultationData, setConsultationData] = useState({
     businessType: '',
     currentChallenges: '',
@@ -73,19 +74,19 @@ export default function CustomSolutionsPage() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-      
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       };
-      
+
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
         await processVoiceInput(audioBlob);
         audioChunksRef.current = [];
       };
-      
+
       mediaRecorder.start();
       setIsRecording(true);
       setIsListening(true);
@@ -122,18 +123,18 @@ export default function CustomSolutionsPage() {
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         // Display transcription
         setTranscription(data.transcription || '');
-        
+
         // Update consultation data with transcription
         const currentStep = consultationSteps[consultationStep];
         setConsultationData(prev => ({
           ...prev,
           [currentStep.id]: data.transcription || ''
         }));
-        
+
         // Move to next step after a short delay
         setTimeout(() => {
           if (consultationStep < consultationSteps.length - 1) {
@@ -171,7 +172,7 @@ export default function CustomSolutionsPage() {
     // Open Typeform for Custom Solution Request
     // Form ID: fkYnNvga - "Custom Solution Request"
     const typeformUrl = 'https://form.typeform.com/to/fkYnNvga';
-    
+
     // Pre-fill form with consultation data if available
     const params = new URLSearchParams();
     if (consultationData.businessType) params.append('business_type', consultationData.businessType);
@@ -179,24 +180,24 @@ export default function CustomSolutionsPage() {
     if (consultationData.automationGoals) params.append('goals', consultationData.automationGoals);
     if (consultationData.budget) params.append('budget', consultationData.budget);
     if (consultationData.timeline) params.append('timeline', consultationData.timeline);
-    
-    const finalUrl = params.toString() 
+
+    const finalUrl = params.toString()
       ? `${typeformUrl}?${params.toString()}`
       : typeformUrl;
-    
+
     window.open(finalUrl, '_blank');
   };
 
   return (
-    <div className="min-h-screen" style={{ 
-      background: 'var(--rensto-bg-primary)', 
+    <div className="min-h-screen" style={{
+      background: 'var(--rensto-bg-primary)',
       color: 'var(--rensto-text-primary)',
       fontFamily: 'var(--font-outfit), sans-serif'
     }}>
       {/* Header */}
-      <header 
+      <header
         className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
-        style={{ 
+        style={{
           background: 'rgba(17, 13, 40, 0.98)',
           borderColor: 'rgba(254, 61, 81, 0.3)'
         }}
@@ -220,36 +221,36 @@ export default function CustomSolutionsPage() {
               <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 Home
               </Link>
-              <Link 
-                href="/marketplace" 
+              <Link
+                href="/marketplace"
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 Marketplace
               </Link>
-              <Link 
-                href="/custom" 
+              <Link
+                href="/custom"
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 Custom
               </Link>
-              <Link 
-                href="/subscriptions" 
+              <Link
+                href="/subscriptions"
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 Subscriptions
               </Link>
-              <Link 
-                href="/solutions" 
+              <Link
+                href="/solutions"
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
@@ -257,12 +258,12 @@ export default function CustomSolutionsPage() {
               </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="border-2"
-                style={{ 
-                  borderColor: 'var(--rensto-primary)', 
+                style={{
+                  borderColor: 'var(--rensto-primary)',
                   color: 'var(--rensto-primary)',
                   background: 'transparent'
                 }}
@@ -276,7 +277,7 @@ export default function CustomSolutionsPage() {
 
       {/* Hero Section */}
       <section className="py-20 px-4 relative overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.3) 0%, transparent 70%)'
@@ -284,7 +285,7 @@ export default function CustomSolutionsPage() {
         />
         <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 
+            <h1
               className="text-5xl md:text-6xl font-bold mb-6"
               style={{
                 background: 'linear-gradient(135deg, var(--rensto-accent-blue) 0%, var(--rensto-accent-cyan) 50%, var(--rensto-text-primary) 100%)',
@@ -296,13 +297,13 @@ export default function CustomSolutionsPage() {
               Free Voice AI Consultation
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-              Get a personalized automation plan for your business. Our AI consultant will analyze your needs 
+              Get a personalized automation plan for your business. Our AI consultant will analyze your needs
               and create a tailored solution just for you.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div 
+              <div
                 className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
-                style={{ 
+                style={{
                   borderColor: 'var(--rensto-accent-cyan)',
                   color: 'var(--rensto-accent-cyan)',
                   background: 'transparent'
@@ -311,9 +312,9 @@ export default function CustomSolutionsPage() {
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">100% Free</span>
               </div>
-              <div 
+              <div
                 className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
-                style={{ 
+                style={{
                   borderColor: 'var(--rensto-primary)',
                   color: 'var(--rensto-primary)',
                   background: 'transparent'
@@ -322,9 +323,9 @@ export default function CustomSolutionsPage() {
                 <Clock className="w-5 h-5" />
                 <span className="font-semibold">15 Minutes</span>
               </div>
-              <div 
+              <div
                 className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
-                style={{ 
+                style={{
                   borderColor: 'var(--rensto-accent-blue)',
                   color: 'var(--rensto-accent-blue)',
                   background: 'transparent'
@@ -341,7 +342,7 @@ export default function CustomSolutionsPage() {
       {/* Consultation Interface */}
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto max-w-4xl">
-          <div 
+          <div
             className="rounded-2xl border-2 p-8"
             style={{
               background: 'var(--rensto-bg-card)',
@@ -351,20 +352,20 @@ export default function CustomSolutionsPage() {
           >
             {consultationStep < consultationSteps.length ? (
               <div className="text-center">
-                <div 
+                <div
                   className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
                   style={{ background: 'rgba(30, 174, 247, 0.2)' }}
                 >
-                  {React.createElement(consultationSteps[consultationStep].icon, { 
+                  {React.createElement(consultationSteps[consultationStep].icon, {
                     className: "w-8 h-8",
                     style: { color: 'var(--rensto-accent-blue)' }
                   })}
                 </div>
-                
+
                 <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                   {consultationSteps[consultationStep].question}
                 </h2>
-                
+
                 <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
                   {consultationSteps[consultationStep].placeholder}
                 </p>
@@ -378,13 +379,13 @@ export default function CustomSolutionsPage() {
                       style={
                         isListening
                           ? {
-                              background: 'var(--rensto-primary)',
-                              boxShadow: 'var(--rensto-glow-primary)'
-                            }
+                            background: 'var(--rensto-primary)',
+                            boxShadow: 'var(--rensto-glow-primary)'
+                          }
                           : {
-                              background: 'var(--rensto-gradient-secondary)',
-                              boxShadow: 'var(--rensto-glow-secondary)'
-                            }
+                            background: 'var(--rensto-gradient-secondary)',
+                            boxShadow: 'var(--rensto-glow-secondary)'
+                          }
                       }
                     >
                       {isListening ? <MicOff className="w-6 h-6 text-white" /> : <Mic className="w-6 h-6 text-white" />}
@@ -393,15 +394,15 @@ export default function CustomSolutionsPage() {
                       {isListening ? 'Listening...' : 'Click to speak'}
                     </span>
                   </div>
-                  
+
                   <p className="text-sm mb-2" style={{ color: 'var(--rensto-text-muted)' }}>
-                    {isListening 
-                      ? 'Speak clearly and we\'ll process your response' 
+                    {isListening
+                      ? 'Speak clearly and we\'ll process your response'
                       : 'Click the microphone to start voice input'
                     }
                   </p>
                   {transcription && (
-                    <div 
+                    <div
                       className="mt-4 p-4 rounded-lg border-2"
                       style={{
                         background: 'rgba(30, 174, 247, 0.1)',
@@ -438,9 +439,9 @@ export default function CustomSolutionsPage() {
                     <span>{Math.round(((consultationStep + 1) / consultationSteps.length) * 100)}% Complete</span>
                   </div>
                   <div className="w-full rounded-full h-2" style={{ background: 'var(--rensto-bg-secondary)' }}>
-                    <div 
+                    <div
                       className="h-2 rounded-full transition-all duration-300"
-                      style={{ 
+                      style={{
                         width: `${((consultationStep + 1) / consultationSteps.length) * 100}%`,
                         background: 'var(--rensto-gradient-secondary)',
                         boxShadow: 'var(--rensto-glow-secondary)'
@@ -466,23 +467,23 @@ export default function CustomSolutionsPage() {
               </div>
             ) : (
               <div className="text-center">
-                <div 
+                <div
                   className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
                   style={{ background: 'rgba(30, 174, 247, 0.2)' }}
                 >
                   <CheckCircle className="w-8 h-8" style={{ color: 'var(--rensto-accent-blue)' }} />
                 </div>
-                
+
                 <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                   Consultation Complete!
                 </h2>
-                
+
                 <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
-                  Thank you for providing your information. We'll create a personalized automation plan for your business.
+                  Thank you for providing your information. We&apos;ll create a personalized automation plan for your business.
                 </p>
 
                 {/* Consultation Summary */}
-                <div 
+                <div
                   className="rounded-lg p-6 mb-8 text-left border-2"
                   style={{
                     background: 'var(--rensto-bg-secondary)',
@@ -517,7 +518,7 @@ export default function CustomSolutionsPage() {
                 </div>
 
                 {/* Next Steps */}
-                <div 
+                <div
                   className="rounded-lg p-6 mb-8 border-2"
                   style={{
                     background: 'rgba(30, 174, 247, 0.1)',
@@ -529,18 +530,18 @@ export default function CustomSolutionsPage() {
                   </h3>
                   <div className="space-y-3 text-left">
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-6 h-6 rounded-full flex items-center justify-center"
                         style={{ background: 'var(--rensto-gradient-secondary)' }}
                       >
                         <span className="text-white text-sm font-bold">1</span>
                       </div>
                       <span style={{ color: 'var(--rensto-text-primary)' }}>
-                        We'll analyze your requirements and create a custom automation plan
+                        We&apos;ll analyze your requirements and create a custom automation plan
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-6 h-6 rounded-full flex items-center justify-center"
                         style={{ background: 'var(--rensto-gradient-secondary)' }}
                       >
@@ -551,7 +552,7 @@ export default function CustomSolutionsPage() {
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-6 h-6 rounded-full flex items-center justify-center"
                         style={{ background: 'var(--rensto-gradient-secondary)' }}
                       >
@@ -607,9 +608,9 @@ export default function CustomSolutionsPage() {
               Get a tailored automation solution designed specifically for your business needs and goals.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
-            <div 
+            <div
               className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
               style={{
                 background: 'var(--rensto-bg-card)',
@@ -617,7 +618,7 @@ export default function CustomSolutionsPage() {
                 boxShadow: 'var(--rensto-glow-secondary)'
               }}
             >
-              <div 
+              <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
                 style={{ background: 'rgba(30, 174, 247, 0.2)' }}
               >
@@ -630,8 +631,8 @@ export default function CustomSolutionsPage() {
                 Every automation is designed specifically for your business processes and requirements.
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
               style={{
                 background: 'var(--rensto-bg-card)',
@@ -639,7 +640,7 @@ export default function CustomSolutionsPage() {
                 boxShadow: 'var(--rensto-glow-primary)'
               }}
             >
-              <div 
+              <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
                 style={{ background: 'rgba(254, 61, 81, 0.2)' }}
               >
@@ -652,8 +653,8 @@ export default function CustomSolutionsPage() {
                 Our team handles the entire implementation process from design to deployment.
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
               style={{
                 background: 'var(--rensto-bg-card)',
@@ -661,7 +662,7 @@ export default function CustomSolutionsPage() {
                 boxShadow: 'var(--rensto-glow-accent)'
               }}
             >
-              <div 
+              <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
                 style={{ background: 'rgba(95, 251, 253, 0.2)' }}
               >
@@ -701,8 +702,8 @@ export default function CustomSolutionsPage() {
               Book FREE Voice AI Consultation
               <ArrowRight className="w-5 h-5" />
             </TypeformButton>
-            <TypeformButton
-              formId="TBij585m"
+            <button
+              onClick={() => setIsScorecardOpen(true)}
               className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
               style={{
                 background: 'var(--rensto-gradient-primary)',
@@ -713,13 +714,18 @@ export default function CustomSolutionsPage() {
               <Target className="w-5 h-5" />
               Take Readiness Scorecard
               <ArrowRight className="w-5 h-5" />
-            </TypeformButton>
+            </button>
           </div>
           <p className="text-sm text-center max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             💡 <strong>New Flow:</strong> Complete the consultation form first. Our Voice AI agent will use your answers to personalize your consultation call.
           </p>
         </div>
       </section>
+
+      <ScorecardModal
+        isOpen={isScorecardOpen}
+        onClose={() => setIsScorecardOpen(false)}
+      />
     </div>
   );
 }
