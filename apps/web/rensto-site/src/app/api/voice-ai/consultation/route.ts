@@ -132,33 +132,31 @@ async function generateTTSAudio(text: string) {
 
 async function saveConsultationData(sessionId: string, step: string, transcription: string, aiResponse: string) {
   try {
-    // Save to Boost.space using MCP (matching Scorecard implementation)
-    const boostSpaceUrl = process.env.BOOST_SPACE_API_URL;
-    const boostSpaceToken = process.env.BOOST_SPACE_API_TOKEN;
+    // Save to Boost.space using note module (Space 45: n8n Workflows Notes)
+    // This provides flexibility for consultation data storage
+    const boostSpaceApiKey = process.env.BOOST_SPACE_API_KEY;
 
-    if (!boostSpaceUrl || !boostSpaceToken) {
-      console.warn('Boost.space configuration missing, skipping save');
+    if (!boostSpaceApiKey) {
+      console.warn('Boost.space API key missing, skipping save');
       return { success: false, message: 'Configuration missing' };
     }
 
-    // Create or update consultation record in Boost.space
-    const response = await fetch(`${boostSpaceUrl}/api/v1/spaces/26/modules/contact/records`, {
+    // Create consultation record using Boost.space MCP pattern
+    const consultationNote = {
+      name: `Voice Consultation - ${sessionId} - Step ${step}`,
+      description: `**Session ID**: ${sessionId}\n**Step**: ${step}\n**User Response**: ${transcription}\n**AI Response**: ${aiResponse}\n**Timestamp**: ${new Date().toISOString()}`,
+      spaces: [45], // n8n Workflows (Notes) space
+      labels: ['voice-consultation', step, 'active']
+    };
+
+    // Use Boost.space API directly
+    const response = await fetch('https://superseller.boost.space/api/note', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${boostSpaceToken}`,
+        'Authorization': `Bearer ${boostSpaceApiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        fields: {
-          'Session ID': sessionId,
-          'Consultation Step': step,
-          'User Response': transcription,
-          'AI Response': aiResponse,
-          'Timestamp': new Date().toISOString(),
-          'Status': 'Voice Consultation',
-          'Source': 'Voice AI Consultation'
-        }
-      })
+      body: JSON.stringify(consultationNote)
     });
 
     if (!response.ok) {
@@ -167,7 +165,9 @@ async function saveConsultationData(sessionId: string, step: string, transcripti
       throw new Error(`Failed to save consultation data: ${response.status}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('Consultation saved to Boost.space:', result);
+    return result;
 
   } catch (error) {
     console.error('Boost.space save error:', error);
@@ -211,8 +211,9 @@ export async function GET() {
       'OpenAI Whisper transcription',
       'OpenAI GPT-4o response generation',
       'OpenAI TTS audio generation',
-      'Boost.space consultation data storage (Space 26, contact module)',
-      'Step-by-step consultation flow'
+      'Boost.space consultation data storage (Space 45, note module)',
+      'Step-by-step consultation flow',
+      'Session tracking and progress monitoring'
     ]
   });
 }
