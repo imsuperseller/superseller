@@ -1,0 +1,27 @@
+{
+  "name": "Rensto - Automations that ship in days",
+  "short_name": "Rensto",
+  "description": "Automations that ship in days — not months. Transform your manual processes into intelligent workflows.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1318",
+  "theme_color": "#0B1318",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
