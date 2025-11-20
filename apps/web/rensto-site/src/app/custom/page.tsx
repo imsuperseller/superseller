@@ -7,15 +7,15 @@ import { Button } from '@/components/ui/button-enhanced';
 import {
   Mic,
   MicOff,
-  Phone,
+  Target,
+  TrendingUp,
+  Zap,
+  DollarSign,
   Calendar,
+  Shield,
   CheckCircle,
   ArrowRight,
-  Zap,
-  Target,
-  Clock,
-  TrendingUp,
-  Shield
+  Phone
 } from 'lucide-react';
 import { TypeformButton } from '@/components/TypeformEmbed';
 import { ScorecardModal } from '@/components/ScorecardModal';
@@ -24,6 +24,7 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { TrustBadges } from '@/components/TrustBadges';
 import { TestimonialSection } from '@/components/TestimonialSection';
 import { useParallax } from '@/hooks/useScrollAnimation';
+import { Footer } from '@/components/Footer';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -46,33 +47,33 @@ export default function CustomSolutionsPage() {
   const consultationSteps = [
     {
       id: 'business-type',
-      question: '🏢 What type of business do you run?',
+      question: 'What type of business do you run?',
       placeholder: 'e.g., HVAC company, real estate agency, insurance firm...',
       icon: Target
     },
     {
       id: 'challenges',
-      question: '⚡ What are your biggest operational challenges?',
+      question: 'What are your biggest operational challenges?',
       placeholder: 'e.g., lead management, customer follow-up, scheduling...',
       icon: TrendingUp
     },
     {
       id: 'goals',
-      question: '🎯 What automation goals do you have?',
-      placeholder: 'e.g., automate lead scoring, streamline scheduling, improve customer communication...',
+      question: 'What would you like to automate?',
+      placeholder: 'e.g., appointment booking, lead nurturing, reporting...',
       icon: Zap
     },
     {
       id: 'budget',
-      question: '💰 What\'s your automation budget range?',
-      placeholder: 'e.g., $500-1000/month, $1000-5000/month, $5000+/month...',
-      icon: Shield
+      question: 'What is your budget range?',
+      placeholder: 'e.g., $5k-$10k, $10k-$25k, $25k+...',
+      icon: DollarSign
     },
     {
       id: 'timeline',
-      question: '⏰ When do you need this implemented?',
-      placeholder: 'e.g., ASAP, within 1 month, within 3 months, flexible...',
-      icon: Clock
+      question: 'When would you like to get started?',
+      placeholder: 'e.g., immediately, within 1 month, within 3 months...',
+      icon: Calendar
     }
   ];
 
@@ -323,17 +324,6 @@ export default function CustomSolutionsPage() {
               >
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">100% Free</span>
-              </div>
-              <div
-                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
-                style={{
-                  borderColor: 'var(--rensto-primary)',
-                  color: 'var(--rensto-primary)',
-                  background: 'transparent'
-                }}
-              >
-                <Clock className="w-5 h-5" />
-                <span className="font-semibold">15 Minutes</span>
               </div>
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
@@ -692,10 +682,10 @@ export default function CustomSolutionsPage() {
                 <Shield className="w-8 h-8" style={{ color: 'var(--rensto-accent-cyan)' }} />
               </div>
               <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-                Ongoing Support
+                Maintenance & Support
               </h3>
               <p style={{ color: 'var(--rensto-text-secondary)' }}>
-                Continuous monitoring, optimization, and support to ensure your automation delivers results.
+                Optional ongoing maintenance plans available to keep your automation running smoothly and up-to-date.
               </p>
             </div>
           </div>
@@ -755,6 +745,8 @@ export default function CustomSolutionsPage() {
         isOpen={isScorecardOpen}
         onClose={() => setIsScorecardOpen(false)}
       />
+
+      <Footer />
     </div>
   );
 }

@@ -30,21 +30,21 @@ export function TrustBadges() {
             color: 'var(--rensto-accent-blue)'
         },
         {
-            icon: Users,
-            label: '500+ Clients',
-            description: 'Trusted worldwide',
+            icon: CheckCircle,
+            label: 'Custom Built',
+            description: 'Tailored to your needs',
             color: 'var(--rensto-accent-cyan)'
         },
         {
             icon: TrendingUp,
-            label: '10x ROI Average',
-            description: 'Proven results',
+            label: 'Proven Results',
+            description: 'Real business impact',
             color: 'var(--rensto-primary)'
         },
         {
-            icon: CheckCircle,
-            label: '24/7 Support',
-            description: 'Always here to help',
+            icon: Users,
+            label: 'Expert Team',
+            description: 'Dedicated specialists',
             color: 'var(--rensto-accent-blue)'
         }
     ];
