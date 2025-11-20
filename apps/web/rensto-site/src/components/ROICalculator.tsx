@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Calculator, DollarSign, Clock, TrendingUp, ArrowRight } from 'lucide-react';
 
+import { useAnalytics } from '@/hooks/useAnalytics';
+
 export function ROICalculator() {
     const [hoursPerWeek, setHoursPerWeek] = useState(10);
     const [hourlyRate, setHourlyRate] = useState(50);
     const [isVisible, setIsVisible] = useState(false);
+    const { trackEvent } = useAnalytics();
 
     // Constants
     const INVESTMENT_COST = 5500; // Average custom build cost
@@ -19,7 +22,21 @@ export function ROICalculator() {
 
     useEffect(() => {
         setIsVisible(true);
-    }, []);
+        trackEvent('roi_calculator_view');
+    }, [trackEvent]);
+
+    // Debounced tracking for slider interactions
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            trackEvent('roi_calculator_interact', {
+                hoursPerWeek,
+                hourlyRate,
+                annualSavings
+            });
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [hoursPerWeek, hourlyRate, annualSavings, trackEvent]);
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -162,7 +179,10 @@ export function ROICalculator() {
                                     *Based on average custom build cost of {formatCurrency(INVESTMENT_COST)}
                                 </p>
                                 <button
-                                    onClick={() => document.getElementById('consultation-cta')?.scrollIntoView({ behavior: 'smooth' })}
+                                    onClick={() => {
+                                        trackEvent('roi_calculator_cta_click', { annualSavings });
+                                        document.getElementById('consultation-cta')?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
                                     className="w-full py-4 rounded-xl font-bold text-white transition-all hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 group"
                                     style={{
                                         background: 'var(--rensto-gradient-primary)',

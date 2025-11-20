@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, Loader2, ArrowRight, Target } from 'lucide-react';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface ScorecardModalProps {
     isOpen: boolean;
@@ -17,6 +18,13 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
         email: '',
         company: ''
     });
+    const { trackEvent } = useAnalytics();
+
+    useEffect(() => {
+        if (isOpen) {
+            trackEvent('scorecard_open');
+        }
+    }, [isOpen, trackEvent]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,6 +44,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
                 throw new Error('Failed to submit form');
             }
 
+            trackEvent('scorecard_submit', { company: formData.company });
             setSuccess(true);
             setTimeout(() => {
                 onClose();
@@ -44,6 +53,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
             }, 3000);
         } catch (error) {
             console.error('Scorecard submission error:', error);
+            trackEvent('scorecard_error', { error: String(error) });
             setError('Something went wrong. Please try again.');
         } finally {
             setIsLoading(false);

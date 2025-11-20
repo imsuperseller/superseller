@@ -20,6 +20,7 @@ import {
 import { TypeformButton } from '@/components/TypeformEmbed';
 import { ScorecardModal } from '@/components/ScorecardModal';
 import { ROICalculator } from '@/components/ROICalculator';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -36,6 +37,7 @@ export default function CustomSolutionsPage() {
   const [transcription, setTranscription] = useState('');
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const { trackEvent } = useAnalytics();
 
   const consultationSteps = [
     {
@@ -91,6 +93,7 @@ export default function CustomSolutionsPage() {
       mediaRecorder.start();
       setIsRecording(true);
       setIsListening(true);
+      trackEvent('voice_consultation_start', { step: consultationStep });
     } catch (error) {
       console.error('Error accessing microphone:', error);
       alert('Please allow microphone access to use voice consultation');
@@ -139,9 +142,11 @@ export default function CustomSolutionsPage() {
         // Move to next step after a short delay
         setTimeout(() => {
           if (consultationStep < consultationSteps.length - 1) {
+            trackEvent('voice_consultation_step_complete', { step: consultationStep });
             setConsultationStep(prev => prev + 1);
             setTranscription(''); // Clear transcription for next step
           } else {
+            trackEvent('voice_consultation_complete');
             setConsultationStep(consultationSteps.length);
           }
         }, 2000);
@@ -187,6 +192,7 @@ export default function CustomSolutionsPage() {
       : typeformUrl;
 
     window.open(finalUrl, '_blank');
+    trackEvent('consultation_cta_click', { type: 'typeform_redirect' });
   };
 
   return (
