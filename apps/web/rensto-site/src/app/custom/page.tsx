@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { TypeformButton } from '@/components/TypeformEmbed';
 import { ScorecardModal } from '@/components/ScorecardModal';
+import { ROICalculator } from '@/components/ROICalculator';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -678,6 +679,9 @@ export default function CustomSolutionsPage() {
           </div>
         </div>
       </section>
+
+      {/* ROI Calculator Section */}
+      <ROICalculator />
 
       {/* CTA Section */}
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
