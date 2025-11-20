@@ -20,6 +20,7 @@ import {
   TrendingUp,
   Loader2
 } from 'lucide-react';
+import { TypeformButton } from '@/components/TypeformEmbed';
 
 interface Workflow {
   id: string;
@@ -210,7 +211,7 @@ export default function MarketplacePage() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Marketplace</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">
               <Link 
@@ -221,11 +222,18 @@ export default function MarketplacePage() {
                 Home
               </Link>
               <Link 
+                href="/marketplace" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Marketplace
+              </Link>
+              <Link 
                 href="/custom" 
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                Custom
+                Tailored Solutions
               </Link>
               <Link 
                 href="/subscriptions" 
@@ -239,7 +247,7 @@ export default function MarketplacePage() {
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                Solutions
+                Industry Packages
               </Link>
             </nav>
             <div className="flex items-center gap-4">
@@ -279,7 +287,7 @@ export default function MarketplacePage() {
                 backgroundClip: 'text'
               }}
             >
-              Automation Template Marketplace
+              Ready-Made Automation Solutions
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Download ready-made n8n templates or let us install them for you. 
@@ -722,7 +730,7 @@ export default function MarketplacePage() {
           <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Browse our template marketplace or get a custom solution designed specifically for your needs.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link href="/custom">
               <button
                 className="px-6 py-3 rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
@@ -747,6 +755,29 @@ export default function MarketplacePage() {
               <Store className="w-5 h-5" />
               Browse All Templates
             </button>
+          </div>
+          
+          {/* Template Request Form */}
+          <div className="mt-8 pt-8 border-t" style={{ borderColor: 'rgba(254, 61, 81, 0.2)' }}>
+            <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+              Don't See the Template You Need? 🔍
+            </h3>
+            <p className="mb-4" style={{ color: 'var(--rensto-text-secondary)' }}>
+              Tell us what workflow you want to automate and we'll build it for you.
+            </p>
+            <TypeformButton
+              formId="ydoAn3hv"
+              className="px-6 py-3 rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto"
+              style={{
+                background: 'var(--rensto-gradient-primary)',
+                color: '#ffffff',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              <Search className="w-5 h-5" />
+              Request a Template
+              <ArrowRight className="w-5 h-5" />
+            </TypeformButton>
           </div>
         </div>
       </section>

@@ -1,8 +1,10 @@
-# ✅ Button Selector Fix - DEPLOYMENT COMPLETE
+# ⚠️ HISTORICAL: Button Selector Fix - DEPLOYMENT COMPLETE
 
-**Date**: October 30, 2025
-**Status**: ✅ Successfully deployed to production
-**Commit**: `b8738ba` - "fix: Update button selectors to support .pricing-button class"
+**Date**: October 30, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **HISTORICAL** - Fix was applied to CDN scripts  
+**Current Status**: Site migrated to Vercel Nov 2, 2025. CDN scripts may not be needed.
+
+**⚠️ NOTE**: This document records a fix that was applied to `rensto-webflow-scripts` CDN. The site is now on Vercel. This is historical reference only.
 
 ---
 

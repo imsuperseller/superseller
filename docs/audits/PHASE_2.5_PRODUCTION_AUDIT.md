@@ -63,7 +63,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 | Domain | Status | Details |
 |--------|--------|---------|
 | **rensto.com** | ✅ 301 → www | Fixed via Cloudflare redirect rule |
-| **www.rensto.com** | ✅ 200 OK | Webflow site (working) |
+| **www.rensto.com** | ✅ 200 OK | Vercel (Next.js app) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
 | **admin.rensto.com** | ✅ 307 Redirect | Vercel (login redirect) |
 | **n8n.rensto.com** | ✅ 200 OK | Cloudflare tunnel |
 | **api.rensto.com** | ✅ 200 OK | Next.js API routes (Stripe webhook) |
@@ -207,7 +207,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 | Service | URL | Status |
 |---------|-----|--------|
-| **Main Site** | https://www.rensto.com | ✅ Live (Webflow) |
+| **Main Site** | https://www.rensto.com | ✅ Live (Vercel/Next.js) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
 | **Admin Dashboard** | https://admin.rensto.com | ✅ Live (Vercel) |
 | **n8n Production** | https://n8n.rensto.com | ✅ Live (Cloudflare tunnel) |
 | **API Routes** | https://api.rensto.com | ✅ Live (Next.js API routes) |

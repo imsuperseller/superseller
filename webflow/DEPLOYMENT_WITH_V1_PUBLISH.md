@@ -1,7 +1,10 @@
-# 🎯 Deployment Guide with v1 Publish
+# ⚠️ OUTDATED: Deployment Guide with v1 Publish
 
-**Date**: October 31, 2025  
-**Status**: ✅ **VERIFIED & WORKING** - Use Site API Token with v1 endpoint
+**Date**: October 31, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document is from **before** the migration to Vercel. Webflow is now archived/inactive. This guide is for historical reference only.
 
 ---
 

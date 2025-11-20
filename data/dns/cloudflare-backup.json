@@ -1,0 +1,206 @@
+{
+  "timestamp": "2025-11-02T21:18:23.866Z",
+  "domain": "rensto.com",
+  "records": [
+    {
+      "id": "03ce67fb02e62df01711f1537340d597",
+      "type": "A",
+      "name": "rensto.com",
+      "content": "198.202.211.1",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "0f8c59b17945286b645029dfc32fa190",
+      "type": "CNAME",
+      "name": "admin.rensto.com",
+      "content": "cname.vercel-dns.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "bbf2049c90f1af18ac8b2b1a2f7da530",
+      "type": "CNAME",
+      "name": "api.rensto.com",
+      "content": "1f19ce4e700c1ca6.vercel-dns-017.com",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "7dc4331431db9570eb2ce011cdc00994",
+      "type": "CNAME",
+      "name": "autodiscover.rensto.com",
+      "content": "autodiscover.outlook.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "06dc2c8f0f8c8be25b06e5745efd98a1",
+      "type": "CNAME",
+      "name": "dashboard.rensto.com",
+      "content": "e06f2093-a7a3-4130-b05c-ffa64681e5a9.cfargotunnel.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "457fc1f8f473cd2571c1844657c53ff0",
+      "type": "CNAME",
+      "name": "_domainconnect.rensto.com",
+      "content": "_domainconnect.gd.domaincontrol.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "d089c319fb18754323ddfcce63cecc9d",
+      "type": "CNAME",
+      "name": "email.rensto.com",
+      "content": "email.secureserver.net",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "0d1675fe32204a4eb09a592a18bbd46d",
+      "type": "CNAME",
+      "name": "leadm.rensto.com",
+      "content": "rensto-lead-machine-lyyl6upo5-shais-projects-f9b9e359.vercel.app",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "0b319c3c48d896aee96d6ae43ffc8a94",
+      "type": "CNAME",
+      "name": "lyncdiscover.rensto.com",
+      "content": "webdir.online.lync.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "446a1d3e267d29294b35d0951b836403",
+      "type": "CNAME",
+      "name": "msoid.rensto.com",
+      "content": "clientconfig.microsoftonline-p.net",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "1f79ad57243e35cbed4378c2b92c6032",
+      "type": "CNAME",
+      "name": "n8n-oauth2.rensto.com",
+      "content": "e06f2093-a7a3-4130-b05c-ffa64681e5a9.cfargotunnel.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "81ed788081848f64a68918053f8c695f",
+      "type": "CNAME",
+      "name": "n8n-quickbooks.rensto.com",
+      "content": "7665476c-663a-48ef-873f-ac6539ccca72.cfargotunnel.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "52f497f1140e08f45a4e3613290de3bd",
+      "type": "CNAME",
+      "name": "n8n.rensto.com",
+      "content": "04515a2f-5626-4e02-b085-a46777f2cb40.cfargotunnel.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "bbd26037f23b0474575f19dce9c785f6",
+      "type": "CNAME",
+      "name": "quickbooks-oauth.rensto.com",
+      "content": "d67b23b0-dbf4-4377-ad74-957c4134c0f6.cfargotunnel.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "acf87d536f678148d9843a028c18f395",
+      "type": "CNAME",
+      "name": "selector1._domainkey.rensto.com",
+      "content": "selector1-rensto-com._domainkey.netorg17223852.y-v1.dkim.mail.microsoft",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "ae11f5c110f3abc39992b8ba3328bd1c",
+      "type": "CNAME",
+      "name": "selector2._domainkey.rensto.com",
+      "content": "selector2-rensto-com._domainkey.netorg17223852.y-v1.dkim.mail.microsoft",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "36688e761d655531f65834f59b66a60d",
+      "type": "CNAME",
+      "name": "sip.rensto.com",
+      "content": "sipdir.online.lync.com",
+      "proxied": true,
+      "comment": ""
+    },
+    {
+      "id": "d15c77baed4639b4d135463cb1d2a518",
+      "type": "CNAME",
+      "name": "www.rensto.com",
+      "content": "cdn.webflow.com",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "72dba9473d844dfe2a90e0f39cdc2522",
+      "type": "MX",
+      "name": "rensto.com",
+      "content": "rensto-com.mail.protection.outlook.com",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "920946145b5dcfebda9bffaa72bc49da",
+      "type": "SRV",
+      "name": "_sipfederationtls._tcp.rensto.com",
+      "content": "1 5061 sipfed.online.lync.com",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "9ed4d9754a41897abf8e8845460378bc",
+      "type": "TXT",
+      "name": "_dmarc.rensto.com",
+      "content": "\"v=DMARC1; p=none; rua=mailto:dmarc@rensto.com; ruf=mailto:dmarc@rensto.com; fo=1\"",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "b672012eb17752a4d0d81ee582b120a9",
+      "type": "TXT",
+      "name": "rensto.com",
+      "content": "\"v=spf1 include:_spf.protection.outlook.com -all\"",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "3e75d738bc8638892db80d99ba49f11d",
+      "type": "TXT",
+      "name": "rensto.com",
+      "content": "\"NETORG17223852.onmicrosoft.com\"",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "e8f9b6e8fc58eb31ac188849d964f6a9",
+      "type": "TXT",
+      "name": "_vercel.rensto.com",
+      "content": "\"vc-domain-verify=api.rensto.com,58d929673c73b675d8bf,dc\"",
+      "proxied": false,
+      "comment": ""
+    },
+    {
+      "id": "1a36301c7cd3ef2238ec5b79205de174",
+      "type": "TXT",
+      "name": "_webflow.rensto.com",
+      "content": "\"one-time-verification=97a4c389-3b1f-4f26-9cb7-bf63115bc029\"",
+      "proxied": false,
+      "comment": ""
+    }
+  ]
+}

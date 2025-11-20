@@ -1,8 +1,10 @@
-# 🏠 Homepage Audit - Manual Checklist
+# ⚠️ OUTDATED: Homepage Audit - Manual Checklist
 
-**URL**: https://www.rensto.com
-**Date**: October 7, 2025
-**Status**: Manual verification required (homepage built in Webflow Designer, no local HTML file)
+**Date**: October 7, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow Designer homepage. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 

@@ -1,7 +1,10 @@
-# ✅ Homepage Fixes - Deployment Complete
+# ⚠️ OUTDATED: Homepage Fixes - Deployment Complete
 
-**Date**: October 31, 2025  
-**Status**: ✅ Schemas Registered | ⚠️ Site Publishing Rate Limited
+**Date**: October 31, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow schema deployment. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 

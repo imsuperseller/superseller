@@ -18,8 +18,10 @@ import {
   Phone,
   Calendar
 } from 'lucide-react';
+import { TypeformButton } from '@/components/TypeformEmbed';
 
 export default function SubscriptionsPage() {
+  const [selectedSubscriptionType, setSelectedSubscriptionType] = useState('lead-gen');
   const [selectedNiche, setSelectedNiche] = useState('');
   const [leadVolume, setLeadVolume] = useState('medium');
   const [crmIntegration, setCrmIntegration] = useState('');
@@ -154,7 +156,7 @@ export default function SubscriptionsPage() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Subscriptions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">
               <Link 
@@ -176,14 +178,21 @@ export default function SubscriptionsPage() {
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                Custom
+                Tailored Solutions
+              </Link>
+              <Link 
+                href="/subscriptions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Subscriptions
               </Link>
               <Link 
                 href="/solutions" 
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                Solutions
+                Industry Packages
               </Link>
             </nav>
             <div className="flex items-center gap-4">
@@ -223,12 +232,120 @@ export default function SubscriptionsPage() {
                 backgroundClip: 'text'
               }}
             >
-              Enhanced Hot Leads Service
+              Subscription Services
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-              Get high-quality, niche-specific leads delivered directly to your CRM. 
-              Our AI-powered system finds the best prospects for your business.
+              Choose from multiple subscription services designed to automate and scale your business operations.
             </p>
+            
+            {/* Subscription Type Tabs */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              <button
+                onClick={() => setSelectedSubscriptionType('lead-gen')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedSubscriptionType === 'lead-gen' ? 'scale-105' : ''
+                }`}
+                style={
+                  selectedSubscriptionType === 'lead-gen'
+                    ? {
+                        background: 'var(--rensto-gradient-primary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        border: '2px solid var(--rensto-primary)',
+                        color: 'var(--rensto-primary)',
+                        background: 'transparent'
+                      }
+                }
+              >
+                🎯 Lead Generation
+              </button>
+              <button
+                onClick={() => setSelectedSubscriptionType('crm')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedSubscriptionType === 'crm' ? 'scale-105' : ''
+                }`}
+                style={
+                  selectedSubscriptionType === 'crm'
+                    ? {
+                        background: 'var(--rensto-gradient-secondary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-secondary)'
+                      }
+                    : {
+                        border: '2px solid var(--rensto-secondary)',
+                        color: 'var(--rensto-secondary)',
+                        background: 'transparent'
+                      }
+                }
+              >
+                📊 CRM Management
+              </button>
+              <button
+                onClick={() => setSelectedSubscriptionType('social')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedSubscriptionType === 'social' ? 'scale-105' : ''
+                }`}
+                style={
+                  selectedSubscriptionType === 'social'
+                    ? {
+                        background: 'var(--rensto-gradient-secondary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-secondary)'
+                      }
+                    : {
+                        border: '2px solid var(--rensto-accent-blue)',
+                        color: 'var(--rensto-accent-blue)',
+                        background: 'transparent'
+                      }
+                }
+              >
+                📱 Social Media Automation
+              </button>
+              <button
+                onClick={() => setSelectedSubscriptionType('content-ai')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedSubscriptionType === 'content-ai' ? 'scale-105' : ''
+                }`}
+                style={
+                  selectedSubscriptionType === 'content-ai'
+                    ? {
+                        background: 'var(--rensto-gradient-secondary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-secondary)'
+                      }
+                    : {
+                        border: '2px solid var(--rensto-accent-cyan)',
+                        color: 'var(--rensto-accent-cyan)',
+                        background: 'transparent'
+                      }
+                }
+              >
+                ✍️ Content AI
+              </button>
+              <button
+                onClick={() => setSelectedSubscriptionType('video-gen')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedSubscriptionType === 'video-gen' ? 'scale-105' : ''
+                }`}
+                style={
+                  selectedSubscriptionType === 'video-gen'
+                    ? {
+                        background: 'var(--rensto-gradient-primary)',
+                        color: '#ffffff',
+                        boxShadow: 'var(--rensto-glow-primary)'
+                      }
+                    : {
+                        border: '2px solid var(--rensto-primary)',
+                        color: 'var(--rensto-primary)',
+                        background: 'transparent'
+                      }
+                }
+              >
+                🎬 Video Generation
+              </button>
+            </div>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               <div 
                 className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
@@ -268,7 +385,197 @@ export default function SubscriptionsPage() {
         </div>
       </section>
 
-      {/* Niche Selection */}
+      {/* Cost Comparison Strip */}
+      {selectedSubscriptionType === 'lead-gen' && (
+        <section className="py-12 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: 'var(--rensto-text-primary)' }}>
+                Traditional Lead Gen vs Rensto
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div 
+                  className="rounded-xl border-2 p-8"
+                  style={{
+                    background: 'var(--rensto-bg-card)',
+                    borderColor: 'rgba(254, 61, 81, 0.3)'
+                  }}
+                >
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                    Traditional Methods
+                  </h3>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">💰</div>
+                      <div>
+                        <div className="font-bold text-xl" style={{ color: 'var(--rensto-text-primary)' }}>
+                          $50 - $200 per lead
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>Cold calling, ads, agencies</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">⏰</div>
+                      <div>
+                        <div className="font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                          20-40 hours/week
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>Manual research & outreach</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">📉</div>
+                      <div>
+                        <div className="font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
+                          10-20% conversion
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>Low-quality leads</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div 
+                  className="rounded-xl border-2 p-8"
+                  style={{
+                    background: 'var(--rensto-bg-card)',
+                    borderColor: 'var(--rensto-primary)',
+                    boxShadow: 'var(--rensto-glow-primary)'
+                  }}
+                >
+                  <div className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-4" style={{
+                    background: 'var(--rensto-gradient-primary)',
+                    color: '#ffffff'
+                  }}>
+                    RENSTO
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                    Automated Lead Generation
+                  </h3>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">💵</div>
+                      <div>
+                        <div className="font-bold text-xl" style={{ color: 'var(--rensto-primary)' }}>
+                          $3 - $7 per lead
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>AI-powered, automated</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">⚡</div>
+                      <div>
+                        <div className="font-bold" style={{ color: 'var(--rensto-primary)' }}>
+                          0 hours/week
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>Fully automated</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">📈</div>
+                      <div>
+                        <div className="font-bold" style={{ color: 'var(--rensto-primary)' }}>
+                          40-60% conversion
+                        </div>
+                        <div style={{ color: 'var(--rensto-text-secondary)' }}>Pre-qualified, targeted leads</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 rounded-lg" style={{ background: 'rgba(254, 61, 81, 0.1)' }}>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold mb-1" style={{ color: 'var(--rensto-primary)' }}>
+                        Save 85-95%
+                      </div>
+                      <div style={{ color: 'var(--rensto-text-secondary)' }}>
+                        vs traditional methods
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Lead Sources Showcase */}
+      {selectedSubscriptionType === 'lead-gen' && (
+        <section className="py-12 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: 'var(--rensto-text-primary)' }}>
+                Where We Get Your Leads
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { name: 'LinkedIn', icon: '💼', description: 'Professional network scraping & outreach' },
+                  { name: 'Google Maps', icon: '🗺️', description: 'Local business discovery & contact' },
+                  { name: 'Facebook Groups', icon: '👥', description: 'Community engagement & lead capture' },
+                  { name: 'Apify Data', icon: '🤖', description: 'AI-powered data enrichment' }
+                ].map((source, index) => (
+                  <div
+                    key={index}
+                    className="rounded-xl border-2 p-6 text-center"
+                    style={{
+                      background: 'var(--rensto-bg-card)',
+                      borderColor: 'rgba(254, 61, 81, 0.3)',
+                      boxShadow: 'var(--rensto-glow-accent)'
+                    }}
+                  >
+                    <div className="text-4xl mb-3">{source.icon}</div>
+                    <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                      {source.name}
+                    </h3>
+                    <p className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>
+                      {source.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Credibility Bar */}
+      {selectedSubscriptionType === 'lead-gen' && (
+        <section className="py-8 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-5xl mx-auto">
+              <div className="rounded-xl border-2 p-8" style={{
+                background: 'var(--rensto-bg-card)',
+                borderColor: 'var(--rensto-primary)',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}>
+                <div className="grid md:grid-cols-3 gap-6 text-center">
+                  <div>
+                    <div className="text-4xl font-bold mb-2" style={{ color: 'var(--rensto-primary)' }}>
+                      12,000+
+                    </div>
+                    <div style={{ color: 'var(--rensto-text-secondary)' }}>Leads Generated Monthly</div>
+                  </div>
+                  <div>
+                    <div className="text-4xl font-bold mb-2" style={{ color: 'var(--rensto-accent-blue)' }}>
+                      92%
+                    </div>
+                    <div style={{ color: 'var(--rensto-text-secondary)' }}>Email Deliverability Rate</div>
+                  </div>
+                  <div>
+                    <div className="text-4xl font-bold mb-2" style={{ color: 'var(--rensto-accent-cyan)' }}>
+                      40-60%
+                    </div>
+                    <div style={{ color: 'var(--rensto-text-secondary)' }}>Average Conversion Rate</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Subscription Type Content */}
+      {selectedSubscriptionType === 'lead-gen' && (
+        <>
+      {/* Niche Selection - Lead Generation */}
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -661,6 +968,310 @@ export default function SubscriptionsPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+        </>
+      )}
+
+      {/* CRM Management Subscription */}
+      {selectedSubscriptionType === 'crm' && (
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                CRM Management Subscription
+              </h2>
+              <p className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                Automate contact management, deduplication, enrichment, and lead scoring across your CRM systems.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { id: 'starter', name: 'Starter', contacts: '500 contacts', price: 299, features: ['Daily deduplication', 'Contact enrichment', 'Lead scoring', 'Basic follow-up sequences'] },
+                { id: 'pro', name: 'Pro', contacts: '2,500 contacts', price: 599, popular: true, features: ['AI-powered lead scoring', 'Advanced segmentation', 'Custom follow-up sequences', 'Integration monitoring'] },
+                { id: 'enterprise', name: 'Enterprise', contacts: '10,000+ contacts', price: 1499, features: ['Multi-CRM sync', 'Custom automation rules', 'Dedicated success manager', 'Unlimited contacts'] }
+              ].map((tier) => (
+                <div
+                  key={tier.id}
+                  className="rounded-2xl p-6 border-2 transition-all hover:-translate-y-1"
+                  style={{
+                    borderColor: tier.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                    background: 'var(--rensto-bg-card)',
+                    boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                  }}
+                >
+                  {tier.popular && (
+                    <div className="text-center mb-4">
+                      <span className="px-4 py-1 rounded-full text-sm font-bold text-white" style={{ background: 'var(--rensto-gradient-primary)' }}>
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-text-primary)' }}>{tier.name}</h3>
+                  <div className="text-4xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-primary)' }}>${tier.price}/mo</div>
+                  <div className="text-sm mb-6 text-center" style={{ color: 'var(--rensto-text-secondary)' }}>{tier.contacts}</div>
+                  <ul className="space-y-3 mb-6">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full font-bold"
+                    style={{ 
+                      background: tier.popular ? 'var(--rensto-gradient-primary)' : 'var(--rensto-gradient-secondary)',
+                      color: 'white',
+                      boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-secondary)'
+                    }}
+                    onClick={() => {
+                      // Handle CRM subscription checkout
+                      window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=crm&tier=${tier.id}`;
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Social Media Automation Subscription */}
+      {selectedSubscriptionType === 'social' && (
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Social Media Automation Subscription
+              </h2>
+              <p className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                Automate your social media presence with AI-powered content generation, scheduling, and analytics.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { id: 'starter', name: 'Starter', accounts: '5 social accounts', price: 299, features: ['Auto-posting', 'Basic scheduling', 'Engagement tracking', '5 accounts'] },
+                { id: 'pro', name: 'Pro', accounts: '15 social accounts', price: 599, popular: true, features: ['AI content generation', 'Advanced scheduling', 'Analytics dashboard', '15 accounts'] },
+                { id: 'enterprise', name: 'Enterprise', accounts: 'Unlimited accounts', price: 1499, features: ['Unlimited accounts', 'White-label options', 'Custom integrations', 'Dedicated manager'] }
+              ].map((tier) => (
+                <div
+                  key={tier.id}
+                  className="rounded-2xl p-6 border-2 transition-all hover:-translate-y-1"
+                  style={{
+                    borderColor: tier.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                    background: 'var(--rensto-bg-card)',
+                    boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                  }}
+                >
+                  {tier.popular && (
+                    <div className="text-center mb-4">
+                      <span className="px-4 py-1 rounded-full text-sm font-bold text-white" style={{ background: 'var(--rensto-gradient-primary)' }}>
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-text-primary)' }}>{tier.name}</h3>
+                  <div className="text-4xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-primary)' }}>${tier.price}/mo</div>
+                  <div className="text-sm mb-6 text-center" style={{ color: 'var(--rensto-text-secondary)' }}>{tier.accounts}</div>
+                  <ul className="space-y-3 mb-6">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full font-bold"
+                    style={{ 
+                      background: tier.popular ? 'var(--rensto-gradient-primary)' : 'var(--rensto-gradient-secondary)',
+                      color: 'white',
+                      boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-secondary)'
+                    }}
+                    onClick={() => {
+                      window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=social&tier=${tier.id}`;
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Content AI Subscription */}
+      {selectedSubscriptionType === 'content-ai' && (
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Content AI Subscription
+              </h2>
+              <p className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                AI-powered content processing, generation, and management for your business.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { id: 'basic', name: 'Basic', uploads: '50 uploads/month', price: 297, features: ['10 GB storage', 'YouTube + PDF processing', 'RAG chat (1000 messages)', '50 script generations'] },
+                { id: 'professional', name: 'Professional', uploads: '250 uploads/month', price: 697, popular: true, features: ['50 GB storage', 'All content types', 'Unlimited RAG chat', '250 script generations', '50 blog posts/month'] },
+                { id: 'enterprise', name: 'Enterprise', uploads: 'Unlimited', price: 1997, features: ['500 GB storage', 'White-label option', 'Custom workflows', 'API access', 'Dedicated support'] }
+              ].map((tier) => (
+                <div
+                  key={tier.id}
+                  className="rounded-2xl p-6 border-2 transition-all hover:-translate-y-1"
+                  style={{
+                    borderColor: tier.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                    background: 'var(--rensto-bg-card)',
+                    boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                  }}
+                >
+                  {tier.popular && (
+                    <div className="text-center mb-4">
+                      <span className="px-4 py-1 rounded-full text-sm font-bold text-white" style={{ background: 'var(--rensto-gradient-primary)' }}>
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-text-primary)' }}>{tier.name}</h3>
+                  <div className="text-4xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-primary)' }}>${tier.price}/mo</div>
+                  <div className="text-sm mb-6 text-center" style={{ color: 'var(--rensto-text-secondary)' }}>{tier.uploads}</div>
+                  <ul className="space-y-3 mb-6">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full font-bold"
+                    style={{ 
+                      background: tier.popular ? 'var(--rensto-gradient-primary)' : 'var(--rensto-gradient-secondary)',
+                      color: 'white',
+                      boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-secondary)'
+                    }}
+                    onClick={() => {
+                      window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=content-ai&tier=${tier.id}`;
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Video Generation Subscription */}
+      {selectedSubscriptionType === 'video-gen' && (
+        <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Video Generation Subscription
+              </h2>
+              <p className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                AI-powered video generation for marketing, demos, and content creation. Create professional videos with avatars, voice cloning, and brand integration.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { id: 'starter', name: 'Starter', videos: '10 videos/month', price: 299, features: ['30-second videos', '700+ stock avatars', 'Basic templates', '1080p export', 'Watermark removal'] },
+                { id: 'pro', name: 'Pro', videos: '50 videos/month', price: 599, popular: true, features: ['Up to 5-minute videos', '1 custom avatar', 'Advanced templates', 'Brand kit integration', 'Voice cloning', '175+ languages'] },
+                { id: 'enterprise', name: 'Enterprise', videos: 'Unlimited videos', price: 1499, features: ['Unlimited length', 'Multiple custom avatars', 'White-label option', 'API access', 'Dedicated support', 'Custom workflows'] }
+              ].map((tier) => (
+                <div
+                  key={tier.id}
+                  className="rounded-2xl p-6 border-2 transition-all hover:-translate-y-1"
+                  style={{
+                    borderColor: tier.popular ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.2)',
+                    background: 'var(--rensto-bg-card)',
+                    boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-accent)'
+                  }}
+                >
+                  {tier.popular && (
+                    <div className="text-center mb-4">
+                      <span className="px-4 py-1 rounded-full text-sm font-bold text-white" style={{ background: 'var(--rensto-gradient-primary)' }}>
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-text-primary)' }}>{tier.name}</h3>
+                  <div className="text-4xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-primary)' }}>${tier.price}/mo</div>
+                  <div className="text-sm mb-6 text-center" style={{ color: 'var(--rensto-text-secondary)' }}>{tier.videos}</div>
+                  <ul className="space-y-3 mb-6">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
+                        <span style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full font-bold"
+                    style={{ 
+                      background: tier.popular ? 'var(--rensto-gradient-primary)' : 'var(--rensto-gradient-secondary)',
+                      color: 'white',
+                      boxShadow: tier.popular ? 'var(--rensto-glow-primary)' : 'var(--rensto-glow-secondary)'
+                    }}
+                    onClick={() => {
+                      window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=video-gen&tier=${tier.id}`;
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FREE Leads Sample Section */}
+      <section 
+        className="py-16 px-4 relative overflow-hidden"
+        style={{ background: 'var(--rensto-bg-primary)' }}
+      >
+        <div className="container mx-auto text-center">
+          <div 
+            className="inline-block px-4 py-2 rounded-full mb-4"
+            style={{ background: 'rgba(95, 251, 253, 0.2)' }}
+          >
+            <span className="text-sm font-bold" style={{ color: 'var(--rensto-accent-cyan)' }}>
+              🎯 Try Before You Buy
+            </span>
+          </div>
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Get 50 FREE Sample Leads
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+            Prove our lead quality before you buy. No credit card required. See the quality for yourself.
+          </p>
+          <TypeformButton
+            formId="xXJi0Jbm"
+            className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto"
+            style={{
+              background: 'var(--rensto-gradient-primary)',
+              color: '#ffffff',
+              boxShadow: 'var(--rensto-glow-primary)'
+            }}
+          >
+            <Target className="w-5 h-5" />
+            Get My FREE 50 Leads
+            <ArrowRight className="w-5 h-5" />
+          </TypeformButton>
         </div>
       </section>
 

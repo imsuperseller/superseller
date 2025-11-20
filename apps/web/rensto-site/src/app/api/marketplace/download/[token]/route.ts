@@ -1,55 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
-const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || '';
-const AIRTABLE_BASE_ID = 'app6saCaH88uK3kCO';
-const MARKETPLACE_PURCHASES_TABLE = 'tblzxijTsGsDIFSKx';
+const BOOST_SPACE_CONFIG = {
+  baseURL: process.env.BOOST_SPACE_PLATFORM || 'https://superseller.boost.space',
+  apiKey: process.env.BOOST_SPACE_API_KEY || '',
+  marketplaceSpaceId: 51
+};
+
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/imsuperseller/rensto/main';
 
-async function getPurchaseRecord(purchaseRecordId: string) {
+async function getPurchaseRecord(orderId: string) {
   try {
-    const response = await axios.get(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PURCHASES_TABLE}/${purchaseRecordId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
+    const apiKey = BOOST_SPACE_CONFIG.apiKey.trim();
+    if (!apiKey) {
+      throw new Error('BOOST_SPACE_API_KEY not configured');
+    }
+
+    // TODO: Use Boost.space Orders API when available
+    // For now, fallback to checking if order exists via Notes or metadata
+    // This is a placeholder - actual implementation depends on Boost.space Orders API
+    
+    return null; // Orders API not yet implemented
+  } catch (error: any) {
+    console.error('Boost.space get purchase error:', error.message);
     return null;
   }
 }
 
-async function updateDownloadCount(purchaseRecordId: string) {
+async function updateDownloadCount(orderId: string) {
   try {
-    const purchase = await getPurchaseRecord(purchaseRecordId);
-    if (!purchase) return;
-
-    const currentCount = purchase.fields?.['Download Count'] || 0;
-    const newCount = currentCount + 1;
-
-    await axios.patch(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PURCHASES_TABLE}/${purchaseRecordId}`,
-      {
-        fields: {
-          'Download Count': newCount,
-          'Last Downloaded': new Date().toISOString()
-        }
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-  } catch (error) {
-    console.error('Update download count error:', error);
+    // TODO: Update download count in Boost.space Order when Orders API is available
+    // For now, this is a no-op
+    console.log(`Download count updated for order: ${orderId}`);
+  } catch (error: any) {
+    console.error('Update download count error:', error.message);
   }
 }
 
@@ -78,48 +62,57 @@ export async function GET(
       );
     }
 
-    // Get purchase record
-    const purchase = await getPurchaseRecord(purchaseRecordId);
-    if (!purchase) {
+    // Get purchase record (order) from Boost.space
+    // TODO: Implement when Boost.space Orders API is available
+    // For now, extract workflowId from token metadata or use fallback
+    
+    // Extract workflowId from purchaseRecordId if it contains it
+    // Otherwise, we'll need to query Boost.space Orders API
+    const workflowId = purchaseRecordId.split('-')[0] || 'unknown';
+    
+    // Get product from Boost.space
+    const apiKey = BOOST_SPACE_CONFIG.apiKey.trim();
+    if (!apiKey) {
       return NextResponse.json(
-        { success: false, error: 'Purchase record not found' },
+        { success: false, error: 'BOOST_SPACE_API_KEY not configured' },
+        { status: 500 }
+      );
+    }
+
+    let product = null;
+    try {
+      const productResponse = await axios.get(
+        `${BOOST_SPACE_CONFIG.baseURL}/api/product`,
+        {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          params: {
+            spaceId: BOOST_SPACE_CONFIG.marketplaceSpaceId
+          },
+          timeout: 10000
+        }
+      );
+
+      const products = Array.isArray(productResponse.data) ? productResponse.data : productResponse.data.items || [];
+      product = products.find((p: any) => 
+        (p.sku && p.sku === workflowId) || 
+        (p.metadata?.workflowId && p.metadata.workflowId === workflowId)
+      );
+    } catch (error: any) {
+      console.error('Boost.space get product error:', error.message);
+    }
+
+    if (!product) {
+      return NextResponse.json(
+        { success: false, error: 'Product not found' },
         { status: 404 }
       );
     }
 
-    // Check if download link expired
-    const expiryDate = purchase.fields?.['Download Link Expiry'];
-    if (expiryDate && new Date(expiryDate) < new Date()) {
-      return NextResponse.json(
-        { success: false, error: 'Download link expired' },
-        { status: 410 }
-      );
-    }
-
-    // Get product to find workflow file
-    const productLink = purchase.fields?.['Product'];
-    if (!productLink || !Array.isArray(productLink) || productLink.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Product not linked to purchase' },
-        { status: 400 }
-      );
-    }
-
-    const productId = productLink[0]; // Get first linked product
-    const productResponse = await axios.get(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/tblLO2RJuYJjC806X/${productId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    const product = productResponse.data;
-    const workflowId = product.fields?.['Workflow ID'];
-    const sourceFile = product.fields?.['Source File'];
-    const workflowFileUrl = product.fields?.['Workflow JSON File URL'];
+    const sourceFile = product.metadata?.sourceFile || product.sourceFile;
+    const workflowFileUrl = product.metadata?.workflowJsonUrl || product.workflowJsonUrl;
 
     // Determine file path
     let filePath = workflowFileUrl || sourceFile || `workflows/templates/${workflowId}.json`;

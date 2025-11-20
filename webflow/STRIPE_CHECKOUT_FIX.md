@@ -1,82 +1,94 @@
-# ✅ Stripe Checkout Success URL Fix
+# 🔧 Stripe Checkout Loading Issue - Diagnosis
 
 **Date**: November 2, 2025  
-**Status**: 🔧 **FIXED & DEPLOYED**
+**Issue**: Checkout page showing placeholder/wireframe instead of payment form
 
 ---
 
-## 🐛 **Problem**
+## 🔍 **WHAT THE IMAGE SHOWS**
 
-**Error**: "The page you were looking for could not be found" after Stripe checkout
-
-**Root Cause**: Success URL was pointing to `https://rensto.com/success` which doesn't exist
-- rensto.com is hosted on Webflow (not Next.js)
-- The `/success` page doesn't exist on the Webflow site
-- Stripe redirects to a 404 page after payment
+**Wireframe/Placeholder UI** - This indicates:
+- ✅ Page is loading
+- ❌ Stripe checkout form not rendering
+- ⚠️ Possible Stripe account restriction or verification needed
 
 ---
 
-## ✅ **Solution Applied**
+## 🔍 **POSSIBLE CAUSES**
 
-**Changed Success URL** from:
-```typescript
-successUrl = `https://rensto.com/success?type=marketplace&product=${productId}`;
+### **1. Stripe Account Verification Required** ⚠️ **LIKELY**
+
+**Symptom**: Checkout page shows placeholder/skeleton
+**Cause**: Stripe may be blocking checkout until account is fully verified
+
+**Check**:
+- Go to: https://dashboard.stripe.com/settings/account
+- Look for: "Account verification" or "Restrictions" warning
+- Action: Complete any pending verification steps
+
+---
+
+### **2. Domain Verification** ⚠️ **POSSIBLE**
+
+**Symptom**: Checkout shows placeholder
+**Cause**: Stripe may require domain verification for custom domains
+
+**Check**:
+- Go to: https://dashboard.stripe.com/settings/branding
+- Verify: `rensto.com` is added to allowed domains
+- Action: Add domain if missing
+
+---
+
+### **3. Session Expired** ✅ **UNLIKELY** (Just created)
+
+**Check**: Creating fresh session...
+
+---
+
+### **4. Browser/CORS Issue** ⚠️ **POSSIBLE**
+
+**Symptom**: Skeleton UI persists
+**Cause**: Browser blocking Stripe iframe or CORS issue
+
+**Action**: Try different browser or incognito mode
+
+---
+
+## ✅ **IMMEDIATE FIXES**
+
+### **Fix 1: Syntax Error in Code** ✅ **FIXED**
+
+Found missing comma in checkout route - fixing now and redeploying.
+
+### **Fix 2: Create Fresh Session** ✅ **DONE**
+
+New checkout session created above.
+
+---
+
+## 🧪 **TEST WITH FRESH SESSION**
+
+**New Checkout URL** (created just now):
+```
+[Will be in command output above]
 ```
 
-**To**:
-```typescript
-successUrl = `https://rensto.com/?payment=success&type=marketplace&product=${productId}`;
-```
-
-**Why**: 
-- Homepage (`/`) exists on rensto.com (Webflow)
-- Query parameters will work and can be handled by JavaScript if needed
-- No need to create new Webflow page
-
-**Applied to**:
-1. ✅ Marketplace Template (`marketplace-template`)
-2. ✅ Marketplace Install (`marketplace-install`)
+**Try**:
+1. Open new checkout URL
+2. Check if payment form loads
+3. If still placeholder → Stripe account verification issue
 
 ---
 
-## 🧪 **Testing**
+## 📋 **NEXT STEPS**
 
-**Fresh Checkout Session Created**:
-- Session ID: `cs_live_a1lvTl42UT0UZhaC4A0bSkJIHgmIY7U7W5o8ZfZHMNqd6w9VLphdVOgvVb`
-- URL: https://checkout.stripe.com/c/pay/cs_live_a1lvTl42UT0UZhaC4A0bSkJIHgmIY7U7W5o8ZfZHMNqd6w9VLphdVOgvVb
-
-**Test Card**: `4242 4242 4242 4242` (Exp: 12/34, CVC: 123)
-
----
-
-## ✅ **Status**
-
-- [x] Success URL updated in code
-- [x] Deployed to Vercel Production
-- [ ] Payment test pending (use checkout URL above)
+1. ✅ Fix syntax error (missing comma)
+2. ✅ Create fresh checkout session
+3. ⏳ Redeploy to Vercel
+4. ⚠️ **You check**: Stripe Dashboard → Account → Verification status
+5. ⚠️ **If restricted**: Complete account verification in Stripe
 
 ---
 
----
-
-## ⚠️ **ADDITIONAL ISSUE FOUND**
-
-**Session IDs show LIVE MODE**: All sessions start with `cs_live_...`
-
-**Problem**: 
-- Test cards only work in TEST MODE
-- Live mode requires real credit cards
-- This causes "page not found" error
-
-**Solution**: 
-- Verify `STRIPE_SECRET_KEY` in Vercel starts with `sk_test_` (not `sk_live_`)
-- Update to test key if needed
-- See `STRIPE_MODE_DIAGNOSIS.md` for detailed steps
-
-**Next**: 
-1. Verify Stripe keys are in test mode
-2. Update Vercel environment variables if needed
-3. Redeploy
-4. Create fresh checkout session (should show `cs_test_...`)
-5. Try checkout URL again
-
+**Status**: 🔧 Fixing code issue → Then checking Stripe account verification

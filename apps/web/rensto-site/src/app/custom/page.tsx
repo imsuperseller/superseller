@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Shield
 } from 'lucide-react';
+import { TypeformButton } from '@/components/TypeformEmbed';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -30,37 +31,38 @@ export default function CustomSolutionsPage() {
   });
   const [consultationStep, setConsultationStep] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
+  const [transcription, setTranscription] = useState('');
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
   const consultationSteps = [
     {
       id: 'business-type',
-      question: 'What type of business do you run?',
+      question: '🏢 What type of business do you run?',
       placeholder: 'e.g., HVAC company, real estate agency, insurance firm...',
       icon: Target
     },
     {
       id: 'challenges',
-      question: 'What are your biggest operational challenges?',
+      question: '⚡ What are your biggest operational challenges?',
       placeholder: 'e.g., lead management, customer follow-up, scheduling...',
       icon: TrendingUp
     },
     {
       id: 'goals',
-      question: 'What automation goals do you have?',
+      question: '🎯 What automation goals do you have?',
       placeholder: 'e.g., automate lead scoring, streamline scheduling, improve customer communication...',
       icon: Zap
     },
     {
       id: 'budget',
-      question: 'What\'s your automation budget range?',
+      question: '💰 What\'s your automation budget range?',
       placeholder: 'e.g., $500-1000/month, $1000-5000/month, $5000+/month...',
       icon: Shield
     },
     {
       id: 'timeline',
-      question: 'When do you need this implemented?',
+      question: '⏰ When do you need this implemented?',
       placeholder: 'e.g., ASAP, within 1 month, within 3 months, flexible...',
       icon: Clock
     }
@@ -102,34 +104,51 @@ export default function CustomSolutionsPage() {
   };
 
   const processVoiceInput = async (audioBlob: Blob) => {
-    // Simulate voice processing
-    console.log('Processing voice input...', audioBlob);
-    
-    // In a real implementation, this would:
-    // 1. Send audio to OpenAI Whisper API
-    // 2. Process the transcription
-    // 3. Extract relevant information
-    // 4. Update consultation data
-    
-    // For demo purposes, simulate processing
-    setTimeout(() => {
-      const currentStep = consultationSteps[consultationStep];
-      const mockResponse = `I understand you're looking for ${currentStep.id} solutions. Let me help you with that.`;
-      
-      // Update consultation data based on current step
-      setConsultationData(prev => ({
-        ...prev,
-        [currentStep.id]: mockResponse
-      }));
-      
-      // Move to next step
-      if (consultationStep < consultationSteps.length - 1) {
-        setConsultationStep(prev => prev + 1);
-      } else {
-        // Consultation complete
-        setConsultationStep(consultationSteps.length);
+    try {
+      // Create FormData to send audio to API
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.webm');
+      formData.append('step', consultationStep.toString());
+      formData.append('sessionId', `session-${Date.now()}`);
+
+      // Send to voice AI API
+      const response = await fetch('/api/voice-ai/consultation', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process voice input');
       }
-    }, 2000);
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Display transcription
+        setTranscription(data.transcription || '');
+        
+        // Update consultation data with transcription
+        const currentStep = consultationSteps[consultationStep];
+        setConsultationData(prev => ({
+          ...prev,
+          [currentStep.id]: data.transcription || ''
+        }));
+        
+        // Move to next step after a short delay
+        setTimeout(() => {
+          if (consultationStep < consultationSteps.length - 1) {
+            setConsultationStep(prev => prev + 1);
+            setTranscription(''); // Clear transcription for next step
+          } else {
+            setConsultationStep(consultationSteps.length);
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error processing voice input:', error);
+      // Fallback: show error and allow text input
+      setTranscription('Error processing voice. Please use text input below.');
+    }
   };
 
   const handleTextInput = (value: string) => {
@@ -198,16 +217,58 @@ export default function CustomSolutionsPage() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Custom Solutions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </Link>
-            <div className="flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-8">
               <Link 
                 href="/" 
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                ← Back to Home
+                Home
               </Link>
+              <Link 
+                href="/marketplace" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Marketplace
+              </Link>
+              <Link 
+                href="/custom" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Custom
+              </Link>
+              <Link 
+                href="/subscriptions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Subscriptions
+              </Link>
+              <Link 
+                href="/solutions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Industry Packages
+              </Link>
+            </nav>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-2"
+                style={{ 
+                  borderColor: 'var(--rensto-primary)', 
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </div>
@@ -333,12 +394,25 @@ export default function CustomSolutionsPage() {
                     </span>
                   </div>
                   
-                  <p className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
+                  <p className="text-sm mb-2" style={{ color: 'var(--rensto-text-muted)' }}>
                     {isListening 
                       ? 'Speak clearly and we\'ll process your response' 
                       : 'Click the microphone to start voice input'
                     }
                   </p>
+                  {transcription && (
+                    <div 
+                      className="mt-4 p-4 rounded-lg border-2"
+                      style={{
+                        background: 'rgba(30, 174, 247, 0.1)',
+                        borderColor: 'var(--rensto-accent-blue)',
+                        color: 'var(--rensto-text-primary)'
+                      }}
+                    >
+                      <p className="text-sm font-semibold mb-1">You said:</p>
+                      <p className="text-sm">{transcription}</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Text Input Fallback */}
@@ -527,7 +601,7 @@ export default function CustomSolutionsPage() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-              Why Choose Custom Solutions?
+              Why Choose Personal Help?
             </h2>
             <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get a tailored automation solution designed specifically for your business needs and goals.
@@ -613,18 +687,37 @@ export default function CustomSolutionsPage() {
           <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
             Start your free consultation today and discover how automation can revolutionize your operations.
           </p>
-          <button
-            onClick={bookConsultation}
-            className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto"
-            style={{
-              background: 'var(--rensto-gradient-secondary)',
-              color: '#ffffff',
-              boxShadow: 'var(--rensto-glow-secondary)'
-            }}
-          >
-            <Mic className="w-5 h-5" />
-            Start Free Consultation
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <TypeformButton
+              formId="TBij585m"
+              className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              style={{
+                background: 'var(--rensto-gradient-secondary)',
+                color: '#ffffff',
+                boxShadow: 'var(--rensto-glow-secondary)'
+              }}
+            >
+              <Mic className="w-5 h-5" />
+              Book FREE Voice AI Consultation
+              <ArrowRight className="w-5 h-5" />
+            </TypeformButton>
+            <TypeformButton
+              formId="TBij585m"
+              className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              style={{
+                background: 'var(--rensto-gradient-primary)',
+                color: '#ffffff',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              <Target className="w-5 h-5" />
+              Take Readiness Scorecard
+              <ArrowRight className="w-5 h-5" />
+            </TypeformButton>
+          </div>
+          <p className="text-sm text-center max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+            💡 <strong>New Flow:</strong> Complete the consultation form first. Our Voice AI agent will use your answers to personalize your consultation call.
+          </p>
         </div>
       </section>
     </div>

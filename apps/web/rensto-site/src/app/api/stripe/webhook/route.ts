@@ -8,7 +8,7 @@ function getStripe(): Stripe {
     throw new Error('STRIPE_SECRET_KEY not configured');
   }
   return new Stripe(apiKey, {
-    apiVersion: '2024-11-20.acacia',
+    apiVersion: '2025-02-24.acacia', // Match Stripe webhook API version
   });
 }
 
@@ -48,6 +48,8 @@ async function triggerN8nWorkflow(webhookUrl: string, data: any) {
   }
 }
 
+// Next.js App Router automatically provides raw body via request.text()
+// This is correct for Stripe webhook signature verification
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
@@ -60,6 +62,8 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event;
 
   try {
+    // Stripe requires raw body (string) for signature verification
+    // request.text() provides this in Next.js App Router
     event = getStripe().webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);

@@ -1,8 +1,10 @@
-# ✅ Homepage Code Embed Setup Guide
+# ⚠️ OUTDATED: Homepage Code Embed Setup Guide
 
-**Date**: October 31, 2025  
-**Goal**: Add homepage content as Code Embed element (visible in Designer)  
-**Note**: Scripts stay in Page Settings (GSAP animations, Stripe checkout)
+**Date**: October 31, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow Designer Code Embed. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 

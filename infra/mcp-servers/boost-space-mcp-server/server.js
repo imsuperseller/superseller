@@ -1191,7 +1191,11 @@ class BoostSpaceMCPServer {
       const response = await axios({
         method,
         url,
-        headers,
+        headers: {
+          'Authorization': `Bearer ${BOOST_SPACE_CONFIG.apiKey}`,
+          'Content-Type': 'application/json',
+          ...headers
+        },
         params: query,
         data: body,
         timeout

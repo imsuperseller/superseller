@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+  waha:
+    container_name: waha-noweb
+    image: devlikeapro/waha-plus:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # NOWEB Engine - No browser/PC needed
+      WAHA_ENGINE: "NOWEB"
+      WHATSAPP_DEFAULT_ENGINE: "NOWEB"
+      
+      # API Configuration
+      WAHA_API_KEY: "4fc7e008d7d24fc995475029effc8fa8"
+      
+      # Session Management
+      WAHA_SESSION_MODE: "auto"
+      
+      # Logging
+      LOG_LEVEL: "info"
+      
+      # Timezone
+      TZ: "America/Chicago"
+      
+      # Optional: Dashboard (if needed)
+      WAHA_DASHBOARD_USERNAME: "admin"
+      WAHA_DASHBOARD_PASSWORD: "admin123"
+      WHATSAPP_SWAGGER_ENABLED: "true"
+      WHATSAPP_SWAGGER_USERNAME: "admin"
+      WHATSAPP_SWAGGER_PASSWORD: "admin123"
+      
+      # Performance
+      NODE_OPTIONS: "--max-old-space-size=16384"
+      PUPPETEER_SKIP_DOWNLOAD: "True"
+      
+    volumes:
+      # Sessions persist here - WhatsApp login stays active
+      - ./sessions:/app/sessions
+      # Data storage
+      - ./data:/app/data
+      # Preserve auth state from previous setup (if exists)
+      - waha_auth_state:/app/auth-state
+
+volumes:
+  waha_auth_state:
+    external: true
+

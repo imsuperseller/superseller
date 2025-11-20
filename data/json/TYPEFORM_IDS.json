@@ -1,29 +1,54 @@
 {
-  "forms": [
-    {
-      "id": "siYf8ed7",
-      "title": "Lead Generation Assessment",
-      "url": "https://form.typeform.com/to/siYf8ed7",
-      "webhook": "https://your-n8n-instance.com/webhook/lead-generation-assessment"
+  "forms": {
+    "ready-solutions-industry-quiz": {
+      "id": "jqrAhQHW",
+      "url": "https://form.typeform.com/to/jqrAhQHW",
+      "title": "Find Your Perfect Industry Automation Package",
+      "webhook": "http://173.254.201.134:5678/webhook/typeform-ready-solutions-quiz",
+      "workflow_id": "KXVJUtRiwozkKBmO",
+      "workflow_name": "TYPEFORM-READY-SOLUTIONS-QUIZ-001",
+      "status": "active",
+      "created": "2025-11-14",
+      "activated": "2025-11-16"
     },
-    {
-      "id": "fkYnNvga",
-      "title": "Custom Solution Request",
-      "url": "https://form.typeform.com/to/fkYnNvga",
-      "webhook": "https://your-n8n-instance.com/webhook/custom-solution-request"
+    "free-leads-sample": {
+      "id": "xXJi0Jbm",
+      "url": "https://form.typeform.com/to/xXJi0Jbm",
+      "title": "Get 50 FREE Sample Leads 🎯",
+      "webhook": "http://173.254.201.134:5678/webhook/typeform-free-leads-sample",
+      "created": "2025-11-14"
     },
-    {
-      "id": "ppf08F66",
-      "title": "Subscription Service Signup",
-      "url": "https://form.typeform.com/to/ppf08F66",
-      "webhook": "https://your-n8n-instance.com/webhook/subscription-service-signup"
+    "marketplace-template-request": {
+      "id": "ydoAn3hv",
+      "url": "https://form.typeform.com/to/ydoAn3hv",
+      "title": "Don't See the Template You Need? 🔍",
+      "webhook": "http://173.254.201.134:5678/webhook/typeform-template-request",
+      "workflow_id": "1NgUtwNhG19JoVCX",
+      "workflow_name": "TYPEFORM-TEMPLATE-REQUEST-001",
+      "status": "active",
+      "created": "2025-11-14",
+      "activated": "2025-11-16"
     },
-    {
-      "id": "EpEv9A1S",
-      "title": "Industry Solution Inquiry",
-      "url": "https://form.typeform.com/to/EpEv9A1S",
-      "webhook": "https://your-n8n-instance.com/webhook/industry-solution-inquiry"
+    "readiness-scorecard": {
+      "id": "TBij585m",
+      "url": "https://form.typeform.com/to/TBij585m",
+      "title": "Is Your Business Ready for Custom Automation? 📊",
+      "webhook": "http://173.254.201.134:5678/webhook/typeform-readiness-scorecard",
+      "workflow_id": "NgqR5LtBhhaFQ8j0",
+      "workflow_name": "TYPEFORM-READINESS-SCORECARD-001",
+      "status": "active",
+      "created": "2025-11-14",
+      "activated": "2025-11-16"
+    },
+    "custom-solutions-voice-ai": {
+      "id": "01JKTNHQXKAWM6W90F0A6JQNJ7",
+      "url": "https://form.typeform.com/to/01JKTNHQXKAWM6W90F0A6JQNJ7",
+      "title": "Custom Solutions Voice AI Consultation",
+      "created": "2025-10-03"
     }
-  ],
-  "created_at": "2025-10-03T15:23:32.471Z"
+  },
+  "api_token": {
+    "updated": "2025-11-14",
+    "note": "Token updated from invalid token to working token"
+  }
 }

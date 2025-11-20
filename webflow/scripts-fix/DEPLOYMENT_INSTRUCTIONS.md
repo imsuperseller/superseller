@@ -1,8 +1,10 @@
-# 🔧 Button Selector Fix - Deployment Instructions
+# ⚠️ HISTORICAL: Button Selector Fix - Deployment Instructions
 
-**Date**: October 30, 2025
-**Issue**: Checkout scripts use wrong button selectors, causing checkout buttons to not work
-**Status**: ✅ Fixed scripts ready for deployment
+**Date**: October 30, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **HISTORICAL** - Fix was applied to CDN scripts  
+**Current Status**: Site migrated to Vercel Nov 2, 2025. CDN scripts may not be needed.
+
+**⚠️ NOTE**: This document records deployment instructions for fixing checkout scripts in `rensto-webflow-scripts` CDN. The site is now on Vercel. This is historical reference only.
 
 ---
 

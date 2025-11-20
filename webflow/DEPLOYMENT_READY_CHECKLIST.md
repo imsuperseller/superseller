@@ -1,23 +1,25 @@
-# ✅ Deployment Ready Checklist
+# ⚠️ OUTDATED: Deployment Ready Checklist
 
-**Date**: October 8, 2025, 2:30 AM CDT
-**Status**: 🟡 **IN PROGRESS - Homepage Live, Service Pages Ready**
-**Last Updated**: Oct 8, 2025 (Session 2)
+**Date**: October 8, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow deployment. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 
-## 🎯 DEPLOYMENT PROGRESS (Oct 8, 2025)
+## 🎯 DEPLOYMENT PROGRESS (Historical - Oct 8, 2025)
 
-### ✅ COMPLETED
-1. **Homepage Scripts Created** - `/homepage/checkout.js` (295 lines)
+### ✅ COMPLETED (Historical)
+1. **Homepage Scripts Created** - `/homepage/checkout.js` (295 lines) (Historical)
    - GSAP scroll animations
    - FAQ accordion functionality
    - Lead magnet form handler
    - Smooth scrolling
-   - **Status**: ✅ LIVE on CDN (https://rensto-webflow-scripts.vercel.app)
+   - **Status**: ✅ LIVE on CDN (https://rensto-webflow-scripts.vercel.app) (Historical)
 
-2. **Script Tags Pasted in Webflow** - Homepage
-   - `<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>`
+2. **Script Tags Pasted in Webflow** - Homepage (OUTDATED)
+   - `<script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>` (OUTDATED)
    - `<script src="https://rensto-webflow-scripts.vercel.app/homepage/checkout.js"></script>`
    - **Status**: ✅ DEPLOYED to www.rensto.com
 

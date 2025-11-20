@@ -1,17 +1,20 @@
-# 🚀 Service Pages Deployment Status
+# ⚠️ OUTDATED: Service Pages Deployment Status
 
-**Date**: October 8, 2025
-**Status**: In Progress
+**Date**: October 8, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow deployment. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 
-## 📋 Deployment Checklist
+## 📋 Deployment Checklist (Historical - OUTDATED)
 
-### 1. Marketplace Page
-- **File**: `WEBFLOW_EMBED_MARKETPLACE_CVJ.html` (55K, 1,563 lines)
+### 1. Marketplace Page (OUTDATED)
+- **File**: `WEBFLOW_EMBED_MARKETPLACE_CVJ.html` (55K, 1,563 lines) (Historical)
 - **URL**: https://rensto.com/marketplace
-- **Webflow Page**: `/marketplace`
-- **Stripe Buttons**: 6 total
+- **Webflow Page**: `/marketplace` (OUTDATED)
+- **Stripe Buttons**: 6 total (Historical)
   - DIY Simple: $29
   - DIY Standard: $97
   - DIY Advanced: $197

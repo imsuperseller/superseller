@@ -36,6 +36,62 @@ const nextConfig = {
     ];
   },
 
+  // Cache headers for optimal CDN and browser caching
+  async headers() {
+    return [
+      {
+        // Static assets (images, fonts, CSS, JS) - Cache for 1 year
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Image files - Cache for 1 year
+        source: '/:path*\\.(jpg|jpeg|png|gif|webp|svg|ico)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Font files - Cache for 1 year
+        source: '/:path*\\.(woff|woff2|ttf|eot)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // API routes - No caching (always fresh)
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+        ],
+      },
+      {
+        // HTML pages - Cache for 1 hour, allow stale-while-revalidate for 24 hours
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400, max-age=0',
+          },
+        ],
+      },
+    ];
+  },
+
   // Disable webpack optimizations that might cause SSR issues
   webpack: (config, { isServer }) => {
     // Handle both server and client-side issues

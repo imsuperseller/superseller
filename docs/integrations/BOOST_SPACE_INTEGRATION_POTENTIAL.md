@@ -133,10 +133,12 @@
 - Boost.space (available)
 
 ### **Data & Storage**
-- Airtable (primary)
-- Notion (documentation)
-- Supabase (planned)
-- MongoDB (planned)
+- Boost.space (PRIMARY - infrastructure metadata, no rate limits)
+- Airtable (SECONDARY/BACKUP - dashboards, manual config, rate limited)
+- n8n Data Tables (OPERATIONAL - workflow data, leads, logs)
+- Notion (DOCUMENTATION ONLY - 15-20 strategic docs)
+- Supabase (CUSTOMER PROJECTS ONLY - when needed)
+- MongoDB (CUSTOMER PROJECTS ONLY - when >50K records)
 - QuickBooks (accounting)
 
 ### **Payments & Financial**

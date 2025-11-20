@@ -16,7 +16,10 @@ import {
   Target,
   Shield,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Facebook,
+  Instagram,
+  Linkedin
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -44,7 +47,7 @@ export default function HomePage() {
     },
     {
       id: 'custom',
-      name: 'Custom Solutions',
+      name: 'Tailored Solutions',
       description: 'Free voice AI consultation builds your tailored automation plan',
       icon: Mic,
       features: [
@@ -82,7 +85,7 @@ export default function HomePage() {
     },
     {
       id: 'solutions',
-      name: 'Ready Solutions',
+      name: 'Industry Packages',
       description: 'Niche-specific automation packages for your industry',
       icon: Package,
       features: [
@@ -173,13 +176,6 @@ export default function HomePage() {
               </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Link 
-                href="/admin" 
-                className="transition-colors hover:opacity-80"
-                style={{ color: 'var(--rensto-text-secondary)' }}
-              >
-                Admin
-              </Link>
               <Button variant="outline" size="sm" className="border-2" style={{ 
                 borderColor: 'var(--rensto-primary)', 
                 color: 'var(--rensto-primary)',
@@ -521,11 +517,18 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div 
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{ background: 'var(--rensto-gradient-primary)' }}
-                >
-                  <Zap className="w-5 h-5 text-white" />
+                <div className="relative w-10 h-10">
+                  <Image
+                    src="/rensto-logo.png"
+                    alt="Rensto Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))'
+                    }}
+                    priority
+                  />
                 </div>
                 <span className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
                   Rensto
@@ -556,7 +559,7 @@ export default function HomePage() {
                     className="transition-colors hover:opacity-80"
                     style={{ color: 'var(--rensto-text-secondary)' }}
                   >
-                    Custom Solutions
+                    Tailored Solutions
                   </Link>
                 </li>
                 <li>
@@ -574,7 +577,7 @@ export default function HomePage() {
                     className="transition-colors hover:opacity-80"
                     style={{ color: 'var(--rensto-text-secondary)' }}
                   >
-                    Ready Solutions
+                    Industry Packages
                   </Link>
                 </li>
               </ul>
@@ -623,50 +626,49 @@ export default function HomePage() {
                 </li>
               </ul>
             </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-                Admin
-              </h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link 
-                    href="/admin" 
-                    className="transition-colors hover:opacity-80"
-                    style={{ color: 'var(--rensto-text-secondary)' }}
-                  >
-                    Admin Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/admin/analytics" 
-                    className="transition-colors hover:opacity-80"
-                    style={{ color: 'var(--rensto-text-secondary)' }}
-                  >
-                    Analytics
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/admin/settings" 
-                    className="transition-colors hover:opacity-80"
-                    style={{ color: 'var(--rensto-text-secondary)' }}
-                  >
-                    Settings
-                  </Link>
-                </li>
-              </ul>
-            </div>
           </div>
           
           <div 
-            className="border-t mt-8 pt-8 text-center"
+            className="border-t mt-8 pt-8"
             style={{ borderColor: 'rgba(254, 61, 81, 0.2)' }}
           >
-            <p style={{ color: 'var(--rensto-text-secondary)' }}>
-              © 2025 Rensto. All rights reserved.
-            </p>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Link
+                  href="https://facebook.com/myrensto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: 'var(--rensto-text-secondary)' }}
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-6 h-6" />
+                </Link>
+                <Link
+                  href="https://instagram.com/myrensto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: 'var(--rensto-text-secondary)' }}
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-6 h-6" />
+                </Link>
+                <Link
+                  href="https://www.linkedin.com/company/rensto-llc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: 'var(--rensto-text-secondary)' }}
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-6 h-6" />
+                </Link>
+              </div>
+              <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                © 2025 Rensto. All rights reserved.
+              </p>
+            </div>
           </div>
         </div>
       </footer>

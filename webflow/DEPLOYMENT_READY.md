@@ -1,21 +1,24 @@
-# ✅ Deployment Ready - Official MCP Server Configured!
+# ⚠️ OUTDATED: Deployment Ready - Official MCP Server Configured!
 
-**Date**: October 31, 2025  
-**Status**: Configuration updated, ready for deployment
+**Date**: October 31, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow MCP server configuration. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 
-## ✅ **WHAT I DID**
+## ✅ **WHAT I DID** (Historical - Pre-Migration)
 
-Updated `~/.cursor/mcp.json` to use **Webflow's Official Remote MCP Server**:
+Updated `~/.cursor/mcp.json` to use **Webflow's Official Remote MCP Server**: (OUTDATED)
 - Added `"webflow": { "url": "https://mcp.webflow.com/sse" }`
 - Kept local MCP as `"webflow-local"` (backup)
 
 ---
 
-## 🔧 **NEXT STEPS** (You Need To Do)
+## 🔧 **NEXT STEPS** (Historical - OUTDATED)
 
-### **1. Restart Cursor** ⚡
+### **1. Restart Cursor** ⚡ (OUTDATED)
 - Close and reopen Cursor
 - New MCP server will load
 

@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: October 13, 2025 (MCP Documentation Audit & Optimization)
-**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 12 MCP Servers Active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Context7)
+**Last Updated**: November 18, 2025 (Documentation Consolidation, MCP Cleanup)
+**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 10 MCP Servers Active (n8n, Airtable, Notion, Typeform, Stripe, TidyCal, Supabase, Boost.space, Shadcn, Context7), ✅ Design System Complete (Brand colors, Outfit font, dark theme, logo, standardized headers)
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 ---
@@ -37,15 +37,15 @@ Rensto is a Universal Automation Platform that delivers AI-powered automation so
 ### **Business Model** (As of October 2025)
 We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan Deiss/DigitalMarketer methodology.
 
-### **Revenue Streams** (5 Service Types)
+### **Revenue Streams** (4 Active Service Types + 1 In Development)
 
 | Service Type | Price Range | Description | Status |
 |-------------|-------------|-------------|--------|
-| **Marketplace** | $29-$3,500+ | Pre-built workflow templates | ✅ Stripe checkout integrated, ready for Webflow deployment |
-| **Ready Solutions** | $890-$2,990+ | Industry-specific packages | ⚠️ Documented, not deployed |
-| **Content AI** | $297-$1,997/mo | AI content processing system (OpenAI-powered) | 🚧 In Development (OpenAI API-based, Phase 1 complete) |
-| **Subscriptions** | $299-$1,499/mo | Lead generation services | ✅ Stripe checkout integrated, ready for Webflow deployment |
-| **Custom Solutions** | $3,500-$8,000+ | Bespoke automation projects | ⚠️ Consultation flow incomplete |
+| **Marketplace** | $29-$3,500+ | Pre-built workflow templates | ✅ Stripe checkout integrated, deployed on Vercel |
+| **Ready Solutions** | $890-$2,990+ | Industry-specific packages | ✅ Stripe checkout integrated, deployed on Vercel |
+| **Subscriptions** | $299-$1,499/mo | Lead generation services | ✅ Stripe checkout integrated, deployed on Vercel |
+| **Custom Solutions** | $3,500-$8,000+ | Bespoke automation projects | ✅ Stripe checkout integrated, deployed on Vercel |
+| **Content AI** | $297-$1,997/mo | AI content processing system (OpenAI-powered) | 🚧 In Development (Phase 1 complete, not live) |
 
 ### **Target Market**
 - Small to mid-size businesses (SMBs)
@@ -62,21 +62,29 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ## 2. CURRENT ARCHITECTURE
 
 ### **Data Flow Philosophy**
-**"n8n Data Tables First, Selective External Sync"**
+**"Boost.space Primary, n8n Operational, Airtable Archive"**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           PRIMARY: n8n Data Tables (RackNerd VPS)           │
-│  All workflow data, leads, customer interactions, logs      │
+│        PRIMARY: Boost.space (Lifetime Plan - No Limits)      │
+│  Infrastructure, products, customers, projects, financial  │
+│  URL: https://superseller.boost.space                      │
+│  Spaces: 39 (Infra), 41 (Refs), 45 (Workflows), 51 (Market)│
+└─────────────────────────────────────────────────────────────┘
+                          ↓ Real-time sync
+┌─────────────────────────────────────────────────────────────┐
+│      OPERATIONAL: n8n Data Tables (RackNerd VPS)            │
+│  Workflow execution data, leads, customer interactions      │
 │  Storage: 173.254.201.134:5678                             │
 └─────────────────────────────────────────────────────────────┘
-                          ↓ Sync every 15 min
+                          ↓ Archive/Backup
 ┌─────────────────────────────────────────────────────────────┐
-│        SECONDARY: Airtable (Business Intelligence)          │
-│  Dashboards, manual editing, team collaboration             │
-│  11 bases, ~867 records (consolidated from 124 tables)     │
+│        ARCHIVE: Airtable (Rate Limited - Backup Only)       │
+│  Historical data, manual editing (when API available)       │
+│  11 bases, ~867 records (migrating to Boost.space)         │
+│  ⚠️ Rate limited: Cannot query via API (use CSV exports)   │
 └─────────────────────────────────────────────────────────────┘
-                          ↓ Sync daily
+                          ↓ Documentation
 ┌─────────────────────────────────────────────────────────────┐
 │         TERTIARY: Notion (Documentation Only)               │
 │  High-level docs, team wiki, 15-20 strategic docs           │
@@ -86,7 +94,15 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ### **Data Storage Decision Matrix**
 
-**Store in n8n Data Tables** (PRIMARY):
+**Store in Boost.space** (PRIMARY):
+- Infrastructure metadata (MCP servers, credentials, nodes, integrations)
+- Marketplace products and purchases
+- Customer and project data
+- Financial data (invoices, expenses)
+- Reference data (companies, business references)
+- **No rate limits** (lifetime plan)
+
+**Store in n8n Data Tables** (OPERATIONAL):
 - Workflow execution data
 - Lead generation data (LinkedIn, Google Maps, Facebook)
 - Customer interaction tracking
@@ -94,11 +110,10 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - Event streams and webhooks
 - Real-time operational metrics
 
-**Sync to Airtable** (REPORTING):
-- Business dashboards
-- Manual configuration (pricing, products)
-- Financial tracking (invoices, revenue)
-- Team collaboration data
+**Archive in Airtable** (BACKUP ONLY):
+- Historical data (migrating to Boost.space)
+- Manual editing (when API available)
+- ⚠️ **Rate limited** - Use CSV exports for migration
 
 **Sync to Notion** (DOCUMENTATION):
 - Strategic planning docs
@@ -340,32 +355,231 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ## 6. CUSTOMER JOURNEY
 
-### **Current State**: ⚠️ **PARTIALLY IMPLEMENTED**
+### **Overview**: 4-Stage Journey
 
-**Customer Journey Tracking in Airtable**: ❌ **NOT FOUND**
+**Status**: ⚠️ **PARTIALLY IMPLEMENTED** (documentation complete, systems incomplete)
 
-**Customer Portal**:
-- **Location**: Some attempts in `/live-systems/customer-portal/`
-- **Status**: Outdated, business model changed since last update
-- **Needs**: 4 different portal views (one per service type)
+**Journey Stages**:
+1. **Awareness → Purchase** (SEO, landing pages, Stripe checkout) - ✅ LIVE
+2. **Purchase → Onboarding** (Stripe webhook → n8n automation) - ⚠️ 40-60% automated
+3. **Onboarding → Active** (Portal access, project delivery) - ❌ Portal not built
+4. **Active → Retention** (Engagement, upsells, referrals) - ❌ Not implemented
 
-**Post-Sale Automation**: ❌ **NOT IMPLEMENTED**
+---
+
+### **Stage 1: Awareness → Purchase** ✅ LIVE
+
+**Landing Pages** (19 pages with Stripe checkout):
+- **4 Service Pages**: /marketplace, /subscriptions, /ready-solutions, /custom-solutions
+- **15 Niche Pages**: /hvac, /realtor, /amazon-seller, /roofer, /dentist, /bookkeeping, /busy-mom, /ecommerce, /fence-contractors, /insurance, /lawyer, /locksmith, /photographers, /product-supplier, /synagogues
+
+**Traffic Sources**:
+- SEO (Organic): 60-70% of traffic, 2-5% conversion
+- Direct Traffic: 15-20%, 8-12% conversion
+- Referrals: 10-15%, 12-20% conversion
+- Social Media: 5-10%, 1-3% conversion
+
+**Checkout Process**:
+```
+User clicks button → JavaScript initiates Stripe checkout → Stripe processes payment → Webhook fires
+```
+
+**Implementation**:
+- Stripe checkout: ✅ Live on all 19 pages (Vercel deployment)
+- GitHub auto-deploy: ✅ Operational (rensto-webflow-scripts repo)
+- Payment links: ✅ 7 live Stripe payment links
+
+---
+
+### **Stage 2: Purchase → Onboarding** ⚠️ 40-60% AUTOMATED
+
+**Trigger**: Stripe webhook `checkout.session.completed`
+
+**Current Flow** (via n8n workflow DEV-FIN-006):
+1. Stripe webhook received at `/api/stripe/webhook`
+2. Validate signature
+3. Extract customer data (email, product, amount)
+4. **Create Airtable records** (Customers, Invoices, Projects/Subscriptions tables)
+5. **Send emails** (customer confirmation + admin notification)
+6. **Notify Slack** (#sales channel)
+
+**What's Automated** (40-60%):
+- ✅ Webhook reception and validation
+- ✅ Customer record creation in Airtable
+- ⚠️ Email sending (templates incomplete)
+- ⚠️ Admin notifications (manual follow-up needed)
 
 **What's Missing**:
-1. Customer journey stages tracking in Airtable
-2. Automated status updates and notifications
-3. Customer portal with:
-   - Invoice history
-   - Project status
-   - Payment tracking
-   - AI insights
-   - Upsell recommendations
-   - Referral incentives
-4. n8n Cloud details for each customer
-5. Affiliate link tracking (n8n)
-6. Payment status tracking (Stripe)
+- ❌ 8 email templates (only placeholders exist)
+- ❌ Automated delivery for Marketplace purchases
+- ❌ Subscription workflow activation
+- ❌ Calendar invites for Custom Solutions
+- ❌ Project creation in n8n for Ready Solutions
 
-**Admin Access**: Should be via admin.rensto.com with links to all customer portals
+**Estimated Time to Complete**: 4-6 hours
+
+---
+
+### **Stage 3: Onboarding → Active Customer** ❌ NOT IMPLEMENTED
+
+**Customer Portal**: ❌ **DOES NOT EXIST** (referenced in code, not built)
+
+**Portal Requirements** (4 different views needed):
+
+**1. Marketplace Portal**:
+- Template downloads (JSON files)
+- Installation guides
+- Support tickets
+- Version update notifications
+
+**2. Subscription Portal**:
+- Leads dashboard (view delivered leads)
+- Lead filters and search
+- Analytics (leads/day, conversion rate)
+- Billing management
+- Pause/resume subscription
+
+**3. Ready Solution Portal**:
+- Project status dashboard
+- Milestone tracking (5-7 milestones)
+- Deliverables download
+- Project manager communication
+- Invoice history
+
+**4. Custom Solution Portal**:
+- Project timeline (Gantt chart)
+- Documentation repository
+- Workflow previews/testing
+- Change request submission
+- Dedicated support channel
+
+**Portal URL Structure** (planned):
+- `https://portal.rensto.com/{customer-slug}`
+- Admin access: `https://admin.rensto.com` → links to all customer portals
+
+**Airtable Tracking**: ❌ **NOT FOUND**
+- No customer journey stages in Airtable
+- No automated status updates
+- No milestone tracking
+
+**Action Required**: Build 4 customer portal views (estimated 5-7 days)
+
+---
+
+### **Stage 4: Active → Retention** ❌ NOT IMPLEMENTED
+
+**Engagement Strategy** (planned but not automated):
+
+**Marketplace Customers**:
+- Week 1: "How's your template working?" email
+- Month 1: New templates newsletter
+- Month 3: "Upgrade to Full-Service?" upsell
+- Month 6: Advanced templates for power users
+
+**Subscription Customers**:
+- Week 1: First leads delivered notification
+- Month 1: Lead quality survey
+- Month 3: Tier upgrade offer (if using >80% capacity)
+- Month 6: Referral bonus program
+- Month 12: Annual plan discount (save 20%)
+
+**Ready Solution Customers**:
+- Week 1: Post-delivery check-in
+- Month 1: "Everything running smoothly?" support call
+- Month 3: Additional workflows upsell
+- Month 6: Integration expansion offer
+- Year 1: Maintenance package renewal
+
+**Custom Solution Customers**:
+- Week 1: Post-delivery training follow-up
+- Month 1: Change request check-in
+- Quarter 1: Business review call
+- Quarter 2: New automation discovery
+- Year 1: Annual optimization package
+
+**Churn Risk Detection** (to be built):
+- Marketplace: No portal logins in 60 days → re-engagement email
+- Subscription: No lead exports in 14 days → support check-in
+- Ready Solution: Workflows disabled → technical support call
+- Custom: No communication in 30 days → "How can we help?" email
+
+**Upsell Triggers** (to be automated):
+- Marketplace: 3+ template purchases → "Ready Solution saves time" offer
+- Subscription: >80% lead capacity → tier upgrade prompt
+- Ready Solution: 5+ workflow requests → Custom Solution recommendation
+- Any service: High engagement + satisfaction → retainer package offer
+
+**Customer Health Scoring** (not implemented):
+- Engagement Score (40 pts): Portal logins, feature usage
+- Product Usage Score (30 pts): Workflows active, error-free runs
+- Payment Score (20 pts): On-time payments, no failures
+- Satisfaction Score (10 pts): NPS score
+- **Ranges**: 80-100 = Healthy, 50-79 = At Risk, 0-49 = Churning
+
+**n8n Workflow Needed**: INT-CUSTOMER-LIFECYCLE (daily automation)
+
+**Action Required**: Build lifecycle automation workflow (estimated 3-4 days)
+
+---
+
+### **Success Metrics** (To Be Tracked)
+
+**Stage 1: Awareness → Purchase**
+- Website Traffic: Target 3,000-5,000/month
+- Landing Page Conversion: Target 2-5%
+- Average Order Value: Target $800-$1,200
+
+**Stage 2: Purchase → Onboarding**
+- Onboarding Completion Rate: Target 90%+
+- Time to First Value: Target <24 hours
+- Support Tickets (Onboarding): Target <10% of customers
+- Customer Satisfaction (NPS): Target 8+
+
+**Stage 3: Onboarding → Active**
+- Active Usage Rate: Target 80%+
+- Feature Adoption: Target 60%+ (using 3+ features)
+- Support Ticket Resolution: Target <24 hours
+- Project Completion Rate: Target 95%+
+
+**Stage 4: Active → Retention**
+- Customer Retention Rate: Target 85%+
+- Monthly Recurring Revenue (MRR): Target $20K-$50K
+- Upsell Rate: Target 20%+
+- Customer Lifetime Value (LTV): Target $3,000-$8,000
+- Net Revenue Retention: Target 110%+
+- Referral Rate: Target 15%+
+
+---
+
+### **Critical Gaps Summary**
+
+**Priority 1: Complete Post-Purchase Automation** ⚠️
+- Create 8 email templates (customer + admin)
+- Automate Marketplace delivery
+- Automate Subscription workflow activation
+- Build Custom Solution calendar integration
+- **Estimated Time**: 4-6 hours
+
+**Priority 2: Build Customer Portals** ❌
+- 4 different portal views (one per service type)
+- Authentication and access control
+- Project/subscription/lead dashboards
+- Billing management
+- **Estimated Time**: 5-7 days
+
+**Priority 3: Implement Lifecycle Automation** ❌
+- Build INT-CUSTOMER-LIFECYCLE workflow
+- Customer health scoring
+- Automated engagement emails
+- Churn risk detection
+- Upsell trigger system
+- **Estimated Time**: 3-4 days
+
+**Total Estimated Time to Complete Customer Journey**: 10-14 days
+
+---
+
+**Full Journey Documentation**: See archived `/docs/business/CUSTOMER_JOURNEY_FLOWS.md` for 880-line detailed breakdown
 
 ---
 
@@ -505,6 +719,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 6. **Notion Integration**: 3 databases accessible, needs sync automation
 7. **MCP Servers**: 12 active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Context7) + 1 disabled (QuickBooks - needs Node.js wrapper)
 8. **Webflow Website**: ✅ LIVE - 19 pages with GitHub auto-deploy Stripe checkout (Oct 7, 2025)
+9. **Design System**: ✅ Complete (November 14, 2025) - Brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd), Outfit font, dark theme (#110d28), logo on all service pages, standardized headers
 
 ### **⚠️ PARTIALLY IMPLEMENTED**
 
@@ -823,10 +1038,11 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 **Rensto Main Site** (`apps/web/rensto-site/` - 1.8G):
 - **URL**: https://rensto.com
-- **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Webflow DevLink
+- **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Shadcn UI
 - **Purpose**: Public-facing marketing site
 - **Pages**: Homepage, About, 4 service types, niche pages, legal pages
-- **Status**: ✅ Active but missing Stripe checkout connections (0 of 5)
+- **Design System**: ✅ Complete (November 14, 2025) - Brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd), Outfit font, dark theme (#110d28), logo on all service pages
+- **Status**: ✅ Active with Stripe checkout (19 pages operational)
 - **Hosting**: Vercel
 - **Documentation**: `apps/web/README.md`
 

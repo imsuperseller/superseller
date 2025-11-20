@@ -17,10 +17,14 @@ import {
   Star,
   Play
 } from 'lucide-react';
+import { TypeformButton } from '@/components/TypeformEmbed';
+import { YouTubeVideoModal } from '@/components/YouTubeVideoModal';
 
 export default function SolutionsPage() {
   const [selectedNiche, setSelectedNiche] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
 
   const niches = [
     {
@@ -30,6 +34,7 @@ export default function SolutionsPage() {
       description: 'Complete automation solutions for HVAC contractors',
       solutions: 5,
       price: 499,
+      videoId: null, // Add your YouTube video ID here (e.g., 'dQw4w9WgXcQ')
       features: [
         'Lead scoring and prioritization',
         'Customer appointment scheduling',
@@ -154,12 +159,253 @@ export default function SolutionsPage() {
         'Increase client satisfaction'
       ],
       popular: false
+    },
+    {
+      id: 'amazon-seller',
+      name: 'Amazon Seller',
+      icon: '📦',
+      description: 'Amazon FBA seller automation solutions',
+      solutions: 5,
+      price: 449,
+      features: [
+        'Inventory management automation',
+        'Review monitoring and responses',
+        'Repricing bot integration',
+        'Order processing automation',
+        'PPC optimization tracking'
+      ],
+      benefits: [
+        'Optimize inventory levels',
+        'Improve seller ratings',
+        'Maximize profit margins',
+        'Streamline order fulfillment'
+      ],
+      popular: false
+    },
+    {
+      id: 'dentist',
+      name: 'Dentist',
+      icon: '🦷',
+      description: 'Dental practice automation solutions',
+      solutions: 5,
+      price: 549,
+      features: [
+        'Appointment reminder automation',
+        'Insurance verification system',
+        'Treatment follow-up sequences',
+        'Recall automation',
+        'Patient review collection'
+      ],
+      benefits: [
+        'Reduce no-shows by 60%',
+        'Improve patient retention',
+        'Streamline insurance processes',
+        'Increase practice efficiency'
+      ],
+      popular: false
+    },
+    {
+      id: 'bookkeeping',
+      name: 'Bookkeeping',
+      icon: '📊',
+      description: 'Bookkeeping and tax automation solutions',
+      solutions: 5,
+      price: 499,
+      features: [
+        'Client onboarding automation',
+        'Document collection system',
+        'Deadline tracking and reminders',
+        'Report generation automation',
+        'Tax season workflow optimization'
+      ],
+      benefits: [
+        'Reduce manual data entry',
+        'Never miss deadlines',
+        'Improve client communication',
+        'Scale your practice efficiently'
+      ],
+      popular: false
+    },
+    {
+      id: 'busy-mom',
+      name: 'Busy Mom',
+      icon: '👩',
+      description: 'Family and household management automation',
+      solutions: 5,
+      price: 249,
+      features: [
+        'Family calendar synchronization',
+        'Meal planning automation',
+        'Shopping list management',
+        'Appointment reminders',
+        'Household task coordination'
+      ],
+      benefits: [
+        'Save 10+ hours per week',
+        'Never forget appointments',
+        'Streamline family coordination',
+        'Reduce mental load'
+      ],
+      popular: false
+    },
+    {
+      id: 'ecommerce',
+      name: 'E-commerce',
+      icon: '🛒',
+      description: 'E-commerce store automation solutions',
+      solutions: 5,
+      price: 399,
+      features: [
+        'Order processing automation',
+        'Inventory synchronization',
+        'Abandoned cart recovery',
+        'Shipping automation',
+        'Customer support workflows'
+      ],
+      benefits: [
+        'Process orders faster',
+        'Reduce inventory errors',
+        'Recover lost sales',
+        'Improve customer satisfaction'
+      ],
+      popular: false
+    },
+    {
+      id: 'fence-contractor',
+      name: 'Fence Contractor',
+      icon: '🚧',
+      description: 'Fence installation contractor automation',
+      solutions: 5,
+      price: 549,
+      features: [
+        'Estimate generation automation',
+        'Permit tracking system',
+        'Material ordering workflows',
+        'Project scheduling automation',
+        'HOA approval coordination'
+      ],
+      benefits: [
+        'Generate estimates instantly',
+        'Track permits efficiently',
+        'Optimize material ordering',
+        'Improve project coordination'
+      ],
+      popular: false
+    },
+    {
+      id: 'lawyer',
+      name: 'Lawyer',
+      icon: '⚖️',
+      description: 'Law firm automation solutions',
+      solutions: 5,
+      price: 599,
+      features: [
+        'Case intake automation',
+        'Document generation workflows',
+        'Court date tracking',
+        'Client communication system',
+        'Billing management automation'
+      ],
+      benefits: [
+        'Streamline case intake',
+        'Never miss court dates',
+        'Improve client communication',
+        'Automate billing processes'
+      ],
+      popular: false
+    },
+    {
+      id: 'product-supplier',
+      name: 'Product Supplier',
+      icon: '📦',
+      description: 'Product supplier and wholesaler automation',
+      solutions: 5,
+      price: 449,
+      features: [
+        'Order management automation',
+        'Inventory tracking system',
+        'Shipping coordination',
+        'Invoice automation',
+        'Client communication workflows'
+      ],
+      benefits: [
+        'Process orders faster',
+        'Maintain accurate inventory',
+        'Improve shipping efficiency',
+        'Streamline client communication'
+      ],
+      popular: false
+    },
+    {
+      id: 'synagogue',
+      name: 'Synagogue',
+      icon: '🕍',
+      description: 'Synagogue management automation solutions',
+      solutions: 5,
+      price: 399,
+      features: [
+        'Member management system',
+        'Event coordination automation',
+        'Donation tracking',
+        'Hebrew calendar synchronization',
+        'Communication workflows'
+      ],
+      benefits: [
+        'Manage members efficiently',
+        'Coordinate events seamlessly',
+        'Track donations accurately',
+        'Improve community engagement'
+      ],
+      popular: false
+    },
+    {
+      id: 'torah-teacher',
+      name: 'Torah Teacher',
+      icon: '📖',
+      description: 'Torah teaching business automation',
+      solutions: 5,
+      price: 349,
+      features: [
+        'Class scheduling automation',
+        'Student progress tracking',
+        'Lesson planning workflows',
+        'Parent communication system',
+        'Payment collection automation'
+      ],
+      benefits: [
+        'Streamline class scheduling',
+        'Track student progress',
+        'Improve parent communication',
+        'Automate payment collection'
+      ],
+      popular: false
     }
   ];
 
   const selectedNicheData = niches.find(niche => niche.id === selectedNiche);
 
-  // Handle Ready Solutions Checkout
+  // Handle Industry Quiz (CVJ Subscribe stage - before checkout)
+  const handleIndustryQuiz = () => {
+    // Open Industry Quiz Typeform - after completion, workflow sends email with recommendation and Stripe checkout link
+    window.open(
+      `https://form.typeform.com/to/jqrAhQHW`,
+      '_blank',
+      'width=800,height=600'
+    );
+  };
+
+  // Handle Watch Demo - Open YouTube video modal
+  const handleWatchDemo = (videoId: string | null | undefined) => {
+    if (videoId) {
+      setSelectedVideoId(videoId);
+      setVideoModalOpen(true);
+    } else {
+      // Fallback: If no video ID, open Industry Quiz as before
+      handleIndustryQuiz();
+    }
+  };
+
+  // Handle Ready Solutions Checkout (direct - for users who skip quiz)
   const handleCheckout = async (nicheData: typeof niches[0] | undefined) => {
     if (!nicheData) {
       alert('Please select a niche package first');
@@ -234,7 +480,7 @@ export default function SolutionsPage() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Ready Solutions</span>
+              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">
               <Link 
@@ -256,7 +502,7 @@ export default function SolutionsPage() {
                 className="transition-colors hover:opacity-80"
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
-                Custom
+                Tailored Solutions
               </Link>
               <Link 
                 href="/subscriptions" 
@@ -264,6 +510,13 @@ export default function SolutionsPage() {
                 style={{ color: 'var(--rensto-text-primary)' }}
               >
                 Subscriptions
+              </Link>
+              <Link 
+                href="/solutions" 
+                className="transition-colors hover:opacity-80"
+                style={{ color: 'var(--rensto-text-primary)' }}
+              >
+                Solutions
               </Link>
             </nav>
             <div className="flex items-center gap-4">
@@ -294,6 +547,16 @@ export default function SolutionsPage() {
         />
         <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
+            <div 
+              className="inline-block px-6 py-3 rounded-full mb-8 text-sm font-bold"
+              style={{
+                background: 'var(--rensto-gradient-primary)',
+                color: '#ffffff',
+                boxShadow: 'var(--rensto-glow-primary)'
+              }}
+            >
+              🎯 Industry-Specific Solutions
+            </div>
             <h1 
               className="text-5xl md:text-6xl font-bold mb-6"
               style={{
@@ -303,11 +566,10 @@ export default function SolutionsPage() {
                 backgroundClip: 'text'
               }}
             >
-              Niche-Specific Automation Packages
+              Industry Automation Packages
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-              Complete automation solutions designed specifically for your industry. 
-              Each package includes 5 proven solutions with full implementation.
+              Choose from 16 industry-specific automation packages. Each package includes 5 proven solutions with complete implementation.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               <div 
@@ -348,96 +610,113 @@ export default function SolutionsPage() {
         </div>
       </section>
 
-      {/* Niche Selection */}
+      {/* Industry Selection Section */}
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-              Choose Your Industry
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: 'var(--rensto-text-primary)' }}>
+              Select Your Industry
             </h2>
-            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-              Select your industry to see the complete automation package designed for your business type.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {niches.map((niche) => (
-              <button
-                key={niche.id}
-                onClick={() => setSelectedNiche(niche.id)}
-                className="relative p-6 rounded-2xl border-2 transition-all duration-300 text-left hover:-translate-y-1"
-                style={
-                  selectedNiche === niche.id
-                    ? {
-                        borderColor: 'var(--rensto-primary)',
-                        background: 'var(--rensto-bg-card)',
-                        boxShadow: 'var(--rensto-glow-primary)'
-                      }
-                    : {
-                        borderColor: 'rgba(254, 61, 81, 0.2)',
-                        background: 'var(--rensto-bg-card)',
-                        boxShadow: 'var(--rensto-glow-accent)'
-                      }
-                }
-              >
-                {niche.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span 
-                      className="px-4 py-1 rounded-full text-sm font-bold text-white"
-                      style={{ background: 'var(--rensto-gradient-primary)' }}
-                    >
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="text-4xl">{niche.icon}</span>
-                  <div>
-                    <h3 className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
-                      {niche.name}
-                    </h3>
-                    <p style={{ color: 'var(--rensto-text-secondary)' }}>{niche.description}</p>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--rensto-primary)' }}>
-                    ${niche.price}
-                  </div>
-                  <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>
-                    {niche.solutions} solutions included
-                  </div>
-                </div>
-                
-                <div className="space-y-2 mb-6">
-                  {niche.features.slice(0, 3).map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--rensto-accent-cyan)' }} />
-                      <span className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+              {niches.map((niche) => (
+                <div
+                  key={niche.id}
+                  onClick={() => setSelectedNiche(niche.id)}
+                  className={`rounded-xl border-2 p-6 cursor-pointer transition-all hover:-translate-y-1 ${
+                    selectedNiche === niche.id ? 'ring-4 ring-offset-2' : ''
+                  }`}
+                  style={{
+                    background: selectedNiche === niche.id ? 'var(--rensto-bg-card)' : 'var(--rensto-bg-primary)',
+                    borderColor: selectedNiche === niche.id ? 'var(--rensto-primary)' : 'rgba(254, 61, 81, 0.3)',
+                    boxShadow: selectedNiche === niche.id ? 'var(--rensto-glow-primary)' : 'none'
+                  }}
+                >
+                  <div className="text-4xl mb-3 text-center">{niche.icon}</div>
+                  <h3 className="text-xl font-bold mb-2 text-center" style={{ color: 'var(--rensto-text-primary)' }}>
+                    {niche.name}
+                  </h3>
+                  <p className="text-sm text-center mb-4" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {niche.description}
+                  </p>
+                  <div className="text-center">
+                    <div className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2" style={{
+                      background: 'var(--rensto-gradient-primary)',
+                      color: '#ffffff'
+                    }}>
+                      {niche.solutions} Solutions
                     </div>
-                  ))}
-                  {niche.features.length > 3 && (
-                    <div className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
-                      +{niche.features.length - 3} more features
+                    <div className="text-2xl font-bold" style={{ color: 'var(--rensto-primary)' }}>
+                      ${niche.price}
                     </div>
-                  )}
-                </div>
-                
-                {selectedNiche === niche.id && (
-                  <div className="flex items-center gap-2" style={{ color: 'var(--rensto-primary)' }}>
-                    <CheckCircle className="w-5 h-5" />
-                    <span className="font-semibold">Selected</span>
                   </div>
-                )}
-              </button>
-            ))}
+                </div>
+              ))}
+            </div>
+            
+            {selectedNicheData && (
+              <div className="mt-12">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
+                    {selectedNicheData.name} Package - ${selectedNicheData.price}
+                  </h3>
+                  <p className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>
+                    {selectedNicheData.solutions} solutions included
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    size="lg" 
+                    className="font-bold"
+                    style={{ 
+                      background: 'var(--rensto-gradient-primary)',
+                      color: 'white',
+                      boxShadow: 'var(--rensto-glow-primary)'
+                    }}
+                    onClick={handleIndustryQuiz}
+                    disabled={isProcessing}
+                  >
+                    <Target className="w-5 h-5 mr-2" />
+                    Find Your Perfect Package
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-2 font-bold"
+                    style={{ 
+                      borderColor: 'var(--rensto-primary)',
+                      color: 'var(--rensto-primary)',
+                      background: 'transparent'
+                    }}
+                    onClick={() => handleCheckout(selectedNicheData)}
+                    disabled={isProcessing}
+                  >
+                    <Package className="w-5 h-5 mr-2" />
+                    {isProcessing ? 'Processing...' : 'Skip Quiz & Buy Now'}
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 font-bold"
+                    style={{ 
+                      borderColor: 'var(--rensto-primary)',
+                      color: 'var(--rensto-primary)',
+                      background: 'transparent'
+                    }}
+                    onClick={() => handleWatchDemo(selectedNicheData?.videoId)}
+                    disabled={isProcessing}
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    Watch Demo
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Selected Niche Details */}
-      {selectedNicheData && (
+      {/* Selected Niche Details - Hidden until launch */}
+      {false && selectedNicheData && (
         <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
           <div className="container mx-auto">
             <div className="max-w-6xl mx-auto">
@@ -507,11 +786,11 @@ export default function SolutionsPage() {
                       color: 'white',
                       boxShadow: 'var(--rensto-glow-primary)'
                     }}
-                    onClick={() => handleCheckout(selectedNicheData)}
+                    onClick={handleIndustryQuiz}
                     disabled={isProcessing}
                   >
-                    <Package className="w-5 h-5 mr-2" />
-                    {isProcessing ? 'Processing...' : 'Get This Package'}
+                    <Target className="w-5 h-5 mr-2" />
+                    Find Your Perfect Package
                   </Button>
                   <Button 
                     size="lg" 
@@ -522,6 +801,23 @@ export default function SolutionsPage() {
                       color: 'var(--rensto-primary)',
                       background: 'transparent'
                     }}
+                    onClick={() => handleCheckout(selectedNicheData)}
+                    disabled={isProcessing}
+                  >
+                    <Package className="w-5 h-5 mr-2" />
+                    {isProcessing ? 'Processing...' : 'Skip Quiz & Buy Now'}
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 font-bold"
+                    style={{ 
+                      borderColor: 'var(--rensto-primary)',
+                      color: 'var(--rensto-primary)',
+                      background: 'transparent'
+                    }}
+                    onClick={() => handleWatchDemo(selectedNicheData?.videoId)}
+                    disabled={isProcessing}
                   >
                     <Play className="w-5 h-5 mr-2" />
                     Watch Demo
@@ -533,8 +829,8 @@ export default function SolutionsPage() {
         </section>
       )}
 
-      {/* How It Works */}
-      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+      {/* How It Works - Hidden until launch */}
+      <section className="hidden py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
@@ -594,8 +890,8 @@ export default function SolutionsPage() {
         </div>
       </section>
 
-      {/* Success Stories */}
-      <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
+      {/* Success Stories - Hidden until launch */}
+      <section className="hidden py-16 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
@@ -670,9 +966,43 @@ export default function SolutionsPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Industry Quiz Section */}
       <section 
         className="py-16 px-4 relative overflow-hidden"
+        style={{ background: 'var(--rensto-bg-secondary)' }}
+      >
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.4) 0%, transparent 70%)'
+          }}
+        />
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+            Find Your Perfect Industry Automation Package
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+            Answer 5 quick questions and we'll recommend the exact solutions for your business.
+          </p>
+          <TypeformButton
+            formId="jqrAhQHW"
+            className="px-8 py-4 text-lg rounded-lg font-bold transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto"
+            style={{
+              background: 'var(--rensto-gradient-primary)',
+              color: '#ffffff',
+              boxShadow: 'var(--rensto-glow-primary)'
+            }}
+          >
+            <Target className="w-5 h-5" />
+            Take the Industry Quiz
+            <ArrowRight className="w-5 h-5" />
+          </TypeformButton>
+        </div>
+      </section>
+
+      {/* CTA Section - Hidden until launch */}
+      <section 
+        className="hidden py-16 px-4 relative overflow-hidden"
         style={{ background: 'var(--rensto-bg-secondary)' }}
       >
         <div 
@@ -698,7 +1028,7 @@ export default function SolutionsPage() {
                 boxShadow: 'var(--rensto-glow-primary)'
               }}
               disabled={!selectedNiche || isProcessing}
-              onClick={() => handleCheckout(selectedNicheData)}
+              onClick={handleIndustryQuiz}
             >
               <Package className="w-5 h-5 mr-2" />
               {isProcessing ? 'Processing...' : `Get ${selectedNicheData?.name} Package`}
@@ -721,6 +1051,17 @@ export default function SolutionsPage() {
           </div>
         </div>
       </section>
+
+      {/* YouTube Video Modal */}
+      <YouTubeVideoModal
+        videoId={selectedVideoId}
+        isOpen={videoModalOpen}
+        onClose={() => {
+          setVideoModalOpen(false);
+          setSelectedVideoId(null);
+        }}
+        title={selectedNicheData ? `${selectedNicheData.name} Package Demo` : 'Demo Video'}
+      />
     </div>
   );
 }

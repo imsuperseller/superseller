@@ -1,8 +1,10 @@
-# 📄 Pages Ready to Deploy - Complete List
+# ⚠️ OUTDATED: Pages Ready to Deploy - Complete List
 
-**Date**: October 7, 2025
-**Status**: 23 HTML embed files ready, 0 deployed to Webflow
-**Action Needed**: Paste embed code into each Webflow page
+**Date**: October 7, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow deployment. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 

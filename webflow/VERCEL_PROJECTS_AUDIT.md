@@ -5,13 +5,20 @@
 
 ---
 
-## 🎯 **Expected Architecture** (From .cursorrules)
+## 🎯 **Expected Architecture** (From .cursorrules - Updated Nov 12, 2025)
+
+**⚠️ NOTE: This audit is from Oct 30, 2025 (PRE-MIGRATION). Site migrated to Vercel Nov 2, 2025.**
 
 ```
-rensto.com          → Webflow (main site, marketplace, subscriptions, all public pages)
+rensto.com          → Vercel (Next.js app - main site, marketplace, subscriptions, all public pages) ✅ CURRENT
 admin.rensto.com    → Vercel (admin dashboard only)
 api.rensto.com      → Vercel (ALL API endpoints: Stripe, webhooks, etc.)
 portal.rensto.com   → Vercel (customer portals - planned)
+```
+
+**Historical (Pre-Migration)**:
+```
+rensto.com          → Webflow (main site) ❌ OUTDATED - Migrated Nov 2, 2025
 ```
 
 ### **Expected Vercel Projects**:

@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Github, 
   Twitter, 
   Linkedin, 
+  Facebook,
+  Instagram,
   Mail, 
   Phone,
   MapPin,
@@ -24,10 +27,7 @@ export function Footer() {
       { name: 'Contact', href: '/contact' },
     ],
     business: [
-      { name: 'Admin Dashboard', href: '/admin', icon: Settings },
       { name: 'Customer App', href: '/app', icon: Workflow },
-      { name: 'Agent Management', href: '/admin/agents', icon: Zap },
-      { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     ],
     legal: [
       { name: 'Privacy Policy', href: '/legal/privacy' },
@@ -35,9 +35,19 @@ export function Footer() {
     ],
     social: [
       {
-        name: 'GitHub',
-        href: 'https://github.com/rensto',
-        icon: Github,
+        name: 'Facebook',
+        href: 'https://facebook.com/myrensto',
+        icon: Facebook,
+      },
+      {
+        name: 'Instagram',
+        href: 'https://instagram.com/myrensto',
+        icon: Instagram,
+      },
+      {
+        name: 'LinkedIn',
+        href: 'https://www.linkedin.com/company/rensto-llc',
+        icon: Linkedin,
       },
       {
         name: 'Twitter',
@@ -45,9 +55,9 @@ export function Footer() {
         icon: Twitter,
       },
       {
-        name: 'LinkedIn',
-        href: 'https://linkedin.com/company/rensto',
-        icon: Linkedin,
+        name: 'GitHub',
+        href: 'https://github.com/rensto',
+        icon: Github,
       },
     ],
   };
@@ -59,8 +69,18 @@ export function Footer() {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-                R
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/rensto-logo.png"
+                  alt="Rensto Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))'
+                  }}
+                  priority
+                />
               </div>
               <span className="text-xl font-bold">Rensto</span>
             </div>

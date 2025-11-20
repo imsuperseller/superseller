@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
         // Use productId price if it exists (niche-specific), otherwise use tier
         const nichePrice = productId && solutionPrices[productId] ? solutionPrices[productId] : null;
         const solutionPrice = nichePrice || solutionPrices[tier || 'starter'];
-        const packageName = metadata.nicheName || `${tier?.toUpperCase()} Ready Solutions Package`;
+        const packageName = metadata.nicheName || `${tier?.toUpperCase()} Industry Package`;
         const packageDesc = metadata.nicheName 
           ? `${metadata.nicheName} automation package with ${metadata.solutionsCount || 5} solutions`
           : 'Industry-specific automation solution';
@@ -206,33 +206,35 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // ALWAYS create/retrieve customer FIRST (required for publishable key association)
-    // Old working system always had customer attached - this was the key
+    // Create/retrieve customer ONLY if email is provided
+    // If no email, Stripe checkout will collect it (better UX)
     const stripe = getStripe();
-    const emailToUse = (customerEmail && customerEmail.trim() && customerEmail.includes('@')) 
-      ? customerEmail.trim() 
-      : `customer-${Date.now()}@rensto.com`;
+    let customerId: string | undefined;
     
-    const existingCustomers = await stripe.customers.list({
-      email: emailToUse,
-      limit: 1,
-    });
-
-    let customerId: string;
-    if (existingCustomers.data.length > 0) {
-      customerId = existingCustomers.data[0].id;
-    } else {
-      const newCustomer = await stripe.customers.create({
+    if (customerEmail && customerEmail.trim() && customerEmail.includes('@')) {
+      const emailToUse = customerEmail.trim();
+      const existingCustomers = await stripe.customers.list({
         email: emailToUse,
-        name: customerName || undefined,
+        limit: 1,
       });
-      customerId = newCustomer.id;
+
+      if (existingCustomers.data.length > 0) {
+        customerId = existingCustomers.data[0].id;
+      } else {
+        const newCustomer = await stripe.customers.create({
+          email: emailToUse,
+          name: customerName || undefined,
+        });
+        customerId = newCustomer.id;
+      }
     }
+    // If no email provided, don't create customer - Stripe will collect email in checkout
 
     // Create Stripe Checkout Session - EXACT MARKETPLACE APP MATCH
     // Include ALL parameters from working marketplace implementation
     const sessionConfig: Stripe.Checkout.SessionCreateParams = {
-      customer: customerId,
+      ...(customerId && { customer: customerId }), // Only attach customer if we have one
+      ...(!customerId && customerEmail && customerEmail.trim() && customerEmail.includes('@') && { customer_email: customerEmail.trim() }), // Pre-fill email if provided but no customer created
       payment_method_types: ['card'],
       line_items: [
         {

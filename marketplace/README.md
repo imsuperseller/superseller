@@ -146,12 +146,12 @@ marketplace/
 | **Business Process Bundle** | $1,191 | $797 | 33% |
 | **Complete Automation Suite** | $6,972 | $3,997 | 43% |
 
-**Status**: ⚠️ Planning document - May not reflect current business model
+**Status**: ⚠️ **OUTDATED** - Planning document from September 25, 2025 - Does not reflect current business model
 
 **Relationship to Current Business Model**:
-- Current model (CLAUDE.md) uses 5 service types: Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions
-- This config defines 4 pricing tiers that may be from earlier business model iteration
-- **Action Required**: Reconcile with current service offerings documented in CLAUDE.md
+- **Current model** (CLAUDE.md, Nov 2025): 5 service types - Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions
+- **This config** (Sep 2025): Defines 4 pricing tiers (Starter, Professional, Enterprise, Custom Enterprise) - **OUTDATED**
+- **Action Required**: ⚠️ **DO NOT USE** - This config is from old business model. Refer to CLAUDE.md for current pricing structure.
 
 **Last Modified**: September 25, 2025
 
@@ -277,11 +277,11 @@ marketplace/
 
 ### **Known Issues**:
 
-**Issue 1: Business Model Mismatch**
-- **Problem**: Pricing tiers in `pricing-config.json` may not align with current 5-service-type model
-- **Current Model** (from CLAUDE.md): Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions
-- **Config Model**: Starter, Professional, Enterprise, Custom Enterprise (4 tiers)
-- **Action**: Reconcile with current business model documented in CLAUDE.md
+**Issue 1: Business Model Mismatch** ⚠️ **OUTDATED**
+- **Problem**: Pricing tiers in `pricing-config.json` do NOT align with current 5-service-type model
+- **Current Model** (from CLAUDE.md, Nov 2025): Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions
+- **Config Model** (Sep 2025): Starter, Professional, Enterprise, Custom Enterprise (4 tiers) - **OUTDATED**
+- **Action**: ⚠️ **DO NOT USE** - This config is outdated. Use CLAUDE.md for current pricing structure.
 
 **Issue 2: Implementation Gap**
 - **Problem**: Configs exist but many features not implemented
@@ -294,10 +294,10 @@ marketplace/
   - Advanced security features
 - **Action**: Audit which features are implemented vs planned
 
-**Issue 3: Pricing Reconciliation Needed**
+**Issue 3: Pricing Reconciliation Needed** ⚠️ **OUTDATED**
 - **Problem**: Multiple pricing sources (this folder, /products/, Stripe, Webflow)
-- **Action**: Create single source of truth for all pricing
-- **Recommendation**: Use Airtable as primary pricing database, sync to all systems
+- **Action**: ⚠️ **DO NOT USE THIS RECOMMENDATION** - Airtable is NOT primary (Boost.space is PRIMARY per CLAUDE.md)
+- **Current Strategy** (CLAUDE.md): Boost.space (PRIMARY) for pricing, Airtable (BACKUP only)
 
 ### **Action Items**:
 

@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'Rensto Team' }],
   creator: 'Rensto',
   publisher: 'Rensto',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/rensto-logo.png',
+  },
   formatDetection: {
     email: false,
     address: false,

@@ -1,0 +1,185 @@
+{
+  "name": "TYPEFORM-VOICE-AI-CONSULTATION-001: Typeform to Voice AI Integration v1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "typeform-voice-ai-consultation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Typeform Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Typeform webhook payload\nconst webhookData = $input.first().json;\nconst formResponse = webhookData.form_response || webhookData;\n\n// Extract answers from Typeform\nconst answers = {};\nif (formResponse.answers) {\n  formResponse.answers.forEach(answer => {\n    const fieldRef = answer.field?.ref || answer.field?.id || '';\n    if (answer.type === 'email') answers.email = answer.email || '';\n    else if (answer.type === 'text') answers[fieldRef] = answer.text || '';\n    else if (answer.type === 'long_text') answers[fieldRef] = answer.text || '';\n    else if (answer.type === 'choice') answers[fieldRef] = answer.choice?.label || '';\n    else if (answer.type === 'choices') answers[fieldRef] = answer.choices?.labels || [];\n    else if (answer.type === 'number') answers[fieldRef] = parseInt(answer.number || 0);\n  });\n}\n\n// Map Typeform answers to consultation data\nconst consultationData = {\n  // Basic info\n  name: answers.name || answers.Name || answers['full-name'] || '',\n  email: answers.email || answers.Email || '',\n  phone: answers.phone || answers.Phone || answers['phone-number'] || '',\n  \n  // Business info\n  businessType: answers.business_type || answers['business-type'] || answers.businessType || '',\n  businessName: answers.business_name || answers['business-name'] || '',\n  teamSize: parseInt(answers.team_size || answers['team-size'] || 0),\n  monthlyRevenue: answers.monthly_revenue || answers['monthly-revenue'] || '',\n  \n  // Consultation questions\n  currentChallenges: answers.challenges || answers.current_challenges || answers['current-challenges'] || '',\n  automationGoals: answers.goals || answers.automation_goals || answers['automation-goals'] || '',\n  budget: answers.budget || answers.Budget || '',\n  timeline: answers.timeline || answers.Timeline || '',\n  \n  // Additional context\n  currentTools: Array.isArray(answers.current_tools || answers['current-tools']) ? answers.current_tools || answers['current-tools'] : [],\n  topPriority: answers.top_priority || answers['top-priority'] || '',\n  \n  // Metadata\n  formId: webhookData.form_id || '',\n  submittedAt: formResponse.submitted_at || new Date().toISOString(),\n  sessionId: `voice-ai-${Date.now()}`\n};\n\n// Generate consultation context for Voice AI\nconst voiceAIContext = `\nConsultation Context for Voice AI Agent:\n\nCustomer Information:\n- Name: ${consultationData.name}\n- Email: ${consultationData.email}\n- Phone: ${consultationData.phone}\n- Business: ${consultationData.businessName || consultationData.businessType}\n- Team Size: ${consultationData.teamSize}\n- Monthly Revenue: ${consultationData.monthlyRevenue}\n\nCurrent Situation:\n- Challenges: ${consultationData.currentChallenges}\n- Current Tools: ${consultationData.currentTools.join(', ') || 'None specified'}\n\nGoals:\n- Automation Goals: ${consultationData.automationGoals}\n- Top Priority: ${consultationData.topPriority}\n\nBudget & Timeline:\n- Budget: ${consultationData.budget}\n- Timeline: ${consultationData.timeline}\n\nInstructions for Voice AI Agent:\n1. Use this context to personalize the consultation\n2. Reference specific challenges mentioned: ${consultationData.currentChallenges}\n3. Focus on their top priority: ${consultationData.topPriority}\n4. Respect their budget range: ${consultationData.budget}\n5. Work within their timeline: ${consultationData.timeline}\n6. Ask clarifying questions based on their current tools: ${consultationData.currentTools.join(', ') || 'Ask what tools they use'}\n`;\n\nreturn [{\n  json: {\n    success: true,\n    consultationData: consultationData,\n    voiceAIContext: voiceAIContext,\n    sessionId: consultationData.sessionId\n  }\n}];"
+      },
+      "id": "parse-typeform-data",
+      "name": "Parse Typeform & Generate Voice AI Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": "voice_ai_consultations",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.consultationData.name }}",
+            "email": "={{ $json.consultationData.email }}",
+            "phone": "={{ $json.consultationData.phone }}",
+            "business_type": "={{ $json.consultationData.businessType }}",
+            "business_name": "={{ $json.consultationData.businessName }}",
+            "team_size": "={{ $json.consultationData.teamSize }}",
+            "monthly_revenue": "={{ $json.consultationData.monthlyRevenue }}",
+            "challenges": "={{ $json.consultationData.currentChallenges }}",
+            "goals": "={{ $json.consultationData.automationGoals }}",
+            "budget": "={{ $json.consultationData.budget }}",
+            "timeline": "={{ $json.consultationData.timeline }}",
+            "current_tools": "={{ $json.consultationData.currentTools.join(', ') }}",
+            "top_priority": "={{ $json.consultationData.topPriority }}",
+            "session_id": "={{ $json.consultationData.sessionId }}",
+            "voice_ai_context": "={{ $json.voiceAIContext }}",
+            "status": "Typeform Submitted - Awaiting Voice AI Call",
+            "source": "Custom Solutions Page",
+            "submitted_at": "={{ $json.consultationData.submittedAt }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "save-to-datatable",
+      "name": "Save to n8n Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.7
+        },
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "You are a professional automation consultant for Rensto. You're about to conduct a voice consultation call. Use the provided context to personalize your conversation. Be friendly, professional, and focus on understanding their specific needs."
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.voiceAIContext }}\n\nGenerate a personalized consultation script for this customer. Include:\n1. Opening greeting (use their name)\n2. Acknowledgment of their specific challenges\n3. Questions to ask based on their goals\n4. Recommendations based on their budget and timeline\n5. Next steps\n\nKeep it conversational and natural for voice delivery."
+            }
+          ]
+        }
+      },
+      "id": "generate-voice-script",
+      "name": "Generate Voice AI Script",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "fromEmail": "consultations@rensto.com",
+        "toEmail": "={{ $json.consultationData.email }}",
+        "subject": "Your Voice AI Consultation is Ready - Next Steps",
+        "emailType": "html",
+        "message": "={{ '<h2>Hi ' + $json.consultationData.name + ',</h2><p>Thank you for completing the consultation form! Your personalized Voice AI consultation is ready.</p><h3>What Happens Next:</h3><ol><li>Our Voice AI agent has reviewed your information</li><li>Your consultation is personalized based on:<ul><li>Your challenges: ' + $json.consultationData.currentChallenges + '</li><li>Your goals: ' + $json.consultationData.automationGoals + '</li><li>Your budget: ' + $json.consultationData.budget + '</li><li>Your timeline: ' + $json.consultationData.timeline + '</li></ul></li><li>You will receive a call or notification to start your Voice AI consultation</li></ol><p><strong>Session ID:</strong> ' + $json.consultationData.sessionId + '</p><p>We look forward to helping you automate your business!</p><p>Best regards,<br>The Rensto Team</p>' }}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Typeform data received and Voice AI consultation prepared', sessionId: $json.consultationData.sessionId, nextStep: 'Voice AI call will be initiated' } }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Typeform Webhook": {
+      "main": [[
+        {
+          "node": "Parse Typeform & Generate Voice AI Context",
+          "type": "main",
+          "index": 0
+        }
+      ]]
+    },
+    "Parse Typeform & Generate Voice AI Context": {
+      "main": [[
+        {
+          "node": "Save to n8n Data Table",
+          "type": "main",
+          "index": 0
+        }
+      ]]
+    },
+    "Save to n8n Data Table": {
+      "main": [[
+        {
+          "node": "Generate Voice AI Script",
+          "type": "main",
+          "index": 0
+        }
+      ]]
+    },
+    "Generate Voice AI Script": {
+      "main": [[
+        {
+          "node": "Send Confirmation Email",
+          "type": "main",
+          "index": 0
+        }
+      ]]
+    },
+    "Send Confirmation Email": {
+      "main": [[
+        {
+          "node": "Webhook Response",
+          "type": "main",
+          "index": 0
+        }
+      ]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-11-16T00:00:00.000Z",
+  "versionId": "1"
+}
+

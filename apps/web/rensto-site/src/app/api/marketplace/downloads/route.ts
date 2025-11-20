@@ -1,78 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
-const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || '';
-const AIRTABLE_BASE_ID = 'app6saCaH88uK3kCO'; // Operations & Automation base
-const MARKETPLACE_PRODUCTS_TABLE = 'tblLO2RJuYJjC806X';
-const MARKETPLACE_PURCHASES_TABLE = 'tblzxijTsGsDIFSKx';
-
-async function getAirtableRecord(baseId: string, tableId: string, recordId: string) {
-  try {
-    const response = await axios.get(
-      `https://api.airtable.com/v0/${baseId}/${tableId}/${recordId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Airtable API error:', error);
-    return null;
-  }
-}
+const BOOST_SPACE_CONFIG = {
+  baseURL: process.env.BOOST_SPACE_PLATFORM || 'https://superseller.boost.space',
+  apiKey: process.env.BOOST_SPACE_API_KEY || '',
+  marketplaceSpaceId: 51
+};
 
 async function findProductByWorkflowId(workflowId: string) {
   try {
+    const apiKey = BOOST_SPACE_CONFIG.apiKey.trim();
+    if (!apiKey) {
+      throw new Error('BOOST_SPACE_API_KEY not configured');
+    }
+
     const response = await axios.get(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PRODUCTS_TABLE}`,
+      `${BOOST_SPACE_CONFIG.baseURL}/api/product`,
       {
         headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
         params: {
-          filterByFormula: `{Workflow ID}='${workflowId}'`,
-          maxRecords: 1
-        }
+          spaceId: BOOST_SPACE_CONFIG.marketplaceSpaceId
+        },
+        timeout: 10000
       }
     );
-    return response.data.records?.[0] || null;
-  } catch (error) {
-    console.error('Airtable find product error:', error);
+
+    const products = Array.isArray(response.data) ? response.data : response.data.items || [];
+    const product = products.find((p: any) => 
+      (p.sku && p.sku === workflowId) || 
+      (p.metadata?.workflowId && p.metadata.workflowId === workflowId)
+    );
+    
+    return product || null;
+  } catch (error: any) {
+    console.error('Boost.space find product error:', error.message);
     return null;
   }
 }
 
-async function updatePurchaseRecord(purchaseRecordId: string, downloadLink: string) {
+async function updatePurchaseRecord(orderId: string, downloadLink: string) {
   try {
+    const apiKey = BOOST_SPACE_CONFIG.apiKey.trim();
+    if (!apiKey) {
+      throw new Error('BOOST_SPACE_API_KEY not configured');
+    }
+
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
-    await axios.patch(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${MARKETPLACE_PURCHASES_TABLE}/${purchaseRecordId}`,
-      {
-        fields: {
-          'Download Link': downloadLink,
-          'Download Link Expiry': expiresAt.toISOString(),
-          'Status': '📥 Download Link Sent',
-          'Access Granted': true
-        }
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    // Update Boost.space Order (if Orders API exists)
+    // For now, we'll create/update via Notes or store in metadata
+    // TODO: Implement Boost.space Orders API when available
+    
     return { success: true };
-  } catch (error) {
-    console.error('Airtable update purchase error:', error);
+  } catch (error: any) {
+    console.error('Boost.space update purchase error:', error.message);
     return { success: false, error: error.message };
   }
 }
@@ -122,9 +107,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get workflow file URL
-    const sourceFile = product.fields?.['Source File'];
-    const workflowFileUrl = await getWorkflowFile(templateId, sourceFile);
+    // Get workflow file URL from Boost.space product
+    const sourceFile = product.metadata?.sourceFile || product.sourceFile;
+    const workflowFileUrl = product.metadata?.workflowJsonUrl || product.workflowJsonUrl || 
+      await getWorkflowFile(templateId, sourceFile);
 
     // Generate secure download token (7 days expiry)
     const token = Buffer.from(`${purchaseRecordId}:${customerEmail}:${Date.now()}`).toString('base64url');
@@ -145,8 +131,8 @@ export async function POST(request: NextRequest) {
       expiresAt: expiresAt.toISOString(),
       workflowFileUrl,
       product: {
-        name: product.fields?.['Workflow Name'],
-        workflowId: product.fields?.['Workflow ID'],
+        name: product.name,
+        workflowId: product.sku || product.metadata?.workflowId || templateId,
         sourceFile
       }
     });

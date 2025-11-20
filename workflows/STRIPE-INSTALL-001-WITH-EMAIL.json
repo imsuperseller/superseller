@@ -266,19 +266,17 @@
     },
     {
       "parameters": {
-        "resource": "message",
-        "operation": "send",
-        "recipients": "={{ $('Parse Webhook Data').item.json.customerEmail }}",
+        "to": "={{ $('Parse Webhook Data').item.json.customerEmail }}",
         "subject": "Your Installation Service is Booked! 🎉",
-        "message": "=<!DOCTYPE html>\n<html>\n<head><style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}.header{background:#2c5aa0;color:white;padding:20px;text-align:center;}.content{padding:20px;}.button{display:inline-block;padding:12px 24px;background:#28a745;color:white;text-decoration:none;border-radius:5px;margin:20px 0;}.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:20px 0;}</style></head>\n<body>\n<div class=\"header\"><h1>🎉 Installation Service Booked!</h1></div>\n<div class=\"content\">\n<p>Hi {{ $('Parse Webhook Data').item.json.webhookData.customerName || 'Customer' }},</p>\n<p>Thank you for purchasing our Full-Service Installation!</p>\n<div class=\"warning\">\n<h2>📅 Schedule Your Installation Call</h2>\n<p><strong>This call is REQUIRED to proceed with installation.</strong></p>\n<p><a href=\"{{ $('Generate TidyCal Link').json.tidycalLink }}\" class=\"button\">Book Your Installation Call Now</a></p>\n</div>\n<h2>What We'll Do:</h2>\n<ul>\n<li>Install your workflow in your n8n instance</li>\n<li>Configure all credentials</li>\n<li>Test end-to-end</li>\n<li>Train you on using it</li>\n</ul>\n<h2>⚡ Before Installation: Get n8n Cloud</h2>\n<p>We'll install your workflow on n8n Cloud. <a href=\"https://tinyurl.com/ym3awuke\">Get your account here</a></p>\n<h2>📋 What to Prepare:</h2>\n<ul>\n<li>Your n8n Cloud account (create via link above)</li>\n<li>List of integrations you use (Gmail, Airtable, etc.)</li>\n<li>Any specific customization requests</li>\n</ul>\n<p>Best regards,<br>The Rensto Team<br>service@rensto.com</p>\n</div>\n</body>\n</html>",
-        "options": {
+        "bodyContent": "=<!DOCTYPE html>\n<html>\n<head><style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}.header{background:#2c5aa0;color:white;padding:20px;text-align:center;}.content{padding:20px;}.button{display:inline-block;padding:12px 24px;background:#28a745;color:white;text-decoration:none;border-radius:5px;margin:20px 0;}.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:20px 0;}</style></head>\n<body>\n<div class=\"header\"><h1>🎉 Installation Service Booked!</h1></div>\n<div class=\"content\">\n<p>Hi {{ $('Parse Webhook Data').item.json.webhookData.customerName || 'Customer' }},</p>\n<p>Thank you for purchasing our Full-Service Installation!</p>\n<div class=\"warning\">\n<h2>📅 Schedule Your Installation Call</h2>\n<p><strong>This call is REQUIRED to proceed with installation.</strong></p>\n<p><a href=\"{{ $('Generate TidyCal Link').json.tidycalLink || $('Generate TidyCal Link').json.url || $('Generate TidyCal Link').json.bookingUrl }}\" class=\"button\">Book Your Installation Call Now</a></p>\n</div>\n<h2>What We'll Do:</h2>\n<ul>\n<li>Install your workflow in your n8n instance</li>\n<li>Configure all credentials</li>\n<li>Test end-to-end</li>\n<li>Train you on using it</li>\n</ul>\n<h2>⚡ Before Installation: Get n8n Cloud</h2>\n<p>We'll install your workflow on n8n Cloud. <a href=\"https://tinyurl.com/ym3awuke\">Get your account here</a></p>\n<h2>📋 What to Prepare:</h2>\n<ul>\n<li>Your n8n Cloud account (create via link above)</li>\n<li>List of integrations you use (Gmail, Airtable, etc.)</li>\n<li>Any specific customization requests</li>\n</ul>\n<p>Best regards,<br>The Rensto Team<br>service@rensto.com</p>\n</div>\n</body>\n</html>",
+        "additionalFields": {
           "contentType": "html"
         }
       },
       "id": "send-email",
       "name": "Send Customer Email",
       "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 1,
+      "typeVersion": 2,
       "position": [2144, 304],
       "credentials": {
         "microsoftOutlookOAuth2Api": {

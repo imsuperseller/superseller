@@ -1,6 +1,6 @@
 # RENSTO PROJECT RULES - MANDATORY FOR ALL WORK
 
-**Last Updated**: October 5, 2025
+**Last Updated**: November 12, 2025
 **Purpose**: Prevent architectural mistakes and ensure consistency across all development
 
 ---
@@ -9,32 +9,37 @@
 
 ### **Domain Architecture** (MEMORIZE THIS):
 ```
-rensto.com          → Webflow (main site, marketplace, subscriptions, all public pages)
+rensto.com          → Vercel (Next.js app - main site, marketplace, subscriptions, all public pages)
+www.rensto.com      → Vercel (Next.js app - same as rensto.com)
 admin.rensto.com    → Vercel (admin dashboard only)
-api.rensto.com      → Vercel (ALL API endpoints: Stripe, webhooks, etc.)
+api.rensto.com      → Vercel (API endpoints - redundant with rensto.com/api/* but works)
 portal.rensto.com   → Vercel (customer portals - planned)
 ```
 
 ### **Critical Rules**:
-1. ⛔ **NEVER** point rensto.com DNS to Vercel - it MUST point to Webflow
-2. ⛔ **NEVER** create API routes in the main rensto.com app
-3. ✅ **ALWAYS** deploy API routes to api.rensto.com subdomain
-4. ✅ **ALWAYS** check CLAUDE.md before making architectural decisions
+1. ✅ **rensto.com is on Vercel** - Next.js app (`apps/web/rensto-site/`)
+2. ✅ **API routes available at**: `rensto.com/api/*` AND `api.rensto.com/api/*` (both work)
+3. ✅ **ALWAYS** check CLAUDE.md before making architectural decisions
+4. ⚠️ **Webflow**: Site exists but DNS doesn't point to it (archived/inactive)
 
 ---
 
 ## 📁 PROJECT STRUCTURE
 
-### **Webflow** (`rensto.com`):
-- Hosted on Webflow, NOT in this repository
-- Contains: Marketplace, Ready Solutions, Subscriptions, Custom, About, all public pages
-- Configuration: Site ID `66c7e551a317e0e9c9f906d8`
-- Custom code: Embedded JavaScript that calls `api.rensto.com` endpoints
-
-### **Vercel** (Multiple Subdomains):
-- **admin.rensto.com**: `/apps/web/admin-dashboard/`
-- **api.rensto.com**: `/apps/web/rensto-site/` (API routes only)
+### **Vercel** (Main Site & Subdomains):
+- **rensto.com** / **www.rensto.com**: `/apps/web/rensto-site/` (Next.js app - main site)
+  - Contains: Homepage, Marketplace, Subscriptions, Custom Solutions, About, all public pages
+  - APIs: `/api/stripe/checkout`, `/api/marketplace/workflows`, etc.
+  - Deployment: Auto-deploy on git push to main branch
+- **admin.rensto.com**: `/apps/web/admin-dashboard/` (Admin dashboard)
+- **api.rensto.com**: `/apps/web/rensto-site/` (API endpoints - redundant but works)
 - **portal.rensto.com**: `/live-systems/customer-portal/` (planned)
+
+### **Webflow** (Archived/Inactive):
+- Site exists but DNS doesn't point to it
+- Site ID: `66c7e551a317e0e9c9f906d8`
+- Status: Archived (not serving traffic)
+- Note: Webflow scripts CDN still exists (`rensto-webflow-scripts.vercel.app`) but may not be needed
 
 ### **n8n Workflows**:
 - Hosted on RackNerd VPS: `173.254.201.134:5678`
@@ -46,19 +51,21 @@ portal.rensto.com   → Vercel (customer portals - planned)
 ## 💳 STRIPE INTEGRATION (CORRECT APPROACH)
 
 ### **Architecture**:
-1. Webflow pages (rensto.com) contain buttons
-2. Buttons call `https://api.rensto.com/stripe/checkout` via JavaScript
+1. Next.js pages (rensto.com) contain buttons/components
+2. Buttons call `/api/stripe/checkout` (relative path) or `https://rensto.com/api/stripe/checkout`
 3. API route creates Stripe session, returns checkout URL
 4. User redirects to Stripe, completes payment
-5. Stripe webhook sends event to `https://api.rensto.com/stripe/webhook`
+5. Stripe webhook sends event to `https://rensto.com/api/stripe/webhook` (or `api.rensto.com/api/stripe/webhook`)
 6. Webhook handler triggers n8n workflows
 
 ### **Workflow**:
 ```
-Webflow Button → api.rensto.com/stripe/checkout → Stripe Checkout
+Next.js Button → rensto.com/api/stripe/checkout → Stripe Checkout
                                                            ↓
-Stripe Webhook → api.rensto.com/stripe/webhook → n8n STRIPE-* workflows
+Stripe Webhook → rensto.com/api/stripe/webhook → n8n STRIPE-* workflows
 ```
+
+**Note**: Both `rensto.com/api/*` and `api.rensto.com/api/*` work (same source code)
 
 ### **Active Stripe n8n Workflows**:
 - `STRIPE-MARKETPLACE-001`: Template purchases
@@ -72,13 +79,14 @@ Stripe Webhook → api.rensto.com/stripe/webhook → n8n STRIPE-* workflows
 
 ## 🔑 ENVIRONMENT VARIABLES
 
-### **Vercel** (api.rensto.com & admin.rensto.com):
+### **Vercel** (rensto.com, api.rensto.com & admin.rensto.com):
 ```
 STRIPE_SECRET_KEY         (Production, Preview, Development)
 STRIPE_PUBLISHABLE_KEY    (Production)
 STRIPE_WEBHOOK_SECRET     (Production, Preview, Development)
 NEXT_PUBLIC_APP_URL       (Production, Preview, Development)
 OPENAI_API_KEY           (Production)
+AIRTABLE_API_KEY         (Production)
 ```
 
 ### **n8n** (RackNerd VPS):
@@ -110,9 +118,10 @@ OPENAI_API_KEY           (Production)
 5. ✅ Use `vercel --prod` from correct directory
 
 ### **DNS Changes**:
-1. ⛔ **NEVER** change rensto.com A record without explicit approval
+1. ⚠️ **rensto.com is on Vercel** - DNS points to `cname.vercel-dns.com`
 2. ✅ **ALWAYS** use Cloudflare API (token: `UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1`)
 3. ✅ **ALWAYS** enable Cloudflare proxy (orange cloud)
+4. ⚠️ **NEVER** change DNS without explicit approval and backup
 
 ---
 
@@ -166,9 +175,10 @@ Examples:
 ## 🚨 CRITICAL MISTAKES TO AVOID
 
 ### **Architecture Mistakes**:
-1. ❌ Pointing rensto.com to Vercel (breaks Webflow site)
-2. ❌ Creating API routes in wrong subdomain
-3. ❌ Not following domain separation
+1. ❌ Changing rensto.com DNS without approval (currently on Vercel)
+2. ❌ Creating API routes in wrong location (should be in `apps/web/rensto-site/src/app/api/`)
+3. ❌ Not following domain separation (admin vs main site vs APIs)
+4. ❌ Assuming Webflow is active (it's archived - DNS doesn't point to it)
 
 ### **Code Mistakes**:
 1. ❌ Missing React import in Next.js files
@@ -240,7 +250,7 @@ Examples:
 - Stripe Dashboard: https://dashboard.stripe.com
 - Vercel Dashboard: https://vercel.com/dashboard
 - Cloudflare Dashboard: https://dash.cloudflare.com
-- Webflow Dashboard: https://webflow.com
+- Webflow Dashboard: https://webflow.com (archived site - not active)
 - n8n Instance: http://173.254.201.134:5678
 
 ### **Credentials**:
@@ -253,8 +263,8 @@ Examples:
 ## 🎯 QUICK DECISION TREE
 
 ### "Where should this code go?"
-- Public website content? → **Webflow** (rensto.com)
-- API endpoint? → **Vercel api.rensto.com** (`/apps/web/rensto-site/src/app/api/`)
+- Public website content? → **Vercel rensto.com** (`/apps/web/rensto-site/src/app/`)
+- API endpoint? → **Vercel rensto.com/api** (`/apps/web/rensto-site/src/app/api/`)
 - Admin dashboard? → **Vercel admin.rensto.com** (`/apps/web/admin-dashboard/`)
 - Customer portal? → **Vercel portal.rensto.com** (`/live-systems/customer-portal/`)
 - Workflow automation? → **n8n** (173.254.201.134:5678)
@@ -270,7 +280,8 @@ Examples:
 
 ## 📚 ADDITIONAL RESOURCES
 
-- Full architecture: `/docs/RENSTO_WEBFLOW_VERCEL_ARCHITECTURE.md`
+- Current website status: `/docs/infrastructure/WEBSITE_CURRENT_STATUS.md`
+- Migration history: `/webflow/MIGRATION_FINAL_STATUS.md`
 - n8n workflows: `/live-systems/n8n-system/workflows/`
 - BMAD process: `/docs/BMAD_PROCESS_SPECIFIC.md`
 - Tech stack details: CLAUDE.md section 14

@@ -1,12 +1,14 @@
-# 🏠 Homepage Fix Instructions
+# ⚠️ OUTDATED: Homepage Fix Instructions
 
-**Date**: October 30, 2025
-**Issue**: Homepage content not rendering (only header/footer visible)
-**File**: `webflow/pages/WEBFLOW_EMBED_HOMEPAGE.html` (1,530 lines)
+**Date**: October 30, 2025 (PRE-MIGRATION)  
+**Status**: ⚠️ **OUTDATED** - Site migrated to Vercel Nov 2, 2025  
+**Current Status**: rensto.com is on Vercel (Next.js), not Webflow
+
+**⚠️ NOTE**: This document references Webflow Designer deployment. The site is now on Vercel. This guide is for historical reference only.
 
 ---
 
-## 🎯 Problem
+## 🎯 Problem (Historical - Pre-Migration)
 
 The homepage at https://www.rensto.com only shows header/footer navigation. All main content sections (hero, lead magnet, path selector, features, FAQ) are missing.
 
@@ -14,9 +16,9 @@ The HTML file exists and contains all content, but it's not deployed to Webflow.
 
 ---
 
-## ✅ Solution: Deploy Homepage HTML
+## ✅ Solution: Deploy Homepage HTML (Historical - Pre-Migration)
 
-### Step 1: Open Webflow Designer
+### Step 1: Open Webflow Designer (OUTDATED)
 1. Go to https://webflow.com/dashboard
 2. Select site: **Rensto** (ID: `66c7e551a317e0e9c9f906d8`)
 3. Open **Designer**

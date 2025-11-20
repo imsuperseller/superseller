@@ -1,8 +1,10 @@
 {
+  "_NOTE": "⚠️ OUTDATED - This config uses 4 pricing tiers (Starter, Professional, Enterprise, Custom Enterprise) from September 2025. Current business model (CLAUDE.md, Nov 2025) uses 5 service types: Marketplace, Ready Solutions, Content AI, Subscriptions, Custom Solutions. DO NOT USE for current pricing - refer to CLAUDE.md Section 1: Business Overview → Revenue Streams",
   "metadata": {
     "created": "2025-09-25T17:51:27.163Z",
     "version": "1.0.0",
-    "totalTiers": 4
+    "totalTiers": 4,
+    "status": "OUTDATED - Does not match current 5-service-type model"
   },
   "tiers": [
     {

@@ -1,0 +1,152 @@
+TEST REPORT - 2025-11-02T20:49:19.396Z
+============================================================
+
+SUMMARY
+------------------------------------------------------------
+Total Tests: 4
+Passed: 4
+Failed: 0
+Total Issues: 0
+Total Warnings: 50
+
+============================================================
+DETAILED RESULTS
+============================================================
+
+
+✅ documentation-consistency.test.js
+------------------------------------------------------------
+Issues: 0
+Warnings: 2
+🧪 Running Documentation Consistency Tests...
+
+
+📄 Testing File References...
+🔍 Testing for Contradictions...
+🔗 Testing Cross-References...
+🔑 Testing Critical Information...
+
+📊 Test Results:
+   Issues: 0
+   Warnings: 2
+
+
+⚠️  WARNINGS:
+   ⚠️ Status percentages vary significantly across documents
+   ⚠️ DOCUMENTATION_INDEX.md not referenced in handoff guide
+
+
+
+✅ code-validation.test.js
+------------------------------------------------------------
+Issues: 0
+Warnings: 46
+🧪 Running Code Validation Tests...
+
+
+🔌 Testing API Endpoints...
+🔐 Testing Environment Variables...
+📁 Testing File Path References...
+🗄️  Testing Airtable Configuration...
+⚙️  Testing n8n Webhook URLs...
+
+📊 Test Results:
+   Issues: 0
+   Warnings: 46
+
+
+⚠️  WARNINGS:
+   ⚠️ API endpoint /api/stripe/webhook exists in code but not documented
+   ⚠️ Undocumented API endpoint: /api/admin/dashboard/metrics
+   ⚠️ Undocumented API endpoint: /api/consultation/booking
+   ⚠️ Undocumented API endpoint: /api/customers/[slug]/config
+   ⚠️ Undocumented API endpoint: /api/installation/booking
+   ⚠️ Undocumented API endpoint: /api/marketplace/download/[token]
+   ⚠️ Undocumented API endpoint: /api/marketplace/downloads
+   ⚠️ Undocumented API endpoint: /api/marketplace/templates
+   ⚠️ Undocumented API endpoint: /api/payment/confirm
+   ⚠️ Undocumented API endpoint: /api/payment/create
+   ⚠️ Undocumented API endpoint: /api/proposals/generate
+   ⚠️ Undocumented API endpoint: /api/requirements/capture
+   ⚠️ Undocumented API endpoint: /api/shelly/makecom/trigger-research
+   ⚠️ Undocumented API endpoint: /api/stripe/webhook
+   ⚠️ Undocumented API endpoint: /api/voice-ai/consultation
+   ⚠️ Undocumented API endpoint: /api/webflow/envcheck
+   ⚠️ Undocumented API endpoint: /api/webflow/oauth/callback
+   ⚠️ Undocumented API endpoint: /api/webflow/oauth/start
+   ⚠️ Undocumented API endpoint: /api/webflow/oauth/url
+   ⚠️ Undocumented API endpoint: /api/webflow/ping
+   ⚠️ Undocumented API endpoint: /api/webflow/test/do-publish
+   ⚠️ Undocumented API endpoint: /api/webflow/test/environments
+   ⚠️ Undocumented API endpoint: /api/webflow/test/publish
+   ⚠️ Undocumented API endpoint: /api/webflow/test/publish2
+   ⚠️ Undocumented API endpoint: /api/webflow/test/site
+   ⚠️ Undocumented API endpoint: /api/webflow/test/sites
+   ⚠️ Undocumented API endpoint: /api/webflow/test/v1/domains
+   ⚠️ Undocumented API endpoint: /api/webflow/test/v1/publish
+   ⚠️ Undocumented API endpoint: /api/webflow/test/v1/publish-direct
+   ⚠️ Undocumented API endpoint: /api/webflow/test/v2/domains
+   ⚠️ Undocumented API endpoint: /api/webflow/test/v2/publish
+   ⚠️ Undocumented API endpoint: /api/webhooks/stripe
+   ⚠️ Undocumented API endpoint: /api/wf/oauth/callback
+   ⚠️ Undocumented API endpoint: /api/wf/oauth/start
+   ⚠️ STRIPE_PUBLISHABLE_KEY mentioned in docs but not found in API code
+   ⚠️ TIDYCAL_API_KEY used in code but not documented
+   ⚠️ OPENAI_API_KEY used in code but not documented
+   ⚠️ AIRTABLE_BASE_ID used in code but not documented
+   ⚠️ AIRTABLE_PROPOSALS_TABLE used in code but not documented
+   ⚠️ AIRTABLE_REQUIREMENTS_TABLE used in code but not documented
+   ⚠️ AIRTABLE_CONSULTATIONS_TABLE used in code but not documented
+   ⚠️ WEBFLOW_REDIRECT_URI used in code but not documented
+   ⚠️ WEBFLOW_SCOPES used in code but not documented
+   ⚠️ WEBFLOW_CLIENT_ID used in code but not documented
+   ⚠️ WEBFLOW_CLIENT_SECRET used in code but not documented
+   ⚠️ n8n URL not found in documentation
+
+
+
+✅ script-validation.test.js
+------------------------------------------------------------
+Issues: 0
+Warnings: 0
+🧪 Running Script Validation Tests...
+
+
+🌐 Testing DNS Migration Script...
+📖 Testing Script Documentation...
+✅ Testing Validation Script...
+⚙️  Testing Script Configuration...
+💾 Testing Backup Functionality...
+
+📊 Test Results:
+   Issues: 0
+   Warnings: 0
+
+✅ All script validation tests passed!
+
+
+
+✅ configuration-validation.test.js
+------------------------------------------------------------
+Issues: 0
+Warnings: 2
+🧪 Running Configuration Validation Tests...
+
+
+🚀 Testing Vercel Configuration...
+🔐 Testing Environment Variables Completeness...
+🌐 Testing DNS Configuration...
+🗄️  Testing Airtable Configuration...
+⚙️  Testing n8n Configuration...
+🏗️  Testing Domain Architecture...
+
+📊 Test Results:
+   Issues: 0
+   Warnings: 2
+
+
+⚠️  WARNINGS:
+   ⚠️ STRIPE_PUBLISHABLE_KEY documented but not found in API code
+   ⚠️ n8n URL not found in documentation
+
+
