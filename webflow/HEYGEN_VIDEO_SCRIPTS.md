@@ -1,10 +1,27 @@
 # 🎬 HeyGen Video Scripts - "Transform Idea into Video"
 
-**Date**: October 31, 2025  
+**Date**: October 31, 2025 (Updated: December 2025)  
 **Tool**: HeyGen "Transform Idea into a Compelling Video"  
 **Avatar**: Use @shai or professional business avatar  
 **Media**: Add Rensto logo at appropriate moments  
 **Duration Options**: 15s, 30s, 60s, 2min, 3min  
+
+---
+
+## 🚀 **IMPORTANT UPDATE (December 2025)**
+
+**HeyGen now offers automated video generation!** 
+
+✅ **NEW**: Use **HeyGen Video Agent** to generate complete videos from comprehensive prompts  
+✅ **NEW**: Automatically handles backgrounds, graphics, animations, logo placement  
+✅ **NEW**: Brand Shuffle automatically applies brand colors/fonts  
+✅ **NEW**: 80% time reduction (10-15 min vs 2-3 hours)
+
+**👉 See updated guide**: `/docs/website/HEYGEN_2026_AUTOMATED_VIDEO_GUIDE.md`
+
+**This file contains original scripts** - Use them as reference or convert to optimized prompts using the new guide above.
+
+---  
 
 **Key Messages**:
 - Everyone else is using agents. You're still doing it manually.
