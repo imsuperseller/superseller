@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Testimonial {
@@ -12,35 +12,56 @@ interface Testimonial {
     result: string;
 }
 
+// Fallback testimonials (same as API fallback)
+const FALLBACK_TESTIMONIALS: Testimonial[] = [
+    {
+        quote: "Rensto transformed our lead management process. What used to take 3 hours daily now happens automatically in minutes.",
+        author: "Michael Chen",
+        role: "Operations Director",
+        company: "Premier HVAC Services",
+        rating: 5,
+        result: "Saved 15hrs/week"
+    },
+    {
+        quote: "The custom Voice AI agent handles our appointment scheduling flawlessly. Our booking rate increased by 40% in the first month.",
+        author: "Sarah Martinez",
+        role: "Practice Manager",
+        company: "Wellness Dental Group",
+        rating: 5,
+        result: "+40% bookings"
+    },
+    {
+        quote: "Best investment we've made. The automation system paid for itself in 6 weeks and continues to save us thousands monthly.",
+        author: "David Thompson",
+        role: "CEO",
+        company: "Thompson Insurance Agency",
+        rating: 5,
+        result: "6-week ROI"
+    }
+];
+
 export function TestimonialSection() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK_TESTIMONIALS);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const testimonials: Testimonial[] = [
-        {
-            quote: "Rensto transformed our lead management process. What used to take 3 hours daily now happens automatically in minutes.",
-            author: "Michael Chen",
-            role: "Operations Director",
-            company: "Premier HVAC Services",
-            rating: 5,
-            result: "Saved 15hrs/week"
-        },
-        {
-            quote: "The custom Voice AI agent handles our appointment scheduling flawlessly. Our booking rate increased by 40% in the first month.",
-            author: "Sarah Martinez",
-            role: "Practice Manager",
-            company: "Wellness Dental Group",
-            rating: 5,
-            result: "+40% bookings"
-        },
-        {
-            quote: "Best investment we've made. The automation system paid for itself in 6 weeks and continues to save us thousands monthly.",
-            author: "David Thompson",
-            role: "CEO",
-            company: "Thompson Insurance Agency",
-            rating: 5,
-            result: "6-week ROI"
-        }
-    ];
+    useEffect(() => {
+        // Fetch testimonials from API
+        fetch('/api/testimonials')
+            .then(res => res.json())
+            .then(data => {
+                if (data.testimonials && data.testimonials.length > 0) {
+                    setTestimonials(data.testimonials);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching testimonials:', error);
+                // Keep fallback testimonials on error
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
     const nextTestimonial = () => {
         setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -51,6 +72,18 @@ export function TestimonialSection() {
     };
 
     const current = testimonials[currentIndex];
+
+    if (isLoading) {
+        return (
+            <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
+                <div className="container mx-auto max-w-5xl text-center">
+                    <div className="text-xl" style={{ color: 'var(--rensto-text-secondary)' }}>
+                        Loading testimonials...
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>

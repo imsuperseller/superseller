@@ -25,6 +25,7 @@ import { TrustBadges } from '@/components/TrustBadges';
 import { TestimonialSection } from '@/components/TestimonialSection';
 import { useParallax } from '@/hooks/useScrollAnimation';
 import { Footer } from '@/components/Footer';
+import { VideoSection } from '@/components/VideoSection';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -307,7 +308,7 @@ export default function CustomSolutionsPage() {
                 backgroundClip: 'text'
               }}
             >
-              Free Voice AI Consultation
+              Voice AI Consultation
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
               Get a personalized automation plan for your business. Our AI consultant will analyze your needs
@@ -336,10 +337,24 @@ export default function CustomSolutionsPage() {
                 <Target className="w-5 h-5" />
                 <span className="font-semibold">Tailored Plan</span>
               </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2"
+                style={{
+                  borderColor: 'var(--rensto-primary)',
+                  color: 'var(--rensto-primary)',
+                  background: 'transparent'
+                }}
+              >
+                <Zap className="w-5 h-5" />
+                <span className="font-semibold">AI-Powered</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Video Section */}
+      <VideoSection />
 
       {/* Trust Badges */}
       <TrustBadges />
@@ -685,7 +700,7 @@ export default function CustomSolutionsPage() {
                 Maintenance & Support
               </h3>
               <p style={{ color: 'var(--rensto-text-secondary)' }}>
-                Optional ongoing maintenance plans available to keep your automation running smoothly and up-to-date.
+                Maintenance plans available to keep your automation running smoothly.
               </p>
             </div>
           </div>
