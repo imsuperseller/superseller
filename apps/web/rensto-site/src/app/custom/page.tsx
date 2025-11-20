@@ -21,6 +21,8 @@ import { TypeformButton } from '@/components/TypeformEmbed';
 import { ScorecardModal } from '@/components/ScorecardModal';
 import { ROICalculator } from '@/components/ROICalculator';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { TrustBadges } from '@/components/TrustBadges';
+import { TestimonialSection } from '@/components/TestimonialSection';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -345,6 +347,9 @@ export default function CustomSolutionsPage() {
           </div>
         </div>
       </section>
+
+      {/* Trust Badges */}
+      <TrustBadges />
 
       {/* Consultation Interface */}
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
@@ -685,6 +690,9 @@ export default function CustomSolutionsPage() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials */}
+      <TestimonialSection />
 
       {/* ROI Calculator Section */}
       <ROICalculator />
