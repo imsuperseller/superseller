@@ -23,6 +23,7 @@ import { ROICalculator } from '@/components/ROICalculator';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { TrustBadges } from '@/components/TrustBadges';
 import { TestimonialSection } from '@/components/TestimonialSection';
+import { useParallax } from '@/hooks/useScrollAnimation';
 
 export default function CustomSolutionsPage() {
   const [isListening, setIsListening] = useState(false);
@@ -40,6 +41,7 @@ export default function CustomSolutionsPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const { trackEvent } = useAnalytics();
+  const parallaxOffset = useParallax(0.3);
 
   const consultationSteps = [
     {
@@ -287,9 +289,10 @@ export default function CustomSolutionsPage() {
       {/* Hero Section */}
       <section className="py-20 px-4 relative overflow-hidden">
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-10 transition-transform duration-100"
           style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.3) 0%, transparent 70%)'
+            background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.3) 0%, transparent 70%)',
+            transform: `translateY(${parallaxOffset}px)`
           }}
         />
         <div className="container mx-auto text-center relative z-10">
@@ -355,11 +358,13 @@ export default function CustomSolutionsPage() {
       <section className="py-16 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
         <div className="container mx-auto max-w-4xl">
           <div
-            className="rounded-2xl border-2 p-8"
+            className="rounded-2xl border-2 p-8 transition-all duration-300 hover:border-opacity-50"
             style={{
-              background: 'var(--rensto-bg-card)',
+              background: 'rgba(17, 13, 40, 0.7)',
               borderColor: 'rgba(30, 174, 247, 0.3)',
-              boxShadow: 'var(--rensto-glow-secondary)'
+              boxShadow: '0 8px 32px 0 rgba(30, 174, 247, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)'
             }}
           >
             {consultationStep < consultationSteps.length ? (
@@ -623,11 +628,13 @@ export default function CustomSolutionsPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div
-              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              className="text-center rounded-xl p-6 border-2 transition-all duration-300 hover:-translate-y-2 hover:border-opacity-60 hover:shadow-2xl"
               style={{
-                background: 'var(--rensto-bg-card)',
+                background: 'rgba(17, 13, 40, 0.6)',
                 borderColor: 'rgba(30, 174, 247, 0.3)',
-                boxShadow: 'var(--rensto-glow-secondary)'
+                boxShadow: '0 8px 32px 0 rgba(30, 174, 247, 0.1)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)'
               }}
             >
               <div
@@ -645,11 +652,13 @@ export default function CustomSolutionsPage() {
             </div>
 
             <div
-              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              className="text-center rounded-xl p-6 border-2 transition-all duration-300 hover:-translate-y-2 hover:border-opacity-60 hover:shadow-2xl"
               style={{
-                background: 'var(--rensto-bg-card)',
+                background: 'rgba(17, 13, 40, 0.6)',
                 borderColor: 'rgba(254, 61, 81, 0.3)',
-                boxShadow: 'var(--rensto-glow-primary)'
+                boxShadow: '0 8px 32px 0 rgba(254, 61, 81, 0.1)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)'
               }}
             >
               <div
@@ -667,11 +676,13 @@ export default function CustomSolutionsPage() {
             </div>
 
             <div
-              className="text-center rounded-xl p-6 border-2 transition-all hover:-translate-y-1"
+              className="text-center rounded-xl p-6 border-2 transition-all duration-300 hover:-translate-y-2 hover:border-opacity-60 hover:shadow-2xl"
               style={{
-                background: 'var(--rensto-bg-card)',
+                background: 'rgba(17, 13, 40, 0.6)',
                 borderColor: 'rgba(95, 251, 253, 0.3)',
-                boxShadow: 'var(--rensto-glow-accent)'
+                boxShadow: '0 8px 32px 0 rgba(95, 251, 253, 0.1)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)'
               }}
             >
               <div
