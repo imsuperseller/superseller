@@ -14,10 +14,18 @@ function getOpenAI(): OpenAI {
 
 export async function POST(request: NextRequest) {
   try {
-    const { audioBlob, step, sessionId } = await request.json();
+    // Parse FormData instead of JSON
+    const formData = await request.formData();
+    const audioFile = formData.get('audio') as File | null;
+    const step = formData.get('step') as string;
+    const sessionId = formData.get('sessionId') as string;
+
+    if (!audioFile) {
+      throw new Error('No audio file provided');
+    }
 
     // Step 1: Transcribe audio using OpenAI Whisper
-    const transcription = await transcribeAudio(audioBlob);
+    const transcription = await transcribeAudio(audioFile);
 
     // Step 2: Generate AI response using OpenAI GPT
     const aiResponse = await generateAIResponse(transcription, step);
@@ -49,15 +57,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function transcribeAudio(audioBlob: string) {
+async function transcribeAudio(audioFile: File) {
   try {
-    // Convert base64 audio to buffer
-    const audioBuffer = Buffer.from(audioBlob, 'base64');
-
-    // Create a File object for OpenAI Whisper
-    const audioFile = new File([audioBuffer], 'audio.webm', { type: 'audio/webm' });
-
-    // Transcribe using OpenAI Whisper
+    // Transcribe using OpenAI Whisper - audioFile is already a File object from FormData
     const openai = getOpenAI();
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
@@ -77,11 +79,11 @@ async function transcribeAudio(audioBlob: string) {
 async function generateAIResponse(transcription: string, step: string) {
   try {
     const stepPrompts = {
-      'business-discovery': 'The user is describing their business. Acknowledge their business and ask for more details about their specific operations.',
-      'challenge-identification': 'The user is describing their operational challenges. Acknowledge their pain points and ask for specific examples.',
-      'goal-definition': 'The user is describing their automation goals. Acknowledge their goals and ask about their desired outcomes.',
-      'budget-assessment': 'The user is discussing their budget. Acknowledge their budget range and ask about their investment priorities.',
-      'timeline-planning': 'The user is discussing their timeline. Acknowledge their timeline and ask about their urgency and priorities.'
+      'business-type': 'The user is describing their business. Acknowledge their business and ask for more details about their specific operations.',
+      'challenges': 'The user is describing their operational challenges. Acknowledge their pain points and ask for specific examples.',
+      'goals': 'The user is describing their automation goals. Acknowledge their goals and ask about their desired outcomes.',
+      'budget': 'The user is discussing their budget. Acknowledge their budget range and ask about their investment priorities.',
+      'timeline': 'The user is discussing their timeline. Acknowledge their timeline and ask about their urgency and priorities.'
     };
 
     const openai = getOpenAI();
@@ -177,7 +179,7 @@ async function saveConsultationData(sessionId: string, step: string, transcripti
 }
 
 function updateConsultationProgress(step: string) {
-  const steps = ['business-discovery', 'challenge-identification', 'goal-definition', 'budget-assessment', 'timeline-planning'];
+  const steps = ['business-type', 'challenges', 'goals', 'budget', 'timeline'];
   const currentIndex = steps.indexOf(step);
   const progress = ((currentIndex + 1) / steps.length) * 100;
 
@@ -190,7 +192,7 @@ function updateConsultationProgress(step: string) {
 }
 
 function getNextStep(currentStep: string) {
-  const steps = ['business-discovery', 'challenge-identification', 'goal-definition', 'budget-assessment', 'timeline-planning'];
+  const steps = ['business-type', 'challenges', 'goals', 'budget', 'timeline'];
   const currentIndex = steps.indexOf(currentStep);
 
   if (currentIndex < steps.length - 1) {
