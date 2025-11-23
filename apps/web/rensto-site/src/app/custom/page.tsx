@@ -391,14 +391,14 @@ export default function CustomSolutionsPage() {
               </div>
 
               <h2 className="text-3xl font-bold text-white mb-4">
-                Architecting Your Empire...
+                Calculating ROI Potential...
               </h2>
 
               <p className="text-slate-400 mb-2">
-                Our AI is generating your cinematic trailer.
+                Analyzing 47 optimization vectors.
               </p>
               <p className="text-slate-500 text-sm">
-                This may take 30-60 seconds.
+                System compiling your results.
               </p>
             </div>
           </div>
@@ -412,7 +412,7 @@ export default function CustomSolutionsPage() {
                 <CheckCircle className="w-4 h-4" />
                 <span className="text-sm font-mono">SYSTEM ONLINE</span>
               </div>
-              <h2 className="text-4xl font-bold text-white">Your Empire Awaits.</h2>
+              <h2 className="text-4xl font-bold text-white">The Revelation.</h2>
             </div>
 
             <div className="relative aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group cursor-pointer">
@@ -441,8 +441,8 @@ export default function CustomSolutionsPage() {
                     <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                       <Play className="w-8 h-8 text-white fill-current" />
                     </div>
-                    <p className="text-slate-400 mb-2">Video Generation Queued</p>
-                    <p className="text-slate-500 text-sm">Check back soon or we&apos;ll email you the link</p>
+                    <p className="text-slate-400 mb-2">Processing Complete</p>
+                    <p className="text-slate-500 text-sm">Your analysis will be delivered via email</p>
                   </div>
                 </div>
               )}
