@@ -191,7 +191,7 @@ export default function CustomSolutionsPage() {
 
   const generateVideo = async () => {
     try {
-      const webhookUrl = 'http://173.254.201.134:5678/webhook/cinematic-pitch';
+      const webhookUrl = '/api/cinematic-pitch';
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
