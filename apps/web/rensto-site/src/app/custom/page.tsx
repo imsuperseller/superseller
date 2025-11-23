@@ -29,6 +29,7 @@ export default function CustomSolutionsPage() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [emailInput, setEmailInput] = useState('');
 
   // Voice Logic State
   const [isRecording, setIsRecording] = useState(false);
@@ -39,15 +40,24 @@ export default function CustomSolutionsPage() {
   const questions = [
     {
       id: 'bottleneck',
-      apiStep: 'challenges', // Map to existing API step
+      apiStep: 'challenges',
       text: "SYSTEM ALERT: Revenue bottleneck detected. Identify the source.",
-      options: ["Lead Quality", "Follow-up Speed", "Manual Data Entry"]
+      options: ["Lead Quality", "Follow-up Speed", "Manual Data Entry"],
+      type: 'choice' as const
     },
     {
       id: 'budget',
-      apiStep: 'budget', // Map to existing API step
+      apiStep: 'budget',
       text: "CONFIGURATION REQUIRED: Select Budget Clearance Level.",
-      options: ["<$1k/mo", "$1k-$5k/mo", "$5k+/mo"]
+      options: ["<$1k/mo", "$1k-$5k/mo", "$5k+/mo"],
+      type: 'choice' as const
+    },
+    {
+      id: 'email',
+      apiStep: 'email',
+      text: "SECURE CHANNEL REQUIRED: Enter delivery address.",
+      options: [],
+      type: 'email' as const
     }
   ];
 
@@ -343,41 +353,68 @@ export default function CustomSolutionsPage() {
                 Clarification needed to finalize architecture.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {questions[interruptionStep].options.map((option) => (
+              {questions[interruptionStep].type === 'choice' ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {questions[interruptionStep].options.map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => handleInterruptionAnswer(option)}
+                        className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-blue-500/50 transition-all text-sm font-medium"
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-white/10"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-slate-900 px-2 text-slate-500">Or use voice override</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={toggleVoice}
+                      className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all ${isListening
+                        ? 'bg-red-500 text-white animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.5)]'
+                        : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                        }`}
+                    >
+                      {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                      <span className="font-medium">
+                        {isListening ? "Listening..." : "Tap to Speak"}
+                      </span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="max-w-md mx-auto">
+                  <input
+                    type="email"
+                    required
+                    placeholder="you@company.com"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && emailInput) {
+                        handleInterruptionAnswer(emailInput);
+                      }
+                    }}
+                    className="w-full px-6 py-4 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600 mb-4"
+                  />
                   <button
-                    key={option}
-                    onClick={() => handleInterruptionAnswer(option)}
-                    className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-blue-500/50 transition-all text-sm font-medium"
+                    onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
+                    disabled={!emailInput}
+                    className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all"
                   >
-                    {option}
+                    Proceed to Analysis →
                   </button>
-                ))}
-              </div>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/10"></div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-slate-900 px-2 text-slate-500">Or use voice override</span>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={toggleVoice}
-                  className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all ${isListening
-                    ? 'bg-red-500 text-white animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.5)]'
-                    : 'bg-white/5 border border-white/10 hover:bg-white/10'
-                    }`}
-                >
-                  {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                  <span className="font-medium">
-                    {isListening ? "Listening..." : "Tap to Speak"}
-                  </span>
-                </button>
-              </div>
+              )}
             </div>
           </div>
         )}
