@@ -18,7 +18,7 @@ import {
 import { Footer } from '@/components/Footer';
 
 // Types for the flow state
-type FlowState = 'IDLE' | 'BOOTING' | 'INTERRUPTION' | 'REVEAL';
+type FlowState = 'IDLE' | 'BOOTING' | 'INTERRUPTION' | 'REVEAL' | 'GENERATING';
 
 export default function CustomSolutionsPage() {
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
@@ -26,6 +26,9 @@ export default function CustomSolutionsPage() {
   const [bootLogs, setBootLogs] = useState<string[]>([]);
   const [interruptionStep, setInterruptionStep] = useState(0);
   const [isListening, setIsListening] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
 
   // Voice Logic State
   const [isRecording, setIsRecording] = useState(false);
@@ -162,13 +165,45 @@ export default function CustomSolutionsPage() {
     }
   };
 
-  const handleInterruptionAnswer = (answer: string) => {
-    // In a real app, save this answer
-    console.log("Answered:", answer);
+  const handleInterruptionAnswer = async (answer: string) => {
+    const currentQuestion = questions[interruptionStep];
+    setAnswers(prev => ({ ...prev, [currentQuestion.id]: answer }));
+    console.log("Answered:", currentQuestion.id, answer);
 
     if (interruptionStep < questions.length - 1) {
       setInterruptionStep(prev => prev + 1);
     } else {
+      // All questions answered - trigger video generation
+      setFlowState('GENERATING');
+      await generateVideo();
+    }
+  };
+
+  const generateVideo = async () => {
+    try {
+      // TODO: Replace with actual n8n workflow webhook URL
+      const webhookUrl = 'https://n8n.rensto.com/webhook/cinematic-pitch';
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url,
+          answers,
+          timestamp: Date.now()
+        })
+      });
+
+      if (!response.ok) throw new Error('Video generation failed');
+
+      const data = await response.json();
+
+      // For now, use a placeholder since the workflow isn't fully connected
+      // setVideoUrl(data.videoUrl);
+      setFlowState('REVEAL');
+    } catch (error) {
+      console.error('Video generation error:', error);
+      setGenerationError('Failed to generate video. Please try again.');
       setFlowState('REVEAL');
     }
   };
@@ -347,6 +382,28 @@ export default function CustomSolutionsPage() {
           </div>
         )}
 
+        {/* STATE: GENERATING (Processing) */}
+        {flowState === 'GENERATING' && (
+          <div className="w-full max-w-3xl z-10">
+            <div className="bg-slate-900/90 border border-purple-500/50 rounded-2xl p-12 shadow-[0_0_100px_rgba(168,85,247,0.2)] backdrop-blur-xl text-center">
+              <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-6 animate-spin">
+                <Zap className="w-10 h-10 text-purple-500" />
+              </div>
+
+              <h2 className="text-3xl font-bold text-white mb-4">
+                Architecting Your Empire...
+              </h2>
+
+              <p className="text-slate-400 mb-2">
+                Our AI is generating your cinematic trailer.
+              </p>
+              <p className="text-slate-500 text-sm">
+                This may take 30-60 seconds.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* STATE: REVEAL (Video Player) */}
         {flowState === 'REVEAL' && (
           <div className="w-full max-w-5xl z-10 animate-in zoom-in-90 duration-1000">
@@ -359,15 +416,36 @@ export default function CustomSolutionsPage() {
             </div>
 
             <div className="relative aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group cursor-pointer">
-              {/* Placeholder for Video Player */}
-              <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
-                <div className="text-center">
-                  <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <Play className="w-8 h-8 text-white fill-current" />
+              {generationError ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+                  <div className="text-center p-8">
+                    <p className="text-red-400 mb-4">{generationError}</p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-medium"
+                    >
+                      Try Again
+                    </button>
                   </div>
-                  <p className="text-slate-400">Play Generated Trailer</p>
                 </div>
-              </div>
+              ) : videoUrl ? (
+                <video
+                  controls
+                  autoPlay
+                  className="w-full h-full"
+                  src={videoUrl}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+                  <div className="text-center">
+                    <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Play className="w-8 h-8 text-white fill-current" />
+                    </div>
+                    <p className="text-slate-400 mb-2">Video Generation Queued</p>
+                    <p className="text-slate-500 text-sm">Check back soon or we&apos;ll email you the link</p>
+                  </div>
+                </div>
+              )}
 
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
