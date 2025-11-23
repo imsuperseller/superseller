@@ -155,6 +155,9 @@ export default function CustomSolutionsPage() {
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (url) {
+      // Auto-add https:// if no protocol is present
+      const formattedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
+      setUrl(formattedUrl);
       setFlowState('BOOTING');
     }
   };
@@ -242,9 +245,9 @@ export default function CustomSolutionsPage() {
                 <Globe className="w-5 h-5 text-slate-500" />
               </div>
               <input
-                type="url"
+                type="text"
                 required
-                placeholder="https://your-business.com"
+                placeholder="example.com or https://example.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="w-full pl-12 pr-4 py-5 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600"
