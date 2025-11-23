@@ -1,0 +1,169 @@
+{
+    "name": "Cinematic Ego-Pitch Engine (POV Edition)",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "cinematic-pitch",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "webhook-trigger",
+            "name": "Webhook Input (URL)"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Mocking the URL Scraper & Research Phase\n// In production, this would use HTTP Request + Cheerio + LLM to extract data\n\nconst url = $input.all()[0].json.body.url || 'hellskitchen.com';\n\n// Simulate delay for \"Hacking\" effect\n// await new Promise(r => setTimeout(r, 2000));\n\nreturn {\n  prospect: {\n    name: \"Gordon Ramsay\",\n    role: \"Head Chef & Owner\",\n    company: \"Hell's Kitchen\",\n    website: url,\n    niche: \"Fine Dining\",\n    pain_points: [\"Staff Inconsistency\", \"Reservation Chaos\"],\n    socials: { twitter: \"@GordonRamsay\" }\n  },\n  business: {\n    name: \"Rensto\",\n    offer: \"Automated Kitchen Ops\",\n    pricing_tiers: [{ name: \"Pro\", price: \"$5k/mo\" }],\n    case_studies: [{ client_name: \"Nobu\", result: \"30% Higher Margins\" }]\n  }\n};"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                220,
+                0
+            ],
+            "id": "mock-research",
+            "name": "Simulate Research"
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "You are the Cinematic Ego-Pitch Engine (POV Mode).\n\nYour goal: Generate a script and visual prompts for a video where the PROSPECT is the HERO (First-Person POV).\n\nTemplates:\n1. \"Temple\" (God Mode): Prospect looks down from throne. Robots serve them. @shai-lfc presents solution.\n2. \"Shark Tank\" (Shark Mode): Prospect sits in shark chair. Rejects bad pitches. @shai-lfc pitches the unicorn deal.\n\nInput: Prospect Data JSON.\n\nTask:\n1. Pick the best template based on niche (e.g., High status/Ego -> Temple, Business/Money -> Shark Tank).\n2. Generate the Voiceover Script (HeyGen).\n3. Generate 5 Sora Prompts (Strictly POV).\n\nOutput JSON:\n{\n  \"template\": \"temple\" | \"shark_tank\",\n  \"script\": \"...\",\n  \"scenes\": [\n    { \"duration\": 5, \"prompt\": \"First-person POV...\" }\n  ]\n}"
+                        },
+                        {
+                            "role": "user",
+                            "content": "Prospect Data: {{ JSON.stringify($json) }}"
+                        }
+                    ]
+                },
+                "jsonOutput": true
+            },
+            "type": "@n8n/n8n-nodes-langchain.chainLlm",
+            "typeVersion": 1,
+            "position": [
+                440,
+                0
+            ],
+            "id": "llm-generate-pov",
+            "name": "Generate POV Script"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/v1/videos/generations",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer cb711f74a221be35a20df8e26e722e04"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "sora-2"
+                        },
+                        {
+                            "name": "prompt",
+                            "value": "={{ $json.scenes[0].prompt }} (Cinematic POV)"
+                        },
+                        {
+                            "name": "text_input",
+                            "value": "={{ $json.script }}"
+                        },
+                        {
+                            "name": "aspect_ratio",
+                            "value": "16:9"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                660,
+                0
+            ],
+            "id": "kie-ai-generate",
+            "name": "Generate Video (Kie.ai / Sora 2)"
+        },
+        {
+            "parameters": {
+                "content": "## Video Generating...\n\n**Task ID:** {{ $json.task_id }}\n**Status:** Processing\n\n### Next Step\nThe engine is polling for the final video URL. Once complete, it will be delivered to the frontend."
+            },
+            "type": "n8n-nodes-base.markdown",
+            "typeVersion": 1,
+            "position": [
+                880,
+                0
+            ],
+            "id": "final-output",
+            "name": "Final Output"
+        }
+    ],
+    "connections": {
+        "Webhook Input (URL)": {
+            "main": [
+                [
+                    {
+                        "node": "Simulate Research",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Simulate Research": {
+            "main": [
+                [
+                    {
+                        "node": "Generate POV Script",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate POV Script": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Video (Kling AI)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Video (Kling AI)": {
+            "main": [
+                [
+                    {
+                        "node": "Final Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

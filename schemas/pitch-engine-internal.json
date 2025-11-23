@@ -1,0 +1,89 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Cinematic Ego-Pitch Engine Internal State",
+    "description": "Internal state and derived variables used by the engine during generation.",
+    "type": "object",
+    "properties": {
+        "derived_archetype": {
+            "type": "string",
+            "description": "The classified archetype of the prospect (e.g., 'Restaurant Owner', 'SaaS Founder')."
+        },
+        "selected_template_id": {
+            "type": "string",
+            "enum": [
+                "temple",
+                "shark_tank",
+                "game_show",
+                "movie_trailer",
+                "coronation"
+            ],
+            "description": "The template selected by the logic or forced by config."
+        },
+        "script_mapping": {
+            "type": "object",
+            "description": "Mapping of prospect pains/desires to script sections.",
+            "properties": {
+                "pain_hook": {
+                    "type": "string"
+                },
+                "desire_promise": {
+                    "type": "string"
+                },
+                "solution_reveal": {
+                    "type": "string"
+                },
+                "cta": {
+                    "type": "string"
+                }
+            }
+        },
+        "generated_assets": {
+            "type": "object",
+            "properties": {
+                "voiceover_script": {
+                    "type": "string",
+                    "description": "Final text for HeyGen/TTS."
+                },
+                "sora_prompts": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "scene_index": {
+                                "type": "integer"
+                            },
+                            "prompt_text": {
+                                "type": "string"
+                            },
+                            "duration_seconds": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                },
+                "visual_text_overlays": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Text to appear on screen."
+                    }
+                }
+            }
+        },
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "generation_timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "engine_version": {
+                    "type": "string"
+                },
+                "processing_time_ms": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
