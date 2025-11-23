@@ -191,8 +191,7 @@ export default function CustomSolutionsPage() {
 
   const generateVideo = async () => {
     try {
-      // TODO: Replace with actual n8n workflow webhook URL
-      const webhookUrl = 'https://n8n.rensto.com/webhook/cinematic-pitch';
+      const webhookUrl = 'http://173.254.201.134:5678/webhook/cinematic-pitch';
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
