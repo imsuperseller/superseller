@@ -41,25 +41,60 @@ export default function CustomSolutionsPage() {
   const audioChunksRef = useRef<Blob[]>([]);
 
   // Interruption questions - apiStep matches voice-ai/consultation API
+  // These questions fill the video generation wait time (13+ minutes) with valuable discovery
   const questions = [
     {
-      id: 'bottleneck',
-      apiStep: 'challenges', // matches voice-ai API
-      text: "SYSTEM ALERT: Revenue bottleneck detected. Identify the source.",
-      options: ["Lead Quality", "Follow-up Speed", "Manual Data Entry"],
+      id: 'business-type',
+      apiStep: 'business-type',
+      text: "INITIALIZING PROFILE: What type of business do you run?",
+      options: [],
+      type: 'text' as const,
+      placeholder: "e.g., E-commerce, Agency, Real Estate, Service Business..."
+    },
+    {
+      id: 'challenges',
+      apiStep: 'challenges',
+      text: "DIAGNOSTIC SCAN: What's your biggest operational pain point?",
+      options: [
+        "Manual repetitive tasks eating my time",
+        "Data scattered across multiple tools",
+        "Slow customer response times",
+        "Inefficient workflows causing errors",
+        "Can't scale without hiring more people"
+      ],
+      type: 'choice' as const
+    },
+    {
+      id: 'goals',
+      apiStep: 'goals',
+      text: "OBJECTIVE SET: What would automation help you achieve most?",
+      options: [
+        "Save 10+ hours per week",
+        "Eliminate manual errors",
+        "Scale without proportional cost increase",
+        "Improve customer experience",
+        "Focus on high-value work"
+      ],
       type: 'choice' as const
     },
     {
       id: 'budget',
-      apiStep: 'budget', // matches voice-ai API
-      text: "CONFIGURATION REQUIRED: Select Budget Clearance Level.",
+      apiStep: 'budget',
+      text: "RESOURCE ALLOCATION: What's your automation investment range?",
       options: ["<$1k/mo", "$1k-$5k/mo", "$5k+/mo"],
+      type: 'choice' as const
+    },
+    {
+      id: 'timeline',
+      apiStep: 'timeline',
+      text: "TIMELINE CONFIGURATION: When do you need this implemented?",
+      options: ["ASAP - urgent pain point", "Within 1 month", "Within 3 months", "Exploring options"],
       type: 'choice' as const
     },
     {
       id: 'email',
       apiStep: 'timeline', // maps email collection to timeline step
-      text: "SECURE CHANNEL REQUIRED: Enter delivery address.",
+      text: "SECURE CHANNEL REQUIRED: Enter delivery address for your personalized solution.",
       options: [],
       type: 'email' as const
     }
@@ -576,6 +611,33 @@ export default function CustomSolutionsPage() {
                     </button>
                   </div>
                 </>
+              ) : questions[interruptionStep].type === 'text' ? (
+                <div className="max-w-md mx-auto">
+                  <input
+                    type="text"
+                    required
+                    placeholder={questions[interruptionStep].placeholder || "Enter your answer..."}
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && emailInput) {
+                        handleInterruptionAnswer(emailInput);
+                      }
+                    }}
+                    className="w-full px-6 py-4 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600 mb-4"
+                  />
+                  <button
+                    onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
+                    disabled={!emailInput}
+                    className="w-full px-6 py-4 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all hover:opacity-90"
+                    style={{
+                      background: emailInput ? 'var(--rensto-gradient-primary)' : undefined,
+                      boxShadow: emailInput ? '0 0 20px rgba(254, 61, 81, 0.3)' : undefined
+                    }}
+                  >
+                    Continue →
+                  </button>
+                </div>
               ) : (
                 <div className="max-w-md mx-auto">
                   <input
