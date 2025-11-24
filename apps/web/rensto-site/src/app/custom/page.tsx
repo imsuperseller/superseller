@@ -321,18 +321,25 @@ export default function CustomSolutionsPage() {
         }
       } else if (data.taskId) {
         // Video is processing - start polling
+        console.log('Received taskId from n8n:', data.taskId);
         setVideoGenerating(true);
+        setFlowState('GENERATING');
         pollVideoStatus(data.taskId);
-      } else if (data.state === 'generating') {
+      } else if (data.state === 'generating' || data.state === 'processing') {
         // Workflow returned with generating state - extract taskId and poll
         const taskId = data.taskId || (data.data?.taskId);
+        console.log('Extracted taskId from generating state:', taskId);
         if (taskId) {
+          setVideoGenerating(true);
+          setFlowState('GENERATING');
           pollVideoStatus(taskId);
         } else {
+          console.error('No taskId found in response:', data);
           throw new Error('No task ID received for polling');
         }
       } else {
-        // Unknown state - wait and check later
+        // Unknown state - log and wait
+        console.warn('Unknown response state:', data);
         setVideoGenerating(false);
       }
     } catch (error) {
@@ -344,6 +351,7 @@ export default function CustomSolutionsPage() {
   };
 
   const pollVideoStatus = async (taskId: string) => {
+    console.log('Starting video status polling for taskId:', taskId);
     const maxAttempts = 60; // 10 minutes max (60 * 10s) - increased for medium/high quality videos
     const delayMs = 10000; // 10 seconds
     const startTime = Date.now();
@@ -358,10 +366,16 @@ export default function CustomSolutionsPage() {
       "Almost ready..."
     ];
 
+    // Initialize progress immediately
+    setGenerationProgress(1);
+    setGenerationStatus(statusMessages[0]);
+    setEstimatedTimeRemaining(60);
+
     for (let i = 1; i <= maxAttempts; i++) {
       try {
         // Update progress (0-90%, leave 10% for final processing)
-        const progress = Math.min(90, (i / maxAttempts) * 90);
+        // Start from 1% on first attempt, not 0%
+        const progress = Math.min(90, Math.max(1, (i / maxAttempts) * 90));
         setGenerationProgress(progress);
         
         // Update status message (rotate every 2 attempts)
@@ -375,7 +389,9 @@ export default function CustomSolutionsPage() {
         const estimated = Math.ceil((remainingAttempts * avgTimePerAttempt) / 1000);
         setEstimatedTimeRemaining(estimated);
 
-        // Poll Kie.ai API directly for status
+        console.log(`Polling attempt ${i}/${maxAttempts} for taskId: ${taskId}`);
+
+        // Poll Veo3.1 API directly for status
         const response = await fetch(`/api/cinematic-pitch/status?taskId=${taskId}`);
         
         if (!response.ok) {
