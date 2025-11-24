@@ -313,13 +313,13 @@ export default function CustomSolutionsPage() {
     const delayMs = 10000; // 10 seconds
     const startTime = Date.now();
 
-    // Dynamic status messages that rotate
+    // Dynamic status messages that rotate - mysterious and intriguing
     const statusMessages = [
-      "Rendering cinematic frames...",
-      "Applying AI-powered visual effects...",
-      "Optimizing color grading...",
-      "Syncing audio-visual elements...",
-      "Finalizing production quality...",
+      "Weaving digital threads into vision...",
+      "Translating potential into reality...",
+      "Crafting the narrative arc...",
+      "Illuminating hidden patterns...",
+      "Converging data streams...",
       "Almost ready..."
     ];
 
@@ -363,7 +363,7 @@ export default function CustomSolutionsPage() {
           setVideoUrl(data.videoUrl);
           setVideoGenerating(false);
           setGenerationProgress(100);
-          setGenerationStatus("Video ready!");
+          setGenerationStatus("Vision complete.");
           setEstimatedTimeRemaining(0);
           // If we're past interruption phase, go to reveal
           if (flowState === 'GENERATING' || interruptionStep === questions.length - 1) {
@@ -463,7 +463,7 @@ export default function CustomSolutionsPage() {
             </h1>
 
             <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
-              Enter your website. Our AI will analyze your digital footprint and generate a cinematic trailer of your future empire.
+              Enter your website. Our AI will analyze your digital footprint and reveal a vision of your future empire.
             </p>
 
             <form onSubmit={handleUrlSubmit} className="relative max-w-lg mx-auto">
@@ -619,7 +619,7 @@ export default function CustomSolutionsPage() {
                 </div>
 
                 <h2 className="text-3xl font-bold text-white mb-2">
-                  {generationStatus || "Generating Your Cinematic Pitch..."}
+                  {generationStatus || "Assembling the vision..."}
                 </h2>
 
                 {/* Progress Bar */}
@@ -661,7 +661,7 @@ export default function CustomSolutionsPage() {
                 </div>
                 
                 <p className="text-center text-slate-400 text-sm mt-4">
-                  Your cinematic pitch is being rendered...
+                  The vision takes shape...
                 </p>
               </div>
 
