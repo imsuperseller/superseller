@@ -324,6 +324,10 @@ export default function CustomSolutionsPage() {
         console.log('Received taskId from n8n:', data.taskId);
         setVideoGenerating(true);
         setFlowState('GENERATING');
+        // Initialize progress immediately
+        setGenerationProgress(1);
+        setGenerationStatus("Weaving digital threads into vision...");
+        setEstimatedTimeRemaining(60);
         pollVideoStatus(data.taskId);
       } else if (data.state === 'generating' || data.state === 'processing') {
         // Workflow returned with generating state - extract taskId and poll
@@ -332,6 +336,10 @@ export default function CustomSolutionsPage() {
         if (taskId) {
           setVideoGenerating(true);
           setFlowState('GENERATING');
+          // Initialize progress immediately
+          setGenerationProgress(1);
+          setGenerationStatus("Weaving digital threads into vision...");
+          setEstimatedTimeRemaining(60);
           pollVideoStatus(taskId);
         } else {
           console.error('No taskId found in response:', data);
@@ -340,6 +348,7 @@ export default function CustomSolutionsPage() {
       } else {
         // Unknown state - log and wait
         console.warn('Unknown response state:', data);
+        console.warn('Full response:', JSON.stringify(data, null, 2));
         setVideoGenerating(false);
       }
     } catch (error) {
