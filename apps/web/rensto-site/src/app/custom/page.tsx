@@ -31,6 +31,9 @@ export default function CustomSolutionsPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [emailInput, setEmailInput] = useState('');
   const [videoGenerating, setVideoGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationStatus, setGenerationStatus] = useState('');
+  const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number | null>(null);
 
   // Voice Logic State
   const [isRecording, setIsRecording] = useState(false);
@@ -308,9 +311,35 @@ export default function CustomSolutionsPage() {
   const pollVideoStatus = async (taskId: string) => {
     const maxAttempts = 30; // 5 minutes max (30 * 10s)
     const delayMs = 10000; // 10 seconds
+    const startTime = Date.now();
+
+    // Dynamic status messages that rotate
+    const statusMessages = [
+      "Rendering cinematic frames...",
+      "Applying AI-powered visual effects...",
+      "Optimizing color grading...",
+      "Syncing audio-visual elements...",
+      "Finalizing production quality...",
+      "Almost ready..."
+    ];
 
     for (let i = 1; i <= maxAttempts; i++) {
       try {
+        // Update progress (0-90%, leave 10% for final processing)
+        const progress = Math.min(90, (i / maxAttempts) * 90);
+        setGenerationProgress(progress);
+        
+        // Update status message (rotate every 2 attempts)
+        const statusIndex = Math.floor((i - 1) / 2) % statusMessages.length;
+        setGenerationStatus(statusMessages[statusIndex]);
+        
+        // Calculate estimated time remaining
+        const elapsed = Date.now() - startTime;
+        const avgTimePerAttempt = elapsed / i;
+        const remainingAttempts = maxAttempts - i;
+        const estimated = Math.ceil((remainingAttempts * avgTimePerAttempt) / 1000);
+        setEstimatedTimeRemaining(estimated);
+
         // Poll Kie.ai API directly for status
         const response = await fetch(`/api/cinematic-pitch/status?taskId=${taskId}`);
         
@@ -333,9 +362,12 @@ export default function CustomSolutionsPage() {
         if (data.videoUrl) {
           setVideoUrl(data.videoUrl);
           setVideoGenerating(false);
+          setGenerationProgress(100);
+          setGenerationStatus("Video ready!");
+          setEstimatedTimeRemaining(0);
           // If we're past interruption phase, go to reveal
           if (flowState === 'GENERATING' || interruptionStep === questions.length - 1) {
-            setFlowState('REVEAL');
+            setTimeout(() => setFlowState('REVEAL'), 500);
           }
           return;
         }
@@ -578,22 +610,74 @@ export default function CustomSolutionsPage() {
 
         {/* STATE: GENERATING (Processing) */}
         {flowState === 'GENERATING' && (
-          <div className="w-full max-w-3xl z-10">
-            <div className="bg-slate-900/90 border border-purple-500/50 rounded-2xl p-12 shadow-[0_0_100px_rgba(168,85,247,0.2)] backdrop-blur-xl text-center">
-              <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-6 animate-spin">
-                <Zap className="w-10 h-10 text-purple-500" />
+          <div className="w-full max-w-4xl z-10">
+            <div className="bg-slate-900/90 border border-purple-500/50 rounded-2xl p-12 shadow-[0_0_100px_rgba(168,85,247,0.2)] backdrop-blur-xl">
+              {/* Progress Section */}
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-6 animate-pulse">
+                  <Zap className="w-10 h-10 text-purple-500" />
+                </div>
+
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  {generationStatus || "Generating Your Cinematic Pitch..."}
+                </h2>
+
+                {/* Progress Bar */}
+                <div className="w-full max-w-md mx-auto mb-4">
+                  <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${generationProgress}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-2 text-xs text-slate-400">
+                    <span>{Math.round(generationProgress)}% Complete</span>
+                    {estimatedTimeRemaining !== null && estimatedTimeRemaining > 0 && (
+                      <span>~{estimatedTimeRemaining}s remaining</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Calculating ROI Potential...
-              </h2>
+              {/* Video Preview Skeleton */}
+              <div className="bg-black/50 rounded-xl p-6 mb-6 border border-purple-500/20">
+                <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg flex items-center justify-center relative overflow-hidden">
+                  {/* Animated background pattern */}
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.3),transparent_50%)] animate-pulse" />
+                  </div>
+                  
+                  {/* Play icon preview */}
+                  <div className="relative z-10">
+                    <div className="w-16 h-16 rounded-full bg-purple-500/30 flex items-center justify-center animate-pulse">
+                      <Play className="w-8 h-8 text-purple-400" fill="currentColor" />
+                    </div>
+                  </div>
+                  
+                  {/* Corner badge */}
+                  <div className="absolute top-4 right-4 bg-purple-500/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-purple-300 border border-purple-500/30">
+                    AI Generated
+                  </div>
+                </div>
+                
+                <p className="text-center text-slate-400 text-sm mt-4">
+                  Your cinematic pitch is being rendered...
+                </p>
+              </div>
 
-              <p className="text-slate-400 mb-2">
-                Analyzing 47 optimization vectors.
-              </p>
-              <p className="text-slate-500 text-sm">
-                System compiling your results.
-              </p>
+              {/* Value-Added Tips (Rotating) */}
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Zap className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm text-slate-300">
+                      <strong className="text-blue-400">Pro Tip:</strong> While you wait, our AI is analyzing your business model, identifying optimization opportunities, and crafting a personalized narrative that highlights your unique value proposition.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
