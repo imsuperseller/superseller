@@ -207,8 +207,10 @@ export default function CustomSolutionsPage() {
 
       const data = await response.json();
 
-      // For now, use a placeholder since the workflow isn't fully connected
-      // setVideoUrl(data.videoUrl);
+      // Set video URL if available
+      if (data.videoUrl) {
+        setVideoUrl(data.videoUrl);
+      }
       setFlowState('REVEAL');
     } catch (error) {
       console.error('Video generation error:', error);
