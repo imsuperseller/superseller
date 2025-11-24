@@ -1,0 +1,417 @@
+{
+  "name": "MKT-MARKETPLACE-001: Workflow Generalizer & Publisher",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "aef7091f-85d4-4b66-8e81-6b35e9f5a2d2",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "workflow_id",
+              "name": "workflow_id",
+              "value": "cJbG8MpomtNrR1Sa",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-workflow-id",
+      "name": "Set Workflow ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://173.254.201.134:5678/api/v1/workflows/{{ $json.workflow_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTE2NzEwfQ.JbIeOnRil3E3_P44LjAWhiY9KRcAHkuuVhJghABz3aQ"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-workflow",
+      "name": "Fetch Workflow from n8n",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        640,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract workflow metadata\nconst workflow = $json;\n\nreturn {\n  json: {\n    original_workflow: JSON.stringify(workflow),\n    workflow_name: workflow.name,\n    workflow_id: workflow.id,\n    nodes_json: JSON.stringify(workflow.nodes),\n    node_count: workflow.nodes ? workflow.nodes.length : 0,\n    is_active: workflow.active || false\n  }\n};"
+      },
+      "id": "extract-metadata",
+      "name": "Extract Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# AI Agent: Workflow Sanitization Expert\n\n## Your Task\n\nAnalyze the following n8n workflow JSON and identify ALL sensitive data that needs to be replaced with template variables.\n\n```json\n{{ $json.nodes_json }}\n```\n\n## What to Find\n\n1. **API Keys**: Any strings that look like API keys, tokens, secrets\n2. **Emails**: Any email addresses\n3. **Phone Numbers**: Any phone numbers in any format\n4. **URLs**: Domain names that are client-specific\n5. **Brand Names**: Company names, client names\n6. **Webhook IDs**: UUIDs used for webhooks\n7. **Credential IDs**: Internal credential references\n\n## Output Format\n\nReturn ONLY a valid JSON array:\n\n```json\n[\n  {\n    \"type\": \"api_key\",\n    \"original_value\": \"sk_live_abc123...\",\n    \"template_variable\": \"{{YOUR_STRIPE_API_KEY}}\",\n    \"location\": \"node: Stripe Payment\",\n    \"explanation\": \"Stripe API key\"\n  }\n]\n```\n\nBe thorough.",
+        "options": {}
+      },
+      "id": "ai-detect-secrets",
+      "name": "AI: Detect Secrets",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.3
+        }
+      },
+      "id": "openai-detect",
+      "name": "OpenAI: Detect Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1200,
+        100
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Apply sanitization\nlet findings = [];\ntry {\n  const output = $json.output || '{}';\n  findings = JSON.parse(output);\n  if (!Array.isArray(findings)) {\n    findings = [];\n  }\n} catch (e) {\n  console.log('Parse error:', e.message);\n  findings = [];\n}\n\nconst workflowStr = $node[\"Extract Metadata\"].json.original_workflow;\nlet sanitized = workflowStr;\nconst replacements = [];\n\nfor (const finding of findings) {\n  if (!finding.original_value) continue;\n  const regex = new RegExp(finding.original_value.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'g');\n  const before = sanitized;\n  sanitized = sanitized.replace(regex, finding.template_variable);\n  \n  if (before !== sanitized) {\n    replacements.push(finding);\n  }\n}\n\nreturn {\n  json: {\n    sanitized_workflow: sanitized,\n    replacements: replacements,\n    replacement_count: replacements.length\n  }\n};"
+      },
+      "id": "apply-sanitization",
+      "name": "Apply Sanitization",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyze workflow complexity\nconst nodeCount = $node[\"Extract Metadata\"].json.node_count;\nconst nodesStr = $node[\"Extract Metadata\"].json.nodes_json || '[]';\nlet nodes = [];\ntry {\n  nodes = JSON.parse(nodesStr);\n} catch (e) {\n  nodes = [];\n}\n\nconst httpNodes = nodes.filter(n => n.type === 'n8n-nodes-base.httpRequest').length;\nconst aiNodes = nodes.filter(n => (n.type || '').includes('langchain') || (n.type || '').includes('anthropic') || (n.type || '').includes('openAi')).length;\nconst conditionalNodes = nodes.filter(n => n.type === 'n8n-nodes-base.if' || n.type === 'n8n-nodes-base.switch').length;\n\nlet score = 1;\nif (nodeCount > 50) score += 4;\nelse if (nodeCount > 30) score += 3;\nelse if (nodeCount > 15) score += 2;\nelse if (nodeCount > 5) score += 1;\n\nscore += Math.min(httpNodes * 0.5, 3);\nscore += Math.min(aiNodes * 0.3, 2);\nscore += Math.min(conditionalNodes * 0.2, 1);\nscore = Math.min(Math.round(score * 10) / 10, 10);\n\nconst buildTime = Math.max(2, Math.round(nodeCount * 0.3 + httpNodes * 0.5 + aiNodes * 1.5));\nconst setupTime = Math.max(15, $node[\"Apply Sanitization\"].json.replacement_count * 3 + 10);\n\nreturn {\n  json: {\n    complexity_score: score,\n    node_count: nodeCount,\n    integration_count: httpNodes,\n    ai_node_count: aiNodes,\n    build_time_hours: buildTime,\n    setup_time_minutes: setupTime,\n    complexity_level: score < 4 ? 'Simple' : score < 7 ? 'Moderate' : 'Complex'\n  }\n};"
+      },
+      "id": "analyze-complexity",
+      "name": "Analyze Complexity",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# AI: Pricing Calculator\n\n## Workflow Details\n\n- **Name**: {{ $node[\"Extract Metadata\"].json.workflow_name }}\n- **Complexity**: {{ $json.complexity_score }}/10 ({{ $json.complexity_level }})\n- **Nodes**: {{ $json.node_count }}\n- **Build Time**: {{ $json.build_time_hours }} hours\n\n## Pricing Formula\n\n1. **DIY Price**: $29 (simple), $49 (moderate), $97 (complex)\n2. **Adjustments**: +$10 per AI node, +$5 per integration\n3. **Full Service**: Build time × $75/hour + 20%\n4. Use psychological pricing ($97, $197, $297, etc.)\n\n## Output ONLY valid JSON:\n\n```json\n{\n  \"diy_price\": 97,\n  \"full_service_price\": 597,\n  \"reasoning\": \"Complex workflow with AI, priced at premium\"\n}\n```",
+        "options": {}
+      },
+      "id": "ai-calculate-pricing",
+      "name": "AI: Calculate Pricing",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1240,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokens": 500,
+          "temperature": 0.7
+        }
+      },
+      "id": "openai-pricing",
+      "name": "OpenAI: Pricing Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1400,
+        700
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# AI: Documentation Generator\n\n## Workflow\n\n{{ $node[\"Extract Metadata\"].json.workflow_name }}\n\n## Variables to Replace\n\n```json\n{{ JSON.stringify($node[\"Apply Sanitization\"].json.replacements) }}\n```\n\n## Create Markdown Documentation\n\n1. **Overview**: What it does (2-3 sentences)\n2. **Prerequisites**: Required accounts/services\n3. **Setup Steps**: Numbered instructions\n4. **Variables Table**: All {{TEMPLATE_VARS}} explained\n5. **Testing**: How to verify it works\n6. **Troubleshooting**: Common issues",
+        "options": {}
+      },
+      "id": "ai-generate-docs",
+      "name": "AI: Generate Docs",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.7
+        }
+      },
+      "id": "openai-docs",
+      "name": "OpenAI: Docs Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1600,
+        100
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://173.254.201.134:3000/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "4fc7e008d7d24fc995475029effc8fa8"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "session",
+              "value": "rensto-support"
+            },
+            {
+              "name": "chatId",
+              "value": "14695885133@c.us"
+            },
+            {
+              "name": "text",
+              "value": "=🚀 *Marketplace Workflow Ready*\n\n*{{ $node[\"Extract Metadata\"].json.workflow_name }}*\n\n📊 *Complexity*: {{ $node[\"Analyze Complexity\"].json.complexity_score }}/10\n📦 *Nodes*: {{ $node[\"Analyze Complexity\"].json.node_count }}\n\n💰 *Pricing*:\n• DIY: ${{ JSON.parse($node[\"AI: Calculate Pricing\"].json.output || '{}').diy_price || 97 }}\n• Full Service: ${{ JSON.parse($node[\"AI: Calculate Pricing\"].json.output || '{}').full_service_price || 597 }}\n\nReply 'APPROVE' to publish."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1640,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Workflow ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Workflow ID": {
+      "main": [
+        [
+          {
+            "node": "Fetch Workflow from n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Workflow from n8n": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata": {
+      "main": [
+        [
+          {
+            "node": "AI: Detect Secrets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze Complexity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Detect Secrets": {
+      "main": [
+        [
+          {
+            "node": "Apply Sanitization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI: Detect Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Detect Secrets",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Sanitization": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Complexity": {
+      "main": [
+        [
+          {
+            "node": "AI: Calculate Pricing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Calculate Pricing": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI: Pricing Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Calculate Pricing",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Docs": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI: Docs Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Generate Docs",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {}
+}

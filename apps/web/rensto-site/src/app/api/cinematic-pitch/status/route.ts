@@ -12,11 +12,11 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Poll Kie.ai API directly for video status
+        // Poll Veo3.1 API directly for video status
         const kieApiKey = process.env.KIE_AI_API_KEY || 'cb711f74a221be35a20df8e26e722e04';
         
         const response = await fetch(
-            `https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${taskId}`,
+            `https://api.kie.ai/api/v1/veo/record-info?taskId=${taskId}`,
             {
                 method: 'GET',
                 headers: {
@@ -27,31 +27,42 @@ export async function GET(request: NextRequest) {
         );
 
         if (!response.ok) {
-            throw new Error(`Kie.ai API failed with status ${response.status}`);
+            // Handle 400 status (1080P still processing)
+            if (response.status === 400) {
+                return NextResponse.json({
+                    state: 'generating',
+                    videoUrl: null,
+                    message: '1080P is processing. It should be ready in 1-2 minutes.',
+                    taskId: taskId,
+                    successFlag: 0
+                });
+            }
+            throw new Error(`Veo3.1 API failed with status ${response.status}`);
         }
 
         const data = await response.json();
 
-        // Extract video URL if ready
+        // Veo3.1 response structure: successFlag (0=generating, 1=success, 2/3=failed)
         let videoUrl = null;
-        if (data.data?.state === 'success' && data.data?.resultJson) {
-            try {
-                const resultJson = JSON.parse(data.data.resultJson);
-                videoUrl = resultJson.resultUrls?.[0] || null;
-            } catch (e) {
-                console.error('Failed to parse resultJson:', e);
-            }
+        let state = 'generating';
+        
+        if (data.data?.successFlag === 1 && data.data?.response?.resultUrls) {
+            videoUrl = data.data.response.resultUrls[0] || null;
+            state = 'success';
+        } else if (data.data?.successFlag === 2 || data.data?.successFlag === 3) {
+            state = 'fail';
         }
 
         return NextResponse.json({
-            state: data.data?.state || 'unknown',
+            state: state,
             videoUrl: videoUrl,
-            message: data.data?.state === 'success' 
+            message: state === 'success' 
                 ? 'Video ready' 
-                : (data.data?.state === 'fail' 
-                    ? data.data?.failMsg || 'Video generation failed' 
+                : (state === 'fail' 
+                    ? data.data?.errorMessage || 'Video generation failed' 
                     : 'Processing...'),
-            taskId: taskId
+            taskId: taskId,
+            successFlag: data.data?.successFlag || 0
         });
     } catch (error) {
         console.error('Status check error:', error);

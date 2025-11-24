@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-11-24T03:46:02.219Z",
+  "workflowId": "eQSCUFw91oXLxtvn",
+  "webhookUrl": "http://173.254.201.134:5678/webhook/976a4187-04c0-458b-b9ba-c7af75ed5de0/waha",
+  "tests": [
+    {
+      "payloadType": "text",
+      "payloadName": "Text Message",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:02.341Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_G42PPJ2VY"
+    },
+    {
+      "payloadType": "image",
+      "payloadName": "Image (No Caption)",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:04.402Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_A7WMSBL12"
+    },
+    {
+      "payloadType": "imageWithCaption",
+      "payloadName": "Image with Caption",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:06.463Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_71A2GXVJF"
+    },
+    {
+      "payloadType": "video",
+      "payloadName": "Video (No Caption)",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:08.515Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_MSYM9J36O"
+    },
+    {
+      "payloadType": "videoWithCaption",
+      "payloadName": "Video with Caption",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:10.573Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_COS7NT1K5"
+    },
+    {
+      "payloadType": "pdf",
+      "payloadName": "PDF (No Caption)",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:12.637Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_QWMKFTHXO"
+    },
+    {
+      "payloadType": "pdfWithCaption",
+      "payloadName": "PDF with Caption (CRITICAL)",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:14.717Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_TUKZ4620Z"
+    },
+    {
+      "payloadType": "voiceNote",
+      "payloadName": "Voice Note",
+      "status": "sent",
+      "statusCode": 200,
+      "response": "firstEntryJson",
+      "timestamp": "2025-11-24T03:46:16.774Z",
+      "messageId": "false_14695885133@c.us_TEST_1763955962219_4RVE0ZL3F"
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "sent": 8,
+    "failed": 0,
+    "pending": 0
+  }
+}

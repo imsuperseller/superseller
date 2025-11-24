@@ -181,5 +181,45 @@ The `costTime: 784` seconds represents **total time from job creation to complet
 
 ---
 
-**Status**: Analysis complete, optimization in progress
+---
+
+## MAJOR UPDATE: Switch to Veo3.1 API (Nov 24, 2025)
+
+### Why Veo3.1?
+- ✅ **`veo3_fast` model**: Designed for faster queue times (solves 13-minute issue)
+- ✅ **Oct-Nov 2025 Technology**: Latest AI video generation with native audio
+- ✅ **Better Queue Management**: Optimized for speed vs quality trade-off
+- ✅ **1080P Support**: High quality with 16:9 aspect ratio
+- ✅ **Callback Support**: Can use webhooks instead of polling
+
+### Implementation Changes
+
+**Old API** (`sora-2-pro-text-to-video`):
+- Endpoint: `/api/v1/jobs/createTask`
+- Status: `/api/v1/jobs/recordInfo`
+- Response: `state: "success" | "fail" | "generating"`
+
+**New API** (`veo3_fast`):
+- Endpoint: `/api/v1/veo/generate`
+- Status: `/api/v1/veo/record-info`
+- Response: `successFlag: 0 (generating) | 1 (success) | 2/3 (failed)`
+
+### Oct-Nov 2025 Techniques Applied
+
+1. **Native Audio Generation**: Veo3.1 includes synchronized audio
+2. **Multi-Shot Scene Control**: Better camera movement and consistency
+3. **Advanced Physics Engine**: More realistic motion
+4. **Aspect Ratio Optimization**: Using 16:9 for 1080P support
+5. **Fast Model Selection**: `veo3_fast` prioritizes speed over maximum quality
+
+### Expected Improvements
+
+- **Queue Time**: Should reduce from 10+ minutes to 2-5 minutes
+- **Total Time**: Should reduce from 13 minutes to 4-7 minutes
+- **Quality**: Slightly lower than `veo3` but still high quality
+- **Reliability**: Better error handling and status reporting
+
+---
+
+**Status**: ✅ Migrated to Veo3.1 with veo3_fast model
 

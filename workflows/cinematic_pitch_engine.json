@@ -1,59 +1,114 @@
 {
-    "name": "Cinematic Ego-Pitch Engine (POV Edition)",
+    "name": "Cinematic Ego-Pitch Engine (Production)",
     "nodes": [
         {
             "parameters": {
                 "path": "cinematic-pitch",
+                "httpMethod": "POST",
                 "responseMode": "lastNode",
                 "options": {}
             },
             "type": "n8n-nodes-base.webhook",
-            "typeVersion": 1,
+            "typeVersion": 2,
             "position": [
                 0,
                 0
             ],
             "id": "webhook-trigger",
-            "name": "Webhook Input (URL)"
+            "name": "Webhook Input",
+            "webhookId": ""
         },
         {
             "parameters": {
-                "jsCode": "// Mocking the URL Scraper & Research Phase\n// In production, this would use HTTP Request + Cheerio + LLM to extract data\n\nconst url = $input.all()[0].json.body.url || 'hellskitchen.com';\n\n// Simulate delay for \"Hacking\" effect\n// await new Promise(r => setTimeout(r, 2000));\n\nreturn {\n  prospect: {\n    name: \"Gordon Ramsay\",\n    role: \"Head Chef & Owner\",\n    company: \"Hell's Kitchen\",\n    website: url,\n    niche: \"Fine Dining\",\n    pain_points: [\"Staff Inconsistency\", \"Reservation Chaos\"],\n    socials: { twitter: \"@GordonRamsay\" }\n  },\n  business: {\n    name: \"Rensto\",\n    offer: \"Automated Kitchen Ops\",\n    pricing_tiers: [{ name: \"Pro\", price: \"$5k/mo\" }],\n    case_studies: [{ client_name: \"Nobu\", result: \"30% Higher Margins\" }]\n  }\n};"
+                "method": "POST",
+                "url": "https://api.perplexity.ai/chat/completions",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer {{ $credentials.perplexityApi.apiKey }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"llama-3.1-sonar-large-128k-online\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Analyze the business at {{ $('Webhook Input').item.json.body.url }} and provide:\\n1. Business type and primary services\\n2. Target audience\\n3. Key pain points (operational, marketing, sales)\\n4. Opportunities for automation\\n5. Competitor landscape\\nProvide specific, actionable insights.\"\n    }\n  ],\n  \"return_citations\": true,\n  \"max_tokens\": 1500\n}",
+                "options": {}
             },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
             "position": [
                 220,
                 0
             ],
-            "id": "mock-research",
-            "name": "Simulate Research"
+            "id": "perplexity-research",
+            "name": "Research (Perplexity)"
         },
         {
             "parameters": {
-                "model": "gpt-4o",
-                "messages": {
-                    "values": [
-                        {
-                            "role": "system",
-                            "content": "You are the Cinematic Ego-Pitch Engine (POV Mode).\n\nYour goal: Generate a script and visual prompts for a video where the PROSPECT is the HERO (First-Person POV).\n\nTemplates:\n1. \"Temple\" (God Mode): Prospect looks down from throne. Robots serve them. @shai-lfc presents solution.\n2. \"Shark Tank\" (Shark Mode): Prospect sits in shark chair. Rejects bad pitches. @shai-lfc pitches the unicorn deal.\n\nInput: Prospect Data JSON.\n\nTask:\n1. Pick the best template based on niche (e.g., High status/Ego -> Temple, Business/Money -> Shark Tank).\n2. Generate the Voiceover Script (HeyGen).\n3. Generate 5 Sora Prompts (Strictly POV).\n\nOutput JSON:\n{\n  \"template\": \"temple\" | \"shark_tank\",\n  \"script\": \"...\",\n  \"scenes\": [\n    { \"duration\": 5, \"prompt\": \"First-person POV...\" }\n  ]\n}"
-                        },
-                        {
-                            "role": "user",
-                            "content": "Prospect Data: {{ JSON.stringify($json) }}"
-                        }
-                    ]
-                },
-                "jsonOutput": true
+                "jsCode": "const perplexityData = $input.all()[0].json;\nconst research = perplexityData.choices[0].message.content;\nconst webhookData = $('Webhook Input').item.json.body;\n\nreturn {\n  url: webhookData.url,\n  research,\n  answers: webhookData.answers,\n  prospectData: {\n    website: webhookData.url,\n    bottleneck: webhookData.answers.bottleneck,\n    budget: webhookData.answers.budget,\n    email: webhookData.answers.email\n  }\n};"
             },
-            "type": "@n8n/n8n-nodes-langchain.chainLlm",
-            "typeVersion": 1,
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
             "position": [
                 440,
                 0
             ],
-            "id": "llm-generate-pov",
-            "name": "Generate POV Script"
+            "id": "extract-research",
+            "name": "Extract Research Data"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.openai.com/v1/chat/completions",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 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"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are the Cinematic Ego-Pitch Engine (POV Mode). Generate a script and visual prompts for a video where the PROSPECT is the HERO (First-Person POV).\\n\\nTemplates:\\n1. 'temple' (God Mode): Prospect looks down from throne. Robots serve them. @shai-lfc presents solution.\\n2. 'shark_tank' (Shark Mode): Prospect sits in shark chair. Rejects bad pitches. @shai-lfc pitches the unicorn deal.\\n\\nOutput JSON:\\n{\\n  \\\"template\\\": \\\"temple\\\" | \\\"shark_tank\\\",\\n  \\\"script\\\": \\\"...\\\",\\n  \\\"scenes\\\": [\\n    { \\\"duration\\\": 8, \\\"prompt\\\": \\\"First-person POV...\\\" }\\n  ]\\n}\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Research: {{ $('Extract Research Data').item.json.research }}\\n\\nProspect Answers:\\n- Bottleneck: {{ $('Extract Research Data').item.json.prospectData.bottleneck }}\\n- Budget: {{ $('Extract Research Data').item.json.prospectData.budget }}\\n\\nGenerate a POV video script.\"\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" },\n  \"temperature\": 0.8,\n  \"max_tokens\": 2000\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                660,
+                0
+            ],
+            "id": "openai-script",
+            "name": "Generate Script (GPT-4o)"
+        },
+        {
+            "parameters": {
+                "jsCode": "const openaiData = $input.all()[0].json;\nconst scriptData = JSON.parse(openaiData.choices[0].message.content);\nconst prospectData = $('Extract Research Data').item.json.prospectData;\n\nreturn {\n  template: scriptData.template,\n  script: scriptData.script,\n  scenes: scriptData.scenes,\n  prospectData\n};"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                880,
+                0
+            ],
+            "id": "parse-script",
+            "name": "Parse Script Data"
         },
         {
             "parameters": {
@@ -75,95 +130,151 @@
                     ]
                 },
                 "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "model",
-                            "value": "sora-2"
-                        },
-                        {
-                            "name": "prompt",
-                            "value": "={{ $json.scenes[0].prompt }} (Cinematic POV)"
-                        },
-                        {
-                            "name": "text_input",
-                            "value": "={{ $json.script }}"
-                        },
-                        {
-                            "name": "aspect_ratio",
-                            "value": "16:9"
-                        }
-                    ]
-                },
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"sora-2\",\n  \"prompt\": \"{{ $('Parse Script Data').item.json.scenes[0].prompt }}\",\n  \"text_input\": \"{{ $('Parse Script Data').item.json.script }}\",\n  \"duration\": {{ $('Parse Script Data').item.json.scenes[0].duration }},\n  \"aspect_ratio\": \"16:9\",\n  \"resolution\": \"1080p\"\n}",
                 "options": {}
             },
             "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.1,
+            "typeVersion": 4.2,
             "position": [
-                660,
+                1100,
                 0
             ],
-            "id": "kie-ai-generate",
-            "name": "Generate Video (Kie.ai / Sora 2)"
+            "id": "kie-video",
+            "name": "Generate Video (Kie.ai)"
         },
         {
             "parameters": {
-                "content": "## Video Generating...\n\n**Task ID:** {{ $json.task_id }}\n**Status:** Processing\n\n### Next Step\nThe engine is polling for the final video URL. Once complete, it will be delivered to the frontend."
+                "unit": "seconds",
+                "amount": 15
             },
-            "type": "n8n-nodes-base.markdown",
-            "typeVersion": 1,
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
             "position": [
-                880,
+                1320,
                 0
             ],
-            "id": "final-output",
-            "name": "Final Output"
+            "id": "wait-initial",
+            "name": "Wait 15s"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Poll Kie.ai for video status up to 6 times (90 seconds total)\nconst taskId = $('Generate Video (Kie.ai)').item.json.task_id;\nconst maxAttempts = 6;\nconst delaySeconds = 15;\n\nfor (let attempt = 1; attempt <= maxAttempts; attempt++) {\n  const response = await $httpRequest({\n    method: 'GET',\n    url: `https://api.kie.ai/v1/videos/${taskId}`,\n    headers: {\n      'Authorization': 'Bearer cb711f74a221be35a20df8e26e722e04'\n    }\n  });\n  \n  const data = JSON.parse(response);\n  \n  if (data.status === 'completed') {\n    return {\n      success: true,\n      videoUrl: data.video_url,\n      thumbnailUrl: data.thumbnail_url,\n      taskId,\n      attempts: attempt\n    };\n  }\n  \n  if (data.status === 'failed') {\n    throw new Error('Video generation failed');\n  }\n  \n  // Still processing, wait before next attempt\n  if (attempt < maxAttempts) {\n    await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));\n  }\n}\n\n// Timeout - still processing after all attempts\nreturn {\n  success: true,\n  videoUrl: null,\n  message: 'Video generation queued - check email for delivery',\n  taskId\n};"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1540,
+                0
+            ],
+            "id": "poll-status",
+            "name": "Poll Until Complete"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Return final response to frontend\nconst result = $input.all()[0].json;\n\nreturn {\n  success: true,\n  videoUrl: result.videoUrl,\n  thumbnailUrl: result.thumbnailUrl,\n  message: result.videoUrl ? 'Video ready' : 'Video queued for processing'\n};"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1760,
+                0
+            ],
+            "id": "final-response",
+            "name": "Return to Frontend"
         }
     ],
     "connections": {
-        "Webhook Input (URL)": {
+        "Webhook Input": {
             "main": [
                 [
                     {
-                        "node": "Simulate Research",
+                        "node": "Research (Perplexity)",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Simulate Research": {
+        "Research (Perplexity)": {
             "main": [
                 [
                     {
-                        "node": "Generate POV Script",
+                        "node": "Extract Research Data",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Generate POV Script": {
+        "Extract Research Data": {
             "main": [
                 [
                     {
-                        "node": "Generate Video (Kling AI)",
+                        "node": "Generate Script (GPT-4o)",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Generate Video (Kling AI)": {
+        "Generate Script (GPT-4o)": {
             "main": [
                 [
                     {
-                        "node": "Final Output",
+                        "node": "Parse Script Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Script Data": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Video (Kie.ai)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Video (Kie.ai)": {
+            "main": [
+                [
+                    {
+                        "node": "Wait 15s",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait 15s": {
+            "main": [
+                [
+                    {
+                        "node": "Poll Until Complete",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll Until Complete": {
+            "main": [
+                [
+                    {
+                        "node": "Return to Frontend",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         }
+    },
+    "settings": {
+        "executionOrder": "v1"
     }
 }

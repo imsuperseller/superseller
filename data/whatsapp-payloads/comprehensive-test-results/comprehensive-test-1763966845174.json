@@ -1,0 +1,87 @@
+{
+  "timestamp": "2025-11-24T06:47:00.402Z",
+  "workflowId": "eQSCUFw91oXLxtvn",
+  "webhookUrl": "http://173.254.201.134:5678/webhook/976a4187-04c0-458b-b9ba-c7af75ed5de0/waha",
+  "tests": [
+    {
+      "payloadType": "text",
+      "payloadName": "Text Message",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:00.544Z",
+      "messageId": "false_14695885133@c.us_7B4D729CBD72662DA416"
+    },
+    {
+      "payloadType": "image",
+      "payloadName": "Image (No Caption)",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:03.613Z",
+      "messageId": "false_14695885133@c.us_141C280B77C2606E6432"
+    },
+    {
+      "payloadType": "imageWithCaption",
+      "payloadName": "Image with Caption",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:06.677Z",
+      "messageId": "false_14695885133@c.us_D9B7446A4F9AB9F5E892"
+    },
+    {
+      "payloadType": "video",
+      "payloadName": "Video (No Caption)",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:09.738Z",
+      "messageId": "false_14695885133@c.us_02DF2B8E0DEACBCE489A"
+    },
+    {
+      "payloadType": "videoWithCaption",
+      "payloadName": "Video with Caption",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:12.800Z",
+      "messageId": "false_14695885133@c.us_76087DD72A82EAC1E7BC"
+    },
+    {
+      "payloadType": "pdf",
+      "payloadName": "PDF (No Caption)",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:16.031Z",
+      "messageId": "false_14695885133@c.us_BF0D5E514DE6A83EF7B8"
+    },
+    {
+      "payloadType": "pdfWithCaption",
+      "payloadName": "PDF with Caption (CRITICAL)",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:19.099Z",
+      "messageId": "false_14695885133@c.us_CAD18E4C9BB09776778E"
+    },
+    {
+      "payloadType": "voiceNote",
+      "payloadName": "Voice Note",
+      "webhookStatus": "sent",
+      "webhookStatusCode": 200,
+      "webhookResponse": "firstEntryJson",
+      "timestamp": "2025-11-24T06:47:22.171Z",
+      "messageId": "false_14695885133@c.us_40CEB9B8DC2C72CF16A1"
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "sent": 8,
+    "failed": 0,
+    "completed": 0,
+    "errors": 0,
+    "successes": 0
+  }
+}

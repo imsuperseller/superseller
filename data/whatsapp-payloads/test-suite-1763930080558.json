@@ -1,0 +1,420 @@
+{
+  "metadata": {
+    "generatedAt": "2025-11-23T20:34:40.557Z",
+    "workflowId": "eQSCUFw91oXLxtvn",
+    "workflowName": "INT-WHATSAPP-SUPPORT-001: Rensto Support Agent (Final)",
+    "totalPayloads": 2,
+    "totalIssues": 1
+  },
+  "coverage": {
+    "text": {
+      "name": "Text Messages",
+      "found": true,
+      "count": 1,
+      "required": true,
+      "status": "✅",
+      "samples": [
+        {
+          "executionId": "20168",
+          "messageId": "false_14695885133@c.us_3BE3795B12EA0103DCA0",
+          "timestamp": 1763928248
+        }
+      ]
+    },
+    "image": {
+      "name": "Images",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    },
+    "imageWithCaption": {
+      "name": "Images with Caption",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    },
+    "video": {
+      "name": "Videos",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    },
+    "videoWithCaption": {
+      "name": "Videos with Caption",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    },
+    "pdf": {
+      "name": "PDFs",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    },
+    "pdfWithCaption": {
+      "name": "PDFs with Caption",
+      "found": true,
+      "count": 1,
+      "required": true,
+      "status": "✅",
+      "samples": [
+        {
+          "executionId": "20159",
+          "messageId": "false_14695885133@c.us_3B60EE6E7C1463A09C51",
+          "timestamp": 1763927854,
+          "mediaUrl": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+          "caption": "analyze"
+        }
+      ]
+    },
+    "voiceNote": {
+      "name": "Voice Notes",
+      "found": false,
+      "count": 0,
+      "required": true,
+      "status": "❌",
+      "samples": []
+    }
+  },
+  "testCases": {
+    "text": {
+      "name": "Test Text Messages",
+      "description": "Verify workflow correctly handles text messages",
+      "payloadCount": 1,
+      "testSteps": [
+        "Send text messages via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": [
+        {
+          "executionId": "20168",
+          "timestamp": 1763928248,
+          "from": "14695885133@c.us",
+          "messageId": "false_14695885133@c.us_3BE3795B12EA0103DCA0",
+          "text": "test",
+          "conversation": "test",
+          "rawPayload": {
+            "id": "false_14695885133@c.us_3BE3795B12EA0103DCA0",
+            "timestamp": 1763928248,
+            "from": "14695885133@c.us",
+            "fromMe": false,
+            "source": "app",
+            "body": "test",
+            "hasMedia": false,
+            "media": null,
+            "_data": {
+              "message": {
+                "conversation": "test"
+              }
+            }
+          },
+          "type": "text"
+        }
+      ]
+    },
+    "image": {
+      "name": "Test Images",
+      "description": "Verify workflow correctly handles images",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send images via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    },
+    "imageWithCaption": {
+      "name": "Test Images with Caption",
+      "description": "Verify workflow correctly handles images with caption",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send images with caption via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify caption is extracted",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    },
+    "video": {
+      "name": "Test Videos",
+      "description": "Verify workflow correctly handles videos",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send videos via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    },
+    "videoWithCaption": {
+      "name": "Test Videos with Caption",
+      "description": "Verify workflow correctly handles videos with caption",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send videos with caption via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify caption is extracted",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    },
+    "pdf": {
+      "name": "Test PDFs",
+      "description": "Verify workflow correctly handles pdfs",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send pdfs via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    },
+    "pdfWithCaption": {
+      "name": "Test PDFs with Caption",
+      "description": "Verify workflow correctly handles pdfs with caption",
+      "payloadCount": 1,
+      "testSteps": [
+        "Send pdfs with caption via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify caption is extracted",
+        "Verify media URL is accessible",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": [
+        {
+          "executionId": "20159",
+          "timestamp": 1763927854,
+          "from": "14695885133@c.us",
+          "messageId": "false_14695885133@c.us_3B60EE6E7C1463A09C51",
+          "mediaUrl": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+          "filename": "Invoice-633F2A51-0023.pdf",
+          "mimetype": "application/pdf",
+          "caption": "analyze",
+          "hasCaption": true,
+          "rawPayload": {
+            "id": "false_14695885133@c.us_3B60EE6E7C1463A09C51",
+            "timestamp": 1763927854,
+            "from": "14695885133@c.us",
+            "fromMe": false,
+            "source": "app",
+            "body": "analyze",
+            "hasMedia": true,
+            "media": {
+              "url": "http://localhost:3000/api/files/rensto-whatsapp/3B60EE6E7C1463A09C51.pdf",
+              "filename": "Invoice-633F2A51-0023.pdf",
+              "mimetype": "application/pdf"
+            },
+            "_data": {
+              "message": {
+                "documentWithCaptionMessage": {
+                  "message": {
+                    "documentMessage": {
+                      "url": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+                      "mimetype": "application/pdf",
+                      "fileName": "Invoice-633F2A51-0023.pdf",
+                      "caption": "analyze"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "type": "pdf"
+        }
+      ]
+    },
+    "voiceNote": {
+      "name": "Test Voice Notes",
+      "description": "Verify workflow correctly handles voice notes",
+      "payloadCount": 0,
+      "testSteps": [
+        "Send voice notes via WhatsApp",
+        "Verify WAHA Trigger receives payload",
+        "Verify Smart Message Router identifies message type correctly",
+        "Verify Message Type Router routes to correct branch",
+        "Verify workflow completes successfully",
+        "Verify response is sent correctly"
+      ],
+      "assertions": [
+        "Payload extraction successful",
+        "Message type detection correct",
+        "Media URL valid (if applicable)",
+        "Caption extracted (if applicable)",
+        "No errors in execution",
+        "Response sent successfully"
+      ],
+      "samplePayloads": []
+    }
+  },
+  "issues": [
+    {
+      "severity": "high",
+      "type": "misidentification",
+      "executionId": "20159",
+      "messageId": "3B60EE6E7C1463A09C51",
+      "expected": "document",
+      "actual": "text",
+      "description": "PDF with caption misidentified as text. Caption: \"analyze\"",
+      "mediaUrl": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+      "mediaInfo": {
+        "filename": "Invoice-633F2A51-0023.pdf",
+        "mimetype": "application/pdf"
+      },
+      "fix": "Smart Message Router should check for documentMessage before defaulting to text"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send images to test workflow",
+      "action": "Create test message: images"
+    },
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send images with caption to test workflow",
+      "action": "Create test message: images with caption"
+    },
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send videos to test workflow",
+      "action": "Create test message: videos"
+    },
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send videos with caption to test workflow",
+      "action": "Create test message: videos with caption"
+    },
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send pdfs to test workflow",
+      "action": "Create test message: pdfs"
+    },
+    {
+      "priority": "high",
+      "type": "missing_test_data",
+      "message": "Need to send voice notes to test workflow",
+      "action": "Create test message: voice notes"
+    },
+    {
+      "priority": "critical",
+      "type": "router_fix",
+      "message": "1 message type misidentifications found",
+      "action": "Fix Smart Message Router logic to correctly detect media types",
+      "issues": [
+        {
+          "severity": "high",
+          "type": "misidentification",
+          "executionId": "20159",
+          "messageId": "3B60EE6E7C1463A09C51",
+          "expected": "document",
+          "actual": "text",
+          "description": "PDF with caption misidentified as text. Caption: \"analyze\"",
+          "mediaUrl": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+          "mediaInfo": {
+            "filename": "Invoice-633F2A51-0023.pdf",
+            "mimetype": "application/pdf"
+          },
+          "fix": "Smart Message Router should check for documentMessage before defaulting to text"
+        }
+      ]
+    }
+  ]
+}

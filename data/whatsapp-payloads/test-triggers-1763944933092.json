@@ -1,0 +1,58 @@
+[
+  {
+    "typeName": "Text",
+    "expectedType": "text",
+    "expectedCaption": null,
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "Image",
+    "expectedType": "image",
+    "expectedCaption": null,
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "Image with Caption",
+    "expectedType": "image",
+    "expectedCaption": "What is this?",
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "Video",
+    "expectedType": "video",
+    "expectedCaption": null,
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "Video with Caption",
+    "expectedType": "video",
+    "expectedCaption": "Check this out",
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "PDF",
+    "expectedType": "document",
+    "expectedCaption": null,
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "PDF with Caption",
+    "expectedType": "document",
+    "expectedCaption": "analyze this invoice",
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  },
+  {
+    "typeName": "Voice",
+    "expectedType": "voice",
+    "expectedCaption": null,
+    "webhookTriggered": true,
+    "executionId": "pending_check"
+  }
+]

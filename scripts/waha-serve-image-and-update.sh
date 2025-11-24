@@ -7,7 +7,7 @@ VPS_IP="173.254.201.134"
 VPS_USER="root"
 VPS_PASSWORD="necmad-zYnfe4-fypwip"
 SESSION_NAME="default"
-IMAGE_FILENAME="novok-profile-picture.jpg"
+IMAGE_FILENAME="rensto-profile-picture.png"
 VPS_IMAGE_PATH="/tmp/${IMAGE_FILENAME}"
 PORT=8080
 PUBLIC_URL="http://${VPS_IP}:${PORT}/${IMAGE_FILENAME}"
@@ -16,11 +16,28 @@ PUBLIC_URL="http://${VPS_IP}:${PORT}/${IMAGE_FILENAME}"
 if [ -z "$1" ]; then
   echo "❌ Error: Image file path is required"
   echo ""
-  echo "Usage: $0 <image_file_path>"
+  echo "Usage: $0 <image_file_path> [session_name]"
+  echo ""
+  echo "Examples:"
+  echo "  $0 \"assets/images/rensto logo.png\""
+  echo "  $0 \"assets/images/rensto logo.png\" default"
+  echo "  $0 \"assets/images/rensto logo.png\" rensto-support"
   exit 1
 fi
 
 IMAGE_FILE="$1"
+
+# Get original file extension
+FILE_EXT="${IMAGE_FILE##*.}"
+
+# Optional: session name as second parameter
+if [ -n "$2" ]; then
+  SESSION_NAME="$2"
+  # Update filename to include session name for uniqueness, preserving original extension
+  IMAGE_FILENAME="profile-picture-${SESSION_NAME}.${FILE_EXT}"
+  VPS_IMAGE_PATH="/tmp/${IMAGE_FILENAME}"
+  PUBLIC_URL="http://${VPS_IP}:${PORT}/${IMAGE_FILENAME}"
+fi
 
 # Check if file exists
 if [ ! -f "$IMAGE_FILE" ]; then

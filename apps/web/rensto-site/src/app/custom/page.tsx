@@ -394,7 +394,8 @@ export default function CustomSolutionsPage() {
 
         const data = await response.json();
 
-        if (data.videoUrl) {
+        // Veo3.1 uses successFlag: 0=generating, 1=success, 2/3=failed
+        if (data.videoUrl || data.successFlag === 1) {
           setVideoUrl(data.videoUrl);
           setVideoGenerating(false);
           setGenerationProgress(100);
@@ -407,7 +408,7 @@ export default function CustomSolutionsPage() {
           return;
         }
         
-        if (data.state === 'fail') {
+        if (data.state === 'fail' || data.successFlag === 2 || data.successFlag === 3) {
           setGenerationError(data.message || 'Video generation failed.');
           setVideoGenerating(false);
           setFlowState('REVEAL');

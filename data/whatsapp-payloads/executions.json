@@ -1,0 +1,120 @@
+[
+  {
+    "id": "20168",
+    "workflowId": "eQSCUFw91oXLxtvn",
+    "status": "success",
+    "startedAt": "2025-11-23T20:04:08.493Z",
+    "stoppedAt": "2025-11-23T20:04:11.487Z",
+    "nodes": {
+      "WAHA Trigger": {
+        "data": {
+          "output": [
+            [],
+            [
+              {
+                "json": {
+                  "payload": {
+                    "id": "false_14695885133@c.us_3BE3795B12EA0103DCA0",
+                    "timestamp": 1763928248,
+                    "from": "14695885133@c.us",
+                    "fromMe": false,
+                    "source": "app",
+                    "body": "test",
+                    "hasMedia": false,
+                    "media": null,
+                    "_data": {
+                      "message": {
+                        "conversation": "test"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          ]
+        }
+      },
+      "Smart Message Router": {
+        "data": {
+          "output": [
+            [
+              {
+                "json": {
+                  "messageId": "3BE3795B12EA0103DCA0",
+                  "messageType": "text"
+                }
+              }
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "20159",
+    "workflowId": "eQSCUFw91oXLxtvn",
+    "status": "success",
+    "startedAt": "2025-11-23T19:57:35.216Z",
+    "stoppedAt": "2025-11-23T19:57:37.805Z",
+    "nodes": {
+      "WAHA Trigger": {
+        "data": {
+          "output": [
+            [],
+            [
+              {
+                "json": {
+                  "payload": {
+                    "id": "false_14695885133@c.us_3B60EE6E7C1463A09C51",
+                    "timestamp": 1763927854,
+                    "from": "14695885133@c.us",
+                    "fromMe": false,
+                    "source": "app",
+                    "body": "analyze",
+                    "hasMedia": true,
+                    "media": {
+                      "url": "http://localhost:3000/api/files/rensto-whatsapp/3B60EE6E7C1463A09C51.pdf",
+                      "filename": "Invoice-633F2A51-0023.pdf",
+                      "mimetype": "application/pdf"
+                    },
+                    "_data": {
+                      "message": {
+                        "documentWithCaptionMessage": {
+                          "message": {
+                            "documentMessage": {
+                              "url": "https://mmg.whatsapp.net/v/t62.7119-24/589842062_1653818318671455_7374581884227913801_n.enc?ccb=11-4&oh=01_Q5Aa3AGQFcE85oATIK2hv6gMRN01Qtn2QBSqYbqPvJbAIBrmYA&oe=694AD31F&_nc_sid=5e03e0&mms3=true",
+                              "mimetype": "application/pdf",
+                              "fileName": "Invoice-633F2A51-0023.pdf",
+                              "caption": "analyze"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          ]
+        }
+      },
+      "Smart Message Router": {
+        "data": {
+          "output": [
+            [
+              {
+                "json": {
+                  "messageId": "3B60EE6E7C1463A09C51",
+                  "messageType": "text",
+                  "textContent": "analyze",
+                  "mediaUrl": "http://173.254.201.134:3000/api/files/rensto-whatsapp/3B60EE6E7C1463A09C51.pdf"
+                }
+              }
+            ]
+          ]
+        }
+      }
+    }
+  }
+]
+
