@@ -21,7 +21,7 @@
 
 | Variable | Required For | Status | Notes |
 |----------|-------------|--------|-------|
-| `OPENAI_API_KEY` | Voice AI consultation | ⚠️ Check | Used in `/api/voice-ai/consultation` |
+| `OPENAI_API_KEY` | Voice AI consultation | ✅ Set | Used in `/api/voice-ai/consultation` |
 | `TIDYCAL_API_KEY` | Installation booking | ⚠️ Check | Has fallback to hardcoded token |
 | `WEBFLOW_CLIENT_ID` | Webflow OAuth | ⚠️ Check | Used in OAuth flows |
 | `WEBFLOW_CLIENT_SECRET` | Webflow OAuth | ⚠️ Check | Used in OAuth flows |
