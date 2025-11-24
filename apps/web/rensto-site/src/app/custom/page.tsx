@@ -281,8 +281,20 @@ export default function CustomSolutionsPage() {
         if (flowState === 'GENERATING' || interruptionStep === questions.length - 1) {
           setFlowState('REVEAL');
         }
+      } else if (data.taskId) {
+        // Video is processing - start polling
+        setVideoGenerating(true);
+        pollVideoStatus(data.taskId);
+      } else if (data.state === 'generating') {
+        // Workflow returned with generating state - extract taskId and poll
+        const taskId = data.taskId || (data.data?.taskId);
+        if (taskId) {
+          pollVideoStatus(taskId);
+        } else {
+          throw new Error('No task ID received for polling');
+        }
       } else {
-        // Video is processing - will be checked when questions are done
+        // Unknown state - wait and check later
         setVideoGenerating(false);
       }
     } catch (error) {
@@ -291,6 +303,65 @@ export default function CustomSolutionsPage() {
       setVideoGenerating(false);
       // Don't change state here - let user complete questions first
     }
+  };
+
+  const pollVideoStatus = async (taskId: string) => {
+    const maxAttempts = 30; // 5 minutes max (30 * 10s)
+    const delayMs = 10000; // 10 seconds
+
+    for (let i = 1; i <= maxAttempts; i++) {
+      try {
+        // Poll Kie.ai API directly for status
+        const response = await fetch(`/api/cinematic-pitch/status?taskId=${taskId}`);
+        
+        if (!response.ok) {
+          // If status endpoint doesn't exist, try n8n webhook again
+          if (response.status === 404) {
+            // Fallback: wait and check videoUrl state
+            await new Promise(r => setTimeout(r, delayMs));
+            if (videoUrl) {
+              setFlowState('REVEAL');
+              return;
+            }
+            continue;
+          }
+          throw new Error(`Status check failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.videoUrl) {
+          setVideoUrl(data.videoUrl);
+          setVideoGenerating(false);
+          // If we're past interruption phase, go to reveal
+          if (flowState === 'GENERATING' || interruptionStep === questions.length - 1) {
+            setFlowState('REVEAL');
+          }
+          return;
+        }
+        
+        if (data.state === 'fail') {
+          setGenerationError(data.message || 'Video generation failed.');
+          setVideoGenerating(false);
+          setFlowState('REVEAL');
+          return;
+        }
+
+        // Still generating - wait and try again
+        await new Promise(r => setTimeout(r, delayMs));
+      } catch (error) {
+        console.error(`Polling attempt ${i} error:`, error);
+        // Continue polling unless it's the last attempt
+        if (i < maxAttempts) {
+          await new Promise(r => setTimeout(r, delayMs));
+        }
+      }
+    }
+
+    // Timeout
+    setGenerationError('Video generation timed out. Please try again.');
+    setVideoGenerating(false);
+    setFlowState('REVEAL');
   };
 
 
