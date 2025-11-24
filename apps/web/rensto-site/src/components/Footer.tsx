@@ -23,11 +23,11 @@ export function Footer() {
       { name: 'Home', href: '/' },
       { name: 'Features', href: '/features' },
       { name: 'Pricing', href: '/pricing' },
-      { name: 'About', href: '/about' },
+      { name: 'Solutions', href: '/solutions' },
       { name: 'Contact', href: '/contact' },
     ],
     business: [
-      { name: 'Customer App', href: '/app', icon: Workflow },
+      { name: 'Customer App', href: '/app/dashboard', icon: Workflow },
     ],
     legal: [
       { name: 'Privacy Policy', href: '/legal/privacy' },

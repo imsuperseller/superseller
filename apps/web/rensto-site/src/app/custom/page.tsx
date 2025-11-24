@@ -36,30 +36,63 @@ export default function CustomSolutionsPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Mock data for the interruption questions
+  // Interruption questions - apiStep matches voice-ai/consultation API
   const questions = [
     {
       id: 'bottleneck',
-      apiStep: 'challenges',
+      apiStep: 'challenges', // matches voice-ai API
       text: "SYSTEM ALERT: Revenue bottleneck detected. Identify the source.",
       options: ["Lead Quality", "Follow-up Speed", "Manual Data Entry"],
       type: 'choice' as const
     },
     {
       id: 'budget',
-      apiStep: 'budget',
+      apiStep: 'budget', // matches voice-ai API
       text: "CONFIGURATION REQUIRED: Select Budget Clearance Level.",
       options: ["<$1k/mo", "$1k-$5k/mo", "$5k+/mo"],
       type: 'choice' as const
     },
     {
       id: 'email',
-      apiStep: 'email',
+      apiStep: 'timeline', // maps email collection to timeline step
       text: "SECURE CHANNEL REQUIRED: Enter delivery address.",
       options: [],
       type: 'email' as const
     }
   ];
+
+  // Handle "Claim This System" - redirect to Stripe checkout
+  const handleClaimSystem = async () => {
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          flowType: 'custom-solutions',
+          productId: 'cinematic-pitch-consultation',
+          tier: 'starter',
+          customerEmail: answers.email || '',
+          metadata: {
+            url,
+            answers,
+            source: 'cinematic-pitch-engine'
+          }
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        // Fallback: open TidyCal booking
+        window.open('https://tidycal.com/rensto/custom-consultation', '_blank');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      // Fallback: open TidyCal booking
+      window.open('https://tidycal.com/rensto/custom-consultation', '_blank');
+    }
+  };
 
   // Voice Recording Functions
   const startVoiceConsultation = async () => {
@@ -251,8 +284,10 @@ export default function CustomSolutionsPage() {
             <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/" className="hover:opacity-80">Home</Link>
-            <Link href="/marketplace" className="hover:opacity-80">Marketplace</Link>
+            <Link href="/" className="hover:opacity-80 transition-colors">Home</Link>
+            <Link href="/marketplace" className="hover:opacity-80 transition-colors">Marketplace</Link>
+            <Link href="/solutions" className="hover:opacity-80 transition-colors">Solutions</Link>
+            <Link href="/subscriptions" className="hover:opacity-80 transition-colors">Subscriptions</Link>
           </nav>
         </div>
       </header>
@@ -300,7 +335,11 @@ export default function CustomSolutionsPage() {
               />
               <button
                 type="submit"
-                className="absolute right-2 top-2 bottom-2 px-6 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all flex items-center gap-2"
+                className="absolute right-2 top-2 bottom-2 px-6 rounded-lg text-white font-semibold transition-all flex items-center gap-2 hover:opacity-90"
+                style={{
+                  background: 'var(--rensto-gradient-primary)',
+                  boxShadow: '0 0 20px rgba(254, 61, 81, 0.3)'
+                }}
               >
                 Generate
                 <ArrowRight className="w-4 h-4" />
@@ -410,7 +449,11 @@ export default function CustomSolutionsPage() {
                   <button
                     onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
                     disabled={!emailInput}
-                    className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all"
+                    className="w-full px-6 py-4 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all hover:opacity-90"
+                    style={{
+                      background: emailInput ? 'var(--rensto-gradient-primary)' : undefined,
+                      boxShadow: emailInput ? '0 0 20px rgba(254, 61, 81, 0.3)' : undefined
+                    }}
                   >
                     Proceed to Analysis →
                   </button>
@@ -460,7 +503,11 @@ export default function CustomSolutionsPage() {
                     <p className="text-red-400 mb-4">{generationError}</p>
                     <button
                       onClick={() => window.location.reload()}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-medium"
+                      className="px-6 py-3 rounded-xl text-white font-medium hover:opacity-90 transition-all"
+                      style={{
+                        background: 'var(--rensto-gradient-primary)',
+                        boxShadow: '0 0 20px rgba(254, 61, 81, 0.3)'
+                      }}
                     >
                       Try Again
                     </button>
@@ -496,7 +543,12 @@ export default function CustomSolutionsPage() {
 
             <div className="mt-8 text-center">
               <Button
-                className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-lg rounded-xl shadow-[0_0_30px_rgba(37,99,235,0.3)]"
+                onClick={handleClaimSystem}
+                className="text-white px-8 py-6 text-lg rounded-xl font-bold"
+                style={{
+                  background: 'var(--rensto-gradient-primary)',
+                  boxShadow: 'var(--rensto-glow-primary)'
+                }}
               >
                 Claim This System
                 <ArrowRight className="w-5 h-5 ml-2" />
