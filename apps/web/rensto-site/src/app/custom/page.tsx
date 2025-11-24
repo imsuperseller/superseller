@@ -309,7 +309,7 @@ export default function CustomSolutionsPage() {
   };
 
   const pollVideoStatus = async (taskId: string) => {
-    const maxAttempts = 30; // 5 minutes max (30 * 10s)
+    const maxAttempts = 60; // 10 minutes max (60 * 10s) - increased for medium/high quality videos
     const delayMs = 10000; // 10 seconds
     const startTime = Date.now();
 
