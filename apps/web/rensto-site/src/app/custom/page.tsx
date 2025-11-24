@@ -30,6 +30,7 @@ export default function CustomSolutionsPage() {
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [emailInput, setEmailInput] = useState('');
+  const [videoGenerating, setVideoGenerating] = useState(false);
 
   // Voice Logic State
   const [isRecording, setIsRecording] = useState(false);
@@ -198,13 +199,16 @@ export default function CustomSolutionsPage() {
     }
   }, [flowState, url]);
 
-  const handleUrlSubmit = (e: React.FormEvent) => {
+  const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (url) {
       // Auto-add https:// if no protocol is present
       const formattedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
       setUrl(formattedUrl);
       setFlowState('BOOTING');
+      
+      // Start video generation immediately (in parallel with boot sequence)
+      generateVideo();
     }
   };
 
@@ -216,13 +220,42 @@ export default function CustomSolutionsPage() {
     if (interruptionStep < questions.length - 1) {
       setInterruptionStep(prev => prev + 1);
     } else {
-      // All questions answered - trigger video generation
-      setFlowState('GENERATING');
-      await generateVideo();
+      // All questions answered - check if video is ready
+      if (videoUrl) {
+        setFlowState('REVEAL');
+      } else if (videoGenerating) {
+        // Video is still generating, show generating state
+        setFlowState('GENERATING');
+        // Poll for video completion
+        pollForVideo();
+      } else {
+        // Video generation failed or hasn't started, try again
+        setFlowState('GENERATING');
+        await generateVideo();
+      }
     }
   };
 
+  const pollForVideo = async () => {
+    // Simple polling - check if videoUrl is set (would need backend endpoint for proper polling)
+    const maxAttempts = 30;
+    let attempts = 0;
+    
+    const interval = setInterval(() => {
+      attempts++;
+      if (videoUrl) {
+        clearInterval(interval);
+        setFlowState('REVEAL');
+      } else if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        setGenerationError('Video generation is taking longer than expected. Please refresh and try again.');
+        setFlowState('REVEAL');
+      }
+    }, 2000); // Check every 2 seconds
+  };
+
   const generateVideo = async () => {
+    setVideoGenerating(true);
     try {
       const webhookUrl = '/api/cinematic-pitch';
 
@@ -231,7 +264,7 @@ export default function CustomSolutionsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           url,
-          answers,
+          answers: {}, // Start with empty answers - video generation doesn't need them
           timestamp: Date.now()
         })
       });
@@ -240,17 +273,26 @@ export default function CustomSolutionsPage() {
 
       const data = await response.json();
 
-      // Set video URL if available
+      // Set video URL if available immediately
       if (data.videoUrl) {
         setVideoUrl(data.videoUrl);
+        setVideoGenerating(false);
+        // If we're past interruption phase, go to reveal
+        if (flowState === 'GENERATING' || interruptionStep === questions.length - 1) {
+          setFlowState('REVEAL');
+        }
+      } else {
+        // Video is processing - will be checked when questions are done
+        setVideoGenerating(false);
       }
-      setFlowState('REVEAL');
     } catch (error) {
       console.error('Video generation error:', error);
       setGenerationError('Failed to generate video. Please try again.');
-      setFlowState('REVEAL');
+      setVideoGenerating(false);
+      // Don't change state here - let user complete questions first
     }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col" style={{

@@ -143,24 +143,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Contact Info */}
-        <div className="mt-8 pt-8 border-t border-slate-800">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center space-x-3">
-              <Mail className="h-5 w-5 text-slate-400" />
-              <span className="text-slate-300">hello@rensto.com</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Phone className="h-5 w-5 text-slate-400" />
-              <span className="text-slate-300">+1 (555) 123-4567</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <MapPin className="h-5 w-5 text-slate-400" />
-              <span className="text-slate-300">San Francisco, CA</span>
-            </div>
-          </div>
-        </div>
-
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
