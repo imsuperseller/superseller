@@ -39,36 +39,66 @@ The `costTime: 784` seconds represents **total time from job creation to complet
 
 ## Optimization Solutions
 
-### Solution 1: Reduce Frame Count (Quick Win)
-**Current**: `n_frames: 10`  
-**Recommended**: `n_frames: 5-8`
+### Solution 1: Use Non-Pro Model (MAJOR FINDING)
+**Current**: `sora-2-pro-text-to-video`  
+**Alternative**: `sora-2-text-to-video` (non-pro)
 
-**Impact**: 
-- Reduces processing complexity
-- May reduce queue priority (less resource-intensive)
-- Still maintains good video quality for preview purposes
+**Discovery**: 
+- ✅ `sora-2-text-to-video` model exists and accepts same parameters
+- ⚠️ Non-pro models typically have shorter queue times
+- ⚠️ May have slightly lower quality but faster processing
+- **Action**: Test if non-pro model has shorter queue times
 
-### Solution 2: Monitor Queue vs Processing Time
+### Solution 2: Valid Parameter Constraints (CRITICAL)
+**Findings from API Testing**:
+- ❌ `n_frames` **MUST be 10** (minimum allowed, cannot reduce)
+- ✅ `size` can be `"high"` or `"standard"` (NOT "medium" or "low")
+- ❌ Previous optimization attempt to reduce frames was invalid
+
+**Current Valid Parameters**:
+```json
+{
+  "model": "sora-2-pro-text-to-video",  // or "sora-2-text-to-video"
+  "input": {
+    "prompt": "...",
+    "aspect_ratio": "landscape",
+    "n_frames": "10",  // REQUIRED - cannot be reduced
+    "size": "high",    // or "standard" (not "medium")
+    "remove_watermark": true
+  }
+}
+```
+
+### Solution 3: Test Size Parameter
+**Current**: `size: "high"`  
+**Alternative**: `size: "standard"`
+
+**Impact**:
+- May reduce queue time (less resource-intensive)
+- May reduce processing time
+- Quality difference unknown - needs testing
+
+### Solution 4: Monitor Queue vs Processing Time
 **Action**: Track multiple requests to identify patterns
 - If consistent 13 minutes → Queue issue
 - If variable → Server load dependent
 
-### Solution 3: Optimize Request Timing
+### Solution 5: Optimize Request Timing
 **Action**: Test during different times of day
 - Off-peak hours may have shorter queues
 - Peak hours (US business hours) likely have longer waits
 
-### Solution 4: Check for Priority Parameters
+### Solution 6: Check for Priority Parameters
 **Action**: Review Kie.ai API documentation for:
 - Priority flags
 - Queue position endpoints
 - Account tier benefits
 
-### Solution 5: Reduce Video Complexity
-**Current Parameters**:
+### Solution 7: Alternative Model Options
+**Option A: Non-Pro Model (Potentially Faster Queue)**
 ```json
 {
-  "model": "sora-2-pro-text-to-video",
+  "model": "sora-2-text-to-video",  // Non-pro version
   "input": {
     "prompt": "...",
     "aspect_ratio": "landscape",
@@ -79,15 +109,29 @@ The `costTime: 784` seconds represents **total time from job creation to complet
 }
 ```
 
-**Optimized Parameters**:
+**Option B: Standard Size (Potentially Faster)**
 ```json
 {
   "model": "sora-2-pro-text-to-video",
   "input": {
     "prompt": "...",
     "aspect_ratio": "landscape",
-    "n_frames": "8",  // Reduced from 10
-    "size": "high",   // Keep for quality
+    "n_frames": "10",
+    "size": "standard",  // Instead of "high"
+    "remove_watermark": true
+  }
+}
+```
+
+**Option C: Non-Pro + Standard (Fastest Queue)**
+```json
+{
+  "model": "sora-2-text-to-video",
+  "input": {
+    "prompt": "...",
+    "aspect_ratio": "landscape",
+    "n_frames": "10",
+    "size": "standard",
     "remove_watermark": true
   }
 }
@@ -97,13 +141,12 @@ The `costTime: 784` seconds represents **total time from job creation to complet
 
 ## Immediate Action Plan
 
-1. **Reduce `n_frames` to 8** (test if this helps)
-2. **Add logging** to track createTime vs completion patterns
-3. **Test multiple requests** at different times to identify queue patterns
-4. **Contact Kie.ai support** if issue persists to understand:
-   - Queue system behavior
-   - Account tier benefits
-   - Priority options
+1. ✅ **Test `sora-2-text-to-video` (non-pro)** - May have shorter queue times
+2. ✅ **Test `size: "standard"`** - May reduce queue/processing time
+3. ⏳ **Add logging** to track createTime vs completion patterns
+4. ⏳ **Test multiple requests** at different times to identify queue patterns
+5. ⏳ **Compare models**: Test pro vs non-pro queue times side-by-side
+6. ⏳ **Compare sizes**: Test high vs standard queue times side-by-side
 
 ---
 
@@ -124,11 +167,17 @@ The `costTime: 784` seconds represents **total time from job creation to complet
 
 ## Next Steps
 
-1. ✅ Implement `n_frames: 8` optimization
-2. ⏳ Add queue time tracking (if API supports it)
-3. ⏳ Test during off-peak hours
-4. ⏳ Contact Kie.ai support for queue insights
-5. ⏳ Consider alternative: Pre-generate videos for common prompts
+1. ❌ ~~Implement `n_frames: 8` optimization~~ (INVALID - minimum is 10)
+2. ✅ **Test `sora-2-text-to-video` (non-pro model)** - Priority test
+3. ✅ **Test `size: "standard"`** - May reduce queue time
+4. ⏳ Add queue time tracking (if API supports it)
+5. ⏳ Test during off-peak hours
+6. ⏳ Compare all 4 combinations:
+   - Pro + High
+   - Pro + Standard
+   - Non-Pro + High
+   - Non-Pro + Standard
+7. ⏳ Consider alternative: Pre-generate videos for common prompts
 
 ---
 
