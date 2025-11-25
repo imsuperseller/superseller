@@ -310,6 +310,7 @@ export default function CustomSolutionsPage() {
       if (!response.ok) throw new Error('Video generation failed');
 
       const data = await response.json();
+      console.log('Full response from n8n:', JSON.stringify(data, null, 2));
 
       // Set video URL if available immediately
       if (data.videoUrl) {
@@ -349,7 +350,19 @@ export default function CustomSolutionsPage() {
         // Unknown state - log and wait
         console.warn('Unknown response state:', data);
         console.warn('Full response:', JSON.stringify(data, null, 2));
-        setVideoGenerating(false);
+        // Try to extract taskId from any field
+        const possibleTaskId = data.taskId || data.data?.taskId || data.id || data.task_id;
+        if (possibleTaskId) {
+          console.log('Found taskId in unknown response:', possibleTaskId);
+          setVideoGenerating(true);
+          setFlowState('GENERATING');
+          setGenerationProgress(1);
+          setGenerationStatus("Weaving digital threads into vision...");
+          setEstimatedTimeRemaining(60);
+          pollVideoStatus(possibleTaskId);
+        } else {
+          setVideoGenerating(false);
+        }
       }
     } catch (error) {
       console.error('Video generation error:', error);
