@@ -48,6 +48,18 @@ class N8nUnifiedServer {
       }
     };
 
+    this.allowedInstances = (process.env.N8N_OPS_ALLOWED_INSTANCES || Object.keys(this.instances).join(','))
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    if (this.allowedInstances.length === 0) {
+      this.allowedInstances = Object.keys(this.instances);
+    }
+
+    this.auditLogEnabled = process.env.N8N_OPS_AUDIT_LOG === 'true';
+    this.auditNamespace = process.env.N8N_OPS_AUDIT_NAMESPACE || 'n8n-ops';
+
     this.setupHandlers();
   }
 
@@ -711,10 +723,27 @@ class N8nUnifiedServer {
         if (!handler) {
             throw new Error(`Unknown tool: ${name}`);
         }
+
+        this.validateScope(args);
+        this.logAudit('tool_call', {
+          tool: name,
+          instances: this.extractInstances(args),
+        });
         
         // Pass args object directly to handlers
-        return await handler.call(this, args);
+        const result = await handler.call(this, args);
+        
+        this.logAudit('tool_success', {
+          tool: name,
+        });
+
+        return result;
       } catch (error) {
+        this.logAudit('tool_error', {
+          tool: name,
+          error: error.message,
+        });
+
         return {
           content: [
             {
@@ -2411,6 +2440,55 @@ class N8nUnifiedServer {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
     console.error('Rensto n8n Unified MCP Server running on stdio');
+  }
+
+  extractInstances(args = {}) {
+    const instances = new Set();
+
+    if (args.instance) {
+      instances.add(args.instance);
+    }
+
+    if (Array.isArray(args.instances)) {
+      args.instances.forEach((value) => value && instances.add(value));
+    }
+
+    if (args.source) {
+      instances.add(args.source);
+    }
+
+    if (args.target) {
+      instances.add(args.target);
+    }
+
+    return Array.from(instances);
+  }
+
+  validateScope(args = {}) {
+    const instances = this.extractInstances(args);
+    if (instances.length === 0) {
+      return;
+    }
+
+    for (const instance of instances) {
+      if (!this.allowedInstances.includes(instance)) {
+        throw new Error(`Instance ${instance} is not allowed in OPS mode`);
+      }
+    }
+  }
+
+  logAudit(event, payload) {
+    if (!this.auditLogEnabled) {
+      return;
+    }
+
+    const entry = {
+      timestamp: new Date().toISOString(),
+      event,
+      ...payload,
+    };
+
+    console.error(`[${this.auditNamespace}] ${JSON.stringify(entry)}`);
   }
 }
 

@@ -48,6 +48,22 @@ After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (i
       "headers": {
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6IjM4OTQwMTM4LTVhZDUtNDBmZi1hZDM1LTgwZTY4MmRhYWZlNiIsImlhdCI6MTc2NDA1MjcyNX0.s_3K8cJYO3h6VuY4rpc94rIIo5eZOkWnyOfBAn5VnV4"
       }
+    },
+    "n8n-ops": {
+      "command": "node",
+      "args": [
+        "/Users/shaifriedman/New Rensto/rensto/rensto-marketplace/plugins/rensto-n8n-agents/mcpServers/n8n-unified-server.js"
+      ],
+      "env": {
+        "N8N_RENSTO_VPS_URL": "http://173.254.201.134:5678",
+        "N8N_RENSTO_VPS_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTE2NzEwfQ.JbIeOnRil3E3_P44LjAWhiY9KRcAHkuuVhJghABz3aQ",
+        "N8N_TAX4US_CLOUD_URL": "https://tax4usllc.app.n8n.cloud",
+        "N8N_TAX4US_CLOUD_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw",
+        "N8N_SHELLY_CLOUD_URL": "https://shellyins.app.n8n.cloud",
+        "N8N_SHELLY_CLOUD_KEY": "",
+        "N8N_OPS_ALLOWED_INSTANCES": "rensto-vps,tax4us-cloud",
+        "N8N_OPS_AUDIT_LOG": "true"
+      }
     }
   }
 }
@@ -61,6 +77,31 @@ After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (i
 2. **Simpler Configuration**: Just URL and token
 3. **Better Performance**: HTTP/SSE connection instead of stdio
 4. **Native n8n Feature**: Built into n8n 1.122.0+
+
+---
+
+## ♻️ Hybrid MCP Strategy (Core + Ops)
+
+To balance safety with full control, the MCP stack now runs in two tiers:
+
+1. **Core Endpoints (HTTP)**  
+   - Servers: `n8n-rensto`, `n8n-tax4us`  
+   - Tools: `search_workflows`, `get_workflow_details`, `execute_workflow`  
+   - Usage: Default for quick inspections and launches. No destructive access.
+
+2. **Ops Endpoint (Stdio Unified Server)**  
+   - Server name: `n8n-ops`  
+   - Location: `/rensto-marketplace/plugins/rensto-n8n-agents/mcpServers/n8n-unified-server.js`  
+   - Coverage: 40+ tools (workflows, executions, credentials, data tables, diagnostics) routed to Rensto + Tax4Us instances.  
+   - Access control:  
+     - `N8N_OPS_ALLOWED_INSTANCES=rensto-vps,tax4us-cloud` limits which tenants accept destructive calls.  
+     - `N8N_OPS_AUDIT_LOG=true` enables structured console auditing for every tool invocation.  
+   - When to use: Editing workflows, rotating credentials, reading execution logs, bulk cleanup, or any task that exceeds the 3-tool core surface.
+
+**Agent Routing Rules**
+- Start with `n8n-rensto` / `n8n-tax4us`.  
+- Automatically escalate to `n8n-ops` when a requested action requires tooling outside the core trio.  
+- If `n8n-ops` is unavailable, fall back to core endpoints and report the limitation.
 
 ---
 
