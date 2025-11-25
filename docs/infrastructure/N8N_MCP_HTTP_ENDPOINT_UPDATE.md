@@ -73,17 +73,39 @@ After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (i
 
 ## 📋 Verification Steps
 
-1. **Test Endpoint**:
+1. **Test Endpoint** (✅ TESTED):
    ```bash
-   curl -H "Authorization: Bearer <token>" \
-        -H "Accept: application/json, text/event-stream" \
-        "https://n8n.rensto.com/mcp-server/http"
+   curl -X POST "https://n8n.rensto.com/mcp-server/http" \
+     -H "Authorization: Bearer <token>" \
+     -H "Content-Type: application/json" \
+     -H "Accept: application/json, text/event-stream" \
+     -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"cursor-test","version":"1.0"}}}'
+   ```
+   
+   **Expected Response**:
+   ```
+   event: message
+   data: {"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"n8n MCP Server","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
    ```
 
 2. **Check Cursor MCP Status**:
    - Restart Cursor
    - Verify `n8n-rensto` MCP server is connected
    - Test MCP tools (e.g., `mcp_n8n-rensto_n8n_list_workflows`)
+
+## ✅ Test Results
+
+**Date**: November 25, 2025  
+**Status**: ✅ **ENDPOINT WORKING**
+
+**Test Results**:
+- ✅ Initialize method: **SUCCESS** (returns server info)
+- ✅ Server name: `n8n MCP Server`
+- ✅ Server version: `1.0.0`
+- ✅ Protocol version: `2024-11-05`
+- ✅ Capabilities: Tools with `listChanged: true`
+- ✅ Authentication: JWT token accepted
+- ✅ Response format: Server-Sent Events (SSE)
 
 ---
 
