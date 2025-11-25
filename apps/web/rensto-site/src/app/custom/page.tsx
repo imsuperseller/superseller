@@ -400,21 +400,23 @@ export default function CustomSolutionsPage() {
       "Almost ready..."
     ];
 
-    // Initialize progress immediately - use setTimeout to ensure state update
-    setTimeout(() => {
-      setGenerationProgress(1);
-      setGenerationStatus(statusMessages[0]);
-      setEstimatedTimeRemaining(60);
-      console.log('Progress initialized to 1%');
-    }, 0);
+    // Initialize progress immediately
+    setGenerationProgress(1);
+    setGenerationStatus(statusMessages[0]);
+    setEstimatedTimeRemaining(60);
+    console.log('Progress initialized to 1% in pollVideoStatus');
 
     for (let i = 1; i <= maxAttempts; i++) {
       try {
         // Update progress (0-90%, leave 10% for final processing)
         // Start from 1% on first attempt, not 0%
         const progress = Math.min(90, Math.max(1, (i / maxAttempts) * 90));
-        console.log(`Polling attempt ${i}: Setting progress to ${progress}%`);
+        console.log(`Polling attempt ${i}/${maxAttempts}: Setting progress to ${progress}%`);
         setGenerationProgress(progress);
+        // Force React to recognize the update
+        if (i === 1) {
+          console.log('First polling attempt - progress should be visible now');
+        }
         
         // Update status message (rotate every 2 attempts)
         const statusIndex = Math.floor((i - 1) / 2) % statusMessages.length;
