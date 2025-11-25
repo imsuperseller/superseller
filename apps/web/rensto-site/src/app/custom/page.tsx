@@ -207,6 +207,16 @@ export default function CustomSolutionsPage() {
     }
   };
 
+  // Ensure progress updates when GENERATING state is active
+  useEffect(() => {
+    if (flowState === 'GENERATING' && generationProgress === 0) {
+      console.log('GENERATING state detected but progress is 0, initializing...');
+      setGenerationProgress(1);
+      setGenerationStatus("Weaving digital threads into vision...");
+      setEstimatedTimeRemaining(60);
+    }
+  }, [flowState, generationProgress]);
+
   // Boot Sequence Logic
   useEffect(() => {
     if (flowState === 'BOOTING') {
@@ -335,12 +345,15 @@ export default function CustomSolutionsPage() {
         const taskId = data.taskId || (data.data?.taskId);
         console.log('Extracted taskId from generating state:', taskId);
         if (taskId) {
-          setVideoGenerating(true);
           setFlowState('GENERATING');
-          // Initialize progress immediately
-          setGenerationProgress(1);
-          setGenerationStatus("Weaving digital threads into vision...");
-          setEstimatedTimeRemaining(60);
+          setVideoGenerating(true);
+          // Use setTimeout to ensure state is set before updating progress
+          setTimeout(() => {
+            setGenerationProgress(1);
+            setGenerationStatus("Weaving digital threads into vision...");
+            setEstimatedTimeRemaining(60);
+            console.log('Progress set to 1% after taskId extracted');
+          }, 0);
           pollVideoStatus(taskId);
         } else {
           console.error('No taskId found in response:', data);
@@ -354,11 +367,14 @@ export default function CustomSolutionsPage() {
         const possibleTaskId = data.taskId || data.data?.taskId || data.id || data.task_id;
         if (possibleTaskId) {
           console.log('Found taskId in unknown response:', possibleTaskId);
-          setVideoGenerating(true);
           setFlowState('GENERATING');
-          setGenerationProgress(1);
-          setGenerationStatus("Weaving digital threads into vision...");
-          setEstimatedTimeRemaining(60);
+          setVideoGenerating(true);
+          setTimeout(() => {
+            setGenerationProgress(1);
+            setGenerationStatus("Weaving digital threads into vision...");
+            setEstimatedTimeRemaining(60);
+            console.log('Progress set to 1% after taskId found in fallback');
+          }, 0);
           pollVideoStatus(possibleTaskId);
         } else {
           setVideoGenerating(false);
@@ -388,16 +404,20 @@ export default function CustomSolutionsPage() {
       "Almost ready..."
     ];
 
-    // Initialize progress immediately
-    setGenerationProgress(1);
-    setGenerationStatus(statusMessages[0]);
-    setEstimatedTimeRemaining(60);
+    // Initialize progress immediately - use setTimeout to ensure state update
+    setTimeout(() => {
+      setGenerationProgress(1);
+      setGenerationStatus(statusMessages[0]);
+      setEstimatedTimeRemaining(60);
+      console.log('Progress initialized to 1%');
+    }, 0);
 
     for (let i = 1; i <= maxAttempts; i++) {
       try {
         // Update progress (0-90%, leave 10% for final processing)
         // Start from 1% on first attempt, not 0%
         const progress = Math.min(90, Math.max(1, (i / maxAttempts) * 90));
+        console.log(`Polling attempt ${i}: Setting progress to ${progress}%`);
         setGenerationProgress(progress);
         
         // Update status message (rotate every 2 attempts)
