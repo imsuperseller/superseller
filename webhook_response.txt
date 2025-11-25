@@ -1,0 +1,70 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host n8n.rensto.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 172.67.215.215, 104.21.43.15
+*   Trying 172.67.215.215:443...
+* Connected to n8n.rensto.com (172.67.215.215) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+} [319 bytes data]
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* (304) (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* (304) (IN), TLS handshake, Unknown (8):
+{ [19 bytes data]
+* (304) (IN), TLS handshake, Certificate (11):
+{ [2526 bytes data]
+* (304) (IN), TLS handshake, CERT verify (15):
+{ [80 bytes data]
+* (304) (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* (304) (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=rensto.com
+*  start date: Nov  1 20:42:50 2025 GMT
+*  expire date: Jan 30 21:40:24 2026 GMT
+*  subjectAltName: host "n8n.rensto.com" matched cert's "*.rensto.com"
+*  issuer: C=US; O=Google Trust Services; CN=WE1
+*  SSL certificate verify ok.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://n8n.rensto.com/webhook/37475351-7bc4-43b9-91f9-d233ab511cd9
+* [HTTP/2] [1] [:method: POST]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: n8n.rensto.com]
+* [HTTP/2] [1] [:path: /webhook/37475351-7bc4-43b9-91f9-d233ab511cd9]
+* [HTTP/2] [1] [user-agent: curl/8.7.1]
+* [HTTP/2] [1] [accept: */*]
+* [HTTP/2] [1] [content-type: application/json]
+* [HTTP/2] [1] [content-length: 29]
+> POST /webhook/37475351-7bc4-43b9-91f9-d233ab511cd9 HTTP/2
+> Host: n8n.rensto.com
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 29
+> 
+} [29 bytes data]
+* upload completely sent off: 29 bytes
+< HTTP/2 404 
+< date: Tue, 25 Nov 2025 00:49:17 GMT
+< content-type: application/json; charset=utf-8
+< content-length: 110
+< etag: W/"6e-covTL+p0nTC2FM0aYUSp1BqMiw4"
+< vary: Accept-Encoding
+< cf-cache-status: DYNAMIC
+< nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+< report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=wiSNktwD8%2FAhf5xnSibqDOoXouL9lLsxT7EHowpsBOOWqcKKj6rZobr2OZD35pQLGP8UaesxZvcjiZKzdn3uCD1FPFiOGuS%2BhsbMHSl4"}]}
+< server: cloudflare
+< cf-ray: 9a3d2536a8d067ae-DFW
+< alt-svc: h3=":443"; ma=86400
+< 
+{ [110 bytes data]
+100   139  100   110  100    29   1280    337 --:--:-- --:--:-- --:--:--  1635
+* Connection #0 to host n8n.rensto.com left intact
+{"code":404,"message":"This webhook is not registered for POST requests. Did you mean to make a GET request?"}

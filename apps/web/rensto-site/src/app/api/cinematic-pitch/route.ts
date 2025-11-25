@@ -4,8 +4,8 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
-        // Forward to n8n webhook (using domain, not IP)
-        const response = await fetch('https://n8n.rensto.com/webhook/cinematic-pitch', {
+        // Forward to n8n webhook - Production URL (activated and configured)
+        const response = await fetch('https://n8n.rensto.com/webhook/37475351-7bc4-43b9-91f9-d233ab511cd9', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

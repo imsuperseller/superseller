@@ -44,51 +44,55 @@ export default function CustomSolutionsPage() {
   // These questions fill the video generation wait time (13+ minutes) with valuable discovery
   const questions = [
     {
-      id: 'business-type',
-      apiStep: 'business-type',
-      text: "INITIALIZING PROFILE: What type of business do you run?",
-      options: [],
-      type: 'text' as const,
-      placeholder: "e.g., E-commerce, Agency, Real Estate, Service Business..."
-    },
-    {
-      id: 'challenges',
+      id: 'internal-diagnostic',
       apiStep: 'challenges',
-      text: "DIAGNOSTIC SCAN: What's your biggest operational pain point?",
+      text: "INTERNAL DIAGNOSTIC: Where is the biggest friction in your current workflow?",
       options: [
-        "Manual repetitive tasks eating my time",
-        "Data scattered across multiple tools",
-        "Slow customer response times",
-        "Inefficient workflows causing errors",
-        "Can't scale without hiring more people"
+        "Lead Qualification/Follow-up",
+        "Customer Onboarding",
+        "Inventory/Logistics",
+        "Reporting & Analytics",
+        "Team Communication"
       ],
       type: 'choice' as const
     },
     {
-      id: 'goals',
+      id: 'growth-blocker',
+      apiStep: 'challenges',
+      text: "GROWTH BLOCKER: What is preventing you from scaling 10x right now?",
+      options: [
+        "Team Bandwidth",
+        "Operational Chaos",
+        "Marketing Reach",
+        "Technical Debt",
+        "Cash Flow/Funding"
+      ],
+      type: 'choice' as const
+    },
+    {
+      id: 'automation-target',
       apiStep: 'goals',
-      text: "OBJECTIVE SET: What would automation help you achieve most?",
+      text: "AUTOMATION TARGET: If you could clone your best employee, what would they do?",
       options: [
-        "Save 10+ hours per week",
-        "Eliminate manual errors",
-        "Scale without proportional cost increase",
-        "Improve customer experience",
-        "Focus on high-value work"
+        "Sales Outreach",
+        "Customer Support",
+        "Project Management",
+        "Data Entry/Admin",
+        "Creative/Content"
       ],
       type: 'choice' as const
     },
     {
-      id: 'budget',
-      apiStep: 'budget',
-      text: "RESOURCE ALLOCATION: What's your automation investment range?",
-      options: ["<$1k/mo", "$1k-$5k/mo", "$5k+/mo"],
-      type: 'choice' as const
-    },
-    {
-      id: 'timeline',
-      apiStep: 'timeline',
-      text: "TIMELINE CONFIGURATION: When do you need this implemented?",
-      options: ["ASAP - urgent pain point", "Within 1 month", "Within 3 months", "Exploring options"],
+      id: 'success-metric',
+      apiStep: 'goals',
+      text: "SUCCESS METRIC: What is the one number you check every morning?",
+      options: [
+        "Revenue/MRR",
+        "New Leads",
+        "Customer Satisfaction (NPS)",
+        "Profit Margin",
+        "Active Users"
+      ],
       type: 'choice' as const
     },
     {
@@ -257,7 +261,7 @@ export default function CustomSolutionsPage() {
       const formattedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
       setUrl(formattedUrl);
       setFlowState('BOOTING');
-      
+
       // Start video generation immediately (in parallel with boot sequence)
       generateVideo();
     }
@@ -291,7 +295,7 @@ export default function CustomSolutionsPage() {
     // Simple polling - check if videoUrl is set (would need backend endpoint for proper polling)
     const maxAttempts = 30;
     let attempts = 0;
-    
+
     const interval = setInterval(() => {
       attempts++;
       if (videoUrl) {
@@ -420,11 +424,11 @@ export default function CustomSolutionsPage() {
         if (i === 1) {
           console.log('First polling attempt - progress should be visible now');
         }
-        
+
         // Update status message (rotate every 2 attempts)
         const statusIndex = Math.floor((i - 1) / 2) % statusMessages.length;
         setGenerationStatus(statusMessages[statusIndex]);
-        
+
         // Calculate estimated time remaining
         const elapsed = Date.now() - startTime;
         const avgTimePerAttempt = elapsed / i;
@@ -436,7 +440,7 @@ export default function CustomSolutionsPage() {
 
         // Poll Veo3.1 API directly for status
         const response = await fetch(`/api/cinematic-pitch/status?taskId=${taskId}`);
-        
+
         if (!response.ok) {
           // If status endpoint doesn't exist, try n8n webhook again
           if (response.status === 404) {
@@ -466,7 +470,7 @@ export default function CustomSolutionsPage() {
           }
           return;
         }
-        
+
         if (data.state === 'fail' || data.successFlag === 2 || data.successFlag === 3) {
           setGenerationError(data.message || 'Video generation failed.');
           setVideoGenerating(false);
@@ -620,9 +624,9 @@ export default function CustomSolutionsPage() {
         {/* STATE: INTERRUPTION (Hybrid Input) */}
         {flowState === 'INTERRUPTION' && (
           <div className="w-full max-w-2xl z-10 animate-in zoom-in-95 duration-500">
-            <div className="bg-slate-900/90 border border-red-500/50 rounded-2xl p-8 shadow-[0_0_100px_rgba(239,68,68,0.2)] backdrop-blur-xl text-center">
-              <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-6 animate-pulse">
-                <Target className="w-8 h-8 text-red-500" />
+            <div className="bg-slate-900/90 border border-cyan-500/50 rounded-2xl p-8 shadow-[0_0_100px_rgba(6,182,212,0.2)] backdrop-blur-xl text-center">
+              <div className="w-16 h-16 rounded-full bg-cyan-500/20 flex items-center justify-center mx-auto mb-6 animate-pulse">
+                <Target className="w-8 h-8 text-cyan-500" />
               </div>
 
               <h2 className="text-2xl font-bold text-white mb-2 font-mono">
@@ -660,7 +664,7 @@ export default function CustomSolutionsPage() {
                     <button
                       onClick={toggleVoice}
                       className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all ${isListening
-                        ? 'bg-red-500 text-white animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.5)]'
+                        ? 'bg-cyan-500 text-white animate-pulse shadow-[0_0_20px_rgba(6,182,212,0.5)]'
                         : 'bg-white/5 border border-white/10 hover:bg-white/10'
                         }`}
                     >
@@ -671,33 +675,6 @@ export default function CustomSolutionsPage() {
                     </button>
                   </div>
                 </>
-              ) : questions[interruptionStep].type === 'text' ? (
-                <div className="max-w-md mx-auto">
-                  <input
-                    type="text"
-                    required
-                    placeholder={questions[interruptionStep].placeholder || "Enter your answer..."}
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && emailInput) {
-                        handleInterruptionAnswer(emailInput);
-                      }
-                    }}
-                    className="w-full px-6 py-4 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600 mb-4"
-                  />
-                  <button
-                    onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
-                    disabled={!emailInput}
-                    className="w-full px-6 py-4 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all hover:opacity-90"
-                    style={{
-                      background: emailInput ? 'var(--rensto-gradient-primary)' : undefined,
-                      boxShadow: emailInput ? '0 0 20px rgba(254, 61, 81, 0.3)' : undefined
-                    }}
-                  >
-                    Continue →
-                  </button>
-                </div>
               ) : (
                 <div className="max-w-md mx-auto">
                   <input
@@ -747,10 +724,10 @@ export default function CustomSolutionsPage() {
                 {/* Progress Bar */}
                 <div className="w-full max-w-md mx-auto mb-4">
                   <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
-                    style={{ width: `${Math.max(1, generationProgress)}%` }}
-                  />
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.max(1, generationProgress)}%` }}
+                    />
                   </div>
                   <div className="flex justify-between mt-2 text-xs text-slate-400">
                     <span>{Math.max(1, Math.round(generationProgress))}% Complete</span>
@@ -768,20 +745,20 @@ export default function CustomSolutionsPage() {
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.3),transparent_50%)] animate-pulse" />
                   </div>
-                  
+
                   {/* Play icon preview */}
                   <div className="relative z-10">
                     <div className="w-16 h-16 rounded-full bg-purple-500/30 flex items-center justify-center animate-pulse">
                       <Play className="w-8 h-8 text-purple-400" fill="currentColor" />
                     </div>
                   </div>
-                  
+
                   {/* Corner badge */}
                   <div className="absolute top-4 right-4 bg-purple-500/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-purple-300 border border-purple-500/30">
                     AI Generated
                   </div>
                 </div>
-                
+
                 <p className="text-center text-slate-400 text-sm mt-4">
                   The vision takes shape...
                 </p>
