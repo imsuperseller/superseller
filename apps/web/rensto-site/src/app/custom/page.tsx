@@ -347,13 +347,11 @@ export default function CustomSolutionsPage() {
         if (taskId) {
           setFlowState('GENERATING');
           setVideoGenerating(true);
-          // Use setTimeout to ensure state is set before updating progress
-          setTimeout(() => {
-            setGenerationProgress(1);
-            setGenerationStatus("Weaving digital threads into vision...");
-            setEstimatedTimeRemaining(60);
-            console.log('Progress set to 1% after taskId extracted');
-          }, 0);
+          // Initialize progress immediately
+          setGenerationProgress(1);
+          setGenerationStatus("Weaving digital threads into vision...");
+          setEstimatedTimeRemaining(60);
+          console.log('Progress set to 1% after taskId extracted');
           pollVideoStatus(taskId);
         } else {
           console.error('No taskId found in response:', data);
@@ -369,12 +367,10 @@ export default function CustomSolutionsPage() {
           console.log('Found taskId in unknown response:', possibleTaskId);
           setFlowState('GENERATING');
           setVideoGenerating(true);
-          setTimeout(() => {
-            setGenerationProgress(1);
-            setGenerationStatus("Weaving digital threads into vision...");
-            setEstimatedTimeRemaining(60);
-            console.log('Progress set to 1% after taskId found in fallback');
-          }, 0);
+          setGenerationProgress(1);
+          setGenerationStatus("Weaving digital threads into vision...");
+          setEstimatedTimeRemaining(60);
+          console.log('Progress set to 1% after taskId found in fallback');
           pollVideoStatus(possibleTaskId);
         } else {
           setVideoGenerating(false);
