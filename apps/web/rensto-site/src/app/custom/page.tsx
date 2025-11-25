@@ -209,13 +209,16 @@ export default function CustomSolutionsPage() {
 
   // Ensure progress updates when GENERATING state is active
   useEffect(() => {
-    if (flowState === 'GENERATING' && generationProgress === 0) {
-      console.log('GENERATING state detected but progress is 0, initializing...');
-      setGenerationProgress(1);
-      setGenerationStatus("Weaving digital threads into vision...");
-      setEstimatedTimeRemaining(60);
+    if (flowState === 'GENERATING') {
+      if (generationProgress === 0) {
+        console.log('GENERATING state detected but progress is 0, initializing to 1%...');
+        setGenerationProgress(1);
+        setGenerationStatus("Weaving digital threads into vision...");
+        setEstimatedTimeRemaining(60);
+      }
+      console.log(`GENERATING state active - Progress: ${generationProgress}%, Status: ${generationStatus}`);
     }
-  }, [flowState, generationProgress]);
+  }, [flowState, generationProgress, generationStatus]);
 
   // Boot Sequence Logic
   useEffect(() => {
@@ -744,13 +747,13 @@ export default function CustomSolutionsPage() {
                 {/* Progress Bar */}
                 <div className="w-full max-w-md mx-auto mb-4">
                   <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: `${generationProgress}%` }}
-                    />
+                  <div 
+                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${Math.max(1, generationProgress)}%` }}
+                  />
                   </div>
                   <div className="flex justify-between mt-2 text-xs text-slate-400">
-                    <span>{Math.round(generationProgress)}% Complete</span>
+                    <span>{Math.max(1, Math.round(generationProgress))}% Complete</span>
                     {estimatedTimeRemaining !== null && estimatedTimeRemaining > 0 && (
                       <span>~{estimatedTimeRemaining}s remaining</span>
                     )}
