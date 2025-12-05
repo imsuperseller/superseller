@@ -17,9 +17,9 @@ const __dirname = path.dirname(__filename);
 
 const WORKFLOW_ID = 'eQSCUFw91oXLxtvn';
 const WEBHOOK_ID = '976a4187-04c0-458b-b9ba-c7af75ed5de0';
-const WEBHOOK_URL = `http://173.254.201.134:5678/webhook/${WEBHOOK_ID}/waha`;
+const WEBHOOK_URL = `http://n8n.rensto.com/webhook/${WEBHOOK_ID}/waha`;
 const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'whatsapp-payloads', 'comprehensive-test-results');
-const N8N_API_URL = 'http://173.254.201.134:5678/api/v1';
+const N8N_API_URL = 'http://n8n.rensto.com/api/v1';
 const N8N_API_KEY = process.env.N8N_API_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNGEzMjUxLTI2ZjYtNDYxNy1iY2Y5LWUwN2YzY2E5NjhhNyIsInR5cGUiOiJwZXJzb25hbCIsImlhdCI6MTcyMDc0MDAwMCwiZXhwIjo0ODc2MTAwMDAwfQ.7XqJ8K9L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A7B8C9D0E1F2G3H4I5J6K';
 
 if (!fs.existsSync(OUTPUT_DIR)) {
