@@ -1,0 +1,1247 @@
+{
+  "updatedAt": "2025-11-26T23:37:50.000Z",
+  "createdAt": "2025-11-26T23:35:16.080Z",
+  "id": "1LWTwUuN6P6uq2Ha",
+  "name": "INT-WHATSAPP-ROUTER-OPTIMIZED: Multi-Customer AI Agent (2)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Find customer configuration in Boost.space where customer_key equals '{{ $json.command || \"default\" }}' and service_status equals 'active'. Use the boost.space query tool to search and return the customer record.",
+        "options": {
+          "systemMessage": "You are a customer lookup assistant. Find customer configurations in Boost.space matching the provided customer_key. Return only the customer record data.\n\nCRITICAL: When using the boost.space query tool, you MUST use this EXACT URL:\nhttps://superseller.boost.space/api/note?spaceId=39\n\nDO NOT use api.boost.space or any other domain. The correct domain is superseller.boost.space."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1104,
+        544
+      ],
+      "id": "775ff272-9d6a-4998-8239-6c845b8e11ea",
+      "name": "🔎 BS Find Customer"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Query Boost.space Notes API to find customer configurations. Use GET method with Bearer token authentication. The API returns customer records stored as notes in Space 39. Filter by customer_key field to find specific customer configurations. Returns JSON array of customer records.",
+        "url": "https://superseller.boost.space/api/note?spaceId=39",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Items_per_Batch', ``, 'number') }}",
+              "batchInterval": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Batch_Interval__ms_', ``, 'number') }}"
+            }
+          },
+          "lowercaseHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Lowercase_Headers', ``, 'boolean') }}",
+          "response": {
+            "response": {
+              "fullResponse": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Response_Headers_and_Status', ``, 'boolean') }}",
+              "neverError": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Never_Error', ``, 'boolean') }}"
+            }
+          },
+          "timeout": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Timeout', ``, 'number') }}"
+        },
+        "optimizeResponse": true,
+        "dataField": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Field_Containing_Data', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        1248,
+        768
+      ],
+      "id": "8481d843-311e-4036-a0f9-6cf17b76aa44",
+      "name": "boost.space query1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "Q8kGX30JZ1ONAdgL",
+          "name": "boost.space"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1120,
+        768
+      ],
+      "id": "afd56147-0ae1-4197-9f17-f9b092e675a7",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Customer Configuration Lookup (in-memory fallback)\n// Routes by command (/tax4us, /meatpoint) first, then by phone mapping, else default.\n\nconst item = $input.first().json;\n\nconst command = (item.command || '').toString().trim().toLowerCase();\nconst rawChatId = (item.chat_id || item.chatId || '').toString().trim();\n\nfunction normalizeChatId(v) {\n  if (!v) return '';\n  const s = String(v).trim();\n  if (s.includes('@')) {\n    const [id, domainRaw] = s.split('@');\n    const digits = id.replace(/\\D/g, '');\n    const domain = (domainRaw === 's.whatsapp.net') ? 'c.us' : domainRaw;\n    return `${digits}@${domain}`;\n  }\n  const digits = s.replace(/\\D/g, '');\n  return digits ? `${digits}@c.us` : s;\n}\n\nconst chatId = normalizeChatId(rawChatId);\nconst phoneDigits = chatId ? chatId.split('@')[0] : '';\n\nconst customerDB = {\n  tax4us: {\n    customer_id: 'tax4us',\n    customer_name: 'Tax4US',\n    ai_model: 'gpt-4o-mini',\n    system_prompt: 'You are a helpful tax consultant AI for Tax4US. Assist with tax questions, filing, deductions, and compliance. Be professional, accurate, and cautious: if info is missing, ask one clarifying question.',\n    features_enabled: { voice: true, image: true, docs: true, video: false },\n    phone_numbers: ['+972501234567'],\n    waha_session: 'default'\n  },\n  meatpoint: {\n    customer_id: 'meatpoint',\n    customer_name: 'MeatPoint',\n    ai_model: 'gpt-4o-mini',\n    system_prompt: 'You are a helpful restaurant operations + customer service assistant for MeatPoint in Dallas. Be concise, practical, and focused on restaurant operations and guest experience. When relevant, propose automation/WhatsApp agent improvements.',\n    features_enabled: { voice: true, image: true, docs: false, video: false },\n    phone_numbers: ['+19725551234'],\n    waha_session: 'default'\n  },\n  default: {\n    customer_id: 'default',\n    customer_name: 'Rensto Demo',\n    ai_model: 'gpt-4o-mini',\n    system_prompt: \"You are Rensto's WhatsApp demo agent. Keep replies short, confident, and business-focused. Move the conversation toward booking a call / building a WhatsApp agent. Ask at most one clarifying question when needed.\",\n    features_enabled: { voice: true, image: true, docs: true, video: false },\n    phone_numbers: [],\n    waha_session: 'default'\n  }\n};\n\nlet customer = customerDB.default;\n\n// 1) Command routing\nif (command && customerDB[command]) {\n  customer = customerDB[command];\n}\n\n// 2) Phone routing (optional)\nif (customer.customer_id === 'default' && phoneDigits) {\n  for (const key of Object.keys(customerDB)) {\n    const cfg = customerDB[key];\n    const match = (cfg.phone_numbers || []).some(p => p.replace(/\\D/g,'') === phoneDigits);\n    if (match) { customer = cfg; break; }\n  }\n}\n\nconst routing_method =\n  (command && customerDB[command]) ? 'command' :\n  (customer.customer_id !== 'default') ? 'phone' : 'default';\n\nreturn [{\n  json: {\n    ...item,\n    chat_id: chatId,\n    chatId,\n    customer_config: customer,\n    routing_method\n  }\n}];"
+      },
+      "id": "7fcf3399-1fe9-4a9c-a5ea-d10fc38f59f8",
+      "name": "🏷️ Customer Config Lookup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\n\nconst customer_config = item.customer_config || {};\nconst message_type = item.message_type || 'text';\nconst content = item.content || item.text || '';\n\nlet chatInput = content;\n\nif (message_type === 'audio') {\n  chatInput = (item.text || content || '').toString() + '\\n\\n[Note: Voice message transcription]';\n} else if (message_type === 'image') {\n  chatInput = (content || 'User sent an image.').toString() + '\\n\\n[Note: Image]';\n} else if (message_type === 'video') {\n  chatInput = (content || 'User sent a video.').toString() + '\\n\\n[Note: Video]';\n} else if (message_type === 'document') {\n  chatInput = (content || 'User sent a document.').toString() + '\\n\\n[Note: Document]';\n}\n\nconst global_system_prompt = (item.global_system_prompt || item.CONFIG?.global_system_prompt || '').toString().trim();\nconst customer_system_prompt = (customer_config.system_prompt || '').toString().trim();\n\nconst systemMessage =\n  (global_system_prompt ? global_system_prompt + '\\n\\n' : '') +\n  customer_system_prompt +\n  `\\n\\n[Runtime]\\nmessage_type=${message_type}`;\n\nreturn [{\n  json: {\n    ...item,\n    chatInput,\n    systemMessage,\n    message_type,\n    customer_config,\n    sessionId: item.session_id,\n    session_id: item.session_id,\n    chat_id: item.chat_id,\n    chatId: item.chat_id\n  }\n}];"
+      },
+      "id": "af41e804-842a-4692-90a2-0322637563f6",
+      "name": "✍️ Prepare AI Input2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2928,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format AI response for WAHA sendText/sendVoice\nconst item = $input.first().json;\n\nconst customer_config = item.customer_config || {};\nconst original_message_type = item.message_type || item.original_message_type || 'text';\n\nconst response_text = (item.output || item.response_text || item.text || '').toString();\n\nfunction normalizeChatId(v) {\n  if (!v) return '';\n  const s = String(v).trim();\n  if (s.includes('@')) {\n    const [id, domainRaw] = s.split('@');\n    const digits = id.replace(/\\D/g, '');\n    const domain = (domainRaw === 's.whatsapp.net') ? 'c.us' : domainRaw;\n    return `${digits}@${domain}`;\n  }\n  const digits = s.replace(/\\D/g, '');\n  return digits ? `${digits}@c.us` : s;\n}\n\nconst session =\n  item.session_id ||\n  item.session ||\n  item.sessionId ||\n  customer_config.waha_session ||\n  'default';\n\nconst chatId = normalizeChatId(item.chat_id || item.chatId || '');\n\nconst voiceEnabled = (customer_config.features_enabled?.voice === true);\n\n// Voice rule: only if customer allows voice AND either inbound was audio OR response is short\nconst send_as_voice =\n  voiceEnabled &&\n  (original_message_type === 'audio' || response_text.length > 0 && response_text.length < 500);\n\nreturn {\n  json: {\n    ...item,\n    session,\n    chatId,\n    text: response_text,\n    response_text,\n    send_as_voice,\n    customer_config,\n    original_message_type\n  }\n};"
+      },
+      "id": "fe03b552-2b82-4dcb-af9f-0ced27746c9f",
+      "name": "📤 Format Response1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3504,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.text }}",
+        "requestOptions": {}
+      },
+      "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+      "typeVersion": 202502,
+      "position": [
+        4528,
+        688
+      ],
+      "id": "fbd864cb-8011-45a8-aea8-80c1457b13e7",
+      "name": "Send a text message1",
+      "credentials": {
+        "wahaApi": {
+          "id": "px3TLR7BGl3MVW7Y",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Voice",
+        "chatId": "={{ $json.chatId }}",
+        "file": "={\n  \"mimetype\": \"audio/ogg; codecs=opus\",\n  \"data\": \"={{ $binary.data.data }}\",\n  \"filename\": \"reply.opus\"\n}",
+        "requestOptions": {}
+      },
+      "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+      "typeVersion": 202502,
+      "position": [
+        4752,
+        496
+      ],
+      "id": "a04d01e0-a12c-4103-9a91-c0c08eaedd2f",
+      "name": "Send an voice message1",
+      "credentials": {
+        "wahaApi": {
+          "id": "px3TLR7BGl3MVW7Y",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "732a087f-5eca-4a2e-8d12-fcbe71896047",
+              "leftValue": "={{ $json.should_skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        544
+      ],
+      "id": "f165282f-44c7-46bc-9932-cd848c7f6b30",
+      "name": "🚫 Filter Skip1"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        336
+      ],
+      "id": "fb5c4be8-a38a-4aa7-9e51-f6af76c21c74",
+      "name": "📝 Transcribe Audio1",
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.media_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "4fc7e008d7d24fc995475029effc8fa8"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1680,
+        336
+      ],
+      "id": "2102b982-c4b1-432b-8072-2b5eefd1bbd5",
+      "name": "🎤 Download Audio1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "={{ $json.systemMessage }}",
+          "passthroughBinaryImages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3152,
+        400
+      ],
+      "id": "603bc156-b6dd-4726-b12c-4be906b2657c",
+      "name": "🧠 AI Agent1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b570ad9b-82f6-4c1c-8f1b-8a2d528170b8",
+              "leftValue": "={{ $json.send_as_voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4304,
+        592
+      ],
+      "id": "3b8505e5-668c-4ad7-911a-ba53a0f911bb",
+      "name": "Voice Response?1"
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "tnSpp4vdxKPjI9w0GnoV",
+          "mode": "list",
+          "cachedResultName": "Hope - upbeat and clear"
+        },
+        "text": "={{ $json.response_text }}",
+        "additionalOptions": {
+          "model": {
+            "mode": "list",
+            "value": "eleven_multilingual_v2"
+          },
+          "outputFormat": "opus_48000_128"
+        },
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        4528,
+        496
+      ],
+      "id": "5574de80-2a17-4277-a88c-9a7c81f5d9da",
+      "name": "Convert text to speech1",
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "yEEqLVMzOlo1L0xI",
+          "name": "ElevenLabs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "store_name",
+              "name": "store_name",
+              "value": "={{ $json.store_name ? ($json.store_name.startsWith('fileSearchStores/') ? $json.store_name : 'fileSearchStores/' + $json.store_name.replace('fileSearchStores/', '')) : 'fileSearchStores/tax4usknowledgebasendf9fmym-bo4pew7b5a3x' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3c719c8d-f5cd-41d3-bcc2-e4c6918cbfb5",
+      "name": "Set Store Name and Extract Text1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2352,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/chatgpt-4o-latest",
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        752
+      ],
+      "id": "f0af1192-97e2-4c58-b3cc-f09d66191688",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "0u20YjhdCgaFXlmg",
+          "name": "tax4us"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3168,
+        624
+      ],
+      "id": "748b6290-ad1f-4c11-b1d8-a8f762b5a93d",
+      "name": "🤖 OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "0sXFXYfqiDEKuDcN",
+          "name": "service@rensto.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        3296,
+        624
+      ],
+      "id": "7f889b01-9299-463d-bfb4-855f59297c69",
+      "name": "💾 SQLite Memory1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "text",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "content",
+              "name": "content",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea0f9683-d8ea-4a82-88ce-3ac3f1fb2e11",
+      "name": "🧩 Attach Transcript1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2128,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.response_text || $json.text || \"\" }}",
+        "guardrails": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 1,
+      "position": [
+        3728,
+        400
+      ],
+      "id": "9b81ec6d-28a5-4c05-b286-ff4ab382ff0b",
+      "name": "🛡️ Guardrails (Outbound)1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const t = $json.message_type || 'unknown';\nconst biz = $json.customer_config?.customer_name || $json.customer_config?.customer_id || 'this business';\n\nconst session = $json.session_id || $json.session || ($json.CONFIG?.waha_session) || 'default';\nconst chatId = $json.chat_id || $json.chatId;\n\nconst msg = `(${biz}) I can't process ${t} messages here. Please send text.`;\n\nreturn [{\n  json: {\n    ...$json,\n    session,\n    chatId,\n    text: msg,\n    response_text: msg,\n    send_as_voice: false\n  }\n}];"
+      },
+      "id": "e6262f6f-b0af-4003-8b31-ac399c66dc08",
+      "name": "🚫 Unsupported Input Type1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const biz = $json.customer_config?.customer_name || $json.customer_config?.customer_id || 'this business';\n\nconst session = $json.session || $json.session_id || $json.sessionId || ($json.CONFIG?.waha_session) || 'default';\nconst chatId = $json.chatId || $json.chat_id;\n\nconst msg = `(${biz}) I can't help with that request. Please rephrase and keep it business-related.`;\n\nreturn [{\n  json: {\n    ...$json,\n    session,\n    chatId,\n    text: msg,\n    response_text: msg,\n    send_as_voice: false\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        672
+      ],
+      "id": "ecae636b-7bba-40d7-9794-06c07362102f",
+      "name": "🚫 Blocked Input1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const biz = $json.customer_config?.customer_name || $json.customer_config?.customer_id || 'this business';\n\nconst session = $json.session || $json.session_id || $json.sessionId || ($json.CONFIG?.waha_session) || 'default';\nconst chatId = $json.chatId || $json.chat_id;\n\nconst msg = `(${biz}) I can't share that. Please ask a business-related question.`;\n\nreturn [{\n  json: {\n    ...$json,\n    session,\n    chatId,\n    text: msg,\n    response_text: msg,\n    send_as_voice: false\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        304
+      ],
+      "id": "f66b54ab-74b3-4aab-8b37-87ac87599241",
+      "name": "🚫 Blocked Response1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "text-type",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "audio-type",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "feat-voice",
+                    "leftValue": "={{ $json.customer_config.features_enabled.voice }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "image-type",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "feat-image",
+                    "leftValue": "={{ $json.customer_config.features_enabled.image }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "video-type",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "feat-video",
+                    "leftValue": "={{ $json.customer_config.features_enabled.video }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "doc-type",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "feat-docs",
+                    "leftValue": "={{ $json.customer_config.features_enabled.docs }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "doc"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "extra",
+          "allMatchingOutputs": false
+        }
+      },
+      "id": "a689b021-e4d3-42c5-9b9b-736b42ff0d55",
+      "name": "🔀 Message Type Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1456,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.media_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $json.CONFIG.waha_api_key }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "fb741e5c-6768-40ee-aa68-47636ec29786",
+      "name": "🖼️ Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2128,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare input for AI Agent (system + user prompt)\nconst item = $input.first().json;\n\nconst message_type = item.message_type || 'text';\nconst content = (item.text || item.content || '').toString();\nconst media_url = item.media_url || '';\nconst customer_config = item.customer_config || {};\n\nconst globalSystem =\n  item.CONFIG?.global_system_prompt ||\n  [\n    \"You are an AI assistant operating inside WhatsApp. Follow these rules:\",\n    \"\",\n    \"SAFETY & SCOPE\",\n    \"- Stay strictly within the customer's business scope and policies.\",\n    \"- If the user asks for disallowed content, refuse briefly and redirect to a business-related alternative.\",\n    \"- If uncertain, ask ONE clarifying question, then stop.\",\n    \"\",\n    \"TOOLS\",\n    \"- You may use available tools only when necessary to answer correctly.\",\n    \"- If you used a tool, incorporate its result into the response. Do not mention internal node names.\",\n    \"\",\n    \"STYLE (WhatsApp)\",\n    \"- Keep replies short and actionable.\",\n    \"- Use plain text. No long explanations.\",\n    \"- Prefer: 1–4 short lines, then one question if needed.\",\n    \"\",\n    \"OUTPUT\",\n    \"- Return the final message text only.\"\n  ].join(\"\\n\");\n\nconst customerSystem = (customer_config.system_prompt || '').toString();\n\nconst systemMessage =\n  `${globalSystem}\\n\\n` +\n  `${customerSystem}\\n\\n` +\n  `Runtime: You are handling a ${message_type} message.`;\n\nconst chatInput =\n  `USER_MESSAGE:\\n${content || \"(no text)\"}\\n\\n` +\n  `CONTEXT:\\n` +\n  `- customer: ${customer_config.customer_id || \"default\"} (${customer_config.customer_name || \"Customer\"})\\n` +\n  `- message_type: ${message_type}\\n` +\n  `- media_url: ${media_url || \"none\"}\\n` +\n  `- user_chat_id: ${item.chat_id || item.chatId || \"unknown\"}\\n` +\n  `- session: ${item.session_id || item.session || \"default\"}\\n`;\n\nreturn [{\n  json: {\n    ...item,\n    chatInput,\n    systemMessage\n  }\n}];"
+      },
+      "id": "765efd47-a7c8-496c-baa9-1f14e4cf56b4",
+      "name": "✍️ Prepare AI Input3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.chatInput || $json.content || \"\" }}",
+        "guardrails": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 1,
+      "position": [
+        2576,
+        528
+      ],
+      "id": "cd74a2a1-1796-4d7d-9acb-488cdc4177d1",
+      "name": "🛡️ Guardrails (Inbound)1"
+    },
+    {
+      "parameters": {
+        "model": "openai/chatgpt-4o-latest",
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        624
+      ],
+      "id": "bce67c5f-557e-4084-993d-b447306c3ed3",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "0u20YjhdCgaFXlmg",
+          "name": "tax4us"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg",
+              "name": "CONFIG",
+              "type": "object",
+              "value": "{\"waha_api_base\": \"http://waha:3000/api\", \"enable_voice\": true, \"enable_images\": true, \"enable_documents\": true, \"enable_video\": true, \"default_model\": \"gpt-4o-mini\", \"voice_model\": \"whisper-1\", \"tts_voice\": \"nova\", \"error_email\": \"shai@superseller.co\"}"
+            },
+            {
+              "id": "82485888-bc22-4c0b-9243-5ba1286ae41d",
+              "name": "global_system_prompt",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1544b36-105e-4909-ac66-12aacf0dc99a",
+      "name": "📋 Config Loader",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize WAHA events into a stable message schema\nconst e = $input.first().json;\n\n// --- session\nconst session_id = e.session || e.sessionId || e?.session?.name || 'default';\n\n// --- message type\nconst message_type = e?.payload?.type || e?.type || e?.message?.type || 'text';\n\n// --- chat id (best-effort across engines)\nconst raw_chat_id =\n  e?.payload?.from ||\n  e?.chatId ||\n  e?.chat?.id ||\n  e?.payload?.chatId ||\n  e?.message?.from ||\n  e?.payload?.chat?.id ||\n  '';\n\n// WAHA expects: international phone digits (no '+') + '@c.us' for DMs\n// It may also emit '@s.whatsapp.net' internally; convert that to '@c.us' when sending.\nfunction normalizeChatId(v) {\n  if (!v) return '';\n  const s = String(v).trim();\n  if (s.includes('@')) {\n    const [id, domainRaw] = s.split('@');\n    const digits = id.replace(/\\D/g, '');\n    let domain = domainRaw;\n    if (domain === 's.whatsapp.net') domain = 'c.us';\n    return `${digits}@${domain}`;\n  }\n  const digits = s.replace(/\\D/g, '');\n  return digits ? `${digits}@c.us` : s;\n}\nconst chat_id = normalizeChatId(raw_chat_id);\n\n// --- text body/caption (if present)\nlet body =\n  e?.payload?.body ||\n  e?.payload?.text ||\n  e?.message?.text ||\n  e?.payload?.caption ||\n  '';\n\n// --- media URL (if present)\nconst media_url =\n  e?.payload?.media?.url ||\n  e?.payload?.url ||\n  e?.payload?.mediaUrl ||\n  e?.message?.media?.url ||\n  '';\n\n// --- skip echoes / fromMe (best-effort)\nconst should_skip = Boolean(\n  e?.payload?.fromMe === true ||\n  e?.payload?.fromMe === 'true' ||\n  e?.message?.fromMe === true ||\n  e?.message?.fromMe === 'true'\n);\n\n// --- command: /tax4us, /meatpoint etc.\nlet command = null;\nif (typeof body === 'string') {\n  const t = body.trim();\n  if (t.startsWith('/')) {\n    command = t.slice(1).split(/\\s+/)[0].toLowerCase();\n    // strip the command token from the body so the agent sees the actual question\n    body = t.replace(/^\\/[^\\s]+\\s*/,'');\n  }\n}\n\nreturn [{\n  json: {\n    ...e,\n    session_id,\n    chat_id,\n    message_type,\n    content: body,\n    media_url,\n    command,\n    should_skip\n  }\n}];\n"
+      },
+      "id": "756a4c27-30d1-4c1d-a145-b718a0a46fa1",
+      "name": "🔄 Normalize Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        544
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "@devlikeapro/n8n-nodes-waha.wahaTrigger",
+      "typeVersion": 202502,
+      "position": [
+        -48,
+        -64
+      ],
+      "id": "41fe7b4e-8b2a-499f-9130-9364a0aca4fc",
+      "name": "WAHA Trigger1",
+      "webhookId": "4d899c77-211c-4d21-8232-952ca1abfcc3"
+    },
+    {
+      "parameters": {
+        "path": "6790e868-cbc7-4429-b953-0ab551a534b8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        3392,
+        80
+      ],
+      "id": "7d95bcf5-c534-4679-8e26-06b6191f590b",
+      "name": "Webhook",
+      "webhookId": "6790e868-cbc7-4429-b953-0ab551a534b8"
+    }
+  ],
+  "connections": {
+    "🔎 BS Find Customer": {
+      "main": [
+        [
+          {
+            "node": "🔀 Message Type Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🔎 BS Find Customer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "boost.space query1": {
+      "ai_tool": [
+        [
+          {
+            "node": "🔎 BS Find Customer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏷️ Customer Config Lookup": {
+      "main": [
+        [
+          {
+            "node": "🔎 BS Find Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✍️ Prepare AI Input2": {
+      "main": [
+        [
+          {
+            "node": "🧠 AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📤 Format Response1": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Guardrails (Outbound)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚫 Filter Skip1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "🏷️ Customer Config Lookup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Transcribe Audio1": {
+      "main": [
+        [
+          {
+            "node": "🧩 Attach Transcript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎤 Download Audio1": {
+      "main": [
+        [
+          {
+            "node": "📝 Transcribe Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "📤 Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Response?1": {
+      "main": [
+        [
+          {
+            "node": "Convert text to speech1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert text to speech1": {
+      "main": [
+        [
+          {
+            "node": "Send an voice message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Store Name and Extract Text1": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Guardrails (Inbound)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🛡️ Guardrails (Inbound)1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 SQLite Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "🧠 AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧩 Attach Transcript1": {
+      "main": [
+        [
+          {
+            "node": "Set Store Name and Extract Text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛡️ Guardrails (Outbound)1": {
+      "main": [
+        [
+          {
+            "node": "Voice Response?1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Blocked Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚫 Unsupported Input Type1": {
+      "main": [
+        [
+          {
+            "node": "Voice Response?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚫 Blocked Input1": {
+      "main": [
+        [
+          {
+            "node": "Voice Response?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚫 Blocked Response1": {
+      "main": [
+        [
+          {
+            "node": "Voice Response?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Message Type Router": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Guardrails (Inbound)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🎤 Download Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🖼️ Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Unsupported Input Type1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Unsupported Input Type1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Unsupported Input Type1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🖼️ Download Image": {
+      "main": [
+        [
+          {
+            "node": "✍️ Prepare AI Input3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✍️ Prepare AI Input3": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Guardrails (Inbound)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛡️ Guardrails (Inbound)1": {
+      "main": [
+        [
+          {
+            "node": "✍️ Prepare AI Input2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Blocked Input1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🛡️ Guardrails (Outbound)1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Config Loader": {
+      "main": [
+        [
+          {
+            "node": "🔄 Normalize Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Normalize Message": {
+      "main": [
+        [
+          {
+            "node": "🚫 Filter Skip1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAHA Trigger1": {
+      "main": [
+        [
+          {
+            "node": "📋 Config Loader",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📋 Config Loader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "📋 Config Loader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "aef96d4d-4864-4bf7-9078-f728595775e9",
+  "activeVersionId": "aef96d4d-4864-4bf7-9078-f728595775e9",
+  "versionCounter": 7,
+  "triggerCount": 2
+}

@@ -1,19 +1,20 @@
 # Rensto n8n Agents Plugin v2.0.0
 
 ## Overview
-Specialized n8n workflow creation and management agents for Rensto with **Docker-based multi-instance support**. This plugin provides direct access to all Rensto n8n instances through specialized Docker-based MCP servers.
+Specialized n8n workflow creation and management agents for Rensto with **npx-based multi-instance support**. This plugin provides direct access to all Rensto n8n instances through specialized npx-based MCP servers.
 
 ## 🚀 Features
 
-### Docker-Based Multi-Instance Support
-- **n8n-rensto-vps**: Docker container `3f30fc680c41` → Internal workflows (173.254.201.134:5678)
-- **n8n-tax4us-cloud**: Docker container `050063cb179f` → Customer workflows (tax4usllc.app.n8n.cloud)
-- **n8n-shelly-cloud**: Docker container `8d519d75af77` → Customer workflows (shellyins.app.n8n.cloud)
+### npx-Based Multi-Instance Support
+- **n8n-rensto**: npx-based MCP server → Internal workflows (173.254.201.134:5678)
+- **n8n-tax4us**: npx-based MCP server → Customer workflows (tax4usllc.app.n8n.cloud)
+- **n8n-shelly**: npx-based MCP server → Customer workflows (shellyins.app.n8n.cloud)
 
 ### Direct Instance Access
-- **Specialized MCP Servers**: Each instance has its own Docker-based MCP server
+- **Specialized MCP Servers**: Each instance has its own npx-based MCP server
 - **No Conflicts**: Clean separation between instances prevents configuration issues
 - **Direct API Access**: Each MCP server connects directly to its specific n8n instance
+- **⚠️ Note**: Docker-based approach was replaced with npx in October 2025 (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ### Specialized Agents
 1. **n8n Workflow Architect**: Design workflow architecture

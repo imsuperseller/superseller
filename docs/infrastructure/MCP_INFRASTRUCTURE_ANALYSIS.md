@@ -12,7 +12,7 @@
 
 | MCP Server | Command | Port | Status | Use Case |
 |------------|---------|------|--------|----------|
-| n8n-mcp | Docker (stdio) | N/A | ✅ Active | Workflow management from Cursor |
+| n8n-mcp | npx (stdio) | N/A | ✅ Active | Workflow management from Cursor (Docker doesn't work) |
 | airtable-mcp | npx (stdio) | N/A | ✅ Active | Airtable data access from Cursor |
 | webflow | Node (stdio) | N/A | ✅ Active | Webflow Designer API |
 | context7 | npx (stdio) | N/A | ✅ Active | Context management |

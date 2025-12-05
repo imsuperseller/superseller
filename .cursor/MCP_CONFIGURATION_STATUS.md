@@ -21,16 +21,16 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 
 ## 📊 **MCP Servers Overview** (11 Active, 1 Disabled)
 
-### **Docker-Based Servers** (2)
+### **Docker-Based Servers** (1 - n8n-mcp moved to npx)
 
 | Server | Image | Status | Purpose |
 |--------|-------|--------|---------|
-| **n8n-mcp** | ghcr.io/czlonkowski/n8n-mcp:latest | ✅ Configured | Access 70 n8n workflows on Rensto VPS |
+| **n8n-mcp** | npx -y n8n-mcp | ✅ Configured | Access n8n workflows via npx (Docker doesn't work) |
 | **stripe-mcp** | mcp/stripe | ✅ Configured | Stripe API operations |
 
-**Note**: Docker-based MCPs create new containers on each Cursor restart. Run cleanup script weekly.
+**Note**: n8n-mcp moved to npx (Docker had stdin issues). See `docs/infrastructure/MCP_CONFIGURATION.md` for working config.
 
-### **NPX-Based Servers** (5)
+### **NPX-Based Servers** (6 - includes n8n-mcp)
 
 | Server | Package | Status | Purpose |
 |--------|---------|--------|---------|

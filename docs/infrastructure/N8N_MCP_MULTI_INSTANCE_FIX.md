@@ -20,7 +20,7 @@ ps aux | grep -E "Claude|Cursor"
 
 **MCP Processes Running**:
 - 3 × npx-based n8n-mcp processes (correct)
-- 2 × Docker-based n8n-mcp processes (leftover from old config)
+- ⚠️ Docker-based n8n-mcp processes don't work (use npx instead - see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 **Log Files**:
 - `~/Library/Logs/Claude/mcp-server-n8n-rensto.log` (should exist)
@@ -135,7 +135,7 @@ curl -H "X-N8N-API-KEY: ..." https://shellyins.app.n8n.cloud/api/v1/workflows
 mcp__n8n-rensto__n8n_list_workflows
 mcp__n8n-rensto__n8n_get_workflow
 mcp__n8n-rensto__n8n_get_execution
-... (42 tools × 3 instances = 126 total)
+... (19 tools × 3 instances = 57 total - consolidated from 38 in older versions)
 ```
 
 **Test Commands**:

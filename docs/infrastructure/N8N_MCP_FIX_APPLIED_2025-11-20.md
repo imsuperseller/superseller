@@ -1,6 +1,6 @@
 # n8n-MCP Fix Applied - November 20, 2025
 
-**Status**: ✅ **FIX APPLIED** - Wrapper scripts created and config updated
+**Status**: ⚠️ **HISTORICAL** - Wrapper scripts were a temporary workaround. Current solution is npx mode (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ---
 
@@ -10,9 +10,13 @@
 
 **Root Cause**: Cursor not passing environment variables from `~/.cursor/mcp.json` to spawned Node.js process
 
-**Evidence**:
-- ✅ With env vars: `"MCP server initialized with 42 tools (n8n API: configured)"`
-- ❌ Without env vars: `"MCP server initialized with 23 tools (n8n API: not configured)"`
+**⚠️ HISTORICAL NOTE**: This document references 42 tools and 23 tools, but the current version (2.26.5) has **19 tools** (consolidated from 38 in older versions).
+
+**Evidence** (Historical):
+- ✅ With env vars: `"MCP server initialized with 42 tools (n8n API: configured)"` - Historical
+- ❌ Without env vars: `"MCP server initialized with 23 tools (n8n API: not configured)"` - Historical
+
+**Current Status**: 19 tools available via npx mode (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ---
 
@@ -71,7 +75,7 @@ Created 3 wrapper scripts that explicitly set environment variables before spawn
 ## Next Steps
 
 1. **Restart Cursor completely** (required for MCP config changes)
-2. **Verify tools are available** - Should see 42 tools per instance (not 23)
+2. **Verify tools are available** - Should see 19 tools per instance (consolidated from 38 in older versions)
 3. **Test n8n API tools** - Tools like `n8n_health_check`, `n8n_list_workflows` should be available
 
 ---

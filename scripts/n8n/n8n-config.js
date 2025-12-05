@@ -14,7 +14,7 @@ const N8N_INSTANCES = {
   rensto: {
     type: 'vps',
     name: 'Rensto VPS',
-    url: 'http://173.254.201.134:5678',
+    url: 'http://n8n.rensto.com',
     apiKey: process.env.N8N_RENSTO_API_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2MDkyMDIxfQ.YKPTmHyLr1_kXX2JMY7hsPy4jvnCJDL71mOCltoUbQc',
     description: 'Rensto internal workflows (68 workflows)',
     workflows: 68,

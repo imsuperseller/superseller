@@ -29,7 +29,7 @@ class N8nUnifiedServer {
 
     this.instances = {
       'rensto-vps': {
-        url: process.env.N8N_RENSTO_VPS_URL || 'http://173.254.201.134:5678',
+        url: process.env.N8N_RENSTO_VPS_URL || 'http://n8n.rensto.com',
         apiKey: process.env.N8N_RENSTO_VPS_KEY,
         type: 'internal',
         apiType: 'self-hosted' // Full API support
@@ -940,13 +940,23 @@ class N8nUnifiedServer {
       });
 
       // Merge updates with existing workflow data
-      const updatedWorkflow = {
+      const mergedWorkflow = {
         ...currentWorkflow.data,
         ...updates,
         // Ensure nodes are preserved if not explicitly updated
         nodes: updates.nodes || currentWorkflow.data.nodes,
         // Ensure connections are preserved if not explicitly updated
         connections: updates.connections || currentWorkflow.data.connections
+      };
+
+      // Filter to only allowed fields for PUT request (n8n API rejects read-only fields)
+      // Allowed fields: name, nodes, connections, settings
+      // Note: 'active' is read-only in PUT - use activateWorkflow (PATCH) to change it
+      const updatedWorkflow = {
+        name: mergedWorkflow.name,
+        nodes: mergedWorkflow.nodes,
+        connections: mergedWorkflow.connections || {},
+        settings: mergedWorkflow.settings || {}
       };
 
       const response = await axios.put(`${config.url}/api/v1/workflows/${id}`, updatedWorkflow, {

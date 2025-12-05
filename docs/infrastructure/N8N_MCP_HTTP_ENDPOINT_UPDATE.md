@@ -2,13 +2,15 @@
 
 **Date**: November 25, 2025  
 **n8n Version**: 1.122.0  
-**Status**: ✅ Configured
+**Status**: ❌ **DOES NOT WORK** - Returns 404 errors
+
+**⚠️ DO NOT USE THIS APPROACH** - See `docs/infrastructure/MCP_CONFIGURATION.md` for working solution.
 
 ---
 
 ## 🔧 Configuration Update
 
-After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (in addition to stdio mode).
+⚠️ **HISTORICAL NOTE**: After updating n8n to 1.122.0, HTTP endpoint mode was attempted but **returns 404 errors and does not work**. Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`).
 
 ### **HTTP Endpoint Details**
 
@@ -33,20 +35,29 @@ After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (i
 }
 ```
 
-**New Configuration** (HTTP mode):
+**⚠️ HTTP MODE DOES NOT WORK** - Returns 404 errors. Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`):
+
 ```json
 {
   "mcpServers": {
     "n8n-rensto": {
-      "url": "https://n8n.rensto.com/mcp-server/http",
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImVjYzFlYWQ4LWJkMzctNGY4My1iZTRmLTZiZDhhNThlMzk0YiIsImlhdCI6MTc2NDA1MTA4Mn0.QeolGfdZUOZn-GBizI382d1-q5Dpsjn_e5Vekd6GxsU"
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"],
+      "env": {
+        "N8N_API_URL": "http://173.254.201.134:5678",
+        "N8N_API_KEY": "[API_KEY]",
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error"
       }
     },
     "n8n-tax4us": {
-      "url": "https://tax4usllc.app.n8n.cloud/mcp-server/http",
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6IjM4OTQwMTM4LTVhZDUtNDBmZi1hZDM1LTgwZTY4MmRhYWZlNiIsImlhdCI6MTc2NDA1MjcyNX0.s_3K8cJYO3h6VuY4rpc94rIIo5eZOkWnyOfBAn5VnV4"
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"],
+      "env": {
+        "N8N_API_URL": "https://tax4usllc.app.n8n.cloud",
+        "N8N_API_KEY": "[API_KEY]",
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error"
       }
     },
     "n8n-ops": {
@@ -71,12 +82,17 @@ After updating n8n to 1.122.0, the MCP server now supports HTTP endpoint mode (i
 
 ---
 
-## ✅ Benefits of HTTP Mode
+## ❌ HTTP Mode Does Not Work
 
-1. **No Local Wrapper Needed**: Direct connection to n8n instance
-2. **Simpler Configuration**: Just URL and token
-3. **Better Performance**: HTTP/SSE connection instead of stdio
-4. **Native n8n Feature**: Built into n8n 1.122.0+
+**Problem**: HTTP endpoint returns 404 errors when accessed from Cursor.
+
+**Solution**: Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`)
+
+**Why npx works**:
+1. ✅ Proven in October 2025 - Fixed Docker stdio issues
+2. ✅ No Docker stdin problems
+3. ✅ Faster startup
+4. ✅ Lower memory usage
 
 ---
 
@@ -120,7 +136,7 @@ To balance safety with full control, the MCP stack now runs in two tiers:
 
 ## 📋 Verification Steps
 
-1. **Test Endpoint** (✅ TESTED):
+1. **⚠️ HTTP Endpoint Test** (❌ RETURNS 404):
    ```bash
    curl -X POST "https://n8n.rensto.com/mcp-server/http" \
      -H "Authorization: Bearer <token>" \
@@ -129,39 +145,29 @@ To balance safety with full control, the MCP stack now runs in two tiers:
      -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"cursor-test","version":"1.0"}}}'
    ```
    
-   **Expected Response**:
-   ```
-   event: message
-   data: {"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"n8n MCP Server","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
-   ```
+   **Actual Response**: ❌ **404 Error** - Endpoint does not exist
+   
+   **Current Solution**: Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
-2. **Check Cursor MCP Status**:
+2. **Check Cursor MCP Status** (npx mode):
    - Restart Cursor
-   - Verify `n8n-rensto` MCP server is connected
+   - Verify `n8n-rensto` MCP server is connected (should show npx mode)
    - Test MCP tools (e.g., `mcp_n8n-rensto_n8n_list_workflows`)
 
-## ✅ Test Results
+## ❌ Test Results (November 28, 2025)
 
-**Date**: November 25, 2025  
-**Status**: ✅ **BOTH ENDPOINTS WORKING**
+**Date**: November 28, 2025  
+**Status**: ❌ **HTTP ENDPOINT RETURNS 404**
 
 ### **Rensto n8n (Self-Hosted)**
-- ✅ Initialize method: **SUCCESS** (returns server info)
-- ✅ Server name: `n8n MCP Server`
-- ✅ Server version: `1.0.0`
-- ✅ Protocol version: `2024-11-05`
-- ✅ Capabilities: Tools with `listChanged: true`
-- ✅ Authentication: JWT token accepted
-- ✅ Response format: Server-Sent Events (SSE)
+- ❌ HTTP endpoint: **404 ERROR**
+- ❌ SSE connection: **FAILS**
+- ✅ **Solution**: Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ### **Tax4Us n8n (Cloud)**
-- ✅ Initialize method: **SUCCESS** (returns server info)
-- ✅ Server name: `n8n MCP Server`
-- ✅ Server version: `1.0.0`
-- ✅ Protocol version: `2024-11-05`
-- ✅ Capabilities: Tools with `listChanged: true`
-- ✅ Authentication: JWT token accepted
-- ✅ Response format: Server-Sent Events (SSE)
+- ❌ HTTP endpoint: **404 ERROR**  
+- ❌ SSE connection: **FAILS**
+- ✅ **Solution**: Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ---
 
@@ -169,23 +175,28 @@ To balance safety with full control, the MCP stack now runs in two tiers:
 
 1. **Token Security**: Keep the JWT token secure - it provides full MCP server API access
 2. **Token Expiration**: JWT tokens may expire - regenerate via n8n UI if needed
-3. **Fallback**: If HTTP mode doesn't work, can revert to stdio mode using the wrapper script
-4. **Other Instances**: 
-- ✅ **Tax4Us**: Now using HTTP mode (`https://tax4usllc.app.n8n.cloud/mcp-server/http`)
-- ⚠️ **Shelly**: Still using stdio mode (HTTP endpoint not yet available)
+3. **⚠️ HTTP mode doesn't work** - Returns 404 errors. Use npx mode instead (see `docs/infrastructure/MCP_CONFIGURATION.md`)
+4. **All Instances**: 
+- ✅ **All instances**: Use npx mode (HTTP endpoint returns 404 for all)
 
 ---
 
-## 🔄 Rollback (If Needed)
+## ✅ Working Configuration
 
-If HTTP mode doesn't work, revert to stdio mode:
+**Use npx mode** (see `docs/infrastructure/MCP_CONFIGURATION.md` for complete configuration):
 
 ```json
 {
   "mcpServers": {
     "n8n-rensto": {
-      "command": "node",
-      "args": ["/Users/shaifriedman/New Rensto/rensto/infra/mcp-servers/n8n-mcp-wrapper/n8n-rensto-wrapper.cjs"]
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"],
+      "env": {
+        "N8N_API_URL": "http://173.254.201.134:5678",
+        "N8N_API_KEY": "[API_KEY]",
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error"
+      }
     }
   }
 }

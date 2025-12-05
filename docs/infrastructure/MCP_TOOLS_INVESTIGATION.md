@@ -46,13 +46,19 @@ requests.get(
 
 ## Fix Applied (November 20, 2025)
 
-**Root Cause**: `n8n-rensto` was using `npx -y n8n-mcp@latest` which can be unreliable. The working `n8n-tax4us` config uses a direct path to the installed package.
+**⚠️ HISTORICAL NOTE**: This document references using a direct path to installed package, but the current working solution is **npx mode** (see `docs/infrastructure/MCP_CONFIGURATION.md`).
 
-**Solution**: Updated `n8n-rensto` config to use direct path:
+**Current Working Solution**:
 ```json
 {
-  "command": "node",
-  "args": ["/Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/dist/mcp/index.js"]
+  "command": "npx",
+  "args": ["-y", "n8n-mcp"],
+  "env": {
+    "N8N_API_URL": "http://173.254.201.134:5678",
+    "N8N_API_KEY": "[API_KEY]",
+    "MCP_MODE": "stdio",
+    "LOG_LEVEL": "error"
+  }
 }
 ```
 

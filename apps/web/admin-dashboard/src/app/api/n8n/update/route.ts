@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Check n8n status
-    const n8nUrl = 'http://173.254.201.134:5678';
+    const n8nUrl = 'http://n8n.rensto.com';
     const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA';
     
     // Test n8n connectivity

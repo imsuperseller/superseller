@@ -50,7 +50,7 @@ export async function POST(
 
     // Simulate the n8n webhook call
     const n8nWebhookUrl =
-      'http://173.254.201.134:5678/webhook/facebook-scraper';
+      'http://n8n.rensto.com/webhook/facebook-scraper';
     const webhookData = {
       executionId,
       agentId: id,

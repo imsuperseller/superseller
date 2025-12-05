@@ -13,10 +13,15 @@ After applying the wrapper script fix and restarting Cursor, **n8n-rensto MCP to
 - ❌ n8n API: not configured
 - ❌ No workflow management tools
 
-**After Fix**:
-- ✅ **38 tools available** (22 documentation + 16 management)
+**After Fix** (Historical - November 2025):
+- ✅ **38 tools available** (22 documentation + 16 management) - Historical count
 - ✅ n8n API: configured and connected
 - ✅ All workflow management tools working
+
+**Current Status** (November 28, 2025):
+- ✅ **19 tools available** (consolidated from 38 in older versions)
+- ✅ npx mode working (see `docs/infrastructure/MCP_CONFIGURATION.md`)
+- ✅ Wrapper scripts replaced by direct npx mode
 
 ---
 
@@ -112,11 +117,12 @@ Created wrapper scripts that explicitly set environment variables before spawnin
 
 ## Current Status
 
-### ✅ Working
-- **n8n-rensto**: 38 tools available, fully functional
+### ✅ Working (Current Status - November 28, 2025)
+- **n8n-rensto**: 19 tools available, fully functional (consolidated from 38)
 - **Context7 MCP**: Working (documentation lookup and research)
 - All workflow management operations working
 - API connectivity confirmed
+- **Configuration**: npx mode (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ### ⚠️ Pending
 - **n8n-tax4us**: Tools not yet available (may need another restart)
@@ -199,7 +205,7 @@ mcp_n8n-rensto_n8n_health_check()
 ## Conclusion
 
 ✅ **The fix worked!** Both n8n-rensto and Context7 MCP tools are now fully operational:
-- **n8n-rensto**: 38 tools available (22 documentation + 16 management)
+- **n8n-rensto**: 19 tools available (consolidated from 38 in older versions)
 - **Context7**: 2 tools available (library documentation lookup)
 - The wrapper script solution successfully works around Cursor's environment variable passing bug
 

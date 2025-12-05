@@ -12,7 +12,7 @@ function getStripe(): Stripe {
   });
 }
 
-const N8N_URL = 'http://173.254.201.134:5678';
+const N8N_URL = 'http://n8n.rensto.com';
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 /**

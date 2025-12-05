@@ -19,11 +19,13 @@ The `node /Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/dist/mcp/inde
 
 **Environment variables are not being passed** from `~/.cursor/mcp.json` to the spawned Node.js process.
 
-**Evidence**:
-- ✅ When env vars are provided manually: `"MCP server initialized with 42 tools (n8n API: configured)"`
-- ❌ When Cursor spawns it: `"MCP server initialized with 23 tools (n8n API: not configured)"`
+**⚠️ HISTORICAL NOTE**: This document references 42 tools and 23 tools, but the current version (2.26.5) has **19 tools** (consolidated from 38 in older versions).
 
-**Result**: Only 23 documentation tools available, missing 19 n8n API tools.
+**Evidence** (Historical):
+- ✅ When env vars are provided manually: `"MCP server initialized with 42 tools (n8n API: configured)"` - Historical
+- ❌ When Cursor spawns it: `"MCP server initialized with 23 tools (n8n API: not configured)"` - Historical
+
+**Current Status**: 19 tools available via npx mode (see `docs/infrastructure/MCP_CONFIGURATION.md`)
 
 ---
 
@@ -36,7 +38,7 @@ N8N_API_KEY="..." \
 node /Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/dist/mcp/index.js
 ```
 
-**Result**: ✅ **42 tools initialized (n8n API: configured)**
+**Result** (Historical): ✅ **42 tools initialized (n8n API: configured)** - Current version has 19 tools
 
 ### Test 2: MCP Protocol Test
 ```bash
@@ -46,7 +48,7 @@ N8N_API_KEY="..." \
 node /Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/dist/mcp/index.js
 ```
 
-**Result**: ✅ **Server responds correctly, 42 tools available**
+**Result** (Historical): ✅ **Server responds correctly, 42 tools available** - Current version has 19 tools
 
 ### Test 3: Cursor Spawned Process
 **Status**: ❌ **23 tools only (n8n API: not configured)**

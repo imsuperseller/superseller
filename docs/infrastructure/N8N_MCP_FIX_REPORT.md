@@ -5,6 +5,8 @@
 **Status**: ✅ FIXED
 **Solution**: Switched from Docker to npx for all 3 n8n instances
 
+**⚠️ THIS IS THE WORKING SOLUTION** - See `docs/infrastructure/MCP_CONFIGURATION.md` for current configuration.
+
 ---
 
 ## 🔍 Problem Analysis

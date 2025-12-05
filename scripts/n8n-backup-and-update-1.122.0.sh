@@ -1,7 +1,7 @@
 #!/bin/sh
-# 🛡️ N8N COMPLETE BACKUP & UPDATE TO 1.122.0
+# 🛡️ N8N COMPLETE BACKUP & UPDATE TO 1.122.5
 # Comprehensive backup of workflows, credentials, community nodes, and data volume
-# Then updates n8n from current version to 1.122.0
+# Then updates n8n from current version to 1.122.5
 # Uses /bin/sh to ensure compatibility and avoid shell initialization issues
 # 
 # LESSONS LEARNED:
@@ -17,7 +17,7 @@ BACKUP_DIR="/root/n8n-backups/$(date +%Y-%m-%d_%H%M%S)"
 CONTAINER_NAME="n8n_rensto"
 VOLUME_NAME="n8n_n8n_data"
 N8N_SERVER="173.254.201.134"
-TARGET_VERSION="1.122.1"
+TARGET_VERSION="1.122.5"
 DOCKER_COMPOSE_DIR="/opt/n8n"
 
 echo "🛡️  N8N COMPLETE BACKUP & UPDATE TO $TARGET_VERSION"

@@ -28,5 +28,8 @@
     "eventsource": "^4.0.0",
     "express": "^5.1.0",
     "stripe": "^19.0.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.57.0"
   }
 }

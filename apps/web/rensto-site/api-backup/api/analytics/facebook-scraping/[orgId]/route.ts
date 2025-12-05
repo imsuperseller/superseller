@@ -34,7 +34,7 @@ export async function GET(
 
 async function getRealFacebookScrapingData(organizationId: string) {
   // Connect to n8n to get real workflow execution data
-  const n8nUrl = process.env.N8N_BASE_URL || 'http://173.254.201.134:5678';
+  const n8nUrl = process.env.N8N_BASE_URL || 'http://n8n.rensto.com';
   const n8nApiKey = process.env.N8N_API_KEY;
 
   // Connect to Apify to get real scraping results

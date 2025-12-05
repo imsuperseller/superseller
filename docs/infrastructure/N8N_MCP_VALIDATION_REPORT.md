@@ -9,12 +9,12 @@
 
 ## Executive Summary
 
-All 3 n8n-MCP instances are **fully operational** after switching from Docker to npx. All 41 tools per instance are accessible via Cursor, and all critical API operations have been validated.
+All 3 n8n-MCP instances are **fully operational** after switching from Docker to npx. All 19 tools per instance are accessible via Cursor (consolidated from 38 in older versions), and all critical API operations have been validated.
 
 **Test Results**:
 - ✅ 6/6 tests passed (100%)
 - ✅ 0 failures
-- ✅ 123 total n8n-MCP tools available (41 × 3 instances)
+- ✅ 57 total n8n-MCP tools available (19 × 3 instances)
 
 ---
 

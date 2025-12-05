@@ -9,17 +9,17 @@
 ## 📊 TOOL INVENTORY
 
 **Total Available**: 40+ tools
-- **n8n MCP Tools**: 38 tools (from czlonkowski/n8n-mcp v2.22.19)
-  - Documentation tools: 22 (search_nodes, get_node_info, validate_workflow, etc.)
-  - Management tools: 16 (n8n_create_workflow, n8n_update_workflow, etc.)
-  - Note: Previous count of 41 was incorrect - actual count is 38 as confirmed by n8n_diagnostic
+- **n8n MCP Tools**: 19 tools (from czlonkowski/n8n-mcp v2.26.5, consolidated from 38 in older versions)
+  - Documentation tools: 7 (consolidated from 22 in older versions)
+  - Management tools: 12 (consolidated from 16 in older versions)
+  - Note: Current version (2.26.5) has 19 tools total (consolidated from 38 in older versions)
 - **Context7 MCP Tools**: 2 tools (from @upstash/context7-mcp v1.0.29)
 
 **Currently Used**: 10 tools  
 **Not Utilized**: 30+ tools
 
-**Last Updated**: November 19, 2025
-**n8n-mcp Version**: 2.22.19 (latest, updated Nov 19, 2025)
+**Last Updated**: November 28, 2025
+**n8n-mcp Version**: 2.26.5 (latest via npx, consolidated to 19 tools)
 **Context7-mcp Version**: 1.0.29 (latest, configured via npx)
 
 ---

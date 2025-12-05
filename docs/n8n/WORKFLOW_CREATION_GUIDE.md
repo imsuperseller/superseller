@@ -203,7 +203,7 @@ The workflow executed successfully but the content was REJECTED at the IF node.
 - This is expected behavior, not a failure
 
 ### Node Analysis
-- Airtable Trigger: ✅ Working
+- Boost.space Trigger: ✅ Working (via HTTP Request node)
 - IF: Should Process?: ✅ Working (correctly rejected invalid content)
 - Slack: Notify Rejection: ✅ Working
 
@@ -224,7 +224,7 @@ it's rejecting test records as designed. Here's the full report:
 ### Example 2: Build New Workflow
 
 **User Request**:
-> "Create a workflow that sends daily email summaries of new Airtable records"
+> "Create a workflow that sends daily email summaries of new Boost.space records"
 
 **Main Session Response**:
 ```
@@ -239,7 +239,7 @@ Task({
   prompt: `Build a new n8n workflow for the Rensto VPS instance (http://173.254.201.134:5678) that:
 
 1. Triggers daily at 9am
-2. Queries Airtable for records created in last 24 hours
+2. Queries Boost.space for records created in last 24 hours
 3. Formats data into an email
 4. Sends email summary
 

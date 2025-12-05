@@ -1,0 +1,570 @@
+{
+  "name": "INT-SYNC-007: n8n to Boost.space Auto Sync v1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minute",
+              "operation": "everyXMinutes",
+              "value": 15
+            }
+          ]
+        }
+      },
+      "disabled": false,
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger (Every 15 min)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 500]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByIndex"
+      },
+      "id": "merge-triggers",
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [460, 400],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://173.254.201.134:5678/api/v1/workflows?limit=250",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{ $env.N8N_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-n8n-workflows",
+      "name": "Fetch All n8n Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract workflows from n8n API response\nconst items = $input.all();\nconst workflows = [];\n\nfor (const item of items) {\n  const data = item.json.data || item.json || [];\n  if (Array.isArray(data)) {\n    workflows.push(...data);\n  } else if (data.id) {\n    workflows.push(data);\n  }\n}\n\n// Extract integrations from nodes\nfunction extractIntegrations(nodes) {\n  const integrations = new Set();\n  for (const node of nodes || []) {\n    if (node.type && node.type.includes('.')) {\n      const service = node.type.split('.')[0];\n      if (service && service !== 'n8n-nodes-base') {\n        integrations.add(service);\n      }\n    }\n  }\n  return Array.from(integrations);\n}\n\n// Process each workflow\nreturn workflows.map(workflow => ({\n  json: {\n    id: workflow.id,\n    name: workflow.name,\n    active: workflow.active || false,\n    nodes: workflow.nodes || [],\n    connections: workflow.connections || {},\n    settings: workflow.settings || {},\n    staticData: workflow.staticData || {},\n    tags: workflow.tags || [],\n    createdAt: workflow.createdAt,\n    updatedAt: workflow.updatedAt,\n    description: workflow.description || workflow.name,\n    nodeCount: (workflow.nodes || []).length,\n    integrations: extractIntegrations(workflow.nodes || [])\n  }\n}));"
+      },
+      "id": "process-n8n-workflows",
+      "name": "Process n8n Workflows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://superseller.boost.space/api/product?limit=250",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.BOOST_SPACE_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-boost-space-products",
+      "name": "Fetch Boost.space Products",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 600],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract products from Boost.space API response\nconst items = $input.all();\nconst products = [];\n\nfor (const item of items) {\n  const data = Array.isArray(item.json) ? item.json : (item.json.data || []);\n  if (Array.isArray(data)) {\n    products.push(...data);\n  } else if (data.id) {\n    products.push(data);\n  }\n}\n\n// Create map of workflow_id (SKU) to product\nconst productMap = {};\nfor (const product of products) {\n  const workflowId = product.sku || product.customFieldsValues?.find(\n    f => f.customFieldInputName === 'workflow_id'\n  )?.value;\n  if (workflowId) {\n    productMap[workflowId] = product;\n  }\n}\n\nreturn Object.values(productMap).map(product => ({\n  json: {\n    id: product.id,\n    sku: product.sku,\n    name: product.name,\n    workflowId: product.sku || product.customFieldsValues?.find(\n      f => f.customFieldInputName === 'workflow_id'\n    )?.value,\n    updatedAt: product.updatedAt || product.createdAt,\n    product: product\n  }\n}));"
+      },
+      "id": "process-boost-space-products",
+      "name": "Process Boost.space Products",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 600],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex"
+      },
+      "id": "combine-data",
+      "name": "Combine n8n & Boost.space Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1120, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Compare n8n workflows with Boost.space products\n// Determine actions: CREATE, UPDATE, DELETE\n\nconst allInputs = $input.all();\nconst n8nWorkflows = allInputs.find(item => item.json.id && item.json.name) ? [allInputs.find(item => item.json.id && item.json.name).json] : allInputs.filter(item => item.json.id && item.json.name).map(item => item.json);\nconst boostSpaceProducts = allInputs.find(item => item.json.workflowId) ? [allInputs.find(item => item.json.workflowId).json] : allInputs.filter(item => item.json.workflowId).map(item => item.json);\n\n// If we got arrays from previous nodes, flatten them\nconst workflows = Array.isArray(n8nWorkflows[0]) ? n8nWorkflows[0] : n8nWorkflows;\nconst products = Array.isArray(boostSpaceProducts[0]) ? boostSpaceProducts[0] : boostSpaceProducts;\n\n// Create maps for quick lookup\nconst n8nMap = {};\nconst boostSpaceMap = {};\n\n// Map n8n workflows by ID\nfor (const workflow of workflows) {\n  if (workflow.id) {\n    n8nMap[workflow.id] = workflow;\n  }\n}\n\n// Map Boost.space products by workflow_id (SKU)\nfor (const product of products) {\n  const workflowId = product.workflowId || product.sku;\n  if (workflowId) {\n    boostSpaceMap[workflowId] = product;\n  }\n}\n\nconst actions = [];\n\n// 1. CREATE: Workflows in n8n but not in Boost.space\nfor (const workflowId in n8nMap) {\n  if (!boostSpaceMap[workflowId]) {\n    actions.push({\n      action: 'CREATE',\n      workflowId: workflowId,\n      workflow: n8nMap[workflowId],\n      reason: 'New workflow in n8n'\n    });\n  }\n}\n\n// 2. UPDATE: Workflows in both (check if updated)\nfor (const workflowId in n8nMap) {\n  if (boostSpaceMap[workflowId]) {\n    const workflow = n8nMap[workflowId];\n    const product = boostSpaceMap[workflowId].product;\n    \n    // Check if workflow was updated (compare updatedAt)\n    const workflowUpdated = new Date(workflow.updatedAt || workflow.createdAt);\n    const productUpdated = new Date(product.updatedAt || product.createdAt);\n    \n    // Also check if name changed\n    const nameChanged = workflow.name !== product.name;\n    \n    if (workflowUpdated > productUpdated || nameChanged) {\n      actions.push({\n        action: 'UPDATE',\n        workflowId: workflowId,\n        workflow: workflow,\n        product: product,\n        reason: workflowUpdated > productUpdated ? 'Workflow updated in n8n' : 'Name changed'\n      });\n    }\n  }\n}\n\n// 3. DELETE: Products in Boost.space but not in n8n\nfor (const workflowId in boostSpaceMap) {\n  if (!n8nMap[workflowId]) {\n    actions.push({\n      action: 'DELETE',\n      workflowId: workflowId,\n      product: boostSpaceMap[workflowId].product,\n      reason: 'Workflow deleted from n8n'\n    });\n  }\n}\n\nreturn actions.map(action => ({ json: action }));"
+      },
+      "id": "determine-actions",
+      "name": "Determine Actions (CREATE/UPDATE/DELETE)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "action-create",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "CREATE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-create",
+      "name": "Filter: CREATE",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1560, 300],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "action-update",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "UPDATE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-update",
+      "name": "Filter: UPDATE",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1560, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "action-delete",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "DELETE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-delete",
+      "name": "Filter: DELETE",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1560, 700],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map workflow to Boost.space Product format\n// Based on populate-all-workflows-to-products.cjs\n\nconst workflow = $input.item.json.workflow;\n\n// Determine category\nfunction getCategory(name) {\n  const n = name.toUpperCase();\n  if (n.startsWith('INT-')) return 'Internal';\n  if (n.startsWith('SUB-')) return 'Subscription';\n  if (n.startsWith('MKT-')) return 'Marketing';\n  if (n.startsWith('DEV-')) return 'Development';\n  if (n.startsWith('TEST-')) return 'Development';\n  if (n.includes('CUSTOMER') || n.includes('CLIENT')) return 'Customer';\n  return 'Internal';\n}\n\n// Determine status\nfunction getStatus(workflow) {\n  if (!workflow.active) return '❌ Deprecated';\n  if (workflow.name.includes('Template') || workflow.name.includes('TEMPLATE')) return '📦 Template';\n  return '✅ Active';\n}\n\n// Determine marketplace readiness\nfunction getMarketplaceReadiness(workflow, category) {\n  if (category === 'Internal') return 'not_applicable';\n  if (workflow.name.includes('Template') || workflow.name.includes('TEMPLATE')) {\n    return 'ready_for_review';\n  }\n  return 'not_ready';\n}\n\nconst category = getCategory(workflow.name);\nconst status = getStatus(workflow);\nconst marketplaceReadiness = getMarketplaceReadiness(workflow, category);\n\n// Build product payload (simplified - custom fields would need field IDs)\nconst product = {\n  name: workflow.name,\n  description: workflow.description || workflow.name,\n  sku: workflow.id,\n  spaces: [59]\n};\n\nreturn { json: { product, workflow } };"
+      },
+      "id": "map-workflow-to-product",
+      "name": "Map Workflow to Product",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://superseller.boost.space/api/product",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.BOOST_SPACE_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { name: $json.product.name, description: $json.product.description, sku: $json.product.sku, spaces: [59] } }}",
+        "options": {}
+      },
+      "id": "create-product",
+      "name": "Create Product in Boost.space",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 300],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map workflow updates to Boost.space Product format\nconst workflow = $input.item.json.workflow;\nconst product = $input.item.json.product;\n\n// Build update payload (only changed fields)\nconst updatePayload = {\n  name: workflow.name,\n  description: workflow.description || workflow.name\n};\n\nreturn { json: { updatePayload, workflow, productId: product.id } };"
+      },
+      "id": "map-workflow-update",
+      "name": "Map Workflow Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ 'https://superseller.boost.space/api/product/' + $json.productId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.BOOST_SPACE_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.updatePayload }}",
+        "options": {}
+      },
+      "id": "update-product",
+      "name": "Update Product in Boost.space",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://superseller.boost.space/api/product/' + $json.product.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.BOOST_SPACE_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "delete-product",
+      "name": "Delete Product from Boost.space",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 700],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex"
+      },
+      "id": "merge-results",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [2220, 500],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Summarize sync results\nconst items = $input.all();\n\nconst summary = {\n  totalProcessed: items.length,\n  created: 0,\n  updated: 0,\n  deleted: 0,\n  errors: 0,\n  details: []\n};\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // Try to determine action from response or original data\n  const action = data.action || (data.id ? 'success' : 'error');\n  \n  if (action === 'CREATE' || (data.id && !data.error)) {\n    summary.created++;\n  } else if (action === 'UPDATE' || (data.id && !data.error)) {\n    summary.updated++;\n  } else if (action === 'DELETE' || (data.statusCode === 200 || data.statusCode === 204)) {\n    summary.deleted++;\n  }\n  \n  if (data.error || data.statusCode >= 400) {\n    summary.errors++;\n  }\n  \n  summary.details.push({\n    action: action,\n    workflowId: data.workflowId || data.sku || data.id,\n    workflowName: data.workflow?.name || data.name || 'Unknown',\n    success: !data.error && data.statusCode < 400,\n    error: data.error || (data.statusCode >= 400 ? `HTTP ${data.statusCode}` : null)\n  });\n}\n\nreturn { json: summary };"
+      },
+      "id": "summarize-results",
+      "name": "Summarize Sync Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2440, 500],
+      "disabled": false
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger (Every 15 min)": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Triggers": {
+      "main": [
+        [
+          {
+            "node": "Fetch All n8n Workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Boost.space Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch All n8n Workflows": {
+      "main": [
+        [
+          {
+            "node": "Process n8n Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process n8n Workflows": {
+      "main": [
+        [
+          {
+            "node": "Combine n8n & Boost.space Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Boost.space Products": {
+      "main": [
+        [
+          {
+            "node": "Process Boost.space Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Boost.space Products": {
+      "main": [
+        [
+          {
+            "node": "Combine n8n & Boost.space Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combine n8n & Boost.space Data": {
+      "main": [
+        [
+          {
+            "node": "Determine Actions (CREATE/UPDATE/DELETE)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determine Actions (CREATE/UPDATE/DELETE)": {
+      "main": [
+        [
+          {
+            "node": "Filter: CREATE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter: UPDATE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter: DELETE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: CREATE": {
+      "main": [
+        [
+          {
+            "node": "Map Workflow to Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: UPDATE": {
+      "main": [
+        [
+          {
+            "node": "Map Workflow Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: DELETE": {
+      "main": [
+        [
+          {
+            "node": "Delete Product from Boost.space",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Workflow to Product": {
+      "main": [
+        [
+          {
+            "node": "Create Product in Boost.space",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Workflow Update": {
+      "main": [
+        [
+          {
+            "node": "Update Product in Boost.space",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Product in Boost.space": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Product in Boost.space": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Delete Product from Boost.space": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Summarize Sync Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {},
+  "meta": {},
+  "pinData": {},
+  "active": false
+}

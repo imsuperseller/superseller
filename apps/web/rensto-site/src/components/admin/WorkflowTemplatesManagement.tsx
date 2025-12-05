@@ -60,7 +60,7 @@ export default function WorkflowTemplatesManagement() {
           deploymentStatus: 'Active',
           documentationUrl: 'https://github.com/rensto/rensto/blob/main/docs/workflow-templates/n8n-workflows/01-advanced-business-process-automation.md',
           n8nWorkflowId: 'rawczJckEDeStnVL',
-          webhookUrl: 'http://173.254.201.134:5678/webhook/business-process-automation',
+          webhookUrl: 'http://n8n.rensto.com/webhook/business-process-automation',
           lastDeployed: '2025-01-25',
           successRate: 95,
           errorCount: 2,
@@ -75,7 +75,7 @@ export default function WorkflowTemplatesManagement() {
           deploymentStatus: 'Active',
           documentationUrl: 'https://github.com/rensto/rensto/blob/main/docs/workflow-templates/n8n-workflows/02-real-time-analytics-dashboard.md',
           n8nWorkflowId: 'yOH1RZI5ZaKc9zy4',
-          webhookUrl: 'http://173.254.201.134:5678/webhook/analytics-dashboard',
+          webhookUrl: 'http://n8n.rensto.com/webhook/analytics-dashboard',
           lastDeployed: '2025-01-25',
           successRate: 98,
           errorCount: 1,
@@ -359,7 +359,7 @@ export default function WorkflowTemplatesManagement() {
                           variant="outline"
                           size="sm"
                           className="w-full justify-start"
-                          onClick={() => window.open(`http://173.254.201.134:5678/workflow/${template.n8nWorkflowId}`, '_blank')}
+                          onClick={() => window.open(`http://n8n.rensto.com/workflow/${template.n8nWorkflowId}`, '_blank')}
                         >
                           <ExternalLink className="h-3 w-3 mr-2" />
                           n8n Workflow
@@ -476,7 +476,7 @@ export default function WorkflowTemplatesManagement() {
                           variant="outline"
                           size="sm"
                           className="w-full justify-start"
-                          onClick={() => window.open(`http://173.254.201.134:5678/workflow/${template.n8nWorkflowId}`, '_blank')}
+                          onClick={() => window.open(`http://n8n.rensto.com/workflow/${template.n8nWorkflowId}`, '_blank')}
                         >
                           <ExternalLink className="h-3 w-3 mr-2" />
                           Open in n8n

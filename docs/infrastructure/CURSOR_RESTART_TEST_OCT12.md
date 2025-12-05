@@ -72,9 +72,7 @@ PID 43027: Started 3:54 AM
 
 **Evidence**:
 - Same issue persists across 3 different MCP server implementations:
-  - czlonkowski/n8n-mcp (Docker) ❌
-  - czlonkowski/n8n-mcp (Docker) ❌
-  - czlonkowski/n8n-mcp Docker-based ❌
+  - ⚠️ Docker-based n8n-mcp doesn't work (use npx - see `docs/infrastructure/MCP_CONFIGURATION.md`)
 - Server responds perfectly to manual JSON-RPC tests ✅
 - Cursor UI shows "41 tools enabled" but they're not callable ❌
 - Documented across Cursor versions: 1.3, 1.6.27, 1.7.44
@@ -94,7 +92,7 @@ PID 43027: Started 3:54 AM
   "n8n": {
     "command": "node",
     "args": [
-      "docker run -i --rm --init -e MCP_MODE=stdio ghcr.io/czlonkowski/n8n-mcp:latest"
+      "npx -y n8n-mcp" (Docker doesn't work - see `docs/infrastructure/MCP_CONFIGURATION.md`)
     ],
     "env": {
       "MCP_STANDALONE": "false"

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const N8N_BASE_URL = 'http://173.254.201.134:5678';
+const N8N_BASE_URL = 'http://n8n.rensto.com';
 const N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU0ODQ1NjEwfQ.n3hVnIsEL7Ra3fst8NUMVENPMrlDD-iN9M-0aQ62TrE';
 
 export async function GET() {
