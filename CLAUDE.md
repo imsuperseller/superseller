@@ -75,7 +75,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ┌─────────────────────────────────────────────────────────────┐
 │      OPERATIONAL: n8n Data Tables (RackNerd VPS)            │
 │  Workflow execution data, leads, customer interactions      │
-│  Storage: 173.254.201.134:5678                             │
+│  Storage: n8n.rensto.com (172.245.56.50:5678)              │
 └─────────────────────────────────────────────────────────────┘
                           ↓ Archive/Backup
 ┌─────────────────────────────────────────────────────────────┐
@@ -158,9 +158,9 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ### **n8n Workflows** (68 Total)
 
 **Production Environment**:
-- **URL**: http://173.254.201.134:5678
-- **Version**: Community Edition v1.113.3
-- **VPS**: RackNerd (173.254.201.134)
+- **URL**: http://n8n.rensto.com (or http://172.245.56.50:5678)
+- **Version**: Community Edition v1.122.5
+- **VPS**: RackNerd (172.245.56.50)
 - **API Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (stored in env)
 
 **Active Workflows by Type**:
@@ -272,7 +272,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - **Use Case**: Only for custom customer apps requiring PostgreSQL + real-time features
 
 ### **RackNerd VPS**
-- **IP**: 173.254.201.134
+- **IP**: 172.245.56.50 (accessible via n8n.rensto.com)
 - **Services**: n8n, MongoDB (if needed), custom APIs
 - **Access**: SSH available
 
@@ -1049,8 +1049,8 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 ### **Workflow Automation**
 
 **n8n** (Workflow Engine):
-- **URL**: http://173.254.201.134:5678
-- **Version**: Community Edition v1.113.3
+- **URL**: http://n8n.rensto.com (or http://172.245.56.50:5678)
+- **Version**: Community Edition v1.122.5
 - **VPS**: RackNerd
 - **API**: REST API with Bearer token
 - **Workflows**: 56 active (was 68, cleaned up)
