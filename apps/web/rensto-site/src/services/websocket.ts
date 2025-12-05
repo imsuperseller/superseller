@@ -10,6 +10,8 @@ class AdminDashboardWebSocket {
 
   connect() {
     try {
+      // TODO: Update to use domain when WebSocket service is migrated
+      // For now, this is a separate service (port 4000) not n8n (port 5678)
       this.ws = new WebSocket('ws://173.254.201.134:4000/ws');
       
       this.ws.onopen = () => {

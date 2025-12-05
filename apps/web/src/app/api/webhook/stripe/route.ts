@@ -80,7 +80,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
 
   try {
     // Send to n8n webhook
-    const n8nResponse = await fetch('http://173.254.201.134:5678/webhook/lead-enrichment-saas', {
+    const n8nResponse = await fetch('http://n8n.rensto.com/webhook/lead-enrichment-saas', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

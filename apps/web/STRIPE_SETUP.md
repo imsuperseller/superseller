@@ -11,7 +11,7 @@ STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # n8n Webhook URL
-N8N_WEBHOOK_URL=http://173.254.201.134:5678/webhook/lead-enrichment-saas
+N8N_WEBHOOK_URL=http://n8n.rensto.com/webhook/lead-enrichment-saas
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000

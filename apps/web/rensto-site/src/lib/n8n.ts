@@ -7,7 +7,7 @@
 
 // n8n configuration
 export const N8N_CONFIG = {
-  baseUrl: process.env.N8N_BASE_URL || 'http://localhost:5678',
+  baseUrl: process.env.N8N_BASE_URL || 'http://n8n.rensto.com',
   apiKey: process.env.N8N_API_KEY || '',
   webhookSecret: process.env.N8N_WEBHOOK_SECRET || '',
   timeout: 30000, // 30 seconds

@@ -44,7 +44,7 @@ export default function N8NUpdateButton() {
       setN8nStatus({
         success: false,
         status: 'offline',
-        n8n_url: 'http://173.254.201.134:5678',
+        n8n_url: 'http://n8n.rensto.com',
         error: 'Failed to check status',
         timestamp: new Date().toISOString()
       });

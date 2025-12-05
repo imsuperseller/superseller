@@ -22,7 +22,7 @@ const CONFIG = {
     fieldGroupId: 479 // "n8n Workflow Fields (Products)"
   },
   n8n: {
-    url: 'http://173.254.201.134:5678',
+    url: 'http://n8n.rensto.com',
     apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTE2NzEwfQ.JbIeOnRil3E3_P44LjAWhiY9KRcAHkuuVhJghABz3aQ',
     instance: 'Rensto VPS'
   }
