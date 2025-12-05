@@ -1117,7 +1117,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 ### **Infrastructure**
 
 **Hosting**:
-- **n8n**: RackNerd VPS (173.254.201.134)
+- **n8n**: RackNerd VPS (172.245.56.50) - Accessible via n8n.rensto.com
 - **Webflow**: Webflow hosting
 - **Admin Dashboard**: Vercel
 - **DNS**: Cloudflare
@@ -1140,7 +1140,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| **n8n Rensto VPS** | http://173.254.201.134:5678 | API key in ~/.cursor/mcp.json |
+| **n8n Rensto VPS** | http://n8n.rensto.com | API key in ~/.cursor/mcp.json |
 | n8n Tax4Us Cloud | https://tax4usllc.app.n8n.cloud | Access via specialized agents (when tool access fixed) |
 | n8n Shelly Cloud | https://shellyins.app.n8n.cloud | Access via specialized agents (when tool access fixed) |
 | Boost.space | https://superseller.boost.space | API key in ~/.cursor/mcp.json |
