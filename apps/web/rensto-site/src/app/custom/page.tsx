@@ -1,232 +1,665 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button-enhanced';
-import { Footer } from '@/components/Footer';
 import {
-    ArrowRight
+    Zap,
+    CheckCircle,
+    ArrowRight,
+    Globe,
+    Brain,
+    Loader2
 } from 'lucide-react';
+import { Footer } from '@/components/Footer';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import {
+    BlueprintIcon,
+    BuildIcon,
+    SupportIcon,
+    BrainSystemIcon,
+    SkillsIcon,
+    GuardIcon,
+    GuaranteeIcon,
+    OldWayXIcon,
+    NewWayCheckIcon
+} from '@/components/icons/CustomIcons';
+import { CustomHeader } from '@/components/CustomHeader';
+
+// Types for the flow state
+type FlowState = 'IDLE' | 'BOOTING' | 'INTERRUPTION' | 'QUALIFIED' | 'GENERATING_SOLUTION' | 'PROPOSAL' | 'REVEAL' | 'GENERATING';
 
 export default function CustomSolutionsPage() {
+    const router = useRouter();
+    const [flowState, setFlowState] = useState<FlowState>('IDLE');
+    const [url, setUrl] = useState('');
+    const [bootLogs, setBootLogs] = useState<string[]>([]);
+    const [interruptionStep, setInterruptionStep] = useState(0);
+    const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [emailInput, setEmailInput] = useState('');
+    const [scanPhase, setScanPhase] = useState(0);
+
+    const terminalRef = useRef<HTMLDivElement>(null);
+
+    // Gatekeeper-style qualification questions
+    const questions = [
+        {
+            id: 'revenue-qualification',
+            text: "QUALIFICATION CHECK: Are you currently generating revenue, or still in pre-launch phase?",
+            options: [
+                "Generating $10K+/month",
+                "Generating $1K-$10K/month",
+                "Pre-revenue but funded",
+                "Just exploring ideas"
+            ],
+            type: 'choice' as const,
+            gatekeeperHint: "We work best with businesses already generating revenue.",
+            scoreMap: { "Generating $10K+/month": 30, "Generating $1K-$10K/month": 25, "Pre-revenue but funded": 15, "Just exploring ideas": 5 }
+        },
+        {
+            id: 'timeline-commitment',
+            text: "COMMITMENT CHECK: When do you need this operational?",
+            options: [
+                "This week - urgent",
+                "This month",
+                "This quarter",
+                "Just researching"
+            ],
+            type: 'choice' as const,
+            gatekeeperHint: "Our approach works best with fast implementers who take action.",
+            scoreMap: { "This week - urgent": 30, "This month": 25, "This quarter": 15, "Just researching": 5 }
+        },
+        {
+            id: 'investment-readiness',
+            text: "INVESTMENT READINESS: Have you set aside budget for automation this quarter?",
+            options: [
+                "Yes, $5K+ ready to invest",
+                "Yes, $1K-$5K allocated",
+                "Need to see ROI first",
+                "No budget yet"
+            ],
+            type: 'choice' as const,
+            gatekeeperHint: "Serious buyers have pre-allocated resources.",
+            scoreMap: { "Yes, $5K+ ready to invest": 30, "Yes, $1K-$5K allocated": 20, "Need to see ROI first": 10, "No budget yet": 0 }
+        },
+        {
+            id: 'email',
+            text: "Last step: Where should we send your custom blueprint?",
+            type: 'email' as const,
+            gatekeeperHint: "This is how we deliver your personalized strategy."
+        }
+    ];
+
+    // Calculate qualification score
+    const calculateQualificationScore = (ans: Record<string, string>) => {
+        let score = 0;
+        questions.forEach(q => {
+            if (q.scoreMap && ans[q.id]) {
+                score += q.scoreMap[ans[q.id] as keyof typeof q.scoreMap] || 0;
+            }
+        });
+        return score;
+    };
+
+    // Get qualification message
+    const getQualificationMessage = (ans: Record<string, string>) => {
+        const score = calculateQualificationScore(ans);
+        if (score >= 70) return { title: "EXCELLENT MATCH", subtitle: "You're exactly who we build for.", color: "text-green-400" };
+        if (score >= 40) return { title: "GOOD POTENTIAL", subtitle: "We can likely help you.", color: "text-yellow-400" };
+        return { title: "EARLY STAGE", subtitle: "Consider our resources first.", color: "text-orange-400" };
+    };
+
+    // Scroll to terminal when starting the flow
+    const scrollToTerminal = () => {
+        terminalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    // Deep Scan Sequence Logic
+    useEffect(() => {
+        if (flowState === 'BOOTING') {
+            const scanPhases = [
+                { label: 'Initializing Rensto Core...', progress: 10 },
+                { label: 'Connecting to target...', progress: 20 },
+                { label: 'Scanning digital infrastructure...', progress: 35 },
+                { label: 'Detecting technology stack...', progress: 50 },
+                { label: 'Analyzing traffic patterns...', progress: 65 },
+                { label: 'Calculating automation potential...', progress: 80 },
+                { label: 'Optimization opportunity detected!', progress: 95 },
+                { label: 'ANALYSIS COMPLETE', progress: 100 }
+            ];
+
+            let currentPhase = 0;
+            setScanPhase(0);
+            setBootLogs([]);
+
+            const interval = setInterval(() => {
+                if (currentPhase < scanPhases.length) {
+                    setScanPhase(currentPhase);
+                    setBootLogs(prev => [...prev, scanPhases[currentPhase].label]);
+                    currentPhase++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => setFlowState('INTERRUPTION'), 800);
+                }
+            }, 600);
+
+            return () => clearInterval(interval);
+        }
+    }, [flowState]);
+
+    const handleUrlSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (url) {
+            const formattedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
+            setUrl(formattedUrl);
+            setFlowState('BOOTING');
+            scrollToTerminal();
+        }
+    };
+
+    const handleInterruptionAnswer = async (answer: string) => {
+        const currentQuestion = questions[interruptionStep];
+        const updatedAnswers = { ...answers, [currentQuestion.id]: answer };
+        setAnswers(updatedAnswers);
+
+        if (interruptionStep < questions.length - 1) {
+            setInterruptionStep(prev => prev + 1);
+        } else {
+            setFlowState('QUALIFIED');
+        }
+    };
+
+    const handleProceedFromQualified = () => {
+        // Redirect to offer page with collected data
+        const email = answers.email || '';
+        let clientName = 'YOUR BUSINESS';
+        try {
+            const hostname = url.replace(/^https?:\/\//, '').split('/')[0];
+            const cleanHost = hostname.replace(/^www\./, '');
+            const namePart = cleanHost.split('.')[0];
+            if (namePart) clientName = namePart.toUpperCase();
+        } catch (e) {
+            console.warn('Failed to parse client name', e);
+        }
+        router.push(`/offer/standard-ai?client=${encodeURIComponent(clientName)}&email=${encodeURIComponent(email)}`);
+    };
+
+
+
     return (
-        <div className="min-h-screen flex flex-col bg-[#0B0F19] text-white font-sans selection:bg-rensto-red/30">
+        <div className="min-h-screen flex flex-col text-white font-sans selection:bg-rensto-red/30" style={{ background: 'var(--rensto-bg-primary)' }}>
 
             {/* Header */}
-            <header className="sticky top-0 z-50 backdrop-blur-md border-b border-white/5 bg-[#0B0F19]/90">
-                <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="relative w-8 h-8">
-                            <Image
-                                src="/rensto-logo.png"
-                                alt="Rensto Logo"
-                                width={32}
-                                height={32}
-                                className="object-contain"
-                            />
-                        </div>
-                        <span className="text-xl font-bold">Rensto</span>
-                    </Link>
-                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-                        <Link href="#process" className="hover:text-white transition-colors">The Process</Link>
-                        <Link href="#outcome" className="hover:text-white transition-colors">Your Options</Link>
-                    </nav>
-                    <Button variant="renstoPrimary" size="sm" asChild>
-                        <Link href="https://tidycal.com/rensto/15-min-consult" target="_blank">
-                            Book Free 15-Min Consult
-                        </Link>
+            <CustomHeader />
+
+            {/* ===== HERO SECTION ===== */}
+            <section className="py-24 px-4 relative overflow-hidden min-h-[80vh] flex items-center">
+                <AnimatedGridBackground />
+                <div className="container mx-auto max-w-5xl text-center relative z-10">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8">
+                        <Zap className="w-4 h-4 text-yellow-400" />
+                        <span className="text-sm font-medium">Custom AI Systems for Business Owners</span>
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{
+                        background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                    }}>
+                        Stop Guessing.<br />Architect Your Empire.
+                    </h1>
+                    <p className="text-xl mb-12 max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                        We build AI systems that work 24/7, never take sick days, and scale infinitely.
+                        No more hiring headaches. No more operational chaos.
+                    </p>
+                    <Button
+                        onClick={() => {
+                            const el = document.getElementById('terminal');
+                            el?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="text-white px-10 py-7 text-xl rounded-xl font-bold"
+                        style={{
+                            background: 'var(--rensto-gradient-primary)',
+                            boxShadow: 'var(--rensto-glow-primary)'
+                        }}
+                    >
+                        See Your System Built Live
+                        <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                 </div>
-            </header>
+            </section>
 
-            <main className="flex-grow">
+            {/* ===== OLD WAY VS NEW WAY ===== */}
+            <section className="py-24 px-4 relative overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ background: 'var(--rensto-primary)' }} />
+                    <div className="absolute top-1/2 right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ background: 'var(--rensto-cyan)' }} />
+                </div>
+                <div className="container mx-auto max-w-6xl relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(254, 61, 81, 0.1)', color: 'var(--rensto-primary)', border: '1px solid rgba(254, 61, 81, 0.3)' }}>
+                            The Truth Nobody Tells You
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                            The Old Way vs. The New Way
+                        </h2>
+                        <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                            You&apos;ve tried hiring. You&apos;ve tried freelancers. Here&apos;s why those approaches keep failing—and what actually works.
+                        </p>
+                    </div>
 
-                {/* HERO SECTION */}
-                <section className="relative py-24 md:py-32 px-4 overflow-hidden">
-                    {/* Background Gradients */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-rensto-blue/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
-
-                    <div className="container mx-auto max-w-4xl text-center">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-slate-300 mb-8">
-                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            Available Now: Instant Custom Planning
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* The Old Way */}
+                        <div className="group relative">
+                            <div className="absolute inset-0 rounded-3xl blur-xl opacity-30" style={{ background: 'rgba(239, 68, 68, 0.3)' }} />
+                            <div className="relative rounded-3xl p-8 backdrop-blur-xl border h-full" style={{
+                                background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                borderColor: 'rgba(239, 68, 68, 0.3)'
+                            }}>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 0.2)' }}>
+                                        <OldWayXIcon size={48} />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-red-400">The Old Way</h3>
+                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Hire employees ($50k+/year each)",
+                                        "Train for 3-6 months before productivity",
+                                        "Manage egos, sick days, turnover",
+                                        "Scale linearly (2x work = 2x cost)",
+                                        "Knowledge leaves when they leave"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-3">
+                                            <OldWayXIcon size={28} className="flex-shrink-0" />
+                                            <span style={{ color: 'var(--rensto-text-secondary)' }}>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
-                            Stop Guessing. Get A Custom <span className="text-transparent bg-clip-text bg-gradient-to-r from-rensto-blue to-rensto-cyan">Automation Plan</span> In 15 Minutes.
-                        </h1>
+                        {/* The Rensto Way */}
+                        <div className="group relative">
+                            <div className="absolute inset-0 rounded-3xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500" style={{ background: 'rgba(95, 251, 253, 0.3)' }} />
+                            <div className="relative rounded-3xl p-8 backdrop-blur-xl border h-full transition-all duration-300 group-hover:translate-y-[-4px]" style={{
+                                background: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                borderColor: 'rgba(95, 251, 253, 0.3)'
+                            }}>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: 'rgba(95, 251, 253, 0.2)' }}>
+                                        <NewWayCheckIcon size={48} />
+                                    </div>
+                                    <h3 className="text-2xl font-bold" style={{ color: 'var(--rensto-cyan)' }}>The Rensto Way</h3>
+                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "One-time build (fixed cost)",
+                                        "Operational in 2-4 weeks",
+                                        "Works 24/7, never complains",
+                                        "Scales infinitely (10x output = same cost)",
+                                        "Your IP, your system, forever"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-3">
+                                            <NewWayCheckIcon size={28} className="flex-shrink-0" />
+                                            <span style={{ color: 'var(--rensto-text-secondary)' }}>{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                        <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                            Tell us what you need. We&apos;ll tell you exactly what it costs, how long it takes, and what you get. No fluff. No weeks of waiting for proposals.
+            {/* ===== HOW WE BUILD YOUR SYSTEM ===== */}
+            <section id="process" className="py-24 px-4 relative overflow-hidden" style={{ background: 'var(--rensto-bg-secondary)' }}>
+                <div className="container mx-auto max-w-5xl relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(30, 174, 247, 0.1)', color: 'var(--rensto-blue)', border: '1px solid rgba(30, 174, 247, 0.3)' }}>
+                            The Process
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                            How We Build Your System
+                        </h2>
+                        <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                            Three simple steps. No fluff. Just results.
                         </p>
+                    </div>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                            <Button variant="renstoPrimary" size="lg" className="w-full sm:w-auto text-lg px-8 py-6" asChild>
-                                <Link href="https://tidycal.com/rensto/15-min-consult" target="_blank">
-                                    Book Free 15-Min Consult <ArrowRight className="ml-2 w-5 h-5" />
-                                </Link>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            { Icon: BlueprintIcon, title: '1. Blueprint', description: 'We analyze your business, identify bottlenecks, and design a custom AI system tailored to your needs.' },
+                            { Icon: BuildIcon, title: '2. Build', description: 'Our engineers construct your system using battle-tested components. Ready in 2-4 weeks.' },
+                            { Icon: SupportIcon, title: '3. Support', description: 'We maintain your system, handle updates, and ensure 99.9% uptime. You focus on growth.' }
+                        ].map((step, i) => (
+                            <div key={i} className="group relative">
+                                <div className="absolute inset-0 rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" style={{ background: 'rgba(30, 174, 247, 0.2)' }} />
+                                <div className="relative rounded-3xl p-8 backdrop-blur-xl border h-full transition-all duration-300 group-hover:translate-y-[-4px]" style={{
+                                    background: 'linear-gradient(135deg, rgba(30, 174, 247, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                    borderColor: 'rgba(30, 174, 247, 0.3)'
+                                }}>
+                                    <div className="w-20 h-20 flex items-center justify-center mb-6">
+                                        <step.Icon size={64} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--rensto-text-primary)' }}>{step.title}</h3>
+                                    <p style={{ color: 'var(--rensto-text-secondary)' }}>{step.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section >
+
+            {/* ===== PRICING ===== */}
+            < section id="pricing" className="py-24 px-4 relative overflow-hidden" >
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, var(--rensto-bg-primary) 0%, var(--rensto-bg-secondary) 50%, var(--rensto-bg-primary) 100%)' }} />
+                <div className="container mx-auto max-w-5xl relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-4" style={{ background: 'rgba(191, 87, 0, 0.1)', color: 'var(--rensto-orange)', border: '1px solid rgba(191, 87, 0, 0.3)' }}>
+                            Investment
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>Investment Structure</h2>
+                        <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                            Think of it like hiring a superhuman employee. You pay once to &quot;create&quot; them,
+                            then a small monthly fee to keep them healthy and operational.
+                        </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[
+                            {
+                                Icon: BrainSystemIcon,
+                                title: 'The Brain',
+                                price: 'Custom Quote',
+                                description: 'One-time. The core AI system custom-built for your operations.',
+                                gradient: 'linear-gradient(135deg, rgba(30, 174, 247, 0.15) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                borderColor: 'rgba(30, 174, 247, 0.4)',
+                                iconColor: 'var(--rensto-blue)',
+                                glowColor: 'rgba(30, 174, 247, 0.3)',
+                                popular: true
+                            },
+                            {
+                                Icon: SkillsIcon,
+                                title: 'The Skills',
+                                price: 'Per Add-on',
+                                description: 'One-time upgrades. Add capabilities like voice, analytics, or integrations.',
+                                gradient: 'linear-gradient(135deg, rgba(254, 61, 81, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                borderColor: 'rgba(254, 61, 81, 0.3)',
+                                iconColor: 'var(--rensto-primary)',
+                                glowColor: 'rgba(254, 61, 81, 0.2)',
+                                popular: false
+                            },
+                            {
+                                Icon: GuardIcon,
+                                title: 'The Guard',
+                                price: 'Monthly Support',
+                                description: 'Monthly. Monitoring, updates, and priority support.',
+                                gradient: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                                borderColor: 'rgba(95, 251, 253, 0.3)',
+                                iconColor: 'var(--rensto-cyan)',
+                                glowColor: 'rgba(95, 251, 253, 0.2)',
+                                popular: false
+                            }
+                        ].map((tier) => (
+                            <div key={tier.title} className="group relative">
+                                <div className="absolute inset-0 rounded-3xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500" style={{ background: tier.glowColor }} />
+                                <div
+                                    className="relative rounded-3xl p-8 backdrop-blur-xl border transition-all duration-300 group-hover:translate-y-[-4px] h-full flex flex-col"
+                                    style={{ background: tier.gradient, borderColor: tier.borderColor }}
+                                >
+                                    {tier.popular && (
+                                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg"
+                                            style={{ background: 'var(--rensto-gradient-primary)', color: 'white' }}>
+                                            Most Popular
+                                        </div>
+                                    )}
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-16 h-16 flex items-center justify-center">
+                                            <tier.Icon size={56} />
+                                        </div>
+                                        <h3 className="text-xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>{tier.title}</h3>
+                                    </div>
+                                    <p className="text-3xl font-bold mb-4" style={{ color: tier.iconColor }}>{tier.price}</p>
+                                    <p style={{ color: 'var(--rensto-text-secondary)' }}>{tier.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-center mt-10 text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
+                        Compare to: 1 full-time employee = $50,000-$100,000/year + benefits + management overhead.
+                    </p>
+                </div>
+            </section >
+
+            {/* ===== LIVE DEMO TERMINAL ===== */}
+            < section id="terminal" ref={terminalRef} className="py-20 px-4 relative overflow-hidden" >
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10"
+                        style={{ background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.2) 0%, transparent 70%)' }} />
+                </div>
+                <div className="container mx-auto max-w-4xl text-center relative z-10">
+                    <h2 className="text-4xl font-bold text-white mb-4">See It In Action</h2>
+                    <p className="text-xl mb-12 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                        Enter your website below. Our AI will analyze your business and show you exactly what your custom system could look like.
+                    </p>
+
+                    {/* STATE: IDLE (URL Input) */}
+                    {flowState === 'IDLE' && (
+                        <div className="max-w-lg mx-auto">
+                            <form onSubmit={handleUrlSubmit} className="relative">
+                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                    <Globe className="w-5 h-5" style={{ color: 'var(--rensto-text-muted)' }} />
+                                </div>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="yourwebsite.com"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-5 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600"
+                                />
+                                <button
+                                    type="submit"
+                                    className="absolute right-2 top-2 bottom-2 px-6 rounded-lg text-white font-semibold transition-all flex items-center gap-2 hover:opacity-90"
+                                    style={{
+                                        background: 'var(--rensto-gradient-primary)',
+                                        boxShadow: '0 0 20px rgba(254, 61, 81, 0.3)'
+                                    }}
+                                >
+                                    Analyze
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* STATE: BOOTING - Deep Scan Visual */}
+                    {flowState === 'BOOTING' && (
+                        <div className="relative rounded-3xl p-8 backdrop-blur-xl border overflow-hidden" style={{
+                            background: 'linear-gradient(135deg, rgba(30, 174, 247, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                            borderColor: 'rgba(30, 174, 247, 0.4)',
+                            boxShadow: '0 0 80px rgba(30, 174, 247, 0.2)'
+                        }}>
+                            {/* Animated background pulse */}
+                            <div className="absolute inset-0 pointer-events-none">
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full animate-ping opacity-10" style={{ background: 'var(--rensto-blue)' }} />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full animate-pulse opacity-20" style={{ background: 'var(--rensto-cyan)' }} />
+                            </div>
+
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-8 relative z-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(30, 174, 247, 0.2)' }}>
+                                        <Brain className="w-5 h-5" style={{ color: 'var(--rensto-blue)' }} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-white">RENSTO DEEP SCAN</h3>
+                                        <p className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>Analyzing {url.replace(/^https?:\/\//, '').split('/')[0]}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-xs text-green-400 font-mono">ACTIVE</span>
+                                </div>
+                            </div>
+
+                            {/* Circular Progress Indicator */}
+                            <div className="flex flex-col items-center justify-center py-8 relative z-10">
+                                <div className="relative w-40 h-40">
+                                    <svg className="w-full h-full transform -rotate-90">
+                                        <circle cx="80" cy="80" r="70" stroke="rgba(30, 174, 247, 0.2)" strokeWidth="8" fill="none" />
+                                        <circle
+                                            cx="80" cy="80" r="70"
+                                            stroke="url(#scanGradient)"
+                                            strokeWidth="8"
+                                            fill="none"
+                                            strokeLinecap="round"
+                                            strokeDasharray={`${2 * Math.PI * 70}`}
+                                            strokeDashoffset={`${2 * Math.PI * 70 * (1 - (scanPhase + 1) / 8)}`}
+                                            className="transition-all duration-500 ease-out"
+                                        />
+                                        <defs>
+                                            <linearGradient id="scanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="var(--rensto-blue)" />
+                                                <stop offset="100%" stopColor="var(--rensto-cyan)" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-4xl font-bold" style={{ color: 'var(--rensto-cyan)' }}>
+                                            {Math.round(((scanPhase + 1) / 8) * 100)}%
+                                        </span>
+                                        <span className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>SCANNING</span>
+                                    </div>
+                                </div>
+
+                                <p className="mt-6 text-lg font-medium animate-pulse" style={{ color: 'var(--rensto-text-primary)' }}>
+                                    {bootLogs[bootLogs.length - 1] || 'Initializing...'}
+                                </p>
+                            </div>
+
+                            {/* Detection Log */}
+                            <div className="mt-4 p-4 rounded-xl font-mono text-xs space-y-1 max-h-32 overflow-y-auto relative z-10" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                                {bootLogs.map((log, i) => (
+                                    <div key={i} className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200" style={{ color: i === bootLogs.length - 1 ? 'var(--rensto-cyan)' : 'var(--rensto-text-muted)' }}>
+                                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                                        <span>{log}</span>
+                                    </div>
+                                ))}
+                                {bootLogs.length < 8 && (
+                                    <div className="flex items-center gap-2 animate-pulse" style={{ color: 'var(--rensto-blue)' }}>
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                        <span>Processing...</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* STATE: INTERRUPTION (Questions) */}
+                    {flowState === 'INTERRUPTION' && (
+                        <div className="bg-slate-900/90 border border-cyan-500/50 rounded-2xl p-8 shadow-[0_0_100px_rgba(6,182,212,0.2)] backdrop-blur-xl text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-slate-800">
+                                <div className="h-full transition-all duration-500 ease-out" style={{ width: `${((interruptionStep + 1) / questions.length) * 100}%`, background: 'var(--rensto-cyan)' }} />
+                            </div>
+
+                            <p className="text-sm mb-2" style={{ color: 'var(--rensto-text-muted)' }}>
+                                Question {interruptionStep + 1} of {questions.length}
+                            </p>
+
+                            <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>
+                                {questions[interruptionStep].text}
+                            </h3>
+
+                            {questions[interruptionStep].type === 'choice' && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {questions[interruptionStep].options?.map((option) => (
+                                        <button
+                                            key={option}
+                                            onClick={() => handleInterruptionAnswer(option)}
+                                            className="p-4 rounded-xl border text-left transition-all hover:scale-[1.02] hover:border-cyan-500/50"
+                                            style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {questions[interruptionStep].type === 'email' && (
+                                <div className="max-w-md mx-auto">
+                                    <input
+                                        type="email"
+                                        placeholder="your@email.com"
+                                        value={emailInput}
+                                        onChange={(e) => setEmailInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && emailInput && handleInterruptionAnswer(emailInput)}
+                                        className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 mb-4"
+                                    />
+                                    <Button
+                                        onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
+                                        disabled={!emailInput}
+                                        className="w-full"
+                                        style={{ background: 'var(--rensto-gradient-primary)' }}
+                                    >
+                                        Get My Blueprint <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* STATE: QUALIFIED */}
+                    {flowState === 'QUALIFIED' && (
+                        <div className="rounded-2xl p-8 backdrop-blur-xl border text-center" style={{
+                            background: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                            borderColor: 'rgba(95, 251, 253, 0.4)'
+                        }}>
+                            <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: 'rgba(95, 251, 253, 0.2)' }}>
+                                <CheckCircle className="w-8 h-8" style={{ color: 'var(--rensto-cyan)' }} />
+                            </div>
+                            <h3 className={`text-2xl font-bold mb-2 ${getQualificationMessage(answers).color}`}>
+                                {getQualificationMessage(answers).title}
+                            </h3>
+                            <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
+                                {getQualificationMessage(answers).subtitle}
+                            </p>
+                            <Button
+                                onClick={handleProceedFromQualified}
+                                className="text-white px-8 py-4 text-lg rounded-xl font-bold"
+                                style={{ background: 'var(--rensto-gradient-primary)' }}
+                            >
+                                View Your Custom Plan <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
                         </div>
+                    )}
+                </div>
+            </section >
 
-                        {/* HERO VIDEO */}
-                        <div className="relative mx-auto max-w-5xl rounded-xl border border-white/10 bg-black aspect-video overflow-hidden shadow-2xl shadow-rensto-blue/20 group">
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                src="https://www.youtube.com/embed/zOPmSBXHiEk?rel=0&modestbranding=1"
-                                title="Rensto Custom Plan"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="absolute inset-0 w-full h-full"
-                            />
+            {/* ===== GUARANTEE ===== */}
+            < section className="py-24 px-4 relative overflow-hidden" >
+                <div className="container mx-auto max-w-3xl text-center relative z-10">
+                    <div className="rounded-3xl p-10 backdrop-blur-xl border" style={{
+                        background: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                        borderColor: 'rgba(95, 251, 253, 0.3)',
+                        boxShadow: '0 0 60px rgba(95, 251, 253, 0.15)'
+                    }}>
+                        <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                            <GuaranteeIcon size={72} />
                         </div>
+                        <div className="inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4" style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' }}>
+                            30-Day Risk-Free Trial
+                        </div>
+                        <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                            100% Satisfaction Guarantee
+                        </h2>
+                        <p style={{ color: 'var(--rensto-text-secondary)' }}>
+                            After the Blueprint phase, if you&apos;re not confident the system will deliver results, we refund you in full. No questions asked. We only get paid when you&apos;re happy.
+                        </p>
                     </div>
-                </section>
+                </div>
+            </section >
 
-                {/* SECTION: THE PROCESS */}
-                <section id="process" className="py-24 px-4 bg-white/5">
-                    <div className="container mx-auto max-w-5xl">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6">How It Works</h2>
-                            <p className="text-xl text-slate-400">We respect your time. Here is exactly what happens.</p>
-                        </div>
-
-                        <div className="grid md:grid-cols-3 gap-8 relative">
-                            {/* Connector Line (Desktop) */}
-                            <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                            {/* Step 1 */}
-                            <div className="relative bg-[#0B0F19] p-8 rounded-2xl border border-white/10 z-10 h-full flex flex-col group hover:border-rensto-blue/30 transition-colors duration-500">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rensto-blue/20 to-transparent border border-rensto-blue/30 flex items-center justify-center mb-6 mx-auto shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_40px_-5px_rgba(59,130,246,0.5)] transition-all duration-500">
-                                    <div className="text-2xl font-bold text-white">1</div>
-                                </div>
-                                <h3 className="text-xl font-bold mb-4 text-center group-hover:text-rensto-blue transition-colors">The Consult (15 Mins)</h3>
-                                <p className="text-slate-400 text-sm mb-4 text-center flex-grow">
-                                    We hop on a quick call. You dump your requirements, pains, and goals. We listen and map it out live.
-                                </p>
-                                <div className="flex justify-center items-center gap-1 h-8 mt-auto">
-                                    {/* Animated Audio Wave */}
-                                    <div className="w-1 h-3 bg-rensto-blue rounded-full animate-[bounce_1s_infinite_0ms]" />
-                                    <div className="w-1 h-5 bg-rensto-blue rounded-full animate-[bounce_1s_infinite_200ms]" />
-                                    <div className="w-1 h-3 bg-rensto-blue rounded-full animate-[bounce_1s_infinite_400ms]" />
-                                </div>
-                            </div>
-
-                            {/* Step 2 */}
-                            <div className="relative bg-[#0B0F19] p-8 rounded-2xl border border-rensto-cyan/50 shadow-[0_0_30px_rgba(6,182,212,0.1)] z-10 h-full flex flex-col group hover:shadow-[0_0_50px_rgba(6,182,212,0.2)] transition-all duration-500">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rensto-cyan/20 to-transparent border border-rensto-cyan/30 flex items-center justify-center mb-6 mx-auto shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)] group-hover:shadow-[0_0_40px_-5px_rgba(6,182,212,0.5)] transition-all duration-500">
-                                    <div className="text-2xl font-bold text-white">2</div>
-                                </div>
-                                <h3 className="text-xl font-bold mb-4 text-center text-rensto-cyan">The Instant Plan</h3>
-                                <p className="text-slate-400 text-sm mb-4 text-center flex-grow">
-                                    Right there on the call, we give you the <strong>Scope</strong>, <strong>Timeline</strong>, and <strong>Fixed Price</strong>.
-                                </p>
-                                <div className="bg-rensto-cyan/10 p-3 rounded-lg text-xs text-rensto-cyan font-medium text-center mt-auto border border-rensto-cyan/20">
-                                    No &quot;I&apos;ll get back to you&quot;. You get the plan now.
-                                </div>
-                            </div>
-
-                            {/* Step 3 */}
-                            <div className="relative bg-[#0B0F19] p-8 rounded-2xl border border-white/10 z-10 h-full flex flex-col group hover:border-rensto-blue/30 transition-colors duration-500">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rensto-blue/20 to-transparent border border-rensto-blue/30 flex items-center justify-center mb-6 mx-auto shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_40px_-5px_rgba(59,130,246,0.5)] transition-all duration-500">
-                                    <div className="text-2xl font-bold text-white">3</div>
-                                </div>
-                                <h3 className="text-xl font-bold mb-4 text-center group-hover:text-rensto-blue transition-colors">The Decision</h3>
-                                <p className="text-slate-400 text-sm mb-4 text-center flex-grow">
-                                    You get a clear path forward. Decide to build it with us, or take the plan and walk.
-                                </p>
-                                <div className="flex justify-center items-center mt-auto">
-                                    {/* Animated Lock-on Target */}
-                                    <div className="relative w-8 h-8 flex items-center justify-center">
-                                        <div className="absolute inset-0 border border-rensto-blue/30 rounded-full animate-[spin_3s_linear_infinite]" />
-                                        <div className="absolute inset-1 border border-rensto-blue/60 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]" />
-                                        <div className="w-1.5 h-1.5 bg-rensto-blue rounded-full animate-pulse" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* SECTION: START CONSULTATION */}
-                <section id="outcome" className="py-24 px-4">
-                    <div className="container mx-auto max-w-4xl">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6">Let&apos;s Build Your Plan</h2>
-                            <p className="text-slate-400">No commitment. No cost. Just a clear path forward.</p>
-                        </div>
-
-                        <div className="max-w-2xl mx-auto">
-                            {/* Single Option: Free Consultation */}
-                            <div className="bg-gradient-to-br from-rensto-blue/10 to-transparent border border-rensto-blue/30 rounded-2xl p-8 relative overflow-hidden group hover:border-rensto-blue/50 transition-all text-center hover:shadow-[0_0_60px_-20px_rgba(59,130,246,0.3)]">
-                                <div className="absolute top-0 right-0 bg-rensto-blue text-white text-xs font-bold px-3 py-1 rounded-bl-lg">FREE</div>
-
-                                {/* Animated Reactor Core */}
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rensto-blue/20 to-transparent border border-rensto-blue/30 flex items-center justify-center mb-8 mx-auto shadow-[0_0_40px_-10px_rgba(59,130,246,0.4)] relative">
-                                    <div className="absolute inset-0 rounded-full border border-rensto-blue/40 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                                    <div className="absolute inset-2 rounded-full border border-rensto-blue/60 border-t-transparent animate-[spin_4s_linear_infinite]" />
-                                    <div className="w-12 h-12 bg-rensto-blue rounded-full blur-md animate-pulse opacity-50" />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-8 h-8 bg-white rounded-full blur-[20px]" />
-                                    </div>
-                                </div>
-
-                                <h3 className="text-3xl font-bold mb-4">Start Free Consultation Now</h3>
-                                <p className="text-slate-400 text-lg mb-8">
-                                    We&apos;ll map out your entire automation architecture, define the scope, and give you a fixed price—live on the call.
-                                </p>
-                                <ul className="inline-block text-left space-y-4 mb-8">
-                                    <li className="flex items-center gap-3 text-slate-300">
-                                        {/* Animated Status Dot */}
-                                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
-                                            <div className="w-2 h-2 bg-rensto-blue rounded-full animate-pulse" />
-                                            <div className="absolute inset-0 bg-rensto-blue/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                                        </div>
-                                        <span>Speak with an Automation Architect</span>
-                                    </li>
-                                    <li className="flex items-center gap-3 text-slate-300">
-                                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
-                                            <div className="w-2 h-2 bg-rensto-blue rounded-full animate-pulse" />
-                                            <div className="absolute inset-0 bg-rensto-blue/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                                        </div>
-                                        <span>Get your <strong>Custom Scope & Quote</strong></span>
-                                    </li>
-                                    <li className="flex items-center gap-3 text-slate-300">
-                                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
-                                            <div className="w-2 h-2 bg-rensto-blue rounded-full animate-pulse" />
-                                            <div className="absolute inset-0 bg-rensto-blue/30 rounded-full animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                                        </div>
-                                        <span>Zero obligation to proceed</span>
-                                    </li>
-                                </ul>
-                                <Button variant="renstoPrimary" size="lg" className="w-full text-lg py-6" asChild>
-                                    <Link href="https://tidycal.com/rensto/15-min-consult" target="_blank">
-                                        Start Free Consultation Now
-                                    </Link>
-                                </Button>
-                                <p className="text-slate-500 text-xs mt-4">
-                                    * Paid implementation options available after the consult.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* FINAL CTA */}
-                <section className="py-32 px-4 text-center">
-                    <h2 className="text-4xl font-bold mb-8">Ready To Build?</h2>
-                    <p className="text-xl text-slate-400 mb-12">15 Minutes. One Plan. No Obligation.</p>
-                    <Button variant="renstoPrimary" size="lg" className="text-xl px-12 py-8 h-auto" asChild>
-                        <Link href="https://tidycal.com/rensto/15-min-consult" target="_blank">
-                            Get Your Custom Plan
-                        </Link>
-                    </Button>
-                </section>
-
-            </main>
             <Footer />
-        </div>
+        </div >
     );
 }

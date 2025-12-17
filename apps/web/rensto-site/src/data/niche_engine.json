@@ -1,0 +1,985 @@
+[
+    {
+        "slug": "hvac",
+        "title": "HVAC Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "missed calls",
+            "primaryOutcome": "booked repairs",
+            "rolename": "dispatcher"
+        },
+        "hero": {
+            "headline": "Convert more missed calls into booked repairs—without hiring.",
+            "subhead": "We install an automation system that captures, qualifies, routes, and follows up—so your techs only handle the paying jobs.",
+            "youtubeId": "IAX5tz3qAgs"
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "hvac_1",
+                    "phase": "core",
+                    "title": "24/7 HVAC AI Receptionist",
+                    "desc": "Voice inbound + qualification + lead create + notify.",
+                    "tech": "Uses OpenAI GPT-4o + Twilio Voice to answer in <800ms.",
+                    "icon": "PhoneIncoming",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "hvac_2",
+                    "phase": "core",
+                    "title": "Missed-Call Rescue",
+                    "desc": "Instant WhatsApp follow-up for missed calls/forms.",
+                    "tech": "Detects call end -> Instant WhatsApp/SMS reply.",
+                    "icon": "MessageSquareWarning",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "hvac_3",
+                    "phase": "core",
+                    "title": "Booking & Dispatch",
+                    "desc": "Propose slots, verify calendar, confirm via WhatsApp.",
+                    "tech": "Matches intent 'Book' -> Checks Calendar API -> Sends link.",
+                    "icon": "CalendarCheck",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "hvac_4",
+                    "phase": "ops",
+                    "title": "Estimate Generator",
+                    "desc": "AI drafts scope from photos -> renders PDF.",
+                    "tech": "Extracts specs from field notes -> GPT-4o generates PDF -> Emails client.",
+                    "icon": "ScrollText",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "hvac_9",
+                    "phase": "ops",
+                    "title": "Tech Voice-to-Job",
+                    "desc": "Transcribes tech voice notes into job recap.",
+                    "tech": "Whisper AI transcription -> Structuring -> CRM update.",
+                    "icon": "Mic",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "hvac_11",
+                    "phase": "ops",
+                    "title": "Parts Reorder Trigger",
+                    "desc": "Low stock alert -> draft supplier email.",
+                    "tech": "Syncs inventory DB -> Flags low stock -> Drafts PO.",
+                    "icon": "PackageSearch",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "hvac_12",
+                    "phase": "ops",
+                    "title": "Daily Owner Brief",
+                    "desc": "Morning digest of pipeline, wins, and issues.",
+                    "tech": "Aggregates CRM activity -> GPT-4o Summary -> Sends Email.",
+                    "icon": "Newspaper",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "hvac_5",
+                    "phase": "growth",
+                    "title": "Review Engine",
+                    "desc": "Post-job review request + sentiment alert.",
+                    "tech": "Detects job 'Completed' -> Sends SMS/Email request -> Analyzes Sentiment.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "hvac_6",
+                    "phase": "growth",
+                    "title": "Competitor Watch",
+                    "desc": "Weekly scrape of competitor offers.",
+                    "tech": "Scrapes competitor sites/ads -> Analyzes offer variances.",
+                    "icon": "Eye",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "hvac_8",
+                    "phase": "growth",
+                    "title": "Seasonal Campaigns",
+                    "desc": "Auto-generate spring/winter promo copy.",
+                    "tech": "Identifies inactive clients -> Generates personalized offer -> SMS blast.",
+                    "icon": "Megaphone",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "realtor",
+        "title": "Realtor Automation System",
+        "category": "professional",
+        "tokens": {
+            "leadSource": "portal leads",
+            "primaryOutcome": "showings",
+            "rolename": "ISA"
+        },
+        "hero": {
+            "headline": "Convert more Zillow leads into showings—without hiring.",
+            "subhead": "We install an automation system that qualifies buyers and schedules viewings—so you only meet serious clients."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "real_1",
+                    "phase": "core",
+                    "title": "24/7 AI Receptionist",
+                    "desc": "Qualify buyer/seller intent -> notify agent.",
+                    "icon": "Bot",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "real_2",
+                    "phase": "core",
+                    "title": "Portal Lead Rescue",
+                    "desc": "Instant WhatsApp response to Zillow/Realtor leads.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "real_3",
+                    "phase": "core",
+                    "title": "Showing Scheduling",
+                    "desc": "Calendar coordination for viewings.",
+                    "icon": "Calendar",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "real_4",
+                    "phase": "ops",
+                    "title": "CMA Generator",
+                    "desc": "Generate comps data -> narrative -> PDF.",
+                    "icon": "FileText",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "real_6",
+                    "phase": "ops",
+                    "title": "Open House Booster",
+                    "desc": "Pre-event reminders + directions + parking info.",
+                    "icon": "Share2",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "real_11",
+                    "phase": "ops",
+                    "title": "Transaction Updates",
+                    "desc": "Auto-update clients at key milestones.",
+                    "icon": "Bell",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "real_5",
+                    "phase": "growth",
+                    "title": "Open House Drip",
+                    "desc": "QR sign-in -> thank you -> 7-day drip.",
+                    "icon": "UserPlus",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "real_7",
+                    "phase": "growth",
+                    "title": "Review Engine",
+                    "desc": "Post-close review request sequence.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "real_10",
+                    "phase": "growth",
+                    "title": "Listing Marketing",
+                    "desc": "Auto-generate social posts for new listings.",
+                    "icon": "Instagram",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "construction",
+        "title": "Construction Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "bid requests",
+            "primaryOutcome": "site walks",
+            "rolename": "estimator"
+        },
+        "hero": {
+            "headline": "Convert more bid requests into site walks—without hiring.",
+            "subhead": "We install an automation system that qualifies projects and schedules evaluations—so you only estimate profitable work."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "con_1",
+                    "phase": "core",
+                    "title": "Broker AI Receptionist",
+                    "desc": "Qualify project scope/budget -> Airtable lead.",
+                    "icon": "HardHat",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "con_2",
+                    "phase": "core",
+                    "title": "Bid Inquiry Rescue",
+                    "desc": "Parse RFQ emails -> instant reply -> pipeline.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "con_3",
+                    "phase": "core",
+                    "title": "Site Walk Scheduling",
+                    "desc": "Coordinate site visits with subs/owners.",
+                    "icon": "Calendar",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "con_4",
+                    "phase": "ops",
+                    "title": "RFQ Generator",
+                    "desc": "Structure scope -> render PDF package.",
+                    "icon": "FileText",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "con_5",
+                    "phase": "ops",
+                    "title": "Bid Collection Engine",
+                    "desc": "Send RFQs -> remind subs -> summarize bids.",
+                    "icon": "Hammer",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "con_6",
+                    "phase": "ops",
+                    "title": "Sub Prequalification",
+                    "desc": "Intake docs -> AI score -> verify.",
+                    "icon": "CheckSquare",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "con_7",
+                    "phase": "growth",
+                    "title": "Competitor Intel",
+                    "desc": "Scrape material pricing/labor rates.",
+                    "icon": "Eye",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "con_10",
+                    "phase": "growth",
+                    "title": "Contract Renewals",
+                    "desc": "Track retainer expiries -> auto-remind.",
+                    "icon": "RefreshCw",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "con_12",
+                    "phase": "growth",
+                    "title": "Daily Broker Brief",
+                    "desc": "Pipeline health + bid deadlines digest.",
+                    "icon": "Newspaper",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "ecom",
+        "title": "Ecom Support Automation",
+        "category": "retail",
+        "tokens": {
+            "leadSource": "support tickets",
+            "primaryOutcome": "resolved orders",
+            "rolename": "support agent"
+        },
+        "hero": {
+            "headline": "Convert support tickets into resolved orders—without hiring.",
+            "subhead": "We install an automation system that triages inquiries and recovers carts—so your team only handles complex issues."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "ecom_1",
+                    "phase": "core",
+                    "title": "AI Support Concierge",
+                    "desc": "Triage order status/refunds -> reply.",
+                    "icon": "Headphones",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "ecom_2",
+                    "phase": "core",
+                    "title": "Cart Recovery",
+                    "desc": "Email + WhatsApp sequence for lost sales.",
+                    "icon": "ShoppingBag",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "ecom_3",
+                    "phase": "core",
+                    "title": "Order Confirmation",
+                    "desc": "WhatsApp receipts + shipping updates.",
+                    "icon": "Truck",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "ecom_4",
+                    "phase": "ops",
+                    "title": "Shipping Monitor",
+                    "desc": "Detect delays -> proactive outreach.",
+                    "icon": "AlertTriangle",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "ecom_7",
+                    "phase": "ops",
+                    "title": "Returns Autopilot",
+                    "desc": "Qualify return -> generate label.",
+                    "icon": "RefreshCcw",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "ecom_9",
+                    "phase": "ops",
+                    "title": "Listing Generator",
+                    "desc": "Generate SEO titles/desc from specs.",
+                    "icon": "Tag",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "ecom_5",
+                    "phase": "growth",
+                    "title": "Post-Purchase Drip",
+                    "desc": "How-to guides -> cross-sell -> reorder.",
+                    "icon": "TrendingUp",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "ecom_6",
+                    "phase": "growth",
+                    "title": "Review Request",
+                    "desc": "Timed review request after delivery.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "ecom_10",
+                    "phase": "growth",
+                    "title": "Price Watch",
+                    "desc": "Scrape competitor pricing -> alert.",
+                    "icon": "Eye",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "lawyer",
+        "title": "Law Firm Automation System",
+        "category": "professional",
+        "tokens": {
+            "leadSource": "inquiries",
+            "primaryOutcome": "consults",
+            "rolename": "intake specialist"
+        },
+        "hero": {
+            "headline": "Convert more inquiries into paid consults—without hiring.",
+            "subhead": "We install an automation system that screens clients and clears conflicts—so you only speak to qualified cases."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "law_1",
+                    "phase": "core",
+                    "title": "Firm AI Intake",
+                    "desc": "Qualify case type/urgency -> conflict check.",
+                    "icon": "Scale",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "law_2",
+                    "phase": "core",
+                    "title": "Speed-to-Lead",
+                    "desc": "Immediate acknowledgement -> log -> escalate.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "law_3",
+                    "phase": "core",
+                    "title": "Consult Scheduling",
+                    "desc": "Propose slots -> book consult.",
+                    "icon": "Calendar",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "law_4",
+                    "phase": "ops",
+                    "title": "Conflict Check",
+                    "desc": "Screen parties against DB -> flag.",
+                    "icon": "ShieldAlert",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "law_5",
+                    "phase": "ops",
+                    "title": "Engagement Gen",
+                    "desc": "Draft agreement -> prepare e-sign.",
+                    "icon": "FileSignature",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "law_6",
+                    "phase": "ops",
+                    "title": "Doc Collection",
+                    "desc": "Checklist reminders until files uploaded.",
+                    "icon": "FolderInput",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "law_8",
+                    "phase": "growth",
+                    "title": "Review Engine",
+                    "desc": "Post-close review request sequence.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "law_9",
+                    "phase": "growth",
+                    "title": "Competitor Watch",
+                    "desc": "Monitor rival firms' marketing.",
+                    "icon": "Eye",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "law_11",
+                    "phase": "growth",
+                    "title": "Attorney Brief",
+                    "desc": "Deadlines + hearings + urgent items.",
+                    "icon": "Briefcase",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "tutor",
+        "title": "Tutoring Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "parent inquiries",
+            "primaryOutcome": "trial lessons",
+            "rolename": "scheduler"
+        },
+        "hero": {
+            "headline": "Convert more inquiries into trial lessons—without hiring.",
+            "subhead": "We install an automation system that handles scheduling and homework feedback—so you focus on teaching."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "tut_1",
+                    "phase": "core",
+                    "title": "Tutor Intake",
+                    "desc": "Qualify subject/grade -> log lead.",
+                    "icon": "GraduationCap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "tut_2",
+                    "phase": "core",
+                    "title": "Inquiry Rescue",
+                    "desc": "Instant reply -> WhatsApp follow-up.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "tut_3",
+                    "phase": "core",
+                    "title": "Trial Scheduling",
+                    "desc": "Schedule trial -> confirm -> link.",
+                    "icon": "CalendarCheck",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "tut_4",
+                    "phase": "ops",
+                    "title": "Lesson Reminders",
+                    "desc": "T-24h/T-2h reminders with prep list.",
+                    "icon": "Bell",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "tut_5",
+                    "phase": "ops",
+                    "title": "Homework Feedback",
+                    "desc": "Intake submission -> AI draft feedback.",
+                    "icon": "BookOpen",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "tut_7",
+                    "phase": "ops",
+                    "title": "Progress Reports",
+                    "desc": "Compile scores -> render PDF report.",
+                    "icon": "FileBarChart",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "tut_9",
+                    "phase": "growth",
+                    "title": "Review Engine",
+                    "desc": "Request testimonial after grade up.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "tut_10",
+                    "phase": "growth",
+                    "title": "Parent Outreach",
+                    "desc": "Find local groups -> build list.",
+                    "icon": "Users",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "tut_11",
+                    "phase": "growth",
+                    "title": "Billing Track",
+                    "desc": "Track balance -> auto-renew reminders.",
+                    "icon": "CreditCard",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "clinic",
+        "title": "Clinic Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "patient calls",
+            "primaryOutcome": "appointments",
+            "rolename": "front desk"
+        },
+        "hero": {
+            "headline": "Convert more patient calls into appointments—without hiring.",
+            "subhead": "We install an automation system that handles scheduling and intake—so your staff focuses on care."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "clin_1",
+                    "phase": "core",
+                    "title": "Clinic Front Desk",
+                    "desc": "Classify intent -> triage -> ack.",
+                    "icon": "Stethoscope",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "clin_2",
+                    "phase": "core",
+                    "title": "Patient Rescue",
+                    "desc": "Instant non-PHI reply -> escalate.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "clin_3",
+                    "phase": "core",
+                    "title": "Appointment Book",
+                    "desc": "Propose slots -> book -> confirm.",
+                    "icon": "CalendarPlus",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "clin_4",
+                    "phase": "ops",
+                    "title": "HIPAA Reminders",
+                    "desc": "Minimal-info reminders T-24h.",
+                    "icon": "ShieldCheck",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "clin_5",
+                    "phase": "ops",
+                    "title": "Intake Packet Gen",
+                    "desc": "Generate forms -> send -> verify.",
+                    "icon": "ClipboardList",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "clin_8",
+                    "phase": "ops",
+                    "title": "Refill Triage",
+                    "desc": "Collect details -> queue approval.",
+                    "icon": "Pill",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "clin_9",
+                    "phase": "growth",
+                    "title": "Waitlist Fill",
+                    "desc": "Auto-contact waitlist on cancel.",
+                    "icon": "UserCheck",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "clin_10",
+                    "phase": "growth",
+                    "title": "Reputation Engine",
+                    "desc": "Post-visit review request.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "clin_11",
+                    "phase": "growth",
+                    "title": "Competitor Watch",
+                    "desc": "Monitor nearby clinic pricing.",
+                    "icon": "Eye",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "roofer",
+        "title": "Roofing Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "storm leads",
+            "primaryOutcome": "inspections",
+            "rolename": "coordinator"
+        },
+        "hero": {
+            "headline": "Convert more storm leads into inspections—without hiring.",
+            "subhead": "We install an automation system that qualifies homeowners and schedules roof walks—so you only bid ready jobs."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "roof_1",
+                    "phase": "core",
+                    "title": "Roofer AI Receptionist",
+                    "desc": "Qualify leak/storm -> Airtable lead.",
+                    "icon": "Home",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "roof_2",
+                    "phase": "core",
+                    "title": "Speed-to-Lead",
+                    "desc": "Instant reply to form fills.",
+                    "icon": "Zap",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "roof_3",
+                    "phase": "core",
+                    "title": "Inspect Scheduling",
+                    "desc": "Book slot -> reminders.",
+                    "icon": "Calendar",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "roof_4",
+                    "phase": "ops",
+                    "title": "Inspection Pack",
+                    "desc": "Photos + notes -> PDF report.",
+                    "icon": "FileText",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "roof_5",
+                    "phase": "ops",
+                    "title": "Storm Claim Asst",
+                    "desc": "Send homeowner checklist.",
+                    "icon": "Umbrella",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "roof_6",
+                    "phase": "ops",
+                    "title": "Estimate Gen",
+                    "desc": "Draft scope -> render PDF.",
+                    "icon": "PenTool",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "roof_7",
+                    "phase": "growth",
+                    "title": "Follow-Up Drip",
+                    "desc": "Day 1/3/7 follow-ups.",
+                    "icon": "TrendingUp",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "roof_8",
+                    "phase": "growth",
+                    "title": "Review Engine",
+                    "desc": "Post-job request -> monitor.",
+                    "icon": "Star",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "roof_12",
+                    "phase": "growth",
+                    "title": "Daily Owner Brief",
+                    "desc": "Pipeline + storm radar.",
+                    "icon": "Sun",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    },
+    {
+        "slug": "restaurant",
+        "title": "Restaurant Automation System",
+        "category": "service",
+        "tokens": {
+            "leadSource": "calls",
+            "primaryOutcome": "reservations",
+            "rolename": "host"
+        },
+        "hero": {
+            "headline": "Convert more calls into reservations—without hiring.",
+            "subhead": "We install an automation system that handles bookings and waitlists—so your staff focuses on service."
+        },
+        "basePrice": {
+            "setup": 2500,
+            "monthly": 497
+        },
+        "phases": {
+            "core": [
+                {
+                    "id": "rest_1",
+                    "phase": "core",
+                    "title": "AI Host",
+                    "desc": "Take reservations -> confirm.",
+                    "icon": "Utensils",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "rest_2",
+                    "phase": "core",
+                    "title": "No-Show Reduce",
+                    "desc": "SMS confirm/reschedule.",
+                    "icon": "MessageSquare",
+                    "price": 0,
+                    "monthly": 0
+                },
+                {
+                    "id": "rest_3",
+                    "phase": "core",
+                    "title": "Waitlist Manager",
+                    "desc": "Notify waitlist -> 'Table Ready'.",
+                    "icon": "Clock",
+                    "price": 0,
+                    "monthly": 0
+                }
+            ],
+            "ops": [
+                {
+                    "id": "rest_5",
+                    "phase": "ops",
+                    "title": "Order Updates",
+                    "desc": "Prep -> Delivery notifications.",
+                    "icon": "Bell",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "rest_11",
+                    "phase": "ops",
+                    "title": "Inventory Reorder",
+                    "desc": "Low stock -> vendor RFQ.",
+                    "icon": "Box",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "rest_12",
+                    "phase": "ops",
+                    "title": "Daily Owner Brief",
+                    "desc": "Sales, bookings, risks.",
+                    "icon": "Newspaper",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ],
+            "growth": [
+                {
+                    "id": "rest_4",
+                    "phase": "growth",
+                    "title": "Cart Rescue",
+                    "desc": "Recover abandoned orders.",
+                    "icon": "ShoppingBag",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "rest_6",
+                    "phase": "growth",
+                    "title": "Catering Quotes",
+                    "desc": "Intake -> render quote PDF.",
+                    "icon": "FileText",
+                    "price": 500,
+                    "monthly": 47
+                },
+                {
+                    "id": "rest_8",
+                    "phase": "growth",
+                    "title": "VIP Reactivation",
+                    "desc": "Targeted offers to lapsed.",
+                    "icon": "Heart",
+                    "price": 500,
+                    "monthly": 47
+                }
+            ]
+        }
+    }
+]

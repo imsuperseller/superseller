@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
-import { 
-  Menu, 
-  X, 
-  ChevronDown, 
+import {
+  Menu,
+  X,
+  ChevronDown,
   User,
   Settings,
   LogOut,
@@ -31,13 +31,15 @@ export function Header() {
   // Don't render header on dashboard routes or service pages (they have their own headers)
   if (mounted) {
     const isDashboardRoute = currentPath.startsWith('/ortal-dashboard');
-    const isServicePage = currentPath === '/' || 
-                          currentPath === '/marketplace' || 
-                          currentPath === '/custom' || 
-                          currentPath === '/subscriptions' || 
-                          currentPath === '/solutions';
-    
-    if (isDashboardRoute || isServicePage) {
+    const isServicePage = currentPath === '/' ||
+      currentPath === '/marketplace' ||
+      currentPath === '/custom' ||
+      currentPath === '/subscriptions' ||
+      currentPath === '/solutions';
+
+    const isCustomLanding = currentPath.startsWith('/offer') || currentPath.startsWith('/onboarding');
+
+    if (isDashboardRoute || isServicePage || isCustomLanding) {
       return null;
     }
   }
@@ -65,7 +67,7 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-8 h-8 relative">
                 <Image
-                  src="/Rensto Logo.png"
+                  src="/rensto-logo.png"
                   alt="Rensto Logo"
                   width={32}
                   height={32}
@@ -95,12 +97,13 @@ export function Header() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Temporarily disabled authentication for portal compatibility */}
-            <Button variant="outline" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/demo">Try Demo</Link>
-            </Button>
+            {/* Temporarily disabled authentication for portal compatibility */}
+            <Link href="/login">
+              <Button variant="outline">Login</Button>
+            </Link>
+            <Link href="/demo">
+              <Button>Try Demo</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}

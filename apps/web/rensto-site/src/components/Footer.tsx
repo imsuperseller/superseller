@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Github, 
-  Twitter, 
-  Linkedin, 
+import {
+  Github,
+  Twitter,
+  Linkedin,
   Facebook,
   Instagram,
-  Mail, 
+  Mail,
   Phone,
   MapPin,
   Zap,
@@ -54,11 +54,7 @@ export function Footer() {
         href: 'https://twitter.com/rensto',
         icon: Twitter,
       },
-      {
-        name: 'GitHub',
-        href: 'https://github.com/rensto',
-        icon: Github,
-      },
+      // GitHub removed
     ],
   };
 
@@ -125,7 +121,7 @@ export function Footer() {
           {/* Business Apps */}
           <div>
             <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4">
-              Business Apps
+              Client Access
             </h3>
             <ul className="space-y-3">
               {navigation.business.map((item) => (

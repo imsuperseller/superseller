@@ -93,7 +93,8 @@ export async function POST(request: NextRequest) {
         'marketplace-install': `${N8N_URL}/webhook/stripe-marketplace-install`,
         'ready-solutions': `${N8N_URL}/webhook/stripe-ready-solutions`,
         'subscription': `${N8N_URL}/webhook/stripe-subscription`,
-        'custom-solutions': `${N8N_URL}/webhook/stripe-custom`
+        'custom-solutions': `${N8N_URL}/webhook/stripe-custom`,
+        'custom-config': `${N8N_URL}/webhook/stripe-custom-config`
       };
 
       const webhookUrl = webhookMap[flowType];
