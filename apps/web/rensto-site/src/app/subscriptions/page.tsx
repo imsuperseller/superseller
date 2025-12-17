@@ -200,72 +200,7 @@ export default function SubscriptionsPage() {
       color: 'var(--rensto-text-primary)',
       fontFamily: 'var(--font-outfit), sans-serif'
     }}>
-      {/* Header */}
-      <header
-        className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
-        style={{
-          background: 'rgba(17, 13, 40, 0.98)',
-          borderColor: 'rgba(254, 61, 81, 0.3)'
-        }}
-      >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="relative w-10 h-10">
-                <Image
-                  src="/rensto-logo.png"
-                  alt="Rensto Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  style={{
-                    filter: 'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))'
-                  }}
-                  priority
-                />
-              </div>
-              <span className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>Rensto</span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-8">
-              <Link
-                href="/custom"
-                className="transition-colors hover:opacity-80"
-                style={{ color: 'var(--rensto-text-primary)' }}
-              >
-                Custom Solutions
-              </Link>
-              <Link
-                href="/subscriptions"
-                className="transition-colors hover:opacity-80 font-medium"
-                style={{ color: 'var(--rensto-cyan)' }}
-              >
-                Subscriptions
-              </Link>
-              <Link
-                href="/solutions"
-                className="transition-colors hover:opacity-80"
-                style={{ color: 'var(--rensto-text-primary)' }}
-              >
-                Industry Packages
-              </Link>
-            </nav>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-2"
-                style={{
-                  borderColor: 'var(--rensto-primary)',
-                  color: 'var(--rensto-primary)',
-                  background: 'transparent'
-                }}
-              >
-                Sign In
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header removed to use global RouteAwareLayout header */}
 
       {/* Qualification Gate */}
       {!isQualified && (

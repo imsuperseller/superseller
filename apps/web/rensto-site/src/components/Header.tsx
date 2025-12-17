@@ -35,7 +35,7 @@ export function Header() {
       currentPath === '/marketplace' ||
       currentPath === '/custom' ||
       currentPath === '/subscriptions' ||
-      currentPath === '/solutions';
+      currentPath === '/niches';
 
     const isCustomLanding = currentPath.startsWith('/offer') || currentPath.startsWith('/onboarding');
 
@@ -105,7 +105,7 @@ export function Header() {
               Subscriptions
             </Link>
             <Link
-              href="/solutions"
+              href="/niches"
               className="text-gray-300 hover:text-white transition-colors"
             >
               Industry Packages
@@ -164,7 +164,7 @@ export function Header() {
                 Subscriptions
               </Link>
               <Link
-                href="/solutions"
+                href="/niches"
                 className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
