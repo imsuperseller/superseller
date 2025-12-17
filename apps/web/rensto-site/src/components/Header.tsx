@@ -59,23 +59,32 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <header
+      className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+      style={{
+        background: 'rgba(17, 13, 40, 0.98)',
+        borderColor: 'rgba(254, 61, 81, 0.3)'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-8 h-8 relative">
+              <div className="w-10 h-10 relative">
                 <Image
                   src="/rensto-logo.png"
                   alt="Rensto Logo"
-                  width={32}
-                  height={32}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 6px rgba(0, 255, 255, 0.5))' }}
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))'
+                  }}
+                  priority
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold" style={{ color: '#ffffff' }}>
                 Rensto
               </span>
             </Link>
@@ -83,26 +92,40 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                {item.name}
-              </Link>
-            ))}
+            <Link
+              href="/custom"
+              className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+            >
+              Custom Solutions
+            </Link>
+            <Link
+              href="/subscriptions"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Subscriptions
+            </Link>
+            <Link
+              href="/solutions"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Industry Packages
+            </Link>
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Temporarily disabled authentication for portal compatibility */}
-            {/* Temporarily disabled authentication for portal compatibility */}
-            <Link href="/login">
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/demo">
-              <Button>Try Demo</Button>
+            <Link href="/custom">
+              <Button
+                size="sm"
+                className="font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
+                  color: '#ffffff',
+                  boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
+                }}
+              >
+                Get Started
+              </Button>
             </Link>
           </div>
 
@@ -111,7 +134,7 @@ export function Header() {
             <Button
               variant="ghost"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2"
+              className="p-2 text-white hover:bg-white/10"
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -124,31 +147,40 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200">
+          <div className="md:hidden border-t border-white/10 bg-[#110d28]">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-3 py-2 text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              <Link
+                href="/custom"
+                className="block px-3 py-2 text-base font-medium text-cyan-400 hover:bg-white/5 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Custom Solutions
+              </Link>
+              <Link
+                href="/subscriptions"
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Subscriptions
+              </Link>
+              <Link
+                href="/solutions"
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Industry Packages
+              </Link>
             </div>
-            <div className="pt-4 pb-3 border-t border-slate-200">
-              {/* Temporarily disabled authentication for portal compatibility */}
-              <div className="space-y-2">
-                <Link href="/login">
-                  <Button variant="outline" className="w-full justify-center">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/demo">
-                  <Button className="w-full justify-center">Try Demo</Button>
-                </Link>
-              </div>
+            <div className="pt-4 pb-3 border-t border-white/10 px-2">
+              <Link href="/custom">
+                <Button className="w-full justify-center font-bold" style={{
+                  background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
+                  color: '#ffffff',
+                  boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
+                }}>
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </div>
         )}
