@@ -420,6 +420,47 @@ export default function NicheTemplatePage() {
                             <p className="text-center text-xs text-gray-600 mt-4">
                                 100% Satisfaction Guarantee. Cancel anytime.
                             </p>
+
+                            {/* ROI Anchor */}
+                            <div className="mt-8 pt-8 border-t border-white/10">
+                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Cost of Inaction</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-3 rounded-lg bg-red-500/10 border border-red-500/20 opacity-70 grayscale hover:grayscale-0 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-red-500/20 text-red-400 p-1.5 rounded">
+                                                <OldWayXIcon size={16} />
+                                            </div>
+                                            <div className="text-sm">
+                                                <div className="text-gray-300 font-medium">Standard Hire</div>
+                                                <div className="text-[10px] text-gray-500">9-5, Sick Days, Training</div>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-red-400 font-bold font-mono">$3,500<span className="text-[10px] opacity-70">/mo</span></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 rounded-lg bg-green-500/10 border border-green-500/20 relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-green-500/5 animate-pulse" />
+                                        <div className="flex items-center gap-3 relative">
+                                            <div className="bg-green-500/20 text-green-400 p-1.5 rounded">
+                                                <NewWayCheckIcon size={16} />
+                                            </div>
+                                            <div className="text-sm">
+                                                <div className="text-white font-bold">Rensto System</div>
+                                                <div className="text-[10px] text-green-400/80">24/7/365, Instant Scale</div>
+                                            </div>
+                                        </div>
+                                        <div className="text-right relative">
+                                            <div className="text-green-400 font-bold font-mono text-lg">${totalMonthly}<span className="text-[10px] opacity-70">/mo</span></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center text-[10px] text-gray-500 mt-2">
+                                        <span className="text-green-400 font-bold">Save ${(3500 - totalMonthly).toLocaleString()}/mo</span> vs hiring human staff.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -429,46 +470,54 @@ export default function NicheTemplatePage() {
                 <section className="max-w-7xl mx-auto px-6 mt-32 w-full">
                     <h2 className="text-3xl font-bold text-center mb-12">Common Questions</h2>
                     <div className="grid md:grid-cols-2 gap-6 w-full">
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Do I need to pay for software licenses?</h3>
-                            <p className="text-gray-400">We host the core automation on our servers. You only pay for your own communication costs (Twilio/WhatsApp/OpenAI), which typically runs $20-$50/month depending on volume.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Is there a contract?</h3>
-                            <p className="text-gray-400">No. We operate on a month-to-month basis. You can pause or cancel your support subscription at any time.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">How long does implementation take?</h3>
-                            <p className="text-gray-400">Once we have your credentials and assets, we can typically go live within 3-5 business days.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">How do you handle sales tax?</h3>
-                            <p className="text-gray-400">Our payments are processed via Stripe, which automatically calculates and collects applicable sales tax based on your location (e.g., Texas regulations) at checkout.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Can I customize the AI's response style?</h3>
-                            <p className="text-gray-400">Yes. During the "Business Logic" onboarding step, you can define the tone (e.g., Professional, Friendly, Urgent) and specific instructions for how the AI usually speaks to your clients.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Do I need a new phone number?</h3>
-                            <p className="text-gray-400">Not necessarily. We can integrate with your existing business line for WhatsApp/SMS, or provide a dedicated tracking number if you prefer to keep them separate.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">What if the AI makes a mistake?</h3>
-                            <p className="text-gray-400">The system is designed to "fail safe". If the AI isn't sure, it politely asks for your team's help or forwards the call/message directly to a human, ensuring no lead is ever lost.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Does it speak Spanish?</h3>
-                            <p className="text-gray-400">Yes! The AI is fully multilingual. It can detect the customer's language (English, Spanish, French, etc.) and switch instantly to converse fluently with them.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">Can I see the conversations?</h3>
-                            <p className="text-gray-400">Absolutely. You have a full dashboard where you can read every transcript, listen to call recordings, and jump in to take over a conversation whenever you want.</p>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                            <h3 className="text-lg font-bold text-white mb-2">How do I get paid?</h3>
-                            <p className="text-gray-400">For services booked through the automation, we integrate with your Stripe or CRM payment link. Funds go directly to your bank account; we never touch your transaction money.</p>
-                        </div>
+                        {/* @ts-ignore */}
+                        {(niche.faqs || [
+                            {
+                                question: "Do I need to pay for software licenses?",
+                                answer: "We host the core automation on our servers. You only pay for your own communication costs (Twilio/WhatsApp/OpenAI), which typically runs $20-$50/month depending on volume."
+                            },
+                            {
+                                question: "Is there a contract?",
+                                answer: "No. We operate on a month-to-month basis. You can pause or cancel your support subscription at any time."
+                            },
+                            {
+                                question: "How long does implementation take?",
+                                answer: "Once we have your credentials and assets, we can typically go live within 3-5 business days."
+                            },
+                            {
+                                question: "How do you handle sales tax?",
+                                answer: "Our payments are processed via Stripe, which automatically calculates and collects applicable sales tax based on your location (e.g., Texas regulations) at checkout."
+                            },
+                            {
+                                question: "Can I customize the AI's response style?",
+                                answer: "Yes. During the \"Business Logic\" onboarding step, you can define the tone (e.g., Professional, Friendly, Urgent) and specific instructions for how the AI usually speaks to your clients."
+                            },
+                            {
+                                question: "Do I need a new phone number?",
+                                answer: "Not necessarily. We can integrate with your existing business line for WhatsApp/SMS, or provide a dedicated tracking number if you prefer to keep them separate."
+                            },
+                            {
+                                question: "What if the AI makes a mistake?",
+                                answer: "The system is designed to \"fail safe\". If the AI isn't sure, it politely asks for your team's help or forwards the call/message directly to a human, ensuring no lead is ever lost."
+                            },
+                            {
+                                question: "Does it speak Spanish?",
+                                answer: "Yes! The AI is fully multilingual. It can detect the customer's language (English, Spanish, French, etc.) and switch instantly to converse fluently with them."
+                            },
+                            {
+                                question: "Can I see the conversations?",
+                                answer: "Absolutely. You have a full dashboard where you can read every transcript, listen to call recordings, and jump in to take over a conversation whenever you want."
+                            },
+                            {
+                                question: "How do I get paid?",
+                                answer: "For services booked through the automation, we integrate with your Stripe or CRM payment link. Funds go directly to your bank account; we never touch your transaction money."
+                            }
+                        ]).map((faq: any, i: number) => (
+                            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] transition-colors">
+                                <h3 className="text-lg font-bold text-white mb-2">{faq.question}</h3>
+                                <p className="text-gray-400">{faq.answer}</p>
+                            </div>
+                        ))}
                     </div>
                 </section>
             </main>
