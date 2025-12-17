@@ -466,6 +466,14 @@ export default function NicheTemplatePage() {
 
                 </div>
 
+                {/* Testimonials: Coming Soon */}
+                <section className="max-w-7xl mx-auto px-6 mt-32 w-full text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400">
+                        <Star size={14} className="text-yellow-500" />
+                        <span>Case Studies & Testimonials Coming Soon</span>
+                    </div>
+                </section>
+
                 {/* FAQ Section */}
                 <section className="max-w-7xl mx-auto px-6 mt-32 w-full">
                     <h2 className="text-3xl font-bold text-center mb-12">Common Questions</h2>

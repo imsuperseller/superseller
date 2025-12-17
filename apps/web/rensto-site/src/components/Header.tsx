@@ -31,7 +31,7 @@ export function Header() {
   // Don't render header on dashboard routes or service pages (they have their own headers)
   if (mounted) {
     const isDashboardRoute = currentPath.startsWith('/ortal-dashboard');
-    const isServicePage = currentPath === '/' ||
+    const isServicePage =
       currentPath === '/marketplace' ||
       currentPath === '/custom' ||
       currentPath === '/subscriptions' ||

@@ -231,7 +231,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does this sync with my MLS or CRM?",
+                "answer": "Yes. We integrate with major MLS feeds and CRMs like Follow Up Boss, KVCore, and Lofty to keep your pipeline in sync."
+            },
+            {
+                "question": "How fast does it respond to Zillow leads?",
+                "answer": "Instantly (< 1 minute). Speed-to-lead is critical; we engage while the buyer is still looking at the listing."
+            },
+            {
+                "question": "Can it handle lockbox codes?",
+                "answer": "Yes, but only after verifying the lead's ID and pre-qualification status, following your strict security protocols."
+            }
+        ]
     },
     {
         "slug": "construction",
@@ -338,7 +352,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does it integrate with Procore or BuilderTrend?",
+                "answer": "Absolutely. We can push bid data and documents directly into your project management software."
+            },
+            {
+                "question": "Can it read complex architectural plans?",
+                "answer": "It can analyze scope narratives and spec sheets to draft initial estimates, but final review is always recommended."
+            },
+            {
+                "question": "How does it handle subcontractor certificates?",
+                "answer": "It automatically requests, collects, and reads insurance certs, flagging any that are expired or insufficient."
+            }
+        ]
     },
     {
         "slug": "ecom",
@@ -445,7 +473,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does this work with Shopify and WooCommerce?",
+                "answer": "Yes, we have deep integrations with both, allowing us to see real-time order status, inventory, and tracking attributes."
+            },
+            {
+                "question": "How does it handle refunds?",
+                "answer": "It follows your policy rulebook (e.g., 'If < $50, auto-refund'). For high-value items, it drafts a ticket for your approval."
+            },
+            {
+                "question": "Can it proactively notify customers of delays?",
+                "answer": "Yes. If a shipping carrier flags a delay, the AI can instantly WhatsApp the customer with an apology and a discount code."
+            }
+        ]
     },
     {
         "slug": "lawyer",
@@ -552,7 +594,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Is this compliant with Attorney Client Privilege?",
+                "answer": "Yes. All data is encrypted, and the AI is trained to never give legal advice—only legal *information* and scheduling."
+            },
+            {
+                "question": "Does it integrate with Clio or MyCase?",
+                "answer": "Yes. We push intake notes, contact details, and documents directly into your practice management software."
+            },
+            {
+                "question": "Can it perform conflict checks?",
+                "answer": "It checks your database for names/entities before booking the consult, flagging matches for your review."
+            }
+        ]
     },
     {
         "slug": "tutor",
@@ -659,7 +715,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does it handle different time zones?",
+                "answer": "Yes. It automatically detects the student's and doctor/tutor's time zones and proposes slots that work for both."
+            },
+            {
+                "question": "Can it process recurring payments?",
+                "answer": "It can monitor your Stripe billing and send friendly reminders or pause scheduling if a payment fails."
+            },
+            {
+                "question": "Is it safe for children?",
+                "answer": "All communications are strictly monitored and logged. We recommend parent cc'ing on all messages for minors."
+            }
+        ]
     },
     {
         "slug": "clinic",
@@ -766,7 +836,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Is this HIPAA compliant?",
+                "answer": "Yes. We sign a BAA. All PHI is handled in a secure, encrypted environment separate from general data."
+            },
+            {
+                "question": "Does it write to my EHR (DrChrono, Athena)?",
+                "answer": "We can push appointment data and intake forms relative to the patient record via HL7 or API interfaces."
+            },
+            {
+                "question": "How does it triage emergencies?",
+                "answer": "It uses clinical keywords. If a patient says 'chest pain', it instructs them to call 911 immediately and hangs up/alerts staff."
+            }
+        ]
     },
     {
         "slug": "roofer",
@@ -873,7 +957,21 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does this work with JobNimbus or AccuLynx?",
+                "answer": "Yes. We create the lead and job record in your CRM automatically after the initial storm qualification."
+            },
+            {
+                "question": "Can it look at weather data?",
+                "answer": "We can integrate with APIs to verify if a storm actually hit the lead's address before you embrace the job."
+            },
+            {
+                "question": "Does it handle insurance supplements?",
+                "answer": "It can collect the necessary photos and documents from homeowners to help your team build the supplement packet."
+            }
+        ]
     },
     {
         "slug": "restaurant",
@@ -980,6 +1078,20 @@
                     "monthly": 47
                 }
             ]
-        }
+        },
+        "faqs": [
+            {
+                "question": "Does it sync with OpenTable, Resy, or Toast?",
+                "answer": "Yes. It reads your real-time availability so it never double-books a table."
+            },
+            {
+                "question": "How does it reduce no-shows?",
+                "answer": "It sends SMS re-confirmations via WhatsApp 2 hours prior. If they don't confirm, it can auto-cancel and offer the table to the waitlist."
+            },
+            {
+                "question": "Can it take takeout orders?",
+                "answer": "Yes, it can guide a caller through the menu, answer allergen questions, and push the order to your kitchen printer."
+            }
+        ]
     }
 ]
