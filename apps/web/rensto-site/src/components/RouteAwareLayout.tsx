@@ -15,7 +15,7 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   const isCustomerPortalRoute = pathname?.startsWith('/ortal') || pathname?.startsWith('/portal-ben-ginati') || pathname?.startsWith('/portal-shelly-mizrahi') || pathname?.startsWith('/portal/ben-ginati') || pathname?.startsWith('/portal/shelly-mizrahi');
 
   // Main service pages and custom landing pages have their own headers (new dark theme design)
-  const isServicePage = pathname === '/' ||
+  const isServicePage =
     pathname === '/marketplace' ||
     pathname?.startsWith('/custom') ||
     pathname?.startsWith('/niches') ||
