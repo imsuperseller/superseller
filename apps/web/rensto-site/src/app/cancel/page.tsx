@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { XCircle } from 'lucide-react';
 
 interface CancelPageProps {
   searchParams: { canceled?: string };
@@ -19,9 +20,9 @@ export default function CancelPage({ searchParams }: CancelPageProps) {
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Payment Cancelled
           </h2>
-          
+
           <p className="mt-2 text-sm text-gray-600">
-            {canceled 
+            {canceled
               ? 'Your payment was cancelled. No charges were made.'
               : 'No payment was processed.'}
           </p>
@@ -40,7 +41,7 @@ export default function CancelPage({ searchParams }: CancelPageProps) {
           >
             Browse Marketplace
           </Link>
-          
+
           <Link
             href="/"
             className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-center font-medium hover:bg-gray-300 transition-colors"

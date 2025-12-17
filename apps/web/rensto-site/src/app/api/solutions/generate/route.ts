@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+
 
 // Solution tier definitions - Rensto pricing
 const SOLUTION_TIERS = {
@@ -110,6 +108,9 @@ PRICING RULES:
 ALWAYS be specific and personalized. Reference their actual answers.`;
 
 export async function POST(request: NextRequest) {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     try {
         const body = await request.json();
         const {

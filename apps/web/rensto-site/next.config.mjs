@@ -6,6 +6,9 @@ const nextConfig = {
     // optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 
+  // Enable Turbopack
+  turbopack: {},
+
   // Disable image optimization for now
   images: {
     unoptimized: true,
@@ -14,10 +17,7 @@ const nextConfig = {
   // Disable static exports
   output: 'standalone',
 
-  // Disable ESLint and TypeScript checking for build
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
   typescript: {
     ignoreBuildErrors: true,
   },

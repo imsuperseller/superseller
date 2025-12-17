@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+
 
 // Gatekeeper method system prompt for the voice agent
 const GATEKEEPER_SYSTEM_PROMPT = `You are an AI sales consultant for Rensto, a custom AI automation agency. 
@@ -38,6 +36,9 @@ CONTEXT PROVIDED:
 IMPORTANT: Be genuine, not manipulative. The goal is to find good-fit clients, not trick anyone.`;
 
 export async function POST(request: NextRequest) {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     try {
         const formData = await request.formData();
         const audioFile = formData.get('audio') as File;

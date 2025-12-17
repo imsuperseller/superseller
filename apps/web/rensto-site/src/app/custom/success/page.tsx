@@ -67,6 +67,20 @@ function SuccessContent() {
         }
     }, [sessionId, magicLinkSent]);
 
+    useEffect(() => {
+        // Load TidyCal Script
+        const script = document.createElement('script');
+        script.src = "https://asset-tidycal.b-cdn.net/js/embed.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, []);
+
     if (loading) {
         return (
             <div className="text-center">
@@ -180,19 +194,7 @@ function SuccessContent() {
                 </div>
             </div>
 
-    useEffect(() => {
-        // Load TidyCal Script
-        const script = document.createElement('script');
-            script.src = "https://asset-tidycal.b-cdn.net/js/embed.js";
-            script.async = true;
-            document.body.appendChild(script);
 
-        return () => {
-            if (document.body.contains(script)) {
-                document.body.removeChild(script);
-            }
-        };
-    }, []);
 
             // ... existing sessionId useEffect ...
 

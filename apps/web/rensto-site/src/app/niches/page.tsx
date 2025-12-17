@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { User, Briefcase, ShoppingBag, Home, GraduationCap, Stethoscope, Utensils, Hammer, Scale, ArrowRight } from 'lucide-react';
-import nichesData from '@/data/niches.json';
+import nichesData from '@/data/niche_engine.json';
 
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { CustomHeader } from '@/components/CustomHeader';
@@ -47,10 +47,10 @@ export default function SelectNichePage() {
                     {/* Grid */}
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {nichesData.map((niche) => {
-                            const Icon = iconMap[niche.id] || Briefcase;
+                            const Icon = iconMap[niche.slug] || Briefcase;
                             return (
                                 <Link
-                                    key={niche.id}
+                                    key={niche.slug}
                                     href={`/niches/${niche.slug}`}
                                     className="group relative"
                                 >
