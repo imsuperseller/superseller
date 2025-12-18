@@ -218,8 +218,8 @@ export default function CustomSolutionsPage() {
                         }}
                         className="text-white px-10 py-7 text-xl rounded-xl font-bold"
                         style={{
-                            background: 'var(--rensto-gradient-primary)',
-                            boxShadow: 'var(--rensto-glow-primary)'
+                            background: 'var(--rensto-gradient-secondary)',
+                            boxShadow: 'var(--rensto-glow-secondary)'
                         }}
                     >
                         See Your System Built Live
@@ -461,8 +461,8 @@ export default function CustomSolutionsPage() {
                                     type="submit"
                                     className="absolute right-2 top-2 bottom-2 px-6 rounded-lg text-white font-semibold transition-all flex items-center gap-2 hover:opacity-90"
                                     style={{
-                                        background: 'var(--rensto-gradient-primary)',
-                                        boxShadow: '0 0 20px rgba(254, 61, 81, 0.3)'
+                                        background: 'var(--rensto-gradient-secondary)',
+                                        boxShadow: 'var(--rensto-glow-secondary)'
                                     }}
                                 >
                                     Analyze
@@ -599,7 +599,7 @@ export default function CustomSolutionsPage() {
                                         onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
                                         disabled={!emailInput}
                                         className="w-full"
-                                        style={{ background: 'var(--rensto-gradient-primary)' }}
+                                        style={{ background: 'var(--rensto-gradient-secondary)' }}
                                     >
                                         Get My Blueprint <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
@@ -626,7 +626,10 @@ export default function CustomSolutionsPage() {
                             <Button
                                 onClick={handleProceedFromQualified}
                                 className="text-white px-8 py-4 text-lg rounded-xl font-bold"
-                                style={{ background: 'var(--rensto-gradient-primary)' }}
+                                style={{
+                                    background: 'var(--rensto-gradient-secondary)',
+                                    boxShadow: 'var(--rensto-glow-secondary)'
+                                }}
                             >
                                 View Your Custom Plan <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>

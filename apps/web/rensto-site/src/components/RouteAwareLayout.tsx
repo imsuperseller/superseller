@@ -19,7 +19,6 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
     pathname === '/marketplace' ||
     pathname?.startsWith('/custom') ||
     pathname?.startsWith('/niches') ||
-    pathname === '/subscriptions' ||
     pathname === '/solutions';
 
   // Custom Offer and Onboarding pages manage their own layout

@@ -34,7 +34,6 @@ export function Header() {
     const isServicePage =
       currentPath === '/marketplace' ||
       currentPath === '/custom' ||
-      currentPath === '/subscriptions' ||
       currentPath === '/niches';
 
     const isCustomLanding = currentPath.startsWith('/offer') || currentPath.startsWith('/onboarding');
