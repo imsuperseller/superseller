@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 
 export const dynamic = 'force-dynamic';
-
-// Boost.space Configuration
-const BOOST_SPACE_API_KEY = process.env.BOOST_SPACE_API_KEY;
-const BOOST_SPACE_API_URL = 'https://superseller.boost.space/api';
 
 interface Testimonial {
     quote: string;
@@ -15,7 +13,7 @@ interface Testimonial {
     result: string;
 }
 
-// Fallback testimonials if Boost.space is unavailable
+// Fallback testimonials if Firestore is empty or unavailable
 const FALLBACK_TESTIMONIALS: Testimonial[] = [
     {
         quote: "Rensto transformed our lead management process. What used to take 3 hours daily now happens automatically in minutes.",
@@ -45,61 +43,103 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
 
 export async function GET() {
     try {
-        if (!BOOST_SPACE_API_KEY) {
-            console.warn('Boost.space API key not configured, using fallback testimonials');
+        const db = getFirestoreAdmin();
+        const snapshot = await db.collection('testimonials').where('active', '==', true).get();
+
+        if (snapshot.empty) {
             return NextResponse.json({ testimonials: FALLBACK_TESTIMONIALS });
         }
 
-        // Fetch testimonials from Boost.space note module (Space 45)
-        // Testimonials are stored as notes with specific labels
-        const response = await fetch(`${BOOST_SPACE_API_URL}/note?spaces=45&labels=testimonial,active`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${BOOST_SPACE_API_KEY}`,
-                'Content-Type': 'application/json'
-            }
+        const testimonials = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                quote: data.quote,
+                author: data.author,
+                role: data.role,
+                company: data.company,
+                rating: data.rating || 5,
+                result: data.result || ''
+            } as Testimonial;
         });
-
-        if (!response.ok) {
-            throw new Error(`Boost.space API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Parse testimonials from notes
-        const testimonials: Testimonial[] = data.items?.map((note: any) => {
-            try {
-                // Parse note description which contains testimonial data in markdown format
-                const lines = note.note?.split('\n') || [];
-                const testimonial: Partial<Testimonial> = {};
-
-                lines.forEach((line: string) => {
-                    if (line.startsWith('**Quote**:')) testimonial.quote = line.replace('**Quote**:', '').trim();
-                    if (line.startsWith('**Author**:')) testimonial.author = line.replace('**Author**:', '').trim();
-                    if (line.startsWith('**Role**:')) testimonial.role = line.replace('**Role**:', '').trim();
-                    if (line.startsWith('**Company**:')) testimonial.company = line.replace('**Company**:', '').trim();
-                    if (line.startsWith('**Rating**:')) testimonial.rating = parseInt(line.replace('**Rating**:', '').trim());
-                    if (line.startsWith('**Result**:')) testimonial.result = line.replace('**Result**:', '').trim();
-                });
-
-                return testimonial as Testimonial;
-            } catch (error) {
-                console.error('Error parsing testimonial:', error);
-                return null;
-            }
-        }).filter(Boolean) || [];
-
-        // If no testimonials found in Boost.space, use fallback
-        if (testimonials.length === 0) {
-            console.warn('No testimonials found in Boost.space, using fallback');
-            return NextResponse.json({ testimonials: FALLBACK_TESTIMONIALS });
-        }
 
         return NextResponse.json({ testimonials });
 
-    } catch (error) {
-        console.error('Error fetching testimonials:', error);
-        // Return fallback testimonials on error
+    } catch (error: any) {
+        console.error('Error fetching testimonials from Firestore:', error);
+        await auditAgent.log({
+            service: 'firebase',
+            action: 'fetch_testimonials_failed',
+            status: 'error',
+            errorMessage: error.message
+        });
+
+        // Always return fallback on error to ensure UI doesn't break
         return NextResponse.json({ testimonials: FALLBACK_TESTIMONIALS });
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        const body = await req.json();
+        const { quote, author, role, company, rating, result } = body;
+
+        if (!quote || !author) {
+            return NextResponse.json({ success: false, error: 'Quote and Author are required' }, { status: 400 });
+        }
+
+        const db = getFirestoreAdmin();
+        const testimonialData = {
+            quote,
+            author,
+            role: role || '',
+            company: company || '',
+            rating: rating || 5,
+            result: result || '',
+            active: false, // Requires admin approval
+            createdAt: new Date().toISOString()
+        };
+
+        const docRef = await db.collection('testimonials').add(testimonialData);
+
+        await auditAgent.log({
+            service: 'firebase',
+            action: 'testimonial_submitted',
+            status: 'success',
+            details: { testimonialId: docRef.id, author }
+        });
+
+        // Notify via WhatsApp (n8n)
+        const n8nWebhook = process.env.N8N_TESTIMONIAL_SUBMISSION_WEBHOOK;
+        if (n8nWebhook) {
+            try {
+                await fetch(n8nWebhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'testimonial_pending',
+                        testimonialId: docRef.id,
+                        author,
+                        company,
+                        quote,
+                        approveUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com'}/api/admin/testimonials/approve?id=${docRef.id}`,
+                        whatsappNumber: '4695885133' // Shai's WhatsApp
+                    })
+                });
+            } catch (n8nErr) {
+                console.error('Failed to send WhatsApp notification for testimonial:', n8nErr);
+            }
+        }
+
+        return NextResponse.json({ success: true, id: docRef.id });
+
+    } catch (error: any) {
+        console.error('Testimonial submission error:', error);
+        await auditAgent.log({
+            service: 'firebase',
+            action: 'testimonial_submission_failed',
+            status: 'error',
+            errorMessage: error.message
+        });
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }

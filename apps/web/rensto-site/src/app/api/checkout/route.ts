@@ -1,22 +1,20 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-06-20',
+    apiVersion: '2023-10-16' as any,
 });
 
-// Unified Product Map
-const PRODUCTS = {
+// Subscription Product Map
+const SUBSCRIPTIONS = {
     'all-access': {
         name: 'Rensto All-Access Pass',
         description: 'Monthly unlimited access to all workflows, agents, and the Model Optimizer.',
         price: 49700,
         mode: 'subscription',
         interval: 'month'
-    },
-    'individual-blueprint': {
-        name: 'Marketplace Blueprint',
-        mode: 'payment',
     },
     'managed-base': {
         name: 'Managed WhatsApp Agent - Base',
@@ -39,6 +37,7 @@ export async function POST(req: Request) {
             metadata = {}
         } = body;
 
+        const db = getFirestoreAdmin();
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
         let mode: Stripe.Checkout.Session.Mode = 'payment';
 
@@ -49,10 +48,10 @@ export async function POST(req: Request) {
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: PRODUCTS['all-access'].name,
-                        description: PRODUCTS['all-access'].description,
+                        name: SUBSCRIPTIONS['all-access'].name,
+                        description: SUBSCRIPTIONS['all-access'].description,
                     },
-                    unit_amount: PRODUCTS['all-access'].price,
+                    unit_amount: SUBSCRIPTIONS['all-access'].price,
                     recurring: { interval: 'month' },
                 },
                 quantity: 1,
@@ -62,24 +61,54 @@ export async function POST(req: Request) {
         // 2. Marketplace Blueprint Download
         else if (flowType === 'marketplace-template') {
             mode = 'payment';
-            const price = body.price || 9700; // Default if not provided
+
+            // Fetch workflow data from Firestore
+            const docRef = db.collection(COLLECTIONS.TEMPLATES).doc(productId);
+            const doc = await docRef.get();
+
+            if (!doc.exists) {
+                await auditAgent.log({
+                    service: 'other',
+                    action: 'checkout_failed',
+                    status: 'error',
+                    errorMessage: `Workflow ${productId} not found in Firestore`,
+                    details: { productId, flowType }
+                });
+                return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+            }
+
+            const workflow = doc.data();
+            const workflowName = workflow?.name || 'Workflow Blueprint';
+
+            // Determine price based on tier (download, install, custom)
+            let unitAmount = (workflow?.price || 97) * 100;
+            if (tier === 'install') unitAmount = (workflow?.installPrice || 797) * 100;
+            if (tier === 'custom') unitAmount = (workflow?.customPrice || 1497) * 100;
+
             lineItems.push({
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: metadata.workflowName || 'Workflow Blueprint Download',
-                        description: 'Secure JSON file download + setup guide',
+                        name: `${workflowName} (${tier.toUpperCase()})`,
+                        description: `Secure access to the Rensto ${tier} solution for: ${workflowName}`,
                     },
-                    unit_amount: price,
+                    unit_amount: Math.round(unitAmount),
                 },
                 quantity: 1,
             });
+
+            // Merge details into metadata for webhook processing
+            Object.assign(metadata, {
+                workflowId: productId,
+                workflowName: workflowName,
+                tier: tier
+            });
         }
 
-        // 3. Managed WhatsApp Plan (Legacy but support built-in)
+        // 3. Managed WhatsApp Plan
         else if (flowType === 'managed-plan') {
             mode = 'subscription';
-            const plan = PRODUCTS['managed-base'];
+            const plan = SUBSCRIPTIONS['managed-base'];
             lineItems.push({
                 price_data: {
                     currency: 'usd',
@@ -121,13 +150,28 @@ export async function POST(req: Request) {
                 ...metadata,
                 flowType,
                 productId,
-                tier
+                tier,
+                platform: 'rensto-firebase'
             }
+        });
+
+        await auditAgent.log({
+            service: 'stripe',
+            action: 'checkout_session_created',
+            status: 'success',
+            details: { sessionId: session.id, flowType, productId, customerEmail }
         });
 
         return NextResponse.json({ url: session.url });
 
     } catch (err: any) {
+        await auditAgent.log({
+            service: 'stripe',
+            action: 'checkout_session_failed',
+            status: 'error',
+            errorMessage: err.message,
+            details: { body: await req.clone().json().catch(() => ({})) }
+        });
         console.error('Stripe Checkout Error:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });
     }

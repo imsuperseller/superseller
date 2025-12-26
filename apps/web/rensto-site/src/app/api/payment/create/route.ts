@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StripeApi } from '@/lib/stripe';
-import { AirtableApi } from '@/lib/airtable';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import { Timestamp } from 'firebase-admin/firestore';
 
 const stripe = new StripeApi();
-const airtable = new AirtableApi();
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,38 +20,57 @@ export async function POST(request: NextRequest) {
     }
 
     // Create payment intent
-    const paymentIntent = await stripe.createPaymentIntent(amount, currency, customer, {
+    const paymentIntentResult = await stripe.createPaymentIntent(amount, currency, {
+      customerId: customer,
       templateId,
       ...metadata
     });
 
-    if (!paymentIntent.success) {
+    if (!paymentIntentResult.success || !paymentIntentResult.paymentIntentId) {
       return NextResponse.json(
-        { success: false, error: paymentIntent.error },
+        { success: false, error: paymentIntentResult.error || 'Failed to create payment intent' },
         { status: 500 }
       );
     }
 
-    // Log payment attempt to Airtable
-    await airtable.logPaymentAttempt({
-      paymentIntentId: paymentIntent.paymentIntentId,
+    const { paymentIntentId, clientSecret } = paymentIntentResult;
+
+    // Log payment attempt to Firestore
+    const db = getFirestoreAdmin();
+    await db.collection(COLLECTIONS.PAYMENTS).doc(paymentIntentId as string).set({
       amount,
       currency,
-      customer,
+      customerId: customer,
       templateId,
-      status: 'pending'
+      status: 'pending',
+      metadata: metadata || {},
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+
+    await auditAgent.log({
+      service: 'stripe',
+      action: 'payment_intent_created',
+      status: 'success',
+      details: { paymentIntentId, amount, customer }
     });
 
     return NextResponse.json({
       success: true,
-      clientSecret: paymentIntent.clientSecret,
-      paymentIntentId: paymentIntent.paymentIntentId,
-      amount: paymentIntent.amount,
-      currency: paymentIntent.currency
+      clientSecret: clientSecret,
+      paymentIntentId: paymentIntentId,
+      amount: amount,
+      currency: currency
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Payment creation error:', error);
+    await auditAgent.log({
+      service: 'stripe',
+      action: 'payment_creation_failed',
+      status: 'error',
+      errorMessage: error.message
+    });
     return NextResponse.json(
       { success: false, error: 'Failed to create payment' },
       { status: 500 }
@@ -60,7 +80,7 @@ export async function POST(request: NextRequest) {
 
 function validatePaymentData(data: any) {
   const requiredFields = ['amount', 'currency', 'customer', 'templateId'];
-  
+
   for (const field of requiredFields) {
     if (!data[field]) {
       return {

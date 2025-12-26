@@ -71,7 +71,7 @@ export default function DemosPage() {
                     </div>
                     <div className="space-y-2">
                         <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-400">Service Customization</h4>
-                        <p className="text-sm text-muted-foreground">Every field corresponds to variable mapping in our n8n and Airtable automation backends.</p>
+                        <p className="text-sm text-muted-foreground">Every field corresponds to variable mapping in our n8n and Firebase automation backends.</p>
                     </div>
                     <div className="space-y-2">
                         <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-400">Enterprise Ready</h4>

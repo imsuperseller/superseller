@@ -140,9 +140,9 @@ export default function EcommerceNichePage() {
                         </div>
                     </div>
                 </section>
-      main>
+            </main>
 
-                <Footer />
+            <Footer />
         </div>
     );
 }

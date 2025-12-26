@@ -55,37 +55,31 @@ export default function WorkflowDetailPage() {
     useEffect(() => {
         async function fetchWorkflow() {
             try {
-                // First try to find in Boost.space workflows
-                const response = await fetch('/api/marketplace/workflows');
+                const response = await fetch(`/api/marketplace/${id}`);
                 const data = await response.json();
 
                 if (data.success) {
-                    const found = data.workflows.find((w: any) => w.id === id || w.workflowId === id);
-                    if (found) {
-                        setWorkflow(found);
-                        setLoading(false);
-                        return;
+                    setWorkflow(data.workflow);
+                } else {
+                    // Fallback to MOCK
+                    const mock = MOCK_TEMPLATES.find(m => m.id === id);
+                    if (mock) {
+                        setWorkflow({
+                            id: mock.id,
+                            workflowId: mock.id,
+                            name: mock.name,
+                            category: mock.category,
+                            description: mock.description,
+                            downloadPrice: mock.price,
+                            installPrice: 797,
+                            customPrice: 1497,
+                            complexity: 'Intermediate',
+                            setupTime: '2 hours',
+                            features: mock.features,
+                            targetMarket: 'Small Businesses',
+                            status: 'Active'
+                        });
                     }
-                }
-
-                // Fallback to MOCK
-                const mock = MOCK_TEMPLATES.find(m => m.id === id);
-                if (mock) {
-                    setWorkflow({
-                        id: mock.id,
-                        workflowId: mock.id,
-                        name: mock.name,
-                        category: mock.category,
-                        description: mock.description,
-                        downloadPrice: mock.price,
-                        installPrice: 797,
-                        customPrice: 1497,
-                        complexity: 'Intermediate',
-                        setupTime: '2 hours',
-                        features: mock.features,
-                        targetMarket: 'Small Businesses',
-                        status: 'Active'
-                    });
                 }
             } catch (error) {
                 console.error('Error fetching workflow:', error);
@@ -105,20 +99,13 @@ export default function WorkflowDetailPage() {
 
         setPurchaseLoading(true);
         try {
-            const flowType =
-                selectedOption === 'download' ? 'marketplace-template' :
-                    selectedOption === 'install' ? 'marketplace-install' :
-                        'marketplace-custom';
-
-            const response = await fetch('/api/stripe/checkout', {
+            const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    flowType,
+                    flowType: 'marketplace-template',
                     productId: workflow?.workflowId || id,
-                    tier: selectedOption === 'download'
-                        ? (workflow?.downloadPrice && workflow.downloadPrice > 100 ? 'complete' : 'advanced')
-                        : selectedOption === 'install' ? 'template' : 'enterprise',
+                    tier: selectedOption, // 'download' | 'install' | 'custom'
                     customerEmail,
                     metadata: {
                         workflowName: workflow?.name,
@@ -244,7 +231,7 @@ export default function WorkflowDetailPage() {
                                 Technical Specifications
                             </h2>
                             <div className="grid md:grid-cols-2 gap-4">
-                                {workflow.features.map((feature, i) => (
+                                {workflow.features && workflow.features.map((feature, i) => (
                                     <div key={i} className="flex items-start gap-3 p-4 bg-[#1a1438]/50 border border-slate-700/50 rounded-xl group hover:border-cyan-500/30 transition-all">
                                         <CheckCircle2 className="w-5 h-5 text-cyan-500 mt-0.5" />
                                         <span className="text-slate-300 group-hover:text-white transition-colors">{feature}</span>

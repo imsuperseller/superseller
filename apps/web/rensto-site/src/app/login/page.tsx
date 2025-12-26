@@ -1,18 +1,15 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-// import { signIn } from 'next-auth/react';
-// import { useSession } from 'next-auth/react';
+import { useState, useEffect, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import {
-  Eye,
-  EyeOff,
   ArrowRight,
   CheckCircle,
   XCircle,
-  Lock,
+  Mail,
   Shield,
+  Loader2
 } from 'lucide-react';
 import { Input } from '@/components/ui/input-enhanced';
 import { Label } from '@/components/ui/label';
@@ -75,7 +72,7 @@ const MagnetButton = ({
   }, []);
 
   return (
-    <button ref={buttonRef} {...props} className="relative overflow-hidden">
+    <button ref={buttonRef} {...props} className={`relative overflow-hidden ${props.className}`}>
       {children}
     </button>
   );
@@ -84,10 +81,10 @@ const MagnetButton = ({
 const SecurityMarquee = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const securityFeatures = [
-    '🔒 Enterprise-grade security',
-    '🛡️ 2FA enabled',
-    '⚡ Powered by NextAuth.js',
-    '🔐 End-to-end encryption',
+    '🔒 Secure Passwordless Login',
+    '🛡️ Enterprise-grade encryption',
+    '⚡ Magic Link Technology',
+    '🔐 24-hour token expiry',
   ];
 
   useEffect(() => {
@@ -107,33 +104,20 @@ const SecurityMarquee = () => {
   );
 };
 
-export default function LoginPage() {
+function LoginFormContent() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
+  const [devLink, setDevLink] = useState<string | null>(null);
 
-  const router = useRouter();
-  // const { data: session, status } = useSession();
-  const session = null;
-  const status = 'unauthenticated';
   const containerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (status === 'authenticated' && session) {
-      // Redirect based on user role
-      if (session.user.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/dashboard');
-      }
-    }
-  }, [status, session, router]);
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect');
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -193,8 +177,11 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!emailValid) return;
+
     setIsLoading(true);
     setError('');
+    setDevLink(null);
 
     // Enhanced button animation
     const button = formRef.current?.querySelector('button');
@@ -205,36 +192,33 @@ export default function LoginPage() {
         yoyo: true,
         repeat: 1,
       });
-
-      // Spark effect
-      const spark = document.createElement('div');
-      spark.className =
-        'absolute w-2 h-2 bg-white rounded-full pointer-events-none';
-      spark.style.left = '50%';
-      spark.style.top = '50%';
-      button.appendChild(spark);
-
-      gsap.fromTo(
-        spark,
-        { scale: 0, opacity: 1 },
-        {
-          scale: 2,
-          opacity: 0,
-          duration: 0.3,
-          onComplete: () => spark.remove(),
-        }
-      );
     }
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch('/api/auth/magic-link/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, redirectTo: redirectPath }),
       });
 
-      if (result?.error) {
-        setError('Invalid email or password');
+      const data = await response.json();
+
+      if (data.success) {
+        setIsSuccess(true);
+        if (data.devLink) {
+          setDevLink(data.devLink);
+        }
+        // Success animation
+        if (formRef.current) {
+          gsap.to(formRef.current, {
+            scale: 1.02,
+            duration: 0.2,
+            yoyo: true,
+            repeat: 1
+          });
+        }
+      } else {
+        setError(data.error || 'Failed to send login link');
         if (formRef.current) {
           gsap.to(formRef.current, {
             x: -10,
@@ -244,16 +228,8 @@ export default function LoginPage() {
             ease: 'power1.inOut',
           });
         }
-      } else {
-        // Success animation
-        if (formRef.current) {
-          gsap.to(formRef.current, {
-            scale: 1.02,
-            duration: 0.2,
-            yoyo: true,
-            repeat: 1,
-            onComplete: () => router.push('/control'),
-          });
+        if (data.debug) {
+          console.log('Debug info:', data.debug);
         }
       }
     } catch (error) {
@@ -266,18 +242,17 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ backgroundColor: BRAND.colors.background.light }}
+      style={{ backgroundColor: BRAND.colors.background.primary }}
     >
       {/* Dynamic animated background */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-blue-500/10 to-orange-500/10 rensto-animate-pulse" />
 
-        {/* Animated network dots */}
-        {[...Array(30)].map((_, i) => {
-          // Use deterministic values based on index to prevent hydration mismatch
-          const left = (i * 3.33) % 100;
-          const top = (i * 2.5 + 10) % 100;
+        {/* Animated network dots (Reduced count for performance) */}
+        {[...Array(15)].map((_, i) => {
+          const left = (i * 6.66) % 100;
+          const top = (i * 5 + 10) % 100;
           const delay = (i * 0.1) % 3;
           const duration = 3 + (i % 3) * 0.5;
 
@@ -294,11 +269,6 @@ export default function LoginPage() {
             />
           );
         })}
-
-        {/* Geometric shapes */}
-        <div className="absolute top-20 left-20 w-32 h-32 border border-orange-500/20 rounded-full rensto-animate-glow-slow"></div>
-        <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500/20 rotate-45 rensto-animate-pulse"></div>
-        <div className="absolute top-1/2 left-10 w-16 h-16 border border-orange-500/20 rounded-full animate-bounce"></div>
       </div>
 
       <div ref={containerRef} className="w-full max-w-lg relative z-10">
@@ -317,10 +287,14 @@ export default function LoginPage() {
             <GradientText>Rensto</GradientText>
           </div>
           <h2 className="text-3xl font-bold text-slate-900 mb-4">
-            Welcome Back
+            {isSuccess ? 'Check Your Inbox' : 'Welcome Back'}
           </h2>
           <div className="text-slate-600 text-lg">
-            <ShinyText>Access your business management platform</ShinyText>
+            <ShinyText>
+              {isSuccess
+                ? `We've sent a magic link to ${email}`
+                : 'Access your business management platform'}
+            </ShinyText>
           </div>
         </div>
 
@@ -329,133 +303,96 @@ export default function LoginPage() {
           {/* Glass effect overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-white/30 rounded-2xl" />
 
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="space-y-8 relative z-10"
-          >
-            {error && (
-              <div className="style={{ backgroundColor: 'var(--rensto-bg-primary)' }} border border-red-200 rounded-xl p-4 animate-shake">
-                <div className="flex items-center space-x-3">
-                  <XCircle className="h-5 w-5 style={{ color: 'var(--rensto-red)' }} flex-shrink-0" />
-                  <p className="text-sm style={{ color: 'var(--rensto-red)' }}">{error}</p>
-                </div>
+          {isSuccess ? (
+            <div className="relative z-10 text-center py-8">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Mail className="w-10 h-10 text-green-600" />
               </div>
-            )}
+              <p className="text-slate-600 mb-8">
+                Click the link in the email to securely sign in. This link expires in 24 hours.
+              </p>
 
-            <div className="space-y-3">
-              <Label
-                htmlFor="email"
-                className="text-slate-700 font-semibold text-base"
+              {devLink && (
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+                  <p className="text-xs font-bold text-yellow-800 mb-2 uppercase tracking-wide">Development Link:</p>
+                  <a href={devLink} className="text-sm text-blue-600 break-all hover:underline block">{devLink}</a>
+                </div>
+              )}
+
+              <button
+                onClick={() => { setIsSuccess(false); setEmail(''); }}
+                className="text-slate-500 hover:text-orange-500 font-medium transition-colors"
               >
-                Email address
-              </Label>
-              <div className="relative">
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className={`h-14 border-2 transition-all duration-300 text-base text-slate-900 ${emailValid === true
+                Back to sign in
+              </button>
+            </div>
+          ) : (
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="space-y-8 relative z-10"
+            >
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 animate-shake">
+                  <div className="flex items-center space-x-3">
+                    <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="email"
+                  className="text-slate-700 font-semibold text-base"
+                >
+                  Email address
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className={`h-14 border-2 transition-all duration-300 text-base text-slate-900 ${emailValid === true
                       ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
                       : emailValid === false
                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                         : 'border-slate-300 focus:border-orange-500 focus:ring-orange-500'
-                    } hover:border-orange-400`}
-                  placeholder="Enter your email"
-                  required
-                />
-                {emailValid === true && (
-                  <CheckCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
-                )}
-                {emailValid === false && (
-                  <XCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 style={{ color: 'var(--rensto-red)' }}" />
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Label
-                htmlFor="password"
-                className="text-slate-700 font-semibold text-base"
-              >
-                Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="h-14 pr-12 border-2 border-slate-300 focus:border-orange-500 focus:ring-orange-500 transition-all duration-300 text-base text-slate-900 hover:border-orange-400"
-                  placeholder="Enter your password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
+                      } hover:border-orange-400`}
+                    placeholder="name@company.com"
+                    required
+                    disabled={isLoading}
+                  />
+                  {emailValid === true && (
+                    <CheckCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-green-500" />
                   )}
-                </button>
+                  {emailValid === false && email.length > 0 && (
+                    <XCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-red-500" />
+                  )}
+                </div>
               </div>
-            </div>
 
-            <MagnetButton
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full rensto-animate-glow"></div>
-                  <span>Signing in...</span>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center space-x-3">
-                  <Lock className="w-5 h-5" />
-                  <span>Sign in</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              )}
-            </MagnetButton>
-
-            {/* Forgot Password Link */}
-            <div className="text-center">
-              <button
-                type="button"
-                className="text-sm text-slate-600 hover:text-orange-500 transition-colors underline"
+              <MagnetButton
+                type="submit"
+                disabled={isLoading || !emailValid}
+                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Forgot your password?
-              </button>
-            </div>
-          </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-10 p-6 bg-gradient-to-r from-slate-50/80 to-slate-100/80 rounded-xl border border-slate-200/50 relative z-10">
-            <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center">
-              <Shield className="w-4 h-4 mr-2" />
-              Demo Credentials
-            </p>
-            <div className="space-y-3 text-sm text-slate-600">
-              <div className="flex justify-between items-center">
-                <span>Email:</span>
-                <span className="font-mono text-slate-800 bg-white px-3 py-2 rounded-lg border">
-                  admin@rensto.com
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Password:</span>
-                <span className="font-mono text-slate-800 bg-white px-3 py-2 rounded-lg border">
-                  admin123
-                </span>
-              </div>
-            </div>
-          </div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center space-x-3">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Sending Link...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center space-x-3">
+                    <Mail className="w-5 h-5" />
+                    <span>Send Magic Link</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                )}
+              </MagnetButton>
+            </form>
+          )}
 
           {/* Security Footer */}
           <div className="mt-8 relative z-10">
@@ -464,5 +401,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      </div>
+    }>
+      <LoginFormContent />
+    </Suspense>
   );
 }

@@ -1,51 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Progress } from '@/components/ui/progress';
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC0nEzAZZmVExL_65CwiRwGngRgF4BoK94",
-  authDomain: "rensto.firebaseapp.com",
-  projectId: "rensto",
-  storageBucket: "rensto.firebasestorage.app",
-  messagingSenderId: "1001545773174",
-  appId: "1:1001545773174:web:c7af4528427957c7b7ef57"
-};
-
-// Firebase will be initialized on client side
-const initFirebase = async () => {
-  if (typeof window === 'undefined') return null;
-  
-  try {
-    const { initializeApp, getApps } = await import('firebase/app');
-    const { getFirestore } = await import('firebase/firestore');
-
-    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    return getFirestore(app);
-  } catch (error) {
-    console.error('Firebase init error:', error);
-    return null;
-  }
-};
-
-// Demo data for when Firebase isn't configured
-const DEMO_TEMPLATES = [
-  { id: 'WA-AGENT-001', name: 'Rensto Voice Agent (Shai AI)', category: 'whatsapp-agent', tier: 'premium', status: 'production', complexity: 'complex', nodeCount: 50, client: 'rensto', isPublic: true, isActive: true, pricingTemplate: 197, pricingInstallation: 797 },
-  { id: 'LEAD-GEN-001', name: 'LinkedIn Lead Scraper', category: 'lead-generation', tier: 'professional', status: 'production', complexity: 'medium', nodeCount: 25, client: 'none', isPublic: true, isActive: true, pricingTemplate: 97, pricingInstallation: 497 },
-  { id: 'CONTENT-001', name: 'Blog Auto-Publisher', category: 'content', tier: 'starter', status: 'production', complexity: 'simple', nodeCount: 15, client: 'tax4us', isPublic: true, isActive: true, pricingTemplate: 49, pricingInstallation: 297 },
-  { id: 'SYNC-001', name: 'Airtable-n8n Sync', category: 'sync', tier: 'professional', status: 'production', complexity: 'medium', nodeCount: 20, client: 'none', isPublic: true, isActive: true, pricingTemplate: 79, pricingInstallation: 397 },
-];
-
-const DEMO_CLIENTS = [
-  { id: 'tax4us', name: 'Tax4Us LLC', contactName: 'Ben Ginati', industry: 'accounting', status: 'active', tier: 'custom', totalRevenue: 2500, activeWorkflows: 8 },
-  { id: 'dima', name: 'Dima Logistics', contactName: 'Dima', industry: 'logistics', status: 'active', tier: 'professional', totalRevenue: 500, activeWorkflows: 3 },
-  { id: 'meatpoint', name: 'MeatPoint', contactName: 'Owner', industry: 'food', status: 'active', tier: 'starter', totalRevenue: 0, activeWorkflows: 2 },
-  { id: 'wonder-care', name: 'Wonder.Care', contactName: 'Contact', industry: 'healthcare', status: 'active', tier: 'enterprise', totalRevenue: 0, activeWorkflows: 4 },
-  { id: 'lital', name: 'Lital Creative', contactName: 'Lital', industry: 'marketing', status: 'prospect', tier: 'professional', totalRevenue: 0, activeWorkflows: 0 },
-  { id: 'ortal', name: 'Ortal Interior Design', contactName: 'Ortal', industry: 'design', status: 'prospect', tier: 'starter', totalRevenue: 0, activeWorkflows: 0 },
-];
-
-interface Template {
+export interface Template {
   id: string;
   name: string;
   category: string;
@@ -60,7 +18,7 @@ interface Template {
   pricingInstallation: number;
 }
 
-interface Client {
+export interface Client {
   id: string;
   name: string;
   contactName: string;
@@ -71,59 +29,18 @@ interface Client {
   activeWorkflows: number;
 }
 
-export default function DashboardContent() {
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
+interface DashboardContentProps {
+  initialTemplates: Template[];
+  initialClients: Client[];
+  lastUpdated: string;
+}
+
+export default function DashboardContent({ initialTemplates, initialClients, lastUpdated }: DashboardContentProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'templates' | 'clients'>('overview');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [isDemo, setIsDemo] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const firestore = await initFirebase();
-        
-        if (!firestore) {
-          setIsDemo(true);
-          setTemplates(DEMO_TEMPLATES as Template[]);
-          setClients(DEMO_CLIENTS as Client[]);
-          setLoading(false);
-          return;
-        }
-
-        const { collection, getDocs } = await import('firebase/firestore');
-        
-        const templatesSnap = await getDocs(collection(firestore, 'templates'));
-        const templatesData = templatesSnap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          nodeCount: parseInt(String(doc.data().nodeCount)) || 0,
-          pricingTemplate: parseInt(String(doc.data().pricingTemplate)) || 0,
-          pricingInstallation: parseInt(String(doc.data().pricingInstallation)) || 0,
-        })) as Template[];
-        setTemplates(templatesData);
-
-        const clientsSnap = await getDocs(collection(firestore, 'clients'));
-        const clientsData = clientsSnap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          totalRevenue: parseFloat(String(doc.data().totalRevenue)) || 0,
-          activeWorkflows: parseInt(String(doc.data().activeWorkflows)) || 0,
-        })) as Client[];
-        setClients(clientsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setIsDemo(true);
-        setTemplates(DEMO_TEMPLATES as Template[]);
-        setClients(DEMO_CLIENTS as Client[]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
+  const templates = initialTemplates;
+  const clients = initialClients;
 
   // Calculate stats
   const categories = Array.from(new Set(templates.map(t => t.category))).filter(Boolean);
@@ -132,8 +49,8 @@ export default function DashboardContent() {
     return acc;
   }, {} as Record<string, number>);
 
-  const filteredTemplates = categoryFilter === 'all' 
-    ? templates 
+  const filteredTemplates = categoryFilter === 'all'
+    ? templates
     : templates.filter(t => t.category === categoryFilter);
 
   const activeClients = clients.filter(c => c.status === 'active');
@@ -142,22 +59,11 @@ export default function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#110d28] text-white p-8">
-      {/* Demo Mode Banner */}
-      {isDemo && (
-        <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-center gap-3">
-          <span className="text-yellow-500 text-xl">⚠️</span>
-          <div>
-            <div className="text-yellow-500 font-medium">Demo Mode</div>
-            <div className="text-yellow-400/70 text-sm">Firebase not configured. Showing sample data.</div>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#fe3d51]">Rensto Workflow Dashboard</h1>
         <p className="text-gray-400 mt-2">
-          {loading ? 'Loading data from Firestore...' : 'Real-time view of templates, clients, and analytics'}
+          Real-time view of templates, clients, and analytics
         </p>
       </div>
 
@@ -167,34 +73,18 @@ export default function DashboardContent() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 font-medium capitalize transition-colors ${
-              activeTab === tab
-                ? 'text-[#1eaef7] border-b-2 border-[#1eaef7]'
-                : 'text-gray-400 hover:text-white'
-            }`}
+            className={`px-6 py-3 font-medium capitalize transition-colors ${activeTab === tab
+              ? 'text-[#1eaef7] border-b-2 border-[#1eaef7]'
+              : 'text-gray-400 hover:text-white'
+              }`}
           >
             {tab}
           </button>
         ))}
       </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="space-y-8 animate-pulse">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="bg-[#1a1438] rounded-xl p-6 h-32" />
-            ))}
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-[#1a1438] rounded-xl p-6 h-64" />
-            <div className="bg-[#1a1438] rounded-xl p-6 h-64" />
-          </div>
-        </div>
-      )}
-
       {/* Overview Tab */}
-      {!loading && activeTab === 'overview' && (
+      {activeTab === 'overview' && (
         <div className="space-y-8">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -202,6 +92,52 @@ export default function DashboardContent() {
             <StatCard title="Total Clients" value={clients.length} subtitle={`${activeClients.length} active, ${prospects.length} prospects`} color="#1eaef7" />
             <StatCard title="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} subtitle="From all clients" color="#5ffbfd" />
             <StatCard title="Total Nodes" value={templates.reduce((sum, t) => sum + t.nodeCount, 0).toLocaleString()} subtitle={`~${Math.round(templates.reduce((sum, t) => sum + t.nodeCount, 0) / (templates.length || 1))} avg per template`} color="#bf5700" />
+          </div>
+
+          {/* AI Opportunity Radar & Hot Picks */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-[#1a1438] to-[#110d28] rounded-2xl p-6 border border-white/5 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <svg className="w-24 h-24 text-[#fe3d51]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z" /></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <span className="p-2 bg-[#fe3d51]/20 rounded-lg"><svg className="w-5 h-5 text-[#fe3d51]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></span>
+                AI Opportunity Radar
+              </h3>
+              <div className="space-y-4 relative z-10">
+                <p className="text-gray-400 text-sm">Targeted upgrades to maximize your automation ROI.</p>
+                <div className="bg-black/20 rounded-xl p-4 border border-white/5 hover:border-[#fe3d51]/30 transition-colors">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Customer Support AI</span>
+                    <span className="text-xs text-[#5ffbfd] font-bold">+85% Efficiency</span>
+                  </div>
+                  <Progress value={85} className="h-1.5" />
+                </div>
+                <div className="bg-black/20 rounded-xl p-4 border border-white/5 hover:border-[#1eaef7]/30 transition-colors">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Automated Outreach</span>
+                    <span className="text-xs text-[#1eaef7] font-bold">+300% Leads</span>
+                  </div>
+                  <Progress value={70} className="h-1.5" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#1a1438] to-[#110d28] rounded-2xl p-6 border border-white/5 group">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <span className="p-2 bg-[#1eaef7]/20 rounded-lg"><svg className="w-5 h-5 text-[#1eaef7]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></span>
+                Marketplace Hot Picks
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {templates.slice(0, 4).map(template => (
+                  <div key={template.id} className="bg-black/20 rounded-xl p-3 border border-white/5 hover:scale-[1.02] transition-transform cursor-pointer">
+                    <div className="text-[10px] text-[#5ffbfd] font-bold uppercase mb-1">{template.category}</div>
+                    <div className="text-xs font-bold line-clamp-1">{template.name}</div>
+                    <div className="mt-2 text-[10px] text-gray-500 font-medium">Starting at ${template.pricingTemplate}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Charts */}
@@ -257,7 +193,7 @@ export default function DashboardContent() {
       )}
 
       {/* Templates Tab */}
-      {!loading && activeTab === 'templates' && (
+      {activeTab === 'templates' && (
         <div className="space-y-6">
           <div className="flex gap-4 items-center">
             <label className="text-gray-400">Filter by category:</label>
@@ -291,7 +227,7 @@ export default function DashboardContent() {
       )}
 
       {/* Clients Tab */}
-      {!loading && activeTab === 'clients' && (
+      {activeTab === 'clients' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatCard title="Active Clients" value={activeClients.length} color="#5ffbfd" />
@@ -330,7 +266,7 @@ export default function DashboardContent() {
 
       {/* Footer */}
       <div className="mt-12 text-center text-gray-500 text-sm">
-        Data synced from Firebase Firestore • Last updated: {new Date().toLocaleString()}
+        Data synced from Firebase Firestore • Last updated: {lastUpdated}
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TidyCalApi } from '@/lib/tidycal';
-import { AirtableApi } from '@/lib/airtable';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import { Timestamp } from 'firebase-admin/firestore';
 
 const tidycal = new TidyCalApi();
-const airtable = new AirtableApi();
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,28 +19,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create booking in TidyCal
+    // 1. Create booking in TidyCal
     const tidycalBooking = await tidycal.createBooking(bookingData);
     if (!tidycalBooking.success) {
+      await auditAgent.log({
+        service: 'other',
+        action: 'tidycal_booking_failed',
+        status: 'error',
+        errorMessage: tidycalBooking.error
+      });
       return NextResponse.json(
         { success: false, error: tidycalBooking.error },
         { status: 500 }
       );
     }
 
-    // Save booking to Airtable
-    const airtableBooking = await airtable.saveConsultationBooking({
+    // 2. Save booking to Firestore
+    const db = getFirestoreAdmin();
+    const bookingRef = await db.collection(COLLECTIONS.CONSULTATIONS).add({
       ...bookingData,
       bookingId: tidycalBooking.bookingId,
-      status: 'confirmed'
+      status: 'confirmed',
+      platform: 'tidycal',
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
     });
 
-    if (!airtableBooking.success) {
-      return NextResponse.json(
-        { success: false, error: airtableBooking.error },
-        { status: 500 }
-      );
-    }
+    await auditAgent.log({
+      service: 'firebase',
+      action: 'consultation_booking_saved',
+      status: 'success',
+      details: { bookingId: tidycalBooking.bookingId, firestoreId: bookingRef.id, email: bookingData.contact?.email }
+    });
 
     return NextResponse.json({
       success: true,
@@ -52,8 +63,14 @@ export async function POST(request: NextRequest) {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Consultation booking error:', error);
+    await auditAgent.log({
+      service: 'firebase',
+      action: 'consultation_booking_failed',
+      status: 'error',
+      errorMessage: error.message
+    });
     return NextResponse.json(
       { success: false, error: 'Failed to create consultation booking' },
       { status: 500 }
@@ -94,7 +111,7 @@ export async function GET(request: NextRequest) {
 
 function validateBookingData(data: any) {
   const requiredFields = ['service', 'datetime', 'contact'];
-  
+
   for (const field of requiredFields) {
     if (!data[field]) {
       return {
@@ -106,29 +123,10 @@ function validateBookingData(data: any) {
 
   // Validate email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(data.contact.email)) {
+  if (!emailRegex.test(data.contact?.email)) {
     return {
       valid: false,
       error: 'Invalid email address'
-    };
-  }
-
-  // Validate phone
-  const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
-  if (data.contact.phone && !phoneRegex.test(data.contact.phone)) {
-    return {
-      valid: false,
-      error: 'Invalid phone number'
-    };
-  }
-
-  // Validate datetime
-  const bookingDate = new Date(data.datetime);
-  const now = new Date();
-  if (bookingDate <= now) {
-    return {
-      valid: false,
-      error: 'Booking date must be in the future'
     };
   }
 

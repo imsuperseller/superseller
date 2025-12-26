@@ -1,31 +1,63 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import DashboardContent, { type Template, type Client } from './DashboardContent';
 
-import dynamic from 'next/dynamic';
+export const metadata = {
+  title: 'Rensto Workflow Dashboard',
+};
 
-// Dynamically import dashboard with SSR disabled to avoid hydration mismatch
-const DashboardContent = dynamic(() => import('./DashboardContent'), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen bg-[#110d28] text-white p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#fe3d51]">Rensto Workflow Dashboard</h1>
-        <p className="text-gray-400 mt-2">Loading dashboard...</p>
-      </div>
-      <div className="space-y-8 animate-pulse">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-[#1a1438] rounded-xl p-6 h-32" />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-[#1a1438] rounded-xl p-6 h-64" />
-          <div className="bg-[#1a1438] rounded-xl p-6 h-64" />
-        </div>
-      </div>
-    </div>
-  ),
-});
+// Admin Check Constants
+const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
 
-export default function WorkflowDashboardPage() {
-  return <DashboardContent />;
+async function getDashboardData() {
+  const db = getFirestoreAdmin();
+
+  // Parallel fetch
+  const [templatesSnapshot, clientsSnapshot] = await Promise.all([
+    db.collection(COLLECTIONS.TEMPLATES).get(),
+    db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get()
+  ]);
+
+  const templates = templatesSnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Template[];
+
+  const clients = clientsSnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Client[];
+
+  return { templates, clients };
+}
+
+export default async function WorkflowDashboardPage() {
+  const session = await verifySession();
+
+  if (!session.isValid || !session.email) {
+    redirect('/login?redirect=/workflow-dashboard');
+  }
+
+  // Admin Check
+  if (!ADMIN_EMAILS.includes(session.email)) {
+    // If not admin, this dashboard (which shows ALL data) is restricted.
+    // Redirect to their specific client dashboard.
+    redirect(`/dashboard/${session.clientId}`);
+  }
+
+  const { templates, clients } = await getDashboardData();
+  const lastUpdated = new Date().toLocaleString('en-US', {
+    timeZone: 'America/New_York',
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+
+  return (
+    <DashboardContent
+      initialTemplates={templates}
+      initialClients={clients}
+      lastUpdated={lastUpdated}
+    />
+  );
 }

@@ -314,13 +314,13 @@ export default function ProcessPage() {
             <Link href="/offers" className="btn-primary text-lg px-8 py-4">
               View Our Offers
             </Link>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-rensto-support'))}
+            <Link
+              href="/contact?source=process"
               className="btn-secondary text-lg px-8 py-4 flex items-center justify-center gap-2"
             >
               <Bot className="w-5 h-5" />
               Chat with AI Agent
-            </button>
+            </Link>
             <Link href="/contact" className="btn-secondary text-lg px-8 py-4">
               Contact Us
             </Link>

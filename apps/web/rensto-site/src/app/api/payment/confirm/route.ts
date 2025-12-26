@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StripeApi } from '@/lib/stripe';
-import { AirtableApi } from '@/lib/airtable';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import { Timestamp } from 'firebase-admin/firestore';
 
 const stripe = new StripeApi();
-const airtable = new AirtableApi();
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Confirm payment
+    // Confirm payment with Stripe
     const confirmation = await stripe.confirmPayment(paymentIntentId);
 
     if (!confirmation.success) {
@@ -26,25 +27,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update payment status in Airtable (if method exists)
-    try {
-      if (typeof (airtable as any).updatePaymentStatus === 'function') {
-        await (airtable as any).updatePaymentStatus(paymentIntentId, confirmation.status);
+    // Update payment status in Firestore
+    const db = getFirestoreAdmin();
+    const paymentRef = db.collection(COLLECTIONS.PAYMENTS).doc(paymentIntentId);
+
+    await paymentRef.update({
+      status: confirmation.status,
+      updatedAt: Timestamp.now()
+    });
+
+    // If payment succeeded, record it as a purchase
+    if (confirmation.status === 'succeeded') {
+      const paymentDoc = await paymentRef.get();
+      const paymentData = paymentDoc.data();
+
+      if (paymentData) {
+        await db.collection(COLLECTIONS.PURCHASES).add({
+          paymentIntentId,
+          customerId: paymentData.customerId,
+          templateId: paymentData.templateId,
+          amount: paymentData.amount,
+          currency: paymentData.currency,
+          status: 'completed',
+          purchasedAt: Timestamp.now(),
+          updatedAt: Timestamp.now()
+        });
+
+        await auditAgent.log({
+          service: 'firebase',
+          action: 'purchase_recorded',
+          status: 'success',
+          details: { paymentIntentId, customerId: paymentData.customerId, templateId: paymentData.templateId }
+        });
       }
-    } catch (error) {
-      console.warn('Airtable updatePaymentStatus not available:', error);
     }
 
-    // If payment succeeded, grant template access (if method exists)
-    if (confirmation.status === 'succeeded') {
-      try {
-        if (typeof (airtable as any).grantTemplateAccess === 'function') {
-          await (airtable as any).grantTemplateAccess(paymentIntentId);
-        }
-      } catch (error) {
-        console.warn('Airtable grantTemplateAccess not available:', error);
-      }
-    }
+    await auditAgent.log({
+      service: 'stripe',
+      action: 'payment_confirmed',
+      status: 'success',
+      details: { paymentIntentId, paymentStatus: confirmation.status }
+    });
 
     return NextResponse.json({
       success: true,
@@ -52,8 +75,14 @@ export async function POST(request: NextRequest) {
       paymentIntent: confirmation.paymentIntent
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Payment confirmation error:', error);
+    await auditAgent.log({
+      service: 'stripe',
+      action: 'payment_confirmation_failed',
+      status: 'error',
+      errorMessage: error.message
+    });
     return NextResponse.json(
       { success: false, error: 'Failed to confirm payment' },
       { status: 500 }

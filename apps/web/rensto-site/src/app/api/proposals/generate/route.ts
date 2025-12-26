@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { AirtableApi } from '@/lib/airtable';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import { Timestamp } from 'firebase-admin/firestore';
 
 // Ensure this API route is always dynamic and not statically evaluated at build time
 export const dynamic = 'force-dynamic';
@@ -15,8 +17,6 @@ function getOpenAI(): OpenAI {
   return new OpenAI({ apiKey });
 }
 
-const airtable = new AirtableApi();
-
 export async function POST(request: NextRequest) {
   try {
     const { requirements, clientInfo, projectInfo } = await request.json();
@@ -30,22 +30,29 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Analyze requirements
     const requirementsAnalysis = analyzeRequirements(requirements);
-    
+
     // Step 2: Select appropriate template
     const template = selectTemplate(requirementsAnalysis, projectInfo);
-    
+
     // Step 3: Generate proposal sections
     const proposalSections = await generateProposalSections(requirementsAnalysis, clientInfo, projectInfo, template);
-    
+
     // Step 4: Calculate pricing
     const pricing = calculatePricing(requirementsAnalysis, projectInfo);
-    
+
     // Step 5: Assemble final proposal
     const finalProposal = assembleProposal(proposalSections, pricing, clientInfo);
-    
-    // Step 6: Save proposal to Airtable
-    const savedProposal = await saveProposalToAirtable(finalProposal, clientInfo, projectInfo);
-    
+
+    // Step 6: Save proposal to Firestore
+    const savedProposal = await saveProposalToFirestore(finalProposal, clientInfo, projectInfo);
+
+    await auditAgent.log({
+      service: 'firebase',
+      action: 'proposal_generated',
+      status: 'success',
+      details: { proposalId: finalProposal.id, client: clientInfo.company, firestoreId: savedProposal.recordId }
+    });
+
     return NextResponse.json({
       success: true,
       proposal: finalProposal,
@@ -53,8 +60,14 @@ export async function POST(request: NextRequest) {
       savedProposal: savedProposal
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Proposal generation error:', error);
+    await auditAgent.log({
+      service: 'openai',
+      action: 'proposal_generation_failed',
+      status: 'error',
+      errorMessage: error.message
+    });
     return NextResponse.json(
       { success: false, error: 'Failed to generate proposal' },
       { status: 500 }
@@ -72,14 +85,16 @@ function analyzeRequirements(requirements: any) {
     conflicts: identifyConflicts(requirements),
     recommendations: generateRecommendations(requirements)
   };
-  
+
   return analysis;
 }
 
 function countTotalRequirements(requirements: any) {
   let total = 0;
   for (const category in requirements) {
-    total += requirements[category].length;
+    if (Array.isArray(requirements[category])) {
+      total += requirements[category].length;
+    }
   }
   return total;
 }
@@ -87,7 +102,9 @@ function countTotalRequirements(requirements: any) {
 function countRequirementsByCategory(requirements: any) {
   const counts: any = {};
   for (const category in requirements) {
-    counts[category] = requirements[category].length;
+    if (Array.isArray(requirements[category])) {
+      counts[category] = requirements[category].length;
+    }
   }
   return counts;
 }
@@ -95,8 +112,10 @@ function countRequirementsByCategory(requirements: any) {
 function countRequirementsByPriority(requirements: any) {
   const counts = { critical: 0, high: 0, medium: 0, low: 0 };
   for (const category in requirements) {
-    for (const req of requirements[category]) {
-      counts[req.priority as keyof typeof counts] = (counts[req.priority as keyof typeof counts] || 0) + 1;
+    if (Array.isArray(requirements[category])) {
+      for (const req of requirements[category]) {
+        counts[req.priority as keyof typeof counts] = (counts[req.priority as keyof typeof counts] || 0) + 1;
+      }
     }
   }
   return counts;
@@ -105,8 +124,10 @@ function countRequirementsByPriority(requirements: any) {
 function countRequirementsByComplexity(requirements: any) {
   const counts = { simple: 0, moderate: 0, complex: 0, enterprise: 0 };
   for (const category in requirements) {
-    for (const req of requirements[category]) {
-      counts[req.complexity as keyof typeof counts] = (counts[req.complexity as keyof typeof counts] || 0) + 1;
+    if (Array.isArray(requirements[category])) {
+      for (const req of requirements[category]) {
+        counts[req.complexity as keyof typeof counts] = (counts[req.complexity as keyof typeof counts] || 0) + 1;
+      }
     }
   }
   return counts;
@@ -114,36 +135,36 @@ function countRequirementsByComplexity(requirements: any) {
 
 function identifyGaps(requirements: any) {
   const gaps = [];
-  
+
   // Check for missing business objectives
-  if (requirements.business_objectives.length === 0) {
+  if (!requirements.business_objectives || requirements.business_objectives.length === 0) {
     gaps.push('Missing business objectives');
   }
-  
+
   // Check for missing functional requirements
-  if (requirements.functional_requirements.length === 0) {
+  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) {
     gaps.push('Missing functional requirements');
   }
-  
+
   // Check for missing technical requirements
-  if (requirements.technical_requirements.length === 0) {
+  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) {
     gaps.push('Missing technical requirements');
   }
-  
+
   return gaps;
 }
 
 function identifyConflicts(requirements: any) {
   const conflicts = [];
-  
+
   // Check for conflicting priorities
   const highPriorityCount = countRequirementsByPriority(requirements).high;
   if (highPriorityCount > 10) {
     conflicts.push('Too many high priority requirements');
   }
-  
+
   // Check for conflicting constraints
-  const constraints = requirements.constraints;
+  const constraints = requirements.constraints || [];
   for (let i = 0; i < constraints.length; i++) {
     for (let j = i + 1; j < constraints.length; j++) {
       if (areConflicting(constraints[i], constraints[j])) {
@@ -151,7 +172,7 @@ function identifyConflicts(requirements: any) {
       }
     }
   }
-  
+
   return conflicts;
 }
 
@@ -159,7 +180,7 @@ function areConflicting(req1: any, req2: any) {
   // Simple conflict detection logic
   const req1Lower = req1.description.toLowerCase();
   const req2Lower = req2.description.toLowerCase();
-  
+
   if (req1Lower.includes('fast') && req2Lower.includes('slow')) {
     return true;
   }
@@ -169,32 +190,32 @@ function areConflicting(req1: any, req2: any) {
   if (req1Lower.includes('simple') && req2Lower.includes('complex')) {
     return true;
   }
-  
+
   return false;
 }
 
 function generateRecommendations(requirements: any) {
   const recommendations = [];
-  
+
   // Recommend based on gaps
-  if (requirements.business_objectives.length === 0) {
+  if (!requirements.business_objectives || requirements.business_objectives.length === 0) {
     recommendations.push('Define clear business objectives');
   }
-  
-  if (requirements.functional_requirements.length === 0) {
+
+  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) {
     recommendations.push('Specify functional requirements');
   }
-  
-  if (requirements.technical_requirements.length === 0) {
+
+  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) {
     recommendations.push('Define technical requirements');
   }
-  
+
   // Recommend based on complexity
   const complexCount = countRequirementsByComplexity(requirements).complex;
   if (complexCount > 5) {
     recommendations.push('Consider breaking down complex requirements');
   }
-  
+
   return recommendations;
 }
 
@@ -213,7 +234,7 @@ function selectTemplate(requirementsAnalysis: any, projectInfo: any) {
 
 async function generateProposalSections(requirementsAnalysis: any, clientInfo: any, projectInfo: any, template: string) {
   const sections: any = {};
-  
+
   // Generate each section using AI
   const sectionNames = [
     'executive-summary',
@@ -226,11 +247,11 @@ async function generateProposalSections(requirementsAnalysis: any, clientInfo: a
     'team',
     'next-steps'
   ];
-  
+
   for (const section of sectionNames) {
     sections[section] = await generateSection(section, requirementsAnalysis, clientInfo, projectInfo);
   }
-  
+
   return sections;
 }
 
@@ -254,9 +275,9 @@ async function generateSection(section: string, requirementsAnalysis: any, clien
       max_tokens: 1000,
       temperature: 0.7
     });
-    
+
     return response.choices[0].message.content;
-    
+
   } catch (error) {
     console.error(`Failed to generate ${section} section:`, error);
     return `[Error generating ${section} section]`;
@@ -275,7 +296,7 @@ function getSectionPrompt(section: string, requirementsAnalysis: any, clientInfo
     'team': `Describe the project team for ${projectInfo.name} with the required expertise and experience.`,
     'next-steps': `Create next steps for ${projectInfo.name} with the timeline and deliverables.`
   };
-  
+
   return prompts[section] || `Generate content for the ${section} section.`;
 }
 
@@ -297,19 +318,16 @@ function calculatePricing(requirementsAnalysis: any, projectInfo: any) {
       support: 0
     }
   };
-  
-  // Calculate base price
-  pricing.basePrice = 10000;
-  
+
   // Apply adjustments
   pricing.finalPrice = pricing.basePrice * pricing.adjustments.complexity * pricing.adjustments.timeline * pricing.adjustments.teamSize * pricing.adjustments.risk;
-  
+
   // Calculate breakdown
   pricing.breakdown.development = pricing.finalPrice * 0.6;
   pricing.breakdown.testing = pricing.finalPrice * 0.2;
   pricing.breakdown.deployment = pricing.finalPrice * 0.1;
   pricing.breakdown.support = pricing.finalPrice * 0.1;
-  
+
   return pricing;
 }
 
@@ -323,45 +341,33 @@ function assembleProposal(sections: any, pricing: any, clientInfo: any) {
     createdAt: new Date().toISOString(),
     status: 'draft'
   };
-  
+
   return proposal;
 }
 
-async function saveProposalToAirtable(proposal: any, clientInfo: any, projectInfo: any) {
+async function saveProposalToFirestore(proposal: any, clientInfo: any, projectInfo: any) {
   try {
-    const response = await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_PROPOSALS_TABLE}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        fields: {
-          'Proposal ID': proposal.id,
-          'Title': proposal.title,
-          'Client': clientInfo.company,
-          'Contact': clientInfo.contact,
-          'Email': clientInfo.email,
-          'Project': projectInfo.name,
-          'Status': '🆕 New Proposal',
-          'Created': new Date().toISOString()
-        }
-      })
+    const db = getFirestoreAdmin();
+    const docRef = await db.collection(COLLECTIONS.PROPOSALS).add({
+      proposalId: proposal.id,
+      title: proposal.title,
+      client: clientInfo.company,
+      contact: clientInfo.contact,
+      email: clientInfo.email,
+      project: projectInfo.name,
+      status: 'new',
+      content: proposal,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
     });
-    
-    if (!response.ok) {
-      throw new Error('Failed to save proposal to Airtable');
-    }
-    
-    const data = await response.json();
-    
+
     return {
       success: true,
-      recordId: data.id
+      recordId: docRef.id
     };
-    
-  } catch (error) {
-    console.error('Failed to save proposal to Airtable:', error);
+
+  } catch (error: any) {
+    console.error('Failed to save proposal to Firestore:', error);
     return {
       success: false,
       error: error.message
@@ -387,7 +393,7 @@ export async function GET() {
       'Automatic section creation',
       'Dynamic pricing calculation',
       'Template selection',
-      'Airtable integration'
+      'Firestore storage'
     ]
   });
 }

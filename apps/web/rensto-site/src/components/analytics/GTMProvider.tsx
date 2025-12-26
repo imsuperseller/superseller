@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -12,7 +12,8 @@ declare global {
     }
 }
 
-export function GTMProvider({ children }: { children: React.ReactNode }) {
+// Inner component that uses useSearchParams - must be wrapped in Suspense
+function GTMPageTracker() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -25,6 +26,10 @@ export function GTMProvider({ children }: { children: React.ReactNode }) {
         }
     }, [pathname, searchParams]);
 
+    return null;
+}
+
+export function GTMProvider({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Script
@@ -40,6 +45,9 @@ export function GTMProvider({ children }: { children: React.ReactNode }) {
           `,
                 }}
             />
+            <Suspense fallback={null}>
+                <GTMPageTracker />
+            </Suspense>
             {children}
         </>
     );

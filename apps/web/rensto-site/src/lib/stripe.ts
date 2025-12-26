@@ -1,4 +1,20 @@
 import Stripe from 'stripe';
+import { auditAgent } from './agents/ServiceAuditAgent';
+
+let stripeInstance: Stripe | null = null;
+
+export function getStripeAdmin(): Stripe {
+  if (!stripeInstance) {
+    const apiKey = process.env.STRIPE_SECRET_KEY?.trim();
+    if (!apiKey) {
+      throw new Error('STRIPE_SECRET_KEY not configured');
+    }
+    stripeInstance = new Stripe(apiKey, {
+      apiVersion: '2023-10-16' as any
+    });
+  }
+  return stripeInstance;
+}
 
 export class StripeApi {
   private stripe: Stripe | null = null;
@@ -27,13 +43,27 @@ export class StripeApi {
         }
       });
 
+      await auditAgent.log({
+        service: 'stripe',
+        action: 'create_payment_intent',
+        status: 'success',
+        details: { amount, currency, paymentIntentId: paymentIntent.id }
+      });
+
       return {
         success: true,
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id
       };
 
-    } catch (error) {
+    } catch (error: any) {
+      await auditAgent.log({
+        service: 'stripe',
+        action: 'create_payment_intent',
+        status: 'error',
+        errorMessage: error.message,
+        details: { amount, currency }
+      });
       console.error('Stripe createPaymentIntent error:', error);
       return {
         success: false,
@@ -91,13 +121,27 @@ export class StripeApi {
         }
       });
 
+      await auditAgent.log({
+        service: 'stripe',
+        action: 'create_customer',
+        status: 'success',
+        details: { email, customerId: customer.id }
+      });
+
       return {
         success: true,
         customerId: customer.id,
         customer
       };
 
-    } catch (error) {
+    } catch (error: any) {
+      await auditAgent.log({
+        service: 'stripe',
+        action: 'create_customer',
+        status: 'error',
+        errorMessage: error.message,
+        details: { email }
+      });
       console.error('Stripe createCustomer error:', error);
       return {
         success: false,

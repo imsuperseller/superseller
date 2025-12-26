@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
     // Step 3: Generate TTS audio using OpenAI TTS
     const ttsAudio = await generateTTSAudio(aiResponse);
 
-    // Step 4: Save consultation data to Airtable
+    // Step 4: Save consultation data to Firestore
     await saveConsultationData(sessionId, step, transcription, aiResponse);
 
     // Step 5: Update consultation progress
@@ -134,45 +136,21 @@ async function generateTTSAudio(text: string) {
 
 async function saveConsultationData(sessionId: string, step: string, transcription: string, aiResponse: string) {
   try {
-    // Save to Boost.space using note module (Space 45: n8n Workflows Notes)
-    // This provides flexibility for consultation data storage
-    const boostSpaceApiKey = process.env.BOOST_SPACE_API_KEY;
-
-    if (!boostSpaceApiKey) {
-      console.warn('Boost.space API key missing, skipping save');
-      return { success: false, message: 'Configuration missing' };
-    }
-
-    // Create consultation record using Boost.space MCP pattern
-    const consultationNote = {
-      name: `Voice Consultation - ${sessionId} - Step ${step}`,
-      description: `**Session ID**: ${sessionId}\n**Step**: ${step}\n**User Response**: ${transcription}\n**AI Response**: ${aiResponse}\n**Timestamp**: ${new Date().toISOString()}`,
-      spaces: [45], // n8n Workflows (Notes) space
-      labels: ['voice-consultation', step, 'active']
-    };
-
-    // Use Boost.space API directly
-    const response = await fetch('https://superseller.boost.space/api/note', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${boostSpaceApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(consultationNote)
+    const db = getFirestoreAdmin();
+    const consultationRef = await db.collection(COLLECTIONS.CONSULTATIONS).add({
+      sessionId,
+      step,
+      userResponse: transcription,
+      aiResponse,
+      timestamp: Timestamp.now(),
+      type: 'voice-ai'
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Boost.space save error:', errorText);
-      throw new Error(`Failed to save consultation data: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Consultation saved to Boost.space:', result);
-    return result;
+    console.log('Consultation saved to Firestore:', consultationRef.id);
+    return { success: true, id: consultationRef.id };
 
   } catch (error) {
-    console.error('Boost.space save error:', error);
+    console.error('Firestore save error:', error);
     // Don't throw - allow consultation to continue even if save fails
     return { success: false, error: String(error) };
   }
@@ -213,7 +191,7 @@ export async function GET() {
       'OpenAI Whisper transcription',
       'OpenAI GPT-4o response generation',
       'OpenAI TTS audio generation',
-      'Boost.space consultation data storage (Space 45, note module)',
+      'Firestore consultation data storage',
       'Step-by-step consultation flow',
       'Session tracking and progress monitoring'
     ]

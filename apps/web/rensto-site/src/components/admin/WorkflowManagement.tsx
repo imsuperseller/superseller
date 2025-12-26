@@ -14,8 +14,24 @@ interface Workflow {
   errors: number;
 }
 
-export default function WorkflowManagement() {
-  const [workflows, setWorkflows] = useState<Workflow[]>([
+import { Template } from '@/lib/firebase';
+
+interface WorkflowManagementProps {
+  templates?: Template[];
+}
+
+export default function WorkflowManagement({ templates = [] }: WorkflowManagementProps) {
+  // Map templates to Workflow interface, mocking status/stats for now
+  const initialWorkflows: Workflow[] = templates.length > 0 ? templates.map(t => ({
+    id: t.id || 'unknown',
+    name: t.name,
+    status: 'running', // Mock status
+    lastExecution: new Date().toISOString(),
+    executionTime: Math.floor(Math.random() * 100) + 20,
+    successRate: Math.floor(Math.random() * 20) + 80,
+    errors: 0
+  })) : [
+    // Fallback if no templates
     {
       id: 'ben-social-media-agent',
       name: 'Ben Social Media Agent',
@@ -24,26 +40,24 @@ export default function WorkflowManagement() {
       executionTime: 45,
       successRate: 95,
       errors: 0
-    },
-    {
-      id: 'ben-podcast-agent',
-      name: 'Ben Podcast Agent',
-      status: 'running',
-      lastExecution: '2025-08-18T17:25:00Z',
-      executionTime: 120,
-      successRate: 88,
-      errors: 2
-    },
-    {
-      id: 'shelly-excel-processor',
-      name: 'Shelly Excel Processor',
-      status: 'stopped',
-      lastExecution: '2025-08-18T16:45:00Z',
-      executionTime: 30,
-      successRate: 100,
-      errors: 0
     }
-  ]);
+  ];
+
+  const [workflows, setWorkflows] = useState<Workflow[]>(initialWorkflows);
+
+  useEffect(() => {
+    if (templates.length > 0) {
+      setWorkflows(templates.map(t => ({
+        id: t.id || 'unknown',
+        name: t.name,
+        status: 'running',
+        lastExecution: new Date().toISOString(),
+        executionTime: Math.floor(Math.random() * 100) + 20,
+        successRate: Math.floor(Math.random() * 20) + 80,
+        errors: 0
+      })));
+    }
+  }, [templates]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -75,7 +89,7 @@ export default function WorkflowManagement() {
         <h2 className="text-3xl font-bold tracking-tight">Workflow Management</h2>
         <Button>Create New Workflow</Button>
       </div>
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {workflows.map((workflow) => (
           <Card key={workflow.id}>
@@ -93,7 +107,7 @@ export default function WorkflowManagement() {
                 <div>Execution Time: {workflow.executionTime}s</div>
                 <div>Errors: {workflow.errors}</div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between text-sm mb-2">
                   <span>Success Rate</span>
@@ -101,7 +115,7 @@ export default function WorkflowManagement() {
                 </div>
                 <Progress value={workflow.successRate} className="w-full" />
               </div>
-              
+
               <div className="flex space-x-2">
                 {workflow.status === 'running' ? (
                   <Button size="sm" variant="destructive" onClick={() => stopWorkflow(workflow.id)}>

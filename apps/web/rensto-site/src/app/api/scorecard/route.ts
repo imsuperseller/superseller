@@ -1,13 +1,9 @@
-import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 import { sendScorecardEmail } from '@/lib/email-service';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
-// Boost.space Configuration
-const BOOST_SPACE_API_URL = 'https://superseller.boost.space/api';
-const BOOST_SPACE_API_KEY = process.env.BOOST_SPACE_API_KEY;
-const CONTACTS_SPACE_ID = 26;
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { email, name, company, answers } = body;
@@ -19,29 +15,19 @@ export async function POST(req: Request) {
             );
         }
 
-        // 1. Save to Boost.space (Contacts Module)
-        const boostResponse = await fetch(`${BOOST_SPACE_API_URL}/contact`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${BOOST_SPACE_API_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email,
-                firstname: name || 'Scorecard Lead',
-                name: company || 'Unknown Company',
-                type: 'lead',
-                contactSource: 'Automation Readiness Scorecard',
-                spaces: [CONTACTS_SPACE_ID], // Assign to Contacts space
-                note: `Scorecard Answers: ${JSON.stringify(answers)}`,
-                // Add custom fields for scorecard results if needed
-            }),
+        // 1. Save to Firestore
+        const db = getFirestoreAdmin();
+        const leadRef = await db.collection(COLLECTIONS.SCORECARDS).add({
+            email,
+            name: name || 'Scorecard Lead',
+            company: company || 'Unknown Company',
+            type: 'lead',
+            source: 'Automation Readiness Scorecard',
+            answers,
+            timestamp: Timestamp.now()
         });
 
-        if (!boostResponse.ok) {
-            console.error('Boost.space Error:', await boostResponse.text());
-            // Continue execution - don't fail user experience if CRM sync fails
-        }
+        console.log('Scorecard lead saved to Firestore:', leadRef.id);
 
         // 2. Send Email with PDF
         // For now using a static PDF URL - in future can generate dynamically
@@ -73,7 +59,7 @@ export async function POST(req: Request) {
     }
 }
 
-export async function OPTIONS(req: Request) {
+export async function OPTIONS() {
     return NextResponse.json({}, {
         headers: {
             'Access-Control-Allow-Origin': '*',

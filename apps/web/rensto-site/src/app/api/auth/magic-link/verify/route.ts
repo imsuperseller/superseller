@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
         }
 
-        const tokenData = tokenDoc.data() as MagicLinkToken;
+        const tokenData = tokenDoc.data() as MagicLinkToken & { redirectTo?: string; role?: string };
 
         // Check if token was already used
         if (tokenData.used) {
@@ -42,14 +42,16 @@ export async function GET(request: NextRequest) {
         await tokenRef.update({ used: true });
 
         // Update client's last login
-        try {
-            const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(tokenData.clientId);
-            await clientRef.update({
-                lastLogin: Timestamp.now(),
-                updatedAt: Timestamp.now()
-            });
-        } catch (clientError) {
-            console.log('Client update skipped (may not exist yet):', clientError);
+        if (tokenData.clientId !== 'admin') {
+            try {
+                const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(tokenData.clientId);
+                await clientRef.update({
+                    lastLogin: Timestamp.now(),
+                    updatedAt: Timestamp.now()
+                });
+            } catch (clientError) {
+                console.log('Client update skipped (may not exist yet):', clientError);
+            }
         }
 
         // Create session data
@@ -62,9 +64,18 @@ export async function GET(request: NextRequest) {
         // Encode session data
         const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString('base64');
 
+        // Determine Redirect URL
+        let destination = `/dashboard/${tokenData.clientId}`;
+
+        if (tokenData.redirectTo) {
+            destination = tokenData.redirectTo;
+        } else if (tokenData.clientId === 'admin') {
+            destination = '/control';
+        }
+
         // Set auth cookie and redirect to dashboard
         const response = NextResponse.redirect(
-            new URL(`/dashboard/${tokenData.clientId}`, request.url)
+            new URL(destination, request.url)
         );
 
         response.cookies.set(AUTH_COOKIE_NAME, sessionToken, {

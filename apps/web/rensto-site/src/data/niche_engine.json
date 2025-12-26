@@ -270,7 +270,7 @@
                     "id": "con_1",
                     "phase": "core",
                     "title": "Broker AI Receptionist",
-                    "desc": "Qualify project scope/budget -> Airtable lead.",
+                    "desc": "Qualify project scope/budget -> Firestore lead.",
                     "icon": "HardHat",
                     "price": 0,
                     "monthly": 0
@@ -875,7 +875,7 @@
                     "id": "roof_1",
                     "phase": "core",
                     "title": "Roofer AI Receptionist",
-                    "desc": "Qualify leak/storm -> Airtable lead.",
+                    "desc": "Qualify leak/storm -> Firestore lead.",
                     "icon": "Home",
                     "price": 0,
                     "monthly": 0

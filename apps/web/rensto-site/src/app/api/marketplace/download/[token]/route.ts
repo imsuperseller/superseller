@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-import { sanitizeWorkflow } from '@/lib/n8n/sanitizer';
-
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/imsuperseller/rensto/main';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function GET(
   request: NextRequest,
@@ -18,38 +17,92 @@ export async function GET(
       );
     }
 
-    // Decode token to get purchase record ID
-    const decoded = Buffer.from(token, 'base64url').toString('utf-8');
-    const [purchaseRecordId, customerEmail, timestamp, workflowPath] = decoded.split(':');
+    // 1. Decode token to get template info
+    // Token structure (base64): templateId:customerEmail:timestamp
+    let templateId: string;
+    let customerEmail: string;
+    let timestampStr: string;
 
-    if (!purchaseRecordId || !workflowPath) {
+    try {
+      const decoded = Buffer.from(token, 'base64url').toString('utf-8');
+      [templateId, customerEmail, timestampStr] = decoded.split(':');
+    } catch (e) {
       return NextResponse.json(
-        { success: false, error: 'Invalid download token' },
+        { success: false, error: 'Malformed download token' },
         { status: 400 }
       );
     }
 
-    // Determine GitHub URL
-    const githubUrl = workflowPath.startsWith('http')
-      ? workflowPath
-      : `${GITHUB_RAW_BASE}/${workflowPath.startsWith('/') ? workflowPath.slice(1) : workflowPath}`;
+    if (!templateId) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid download token: missing template ID' },
+        { status: 400 }
+      );
+    }
 
-    // 1. Fetch the raw workflow from GitHub
-    const response = await axios.get(githubUrl);
-    const workflowJson = response.data;
+    // 2. Fetch the template from Firestore
+    const db = getFirestoreAdmin();
+    const docRef = db.collection(COLLECTIONS.TEMPLATES).doc(templateId);
+    const doc = await docRef.get();
 
-    // 2. SANITIZE the workflow using the Rensto Sanitizer
-    // This removes passwords, API keys, and internal instance IDs
-    const sanitizedWorkflow = sanitizeWorkflow(workflowJson);
+    if (!doc.exists) {
+      await auditAgent.log({
+        service: 'firebase',
+        action: 'download_failed',
+        status: 'error',
+        errorMessage: `Template ${templateId} not found for download`,
+        details: { templateId, customerEmail }
+      });
+      return NextResponse.json(
+        { success: false, error: 'Template not found' },
+        { status: 404 }
+      );
+    }
 
-    // 3. Update download count or log (async)
-    // await logDownload(purchaseRecordId);
+    const template = doc.data();
 
-    // 4. Return the sanitized file as a download
-    return new NextResponse(JSON.stringify(sanitizedWorkflow, null, 2), {
+    // Check if content exists
+    if (!template?.content) {
+      return NextResponse.json(
+        { success: false, error: 'Template content is empty' },
+        { status: 500 }
+      );
+    }
+
+    // 3. Log the download event in Firestore
+    try {
+      await db.collection(COLLECTIONS.DOWNLOADS).add({
+        templateId,
+        userEmail: customerEmail || 'anonymous',
+        timestamp: Timestamp.now(),
+        status: 'success',
+        userAgent: request.headers.get('user-agent'),
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+    } catch (logError) {
+      console.error('Failed to log download to Firestore:', logError);
+      // Continue anyway as we have the content
+    }
+
+    await auditAgent.log({
+      service: 'firebase',
+      action: 'download_success',
+      status: 'success',
+      details: { templateId, customerEmail, templateName: template.name }
+    });
+
+    // 4. Return the file as a JSON download
+    const filename = `${template.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}.json`;
+
+    // If it's already a string, use it, otherwise stringify
+    const content = typeof template.content === 'string'
+      ? template.content
+      : JSON.stringify(template.content, null, 2);
+
+    return new NextResponse(content, {
       headers: {
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="${workflowPath.split('/').pop() || 'rensto-workflow.json'}"`
+        'Content-Disposition': `attachment; filename="${filename}"`
       }
     });
 
