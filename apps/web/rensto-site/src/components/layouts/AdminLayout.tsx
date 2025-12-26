@@ -35,13 +35,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // Handle client-side mounting and theme initialization
   useEffect(() => {
     setMounted(true);
-    
+
     // Initialize theme from localStorage
     try {
       const savedTheme = localStorage.getItem('admin-theme') as 'light' | 'dark' | null;
       if (savedTheme) {
         setTheme(savedTheme);
-        
+
         // Apply theme to document
         if (savedTheme === 'dark') {
           document.documentElement.classList.add('dark');
@@ -73,11 +73,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    
+
     // Implement theme persistence
     try {
       localStorage.setItem('admin-theme', newTheme);
-      
+
       // Also update document class for immediate effect
       if (newTheme === 'dark') {
         document.documentElement.classList.add('dark');
@@ -110,8 +110,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 relative">
               <Image
-                src="/Rensto Logo.png"
-                alt="Rensto Logo"
+                src="/rensto-logo.webp"
+                alt="Rensto - AI-Powered Business Automation"
                 width={32}
                 height={32}
                 className="rensto-animate-glow"
@@ -149,7 +149,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             >
               <Menu className="h-5 w-5" />
             </button>
-            
+
             {/* Search */}
             <div className="ml-4 flex-1 max-w-lg">
               <div className="relative">
@@ -208,8 +208,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 relative">
                   <Image
-                    src="/Rensto Logo.png"
-                    alt="Rensto Logo"
+                    src="/rensto-logo.webp"
+                    alt="Rensto - AI-Powered Business Automation"
                     width={32}
                     height={32}
                     className="rensto-animate-glow"

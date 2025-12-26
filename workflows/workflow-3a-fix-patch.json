@@ -1,0 +1,22 @@
+{
+  "_comment": "Patch for Marketing Agency #3a: TidyCal → Contract Creation",
+  "_node": "Data Table - Update Contract Sent",
+  "_fix": "Add matchingColumns to enable proper record matching",
+  
+  "columns_patch": {
+    "matchingColumns": ["Email"],
+    "value": {
+      "Status": "Contract Sent",
+      "UpdatedAt": "={{ $now }}"
+    }
+  },
+  
+  "schema_add": {
+    "id": "Email",
+    "displayName": "Email", 
+    "required": false,
+    "defaultMatch": true,
+    "display": true,
+    "type": "string"
+  }
+}

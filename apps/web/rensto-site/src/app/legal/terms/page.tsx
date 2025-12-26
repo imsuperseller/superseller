@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { env } from '@/lib/env';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service',
-  description: 'Terms and conditions for using Rensto services and website.',
+  title: 'Terms of Service | Rensto Business Agreement',
+  description: 'The terms and conditions for using our services.',
+  alternates: {
+    canonical: '/legal/terms',
+  },
 };
 
 export default function TermsOfServicePage() {
@@ -25,8 +28,8 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">1. Agreement to Terms</h2>
               <p className="text-muted mb-4">
-                By accessing and using the services provided by Rensto LLC (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;), 
-                you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these terms, 
+                By accessing and using the services provided by Rensto LLC (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;),
+                you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these terms,
                 you may not access our services.
               </p>
             </section>
@@ -48,10 +51,10 @@ export default function TermsOfServicePage() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">3. Project Terms</h2>
-              
+
               <h3 className="text-xl font-semibold mb-3">Scope and Deliverables</h3>
               <p className="text-muted mb-4">
-                Project scope, deliverables, timelines, and pricing will be defined in a separate project agreement 
+                Project scope, deliverables, timelines, and pricing will be defined in a separate project agreement
                 or statement of work. All projects are subject to our WIP limits and quality standards.
               </p>
 
@@ -68,7 +71,7 @@ export default function TermsOfServicePage() {
 
               <h3 className="text-xl font-semibold mb-3">Intellectual Property</h3>
               <p className="text-muted mb-4">
-                Upon full payment, you own the custom workflows and configurations created for your project. 
+                Upon full payment, you own the custom workflows and configurations created for your project.
                 We retain rights to our proprietary methodologies, templates, and general knowledge.
               </p>
             </section>
@@ -106,12 +109,12 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">6. Limitation of Liability</h2>
               <p className="text-muted mb-4">
-                To the maximum extent permitted by law, Rensto shall not be liable for any indirect, incidental, 
-                special, consequential, or punitive damages, including but not limited to loss of profits, data, 
+                To the maximum extent permitted by law, Rensto shall not be liable for any indirect, incidental,
+                special, consequential, or punitive damages, including but not limited to loss of profits, data,
                 or business opportunities.
               </p>
               <p className="text-muted mb-4">
-                Our total liability for any claim arising from these Terms or our services shall not exceed the 
+                Our total liability for any claim arising from these Terms or our services shall not exceed the
                 amount paid by you for the specific service giving rise to the claim.
               </p>
             </section>
@@ -119,7 +122,7 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">7. Warranty and Guarantee</h2>
               <p className="text-muted mb-4">
-                We warrant that our services will be performed in a professional manner consistent with industry standards. 
+                We warrant that our services will be performed in a professional manner consistent with industry standards.
                 If you are not satisfied with our work, we offer a money-back guarantee within 30 days of project completion.
               </p>
               <p className="text-muted mb-4">
@@ -136,8 +139,8 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">8. Confidentiality</h2>
               <p className="text-muted mb-4">
-                We understand the sensitive nature of your business information and commit to maintaining strict 
-                confidentiality. We will not disclose your confidential information to third parties without your 
+                We understand the sensitive nature of your business information and commit to maintaining strict
+                confidentiality. We will not disclose your confidential information to third parties without your
                 written consent, except as required by law.
               </p>
             </section>
@@ -158,8 +161,8 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">10. Force Majeure</h2>
               <p className="text-muted mb-4">
-                Neither party shall be liable for delays or failures in performance due to circumstances beyond 
-                their reasonable control, including but not limited to natural disasters, government actions, 
+                Neither party shall be liable for delays or failures in performance due to circumstances beyond
+                their reasonable control, including but not limited to natural disasters, government actions,
                 or technical failures.
               </p>
             </section>
@@ -167,7 +170,7 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">11. Governing Law</h2>
               <p className="text-muted mb-4">
-                These Terms shall be governed by and construed in accordance with the laws of the State of Texas, 
+                These Terms shall be governed by and construed in accordance with the laws of the State of Texas,
                 without regard to its conflict of law provisions.
               </p>
             </section>
@@ -175,7 +178,7 @@ export default function TermsOfServicePage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">12. Changes to Terms</h2>
               <p className="text-muted mb-4">
-                We reserve the right to modify these Terms at any time. Changes will be effective immediately 
+                We reserve the right to modify these Terms at any time. Changes will be effective immediately
                 upon posting on our website. Your continued use of our services constitutes acceptance of the modified Terms.
               </p>
             </section>

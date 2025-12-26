@@ -6,8 +6,10 @@
 @layer base {
   :root {
     /* Rensto brand default (dark-first) - Matching Webflow Brand System */
-    --background: 266 47% 10%; /* #110d28 - matches Rensto brand */
-    --foreground: 210 40% 98%; /* near white */
+    --background: 266 47% 10%;
+    /* #110d28 - matches Rensto brand */
+    --foreground: 210 40% 98%;
+    /* near white */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
@@ -33,35 +35,48 @@
     --chart-5: 27 87% 67%;
 
     /* Rensto Brand Colors (authoritative) - Matching Webflow Brand System */
-    --rensto-primary: #fe3d51; /* Primary Red - matches Webflow */
-    --rensto-red: #fe3d51; /* Alias for compatibility */
-    --rensto-secondary: #bf5700; /* Secondary Orange - matches Webflow */
-    --rensto-orange: #bf5700; /* Alias for compatibility */
-    --rensto-accent-blue: #1eaef7; /* Accent Blue - matches Webflow */
-    --rensto-blue: #1eaef7; /* Alias for compatibility */
-    --rensto-accent-cyan: #5ffbfd; /* Accent Cyan - matches Webflow */
-    --rensto-cyan: #5ffbfd; /* Alias for compatibility */
+    --rensto-primary: #fe3d51;
+    /* Primary Red - matches Webflow */
+    --rensto-red: #fe3d51;
+    /* Alias for compatibility */
+    --rensto-secondary: #bf5700;
+    /* Secondary Orange - matches Webflow */
+    --rensto-orange: #bf5700;
+    /* Alias for compatibility */
+    --rensto-accent-blue: #1eaef7;
+    /* Accent Blue - matches Webflow */
+    --rensto-blue: #1eaef7;
+    /* Alias for compatibility */
+    --rensto-accent-cyan: #5ffbfd;
+    /* Accent Cyan - matches Webflow */
+    --rensto-cyan: #5ffbfd;
+    /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
-    
+
     /* Rensto Background Colors - Matching Webflow Brand System */
-    --rensto-bg-primary: #110d28; /* app background - matches Webflow */
-    --rensto-bg-secondary: #1a162f; /* panels, surfaces - matches Webflow */
-    --rensto-bg-card: #1a153f; /* cards */
+    --rensto-bg-primary: #110d28;
+    /* app background - matches Webflow */
+    --rensto-bg-secondary: #1a162f;
+    /* panels, surfaces - matches Webflow */
+    --rensto-bg-card: #1a153f;
+    /* cards */
     --rensto-bg-surface: #17123a;
-    
+
     /* Rensto Text Colors - Matching Webflow Brand System */
-    --rensto-text-primary: #fffff3; /* Light text - matches Webflow */
-    --rensto-text-secondary: #b0bec5; /* Gray text - matches Webflow */
+    --rensto-text-primary: #fffff3;
+    /* Light text - matches Webflow */
+    --rensto-text-secondary: #b0bec5;
+    /* Gray text - matches Webflow */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
-    
+
     /* Rensto Gradients */
     --rensto-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
     --rensto-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
     --rensto-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
     --rensto-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
-    
+
     /* Rensto Glow Effects */
     --rensto-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
     --rensto-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
@@ -96,35 +111,47 @@
     --chart-5: 340 75% 55%;
 
     /* Rensto Brand Colors (Dark Mode) - Matching Webflow Brand System */
-    --rensto-primary: #fe3d51; /* Primary Red - matches Webflow */
-    --rensto-red: #fe3d51; /* Alias for compatibility */
-    --rensto-secondary: #bf5700; /* Secondary Orange - matches Webflow */
-    --rensto-orange: #bf5700; /* Alias for compatibility */
-    --rensto-accent-blue: #1eaef7; /* Accent Blue - matches Webflow */
-    --rensto-blue: #1eaef7; /* Alias for compatibility */
-    --rensto-accent-cyan: #5ffbfd; /* Accent Cyan - matches Webflow */
-    --rensto-cyan: #5ffbfd; /* Alias for compatibility */
+    --rensto-primary: #fe3d51;
+    /* Primary Red - matches Webflow */
+    --rensto-red: #fe3d51;
+    /* Alias for compatibility */
+    --rensto-secondary: #bf5700;
+    /* Secondary Orange - matches Webflow */
+    --rensto-orange: #bf5700;
+    /* Alias for compatibility */
+    --rensto-accent-blue: #1eaef7;
+    /* Accent Blue - matches Webflow */
+    --rensto-blue: #1eaef7;
+    /* Alias for compatibility */
+    --rensto-accent-cyan: #5ffbfd;
+    /* Accent Cyan - matches Webflow */
+    --rensto-cyan: #5ffbfd;
+    /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
-    
+
     /* Rensto Background Colors (Dark Mode) - Matching Webflow Brand System */
-    --rensto-bg-primary: #110d28; /* matches Webflow */
-    --rensto-bg-secondary: #1a162f; /* matches Webflow */
+    --rensto-bg-primary: #110d28;
+    /* matches Webflow */
+    --rensto-bg-secondary: #1a162f;
+    /* matches Webflow */
     --rensto-bg-card: #1a153f;
     --rensto-bg-surface: #17123a;
-    
+
     /* Rensto Text Colors (Dark Mode) - Matching Webflow Brand System */
-    --rensto-text-primary: #fffff3; /* matches Webflow */
-    --rensto-text-secondary: #b0bec5; /* matches Webflow */
+    --rensto-text-primary: #fffff3;
+    /* matches Webflow */
+    --rensto-text-secondary: #b0bec5;
+    /* matches Webflow */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
-    
+
     /* Rensto Gradients (Dark Mode) */
     --rensto-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
     --rensto-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
     --rensto-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
     --rensto-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
-    
+
     /* Rensto Glow Effects (Dark Mode) */
     --rensto-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
     --rensto-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
@@ -135,80 +162,97 @@
 
 /* ReactBits Animations */
 @keyframes gradient {
-  0%, 100% { 
-    background-position: 0% 50%; 
+
+  0%,
+  100% {
+    background-position: 0% 50%;
   }
-  50% { 
-    background-position: 100% 50%; 
+
+  50% {
+    background-position: 100% 50%;
   }
 }
 
 @keyframes shine {
-  0% { 
-    transform: translateX(-100%) skewX(-12deg); 
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
   }
-  100% { 
-    transform: translateX(200%) skewX(-12deg); 
+
+  100% {
+    transform: translateX(200%) skewX(-12deg);
   }
 }
 
 @keyframes shake {
-  0%, 100% { 
-    transform: translateX(0); 
+
+  0%,
+  100% {
+    transform: translateX(0);
   }
-  25% { 
-    transform: translateX(-5px); 
+
+  25% {
+    transform: translateX(-5px);
   }
-  75% { 
-    transform: translateX(5px); 
+
+  75% {
+    transform: translateX(5px);
   }
 }
 
 @keyframes spin-slow {
-  from { 
-    transform: rotate(0deg); 
+  from {
+    transform: rotate(0deg);
   }
-  to { 
-    transform: rotate(360deg); 
+
+  to {
+    transform: rotate(360deg);
   }
 }
 
 /* Rensto Brand Animations */
 @keyframes rensto-glow {
-  0%, 100% { 
-    box-shadow: var(--rensto-glow-accent); 
+
+  0%,
+  100% {
+    box-shadow: var(--rensto-glow-accent);
   }
-  50% { 
-    box-shadow: var(--rensto-glow-neon); 
+
+  50% {
+    box-shadow: var(--rensto-glow-neon);
   }
 }
 
 @keyframes rensto-pulse {
-  0%, 100% { 
-    opacity: 1; 
+
+  0%,
+  100% {
+    opacity: 1;
   }
-  50% { 
-    opacity: 0.8; 
+
+  50% {
+    opacity: 0.8;
   }
 }
 
 @keyframes rensto-shimmer {
-  0% { 
-    background-position: -200% 0; 
+  0% {
+    background-position: -200% 0;
   }
-  100% { 
-    background-position: 200% 0; 
+
+  100% {
+    background-position: 200% 0;
   }
 }
 
 @keyframes rensto-fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -217,49 +261,49 @@
   .rensto-glow-primary {
     box-shadow: var(--rensto-glow-primary);
   }
-  
+
   .rensto-glow-secondary {
     box-shadow: var(--rensto-glow-secondary);
   }
-  
+
   .rensto-glow-accent {
     box-shadow: var(--rensto-glow-accent);
   }
-  
+
   .rensto-glow-neon {
     box-shadow: var(--rensto-glow-neon);
   }
-  
+
   .rensto-gradient-primary {
     background: var(--rensto-gradient-primary);
   }
-  
+
   .rensto-gradient-secondary {
     background: var(--rensto-gradient-secondary);
   }
-  
+
   .rensto-gradient-brand {
     background: var(--rensto-gradient-brand);
   }
-  
+
   .rensto-gradient-neon {
     background: var(--rensto-gradient-neon);
   }
-  
+
   .rensto-animate-glow {
     animation: rensto-glow 2s ease-in-out infinite alternate;
   }
-  
+
   .rensto-animate-pulse {
     animation: rensto-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
+
   .rensto-animate-shimmer {
     background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
     background-size: 200% 100%;
     animation: rensto-shimmer 2s infinite;
   }
-  
+
   .rensto-animate-fadeIn {
     animation: rensto-fadeIn 0.5s ease-out;
   }
@@ -274,7 +318,7 @@
     padding: 1.5rem;
     box-shadow: var(--rensto-glow-accent);
   }
-  
+
   .rensto-card-neon {
     background-color: var(--rensto-bg-card);
     border: 2px solid var(--rensto-cyan);
@@ -282,14 +326,14 @@
     padding: 1.5rem;
     box-shadow: var(--rensto-glow-neon);
   }
-  
+
   .rensto-card-gradient {
     border-radius: 0.5rem;
     padding: 1.5rem;
     border: 1px solid rgba(0, 255, 255, 0.3);
     background: linear-gradient(135deg, var(--rensto-bg-card) 0%, var(--rensto-bg-secondary) 100%);
   }
-  
+
   .rensto-input {
     background-color: var(--rensto-bg-secondary);
     border: 1px solid var(--rensto-bg-primary);
@@ -297,17 +341,17 @@
     padding: 0.5rem 0.75rem;
     color: var(--rensto-text-primary);
   }
-  
+
   .rensto-input:focus {
     border-color: var(--rensto-cyan);
     outline: none;
     box-shadow: var(--rensto-glow-accent);
   }
-  
+
   .rensto-input::placeholder {
     color: var(--rensto-text-muted);
   }
-  
+
   .rensto-badge {
     display: inline-flex;
     align-items: center;
@@ -316,31 +360,31 @@
     font-size: 0.75rem;
     font-weight: 500;
   }
-  
+
   .rensto-badge-success {
     background-color: rgba(34, 197, 94, 0.2);
     color: #4ade80;
     border: 1px solid rgba(34, 197, 94, 0.3);
   }
-  
+
   .rensto-badge-warning {
     background-color: rgba(249, 115, 22, 0.2);
     color: #fb923c;
     border: 1px solid rgba(249, 115, 22, 0.3);
   }
-  
+
   .rensto-badge-error {
     background-color: rgba(239, 68, 68, 0.2);
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.3);
   }
-  
+
   .rensto-badge-info {
     background-color: rgba(6, 182, 212, 0.2);
     color: #22d3ee;
     border: 1px solid rgba(6, 182, 212, 0.3);
   }
-  
+
   .rensto-badge-neon {
     background-color: rgba(0, 255, 255, 0.2);
     color: var(--rensto-cyan);
@@ -354,6 +398,13 @@
     /* Tailwind v4: avoid @apply color tokens here; use variables directly */
     border-color: hsl(var(--border));
   }
+
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
   body {
     /* Use Rensto brand colors directly - matching Webflow brand system */
     background-color: var(--rensto-bg-primary) !important;
@@ -366,24 +417,30 @@
   0% {
     transform: translate(0, 0);
   }
+
   100% {
     transform: translate(60px, 60px);
   }
 }
 
 @keyframes particleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) translateX(0);
     opacity: 0.2;
   }
+
   25% {
     transform: translateY(-20px) translateX(10px);
     opacity: 0.6;
   }
+
   50% {
     transform: translateY(-10px) translateX(-5px);
     opacity: 0.4;
   }
+
   75% {
     transform: translateY(-30px) translateX(15px);
     opacity: 0.7;
@@ -391,10 +448,13 @@
 }
 
 @keyframes orbPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.2;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 0.35;
@@ -405,6 +465,7 @@
   0% {
     top: -10%;
   }
+
   100% {
     top: 110%;
   }

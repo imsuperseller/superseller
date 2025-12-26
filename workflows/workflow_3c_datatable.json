@@ -1,0 +1,287 @@
+{
+    "name": "Marketing Agency #3c: Payment Complete → Closed-Won (Data Table)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "stripe-payment-complete",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                -592,
+                16
+            ],
+            "id": "79f96bcf-c00d-4ee7-bb62-6aac92ff6c06",
+            "name": "Stripe Webhook",
+            "webhookId": "stripe-payment-complete"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "is-complete",
+                            "leftValue": "={{ $json.body.type || $json.type }}",
+                            "rightValue": "checkout.session.completed",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                -368,
+                16
+            ],
+            "id": "9a549272-57f8-4fef-85ff-992a6675a8eb",
+            "name": "IF - Payment Complete"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "p1",
+                            "name": "leadId",
+                            "value": "={{ ($json.body.data.object.metadata || $json.data.object.metadata).lead_id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "p2",
+                            "name": "contractId",
+                            "value": "={{ ($json.body.data.object.metadata || $json.data.object.metadata).contract_id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "p3",
+                            "name": "customerEmail",
+                            "value": "={{ $json.body.data.object.customer_details.email || $json.data.object.customer_details.email }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "p4",
+                            "name": "amountPaid",
+                            "value": "={{ ($json.body.data.object.amount_total || $json.data.object.amount_total) / 100 }}",
+                            "type": "number"
+                        },
+                        {
+                            "id": "p5",
+                            "name": "paymentId",
+                            "value": "={{ $json.body.data.object.payment_intent || $json.data.object.payment_intent }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -144,
+                16
+            ],
+            "id": "db6a14b6-34bd-453f-854e-140feccabe43",
+            "name": "Set - Payment Complete"
+        },
+        {
+            "parameters": {
+                "operation": "getRows",
+                "tableId": {
+                    "__rl": true,
+                    "value": "Leads",
+                    "mode": "name"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "column": "id",
+                            "operator": "equals",
+                            "value": "={{ $json.leadId }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "returnAll": false,
+                    "limit": 1
+                }
+            },
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                80,
+                16
+            ],
+            "id": "a4435bcf-89b5-4f2f-8d51-683e0b1e70ab",
+            "name": "Data Table - Get Lead"
+        },
+        {
+            "parameters": {
+                "operation": "updateRows",
+                "tableId": {
+                    "__rl": true,
+                    "value": "Leads",
+                    "mode": "name"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "column": "id",
+                            "operator": "equals",
+                            "value": "={{ $('Set - Payment Complete').item.json.leadId }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "Closed-Won",
+                        "Notes": "={{ 'Payment received on ' + $now.toFormat('yyyy-MM-dd HH:mm') + '. Amount: $' + $('Set - Payment Complete').item.json.amountPaid + '. Payment ID: ' + $('Set - Payment Complete').item.json.paymentId }}"
+                    }
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                304,
+                16
+            ],
+            "id": "971aadbb-38b1-45e1-a5e5-b93d714d5b6d",
+            "name": "Data Table - Closed-Won"
+        },
+        {
+            "parameters": {
+                "toRecipients": "={{ $('Data Table - Get Lead').item.json.Email }}",
+                "subject": "=Welcome to Rensto! 🎉 Let's Build Your Automation",
+                "bodyContent": "=<h1>Welcome to Rensto! 🎉</h1><p>Hi {{ $('Data Table - Get Lead').item.json.FullName }},</p><p>Payment of ${{ $('Set - Payment Complete').item.json.amountPaid }} received!</p><p><a href=\"https://tidycal.com/rensto/kickoff\">Schedule Kickoff Call</a></p>",
+                "additionalFields": {
+                    "bodyContentType": "html"
+                }
+            },
+            "type": "n8n-nodes-base.microsoftOutlook",
+            "typeVersion": 2,
+            "position": [
+                528,
+                16
+            ],
+            "id": "3039edf3-4305-49d2-ae73-880b25808bf9",
+            "name": "Send Welcome Email",
+            "credentials": {
+                "microsoftOutlookOAuth2Api": {
+                    "id": "EA2Fl9QT5h2HZoo9",
+                    "name": "rensto"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "chatId": "374214124",
+                "text": "=🎉🎉 NEW CLIENT! 🎉🎉\n👤 {{ $('Data Table - Get Lead').item.json.FullName }}\n💰 ${{ $('Set - Payment Complete').item.json.amountPaid }}\n✅ CLOSED-WON",
+                "additionalFields": {
+                    "appendAttribution": false
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                752,
+                16
+            ],
+            "id": "77159f75-2035-4ef5-ae37-26934e9a550d",
+            "name": "Telegram - New Client!",
+            "credentials": {
+                "telegramApi": {
+                    "id": "0WW3IfTfTah5WAnl",
+                    "name": "rensto_bot"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Stripe Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "IF - Payment Complete",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF - Payment Complete": {
+            "main": [
+                [
+                    {
+                        "node": "Set - Payment Complete",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                []
+            ]
+        },
+        "Set - Payment Complete": {
+            "main": [
+                [
+                    {
+                        "node": "Data Table - Get Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Data Table - Get Lead": {
+            "main": [
+                [
+                    {
+                        "node": "Data Table - Closed-Won",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Data Table - Closed-Won": {
+            "main": [
+                [
+                    {
+                        "node": "Send Welcome Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Welcome Email": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram - New Client!",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "meta": {
+        "instanceId": "d6d5e33115a32f19742462b1f375a2ffde1364323928b1b4e33055d1a9c6e595"
+    }
+}

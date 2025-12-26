@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LITAL_PRICING_CONFIG } from '@/config/lital-pricing';
+import { ESignaturesApi } from '@/lib/esignatures';
 
-const ESIGNATURES_API_KEY = process.env.ESIGNATURES_API_KEY;
 const ESIGNATURES_TEMPLATE_ID = process.env.ESIGNATURES_TEMPLATE_ID;
 
 export async function POST(req: NextRequest) {
-    if (!ESIGNATURES_API_KEY || !ESIGNATURES_TEMPLATE_ID) {
+    if (!ESIGNATURES_TEMPLATE_ID) {
         return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
@@ -20,9 +20,8 @@ export async function POST(req: NextRequest) {
         // Build Dynamic Scope of Work
         let scopeDescription = `Base Platform: ${LITAL_PRICING_CONFIG.base.label}\n`;
 
-        // Helper to find in any category
         const findFeature = (id: string) => {
-            if (id === LITAL_PRICING_CONFIG.base.id) return null; // Already added base
+            if (id === LITAL_PRICING_CONFIG.base.id) return null;
             const support = LITAL_PRICING_CONFIG.supportOptions.find(o => o.id === id);
             if (support) return { ...support, category: 'Monthly Support' };
             const upgrade = LITAL_PRICING_CONFIG.upgrades.find(u => u.id === id);
@@ -39,55 +38,30 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // Prepare contract request
-        const response = await fetch('https://esignatures.com/api/contracts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${Buffer.from(ESIGNATURES_API_KEY + ':').toString('base64')}`
+        const esign = new ESignaturesApi();
+        const result = await esign.createContract({
+            template_id: ESIGNATURES_TEMPLATE_ID,
+            title: `Service Agreement - ${packageName || 'Custom Plan'}`,
+            metadata: {
+                packageName,
+                price: String(price)
             },
-            body: JSON.stringify({
-                template_id: ESIGNATURES_TEMPLATE_ID,
-                title: `Service Agreement - ${packageName || 'Custom Plan'}`,
-                metadata: {
-                    packageName,
-                    price: String(price)
-                },
-                signers: [
-                    {
-                        name: signerName,
-                        email: signerEmail
-                    }
-                ],
-                custom_fields: [
-                    {
-                        name: 'price',
-                        value: `$${Number(price).toLocaleString()}`
-                    },
-                    {
-                        name: 'scope_of_work',
-                        value: scopeDescription
-                    },
-                    {
-                        name: 'package_name',
-                        value: packageName
-                    }
-                ],
-                // Test mode?
-                test: process.env.NODE_ENV !== 'production' ? 'yes' : 'no'
-            })
+            signers: [{ name: signerName, email: signerEmail }],
+            custom_fields: [
+                { name: 'price', value: `$${Number(price).toLocaleString()}` },
+                { name: 'scope_of_work', value: scopeDescription },
+                { name: 'package_name', value: packageName }
+            ],
+            test: process.env.NODE_ENV !== 'production' ? 'yes' : 'no'
         });
 
-        const result = await response.json();
-
-        if (!response.ok) {
-            console.error('eSignatures API Error:', result);
-            return NextResponse.json({ error: 'Failed to create contract', details: result }, { status: response.status });
+        if (!result.success) {
+            return NextResponse.json({ error: result.error, details: result.details }, { status: 500 });
         }
 
         return NextResponse.json({
             success: true,
-            contractId: result.data?.contract?.id,
+            contractId: result.contractId,
             message: 'Contract sent successfully'
         });
 

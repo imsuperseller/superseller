@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Script from 'next/script';
 
 interface TypeformEmbedProps {
   formId: string;
@@ -13,22 +14,11 @@ export function TypeformEmbed({ formId, height = 600, className = '', style = {}
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load Typeform embed script
-    const script = document.createElement('script');
-    script.src = 'https://embed.typeform.com/next/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
+    // Typeform initialization logic if needed
   }, []);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={className}
       style={{ width: '100%', height: `${height}px`, ...style }}
@@ -41,7 +31,10 @@ export function TypeformEmbed({ formId, height = 600, className = '', style = {}
         data-tf-medium="snippet"
         style={{ width: '100%', height: '100%' }}
       />
-      <script src="https://embed.typeform.com/next/embed.js"></script>
+      <Script
+        src="https://embed.typeform.com/next/embed.js"
+        strategy="lazyOnload"
+      />
     </div>
   );
 }

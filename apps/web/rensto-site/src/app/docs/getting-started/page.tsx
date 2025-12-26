@@ -5,6 +5,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Getting Started - Rensto Business System',
   description: 'Quick start guide for Rensto Business System',
+  alternates: {
+    canonical: '/docs/getting-started',
+  },
 };
 
 const steps = [
@@ -98,7 +101,7 @@ export default function GettingStartedPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Start Guide</h2>
-          
+
           <div className="space-y-8">
             {steps.map((step, index) => (
               <div key={step.title} className="flex items-start space-x-4">
@@ -107,14 +110,14 @@ export default function GettingStartedPage() {
                     <span className="style={{ color: 'var(--rensto-blue)' }} font-semibold">{index + 1}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
                     <step.icon className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
                   </div>
                   <p className="text-gray-600 mb-3">{step.description}</p>
-                  
+
                   <ul className="space-y-2">
                     {step.details.map((detail, detailIndex) => (
                       <li key={detailIndex} className="flex items-start">
@@ -130,7 +133,7 @@ export default function GettingStartedPage() {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <Link
-              href="/portal"
+              href="/contact"
               className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Get Started Now
@@ -142,13 +145,13 @@ export default function GettingStartedPage() {
         {/* Key Features */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Features</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((feature) => (
               <div key={feature.title} className="border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-gray-600 mb-4">{feature.description}</p>
-                
+
                 <ul className="space-y-2">
                   {feature.benefits.map((benefit, index) => (
                     <li key={index} className="flex items-start">
@@ -168,7 +171,7 @@ export default function GettingStartedPage() {
           <p className="text-gray-600 mb-6">
             Now that you&apos;re familiar with the basics, explore these resources to get the most out of Rensto:
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/docs/agents"
@@ -177,7 +180,7 @@ export default function GettingStartedPage() {
               <h3 className="font-semibold text-gray-900 mb-2">Agent Management</h3>
               <p className="text-sm text-gray-600">Learn how to create and manage automation agents</p>
             </Link>
-            
+
             <Link
               href="/docs/analytics"
               className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
@@ -185,7 +188,7 @@ export default function GettingStartedPage() {
               <h3 className="font-semibold text-gray-900 mb-2">Analytics Guide</h3>
               <p className="text-sm text-gray-600">Understand your data and get actionable insights</p>
             </Link>
-            
+
             <Link
               href="/docs/api-reference"
               className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
@@ -203,7 +206,7 @@ export default function GettingStartedPage() {
             <p className="text-gray-600 mb-6">
               Our support team is here to help you get the most out of Rensto.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/docs/support"
@@ -211,7 +214,7 @@ export default function GettingStartedPage() {
               >
                 Contact Support
               </Link>
-              
+
               <Link
                 href="/docs/troubleshooting"
                 className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"

@@ -42,6 +42,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // const { data: session } = useSession();
   const session = { user: { name: 'Admin User', email: 'admin@rensto.com' } };
   const pathname = usePathname();
+  const signOut = () => console.log('Sign out clicked');
 
   if (!session) {
     return (
@@ -58,9 +59,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div className="min-h-screen bg-slate-50">
       {/* Mobile sidebar */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          sidebarOpen ? 'block' : 'hidden'
-        }`}
+        className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'
+          }`}
       >
         <div
           className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm"
@@ -71,8 +71,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 relative">
                 <Image
-                  src="/rensto-logo.png"
-                  alt="Rensto"
+                  src="/rensto-logo.webp"
+                  alt="Rensto - AI-Powered Business Automation"
                   width={32}
                   height={32}
                   className="rounded-lg"
@@ -96,11 +96,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-3 py-2 rounded-lg mb-1 transition-colors ${
-                    isActive
-                      ? 'bg-gradient-to-r from-orange-500 to-blue-600 text-white shadow-sm'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-blue-50'
-                  }`}
+                  className={`flex items-center px-3 py-2 rounded-lg mb-1 transition-colors ${isActive
+                    ? 'bg-gradient-to-r from-orange-500 to-blue-600 text-white shadow-sm'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-blue-50'
+                    }`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <item.icon className="h-5 w-5 mr-3" />
@@ -119,8 +118,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 relative">
                 <Image
-                  src="/rensto-logo.png"
-                  alt="Rensto"
+                  src="/rensto-logo.webp"
+                  alt="Rensto - AI-Powered Business Automation"
                   width={32}
                   height={32}
                   className="rounded-lg"
@@ -138,11 +137,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-3 py-2 rounded-lg mb-1 transition-colors ${
-                    isActive
-                      ? 'bg-gradient-to-r from-orange-500 to-blue-600 text-white shadow-sm'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-blue-50'
-                  }`}
+                  className={`flex items-center px-3 py-2 rounded-lg mb-1 transition-colors ${isActive
+                    ? 'bg-gradient-to-r from-orange-500 to-blue-600 text-white shadow-sm'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-blue-50'
+                    }`}
                 >
                   <item.icon className="h-5 w-5 mr-3" />
                   {item.name}

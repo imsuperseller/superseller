@@ -307,8 +307,8 @@ export default function LoginPage() {
           <div className="flex items-center justify-center space-x-4 mb-8">
             <div className="w-16 h-16 relative">
               <Image
-                src="/rensto-logo.png"
-                alt="Rensto"
+                src="/rensto-logo.webp"
+                alt="Rensto - AI-Powered Business Automation"
                 width={64}
                 height={64}
                 className="rounded-xl shadow-2xl"
@@ -356,13 +356,12 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className={`h-14 border-2 transition-all duration-300 text-base text-slate-900 ${
-                    emailValid === true
+                  className={`h-14 border-2 transition-all duration-300 text-base text-slate-900 ${emailValid === true
                       ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
                       : emailValid === false
-                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                      : 'border-slate-300 focus:border-orange-500 focus:ring-orange-500'
-                  } hover:border-orange-400`}
+                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                        : 'border-slate-300 focus:border-orange-500 focus:ring-orange-500'
+                    } hover:border-orange-400`}
                   placeholder="Enter your email"
                   required
                 />

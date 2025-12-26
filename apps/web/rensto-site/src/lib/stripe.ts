@@ -10,7 +10,7 @@ export class StripeApi {
         throw new Error('STRIPE_SECRET_KEY not configured');
       }
       this.stripe = new Stripe(apiKey, {
-        apiVersion: '2023-10-16'
+        apiVersion: '2023-10-16' as any // Use standard version compatible with current types
       });
     }
     return this.stripe;
@@ -19,7 +19,7 @@ export class StripeApi {
   async createPaymentIntent(amount: number, currency: string = 'usd', metadata: any = {}) {
     try {
       const paymentIntent = await this.getStripe().paymentIntents.create({
-        amount: amount * 100, // Convert to cents
+        amount: Math.round(amount * 100), // Convert to cents
         currency,
         metadata,
         automatic_payment_methods: {
@@ -66,7 +66,7 @@ export class StripeApi {
   async confirmPayment(paymentIntentId: string) {
     try {
       const paymentIntent = await this.getStripe().paymentIntents.retrieve(paymentIntentId);
-      
+
       return {
         success: true,
         status: paymentIntent.status,
@@ -106,23 +106,17 @@ export class StripeApi {
     }
   }
 
-  async createProduct(name: string, description: string, price: number) {
+  async createProduct(name: string, description: string, unitAmount: number, currency: string = 'usd') {
     try {
-      const product = await this.stripe.products.create({
+      const product = await this.getStripe().products.create({
         name,
         description,
-        metadata: {
-          type: 'template'
-        }
       });
 
       const priceObject = await this.getStripe().prices.create({
+        unit_amount: Math.round(unitAmount * 100), // Convert to cents
+        currency,
         product: product.id,
-        unit_amount: price * 100, // Convert to cents
-        currency: 'usd',
-        metadata: {
-          type: 'template'
-        }
       });
 
       return {
@@ -216,7 +210,7 @@ export class StripeApi {
     try {
       const refund = await this.getStripe().refunds.create({
         payment_intent: paymentIntentId,
-        amount: amount ? amount * 100 : undefined, // Convert to cents
+        amount: amount ? Math.round(amount * 100) : undefined, // Convert to cents
         metadata: {
           reason: 'customer_request'
         }

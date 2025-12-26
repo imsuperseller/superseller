@@ -36,7 +36,7 @@ export default function CancelPage({ searchParams }: CancelPageProps) {
 
         <div className="flex space-x-4">
           <Link
-            href="/marketplace"
+            href="/subscriptions"
             className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-blue-700 transition-colors"
           >
             Browse Marketplace

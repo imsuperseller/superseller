@@ -27,7 +27,7 @@ export class AirtableApi {
   }) {
     try {
       const { category, search, sort, page = 1, limit = 12 } = params;
-      
+
       let filterByFormula = '';
       if (category) {
         filterByFormula += `AND({Category} = "${category}")`;
@@ -52,6 +52,8 @@ export class AirtableApi {
         description: record.fields.Description,
         category: record.fields.Category,
         price: record.fields.Price,
+        installPrice: record.fields.InstallPrice || 797,
+        customPrice: record.fields.CustomPrice || 1497,
         rating: record.fields.Rating || 0,
         downloads: record.fields.Downloads || 0,
         features: record.fields.Features || [],
@@ -59,7 +61,9 @@ export class AirtableApi {
         popular: record.fields.Popular || false,
         image: record.fields.Image || null,
         version: record.fields.Version || '1.0.0',
-        fileSize: record.fields.FileSize || 0
+        fileSize: record.fields.FileSize || 0,
+        isInternalOnly: record.fields.IsInternalOnly === true,
+        readinessStatus: record.fields.ReadinessStatus || 'Draft'
       }));
 
     } catch (error) {
@@ -81,6 +85,8 @@ export class AirtableApi {
         description: record.fields.Description,
         category: record.fields.Category,
         price: record.fields.Price,
+        installPrice: record.fields.InstallPrice || 797,
+        customPrice: record.fields.CustomPrice || 1497,
         rating: record.fields.Rating || 0,
         downloads: record.fields.Downloads || 0,
         features: record.fields.Features || [],
@@ -89,6 +95,8 @@ export class AirtableApi {
         image: record.fields.Image || null,
         version: record.fields.Version || '1.0.0',
         fileSize: record.fields.FileSize || 0,
+        isInternalOnly: record.fields.IsInternalOnly === true,
+        readinessStatus: record.fields.ReadinessStatus || 'Draft',
         content: record.fields.Content || null
       };
 
@@ -170,6 +178,43 @@ export class AirtableApi {
     } catch (error) {
       console.error('Airtable getUserDownloads error:', error);
       throw new Error('Failed to fetch user downloads');
+    }
+  }
+
+  async checkCustomerStatus(email: string) {
+    try {
+      const response = await axios.get(`${this.baseUrl}/tblCustomers`, {
+        headers: this.getHeaders(),
+        params: {
+          filterByFormula: `{Email} = "${email}"`
+        }
+      });
+      return response.data.records.length > 0;
+    } catch (error) {
+      console.error('Airtable checkCustomerStatus error:', error);
+      return false;
+    }
+  }
+
+  async saveConsultationBooking(bookingData: any) {
+    try {
+      const response = await axios.post(`${this.baseUrl}/tblBookings`, {
+        fields: {
+          'Service': bookingData.service,
+          'DateTime': bookingData.datetime,
+          'Email': bookingData.contact.email,
+          'Name': bookingData.contact.name,
+          'Phone': bookingData.contact.phone || '',
+          'TidyCal ID': bookingData.bookingId,
+          'Status': bookingData.status || 'Confirmed'
+        }
+      }, {
+        headers: this.getHeaders()
+      });
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('Airtable saveConsultationBooking error:', error);
+      return { success: false, error: 'Failed to save booking' };
     }
   }
 

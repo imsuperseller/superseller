@@ -115,6 +115,21 @@ export async function POST(request: NextRequest) {
         webhookMetadata = { ...webhookMetadata, product: cKey, productId, tier, price: cPrice };
         break;
 
+      case 'marketplace-custom':
+        const mcPrices: Record<string, number> = { enterprise: 1497, premium: 2497 };
+        const mcPrice = mcPrices[tier || 'enterprise'];
+        const mcPriceObj = await getStripe().prices.create({
+          unit_amount: mcPrice * 100,
+          currency: 'usd',
+          product_data: {
+            name: `Custom Automation Setup & Discovery`
+          },
+        });
+        priceId = mcPriceObj.id;
+        successUrl = `https://www.rensto.com/success?type=marketplace-custom&product=${productId}`;
+        webhookMetadata = { ...webhookMetadata, productId, tier, price: mcPrice };
+        break;
+
       case 'custom-config':
         // Flow 6: Dynamic Configurator (Lital Hybrid)
         if (!Array.isArray(featureIds)) {

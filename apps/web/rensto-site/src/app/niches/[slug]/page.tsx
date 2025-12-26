@@ -197,10 +197,11 @@ export default function NicheTemplatePage() {
                         System Configurator
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
-                        Build Your {niche.title}
+                        Build Your AI-Powered {niche.title}
                     </h1>
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
-                        Select the modules you need. Start with the Core System and add capabilities as you grow.
+                        Deploy an industry-specific AI Automation system designed for {niche.title}.
+                        Select your core modules and scale your operations with intelligent workflows.
                     </p>
 
                     {/* @ts-ignore - dynamic data access */}
@@ -215,6 +216,7 @@ export default function NicheTemplatePage() {
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
+                                loading="lazy"
                                 className="absolute inset-0 w-full h-full"
                             />
                         </div>

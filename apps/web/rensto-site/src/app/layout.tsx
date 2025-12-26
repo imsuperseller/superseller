@@ -3,16 +3,23 @@ import { Outfit } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import { RouteAwareLayout } from '@/components/RouteAwareLayout';
+import { StickyMobileCTA } from '@/components/StickyMobileCTA';
+import { CTAPopup } from '@/components/CTAPopup';
+import { SupportWidget } from '@/components/SupportWidget';
+import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { GTMProvider } from '@/components/analytics/GTMProvider';
+import { Schema, organizationSchema, websiteSchema, localBusinessSchema } from '@/components/seo/Schema';
 
-const outfit = Outfit({ 
+const outfit = Outfit({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-outfit',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Rensto - Business Automation Platform',
-  description: 'Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.',
+  title: 'Rensto | AI-Powered Business Automation Platform',
+  description: 'Scale your business with autonomous AI agents and intelligent workflow automation. Transform operations with Rensto.',
   keywords: ['business automation', 'AI agents', 'workflow automation', 'digital transformation'],
   authors: [{ name: 'Rensto Team' }],
   creator: 'Rensto',
@@ -32,13 +39,13 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Rensto - Business Automation Platform',
-    description: 'Transform your business with AI-powered automation agents.',
+    title: 'Rensto | AI-Powered Business Automation Platform',
+    description: 'Scale your business with autonomous AI agents and intelligent workflow automation.',
     url: 'https://rensto.com',
     siteName: 'Rensto',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'Rensto Business Automation Platform',
@@ -49,9 +56,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rensto - Business Automation Platform',
-    description: 'Transform your business with AI-powered automation agents.',
-    images: ['/og-image.jpg'],
+    title: 'Rensto | AI-Powered Business Automation Platform',
+    description: 'Scale your business with autonomous AI agents and intelligent workflow automation.',
+    images: ['/opengraph-image.png'],
     creator: '@rensto',
   },
   robots: {
@@ -92,11 +99,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={outfit.variable}>
       <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-        <Providers>
-          <RouteAwareLayout>
-            {children}
-          </RouteAwareLayout>
-        </Providers>
+        <GTMProvider>
+          <Providers>
+            <RouteAwareLayout>
+              <Schema type="Organization" data={organizationSchema} />
+              <Schema type="WebSite" data={websiteSchema} />
+              <Schema type="LocalBusiness" data={localBusinessSchema} />
+              {children}
+              <StickyMobileCTA />
+              <CTAPopup />
+              <SupportWidget mode="floating" />
+              <WhatsAppButton />
+            </RouteAwareLayout>
+          </Providers>
+        </GTMProvider>
       </body>
     </html>
   );

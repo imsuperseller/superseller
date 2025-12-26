@@ -23,17 +23,18 @@ import {
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Mock session for now - remove authentication requirement
   const session = { user: { name: 'Admin User', email: 'admin@rensto.com' } };
   const status = 'authenticated';
+  const signOut = ({ callbackUrl }: { callbackUrl: string }) => console.log('Sign out clicked', callbackUrl);
 
   // Mock data for demonstration
   const stats = {
-    revenue: { current: 45200, previous: 38900, change: '+16.2%' },
-    projects: { active: 12, completed: 8, pending: 3 },
-    clients: { total: 24, new: 3, active: 21 },
-    invoices: { pending: 5, overdue: 2, total: 18700 },
+    revenue: { current: 4520, previous: 3890, change: '+16.2%' },
+    projects: { active: 3, completed: 2, pending: 1 },
+    clients: { total: 5, new: 1, active: 4 },
+    invoices: { pending: 2, overdue: 0, total: 1870 },
   };
 
   const recentActivity = [
@@ -98,8 +99,8 @@ export default function AdminDashboard() {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               <Image
-                src="/rensto-logo.png"
-                alt="Rensto"
+                src="/rensto-logo.webp"
+                alt="Rensto - AI-Powered Business Automation"
                 width={32}
                 height={32}
                 className="rounded-lg"
@@ -155,11 +156,10 @@ export default function AdminDashboard() {
                 <li key={item.id}>
                   <button
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      activeTab === item.id
-                        ? 'bg-orange-50 text-orange-600 border border-orange-200'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === item.id
+                      ? 'bg-orange-50 text-orange-600 border border-orange-200'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>
@@ -302,11 +302,10 @@ export default function AdminDashboard() {
                     className="flex items-center space-x-4 p-3 rounded-lg hover:bg-slate-50"
                   >
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.status === 'success'
-                          ? 'bg-green-100'
-                          : 'bg-orange-100'
-                      }`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${activity.status === 'success'
+                        ? 'bg-green-100'
+                        : 'bg-orange-100'
+                        }`}
                     >
                       {activity.status === 'success' ? (
                         <CheckCircle className="w-4 h-4 text-green-600" />

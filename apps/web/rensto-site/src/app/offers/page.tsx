@@ -5,8 +5,11 @@ import { formatCurrency } from '@/lib/utils';
 import { Check, Star, Zap, Shield, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Offers & Pricing',
-  description: 'Choose the right automation solution for your business. From audits to ongoing care plans.',
+  title: 'Special Automation Offers & Audit Plans | Rensto',
+  description: 'Exclusive deals on AI automation systems, process audits, and limited-time consulting offers for scaling businesses.',
+  alternates: {
+    canonical: '/offers',
+  },
 };
 
 const products = [
@@ -121,8 +124,51 @@ const carePlans = [
 ];
 
 export default function OffersPage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is included in the Rensto Automation Audit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Rensto Automation Audit includes a comprehensive process analysis, identification of specific automation opportunities, a detailed implementation roadmap, and direct ROI projections for your business."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer a satisfaction guarantee for your services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, for our Automation Audit, we guarantee you'll identify $25,000+ in annual savings within 2 hours, or we will provide a 100% refund. Our sprint planning also includes an ROI guarantee."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the ongoing Care Plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our Care Plans (Starter, Growth, and Scale) provide monthly support hours, system monitoring, performance optimization, and dedicated engineering time to keep your automations running perfectly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I know which automation plan is right for my business?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We recommend starting with our Automation Audit to identify high-impact opportunities, or scheduling a call with our team to discuss your specific business needs and scaling goals."
+        }
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Hero Section */}
       <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
         <div className="container text-center">

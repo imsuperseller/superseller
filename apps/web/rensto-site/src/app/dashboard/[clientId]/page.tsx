@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -16,8 +16,10 @@ import {
     ExternalLink,
     Loader2,
     ChevronRight,
-    AlertCircle
+    AlertCircle,
+    Bot
 } from 'lucide-react';
+import { Button } from '@/components/ui/button-enhanced';
 
 // Types
 interface Deliverable {
@@ -49,49 +51,92 @@ interface ProjectData {
         tokensLimit: number;
         lastReset: string;
     };
+    id?: string;
 }
-
-// Mock data for demo purposes
-const MOCK_PROJECT: ProjectData = {
-    clientName: 'Demo Client',
-    packageName: 'Professional',
-    startDate: '2024-01-15',
-    status: 'build',
-    progress: 45,
-    deliverables: [
-        { id: '1', name: 'Discovery & Requirements', status: 'completed' },
-        { id: '2', name: 'CRM Integration Setup', status: 'completed' },
-        { id: '3', name: 'Lead Qualification Bot', status: 'in_progress' },
-        { id: '4', name: 'Email Automation Flows', status: 'pending', dueDate: '2024-02-01' },
-        { id: '5', name: 'Dashboard & Analytics', status: 'pending', dueDate: '2024-02-15' },
-        { id: '6', name: 'Training & Handoff', status: 'pending', dueDate: '2024-02-20' },
-    ],
-    invoices: [
-        { id: 'inv-001', amount: 4997, status: 'paid', date: '2024-01-15', description: 'Professional Package - Initial Payment' },
-        { id: 'inv-002', amount: 147, status: 'pending', date: '2024-02-15', description: 'Monthly Maintenance - February' },
-    ],
-    llmUsage: {
-        tokensUsed: 125000,
-        tokensLimit: 500000,
-        lastReset: '2024-02-01',
-    },
-};
 
 export default function ClientDashboard() {
     const params = useParams();
     const clientId = params.clientId as string;
     const [loading, setLoading] = useState(true);
     const [project, setProject] = useState<ProjectData | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'deliverables' | 'invoices' | 'usage'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'deliverables' | 'invoices' | 'usage' | 'agent'>('overview');
+    const [error, setError] = useState<string | null>(null);
+
+    // Mock deliverables and invoices for now (until we persist these in DB)
+    // Eventually these should come from the Client object deliverables array
+    const DEFAULT_DELIVERABLES: Deliverable[] = [
+        { id: '1', name: 'Discovery & Requirements', status: 'completed' },
+        { id: '2', name: 'CRM Integration Setup', status: 'in_progress' },
+        { id: '3', name: 'Lead Qualification Bot', status: 'pending' },
+        { id: '4', name: 'Email Automation Flows', status: 'pending' },
+        { id: '5', name: 'Dashboard & Analytics', status: 'pending' },
+        { id: '6', name: 'Training & Handoff', status: 'pending' },
+    ];
+
+    // Fallback ID for invoices if none exist
+    const generateInvoiceId = () => Math.random().toString(36).substring(7);
+
+    const fetchClientData = useCallback(async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/clients?clientId=${clientId}`);
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    setError('Client not found');
+                } else {
+                    setError('Failed to load project data');
+                }
+                setProject(null);
+                return;
+            }
+
+            const data = await response.json();
+            if (data.success && data.client) {
+                const client = data.client;
+
+                // Map API data to Dashboard ProjectData structure
+                // Use data from DB if available, otherwise defaults
+                const mappedProject: ProjectData = {
+                    id: client.id,
+                    clientName: client.name || 'Valued Client',
+                    packageName: client.selectedTier ? `${client.selectedTier.charAt(0).toUpperCase() + client.selectedTier.slice(1)} Package` : 'Custom Solution',
+                    startDate: client.createdAt ? new Date(client.createdAt._seconds * 1000).toLocaleDateString() : new Date().toLocaleDateString(),
+                    status: client.contractStatus === 'signed' ? 'build' : 'discovery',
+                    progress: client.qualificationScore ? Math.min(client.qualificationScore, 100) : 15, // Use score as proxy for progress for now
+                    deliverables: client.deliverables || DEFAULT_DELIVERABLES,
+                    invoices: client.amountPaid ? [
+                        {
+                            id: generateInvoiceId(),
+                            amount: client.amountPaid,
+                            status: 'paid',
+                            date: client.createdAt ? new Date(client.createdAt._seconds * 1000).toLocaleDateString() : new Date().toLocaleDateString(),
+                            description: 'Initial Payment'
+                        }
+                    ] : [],
+                    llmUsage: {
+                        tokensUsed: 0,
+                        tokensLimit: 500000,
+                        lastReset: new Date().toLocaleDateString(),
+                    },
+                };
+
+                setProject(mappedProject);
+                setError(null);
+            }
+        } catch (err) {
+            console.error('Error fetching client:', err);
+            setError('Connection error. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    }, [clientId]);
 
     useEffect(() => {
-        // In real implementation, fetch from API
-        // For now, use mock data
-        setTimeout(() => {
-            setProject(MOCK_PROJECT);
-            setLoading(false);
-        }, 500);
-    }, [clientId]);
+        if (clientId) {
+            fetchClientData();
+        }
+    }, [clientId, fetchClientData]);
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -124,25 +169,34 @@ export default function ClientDashboard() {
                 className="min-h-screen flex items-center justify-center"
                 style={{ backgroundColor: 'var(--rensto-bg-primary)' }}
             >
-                <Loader2 className="w-12 h-12 animate-spin" style={{ color: 'var(--rensto-cyan)' }} />
+                <div>
+                    <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" style={{ color: 'var(--rensto-cyan)' }} />
+                    <p style={{ color: 'var(--rensto-text-muted)' }}>Loading Project Data...</p>
+                </div>
             </div>
         );
     }
 
-    if (!project) {
+    if (error || !project) {
         return (
             <div
                 className="min-h-screen flex items-center justify-center"
                 style={{ backgroundColor: 'var(--rensto-bg-primary)' }}
             >
-                <div className="text-center">
+                <div className="text-center p-8 max-w-md rounded-2xl border border-white/10" style={{ backgroundColor: 'var(--rensto-bg-card)' }}>
                     <AlertCircle className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--rensto-primary)' }} />
                     <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
-                        Project Not Found
+                        {error || 'Project Not Found'}
                     </h1>
-                    <p style={{ color: 'var(--rensto-text-secondary)' }}>
-                        Please check your access link or contact support.
+                    <p style={{ color: 'var(--rensto-text-secondary)' }} className="mb-6">
+                        We couldn't load the project data for ID: <span className="font-mono text-sm bg-white/10 px-2 py-1 rounded">{clientId}</span>
                     </p>
+                    <Button
+                        onClick={() => window.location.reload()}
+                        variant="renstoSecondary"
+                    >
+                        Try Again
+                    </Button>
                 </div>
             </div>
         );
@@ -186,16 +240,17 @@ export default function ClientDashboard() {
                             border: '1px solid var(--rensto-cyan)'
                         }}
                     >
-                        {project.packageName} Package
+                        {project.packageName}
                     </div>
                 </div>
             </header>
 
             <div className="max-w-6xl mx-auto px-8 py-8">
                 {/* Tabs */}
-                <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-none">
                     {[
                         { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+                        { id: 'agent', label: 'Agent Hub', icon: Bot },
                         { id: 'deliverables', label: 'Deliverables', icon: Package },
                         { id: 'invoices', label: 'Invoices', icon: CreditCard },
                         { id: 'usage', label: 'LLM Usage', icon: TrendingUp },
@@ -346,6 +401,7 @@ export default function ClientDashboard() {
                             <div className="grid md:grid-cols-2 gap-3">
                                 <a
                                     href="https://tidycal.com/rensto/custom-support"
+                                    target="_blank"
                                     className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80"
                                     style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
                                 >
@@ -368,6 +424,29 @@ export default function ClientDashboard() {
                                 </a>
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {/* Agent / Chat Hub Tab */}
+                {activeTab === 'agent' && (
+                    <div className="rounded-xl p-6 min-h-[500px] flex flex-col items-center justify-center text-center"
+                        style={{ backgroundColor: 'var(--rensto-bg-card)' }}>
+                        <div className="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center mb-6">
+                            <Bot className="w-10 h-10" style={{ color: 'var(--rensto-cyan)' }} />
+                        </div>
+                        <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                            Chat Hub (Beta)
+                        </h2>
+                        <p className="max-w-md text-lg mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
+                            Test your deployed agents directly in the dashboard. This feature connects to your active n8n workflows.
+                        </p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 mb-6">
+                            <Clock className="w-4 h-4" />
+                            <span>Awaiting Workflow Connection</span>
+                        </div>
+                        <p className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
+                            Your configuration is currently compiling. Check back in 10-15 minutes or schedule a call.
+                        </p>
                     </div>
                 )}
 
@@ -441,53 +520,59 @@ export default function ClientDashboard() {
                         className="rounded-xl overflow-hidden"
                         style={{ backgroundColor: 'var(--rensto-bg-card)' }}
                     >
-                        {project.invoices.map((invoice) => (
-                            <div
-                                key={invoice.id}
-                                className="flex items-center justify-between p-5 border-b last:border-b-0"
-                                style={{ borderColor: 'var(--rensto-bg-secondary)' }}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div
-                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
-                                        style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
-                                    >
-                                        <FileText className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                        {project.invoices.length > 0 ? (
+                            project.invoices.map((invoice) => (
+                                <div
+                                    key={invoice.id}
+                                    className="flex items-center justify-between p-5 border-b last:border-b-0"
+                                    style={{ borderColor: 'var(--rensto-bg-secondary)' }}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                            style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
+                                        >
+                                            <FileText className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                        </div>
+                                        <div>
+                                            <p
+                                                className="font-medium"
+                                                style={{ color: 'var(--rensto-text-primary)' }}
+                                            >
+                                                {invoice.description}
+                                            </p>
+                                            <p
+                                                className="text-sm"
+                                                style={{ color: 'var(--rensto-text-muted)' }}
+                                            >
+                                                {invoice.date}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
+                                    <div className="text-right">
                                         <p
-                                            className="font-medium"
+                                            className="font-bold"
                                             style={{ color: 'var(--rensto-text-primary)' }}
                                         >
-                                            {invoice.description}
+                                            {formatCurrency(invoice.amount)}
                                         </p>
-                                        <p
-                                            className="text-sm"
-                                            style={{ color: 'var(--rensto-text-muted)' }}
+                                        <span
+                                            className="px-2 py-0.5 rounded text-xs font-medium capitalize"
+                                            style={{
+                                                backgroundColor: `${getStatusColor(invoice.status)}20`,
+                                                color: getStatusColor(invoice.status)
+                                            }}
                                         >
-                                            {invoice.date}
-                                        </p>
+                                            {invoice.status}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p
-                                        className="font-bold"
-                                        style={{ color: 'var(--rensto-text-primary)' }}
-                                    >
-                                        {formatCurrency(invoice.amount)}
-                                    </p>
-                                    <span
-                                        className="px-2 py-0.5 rounded text-xs font-medium capitalize"
-                                        style={{
-                                            backgroundColor: `${getStatusColor(invoice.status)}20`,
-                                            color: getStatusColor(invoice.status)
-                                        }}
-                                    >
-                                        {invoice.status}
-                                    </span>
-                                </div>
+                            ))
+                        ) : (
+                            <div className="p-8 text-center text-gray-500">
+                                No invoices found.
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
 

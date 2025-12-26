@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { env } from '@/lib/env';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'How Rensto collects, uses, and protects your personal information.',
+  title: 'Privacy Policy | Rensto Data Protection',
+  description: 'How Rensto collects, uses, and protects your personal information. We are committed to your data privacy and security.',
+  alternates: {
+    canonical: '/legal/privacy',
+  },
 };
 
 export default function PrivacyPolicyPage() {
@@ -25,15 +28,15 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
               <p className="text-muted mb-4">
-                Rensto LLC (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. 
-                This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit 
+                Rensto LLC (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
+                This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit
                 our website or use our services.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">2. Information We Collect</h2>
-              
+
               <h3 className="text-xl font-semibold mb-3">Personal Information</h3>
               <p className="text-muted mb-4">
                 We may collect personal information that you voluntarily provide to us, including:
@@ -89,8 +92,8 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">5. Data Security</h2>
               <p className="text-muted mb-4">
-                We implement appropriate security measures to protect your personal information against unauthorized access, 
-                alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure, 
+                We implement appropriate security measures to protect your personal information against unauthorized access,
+                alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure,
                 and we cannot guarantee absolute security.
               </p>
             </section>
@@ -112,7 +115,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">7. Cookies and Tracking</h2>
               <p className="text-muted mb-4">
-                We use cookies and similar technologies to enhance your experience on our website. You can control cookie 
+                We use cookies and similar technologies to enhance your experience on our website. You can control cookie
                 settings through your browser preferences. However, disabling cookies may affect website functionality.
               </p>
             </section>
@@ -120,7 +123,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">8. Third-Party Links</h2>
               <p className="text-muted mb-4">
-                Our website may contain links to third-party websites. We are not responsible for the privacy practices 
+                Our website may contain links to third-party websites. We are not responsible for the privacy practices
                 of these external sites. We encourage you to review their privacy policies.
               </p>
             </section>
@@ -128,7 +131,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">9. Children&apos;s Privacy</h2>
               <p className="text-muted mb-4">
-                Our services are not intended for children under 13 years of age. We do not knowingly collect personal 
+                Our services are not intended for children under 13 years of age. We do not knowingly collect personal
                 information from children under 13.
               </p>
             </section>
@@ -136,7 +139,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">10. Changes to This Policy</h2>
               <p className="text-muted mb-4">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the 
+                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the
                 new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
               </p>
             </section>

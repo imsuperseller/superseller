@@ -1,8 +1,6 @@
-version: '3.3'
-
 services:
   waha:
-    container_name: waha-noweb
+    container_name: waha
     image: devlikeapro/waha-plus:latest
     restart: always
     ports:
@@ -32,18 +30,18 @@ services:
       WHATSAPP_SWAGGER_PASSWORD: "admin123"
       
       # Performance
-      NODE_OPTIONS: "--max-old-space-size=16384"
+      NODE_OPTIONS: "--max-old-space-size=4096"
       PUPPETEER_SKIP_DOWNLOAD: "True"
       
     volumes:
       # Sessions persist here - WhatsApp login stays active
-      - ./sessions:/app/sessions
+      - ./sessions:/app/.sessions
       # Data storage
       - ./data:/app/data
-      # Preserve auth state from previous setup (if exists)
-      - waha_auth_state:/app/auth-state
+    networks:
+      - n8n_n8n-network
 
-volumes:
-  waha_auth_state:
+networks:
+  n8n_n8n-network:
     external: true
 

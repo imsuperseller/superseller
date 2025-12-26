@@ -31,6 +31,7 @@ To become the leading universal automation platform that enables any business to
 - **Marketplace**: n8n templates & installation services
 - **Custom Solutions**: Voice AI consultation & tailored automation
 - **Subscriptions**: Enhanced hot leads service with CRM integration
+- **WhatsApp Agent**: Modular 24/7 operating system (Base + Add-ons)
 - **Ready Solutions**: Niche-specific automation packages
 
 **Secondary**: Usage-based billing for high-volume customers
@@ -82,7 +83,9 @@ To become the leading universal automation platform that enables any business to
 #### **Q1 2025: Foundation**
 - ✅ **Lead Machine** (Completed)
 - ✅ **n8n Workflow Integration** (Completed)
+- ✅ **n8n Workflow Integration** (Completed)
 - ✅ **Airtable Integration** (Completed)
+- 🔄 **WhatsApp Agent Launch** (In Progress)
 - 🔄 **Customer Portal** (In Progress)
 - 🔄 **Admin Dashboard** (In Progress)
 
@@ -151,11 +154,11 @@ To become the leading universal automation platform that enables any business to
 
 ### **📊 REVENUE BREAKDOWN**
 
-#### **Subscription Revenue**
-- **Marketplace**: 40% of customers (template downloads & installation)
-- **Custom Solutions**: 25% of customers (voice AI consultation)
-- **Subscriptions**: 20% of customers (hot leads service)
-- **Ready Solutions**: 15% of customers (niche-specific packages)
+- **Marketplace**: 35% of customers (template downloads & installation)
+- **WhatsApp Agent**: 25% of customers (recurring + setup fees)
+- **Custom Solutions**: 20% of customers (voice AI consultation)
+- **Subscriptions**: 10% of customers (hot leads service)
+- **Ready Solutions**: 10% of customers (niche-specific packages)
 
 #### **Usage Revenue**
 - **API Calls**: $10,000/month by Q4

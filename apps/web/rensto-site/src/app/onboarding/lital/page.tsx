@@ -17,8 +17,8 @@ export default function LitalOnboardingPage() {
                     <Link href="/" className="flex items-center gap-3 group">
                         <div className="relative w-10 h-10 transition-transform group-hover:scale-105">
                             <Image
-                                src="/rensto-logo.png"
-                                alt="Rensto Logo"
+                                src="/rensto-logo.webp"
+                                alt="Rensto - AI-Powered Business Automation"
                                 width={40}
                                 height={40}
                                 className="object-contain"

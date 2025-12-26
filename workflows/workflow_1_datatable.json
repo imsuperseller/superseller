@@ -1,0 +1,869 @@
+{
+    "name": "Marketing Agency #1: Inbound Lead Intelligence (Data Table)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "lead-intake",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                -2832,
+                1920
+            ],
+            "id": "30a70a12-066a-45ee-8e29-53899d1fc307",
+            "name": "Webhook - Lead Intake",
+            "webhookId": "08b6c04a-cc98-49ca-ae27-9fc4bf520fe9",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "f1",
+                            "name": "fullName",
+                            "value": "={{ $json.body.fullName || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f2",
+                            "name": "email",
+                            "value": "={{ $json.body.email || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f3",
+                            "name": "phone",
+                            "value": "={{ $json.body.phone || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f4",
+                            "name": "message",
+                            "value": "={{ $json.body.message || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f5",
+                            "name": "company",
+                            "value": "={{ $json.body.company || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f6",
+                            "name": "website",
+                            "value": "={{ $json.body.website || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f7",
+                            "name": "source",
+                            "value": "={{ $json.body.source || 'web' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f8",
+                            "name": "channel",
+                            "value": "web",
+                            "type": "string"
+                        },
+                        {
+                            "id": "f9",
+                            "name": "consent",
+                            "value": "={{ $json.body.consent === true }}",
+                            "type": "boolean"
+                        },
+                        {
+                            "id": "f10",
+                            "name": "receivedAt",
+                            "value": "={{ $now }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -2608,
+                1920
+            ],
+            "id": "38eb0c1c-5fab-49bf-8de7-f6f9b36c5496",
+            "name": "Set - Normalize Fields"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "c1",
+                            "leftValue": "={{ $json.email }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notEmpty"
+                            }
+                        },
+                        {
+                            "id": "c2",
+                            "leftValue": "={{ $json.phone }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notEmpty"
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                -2384,
+                1920
+            ],
+            "id": "5f2176b5-138a-48e8-9e60-bff9b5b9ceab",
+            "name": "IF - Validate Gates"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={ \"ok\": false, \"error\": \"Missing email or phone\" }",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.5,
+            "position": [
+                -2160,
+                2016
+            ],
+            "id": "cc45a495-16bc-468e-ad6c-416ffcdae13f",
+            "name": "Respond - Reject"
+        },
+        {
+            "parameters": {
+                "operation": "getRows",
+                "tableId": {
+                    "__rl": true,
+                    "value": "Leads",
+                    "mode": "name"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "column": "Email",
+                            "operator": "equals",
+                            "value": "={{ $json.email.toLowerCase() }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "returnAll": false,
+                    "limit": 1
+                }
+            },
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                -2160,
+                1824
+            ],
+            "id": "e4884e94-a245-41b1-9c1f-45cb9e933ae5",
+            "name": "Data Table - Find Existing",
+            "alwaysOutputData": true
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "exists-1",
+                            "leftValue": "={{ $json.id }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "exists"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                -1936,
+                1824
+            ],
+            "id": "7de8eb88-a42c-4a06-aa08-396437c67b90",
+            "name": "IF - Exists?"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.firecrawl.dev/v1/scrape",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "fireCrawlApi",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={ \"url\": \"{{ $json.website }}\", \"formats\": [\"markdown\"] }",
+                "options": {
+                    "response": {
+                        "response": {
+                            "neverError": true
+                        }
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -1488,
+                1824
+            ],
+            "id": "33ffc52e-7919-4492-a021-e29dbad958ff",
+            "name": "Firecrawl - Audit Site",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "V3yoK02N3hOAR93E",
+                    "name": "waha"
+                },
+                "firecrawlApi": {
+                    "id": "T8cx1yp47asH1gyX",
+                    "name": "Firecrawl account 2"
+                },
+                "fireCrawlApi": {
+                    "id": "C7jG0WqI4lxcUkhL",
+                    "name": "FireCrawl account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "value": "chatgpt-4o-latest",
+                    "mode": "list"
+                },
+                "responses": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "You are a senior marketing agency strategist. Analyze leads and generate personalized responses. Be professional but warm. Always include a clear next step. The replyEmailBody should be 2-3 sentences. The replyWhatsAppBody should be 1-2 sentences (shorter for mobile). The nextQuestion should probe their specific needs/timeline/budget."
+                        },
+                        {
+                            "content": "==Lead Data:\nName: {{ $json['Full Name'] || $json.fullName }}\nEmail: {{ $json.Email || $json.email }}\nMessage: {{ $json.Message || $json.message }}\nCompany: {{ $json.Company || $json.company }}\nWebsite Audit: {{ $json.data?.markdown ?? 'No data' }}"
+                        }
+                    ]
+                },
+                "builtInTools": {},
+                "options": {
+                    "textFormat": {
+                        "textOptions": {
+                            "type": "json_schema",
+                            "schema": "{\"type\":\"object\",\"properties\":{\"intent\":{\"type\":\"string\",\"enum\":[\"quote\",\"question\",\"partnership\",\"support\",\"other\"]},\"urgency\":{\"type\":\"string\",\"enum\":[\"low\",\"medium\",\"high\"]},\"summary\":{\"type\":\"string\"},\"replyEmailSubject\":{\"type\":\"string\"},\"replyEmailBody\":{\"type\":\"string\"},\"replyWhatsAppBody\":{\"type\":\"string\"},\"nextQuestion\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"intent\",\"urgency\",\"summary\",\"replyEmailSubject\",\"replyEmailBody\",\"replyWhatsAppBody\",\"nextQuestion\"]}",
+                            "description": "Analyze inbound lead, classify intent/urgency, generate email and WhatsApp reply drafts with booking CTA.",
+                            "strict": true
+                        }
+                    }
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "typeVersion": 2.1,
+            "position": [
+                -1264,
+                1824
+            ],
+            "id": "d9b1e14f-c533-49e7-a99b-30c03143ac0f",
+            "name": "OpenAI - Analysis",
+            "credentials": {
+                "openAiApi": {
+                    "id": "0sXFXYfqiDEKuDcN",
+                    "name": "service@rensto.com"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "o1",
+                            "name": "intent",
+                            "value": "={{ $json.output[0].content[0].text.intent }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o2",
+                            "name": "urgency",
+                            "value": "={{ $json.output[0].content[0].text.urgency }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o3",
+                            "name": "summary",
+                            "value": "={{ $json.output[0].content[0].text.summary }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o4",
+                            "name": "replyEmailSubject",
+                            "value": "={{ $json.output[0].content[0].text.replyEmailSubject }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o5",
+                            "name": "replyEmailBody",
+                            "value": "={{ $json.output[0].content[0].text.replyEmailBody }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o6",
+                            "name": "replyWhatsAppBody",
+                            "value": "={{ $json.output[0].content[0].text.replyWhatsAppBody }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o7",
+                            "name": "bookingLink",
+                            "value": "https://tidycal.com/rensto/discovery",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o8",
+                            "name": "updatedAt",
+                            "value": "={{ $now }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "o9",
+                            "name": "enrichmentData",
+                            "value": "={{ JSON.stringify({intent: $json.output[0].content[0].text.intent, urgency: $json.output[0].content[0].text.urgency, summary: $json.output[0].content[0].text.summary}) }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -912,
+                1824
+            ],
+            "id": "691a5213-14ab-43d6-a487-672658b1022a",
+            "name": "Set - Normalize Output"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 3,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "has-id",
+                            "leftValue": "={{ $json.isExisting }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "true",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "looseTypeValidation": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                -688,
+                1824
+            ],
+            "id": "792d57ee-1268-4757-a223-5e3e7f637d72",
+            "name": "IF - Update vs Create"
+        },
+        {
+            "parameters": {
+                "operation": "updateRows",
+                "tableId": {
+                    "__rl": true,
+                    "value": "Leads",
+                    "mode": "name"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "column": "id",
+                            "operator": "equals",
+                            "value": "={{ $json.existingRecordId }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "Enriching",
+                        "Intent": "={{ $json.intent }}",
+                        "Urgency": "={{ $json.urgency }}",
+                        "EnrichmentDataJSON": "={{ $json.enrichmentData }}",
+                        "ReplyEmailSubject": "={{ $json.replyEmailSubject }}",
+                        "ReplyEmailBody": "={{ $json.replyEmailBody }}",
+                        "ReplyWhatsApp": "={{ $json.replyWhatsAppBody }}",
+                        "BookingLink": "={{ $json.bookingLink }}",
+                        "UpdatedAt": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}"
+                    }
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                -464,
+                1728
+            ],
+            "id": "e090f58d-d802-4435-b376-c41fd87775b1",
+            "name": "Data Table - Update"
+        },
+        {
+            "parameters": {
+                "operation": "insertRow",
+                "tableId": {
+                    "__rl": true,
+                    "value": "Leads",
+                    "mode": "name"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "FullName": "={{ $json['Full Name'] || $json.fullName }}",
+                        "Email": "={{ $json.Email || $json.email }}",
+                        "PhoneNumber": "={{ $json['Phone Number'] || $json.phone }}",
+                        "Message": "={{ $json.Message || $json.message }}",
+                        "Company": "={{ $json.Company || $json.company }}",
+                        "Website": "={{ $json.Website || $json.website }}",
+                        "Status": "New",
+                        "Intent": "={{ $json.intent }}",
+                        "Urgency": "={{ $json.urgency }}",
+                        "BookingLink": "={{ $json.bookingLink }}",
+                        "ReplyEmailSubject": "={{ $json.replyEmailSubject }}",
+                        "ReplyEmailBody": "={{ $json.replyEmailBody }}",
+                        "ReplyWhatsApp": "={{ $json.replyWhatsAppBody }}",
+                        "EnrichmentDataJSON": "={{ $json.enrichmentData }}",
+                        "CreatedAt": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
+                        "UpdatedAt": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}"
+                    }
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                -464,
+                1920
+            ],
+            "id": "282a368e-db05-4903-ab51-f9974f82b15c",
+            "name": "Data Table - Create"
+        },
+        {
+            "parameters": {
+                "chatId": "374214124",
+                "text": "=🔔 New Lead\nName: {{ $('Webhook - Lead Intake').item.json.body.fullName }}\nIntent: {{ $('Set - Normalize Output').item.json.intent }}\nUrgency: {{ $('Set - Normalize Output').item.json.urgency }}\n\n✅ Auto-reply sent",
+                "additionalFields": {
+                    "appendAttribution": false
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                208,
+                1824
+            ],
+            "id": "2c620256-053a-43d4-9a25-efd58d5f7ae2",
+            "name": "Telegram - Alert",
+            "webhookId": "f0efa615-eebb-4253-8814-018daca5f4be",
+            "credentials": {
+                "telegramApi": {
+                    "id": "0WW3IfTfTah5WAnl",
+                    "name": "rensto_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={ \"ok\": true, \"intent\": \"{{ $json.intent }}\", \"urgency\": \"{{ $json.urgency }}\" }",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.5,
+            "position": [
+                432,
+                1824
+            ],
+            "id": "e24754d1-4649-4d74-bf81-9ce342067140",
+            "name": "Respond - Success"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "35b53d02-b135-48e5-9807-5f1b8f34bcff",
+                            "name": "isExisting",
+                            "value": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "id": "4f8c27cd-5e55-4ed0-aa42-4a5c79b121cc",
+                            "name": "existingRecordId",
+                            "value": "={{ $json.id }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "includeOtherFields": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -1712,
+                1728
+            ],
+            "id": "3b69a04d-a164-4838-bb91-eb7a70ac2f08",
+            "name": "Mark Existing"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "5ddb1499-531b-4e87-b7e2-7662269b72ee",
+                            "name": "isExisting",
+                            "value": false,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                "includeOtherFields": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -1712,
+                1920
+            ],
+            "id": "2abcf4db-3112-4084-bdeb-b3d79d917a21",
+            "name": "Mark New"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "email",
+                            "name": "email",
+                            "value": "={{ $json.Email || $json.email || $('Webhook - Lead Intake').item.json.body.email }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emailBody",
+                            "name": "emailBody",
+                            "value": "={{ $('Set - Normalize Output').item.json.replyEmailBody || $json.ReplyEmailBody || $json.replyEmailBody }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "bookingLink",
+                            "name": "bookingLink",
+                            "value": "={{ $('Set - Normalize Output').item.json.bookingLink || $json.BookingLink || $json.bookingLink || 'https://tidycal.com/rensto/discovery' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emailSubject",
+                            "name": "emailSubject",
+                            "value": "={{ $('Set - Normalize Output').item.json.replyEmailSubject || $json.ReplyEmailSubject || $json.replyEmailSubject }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emailHtml",
+                            "name": "emailHtml",
+                            "value": "={{ '<p style=\"font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; color: #333;\">' + ($('Set - Normalize Output').item.json.replyEmailBody || $json.ReplyEmailBody || $json.replyEmailBody || '') + '</p>\\n\\n<p style=\"margin-top: 24px; font-family: Arial, sans-serif; font-size: 16px;\"><strong>Book a call:</strong> <a href=\"' + ($('Set - Normalize Output').item.json.bookingLink || $json.BookingLink || $json.bookingLink || 'https://tidycal.com/rensto/discovery') + '\" style=\"color: #1eaef7; text-decoration: none; font-weight: 600;\">' + ($('Set - Normalize Output').item.json.bookingLink || $json.BookingLink || $json.bookingLink || 'https://tidycal.com/rensto/discovery') + '</a></p>' }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "prepare-email-html-set",
+            "name": "Set - Prepare Email HTML",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -240,
+                1824
+            ]
+        },
+        {
+            "parameters": {
+                "toRecipients": "={{ $json.email }}",
+                "subject": "={{ $json.emailSubject }}",
+                "bodyContent": "={{ $json.emailHtml }}",
+                "additionalFields": {
+                    "bodyContentType": "html"
+                }
+            },
+            "type": "n8n-nodes-base.microsoftOutlook",
+            "typeVersion": 2,
+            "position": [
+                -16,
+                1824
+            ],
+            "id": "5e505eb4-eada-4238-9eb2-18b46b040bbd",
+            "name": "Send a message",
+            "webhookId": "b69ce30f-57fe-4233-b6f8-d8bf87708ffe",
+            "credentials": {
+                "microsoftOutlookOAuth2Api": {
+                    "id": "EA2Fl9QT5h2HZoo9",
+                    "name": "rensto"
+                }
+            }
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Webhook - Lead Intake": {
+            "main": [
+                [
+                    {
+                        "node": "Set - Normalize Fields",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set - Normalize Fields": {
+            "main": [
+                [
+                    {
+                        "node": "IF - Validate Gates",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF - Validate Gates": {
+            "main": [
+                [
+                    {
+                        "node": "Data Table - Find Existing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Respond - Reject",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Data Table - Find Existing": {
+            "main": [
+                [
+                    {
+                        "node": "IF - Exists?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF - Exists?": {
+            "main": [
+                [
+                    {
+                        "node": "Mark Existing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Mark New",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Firecrawl - Audit Site": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI - Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI - Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Set - Normalize Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set - Normalize Output": {
+            "main": [
+                [
+                    {
+                        "node": "IF - Update vs Create",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF - Update vs Create": {
+            "main": [
+                [
+                    {
+                        "node": "Data Table - Update",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Data Table - Create",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Data Table - Update": {
+            "main": [
+                [
+                    {
+                        "node": "Set - Prepare Email HTML",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Data Table - Create": {
+            "main": [
+                [
+                    {
+                        "node": "Set - Prepare Email HTML",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Telegram - Alert": {
+            "main": [
+                [
+                    {
+                        "node": "Respond - Success",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark Existing": {
+            "main": [
+                [
+                    {
+                        "node": "Firecrawl - Audit Site",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark New": {
+            "main": [
+                [
+                    {
+                        "node": "Firecrawl - Audit Site",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set - Prepare Email HTML": {
+            "main": [
+                [
+                    {
+                        "node": "Send a message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a message": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram - Alert",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true
+    },
+    "meta": {
+        "instanceId": "d6d5e33115a32f19742462b1f375a2ffde1364323928b1b4e33055d1a9c6e595"
+    },
+    "tags": []
+}

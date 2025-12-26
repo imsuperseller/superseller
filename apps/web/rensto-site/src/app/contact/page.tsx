@@ -5,8 +5,11 @@ import { ContactForm } from '@/components/ContactForm';
 import { Mail, MapPin, Clock, Phone } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with Rensto to discuss your automation needs. We respond within 24 hours.',
+  title: 'Contact Rensto | AI Automation Experts & Consultation',
+  description: 'Get in touch with our team to discuss your business automation needs. Expert guidance on AI agents, workflow optimization, and custom infrastructure.',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 const contactInfo = [
@@ -105,7 +108,7 @@ export default function ContactPage() {
                       <div>
                         <h3 className="text-lg font-semibold mb-1">{info.title}</h3>
                         {info.link ? (
-                          <Link 
+                          <Link
                             href={info.link}
                             className="text-accent1 hover:text-accent2 transition-colors duration-200"
                           >
@@ -126,7 +129,7 @@ export default function ContactPage() {
                 <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
                 <div className="flex space-x-4">
                   {env.NEXT_PUBLIC_LINKEDIN_URL && (
-                    <Link 
+                    <Link
                       href={env.NEXT_PUBLIC_LINKEDIN_URL}
                       className="text-muted hover:text-accent1 transition-colors duration-200"
                       target="_blank"
@@ -136,7 +139,7 @@ export default function ContactPage() {
                     </Link>
                   )}
                   {env.NEXT_PUBLIC_X_URL && (
-                    <Link 
+                    <Link
                       href={env.NEXT_PUBLIC_X_URL}
                       className="text-muted hover:text-accent1 transition-colors duration-200"
                       target="_blank"
@@ -146,7 +149,7 @@ export default function ContactPage() {
                     </Link>
                   )}
                   {env.NEXT_PUBLIC_YOUTUBE_URL && (
-                    <Link 
+                    <Link
                       href={env.NEXT_PUBLIC_YOUTUBE_URL}
                       className="text-muted hover:text-accent1 transition-colors duration-200"
                       target="_blank"

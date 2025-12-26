@@ -1,11 +1,14 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 
-import { Search, CheckCircle, Rocket, Handshake, Headphones } from 'lucide-react';
+import { Search, CheckCircle, Rocket, Handshake, Headphones, Bot } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Our Process',
-  description: 'How we deliver automations in days, not months. Our proven 5-stage process with WIP limits ensures quality and speed.',
+  title: 'Our Proven Automation Process | Rensto Business System',
+  description: 'Understand how we architect and build your business automation infrastructure in days, not months. Our 5-stage rapid deployment model.',
+  alternates: {
+    canonical: '/process',
+  },
 };
 
 const processSteps = [
@@ -120,8 +123,43 @@ const wipLimits = [
 ];
 
 export default function ProcessPage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does the automation deployment process take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our rapid deployment model typically takes between 7 to 10 days from discovery to production, ensuring a high-quality automation system is delivered quickly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the stages of your automation process?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our proven 5-stage process includes: 1. Discovery & Planning, 2. Design & Approval, 3. Build & Deploy, 4. Training & Handover, and 5. Care & Optimization."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are WIP limits and why do you use them?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Work-in-Progress (WIP) limits mean we maximum 2 concurrent builds at any time. This ensures each client gets our full expertise, resulting in faster delivery and higher quality output."
+        }
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Hero Section */}
       <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
         <div className="container text-center">
@@ -215,7 +253,7 @@ export default function ProcessPage() {
               <div key={index} className="card text-center group hover:scale-105 transition-transform duration-300">
                 <h3 className="text-xl font-bold mb-4">{limit.title}</h3>
                 <p className="text-muted mb-6">{limit.description}</p>
-                
+
                 <ul className="space-y-2 text-left">
                   {limit.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-center space-x-2 text-sm">
@@ -244,15 +282,15 @@ export default function ProcessPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="card text-center">
-              <div className="text-3xl font-bold gradient-text mb-2">3-5</div>
+              <div className="text-3xl font-bold gradient-text mb-2">3-7</div>
               <div className="text-muted">Days to Production</div>
             </div>
             <div className="card text-center">
-              <div className="text-3xl font-bold gradient-text mb-2">80%</div>
+              <div className="text-3xl font-bold gradient-text mb-2">50%</div>
               <div className="text-muted">Task Reduction</div>
             </div>
             <div className="card text-center">
-              <div className="text-3xl font-bold gradient-text mb-2">10+</div>
+              <div className="text-3xl font-bold gradient-text mb-2">5+</div>
               <div className="text-muted">Hours Saved Weekly</div>
             </div>
             <div className="card text-center">
@@ -276,8 +314,15 @@ export default function ProcessPage() {
             <Link href="/offers" className="btn-primary text-lg px-8 py-4">
               View Our Offers
             </Link>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-rensto-support'))}
+              className="btn-secondary text-lg px-8 py-4 flex items-center justify-center gap-2"
+            >
+              <Bot className="w-5 h-5" />
+              Chat with AI Agent
+            </button>
             <Link href="/contact" className="btn-secondary text-lg px-8 py-4">
-              Schedule a Call
+              Contact Us
             </Link>
           </div>
         </div>

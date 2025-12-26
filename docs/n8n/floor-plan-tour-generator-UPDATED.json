@@ -1,0 +1,615 @@
+{
+    "name": "Floor Plan to Photorealistic Property Tour Generator",
+    "nodes": [
+        {
+            "parameters": {
+                "formTitle": "Upload Floor Plan for Visualization",
+                "formFields": {
+                    "values": [
+                        {
+                            "fieldName": "floorPlan",
+                            "fieldLabel": "Floor Plan Image",
+                            "fieldType": "file",
+                            "multipleFiles": false
+                        }
+                    ]
+                },
+                "options": {
+                    "appendAttribution": false
+                }
+            },
+            "id": "c49ff932-6f29-4d69-acb4-89d24dcdbb2b",
+            "name": "Upload Floor Plan Form",
+            "type": "n8n-nodes-base.formTrigger",
+            "typeVersion": 2.4,
+            "position": [
+                -896,
+                288
+            ],
+            "webhookId": "b2695d3c-3171-4632-9e5f-2c7243f24892"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "id-1",
+                            "name": "isometricPrompt",
+                            "value": "Top-down, fully 3D isometric render of the entire floor plan. Create a clean, highly detailed miniature architectural maquette with accurate room proportions and layout, matching the reference exactly. Remove all text labels. Keep all walls, doors, furnitures, appliances or rooms properly places. Use colorful, modern furniture and decorative objects in each room—sofas, beds, tables, cabinets, lamps, plants, rugs, appliances—arranged realistically and in scale. High-resolution, photorealistic materials (wood floors, tiles, fabrics, glass). Soft global lighting, subtle shadows, crisp edges. Professional, polished, high-quality output.",
+                            "type": "string"
+                        },
+                        {
+                            "id": "id-2",
+                            "name": "livingRoomPrompt",
+                            "value": "Eye-level photorealistic render of a modern living room. Comfortable seating, coffee table, entertainment center, warm lighting, contemporary decor. High-quality materials and textures.",
+                            "type": "string"
+                        },
+                        {
+                            "id": "id-3",
+                            "name": "kitchenPrompt",
+                            "value": "Eye-level photorealistic render of a modern kitchen. Sleek cabinets, countertops, appliances, island or dining area, bright lighting, clean design.",
+                            "type": "string"
+                        },
+                        {
+                            "id": "id-4",
+                            "name": "bedroomPrompt",
+                            "value": "Eye-level photorealistic render of a modern bedroom. Comfortable bed, nightstands, wardrobe, soft lighting, cozy atmosphere, contemporary style.",
+                            "type": "string"
+                        },
+                        {
+                            "id": "id-5",
+                            "name": "patioPrompt",
+                            "value": "Eye-level photorealistic render of an outdoor patio. Outdoor furniture, plants, lighting, comfortable seating area, inviting atmosphere.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "includeOtherFields": true,
+                "options": {}
+            },
+            "id": "3475f154-2866-4652-8495-a528b00a56d9",
+            "name": "Workflow Configuration",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -672,
+                288
+            ]
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "name",
+                    "value": "floor_plan_submissions"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "floorPlan": "={{ $('Upload Floor Plan Form').item.json.floorPlan }}",
+                        "status": "processing",
+                        "submissionDate": "={{ $now.toISO() }}"
+                    }
+                },
+                "options": {}
+            },
+            "id": "eaa03048-4e62-4eac-bb7a-9057094aadef",
+            "name": "Store Form Submission",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                -448,
+                288
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "text",
+                "responseBody": "=## 🎉 Your Floor Plan is Being Processed!\n\nThank you for your submission. Our AI is now:\n\n1. ✨ Generating a 3D isometric maquette\n2. 🏠 Creating photorealistic room renders\n3. 🎬 Animating room walkthroughs\n4. 🎞️ Merging into a property tour video\n\n**Estimated processing time: 5-10 minutes**\n\nYour submission ID: {{ $('Store Form Submission').item.json.id }}\n\nYou will receive the final video once processing is complete.",
+                "options": {
+                    "responseHeaders": {
+                        "entries": [
+                            {
+                                "name": "Content-Type",
+                                "value": "text/markdown"
+                            }
+                        ]
+                    }
+                }
+            },
+            "id": "respond-immediately-node",
+            "name": "Respond Immediately",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                -224,
+                288
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "model": "gpt-image-1",
+                "prompt": "={{ $('Workflow Configuration').first().json.isometricPrompt }}",
+                "options": {
+                    "size": "1024x1024"
+                }
+            },
+            "id": "3b0abeb8-26af-44b9-b442-5c1f56d963b9",
+            "name": "Generate 3D Isometric Maquette",
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "typeVersion": 2.1,
+            "position": [
+                0,
+                288
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "0sXFXYfqiDEKuDcN",
+                    "name": "service@rensto.com"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "imagen-4.0-generate-001"
+                },
+                "prompt": "={{ $('Workflow Configuration').first().json.livingRoomPrompt }}",
+                "options": {
+                    "sampleCount": 1
+                }
+            },
+            "id": "038457f4-4411-43f3-a3d9-c790bca3ed1b",
+            "name": "Generate Living Room Render",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                224,
+                0
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "6UgFlgar0aCiXKdm",
+                    "name": "Google Gemini(PaLM) Api superseller"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "imagen-4.0-generate-001"
+                },
+                "prompt": "={{ $('Workflow Configuration').first().json.kitchenPrompt }}",
+                "options": {
+                    "sampleCount": 1
+                }
+            },
+            "id": "e08177e0-fae8-4d65-8eb8-508015c82e59",
+            "name": "Generate Kitchen Render",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                224,
+                192
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "imagen-4.0-generate-001"
+                },
+                "prompt": "={{ $('Workflow Configuration').first().json.bedroomPrompt }}",
+                "options": {
+                    "sampleCount": 1
+                }
+            },
+            "id": "01a73167-79c6-4f68-b679-fd186daf33a0",
+            "name": "Generate Bedroom Render",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                224,
+                384
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "imagen-4.0-generate-001"
+                },
+                "prompt": "={{ $('Workflow Configuration').first().json.patioPrompt }}",
+                "options": {
+                    "sampleCount": 1
+                }
+            },
+            "id": "274e6c08-07bb-4e3d-8e03-a0f5a921855e",
+            "name": "Generate Patio Render",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                224,
+                576
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "video",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "veo-2.0"
+                },
+                "prompt": "Smooth cinematic camera movement through the living room, showcasing the space from multiple angles",
+                "options": {}
+            },
+            "id": "7977780a-e6b7-4b38-8b82-c00e15cd8a81",
+            "name": "Animate Living Room",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                448,
+                0
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "video",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "veo-2.0"
+                },
+                "prompt": "Smooth cinematic camera movement through the kitchen, showcasing appliances and design details",
+                "options": {}
+            },
+            "id": "ec903052-761a-4681-8fa9-215d80378ea2",
+            "name": "Animate Kitchen",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                448,
+                192
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "video",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "veo-2.0"
+                },
+                "prompt": "Smooth cinematic camera movement through the bedroom, creating a cozy and inviting atmosphere",
+                "options": {}
+            },
+            "id": "da3a686a-1f2c-42d7-92b0-4e0d8f4b2fcd",
+            "name": "Animate Bedroom",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                448,
+                384
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "video",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "veo-2.0"
+                },
+                "prompt": "Smooth cinematic camera movement through the patio, highlighting outdoor features and ambiance",
+                "options": {}
+            },
+            "id": "19b17491-5cbe-44f2-af59-a5f15704e398",
+            "name": "Animate Patio",
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                448,
+                576
+            ],
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "ECjtM6z8D6nRIDJC",
+                    "name": "tax4us"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://172.245.56.50:3456/merge",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"video_urls\": [\n    \"{{ $('Animate Living Room').item.json.videoUrl }}\",\n    \"{{ $('Animate Kitchen').item.json.videoUrl }}\",\n    \"{{ $('Animate Bedroom').item.json.videoUrl }}\",\n    \"{{ $('Animate Patio').item.json.videoUrl }}\"\n  ]\n}",
+                "options": {
+                    "timeout": 300000
+                }
+            },
+            "id": "e9efaa5f-d631-4443-887c-e30e7617e70e",
+            "name": "Merge Videos into Tour",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                672,
+                288
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "name",
+                    "value": "floor_plan_submissions"
+                },
+                "rowId": "={{ $('Store Form Submission').item.json.id }}",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "status": "completed",
+                        "finalTourUrl": "={{ $('Merge Videos into Tour').item.json.video_url }}",
+                        "isometricImageUrl": "={{ $('Generate 3D Isometric Maquette').item.json.imageUrl }}",
+                        "livingRoomVideoUrl": "={{ $('Animate Living Room').item.json.videoUrl }}",
+                        "kitchenVideoUrl": "={{ $('Animate Kitchen').item.json.videoUrl }}",
+                        "bedroomVideoUrl": "={{ $('Animate Bedroom').item.json.videoUrl }}",
+                        "patioVideoUrl": "={{ $('Animate Patio').item.json.videoUrl }}"
+                    }
+                },
+                "options": {}
+            },
+            "id": "update-submission-status",
+            "name": "Update Submission with Results",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                896,
+                288
+            ]
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Upload Floor Plan Form": {
+            "main": [
+                [
+                    {
+                        "node": "Workflow Configuration",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Workflow Configuration": {
+            "main": [
+                [
+                    {
+                        "node": "Store Form Submission",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Form Submission": {
+            "main": [
+                [
+                    {
+                        "node": "Respond Immediately",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Respond Immediately": {
+            "main": [
+                [
+                    {
+                        "node": "Generate 3D Isometric Maquette",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate 3D Isometric Maquette": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Living Room Render",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Generate Kitchen Render",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Generate Bedroom Render",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Generate Patio Render",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Living Room Render": {
+            "main": [
+                [
+                    {
+                        "node": "Animate Living Room",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Kitchen Render": {
+            "main": [
+                [
+                    {
+                        "node": "Animate Kitchen",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Bedroom Render": {
+            "main": [
+                [
+                    {
+                        "node": "Animate Bedroom",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Patio Render": {
+            "main": [
+                [
+                    {
+                        "node": "Animate Patio",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Animate Living Room": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Videos into Tour",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Animate Kitchen": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Videos into Tour",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Animate Bedroom": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Videos into Tour",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Animate Patio": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Videos into Tour",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge Videos into Tour": {
+            "main": [
+                [
+                    {
+                        "node": "Update Submission with Results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": false
+    },
+    "versionId": "6e3ba3ed-b44d-4732-adb8-d163145af54c",
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "d6d5e33115a32f19742462b1f375a2ffde1364323928b1b4e33055d1a9c6e595"
+    },
+    "id": "stj8DmATqe66D9j4",
+    "tags": []
+}

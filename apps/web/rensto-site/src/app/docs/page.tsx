@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { Book, Code, Users, Settings, Zap, Shield, FileText, HelpCircle, ArrowRight, ExternalLink } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Documentation - Rensto Business System',
-  description: 'Complete documentation for Rensto Business System',
+  title: 'Rensto Documentation | AI Implementation & API Guides',
+  description: 'Comprehensive guides and documentation for the Rensto platform. Learn how to architect, build, and scale your business automation.',
+  alternates: {
+    canonical: '/docs',
+  },
 };
 
 const documentationSections = [
@@ -132,10 +135,10 @@ export default function DocumentationPage() {
           {documentationSections.map((section) => (
             <div key={section.title} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex items-center mb-4">
-                <section.icon className="h-6 w-6 style={{ color: 'var(--rensto-blue)' }} mr-3" />
+                <section.icon className="h-6 w-6 mr-3 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900">{section.title}</h2>
               </div>
-              
+
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <Link
@@ -145,12 +148,12 @@ export default function DocumentationPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <h3 className="text-sm font-medium text-gray-900 group-hover:style={{ color: 'var(--rensto-blue)' }} transition-colors">
+                        <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
                           {item.title}
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">{item.description}</p>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-gray-400 group-hover:style={{ color: 'var(--rensto-blue)' }} transition-colors" />
+                      <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                     </div>
                   </Link>
                 ))}
@@ -162,37 +165,37 @@ export default function DocumentationPage() {
         {/* Quick Links */}
         <div className="mt-16 bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Links</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link
               href="/docs/getting-started"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
-              <Book className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
+              <Book className="h-5 w-5 text-blue-600 mr-3" />
               <span className="font-medium text-gray-900">Quick Start</span>
             </Link>
-            
+
             <Link
               href="/docs/api-reference"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
-              <Code className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
+              <Code className="h-5 w-5 text-blue-600 mr-3" />
               <span className="font-medium text-gray-900">API Reference</span>
             </Link>
-            
+
             <Link
               href="/docs/troubleshooting"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
-              <HelpCircle className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
+              <HelpCircle className="h-5 w-5 text-blue-600 mr-3" />
               <span className="font-medium text-gray-900">Troubleshooting</span>
             </Link>
-            
+
             <Link
               href="/docs/support"
               className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
-              <Users className="h-5 w-5 style={{ color: 'var(--rensto-blue)' }} mr-3" />
+              <Users className="h-5 w-5 text-blue-600 mr-3" />
               <span className="font-medium text-gray-900">Support</span>
             </Link>
           </div>
@@ -205,7 +208,7 @@ export default function DocumentationPage() {
             <p className="text-gray-600 mb-6">
               Can&apos;t find what you&apos;re looking for? Our support team is here to help.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/docs/support"
@@ -214,7 +217,7 @@ export default function DocumentationPage() {
                 <HelpCircle className="h-5 w-5 mr-2" />
                 Contact Support
               </Link>
-              
+
               <a
                 href="https://github.com/rensto/docs/issues"
                 target="_blank"

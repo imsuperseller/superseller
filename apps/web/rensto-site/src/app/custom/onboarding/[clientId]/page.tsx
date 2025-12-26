@@ -110,7 +110,7 @@ export default function OnboardingWizardPage() {
                     </div>
 
                     <Button
-                        onClick={() => router.push('/dashboard')}
+                        onClick={() => router.push(`/dashboard/${clientId}`)}
                         variant="renstoNeon"
                         className="w-full py-6 text-lg"
                     >

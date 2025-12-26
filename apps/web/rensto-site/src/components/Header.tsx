@@ -13,39 +13,27 @@ import {
   LogOut,
   Zap,
   Workflow,
-  BarChart3
+  BarChart3,
+  MessageCircle
 } from 'lucide-react';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
 
-  // Handle client-side mounting to avoid hydration issues
+  // Handle client-side state for path-dependent logic (if UI needs it later)
   useEffect(() => {
     setMounted(true);
     setCurrentPath(window.location.pathname);
   }, []);
 
-  // Don't render header on dashboard routes or service pages (they have their own headers)
-  if (mounted) {
-    const isDashboardRoute = currentPath.startsWith('/ortal-dashboard');
-    const isServicePage =
-      currentPath === '/marketplace' ||
-      currentPath === '/custom' ||
-      currentPath === '/niches';
-
-    const isCustomLanding = currentPath.startsWith('/offer') || currentPath.startsWith('/onboarding');
-
-    if (isDashboardRoute || isServicePage || isCustomLanding) {
-      return null;
-    }
-  }
-
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Process', href: '/process' },
+    { name: 'Industry Hub', href: '/niches' },
+    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Demos', href: '/demos' },
     { name: 'Offers', href: '/offers' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -72,8 +60,8 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-10 h-10 relative">
                 <Image
-                  src="/rensto-logo.png"
-                  alt="Rensto Logo"
+                  src="/rensto-logo.webp"
+                  alt="Rensto - AI-Powered Business Automation"
                   width={40}
                   height={40}
                   className="object-contain"
@@ -90,29 +78,59 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/custom"
-              className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
-            >
-              Custom Solutions
-            </Link>
-            <Link
-              href="/subscriptions"
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              Subscriptions
-            </Link>
-            <Link
-              href="/niches"
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              Industry Packages
-            </Link>
-          </nav>
+          <Link
+            href="/whatsapp"
+            className="text-green-400 hover:text-green-300 transition-colors font-medium flex items-center gap-1.5"
+          >
+            WhatsApp OS
+            <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full border border-green-500/30 animate-pulse">New</span>
+          </Link>
+          <Link
+            href="/custom"
+            className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+          >
+            Custom Solutions
+          </Link>
+          <Link
+            href="/pricing"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/subscriptions"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Managed Plans
+          </Link>
+          <Link
+            href="/niches"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Industry Hub
+          </Link>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            <button
+              onClick={() => {
+                // We'll use a global event or context for this in a real app, 
+                // but for now let's assume the widget is always present and listens for a custom "open-rensto-support" event
+                window.dispatchEvent(new CustomEvent('open-rensto-support'));
+              }}
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+            >
+              Support Agent
+            </button>
+            <a
+              href="https://wa.me/1234567890?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm font-medium text-green-400 hover:text-green-300 transition-colors"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>WhatsApp</span>
+            </a>
             <Link href="/custom">
               <Button
                 size="sm"
@@ -148,6 +166,14 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-white/10 bg-[#110d28]">
             <div className="px-2 pt-2 pb-3 space-y-1">
+              <Link
+                href="/whatsapp"
+                className="block px-3 py-2 text-base font-medium text-green-400 hover:bg-white/5 rounded-md flex justify-between items-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                WhatsApp OS
+                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/30">New</span>
+              </Link>
               <Link
                 href="/custom"
                 className="block px-3 py-2 text-base font-medium text-cyan-400 hover:bg-white/5 rounded-md"

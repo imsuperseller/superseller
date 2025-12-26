@@ -38,36 +38,8 @@ interface MCPTool {
 }
 
 export default function QuickBooksDashboard() {
-  const [customerData, setCustomerData] = useState<CustomerData[]>([
-    {
-      id: '1',
-      name: 'Customer A',
-      company: 'Business Solutions Inc',
-      paid: 3000,
-      outstanding: 2000,
-      monthlyExpenses: 1250,
-      status: 'active'
-    },
-    {
-      id: '2',
-      name: 'Customer B',
-      company: 'Professional Services',
-      paid: 150,
-      outstanding: 100,
-      monthlyExpenses: 75,
-      status: 'active'
-    },
-    {
-      id: '3',
-      name: 'Customer C',
-      company: 'Digital Marketing Co',
-      paid: 5198,
-      outstanding: 0,
-      monthlyExpenses: 450,
-      status: 'active'
-    }
-  ]);
-
+  const [loading, setLoading] = useState(true);
+  const [customerData, setCustomerData] = useState<CustomerData[]>([]);
   const [expenseData, setExpenseData] = useState<ExpenseData[]>([
     { service: 'OpenAI API', amount: 525, percentage: 42 },
     { service: 'n8n Platform', amount: 900, percentage: 72 },
@@ -93,10 +65,42 @@ export default function QuickBooksDashboard() {
     { name: 'Expense Summary', description: 'Cost breakdown & optimization', price: '$29/mo', icon: '📈' }
   ]);
 
-  const totalRevenue = customerData.reduce((sum, customer) => sum + customer.paid, 0);
-  const totalOutstanding = customerData.reduce((sum, customer) => sum + customer.outstanding, 0);
+  const [summary, setSummary] = useState({
+    totalRevenue: 0,
+    activeCustomers: 0,
+    outstandingInvoices: 0
+  });
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/admin/quickbooks');
+        const data = await response.json();
+        if (data.success) {
+          setSummary({
+            totalRevenue: data.totalRevenue,
+            activeCustomers: data.activeCustomers,
+            outstandingInvoices: data.outstandingInvoices
+          });
+          if (data.customers) setCustomerData(data.customers);
+        }
+      } catch (error) {
+        console.error('Failed to fetch QuickBooks data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const totalRevenue = summary.totalRevenue;
+  const totalOutstanding = summary.outstandingInvoices;
   const totalMonthlyExpenses = expenseData.reduce((sum, expense) => sum + expense.amount, 0);
   const monthlyMcpRevenue = mcpTools.length * 29;
+
+  if (loading) {
+    return <div className="p-8 text-center text-cyan-400 font-mono">Loading Financial Data...</div>;
+  }
 
   return (
     <div className="space-y-8">

@@ -1,0 +1,212 @@
+{
+  "name": "util_human_approval",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "human-approval",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "human-approval-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format approval request\nconst input = $input.item.json;\n\n// Expected input format:\n// {\n//   \"action\": \"request_approval\",\n//   \"payload\": {\n//     \"data\": {...},\n//     \"action\": \"Send email to customer\",\n//     \"requester\": \"workflow-name\",\n//     \"timeout\": 3600 // seconds (optional, default 24 hours)\n//   }\n// }\n\nconst payload = input.payload || input;\nconst approvalId = `approval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;\n\nreturn {\n  approvalId,\n  action: payload.action || 'Review required',\n  data: payload.data || payload,\n  requester: payload.requester || 'unknown',\n  timeout: payload.timeout || 86400, // 24 hours default\n  timestamp: new Date().toISOString(),\n  status: 'pending'\n};"
+      },
+      "id": "format-request",
+      "name": "Format Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "⏸️ *Human Approval Required*\n\n*Action:* {{ $json.action }}\n*Requester:* {{ $json.requester }}\n*Approval ID:* {{ $json.approvalId }}\n\n*Data to Review:*\n```\n{{ JSON.stringify($json.data, null, 2) }}\n```\n\n[✅ Approve]({{ $env.N8N_URL }}/webhook/approve/{{ $json.approvalId }}) | [❌ Reject]({{ $env.N8N_URL }}/webhook/reject/{{ $json.approvalId }})"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-slack",
+      "name": "Send Slack Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300],
+      "notes": "Sends approval request to Slack with Approve/Reject buttons"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "record",
+        "base": "={{ $env.AIRTABLE_APPROVALS_BASE_ID }}",
+        "table": "Approval Requests",
+        "fields": {
+          "Approval ID": "={{ $json.approvalId }}",
+          "Action": "={{ $json.action }}",
+          "Requester": "={{ $json.requester }}",
+          "Status": "Pending",
+          "Timestamp": "={{ $json.timestamp }}",
+          "Data": "={{ JSON.stringify($json.data) }}"
+        }
+      },
+      "id": "log-request",
+      "name": "Log Request",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [650, 400],
+      "disabled": false,
+      "notes": "Optional: Log approval requests to Airtable"
+    },
+    {
+      "parameters": {
+        "mode": "webhook",
+        "webhookId": "={{ $json.approvalId }}",
+        "options": {
+          "responseMode": "responseNode",
+          "responseData": "allEntries"
+        }
+      },
+      "id": "wait-for-webhook",
+      "name": "Wait for Webhook",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [850, 300],
+      "notes": "Waits for approval/rejection webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.query.action }}",
+              "operation": "equal",
+              "value2": "approve"
+            }
+          ]
+        }
+      },
+      "id": "check-approval",
+      "name": "Check Approval",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Return approved data\nreturn {\n  approved: true,\n  approvalId: $('Format Request').item.json.approvalId,\n  data: $('Format Request').item.json.data,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "approved",
+      "name": "Approved",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Return rejected data\nreturn {\n  approved: false,\n  approvalId: $('Format Request').item.json.approvalId,\n  reason: $json.query.reason || 'Rejected by user',\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "rejected",
+      "name": "Rejected",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Request": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait for Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approval": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-12-06T00:00:00.000Z",
+      "updatedAt": "2025-12-06T00:00:00.000Z",
+      "id": "utility",
+      "name": "utility"
+    },
+    {
+      "createdAt": "2025-12-06T00:00:00.000Z",
+      "updatedAt": "2025-12-06T00:00:00.000Z",
+      "id": "human-approval",
+      "name": "human-approval"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-06T00:00:00.000Z",
+  "versionId": "1"
+}

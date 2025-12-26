@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle, ArrowRight, Mail, Calendar, Loader2 } from 'lucide-react';
+import Script from 'next/script';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
@@ -68,17 +69,7 @@ function SuccessContent() {
     }, [sessionId, magicLinkSent]);
 
     useEffect(() => {
-        // Load TidyCal Script
-        const script = document.createElement('script');
-        script.src = "https://asset-tidycal.b-cdn.net/js/embed.js";
-        script.async = true;
-        document.body.appendChild(script);
-
-        return () => {
-            if (document.body.contains(script)) {
-                document.body.removeChild(script);
-            }
-        };
+        // TidyCal initialization logic if needed when script loads
     }, []);
 
     if (loading) {
@@ -234,6 +225,11 @@ function SuccessContent() {
             >
                 Questions? Contact support@rensto.com
             </p>
+
+            <Script
+                src="https://asset-tidycal.b-cdn.net/js/embed.js"
+                strategy="lazyOnload"
+            />
         </>
     );
 }

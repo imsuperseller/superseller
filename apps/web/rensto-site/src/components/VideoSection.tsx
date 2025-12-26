@@ -52,6 +52,7 @@ export function VideoSection({
                         title="Rensto Automation Overview"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        loading="lazy"
                         style={{
                             border: 'none',
                             borderRadius: '1.5rem'

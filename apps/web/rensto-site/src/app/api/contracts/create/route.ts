@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// eSignatures.com API configuration
-const ESIGNATURES_API_KEY = process.env.ESIGNATURES_API_KEY;
-const ESIGNATURES_BASE_URL = 'https://esignatures.com/api';
+import { ESignaturesApi } from '@/lib/esignatures';
 
 // Rensto contract template
 const CONTRACT_TEMPLATE = `
@@ -111,14 +108,7 @@ interface ContractData {
 export async function POST(request: NextRequest) {
     try {
         const body: ContractData = await request.json();
-
-        if (!ESIGNATURES_API_KEY) {
-            console.error('ESIGNATURES_API_KEY not configured');
-            return NextResponse.json(
-                { error: 'Contract service not configured' },
-                { status: 500 }
-            );
-        }
+        const esign = new ESignaturesApi();
 
         // Format the contract with actual values
         const today = new Date().toLocaleDateString('en-US', {
@@ -135,59 +125,36 @@ export async function POST(request: NextRequest) {
             .replace(/{package_price}/g, `$${body.packagePrice.toLocaleString()}`)
             .replace(/{monthly_fee}/g, `$${body.monthlyFee}`)
             .replace(/{service_description}/g, body.serviceDescription)
-            .replace(/{deliverables}/g, body.deliverables.map((d, i) => `${i + 1}. ${d}`).join('\n'))
-            .replace(/{requirements}/g, body.requirements.map((r, i) => `${i + 1}. ${r}`).join('\n'))
+            .replace(/{deliverables}/g, (body.deliverables || []).map((d, i) => `${i + 1}. ${d}`).join('\n'))
+            .replace(/{requirements}/g, (body.requirements || []).map((r, i) => `${i + 1}. ${r}`).join('\n'))
             .replace(/{timeline}/g, body.timeline);
 
-        // Create contract via eSignatures.com API
-        const response = await fetch(`${ESIGNATURES_BASE_URL}/contracts`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${ESIGNATURES_API_KEY}`,
-                'Content-Type': 'application/json',
+        const result = await esign.createContract({
+            template_id: null,
+            title: `Rensto Automation Agreement - ${body.clientName}`,
+            metadata: {
+                client_email: body.clientEmail,
+                package: body.packageName,
+                price: body.packagePrice,
             },
-            body: JSON.stringify({
-                template_id: null, // Using inline content
-                title: `Rensto Automation Agreement - ${body.clientName}`,
-                metadata: {
-                    client_email: body.clientEmail,
-                    package: body.packageName,
-                    price: body.packagePrice,
-                },
-                signers: [
-                    {
-                        name: body.clientName,
-                        email: body.clientEmail,
-                        role: 'client',
-                        order: 1,
-                    }
-                ],
-                content: formattedContract,
-                redirect_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com'}/custom/payment?signed=true`,
-                webhook_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com'}/api/webhooks/esignatures`,
-                expires_in_days: 2, // 48 hour validity
-                send_email: true,
-                email_subject: `Your Rensto Automation Agreement - ${body.packageName}`,
-                email_message: `Hi ${body.clientName},\n\nPlease review and sign your automation services agreement.\n\nThis document is valid for 48 hours.\n\nBest,\nThe Rensto Team`,
-            }),
+            signers: [{ name: body.clientName, email: body.clientEmail }],
+            content: formattedContract,
+            redirect_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com'}/custom/payment?signed=true`,
+            webhook_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com'}/api/webhooks/esignatures`,
+            expires_in_days: 2,
+            send_email: true,
+            email_subject: `Your Rensto Automation Agreement - ${body.packageName}`,
+            email_message: `Hi ${body.clientName},\n\nPlease review and sign your automation services agreement.\n\nThis document is valid for 48 hours.\n\nBest,\nThe Rensto Team`,
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('eSignatures API error:', errorText);
-            return NextResponse.json(
-                { error: 'Failed to create contract' },
-                { status: response.status }
-            );
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: 500 });
         }
-
-        const contractData = await response.json();
 
         return NextResponse.json({
             success: true,
-            contractId: contractData.id,
-            signingUrl: contractData.signing_url,
-            expiresAt: contractData.expires_at,
+            contractId: result.contractId,
+            signingUrl: result.signingUrl,
         });
 
     } catch (error) {

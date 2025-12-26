@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button-enhanced';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { 
-  Store, 
-  Mic, 
-  Users, 
-  Package, 
-  ArrowRight, 
-  CheckCircle, 
+import {
+  Store,
+  Mic,
+  Users,
+  Package,
+  ArrowRight,
+  CheckCircle,
   Star,
   Zap,
   Target,
@@ -39,7 +39,7 @@ export default function HomeUpdatedPage() {
       ],
       pricing: 'From $29/template',
       cta: 'Browse Templates',
-      href: '/marketplace',
+      href: '/subscriptions',
       color: 'blue',
       popular: false
     },
@@ -96,7 +96,7 @@ export default function HomeUpdatedPage() {
       ],
       pricing: 'Industry pricing',
       cta: 'Explore Solutions',
-      href: '/solutions',
+      href: '/niches',
       color: 'orange',
       popular: false
     }
@@ -183,7 +183,7 @@ export default function HomeUpdatedPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Header />
-      
+
       <main>
         {/* Hero Section */}
         <section className="py-20 px-4">
@@ -196,10 +196,10 @@ export default function HomeUpdatedPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link href="/lead-generator.html">Start Free Trial</Link>
+                <Link href="/subscriptions">Start Free Trial</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/marketplace">Browse Marketplace</Link>
+                <Link href="/subscriptions">Browse Marketplace</Link>
               </Button>
             </div>
           </div>
@@ -214,14 +214,13 @@ export default function HomeUpdatedPage() {
                 Pick what works best for you. We have ready-made solutions, custom help, or you can do it yourself. Whatever you're comfortable with.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {serviceTypes.map((service) => (
                 <div
                   key={service.id}
-                  className={`relative bg-white rounded-xl shadow-lg p-6 border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                    service.popular ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
-                  }`}
+                  className={`relative bg-white rounded-xl shadow-lg p-6 border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${service.popular ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
+                    }`}
                 >
                   {service.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -230,7 +229,7 @@ export default function HomeUpdatedPage() {
                       </span>
                     </div>
                   )}
-                  
+
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
                       <service.icon className="w-8 h-8 text-blue-600" />
@@ -238,7 +237,7 @@ export default function HomeUpdatedPage() {
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{service.name}</h3>
                     <p className="text-gray-600 mb-4">{service.description}</p>
                     <div className="text-2xl font-bold text-blue-600 mb-4">{service.pricing}</div>
-                    
+
                     <ul className="text-left space-y-2 mb-6">
                       {service.features.map((feature, index) => (
                         <li key={index} className="flex items-center text-sm text-gray-600">
@@ -247,7 +246,7 @@ export default function HomeUpdatedPage() {
                         </li>
                       ))}
                     </ul>
-                    
+
                     <Button className="w-full" asChild>
                       <Link href={service.href}>{service.cta}</Link>
                     </Button>
@@ -267,7 +266,7 @@ export default function HomeUpdatedPage() {
                 We make business automation simple. No confusing tech stuff. Just tell us what you want to happen, and we make it work.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
                 <div key={index} className="bg-white rounded-xl p-6 shadow-lg">
@@ -279,20 +278,20 @@ export default function HomeUpdatedPage() {
                 </div>
               ))}
             </div>
-            
+
             {/* Stats Bar */}
             <div className="mt-16 bg-blue-600 rounded-xl p-8 text-white">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div>
-                  <div className="text-4xl font-bold mb-2">4,000+</div>
-                  <div className="text-blue-100">Happy Customers</div>
+                  <div className="text-4xl font-bold mb-2">10+</div>
+                  <div className="text-blue-100">Happy Clients</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold mb-2">$470K</div>
-                  <div className="text-blue-100">Monthly Revenue</div>
+                  <div className="text-4xl font-bold mb-2">$5K+</div>
+                  <div className="text-blue-100">Operating Efficiency</div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold mb-2">10x</div>
+                  <div className="text-4xl font-bold mb-2">5x</div>
                   <div className="text-blue-100">Time Saved</div>
                 </div>
               </div>
@@ -309,14 +308,13 @@ export default function HomeUpdatedPage() {
                 Pick the plan that works for your business. No hidden fees, no surprises.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {pricingPlans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`relative bg-white rounded-xl shadow-lg p-8 border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                    plan.popular ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
-                  }`}
+                  className={`relative bg-white rounded-xl shadow-lg p-8 border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${plan.popular ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
+                    }`}
                 >
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -325,12 +323,12 @@ export default function HomeUpdatedPage() {
                       </span>
                     </div>
                   )}
-                  
+
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                     <div className="text-4xl font-bold text-blue-600 mb-4">{plan.price}</div>
                     <p className="text-gray-600 mb-6">{plan.description}</p>
-                    
+
                     <ul className="text-left space-y-3 mb-8">
                       {plan.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-center text-gray-600">
@@ -339,9 +337,9 @@ export default function HomeUpdatedPage() {
                         </li>
                       ))}
                     </ul>
-                    
+
                     <Button className="w-full" size="lg" asChild>
-                      <Link href="/lead-generator.html">Get Started</Link>
+                      <Link href="/subscriptions">Get Started</Link>
                     </Button>
                   </div>
                 </div>
@@ -355,20 +353,20 @@ export default function HomeUpdatedPage() {
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-4xl font-bold mb-4">Ready to Stop Doing Boring Tasks?</h2>
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands of businesses already saving time and money with Rensto.
+              Join the businesses already saving time and money with Rensto.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
-                <Link href="/lead-generator.html">Start Free Trial</Link>
+                <Link href="/subscriptions">Start Free Trial</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600" asChild>
-                <Link href="/marketplace">Browse Marketplace</Link>
+                <Link href="/subscriptions">Browse Marketplace</Link>
               </Button>
             </div>
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

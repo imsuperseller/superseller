@@ -44,8 +44,8 @@ export default function RenstoComponentsPage() {
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 relative">
                 <Image
-                  src="/Rensto Logo.png"
-                  alt="Rensto Logo"
+                  src="/rensto-logo.webp"
+                  alt="Rensto - AI-Powered Business Automation"
                   width={32}
                   height={32}
                   className="rensto-animate-glow"
@@ -79,54 +79,54 @@ export default function RenstoComponentsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center space-y-4">
                   <div className="w-6 h-6 relative">
-                <Image
-                  src="/Rensto Logo.png"
-                  alt="Rensto Logo"
-                  width={24}
-                  height={24}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
-                />
-              </div>
+                    <Image
+                      src="/rensto-logo.webp"
+                      alt="Rensto - AI-Powered Business Automation"
+                      width={24}
+                      height={24}
+                      className="rensto-animate-glow"
+                      style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
+                    />
+                  </div>
                   <p className="text-sm text-rensto-text">Small Neon Glow</p>
                 </div>
                 <div className="text-center space-y-4">
                   <div className="w-8 h-8 relative">
-                <Image
-                  src="/Rensto Logo.png"
-                  alt="Rensto Logo"
-                  width={32}
-                  height={32}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
-                />
-              </div>
+                    <Image
+                      src="/rensto-logo.webp"
+                      alt="Rensto - AI-Powered Business Automation"
+                      width={32}
+                      height={32}
+                      className="rensto-animate-glow"
+                      style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
+                    />
+                  </div>
                   <p className="text-sm text-rensto-text">Medium Gradient Shimmer</p>
                 </div>
                 <div className="text-center space-y-4">
                   <div className="w-12 h-12 relative">
-                <Image
-                  src="/Rensto Logo.png"
-                  alt="Rensto Logo"
-                  width={48}
-                  height={48}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
-                />
-              </div>
+                    <Image
+                      src="/rensto-logo.webp"
+                      alt="Rensto - AI-Powered Business Automation"
+                      width={48}
+                      height={48}
+                      className="rensto-animate-glow"
+                      style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
+                    />
+                  </div>
                   <p className="text-sm text-rensto-text">Large Cyberpunk Pulse</p>
                 </div>
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 relative">
-                <Image
-                  src="/Rensto Logo.png"
-                  alt="Rensto Logo"
-                  width={64}
-                  height={64}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
-                />
-              </div>
+                    <Image
+                      src="/rensto-logo.webp"
+                      alt="Rensto - AI-Powered Business Automation"
+                      width={64}
+                      height={64}
+                      className="rensto-animate-glow"
+                      style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
+                    />
+                  </div>
                   <p className="text-sm text-rensto-text">XL with Tagline</p>
                 </div>
               </div>

@@ -66,9 +66,19 @@ export function ContactForm() {
     setSubmitStatus('idle');
 
     try {
-      // In a real implementation, this would send to your backend
-      // For now, we'll simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
 
       setSubmitStatus('success');
       setFormData({
@@ -79,7 +89,8 @@ export function ContactForm() {
         budget: '',
         timeline: ''
       });
-    } catch {
+    } catch (error) {
+      console.error('Contact form error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -138,9 +149,8 @@ export function ContactForm() {
             id="name"
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            className={`w-full px-4 py-3 rounded-lg bg-card border ${
-              errors.name ? 'border-red-500' : 'border-border'
-            } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
+            className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.name ? 'border-red-500' : 'border-border'
+              } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
             placeholder="Your full name"
           />
           {errors.name && (
@@ -157,9 +167,8 @@ export function ContactForm() {
             id="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
-            className={`w-full px-4 py-3 rounded-lg bg-card border ${
-              errors.email ? 'border-red-500' : 'border-border'
-            } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
+            className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.email ? 'border-red-500' : 'border-border'
+              } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
             placeholder="your@email.com"
           />
           {errors.email && (
@@ -191,9 +200,8 @@ export function ContactForm() {
           value={formData.message}
           onChange={(e) => handleInputChange('message', e.target.value)}
           rows={5}
-          className={`w-full px-4 py-3 rounded-lg bg-card border ${
-            errors.message ? 'border-red-500' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent resize-none`}
+          className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.message ? 'border-red-500' : 'border-border'
+            } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent resize-none`}
           placeholder="Tell us about your automation needs..."
         />
         {errors.message && (

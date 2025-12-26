@@ -22,7 +22,7 @@ async function getWorkflowsFromBoostSpace(filters: {
   limit?: number;
 }) {
   const apiKey = BOOST_SPACE_CONFIG.apiKey.trim();
-  
+
   if (!apiKey) {
     throw new Error('BOOST_SPACE_API_KEY not configured');
   }
@@ -45,14 +45,14 @@ async function getWorkflowsFromBoostSpace(filters: {
     );
 
     let products = Array.isArray(response.data) ? response.data : response.data.items || [];
-    
+
     // Filter by category/status if needed
     if (filters.category) {
-      products = products.filter((p: any) => 
+      products = products.filter((p: any) =>
         p.category === filters.category || p.metadata?.category === filters.category
       );
     }
-    
+
     if (filters.status) {
       // Handle both "Active" and "✅ Active" status formats
       const statusMatch = filters.status.replace('✅ ', '').toLowerCase();
@@ -66,20 +66,21 @@ async function getWorkflowsFromBoostSpace(filters: {
     return products.map((product: any) => {
       const downloadPrice = product.unit_price ? product.unit_price / 100 : 0; // Convert from cents
       const installPrice = product.metadata?.installPrice || product.installPrice || 0;
-      
+      const customPrice = product.metadata?.customPrice || product.customPrice || 1497;
+
       // Determine tier based on price
       let downloadTier = 'simple';
       if (downloadPrice >= 197) downloadTier = 'complete';
       else if (downloadPrice >= 97) downloadTier = 'advanced';
-      
+
       let installTier = 'template';
       if (installPrice >= 3500) installTier = 'custom';
       else if (installPrice >= 1997) installTier = 'system';
 
       // Extract features
       const features = product.metadata?.features || product.features || [];
-      const featureList = Array.isArray(features) ? features : 
-                         (typeof features === 'string' ? features.split(/[,\n]/).map((f: string) => f.trim()).filter(Boolean) : []);
+      const featureList = Array.isArray(features) ? features :
+        (typeof features === 'string' ? features.split(/[,\n]/).map((f: string) => f.trim()).filter(Boolean) : []);
 
       return {
         id: product.id,
@@ -89,6 +90,7 @@ async function getWorkflowsFromBoostSpace(filters: {
         description: product.description || '',
         downloadPrice: downloadPrice,
         installPrice: installPrice,
+        customPrice: customPrice,
         downloadTier: downloadTier,
         installTier: installTier,
         complexity: product.metadata?.complexity || product.complexity || 'Intermediate',
@@ -98,25 +100,27 @@ async function getWorkflowsFromBoostSpace(filters: {
         n8nAffiliateLink: product.metadata?.n8nAffiliateLink || product.n8nAffiliateLink || 'https://tinyurl.com/ym3awuke',
         workflowJsonUrl: product.metadata?.workflowJsonUrl || product.workflowJsonUrl || '',
         status: product.metadata?.status || product.status || 'Active',
-        pricingTiers: product.metadata?.pricingTiers || product.pricingTiers || []
+        pricingTiers: product.metadata?.pricingTiers || product.pricingTiers || [],
+        is_internal_only: product.metadata?.is_internal_only === true || product.is_internal_only === true || false,
+        readiness_status: product.metadata?.readiness_status || product.readiness_status || 'Draft'
       };
     });
-    
+
   } catch (error: unknown) {
     const axiosError = error as { message?: string; response?: { status?: number } };
-    
+
     console.error('Boost.space API error:', {
       message: axiosError.message,
       status: axiosError.response?.status,
       data: axiosError.response
     });
-    
+
     if (axiosError.response?.status === 401) {
       throw new Error('Boost.space API key is invalid or expired.');
     } else if (axiosError.response?.status === 404) {
       throw new Error('Boost.space Products module not found. Please verify configuration.');
     }
-    
+
     throw new Error(`Failed to fetch workflows from Boost.space: ${axiosError.message || 'Unknown error'}`);
   }
 }

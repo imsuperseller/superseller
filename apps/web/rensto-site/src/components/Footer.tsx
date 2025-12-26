@@ -12,7 +12,9 @@ import {
   Zap,
   Workflow,
   Settings,
-  BarChart3
+  BarChart3,
+  Bot,
+  MessageCircle
 } from 'lucide-react';
 
 export function Footer() {
@@ -21,10 +23,10 @@ export function Footer() {
   const navigation = {
     main: [
       { name: 'Home', href: '/' },
-      { name: 'Features', href: '/features' },
-      { name: 'Pricing', href: '/pricing' },
-      { name: 'Solutions', href: '/solutions' },
-      { name: 'Contact', href: '/contact' },
+      { name: 'Marketplace', href: '/marketplace' },
+      { name: 'Custom Solutions', href: '/custom' },
+      { name: 'Subscriptions', href: '/subscriptions' },
+      { name: 'Industry Packages', href: '/niches' },
     ],
     business: [
       { name: 'Customer App', href: '/app/dashboard', icon: Workflow },
@@ -54,6 +56,11 @@ export function Footer() {
         href: 'https://twitter.com/rensto',
         icon: Twitter,
       },
+      {
+        name: 'WhatsApp',
+        href: "https://wa.me/1234567890?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.",
+        icon: MessageCircle,
+      },
       // GitHub removed
     ],
   };
@@ -67,8 +74,8 @@ export function Footer() {
             <div className="flex items-center space-x-3 mb-4">
               <div className="relative w-10 h-10">
                 <Image
-                  src="/rensto-logo.png"
-                  alt="Rensto Logo"
+                  src="/rensto-logo.webp"
+                  alt="Rensto - AI-Powered Business Automation"
                   width={40}
                   height={40}
                   className="object-contain"
@@ -135,6 +142,15 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-rensto-support'))}
+                  className="flex items-center text-slate-300 hover:text-white transition-colors text-sm"
+                >
+                  <Bot className="h-4 w-4 mr-2" />
+                  AI Support agent
+                </button>
+              </li>
             </ul>
           </div>
         </div>

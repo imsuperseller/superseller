@@ -9,7 +9,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
   const sessionId = searchParams.session_id;
 
   if (!sessionId) {
-    redirect('/marketplace');
+    redirect('/subscriptions');
   }
 
   return (
@@ -36,7 +36,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Payment Successful!
           </h2>
-          
+
           <p className="mt-2 text-sm text-gray-600">
             Thank you for your purchase. Your order has been processed successfully.
           </p>
@@ -51,7 +51,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                   {sessionId}
                 </dd>
               </div>
-              
+
               <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-4 border-t border-gray-200">
                 <dt className="text-sm font-medium text-gray-500">Status</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -81,9 +81,9 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
             >
               Go to Dashboard
             </Link>
-            
+
             <Link
-              href="/marketplace"
+              href="/subscriptions"
               className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-center font-medium hover:bg-gray-300 transition-colors"
             >
               Browse More

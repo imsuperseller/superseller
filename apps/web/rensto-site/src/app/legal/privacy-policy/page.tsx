@@ -3,6 +3,9 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Privacy Policy - Rensto Business System',
   description: 'Our privacy policy and data protection practices',
+  alternates: {
+    canonical: '/legal/privacy',
+  },
 };
 
 export default function PrivacyPolicyPage() {
@@ -11,7 +14,7 @@ export default function PrivacyPolicyPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
-          
+
           <div className="prose prose-lg max-w-none">
             <p className="text-sm text-gray-600 mb-6">
               <strong>Last updated:</strong> {new Date().toLocaleDateString()}
@@ -20,15 +23,15 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
               <p className="text-gray-700 mb-4">
-                Rensto Business System (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. 
-                This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
+                Rensto Business System (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
+                This Privacy Policy explains how we collect, use, disclose, and safeguard your information
                 when you use our business automation platform.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. Information We Collect</h2>
-              
+
               <h3 className="text-xl font-medium text-gray-900 mb-3">2.1 Personal Information</h3>
               <ul className="list-disc pl-6 text-gray-700 mb-4">
                 <li>Name and contact information (email, phone number)</li>
@@ -111,7 +114,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">7. Data Retention</h2>
               <p className="text-gray-700 mb-4">
-                We retain your information for as long as necessary to provide our services and comply with legal obligations. 
+                We retain your information for as long as necessary to provide our services and comply with legal obligations.
                 When you delete your account, we will delete or anonymize your personal data within 30 days.
               </p>
             </section>
@@ -119,7 +122,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">8. Cookies and Tracking</h2>
               <p className="text-gray-700 mb-4">
-                We use cookies and similar technologies to improve your experience and analyze usage patterns. 
+                We use cookies and similar technologies to improve your experience and analyze usage patterns.
                 You can control cookie settings through your browser preferences.
               </p>
             </section>
@@ -127,7 +130,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">9. International Data Transfers</h2>
               <p className="text-gray-700 mb-4">
-                Your information may be transferred to and processed in countries other than your own. 
+                Your information may be transferred to and processed in countries other than your own.
                 We ensure appropriate safeguards are in place to protect your data during such transfers.
               </p>
             </section>
@@ -135,7 +138,7 @@ export default function PrivacyPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">10. Children&apos;s Privacy</h2>
               <p className="text-gray-700 mb-4">
-                Our services are not intended for children under 16 years of age. 
+                Our services are not intended for children under 16 years of age.
                 We do not knowingly collect personal information from children under 16.
               </p>
             </section>

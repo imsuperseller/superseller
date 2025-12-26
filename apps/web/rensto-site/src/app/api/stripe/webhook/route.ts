@@ -8,7 +8,7 @@ function getStripe(): Stripe {
     throw new Error('STRIPE_SECRET_KEY not configured');
   }
   return new Stripe(apiKey, {
-    apiVersion: '2025-02-24.acacia', // Match Stripe webhook API version
+    apiVersion: '2025-08-27.basil' as any, // Match SDK version
   });
 }
 
@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
       const webhookMap: Record<string, string> = {
         'marketplace-template': `${N8N_URL}/webhook/stripe-marketplace-template`,
         'marketplace-install': `${N8N_URL}/webhook/stripe-marketplace-install`,
+        'marketplace-custom': `${N8N_URL}/webhook/stripe-marketplace-custom`,
         'ready-solutions': `${N8N_URL}/webhook/stripe-ready-solutions`,
         'subscription': `${N8N_URL}/webhook/stripe-subscription`,
         'custom-solutions': `${N8N_URL}/webhook/stripe-custom`,
@@ -136,8 +137,8 @@ export async function POST(request: NextRequest) {
           subscriptionId: subscription.id,
           customerId: subscription.customer,
           status: subscription.status,
-          currentPeriodStart: subscription.current_period_start,
-          currentPeriodEnd: subscription.current_period_end,
+          currentPeriodStart: (subscription as any).current_period_start,
+          currentPeriodEnd: (subscription as any).current_period_end,
           metadata: subscription.metadata,
           timestamp: new Date().toISOString()
         }

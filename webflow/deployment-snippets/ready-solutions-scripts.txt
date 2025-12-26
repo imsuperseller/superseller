@@ -1,4 +1,0 @@
-<!-- Ready Solutions Page Scripts -->
-<!-- Paste this in Webflow: Page Settings → Custom Code → Before </body> tag -->
-    <script src="https://rensto-webflow-scripts.vercel.app/shared/stripe-core.js"></script>
-    <script src="https://rensto-webflow-scripts.vercel.app/ready-solutions/checkout.js"></script>
