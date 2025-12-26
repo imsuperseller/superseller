@@ -37,6 +37,15 @@ export async function GET(request: NextRequest) {
       downloads: doc.data().downloads || 0
     }));
 
+    // Filter out internal and client-specific templates from public view
+    const EXCLUDED_TAGS = ['internal', 'tax4us', 'meatpoint', 'dima', 'client-specific', 'archive', 'testing'];
+    if (!searchParams.has('includeInternal')) {
+      templates = templates.filter((t: any) => {
+        const features = t.features || [];
+        return !features.some((tag: string) => EXCLUDED_TAGS.includes(tag.toLowerCase()));
+      });
+    }
+
     // In-memory search fallback
     if (search) {
       const searchLower = search.toLowerCase();
