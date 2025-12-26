@@ -1,0 +1,23 @@
+# Rensto AI Automation Readiness Checklist
+## For High-Volume Operations
+
+1. **Infrastructure Audit**
+   - [ ] n8n Host (RackNerd/Self-Hosted)
+   - [ ] Dedicated WhatsApp Number (Evolution API/WAHA)
+   - [ ] AI Model Access (OpenAI/Gemini/Claude)
+   - [ ] Secure Vault for API Keys
+
+2. **Sales Automation**
+   - [ ] Lead Scoring Logic (Airtable)
+   - [ ] Multi-platform Scraper (Apollo/LinkedIn)
+   - [ ] Personalized Outreach (GPT-4o)
+   - [ ] CRM Sync (QuickBooks/HubSpot)
+
+3. **Operations & Support**
+   - [ ] Knowledge Base (RAG System)
+   - [ ] Multi-Agent Routing (WhatsApp/Email)
+   - [ ] Invoicing Automation (QuickBooks)
+   - [ ] Real-time Error Alerting (Telegram)
+
+---
+© 2025 Rensto. All Rights Reserved.

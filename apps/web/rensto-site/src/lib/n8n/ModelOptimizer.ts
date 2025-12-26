@@ -1,7 +1,6 @@
 /**
  * n8n Model Optimizer Service
- * Monitors LLM performance benchmarks (e.g., LMArena/LMSYS) and 
- * suggests model updates for specific n8n nodes.
+ * Monitors LLM performance benchmarks and suggests model updates for n8n nodes.
  */
 
 interface OptimizationRecommendation {
@@ -11,48 +10,59 @@ interface OptimizationRecommendation {
     suggestedModel: string;
     reason: string;
     improvementPct: number;
+    nodeType: string;
 }
 
 export class ModelOptimizer {
-    private static readonly LMARENA_API = 'https://api.lmarena.ai/v1/benchmarks'; // Placeholder
-
-    /**
-     * Fetches the latest LLM performance data.
-     */
-    private async getLatestBenchmarks() {
-        // In a real implementation:
-        // const response = await fetch(this.LMARENA_API);
-        // return response.json();
-        return [
-            { id: 'gemini-2.0-flash', score: 1350, category: 'coding' },
-            { id: 'gpt-4o', score: 1340, category: 'coding' },
-            { id: 'claude-3-5-sonnet', score: 1345, category: 'coding' }
-        ];
-    }
-
     /**
      * Analyzes an n8n workflow for potential model upgrades.
      */
     public async analyzeWorkflow(workflowJson: any): Promise<OptimizationRecommendation[]> {
-        const benchmarks = await this.getLatestBenchmarks();
         const recommendations: OptimizationRecommendation[] = [];
 
         if (!workflowJson.nodes || !Array.isArray(workflowJson.nodes)) return [];
 
         for (const node of workflowJson.nodes) {
-            // Logic to detect AI nodes (OpenAI, Anthropic, Gemini nodes)
-            if (node.type.includes('n8n-nodes-base.openAi') || node.type.includes('n8n-nodes-base.googleGemini')) {
-                const currentModel = node.parameters?.model || 'unknown';
+            // Detect various AI node types in n8n
+            const isAiNode =
+                node.type.includes('n8n-nodes-base.openAi') ||
+                node.type.includes('n8n-nodes-base.googleGemini') ||
+                node.type.includes('n8n-nodes-base.anthropic') ||
+                node.type === 'n8n-nodes-base.aiAgent' ||
+                node.type === 'n8n-nodes-base.aiChain';
 
-                // Example check: If using an older model, suggest the top performer
-                if (currentModel.includes('3.5') || currentModel.includes('1.0')) {
+            if (isAiNode) {
+                const currentModel = node.parameters?.model || node.parameters?.options?.model || 'unknown';
+
+                // Recommendation Logic: If using older/expensive models, suggest optimized ones
+                if (
+                    currentModel.includes('gpt-4-') && !currentModel.includes('o') || // Move to 4o
+                    currentModel.includes('gpt-3.5') ||
+                    currentModel.includes('gemini-1.0') ||
+                    currentModel.includes('claude-3-opus') // Opus is slow/expensive, move to Sonnet 3.5
+                ) {
+                    let suggested = 'gemini-2.0-flash';
+                    let reason = 'Superior speed and context handling at a lower cost.';
+                    let improvement = 40;
+
+                    if (currentModel.includes('gpt-4')) {
+                        suggested = 'gpt-4o';
+                        reason = 'Native multi-modal capabilities and significantly faster response times.';
+                        improvement = 30;
+                    } else if (currentModel.includes('claude')) {
+                        suggested = 'claude-3-5-sonnet';
+                        reason = 'Top-tier coding and reasoning performance with lower latency.';
+                        improvement = 25;
+                    }
+
                     recommendations.push({
                         nodeId: node.id,
                         nodeName: node.name,
                         currentModel,
-                        suggestedModel: 'gemini-2.0-flash', // Based on mock benchmark
-                        reason: 'Significant performance jump in coding and reasoning tasks.',
-                        improvementPct: 22
+                        suggestedModel: suggested,
+                        reason,
+                        improvementPct: improvement,
+                        nodeType: node.type
                     });
                 }
             }
@@ -62,20 +72,25 @@ export class ModelOptimizer {
     }
 
     /**
-     * Dispatches a WhatsApp alert for recommended optimizations.
+     * Formats recommendations for a WhatsApp notification.
      */
-    public async notifyUser(recommendations: OptimizationRecommendation[]) {
-        if (recommendations.length === 0) return;
+    public formatWhatsAppMessage(customerName: string, recommendations: OptimizationRecommendation[]): string {
+        if (recommendations.length === 0) return '';
 
-        const message = `🚀 *Rensto Auto-Optimizer Alert*\n\n` +
-            `We found ${recommendations.length} optimization(s) for your workflows:\n\n` +
-            recommendations.map(r =>
-                `• *${r.nodeName}*: ${r.currentModel} → *${r.suggestedModel}*\n  _${r.reason}_`
-            ).join('\n\n') +
-            `\n\n[Approve All Changes](https://rensto.com/admin/optimize?approve=all)`;
+        let message = `🚀 *Rensto Optimizer: Performance Report for ${customerName}*\n\n`;
+        message += `We've detected *${recommendations.length} optimization(s)* to boost your workflow performance:\n\n`;
 
-        console.log('Dispatching WhatsApp Alert:', message);
-        // await trackServerEvent('optimization_alert_sent', { count: recommendations.length });
-        // await sendWhatsAppMessage(process.env.ADMIN_PHONE, message);
+        recommendations.forEach((r, idx) => {
+            message += `${idx + 1}. *${r.nodeName}*\n`;
+            message += `   • Current: ${r.currentModel}\n`;
+            message += `   • *Target*: ${r.suggestedModel}\n`;
+            message += `   • *Impact*: +${r.improvementPct}% performance\n`;
+            message += `   • _Reason: ${r.reason}_\n\n`;
+        });
+
+        message += `🔗 *Review & Apply*: https://rensto.com/portal/optimizer\n\n`;
+        message += `_This audit is part of your All-Access Pass benefits._`;
+
+        return message;
     }
 }

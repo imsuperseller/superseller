@@ -5,141 +5,130 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2024-06-20',
 });
 
-// Price Map (In a real app, this should be in a DB or config)
-const PRICES = {
-    base: 24900, // $249.00
-    base_setup: 49900, // $499.00
-    addons: {
-        media: { price: 7900, setup: 19900 },
-        handoff: { price: 19900, setup: 39900 },
-        groups: { price: 14900, setup: 29900 },
-        broadcast: { price: 19900, setup: 29900 },
-        interactive: { price: 9900, setup: 19900 },
-        presence: { price: 9900, setup: 19900 },
-        labels: { price: 7900, setup: 19900 },
-        read_ops: { price: 7900, setup: 19900 },
-        profile: { price: 4900, setup: 9900 },
-        security: { price: 14900, setup: 39900 },
-        reliability: { price: 24900, setup: 49900 }
+// Unified Product Map
+const PRODUCTS = {
+    'all-access': {
+        name: 'Rensto All-Access Pass',
+        description: 'Monthly unlimited access to all workflows, agents, and the Model Optimizer.',
+        price: 49700,
+        mode: 'subscription',
+        interval: 'month'
     },
-    extra_number: { price: 14900, setup: 9900 }
+    'individual-blueprint': {
+        name: 'Marketplace Blueprint',
+        mode: 'payment',
+    },
+    'managed-base': {
+        name: 'Managed WhatsApp Agent - Base',
+        description: 'Elite Level Architecture + Dedicated Instance',
+        price: 24900,
+        mode: 'subscription',
+        interval: 'month',
+        setupFee: 49900
+    }
 };
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { selectedAddons = [], extraNumbers = 0 } = body;
+        const {
+            flowType, // 'subscription' | 'marketplace-template' | 'managed-plan'
+            productId,
+            tier,
+            customerEmail,
+            metadata = {}
+        } = body;
 
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+        let mode: Stripe.Checkout.Session.Mode = 'payment';
 
-        // 1. Base Plan Subscription
-        lineItems.push({
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name: 'Rensto WhatsApp Agent - Base Platform',
-                    description: 'Type II Architecture, Anti-Ban Protection, n8n Brain Connection',
-                },
-                unit_amount: PRICES.base,
-                recurring: {
-                    interval: 'month',
-                },
-            },
-            quantity: 1,
-        });
-
-        // 2. Base Plan Setup Fee
-        lineItems.push({
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name: 'One-time Setup Fee (Base)',
-                    description: 'Architecture setup, number integration, verification',
-                },
-                unit_amount: PRICES.base_setup,
-            },
-            quantity: 1,
-        });
-
-        // 3. Add-ons
-        selectedAddons.forEach((addonId: string) => {
-            const priceConfig = PRICES.addons[addonId as keyof typeof PRICES.addons];
-            if (priceConfig) {
-                // Add-on Subscription
-                lineItems.push({
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: `Add-on: ${addonId.charAt(0).toUpperCase() + addonId.slice(1)}`,
-                        },
-                        unit_amount: priceConfig.price,
-                        recurring: {
-                            interval: 'month',
-                        },
+        // 1. All-Access Subscription
+        if (flowType === 'subscription' && productId === 'all-access') {
+            mode = 'subscription';
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: PRODUCTS['all-access'].name,
+                        description: PRODUCTS['all-access'].description,
                     },
-                    quantity: 1,
-                });
+                    unit_amount: PRODUCTS['all-access'].price,
+                    recurring: { interval: 'month' },
+                },
+                quantity: 1,
+            });
+        }
 
-                // Add-on Setup
+        // 2. Marketplace Blueprint Download
+        else if (flowType === 'marketplace-template') {
+            mode = 'payment';
+            const price = body.price || 9700; // Default if not provided
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: metadata.workflowName || 'Workflow Blueprint Download',
+                        description: 'Secure JSON file download + setup guide',
+                    },
+                    unit_amount: price,
+                },
+                quantity: 1,
+            });
+        }
+
+        // 3. Managed WhatsApp Plan (Legacy but support built-in)
+        else if (flowType === 'managed-plan') {
+            mode = 'subscription';
+            const plan = PRODUCTS['managed-base'];
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: plan.name,
+                        description: plan.description,
+                    },
+                    unit_amount: plan.price,
+                    recurring: { interval: 'month' },
+                },
+                quantity: 1,
+            });
+
+            if (plan.setupFee) {
                 lineItems.push({
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: `Setup: ${addonId.charAt(0).toUpperCase() + addonId.slice(1)}`,
+                            name: 'Implementation & Setup Fee',
+                            description: 'Professional architecture configuration',
                         },
-                        unit_amount: priceConfig.setup,
+                        unit_amount: plan.setupFee,
                     },
                     quantity: 1,
                 });
             }
-        });
-
-        // 4. Extra Numbers
-        if (extraNumbers > 0) {
-            lineItems.push({
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Extra WhatsApp Numbers (Sessions)',
-                    },
-                    unit_amount: PRICES.extra_number.price,
-                    recurring: {
-                        interval: 'month',
-                    },
-                },
-                quantity: extraNumbers,
-            });
-
-            lineItems.push({
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Setup: Extra Numbers',
-                    },
-                    unit_amount: PRICES.extra_number.setup,
-                },
-                quantity: extraNumbers,
-            });
         }
 
         const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
         const session = await stripe.checkout.sessions.create({
+            customer_email: customerEmail,
             payment_method_types: ['card'],
             line_items: lineItems,
-            mode: 'subscription',
-            success_url: `${origin}/whatsapp/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${origin}/whatsapp`,
+            mode: mode,
+            success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/pricing`,
             metadata: {
-                selectedAddons: selectedAddons.join(','),
-                extraNumbers: extraNumbers.toString()
+                ...metadata,
+                flowType,
+                productId,
+                tier
             }
         });
 
         return NextResponse.json({ url: session.url });
 
     } catch (err: any) {
-        console.error('Stripe Error:', err);
+        console.error('Stripe Checkout Error:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }

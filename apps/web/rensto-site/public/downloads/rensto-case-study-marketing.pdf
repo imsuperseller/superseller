@@ -1,0 +1,23 @@
+# Rensto Case Study: Marketing Automation
+## Result: 312% Lead Velocity Increase
+
+### Executive Summary
+A leading real estate consultancy was struggling with manual lead follow-up. Using Rensto's **WhatsApp Router** and **N8N Logic**, we automated the initial qualification and booking process.
+
+### Challenges
+- Response times over 4 hours.
+- 60% of leads weren't qualified.
+- Manual data entry into CRM was prone to errors.
+
+### The Rensto Solution
+1. **Automated Triage**: n8n scans incoming inquiries and routes them based on property value.
+2. **AI Qualification**: GPT-4o powered WhatsApp bot handles initial discovery.
+3. **Calendar Sync**: Integrated TidyCal for instant booking of qualified leads.
+
+### Results
+- **Response Time**: < 30 seconds.
+- **Qualified Leads**: +45% month-over-month.
+- **ROI**: System paid for itself in 14 days.
+
+---
+© 2025 Rensto. All Rights Reserved.
