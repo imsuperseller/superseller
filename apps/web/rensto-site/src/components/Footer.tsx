@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -14,8 +16,11 @@ import {
   Settings,
   BarChart3,
   Bot,
-  MessageCircle
+  MessageCircle,
+  Brain
 } from 'lucide-react';
+
+const CONTACT_PHONE = "1234567890"; // Reusable placeholder
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -25,11 +30,12 @@ export function Footer() {
       { name: 'Home', href: '/' },
       { name: 'Marketplace', href: '/marketplace' },
       { name: 'Custom Solutions', href: '/custom' },
-      { name: 'Subscriptions', href: '/subscriptions' },
-      { name: 'Industry Packages', href: '/niches' },
+      { name: 'Offers/Pricing', href: '/offers' },
+      { name: 'Industry Hub', href: '/niches' },
     ],
     business: [
-      { name: 'Customer App', href: '/app/dashboard', icon: Workflow },
+      { name: 'Client Dashboard', href: '/login', icon: Workflow },
+      { name: 'Admin Control', href: '/control', icon: Settings },
     ],
     legal: [
       { name: 'Privacy Policy', href: '/legal/privacy' },
@@ -58,7 +64,7 @@ export function Footer() {
       },
       {
         name: 'WhatsApp',
-        href: "https://wa.me/1234567890?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.",
+        href: `https://wa.me/${CONTACT_PHONE}?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.`,
         icon: MessageCircle,
       },
       // GitHub removed
@@ -66,7 +72,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-slate-900 text-white">
+    <footer className="text-white border-t border-white/5" style={{ background: 'var(--rensto-bg-primary)' }}>
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}

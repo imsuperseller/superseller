@@ -95,9 +95,9 @@ export default function AdminDashboardClient({
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen" style={{ background: 'var(--rensto-bg-primary)' }}>
             {/* Header */}
-            <header className="bg-white border-b border-slate-200 px-6 py-4">
+            <header className="border-b px-6 py-4" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-3">
@@ -120,10 +120,10 @@ export default function AdminDashboardClient({
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                             />
                         </div>
-                        <button className="relative p-2 text-slate-600 hover:text-slate-900">
+                        <button className="relative p-2 text-slate-400 hover:text-white">
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                         </button>
@@ -133,7 +133,7 @@ export default function AdminDashboardClient({
                             </div>
                             <button
                                 onClick={handleSignOut}
-                                className="p-2 text-slate-600 hover:text-red-500 transition-colors"
+                                className="p-2 text-slate-400 hover:text-red-500 transition-colors"
                                 title="Sign out"
                             >
                                 <LogOut className="w-5 h-5" />
@@ -145,7 +145,7 @@ export default function AdminDashboardClient({
 
             <div className="flex">
                 {/* Sidebar */}
-                <aside className="w-64 bg-white border-r border-slate-200 min-h-screen">
+                <aside className="w-64 border-r min-h-screen" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                     <nav className="p-4">
                         <ul className="space-y-2">
                             {[
@@ -162,8 +162,8 @@ export default function AdminDashboardClient({
                                     <button
                                         onClick={() => setActiveTab(item.id)}
                                         className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === item.id
-                                            ? 'bg-orange-50 text-orange-600 border border-orange-200'
-                                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                            ? 'bg-white/10 text-[var(--rensto-cyan)] border border-white/20 shadow-[0_0_15px_rgba(45,168,255,0.2)]'
+                                            : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                             }`}
                                     >
                                         <item.icon className="w-5 h-5" />
@@ -182,10 +182,10 @@ export default function AdminDashboardClient({
                             <>
                                 {/* Page Header */}
                                 <div className="mb-8">
-                                    <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                                    <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>
                                         Dashboard Overview
                                     </h2>
-                                    <p className="text-slate-600">
+                                    <p style={{ color: 'var(--rensto-text-secondary)' }}>
                                         Welcome back! Here&apos;s what&apos;s happening with your
                                         business.
                                     </p>
@@ -193,13 +193,13 @@ export default function AdminDashboardClient({
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                    <div className="rounded-xl border p-6 shadow-sm" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Revenue This Month
                                                 </p>
-                                                <p className="text-2xl font-bold text-slate-900">
+                                                <p className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
                                                     ${stats.revenue.current.toLocaleString()}
                                                 </p>
                                                 <p className="text-sm text-green-600 flex items-center mt-1">
@@ -213,13 +213,13 @@ export default function AdminDashboardClient({
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                    <div className="rounded-xl border p-6 shadow-sm" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Active Projects
                                                 </p>
-                                                <p className="text-2xl font-bold text-slate-900">
+                                                <p className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
                                                     {stats.projects.active}
                                                 </p>
                                                 <p className="text-sm text-slate-500 mt-1">
@@ -233,13 +233,13 @@ export default function AdminDashboardClient({
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                    <div className="rounded-xl border p-6 shadow-sm" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Total Clients
                                                 </p>
-                                                <p className="text-2xl font-bold text-slate-900">
+                                                <p className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
                                                     {stats.clients.total}
                                                 </p>
                                                 <p className="text-sm text-green-600 flex items-center mt-1">
@@ -253,13 +253,13 @@ export default function AdminDashboardClient({
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                    <div className="rounded-xl border p-6 shadow-sm" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Pending Invoices
                                                 </p>
-                                                <p className="text-2xl font-bold text-slate-900">
+                                                <p className="text-2xl font-bold" style={{ color: 'var(--rensto-text-primary)' }}>
                                                     {stats.invoices.pending}
                                                 </p>
                                                 <p className="text-sm text-red-600 flex items-center mt-1">
@@ -275,8 +275,8 @@ export default function AdminDashboardClient({
                                 </div>
 
                                 {/* Quick Actions */}
-                                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-8">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                                <div className="rounded-xl border p-6 shadow-sm mb-8" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                                    <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                                         Quick Actions
                                     </h3>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -298,8 +298,8 @@ export default function AdminDashboardClient({
                                 </div>
 
                                 {/* Recent Activity */}
-                                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                                <div className="rounded-xl border p-6 shadow-sm" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                                    <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
                                         Recent Activity
                                     </h3>
                                     <div className="space-y-4">
@@ -321,7 +321,7 @@ export default function AdminDashboardClient({
                                                                 <Clock className="w-4 h-4 text-orange-600" />}
                                                 </div>
                                                 <div className="flex-1">
-                                                    <p className="text-sm font-medium text-slate-900">
+                                                    <p className="text-sm font-medium" style={{ color: 'var(--rensto-text-primary)' }}>
                                                         {activity.action}
                                                     </p>
                                                     <p className="text-xs text-slate-500">{activity.time}</p>

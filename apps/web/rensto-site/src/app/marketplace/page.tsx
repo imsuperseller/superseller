@@ -96,10 +96,10 @@ export default function MarketplacePage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#110d28] text-white selection:bg-[#fe3d51] selection:text-white flex flex-col pt-16">
+        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+            <Header />
             <Schema type="BreadcrumbList" data={breadcrumbData} />
             <AnimatedGridBackground />
-            <Header />
 
             <main className="flex-grow container mx-auto px-6 py-12 relative z-10">
                 {/* Hero Section */}
@@ -112,7 +112,9 @@ export default function MarketplacePage() {
                     </h1>
                     <p className="text-lg text-slate-400 max-w-2xl mx-auto">
                         Browse our library of pre-built n8n workflows and AI agents.
-                        Choose between instant JSON download, expert implementation, or custom setup.
+                        <span className="block mt-2 font-semibold text-cyan-400">
+                            [BETA] All workflows currently available via Custom Implementation only.
+                        </span>
                     </p>
                 </div>
 
@@ -311,44 +313,44 @@ function WorkflowCard({ template, viewMode }: { template: Template; viewMode: 'g
 const MOCK_TEMPLATES: Template[] = [
     {
         id: 'whatsapp-router',
-        name: 'WhatsApp Business Router',
-        description: 'Intelligently route incoming WhatsApp messages to the correct agent or department.',
+        name: 'Omni-Channel Lead Router',
+        description: 'Intelligently route incoming business messages to the correct department or CRM.',
         category: 'Operations',
         price: 97,
         rating: 5.0,
         downloads: 245,
         popular: true,
-        features: ['WAHA Integration', 'Intelligent Routing', 'Multi-Agent Support', 'Analytics']
+        features: ['Intelligent Routing', 'CRM Integration', 'Multi-Agent Support', 'Analytics']
     },
     {
         id: 'rensto-support-agent',
-        name: 'AI Support Specialist',
+        name: 'Professional support Agent',
         description: '24/7 AI-powered support agent trained on your company knowledge base.',
         category: 'AI Agents',
         price: 197,
         rating: 4.9,
         downloads: 182,
         popular: true,
-        features: ['Gemini RAG', 'Voice Support', 'Knowledge Base Sync', 'Human Handoff']
+        features: ['Gemini RAG', 'Knowledge Base Sync', 'Human Handoff']
     },
     {
-        id: 'tax4us-agent',
-        name: 'Tax Compliance Agent',
-        description: 'Specialized AI agent for tax inquiries, law compliance, and customer support.',
+        id: 'compliance-audit-agent',
+        name: 'Auto-Audit Specialist',
+        description: 'Specialized AI agent for document analysis, law compliance, and reporting.',
         category: 'AI Agents',
         price: 247,
         rating: 4.8,
         downloads: 64,
-        features: ['Legal Knowledge Base', 'Document Analysis', 'Compliance Filtering', 'Voice Processing']
+        features: ['Document Analysis', 'Compliance Filtering', 'Security Guardrails']
     },
     {
-        id: 'meatpoint-agent',
-        name: 'MeatPoint Sales Agent',
-        description: 'Automated sales and support for high-volume retail/wholesale operations.',
+        id: 'sales-growth-agent',
+        name: 'AI Revenue Closer',
+        description: 'Automated sales prospecting and qualification for high-volume operations.',
         category: 'Sales',
         price: 197,
         rating: 4.7,
         downloads: 92,
-        features: ['Inventory Integration', 'Order Processing', 'Customer History', 'Upsell Logic']
+        features: ['Lead Scoring', 'CRM Injection', 'Customer History', 'Upsell Logic']
     }
 ];

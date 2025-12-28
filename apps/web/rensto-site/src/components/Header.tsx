@@ -14,8 +14,11 @@ import {
   Zap,
   Workflow,
   BarChart3,
-  MessageCircle
+  MessageCircle,
+  Brain
 } from 'lucide-react';
+
+const CONTACT_PHONE = "1234567890"; // Reusable placeholder
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,21 +31,14 @@ export function Header() {
     setCurrentPath(window.location.pathname);
   }, []);
 
+  // Main navigation links - only pages that exist
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Process', href: '/process' },
     { name: 'Industry Hub', href: '/niches' },
     { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Demos', href: '/demos' },
     { name: 'Offers', href: '/offers' },
     { name: 'Contact', href: '/contact' },
-  ];
-
-  const businessApps = [
-    { name: 'Admin Dashboard', href: '/admin', icon: Settings },
-    { name: 'Customer Portal', href: '/demo-org', icon: Workflow },
-    { name: 'Agent Management', href: '/admin/agents', icon: Zap },
-    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   ];
 
   return (
@@ -92,22 +88,22 @@ export function Header() {
             Custom Solutions
           </Link>
           <Link
-            href="/pricing"
+            href="/offers"
             className="text-gray-300 hover:text-white transition-colors"
           >
             Pricing
           </Link>
           <Link
-            href="/subscriptions"
+            href="/marketplace"
             className="text-gray-300 hover:text-white transition-colors"
           >
-            Managed Plans
+            Marketplace
           </Link>
           <Link
             href="/niches"
             className="text-gray-300 hover:text-white transition-colors"
           >
-            Industry Hub
+            Niches
           </Link>
 
           {/* Desktop Actions */}
@@ -123,7 +119,7 @@ export function Header() {
               Support Agent
             </button>
             <a
-              href="https://wa.me/1234567890?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business."
+              href={`https://wa.me/${CONTACT_PHONE}?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm font-medium text-green-400 hover:text-green-300 transition-colors"

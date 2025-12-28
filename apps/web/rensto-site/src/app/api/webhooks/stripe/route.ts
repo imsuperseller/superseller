@@ -54,8 +54,7 @@ export async function POST(req: Request) {
                 const templateId = metadata.productId || metadata.workflowId;
                 const customerEmail = session.customer_details?.email;
 
-                // Create a secure download token (valid indefinitely for now, can add expiration later)
-                // Format: templateId:customerEmail:timestamp
+                // Create a secure download token
                 const tokenData = `${templateId}:${customerEmail}:${Date.now()}`;
                 const downloadToken = Buffer.from(tokenData).toString('base64url');
                 const downloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://rensto.com'}/api/marketplace/download/${downloadToken}`;
@@ -77,6 +76,54 @@ export async function POST(req: Request) {
                     status: 'success',
                     details: { templateId, customerEmail, downloadUrl }
                 });
+            }
+
+            // 3. Specialized handling for Service Purchases (e.g. Automation Audit)
+            if (metadata.flowType === 'service-purchase') {
+                const customerEmail = session.customer_details?.email;
+                if (customerEmail) {
+                    const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
+
+                    // Check if client already exists
+                    const existingClient = await clientsRef.where('email', '==', customerEmail.toLowerCase()).limit(1).get();
+
+                    const clientData = {
+                        email: customerEmail.toLowerCase(),
+                        name: session.customer_details?.name || 'Valued Client',
+                        status: 'paid',
+                        amountPaid: session.amount_total ? session.amount_total / 100 : 0,
+                        lastPaidAt: Timestamp.now(),
+                        productId: metadata.productId || 'automation-audit',
+                        tier: metadata.tier || 'standard',
+                        stripeCustomerId: session.customer as string,
+                        updatedAt: Timestamp.now()
+                    };
+
+                    if (existingClient.empty) {
+                        // Create new client record
+                        const newClient = await clientsRef.add({
+                            ...clientData,
+                            createdAt: Timestamp.now(),
+                        });
+
+                        await auditAgent.log({
+                            service: 'firebase',
+                            action: 'client_provisioned',
+                            status: 'success',
+                            details: { clientId: newClient.id, email: customerEmail }
+                        });
+                    } else {
+                        // Update existing client record
+                        await existingClient.docs[0].ref.update(clientData);
+
+                        await auditAgent.log({
+                            service: 'firebase',
+                            action: 'client_updated_post_purchase',
+                            status: 'success',
+                            details: { clientId: existingClient.docs[0].id, email: customerEmail }
+                        });
+                    }
+                }
             }
 
             // 3. Forward to n8n for QuickBooks and other integrations

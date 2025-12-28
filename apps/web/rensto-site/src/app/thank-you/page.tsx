@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Mail, Download, Zap, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 function ThankYouContent() {
     const searchParams = useSearchParams();
@@ -102,11 +104,15 @@ function ThankYouContent() {
 
 export default function ThankYouPage() {
     return (
-        <main className="min-h-screen pt-32 pb-20 px-4 bg-[#110d28]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent pointer-events-none" />
-            <Suspense fallback={<div className="text-center text-white">Loading...</div>}>
-                <ThankYouContent />
-            </Suspense>
-        </main>
+        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+            <Header />
+            <main className="flex-grow pt-32 pb-20 px-4">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent pointer-events-none" />
+                <Suspense fallback={<div className="text-center text-white">Loading...</div>}>
+                    <ThankYouContent />
+                </Suspense>
+            </main>
+            <Footer />
+        </div>
     );
 }

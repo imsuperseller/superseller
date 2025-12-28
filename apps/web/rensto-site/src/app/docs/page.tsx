@@ -1,14 +1,9 @@
-import { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
 import { Book, Code, Users, Settings, Zap, Shield, FileText, HelpCircle, ArrowRight, ExternalLink } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'Rensto Documentation | AI Implementation & API Guides',
-  description: 'Comprehensive guides and documentation for the Rensto platform. Learn how to architect, build, and scale your business automation.',
-  alternates: {
-    canonical: '/docs',
-  },
-};
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 const documentationSections = [
   {
@@ -98,139 +93,143 @@ const documentationSections = [
 
 export default function DocumentationPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+      <Header />
+      <main className="flex-grow">
+        {/* Header */}
+        <div className="border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                Documentation
+              </h1>
+              <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                Everything you need to know about Rensto Business System. From getting started to advanced features.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="border-b" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search documentation..."
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-[var(--rensto-blue)] focus:border-transparent"
+                />
+                <Book className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Documentation Sections */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Documentation
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything you need to know about Rensto Business System. From getting started to advanced features.
-            </p>
-          </div>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {documentationSections.map((section) => (
+              <div key={section.title} className="rounded-lg shadow-sm border p-6" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="flex items-center mb-4">
+                  <section.icon className="h-6 w-6 mr-3 text-[var(--rensto-blue)]" />
+                  <h2 className="text-xl font-semibold" style={{ color: 'var(--rensto-text-primary)' }}>{section.title}</h2>
+                </div>
 
-      {/* Search Bar */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="max-w-2xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search documentation..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <Book className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Documentation Sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {documentationSections.map((section) => (
-            <div key={section.title} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center mb-4">
-                <section.icon className="h-6 w-6 mr-3 text-blue-600" />
-                <h2 className="text-xl font-semibold text-gray-900">{section.title}</h2>
-              </div>
-
-              <div className="space-y-3">
-                {section.items.map((item) => (
-                  <Link
-                    key={item.title}
-                    href={item.href}
-                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">{item.description}</p>
+                <div className="space-y-3">
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="block p-3 rounded-lg hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-medium transition-colors" style={{ color: 'var(--rensto-text-primary)' }}>
+                            {item.title}
+                          </h3>
+                          <p className="text-xs mt-1" style={{ color: 'var(--rensto-text-secondary)' }}>{item.description}</p>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-[var(--rensto-blue)] transition-colors" />
                       </div>
-                      <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Links */}
-        <div className="mt-16 bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Links</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link
-              href="/docs/getting-started"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <Book className="h-5 w-5 text-blue-600 mr-3" />
-              <span className="font-medium text-gray-900">Quick Start</span>
-            </Link>
-
-            <Link
-              href="/docs/api-reference"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <Code className="h-5 w-5 text-blue-600 mr-3" />
-              <span className="font-medium text-gray-900">API Reference</span>
-            </Link>
-
-            <Link
-              href="/docs/troubleshooting"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <HelpCircle className="h-5 w-5 text-blue-600 mr-3" />
-              <span className="font-medium text-gray-900">Troubleshooting</span>
-            </Link>
-
-            <Link
-              href="/docs/support"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <Users className="h-5 w-5 text-blue-600 mr-3" />
-              <span className="font-medium text-gray-900">Support</span>
-            </Link>
+            ))}
           </div>
-        </div>
 
-        {/* Getting Help */}
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
-            <p className="text-gray-600 mb-6">
-              Can&apos;t find what you&apos;re looking for? Our support team is here to help.
-            </p>
+          {/* Quick Links */}
+          <div className="mt-16 rounded-lg shadow-sm border p-8" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+            <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>Quick Links</h2>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Link
-                href="/docs/support"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                href="/docs/getting-started"
+                className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
               >
-                <HelpCircle className="h-5 w-5 mr-2" />
-                Contact Support
+                <Book className="h-5 w-5 text-blue-600 mr-3" />
+                <span className="font-medium text-gray-900">Quick Start</span>
               </Link>
 
-              <a
-                href="https://github.com/rensto/docs/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              <Link
+                href="/docs/api-reference"
+                className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
               >
-                <ExternalLink className="h-5 w-5 mr-2" />
-                Report Issue
-              </a>
+                <Code className="h-5 w-5 text-blue-600 mr-3" />
+                <span className="font-medium text-gray-900">API Reference</span>
+              </Link>
+
+              <Link
+                href="/docs/troubleshooting"
+                className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              >
+                <HelpCircle className="h-5 w-5 text-blue-600 mr-3" />
+                <span className="font-medium text-gray-900">Troubleshooting</span>
+              </Link>
+
+              <Link
+                href="/docs/support"
+                className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              >
+                <Users className="h-5 w-5 text-blue-600 mr-3" />
+                <span className="font-medium text-gray-900">Support</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Getting Help */}
+          <div className="mt-8 rounded-lg p-8" style={{ background: 'linear-gradient(to right, rgba(0, 242, 254, 0.05), rgba(79, 172, 254, 0.05))', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>Need Help?</h2>
+              <p className="mb-6" style={{ color: 'var(--rensto-text-secondary)' }}>
+                Can&apos;t find what you&apos;re looking for? Our support team is here to help.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/docs/support"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  <HelpCircle className="h-5 w-5 mr-2" />
+                  Contact Support
+                </Link>
+
+                <a
+                  href="https://github.com/rensto/docs/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  <ExternalLink className="h-5 w-5 mr-2" />
+                  Report Issue
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

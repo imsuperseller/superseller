@@ -80,7 +80,7 @@ export default function NichesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#110d28] text-white flex flex-col pt-16">
+        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
             <Header />
             <Schema type="BreadcrumbList" data={breadcrumbData} />
@@ -141,7 +141,7 @@ export default function NichesPage() {
                             </p>
                             <div className="flex gap-4">
                                 <Link href="/contact">
-                                    <Button size="lg" className="bg-white text-black hover:bg-slate-200 h-14 px-8 font-bold">
+                                    <Button size="lg" className="h-14 px-8 font-bold" variant="renstoPrimary">
                                         Custom Audit <Zap className="ml-2 w-5 h-5 fill-current" />
                                     </Button>
                                 </Link>

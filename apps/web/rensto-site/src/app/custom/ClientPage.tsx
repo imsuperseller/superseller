@@ -25,7 +25,7 @@ import {
     OldWayXIcon,
     NewWayCheckIcon
 } from '@/components/icons/CustomIcons';
-import { CustomHeader } from '@/components/CustomHeader';
+import { Header } from '@/components/Header';
 
 // Types for the flow state
 type FlowState = 'IDLE' | 'BOOTING' | 'INTERRUPTION' | 'QUALIFIED' | 'GENERATING_SOLUTION' | 'PROPOSAL' | 'REVEAL' | 'GENERATING';
@@ -200,8 +200,8 @@ export default function CustomSolutionsPage() {
             })
         }).catch(err => console.error('[Custom Page] Lead intake error:', err));
 
-        // Redirect to offer page
-        router.push(`/offer/standard-ai?client=${encodeURIComponent(clientName)}&email=${encodeURIComponent(email)}`);
+        // Redirect to audit page
+        router.push(`/offers#audit?client=${encodeURIComponent(clientName)}&email=${encodeURIComponent(email)}`);
     };
 
 
@@ -210,7 +210,7 @@ export default function CustomSolutionsPage() {
         <div className="min-h-screen flex flex-col text-white font-sans selection:bg-rensto-red/30" style={{ background: 'var(--rensto-bg-primary)' }}>
 
             {/* Header */}
-            <CustomHeader />
+            <Header />
 
             {/* ===== HERO SECTION ===== */}
             <section className="py-24 px-4 relative overflow-hidden min-h-[80vh] flex items-center">

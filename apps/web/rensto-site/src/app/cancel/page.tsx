@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button-enhanced';
 
 interface CancelPageProps {
   searchParams: { canceled?: string };
@@ -9,54 +10,48 @@ export default function CancelPage({ searchParams }: CancelPageProps) {
   const canceled = searchParams?.canceled;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          {/* Cancel Icon */}
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-            <XCircle className="h-6 w-6 text-red-600" />
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'var(--rensto-bg-primary)' }}>
+      <div className="max-w-md w-full relative">
+        {/* Decorative backdrop */}
+        <div className="absolute inset-0 bg-red-500/10 blur-[80px] rounded-full -z-10" />
+
+        <div className="bg-[#1a1438]/60 border border-white/10 rounded-[2rem] p-8 md:p-12 backdrop-blur-xl space-y-8 text-center">
+          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-2xl bg-red-500/10 border border-red-500/20">
+            <XCircle className="h-10 w-10 text-red-500" />
           </div>
 
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Payment Cancelled
-          </h2>
+          <div className="space-y-3">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Payment <span className="text-red-500">Cancelled</span>
+            </h1>
+            <p className="text-slate-400">
+              {canceled
+                ? 'Your payment session was cancelled. No charges were made to your account.'
+                : 'The payment process was not completed. You can try again when you are ready.'}
+            </p>
+          </div>
 
-          <p className="mt-2 text-sm text-gray-600">
-            {canceled
-              ? 'Your payment was cancelled. No charges were made.'
-              : 'No payment was processed.'}
-          </p>
-        </div>
+          <div className="grid gap-4">
+            <Link href="/offers">
+              <Button className="w-full bg-white/5 hover:bg-white/10 text-white border-white/10 h-14 font-bold rounded-xl">
+                Return to Offers
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="ghost" className="w-full text-slate-500 hover:text-white h-12">
+                Back to Homepage
+              </Button>
+            </Link>
+          </div>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-          <p className="text-sm text-gray-600 mb-4">
-            You can return to our marketplace to browse other products or try again.
-          </p>
-        </div>
-
-        <div className="flex space-x-4">
-          <Link
-            href="/subscriptions"
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-blue-700 transition-colors"
-          >
-            Browse Marketplace
-          </Link>
-
-          <Link
-            href="/"
-            className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-center font-medium hover:bg-gray-300 transition-colors"
-          >
-            Go Home
-          </Link>
-        </div>
-
-        <div className="text-center">
-          <p className="text-xs text-gray-500">
-            Need help? Contact us at{' '}
-            <a href="mailto:support@rensto.com" className="text-blue-600 hover:text-blue-700">
-              support@rensto.com
-            </a>
-          </p>
+          <div className="pt-8 border-t border-white/5">
+            <p className="text-xs text-slate-500">
+              Need assistance? contact our support at{' '}
+              <a href="mailto:support@rensto.com" className="text-red-500/80 hover:text-red-500 transition-colors">
+                support@rensto.com
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

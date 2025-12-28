@@ -1,21 +1,21 @@
-
 import React from 'react';
 import { RenstoCard } from '@/components/ui/rensto-card';
 
-export function AgentOutputDisplay({ customerId, agentType }) {
-  const sampleOutputs = {
-    'ben-ginati': {
-      wordpress: ['Tax Season Blog Post', 'SEO Optimization Report'],
-      social: ['Tax Tips Tuesday Post', 'LinkedIn Article'],
-      podcast: ['Tax Planning Episode', 'Show Notes']
-    },
-    'shelly-mizrahi': {
-      excel: ['Customer Analysis Report', 'Q4 Performance Data'],
-      data: ['Retention Analysis', 'Trend Report']
+interface AgentOutputDisplayProps {
+  customerId: string;
+  agentType: string;
+}
+
+export function AgentOutputDisplay({ customerId, agentType }: AgentOutputDisplayProps) {
+  const sampleOutputs: Record<string, Record<string, string[]>> = {
+    'test-customer': {
+      'content-strategy': ['Marketing Roadmap 2024', 'Brand Voice Guide'],
+      'lead-audit': ['Conversion Analysis', 'Optimization Plan'],
+      'system-architecture': ['Integration Map', 'Security Protocol']
     }
   };
 
-  const outputs = sampleOutputs[customerId]?.[agentType] || [];
+  const outputs = sampleOutputs[customerId as keyof typeof sampleOutputs]?.[agentType] || [];
 
   return (
     <RenstoCard variant="gradient">

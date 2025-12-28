@@ -50,7 +50,7 @@ export default function EcommerceNichePage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#110d28] text-white flex flex-col pt-16">
+        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
             <Header />
             <Schema type="FAQPage" data={faqData} />
@@ -74,7 +74,7 @@ export default function EcommerceNichePage() {
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <Link href="/contact?niche=ecommerce">
-                                        <Button size="lg" className="bg-pink-600 hover:bg-pink-500 text-white h-14 px-8 font-bold">
+                                        <Button size="lg" className="h-14 px-8 font-bold" variant="renstoPrimary">
                                             Book Store Audit
                                         </Button>
                                     </Link>

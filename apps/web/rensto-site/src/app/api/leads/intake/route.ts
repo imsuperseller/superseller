@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { env } from '@/lib/env';
 
 export async function POST(request: Request) {
     try {
@@ -13,7 +14,9 @@ export async function POST(request: Request) {
         }
 
         // Forward to n8n lead-intake webhook
-        const n8nResponse = await fetch('https://n8n.rensto.com/webhook/lead-intake', {
+        const webhookUrl = env.N8N_LEAD_INTAKE_URL || 'https://n8n.rensto.com/webhook/lead-intake';
+
+        const n8nResponse = await fetch(webhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

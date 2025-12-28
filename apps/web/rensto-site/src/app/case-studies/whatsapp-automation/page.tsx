@@ -29,7 +29,7 @@ export default function CaseStudyPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#110d28] text-white flex flex-col pt-16">
+        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
             <Header />
             <Schema type="BreadcrumbList" data={breadcrumbData} />

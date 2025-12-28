@@ -4,6 +4,8 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle, ArrowRight, Mail, Calendar, Loader2 } from 'lucide-react';
 import Script from 'next/script';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
@@ -251,17 +253,21 @@ function LoadingFallback() {
 export default function CustomSolutionSuccessPage() {
     return (
         <div
-            className="min-h-screen flex items-center justify-center p-8"
+            className="min-h-screen flex flex-col pt-16"
             style={{ backgroundColor: 'var(--rensto-bg-primary)' }}
         >
-            <div
-                className="max-w-lg w-full rounded-2xl p-10 text-center"
-                style={{ backgroundColor: 'var(--rensto-bg-card)' }}
-            >
-                <Suspense fallback={<LoadingFallback />}>
-                    <SuccessContent />
-                </Suspense>
-            </div>
+            <Header />
+            <main className="flex-grow flex items-center justify-center p-8">
+                <div
+                    className="max-w-lg w-full rounded-2xl p-10 text-center"
+                    style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                >
+                    <Suspense fallback={<LoadingFallback />}>
+                        <SuccessContent />
+                    </Suspense>
+                </div>
+            </main>
+            <Footer />
         </div>
     );
 }

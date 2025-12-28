@@ -242,7 +242,7 @@ function LoginFormContent() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ backgroundColor: BRAND.colors.background.primary }}
+      style={{ background: 'var(--rensto-bg-primary)' }}
     >
       {/* Dynamic animated background */}
       <div className="absolute inset-0 pointer-events-none">
@@ -299,7 +299,7 @@ function LoginFormContent() {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200/50 shadow-2xl p-10 relative overflow-hidden">
+        <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ background: 'var(--rensto-bg-card)', borderColor: 'rgba(254, 61, 81, 0.2)' }}>
           {/* Glass effect overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-white/30 rounded-2xl" />
 
@@ -344,7 +344,8 @@ function LoginFormContent() {
               <div className="space-y-3">
                 <Label
                   htmlFor="email"
-                  className="text-slate-700 font-semibold text-base"
+                  className="font-semibold text-base"
+                  style={{ color: 'var(--rensto-text-primary)' }}
                 >
                   Email address
                 </Label>

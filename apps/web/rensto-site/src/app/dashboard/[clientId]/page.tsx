@@ -32,7 +32,7 @@ async function getClientData(clientId: string): Promise<ProjectData | null> {
         clientName: client.name || 'Valued Client',
         packageName: client.selectedTier ? `${client.selectedTier.charAt(0).toUpperCase() + client.selectedTier.slice(1)} Package` : 'Custom Solution',
         startDate: client.createdAt ? new Date(client.createdAt._seconds * 1000).toLocaleDateString() : new Date().toLocaleDateString(),
-        status: client.contractStatus === 'signed' ? 'build' : 'discovery',
+        status: client.status || (client.contractStatus === 'signed' ? 'build' : 'discovery'),
         progress: client.qualificationScore ? Math.min(client.qualificationScore, 100) : 15,
         deliverables: client.deliverables || DEFAULT_DELIVERABLES,
         invoices: client.amountPaid ? [

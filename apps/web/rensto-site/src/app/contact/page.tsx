@@ -1,16 +1,11 @@
-import { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
 import { env } from '@/lib/env';
 import { ContactForm } from '@/components/ContactForm';
 import { Mail, MapPin, Clock, Phone } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'Contact Rensto | AI Automation Experts & Consultation',
-  description: 'Get in touch with our team to discuss your business automation needs. Expert guidance on AI agents, workflow optimization, and custom infrastructure.',
-  alternates: {
-    canonical: '/contact',
-  },
-};
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 const contactInfo = [
   {
@@ -72,141 +67,145 @@ const faqs = [
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
-        <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Let&apos;s Build Something Amazing
-          </h1>
-          <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
-            Ready to automate your business processes? Get in touch and let&apos;s discuss how we can help you save time and scale efficiently.
-          </p>
-        </div>
-      </section>
+    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+      <Header />
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
+          <div className="container text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Let&apos;s Build Something Amazing
+            </h1>
+            <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
+              Ready to automate your business processes? Get in touch and let&apos;s discuss how we can help you save time and scale efficiently.
+            </p>
+          </div>
+        </section>
 
-      {/* Contact Form & Info */}
-      <section className="section">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <div>
-              <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
-              <ContactForm />
-            </div>
-
-            {/* Contact Information */}
-            <div>
-              <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
-              <div className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <div key={index} className="card">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0">
-                        <info.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-1">{info.title}</h3>
-                        {info.link ? (
-                          <Link
-                            href={info.link}
-                            className="text-accent1 hover:text-accent2 transition-colors duration-200"
-                          >
-                            {info.value}
-                          </Link>
-                        ) : (
-                          <p className="text-text">{info.value}</p>
-                        )}
-                        <p className="text-sm text-muted mt-1">{info.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        {/* Contact Form & Info */}
+        <section className="section">
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Contact Form */}
+              <div>
+                <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
+                <ContactForm />
               </div>
 
-              {/* Social Links */}
-              <div className="mt-8 card">
-                <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-                <div className="flex space-x-4">
-                  {env.NEXT_PUBLIC_LINKEDIN_URL && (
-                    <Link
-                      href={env.NEXT_PUBLIC_LINKEDIN_URL}
-                      className="text-muted hover:text-accent1 transition-colors duration-200"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      LinkedIn
-                    </Link>
-                  )}
-                  {env.NEXT_PUBLIC_X_URL && (
-                    <Link
-                      href={env.NEXT_PUBLIC_X_URL}
-                      className="text-muted hover:text-accent1 transition-colors duration-200"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      X (Twitter)
-                    </Link>
-                  )}
-                  {env.NEXT_PUBLIC_YOUTUBE_URL && (
-                    <Link
-                      href={env.NEXT_PUBLIC_YOUTUBE_URL}
-                      className="text-muted hover:text-accent1 transition-colors duration-200"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      YouTube
-                    </Link>
-                  )}
+              {/* Contact Information */}
+              <div>
+                <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
+                <div className="space-y-6">
+                  {contactInfo.map((info, index) => (
+                    <div key={index} className="card">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0">
+                          <info.icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-1">{info.title}</h3>
+                          {info.link ? (
+                            <Link
+                              href={info.link}
+                              className="text-accent1 hover:text-accent2 transition-colors duration-200"
+                            >
+                              {info.value}
+                            </Link>
+                          ) : (
+                            <p className="text-text">{info.value}</p>
+                          )}
+                          <p className="text-sm text-muted mt-1">{info.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Social Links */}
+                <div className="mt-8 card">
+                  <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+                  <div className="flex space-x-4">
+                    {env.NEXT_PUBLIC_LINKEDIN_URL && (
+                      <Link
+                        href={env.NEXT_PUBLIC_LINKEDIN_URL}
+                        className="text-muted hover:text-accent1 transition-colors duration-200"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        LinkedIn
+                      </Link>
+                    )}
+                    {env.NEXT_PUBLIC_X_URL && (
+                      <Link
+                        href={env.NEXT_PUBLIC_X_URL}
+                        className="text-muted hover:text-accent1 transition-colors duration-200"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        X (Twitter)
+                      </Link>
+                    )}
+                    {env.NEXT_PUBLIC_YOUTUBE_URL && (
+                      <Link
+                        href={env.NEXT_PUBLIC_YOUTUBE_URL}
+                        className="text-muted hover:text-accent1 transition-colors duration-200"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        YouTube
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ Section */}
-      <section className="section bg-card/30">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Frequently Asked Questions
+        {/* FAQ Section */}
+        <section className="section bg-card/30">
+          <div className="container">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-xl text-muted max-w-2xl mx-auto">
+                Common questions about our process and services
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {faqs.map((faq, index) => (
+                <div key={index} className="card">
+                  <h3 className="text-lg font-semibold mb-3">{faq.question}</h3>
+                  <p className="text-muted leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="section bg-gradient-to-r from-accent1/20 to-accent2/20">
+          <div className="container text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to Get Started?
             </h2>
-            <p className="text-xl text-muted max-w-2xl mx-auto">
-              Common questions about our process and services
+            <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
+              Choose from our automation services or schedule a consultation to discuss your specific needs.
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/offers" className="btn-primary text-lg px-8 py-4">
+                View Our Offers
+              </Link>
+              <Link href="/process" className="btn-secondary text-lg px-8 py-4">
+                Learn Our Process
+              </Link>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {faqs.map((faq, index) => (
-              <div key={index} className="card">
-                <h3 className="text-lg font-semibold mb-3">{faq.question}</h3>
-                <p className="text-muted leading-relaxed">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section bg-gradient-to-r from-accent1/20 to-accent2/20">
-        <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Get Started?
-          </h2>
-          <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-            Choose from our automation services or schedule a consultation to discuss your specific needs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/offers" className="btn-primary text-lg px-8 py-4">
-              View Our Offers
-            </Link>
-            <Link href="/process" className="btn-secondary text-lg px-8 py-4">
-              Learn Our Process
-            </Link>
-          </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 }

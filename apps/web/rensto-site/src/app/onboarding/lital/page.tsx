@@ -9,7 +9,7 @@ import { Footer } from '@/components/Footer';
 
 export default function LitalOnboardingPage() {
     return (
-        <main className="min-h-screen bg-[#0B0F19] text-slate-200 font-sans selection:bg-rensto-blue/30 overflow-x-hidden">
+        <main className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
 
             {/* --- CUSTOM NAVBAR (Dark Mode Overrides) --- */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0B0F19]/80 backdrop-blur-md border-b border-white/5">

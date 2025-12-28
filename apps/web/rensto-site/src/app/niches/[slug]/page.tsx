@@ -62,7 +62,7 @@ import {
 
 import nicheEngineData from '@/data/niche_engine.json'; // New data source
 
-import { CustomHeader } from '@/components/CustomHeader';
+import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import {
@@ -186,9 +186,9 @@ export default function NicheTemplatePage() {
     const totalMonthly = baseMonthly + addonsMonthly;
 
     return (
-        <div className="min-h-screen text-white selection:bg-[#3B82F6] selection:text-white relative flex flex-col font-sans">
+        <div className="min-h-screen text-white selection:bg-[#3B82F6] selection:text-white relative flex flex-col font-sans" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
-            <CustomHeader />
+            <Header />
 
             <main className="pt-32 pb-40 flex-grow">
                 {/* Hero Section */}

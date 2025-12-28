@@ -1,17 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Input } from '@/components/ui/input-enhanced';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Search, 
-  FileText, 
-  BookOpen, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Search,
+  FileText,
+  BookOpen,
+  Plus,
+  Edit,
+  Trash2,
   Tag,
   Calendar,
   User,
@@ -391,11 +393,11 @@ export default function KnowledgebasePage() {
 
   const filteredDocuments = documents.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         doc.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         doc.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+      doc.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+
     const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -408,8 +410,9 @@ export default function KnowledgebasePage() {
       category: selectedCategory || 'general',
       tags: [],
       author: 'Current User',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      version: 1,
       views: 0,
       helpful: 0,
       notHelpful: 0
@@ -417,7 +420,7 @@ export default function KnowledgebasePage() {
 
     // Add to documents list
     setDocuments(prev => [newDocument, ...prev]);
-    
+
     // TODO: Send API request to backend
     // const response = await fetch('/api/knowledgebase/documents', {
     //   method: 'POST',
@@ -439,7 +442,7 @@ export default function KnowledgebasePage() {
     // TODO: Navigate to edit page or open modal
     // For now, show alert with document info
     alert(`Editing: ${document.title}\nCategory: ${document.category}\nLast updated: ${document.updatedAt}`);
-    
+
     console.log('Edit document:', id);
   };
 
@@ -457,7 +460,7 @@ export default function KnowledgebasePage() {
 
     // Remove from local state
     setDocuments(prev => prev.filter(doc => doc.id !== id));
-    
+
     // TODO: Send API request to backend
     // const response = await fetch(`/api/knowledgebase/documents/${id}`, {
     //   method: 'DELETE'
@@ -493,177 +496,181 @@ export default function KnowledgebasePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Knowledge Base</h1>
-          <p className="text-gray-600 mt-2">Complete setup guides, integration docs, and best practices</p>
+    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+      <Header />
+      <main className="flex-grow container mx-auto px-4 py-12 relative z-10">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Knowledge Base</h1>
+            <p className="text-gray-600 mt-2">Complete setup guides, integration docs, and best practices</p>
+          </div>
+          <Button onClick={handleCreateDocument} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            New Document
+          </Button>
         </div>
-        <Button onClick={handleCreateDocument} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          New Document
-        </Button>
-      </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Search documents..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+        {/* Search and Filters */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search documents..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {categories.map(category => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(category)}
+                className="capitalize flex items-center gap-2"
+              >
+                {getCategoryIcon(category)}
+                {category.replace('-', ' ')}
+              </Button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory(category)}
-              className="capitalize flex items-center gap-2"
-            >
-              {getCategoryIcon(category)}
-              {category.replace('-', ' ')}
-            </Button>
+
+        {/* Documents Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredDocuments.map(doc => (
+            <Card key={doc.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-lg">{doc.title}</CardTitle>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEditDocument(doc.id)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteDocument(doc.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <User className="h-3 w-3" />
+                  {doc.author}
+                  <Calendar className="h-3 w-3 ml-2" />
+                  {doc.updatedAt.toLocaleDateString()}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4 line-clamp-3">{doc.content}</p>
+
+                {/* Referral Links */}
+                {doc.referralLinks && doc.referralLinks.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <ExternalLink className="h-3 w-3" />
+                      Quick Links
+                    </h4>
+                    <div className="space-y-1">
+                      {doc.referralLinks.map((link, index) => (
+                        <a
+                          key={index}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-xs style={{ color: 'var(--rensto-blue)' }} hover:style={{ color: 'var(--rensto-blue)' }} underline"
+                        >
+                          {link.name}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Installation Steps */}
+                {doc.installationSteps && doc.installationSteps.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <Download className="h-3 w-3" />
+                      Setup Steps
+                    </h4>
+                    <div className="text-xs text-gray-600 space-y-1">
+                      {doc.installationSteps.slice(0, 3).map((step, index) => (
+                        <div key={index} className="truncate">{step}</div>
+                      ))}
+                      {doc.installationSteps.length > 3 && (
+                        <div className="style={{ color: 'var(--rensto-blue)' }}">+{doc.installationSteps.length - 3} more steps</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Required Credentials */}
+                {doc.credentials && doc.credentials.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <Key className="h-3 w-3" />
+                      Required Credentials
+                    </h4>
+                    <div className="space-y-1">
+                      {doc.credentials.map((cred, index) => (
+                        <div key={index} className="flex items-center gap-2 text-xs">
+                          <span className={`w-2 h-2 rounded-full ${cred.required ? 'bg-red-500' : 'bg-yellow-500'}`}></span>
+                          <span className="text-gray-600">{cred.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {doc.tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      <Tag className="h-3 w-3 mr-1" />
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex justify-between items-center text-sm text-gray-500">
+                  <span className="capitalize flex items-center gap-1">
+                    {getCategoryIcon(doc.category)}
+                    {doc.category.replace('-', ' ')}
+                  </span>
+                  <span>v{doc.version}</span>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
-      </div>
 
-      {/* Documents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredDocuments.map(doc => (
-          <Card key={doc.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{doc.title}</CardTitle>
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEditDocument(doc.id)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDeleteDocument(doc.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <User className="h-3 w-3" />
-                {doc.author}
-                <Calendar className="h-3 w-3 ml-2" />
-                {doc.updatedAt.toLocaleDateString()}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4 line-clamp-3">{doc.content}</p>
-              
-              {/* Referral Links */}
-              {doc.referralLinks && doc.referralLinks.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <ExternalLink className="h-3 w-3" />
-                    Quick Links
-                  </h4>
-                  <div className="space-y-1">
-                    {doc.referralLinks.map((link, index) => (
-                      <a
-                        key={index}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block text-xs style={{ color: 'var(--rensto-blue)' }} hover:style={{ color: 'var(--rensto-blue)' }} underline"
-                      >
-                        {link.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Installation Steps */}
-              {doc.installationSteps && doc.installationSteps.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <Download className="h-3 w-3" />
-                    Setup Steps
-                  </h4>
-                  <div className="text-xs text-gray-600 space-y-1">
-                    {doc.installationSteps.slice(0, 3).map((step, index) => (
-                      <div key={index} className="truncate">{step}</div>
-                    ))}
-                    {doc.installationSteps.length > 3 && (
-                      <div className="style={{ color: 'var(--rensto-blue)' }}">+{doc.installationSteps.length - 3} more steps</div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Required Credentials */}
-              {doc.credentials && doc.credentials.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <Key className="h-3 w-3" />
-                    Required Credentials
-                  </h4>
-                  <div className="space-y-1">
-                    {doc.credentials.map((cred, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs">
-                        <span className={`w-2 h-2 rounded-full ${cred.required ? 'bg-red-500' : 'bg-yellow-500'}`}></span>
-                        <span className="text-gray-600">{cred.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-1 mb-3">
-                {doc.tags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    <Tag className="h-3 w-3 mr-1" />
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex justify-between items-center text-sm text-gray-500">
-                <span className="capitalize flex items-center gap-1">
-                  {getCategoryIcon(doc.category)}
-                  {doc.category.replace('-', ' ')}
-                </span>
-                <span>v{doc.version}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredDocuments.length === 0 && (
-        <div className="text-center py-12">
-          <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
-          <p className="text-gray-600 mb-4">
-            {searchQuery || selectedCategory !== 'all' 
-              ? 'Try adjusting your search or filters'
-              : 'Get started by creating your first document'
-            }
-          </p>
-          {!searchQuery && selectedCategory === 'all' && (
-            <Button onClick={handleCreateDocument}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Document
-            </Button>
-          )}
-        </div>
-      )}
+        {/* Empty State */}
+        {filteredDocuments.length === 0 && (
+          <div className="text-center py-12">
+            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
+            <p className="text-gray-600 mb-4">
+              {searchQuery || selectedCategory !== 'all'
+                ? 'Try adjusting your search or filters'
+                : 'Get started by creating your first document'
+              }
+            </p>
+            {!searchQuery && selectedCategory === 'all' && (
+              <Button onClick={handleCreateDocument}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Document
+              </Button>
+            )}
+          </div>
+        )}
+      </main>
+      <Footer />
     </div>
   );
 }

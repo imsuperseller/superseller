@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge';
 import { RenstoProgress } from '@/components/ui/rensto-progress';
 import { RenstoStatusIndicator } from '@/components/ui/rensto-status';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import {
   Zap,
   Star,
@@ -36,36 +38,9 @@ export default function RenstoComponentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-rensto-bg-primary">
-      {/* Header */}
-      <header className="bg-rensto-card border-b border-rensto-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 relative">
-                <Image
-                  src="/rensto-logo.webp"
-                  alt="Rensto - AI-Powered Business Automation"
-                  width={32}
-                  height={32}
-                  className="rensto-animate-glow"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))' }}
-                />
-              </div>
-              <h1 className="text-xl font-bold text-rensto-text">Rensto Components</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="renstoPrimary" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export Components
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+      <Header />
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Rensto Logo Section */}
           <Card variant="rensto" className="rensto-card">
@@ -164,7 +139,7 @@ export default function RenstoComponentsPage() {
                   <div className="space-y-2">
                     <Button variant="renstoNeon" size="sm">Neon Glow</Button>
                     <Button variant="renstoGhost">Ghost Style</Button>
-                    <Button variant="renstoBrand" size="lg">Brand Style</Button>
+                    <Button variant="renstoPrimary" size="lg">Brand Style</Button>
                   </div>
                 </div>
               </div>
@@ -326,6 +301,7 @@ export default function RenstoComponentsPage() {
           </Card>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

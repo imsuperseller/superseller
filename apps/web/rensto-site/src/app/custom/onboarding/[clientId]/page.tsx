@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
-import { CustomHeader } from '@/components/CustomHeader';
+import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button-enhanced';
 import { StepIndicator } from '@/components/wizard/StepIndicator';
@@ -81,9 +81,9 @@ export default function OnboardingWizardPage() {
 
     if (isComplete) {
         return (
-            <div className="min-h-screen text-white relative flex flex-col items-center justify-center">
+            <div className="min-h-screen text-white relative flex flex-col items-center justify-center pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
                 <AnimatedGridBackground />
-                <CustomHeader />
+                <Header />
 
                 <div
                     className="relative z-10 max-w-2xl w-full mx-auto p-8 rounded-3xl border border-[var(--rensto-cyan)] bg-black/40 backdrop-blur-xl text-center transition-all duration-500 animate-in fade-in zoom-in-95"
@@ -122,9 +122,9 @@ export default function OnboardingWizardPage() {
     }
 
     return (
-        <div className="min-h-screen text-white relative flex flex-col">
+        <div className="min-h-screen text-white relative flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
-            <CustomHeader />
+            <Header />
 
             <main className="flex-grow pt-32 pb-20 px-6">
                 <div className="max-w-4xl mx-auto">

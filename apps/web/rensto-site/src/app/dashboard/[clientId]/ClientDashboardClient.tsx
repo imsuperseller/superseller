@@ -44,7 +44,7 @@ export interface ProjectData {
     clientName: string;
     packageName: string;
     startDate: string;
-    status: 'discovery' | 'build' | 'review' | 'launch' | 'maintenance';
+    status: 'discovery' | 'build' | 'review' | 'launch' | 'maintenance' | 'paid' | 'onboarding';
     progress: number;
     deliverables: Deliverable[];
     invoices: Invoice[];
@@ -378,12 +378,16 @@ export default function ClientDashboardClient({ project }: ClientDashboardClient
                         <p className="max-w-md text-lg mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
                             Test your deployed agents directly in the dashboard. This feature connects to your active n8n workflows.
                         </p>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 mb-6">
-                            <Clock className="w-4 h-4" />
-                            <span>Awaiting Workflow Connection</span>
-                        </div>
+                        {(project.status === 'onboarding' || project.status === 'paid') && (
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 mb-6">
+                                <Clock className="w-4 h-4" />
+                                <span>Awaiting Workflow Connection</span>
+                            </div>
+                        )}
                         <p className="text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
-                            Your configuration is currently compiling. Check back in 10-15 minutes or schedule a call.
+                            {project.status === 'onboarding' || project.status === 'paid'
+                                ? 'Your configuration is currently compiling. Check back in 10-15 minutes or schedule a call.'
+                                : 'Connect your first automation to see live performance data here.'}
                         </p>
                     </div>
                 )}

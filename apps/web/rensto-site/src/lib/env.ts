@@ -24,6 +24,10 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   SERPAPI_API_KEY: z.string().optional(),
   TIDYCAL_TOKEN: z.string().optional(),
+  N8N_WEBHOOK_URL: z.string().url().optional(),
+  N8N_LEAD_INTAKE_URL: z.string().url().optional(),
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);
