@@ -496,7 +496,7 @@ export default function KnowledgebasePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12 relative z-10">
         {/* Header */}

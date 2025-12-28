@@ -38,7 +38,7 @@ export default function RenstoComponentsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
       <Header />
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">

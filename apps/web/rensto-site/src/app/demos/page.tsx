@@ -12,7 +12,7 @@ import { Footer } from '@/components/Footer';
 
 export default function DemosPage() {
     return (
-        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <Header />
             <main className="flex-grow pt-24 pb-16 px-4 md:px-8">
                 {/* Hero Header */}

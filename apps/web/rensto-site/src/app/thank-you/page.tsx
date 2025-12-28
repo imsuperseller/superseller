@@ -104,7 +104,7 @@ function ThankYouContent() {
 
 export default function ThankYouPage() {
     return (
-        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <Header />
             <main className="flex-grow pt-32 pb-20 px-4">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent pointer-events-none" />

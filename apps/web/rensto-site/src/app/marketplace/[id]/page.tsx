@@ -186,7 +186,7 @@ export default function WorkflowDetailPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <Schema type="Product" data={productSchema} />
             <Schema type="BreadcrumbList" data={breadcrumbData} />
             <AnimatedGridBackground />

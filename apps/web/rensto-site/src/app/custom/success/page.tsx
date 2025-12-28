@@ -253,7 +253,7 @@ function LoadingFallback() {
 export default function CustomSolutionSuccessPage() {
     return (
         <div
-            className="min-h-screen flex flex-col pt-16"
+            className="min-h-screen flex flex-col"
             style={{ backgroundColor: 'var(--rensto-bg-primary)' }}
         >
             <Header />

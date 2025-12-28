@@ -96,7 +96,7 @@ export default function MarketplacePage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <Header />
             <Schema type="BreadcrumbList" data={breadcrumbData} />
             <AnimatedGridBackground />

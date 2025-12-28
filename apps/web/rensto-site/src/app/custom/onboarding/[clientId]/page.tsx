@@ -122,7 +122,7 @@ export default function OnboardingWizardPage() {
     }
 
     return (
-        <div className="min-h-screen text-white relative flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen text-white relative flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
             <Header />
 

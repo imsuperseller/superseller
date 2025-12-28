@@ -88,16 +88,6 @@ export function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={() => {
-                // We'll use a global event or context for this in a real app, 
-                // but for now let's assume the widget is always present and listens for a custom "open-rensto-support" event
-                window.dispatchEvent(new CustomEvent('open-rensto-support'));
-              }}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
-            >
-              Support Agent
-            </button>
             <a
               href={`https://wa.me/${CONTACT_PHONE}?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.`}
               target="_blank"
@@ -141,36 +131,17 @@ export function Header() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-white/10 bg-[#110d28]">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link
-                href="/whatsapp"
-                className="block px-3 py-2 text-base font-medium text-green-400 hover:bg-white/5 rounded-md flex justify-between items-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                WhatsApp OS
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/30">New</span>
-              </Link>
-              <Link
-                href="/custom"
-                className="block px-3 py-2 text-base font-medium text-cyan-400 hover:bg-white/5 rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Custom Solutions
-              </Link>
-              <Link
-                href="/subscriptions"
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Subscriptions
-              </Link>
-              <Link
-                href="/niches"
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Industry Packages
-              </Link>
+            <div className="space-y-1 px-2 pt-2 pb-3">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block px-3 py-2 text-base font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
             <div className="pt-4 pb-3 border-t border-white/10 px-2">
               <Link href="/custom">

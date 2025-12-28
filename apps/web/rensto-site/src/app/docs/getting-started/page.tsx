@@ -84,7 +84,7 @@ const features = [
 
 export default function GettingStartedPage() {
   return (
-    <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
       <Header />
       <main className="flex-grow">
         {/* Header */}

@@ -201,7 +201,7 @@ export default function SubscriptionsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pt-16" style={{
+    <div className="min-h-screen flex flex-col" style={{
       background: 'var(--rensto-bg-primary)',
       color: 'var(--rensto-text-primary)',
       fontFamily: 'var(--font-outfit), sans-serif'

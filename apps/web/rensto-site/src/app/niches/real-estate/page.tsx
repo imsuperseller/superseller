@@ -50,7 +50,7 @@ export default function RealEstateNichePage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col pt-16" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <AnimatedGridBackground />
             <Header />
             <Schema type="FAQPage" data={faqData} />
