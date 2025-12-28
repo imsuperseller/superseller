@@ -74,37 +74,17 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <Link
-            href="/whatsapp"
-            className="text-green-400 hover:text-green-300 transition-colors font-medium flex items-center gap-1.5"
-          >
-            WhatsApp OS
-            <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full border border-green-500/30 animate-pulse">New</span>
-          </Link>
-          <Link
-            href="/custom"
-            className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
-          >
-            Custom Solutions
-          </Link>
-          <Link
-            href="/offers"
-            className="text-gray-300 hover:text-white transition-colors"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/marketplace"
-            className="text-gray-300 hover:text-white transition-colors"
-          >
-            Marketplace
-          </Link>
-          <Link
-            href="/niches"
-            className="text-gray-300 hover:text-white transition-colors"
-          >
-            Niches
-          </Link>
+          <nav className="hidden md:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">

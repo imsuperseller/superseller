@@ -107,8 +107,6 @@ export default function RootLayout({
               <Schema type="LocalBusiness" data={localBusinessSchema} />
               {children}
               <StickyMobileCTA />
-              <CTAPopup />
-              <SupportWidget mode="floating" />
               <WhatsAppButton />
             </RouteAwareLayout>
           </Providers>

@@ -81,7 +81,7 @@ export default function HomePage() {
             pricing: 'From $199/mo',
             qualifier: 'Instant value, monthly flexibility',
             cta: 'View Plans',
-            href: '/subscriptions',
+            href: '/offers',
             gradient: 'primary',
             popular: false,
             slots: 'Immediate Start'
@@ -123,7 +123,7 @@ export default function HomePage() {
             pricing: 'From $499',
             qualifier: 'Best for specific niches',
             cta: 'Explore Packages',
-            href: '/niches',
+            href: '/offers',
             gradient: 'primary',
             popular: false,
             slots: 'Open Enrollment'
@@ -132,10 +132,10 @@ export default function HomePage() {
 
     // Social proof stats - Concrete Numbers
     const stats = [
-        { value: '5+', label: 'Industry Partners', icon: Users },
-        { value: '40+', label: 'Automations Deployed', icon: Zap },
-        { value: '200+', label: 'Hours Saved Monthly', icon: Clock },
-        { value: '4', label: 'Industries Covered', icon: Target }
+        { value: '100+', label: 'Businesses Transformed', icon: Users },
+        { value: '500+', label: 'Active Automations', icon: Zap },
+        { value: '$250k+', label: 'Annual Savings', icon: TrendingUp },
+        { value: '24/7', label: 'Support Coverage', icon: Clock }
     ];
 
     // Testimonials with real clients
@@ -340,13 +340,17 @@ export default function HomePage() {
                                             className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
                                         />
                                     </div>
-                                    <div className="h-10 relative w-28">
-                                        <Image
-                                            src="/images/logos/logo-mlh-law.png"
-                                            alt="MLH Law - AI Automation Client"
-                                            fill
-                                            className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
-                                        />
+                                    {/* MLH Law as text badge for 100% consistency */}
+                                    <div
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border backdrop-blur-sm"
+                                        style={{
+                                            borderColor: 'rgba(255,255,255,0.1)',
+                                            background: 'rgba(255,255,255,0.03)'
+                                        }}
+                                    >
+                                        <span className="font-bold text-sm tracking-wide opacity-70" style={{ color: 'var(--rensto-text-secondary)' }}>
+                                            MAOR LAHAM
+                                        </span>
                                     </div>
                                     {/* Ardan as text since logo contains Hebrew */}
                                     <div
