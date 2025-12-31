@@ -158,13 +158,6 @@ export default function HomePage() {
             image: "/images/testimonials/client-testimonial-ortal.jpg"
         },
         {
-            quote: "Our agreements are now generated instantly via WhatsApp. It changed my entire workflow.",
-            author: "Maor Laham Hacohen",
-            role: "Advocate, MLH Law",
-            result: "Legal Agreements Agent",
-            image: "/images/clients/client-maor-laham.jpg"
-        },
-        {
             quote: "The project management automations cut our administrative overhead by 40%. Best investment we've made.",
             author: "Aviad Hazout",
             role: "CEO, Ardan Management & Engineering",
@@ -355,15 +348,7 @@ export default function HomePage() {
                                 </p>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 opacity-90 items-center justify-items-center">
                                     {/* Real Client Logos */}
-                                    <div className="h-6 md:h-8 relative w-20 md:w-24">
-                                        <Image
-                                            src="/images/logos/logo-mlh-law.png"
-                                            alt="Maor Laham - MLH Law"
-                                            fill
-                                            className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
-                                        />
-                                    </div>
-                                    <div className="h-6 md:h-8 relative w-20 md:w-24">
+                                    <div className="h-6 md:h-8 relative w-24 md:w-32">
                                         <Image
                                             src="/images/logos/logo-tax4us.png"
                                             alt="Tax4US - AI Automation Client"
@@ -371,12 +356,21 @@ export default function HomePage() {
                                             className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
                                         />
                                     </div>
-                                    <div
-                                        className="h-6 md:h-8 relative w-20 md:w-24 flex items-center justify-center border-l border-white/10"
-                                    >
-                                        <span className="font-black text-xs md:text-sm tracking-[0.2em] text-white/50 group-hover:text-white/80 transition-colors uppercase">
-                                            ARDANE
-                                        </span>
+                                    <div className="h-10 md:h-12 relative w-28 md:w-36">
+                                        <Image
+                                            src="/images/logos/logo-ardan.png"
+                                            alt="ARDANE - Project Management Client"
+                                            fill
+                                            className="object-contain opacity-90 hover:opacity-100 transition-opacity"
+                                        />
+                                    </div>
+                                    <div className="h-10 md:h-12 relative w-28 md:w-36">
+                                        <Image
+                                            src="/images/logos/logo-wondercare.png"
+                                            alt="WonderCare"
+                                            fill
+                                            className="object-contain opacity-90 hover:opacity-100 transition-opacity"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -498,6 +492,7 @@ export default function HomePage() {
                                         }}
                                         onMouseEnter={() => setSelectedService(service.id)}
                                         onMouseLeave={() => setSelectedService(null)}
+                                        onLeave={() => setSelectedService(null)}
                                     >
                                         {service.popular && (
                                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">

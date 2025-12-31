@@ -20,7 +20,7 @@ import {
   Phone
 } from 'lucide-react';
 
-const CONTACT_PHONE = "12144362102"; // Rensto Voice AI number
+const CONTACT_PHONE = "14699299314"; // Rensto Voice number
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -104,8 +104,7 @@ export function Header() {
               href={`tel:${CONTACT_PHONE}`}
               className="flex items-center gap-2 text-sm font-medium text-rensto-cyan hover:text-white transition-colors"
             >
-              <Phone className="h-4 w-4" />
-              <span>Voice AI: +1 (214) 436-2102</span>
+              <span>Call: +1 (469) 929-9314</span>
             </a>
             <Link href="/custom">
               <Button

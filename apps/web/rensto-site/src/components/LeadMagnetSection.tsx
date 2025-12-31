@@ -62,7 +62,7 @@ export function LeadMagnetSection() {
                                 Our AI brain analyzes your industry and identifies the top 3 high-impact workflows you can automate today.
                             </p>
 
-                            <form onSubmit={handleAuditSubmit} className="space-y-3">
+                            <form onSubmit={handleAuditSubmit} className="space-y-3 mt-auto">
                                 <input
                                     type="email"
                                     required

@@ -128,7 +128,7 @@ export default function ContactPage() {
                       <Phone className="w-6 h-6 text-cyan-400" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-white">Instant Voice AI</h3>
+                      <h3 className="font-bold text-white">Instant Voice Support</h3>
                       <p className="text-xs text-slate-500 uppercase tracking-widest">Available 24/7</p>
                     </div>
                   </div>
@@ -136,9 +136,9 @@ export default function ContactPage() {
                     Want to experience our tech right now? Call our Voice AI Agent.
                     He can answer questions, explain our process, and even book your audit session.
                   </p>
-                  <a href="tel:12144362102" className="block">
+                  <a href="tel:14699299314" className="block">
                     <Button variant="renstoPrimary" className="w-full h-14 font-bold rounded-xl text-lg">
-                      Call +1 (214) 436-2102
+                      Call +1 (469) 929-9314
                     </Button>
                   </a>
                 </motion.div>

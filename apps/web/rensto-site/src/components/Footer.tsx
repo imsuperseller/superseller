@@ -20,7 +20,7 @@ import {
   Brain
 } from 'lucide-react';
 
-const CONTACT_PHONE = "12144362102"; // Rensto business number
+const CONTACT_PHONE = "12144362102"; // Rensto WhatsApp number
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
