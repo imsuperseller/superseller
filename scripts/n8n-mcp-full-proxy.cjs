@@ -26,7 +26,7 @@ log(`N8N_API_URL: ${process.env.N8N_API_URL}`);
 log(`N8N_API_KEY: ${process.env.N8N_API_KEY ? 'Set' : 'NOT SET'}`);
 
 // Spawn npx n8n-mcp as subprocess
-const child = spawn('npx', ['-y', 'n8n-mcp@2.29.5'], {
+const child = spawn('./node_modules/.bin/n8n-mcp', [], {
     env: {
         ...process.env,
         MCP_MODE: 'stdio',

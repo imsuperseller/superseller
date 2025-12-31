@@ -14,7 +14,8 @@ import {
     Cpu,
     Globe,
     LayoutGrid,
-    List
+    List,
+    Settings2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 import { Card } from '@/components/ui/card';
@@ -24,6 +25,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { Schema } from '@/components/seo/Schema';
+import { CustomizationModal, MOCK_FLOOR_PLAN_SCHEMA } from '@/components/marketplace/CustomizationModal';
 
 interface Template {
     id: string;
@@ -53,14 +55,21 @@ export default function MarketplacePage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [customizeModal, setCustomizeModal] = useState<{ open: boolean; template: Template | null }>({
+        open: false,
+        template: null
+    });
 
     useEffect(() => {
         async function fetchTemplates() {
             try {
-                const response = await fetch(`/api/marketplace/templates?category=${selectedCategory === 'All' ? '' : selectedCategory.toLowerCase().replace(' ', '-')}&search=${searchQuery}`);
+                const categoryParam = selectedCategory === 'All' ? '' : selectedCategory.toLowerCase().replace(' ', '-');
+                const tagParam = selectedTag || '';
+                const response = await fetch(`/api/marketplace/templates?category=${categoryParam}&search=${searchQuery}&tag=${tagParam}`);
                 const data = await response.json();
-                if (data.success) {
+                if (data.success && data.templates && data.templates.length > 0) {
                     setTemplates(data.templates);
                 } else {
                     // Mock data fallback if API fails or returns empty
@@ -76,7 +85,7 @@ export default function MarketplacePage() {
 
         const timer = setTimeout(fetchTemplates, 300);
         return () => clearTimeout(timer);
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, selectedTag]);
 
     const breadcrumbData = {
         itemListElement: [
@@ -108,12 +117,12 @@ export default function MarketplacePage() {
                         Automation Marketplace
                     </Badge>
                     <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/60">
-                        Build Faster with <span className="text-[#fe3d51]">Templates</span>
+                        Build Faster with <span className="text-[#fe3d51]">Pre-Built Tools</span>
                     </h1>
                     <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                        Browse our library of pre-built n8n workflows and AI agents.
+                        Browse our library of pre-built automation tools and AI assistants.
                         <span className="block mt-2 font-semibold text-cyan-400">
-                            [BETA] All workflows currently available via Custom Implementation only.
+                            [BETA] All tools currently available via Custom Setup only.
                         </span>
                     </p>
                 </div>
@@ -136,7 +145,10 @@ export default function MarketplacePage() {
                                 key={cat}
                                 variant={selectedCategory === cat ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => setSelectedCategory(cat)}
+                                onClick={() => {
+                                    setSelectedCategory(cat);
+                                    setSelectedTag(null); // Clear tag when switching category
+                                }}
                                 className={`flex-shrink-0 transition-all ${selectedCategory === cat
                                     ? 'bg-cyan-500 text-black hover:bg-cyan-400'
                                     : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -144,6 +156,22 @@ export default function MarketplacePage() {
                             >
                                 {cat}
                             </Button>
+                        ))}
+                    </div>
+
+                    {/* Tag Filter (Dynamic based on data) */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar ml-0 lg:ml-4 border-l lg:border-slate-700/50 lg:pl-4">
+                        {['n8n', 'AI Agent', 'Operations', 'CRM'].map((tag) => (
+                            <Badge
+                                key={tag}
+                                className={`cursor-pointer transition-all whitespace-nowrap px-3 py-1 ${selectedTag === tag
+                                    ? 'bg-[#fe3d51] text-white'
+                                    : 'bg-white/5 text-slate-500 hover:text-white'
+                                    }`}
+                                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                            >
+                                #{tag}
+                            </Badge>
                         ))}
                     </div>
 
@@ -180,7 +208,12 @@ export default function MarketplacePage() {
                         : "flex flex-col gap-4"
                     }>
                         {templates.map((template) => (
-                            <WorkflowCard key={template.id} template={template} viewMode={viewMode} />
+                            <WorkflowCard
+                                key={template.id}
+                                template={template}
+                                viewMode={viewMode}
+                                onCustomize={() => setCustomizeModal({ open: true, template })}
+                            />
                         ))}
                     </div>
                 ) : (
@@ -199,21 +232,21 @@ export default function MarketplacePage() {
                     <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
                         <div className="flex-1 space-y-6 text-center lg:text-left">
                             <h2 className="text-3xl md:text-4xl font-bold font-mono uppercase tracking-tight">
-                                Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> architected solution?
+                                Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> system?
                             </h2>
                             <p className="text-slate-400 text-lg leading-relaxed max-w-xl">
-                                If our templates don't fit your exact workflow, we can build a bespoke automation
-                                ecosystem tailored specifically to your business operations.
+                                If our ready-made tools don't fit exactly how you work, we can build a custom-made system
+                                tailored specifically to your daily business operations.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                 <Link href="/contact?type=custom">
-                                    <Button size="lg" className="bg-[#fe3d51] hover:bg-[#ff4d61] text-white px-8 h-14 text-base font-bold">
+                                    <Button size="xl" variant="renstoPrimary" className="px-8 font-bold w-full sm:w-auto">
                                         Book Discovery Call
                                         <Zap className="ml-2 w-5 h-5 fill-current" />
                                     </Button>
                                 </Link>
                                 <Link href="/contact">
-                                    <Button variant="outline" size="lg" className="border-slate-700 hover:bg-white/5 h-14 px-8 text-base">
+                                    <Button variant="renstoNeon" size="xl" className="w-full sm:w-auto">
                                         Ask a Question
                                     </Button>
                                 </Link>
@@ -230,11 +263,25 @@ export default function MarketplacePage() {
             </main>
 
             <Footer />
+
+            {/* Customization Modal */}
+            {customizeModal.template && (
+                <CustomizationModal
+                    isOpen={customizeModal.open}
+                    onClose={() => setCustomizeModal({ open: false, template: null })}
+                    workflowName={customizeModal.template.name}
+                    workflowId={customizeModal.template.id}
+                    parametersSchema={MOCK_FLOOR_PLAN_SCHEMA}
+                    estimatedTime="24-48 hours"
+                    complexity="Intermediate"
+                    perRunCost={customizeModal.template.price * 0.1}
+                />
+            )}
         </div>
     );
 }
 
-function WorkflowCard({ template, viewMode }: { template: Template; viewMode: 'grid' | 'list' }) {
+function WorkflowCard({ template, viewMode, onCustomize }: { template: Template; viewMode: 'grid' | 'list'; onCustomize?: () => void }) {
     if (viewMode === 'list') {
         return (
             <Link href={`/marketplace/${template.id}`}>
@@ -299,11 +346,26 @@ function WorkflowCard({ template, viewMode }: { template: Template; viewMode: 'g
                         </div>
                     </div>
 
-                    <Link href={`/marketplace/${template.id}`}>
-                        <Button size="icon" className="rounded-full bg-white/5 hover:bg-cyan-500 hover:text-black border-slate-700">
-                            <ArrowRight className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onCustomize?.();
+                            }}
+                        >
+                            <Settings2 className="w-3 h-3 mr-1" />
+                            Customize
                         </Button>
-                    </Link>
+                        <Link href={`/marketplace/${template.id}`}>
+                            <Button size="icon" className="rounded-full bg-white/5 hover:bg-cyan-500 hover:text-black border-slate-700">
+                                <ArrowRight className="w-4 h-4" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </Card>
@@ -313,44 +375,44 @@ function WorkflowCard({ template, viewMode }: { template: Template; viewMode: 'g
 const MOCK_TEMPLATES: Template[] = [
     {
         id: 'whatsapp-router',
-        name: 'Omni-Channel Lead Router',
-        description: 'Intelligently route incoming business messages to the correct department or CRM.',
+        name: 'WhatsApp Lead Secretary',
+        description: 'Automatically route incoming messages to the right team member or your CRM.',
         category: 'Operations',
         price: 97,
         rating: 5.0,
         downloads: 245,
         popular: true,
-        features: ['Intelligent Routing', 'CRM Integration', 'Multi-Agent Support', 'Analytics']
+        features: ['Smart Routing', 'CRM Sync', 'Multi-User', 'Easy Stats']
     },
     {
         id: 'rensto-support-agent',
-        name: 'Professional support Agent',
-        description: '24/7 AI-powered support agent trained on your company knowledge base.',
+        name: '24/7 AI Support Assistant',
+        description: 'An AI assistant that knows your business and answers customers 24/7.',
         category: 'AI Agents',
         price: 197,
         rating: 4.9,
         downloads: 182,
         popular: true,
-        features: ['Gemini RAG', 'Knowledge Base Sync', 'Human Handoff']
+        features: ['Learns your business', 'Easy Setup', 'Human Handoff']
     },
     {
         id: 'compliance-audit-agent',
-        name: 'Auto-Audit Specialist',
-        description: 'Specialized AI agent for document analysis, law compliance, and reporting.',
+        name: 'Automatic Quality Checker',
+        description: 'An AI that reads your documents and checks for errors or compliance issues.',
         category: 'AI Agents',
         price: 247,
         rating: 4.8,
         downloads: 64,
-        features: ['Document Analysis', 'Compliance Filtering', 'Security Guardrails']
+        features: ['Doc Analysis', 'Error Finding', 'Safety Checks']
     },
     {
         id: 'sales-growth-agent',
-        name: 'AI Revenue Closer',
-        description: 'Automated sales prospecting and qualification for high-volume operations.',
+        name: 'AI Sales Assistant',
+        description: 'Finds and talks to potential customers and qualifies them for your sales team.',
         category: 'Sales',
         price: 197,
         rating: 4.7,
         downloads: 92,
-        features: ['Lead Scoring', 'CRM Injection', 'Customer History', 'Upsell Logic']
+        features: ['Lead Scoring', 'CRM Sync', 'Customer History', 'Upsell Logic']
     }
 ];

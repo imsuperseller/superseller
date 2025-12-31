@@ -75,6 +75,8 @@ services:
       - N8N_VERSION_NOTIFICATIONS_ENABLED=true
       - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
       - REDIS_URL=redis://redis:6379
+      - HIGGSFIELD_KEY_ID=bdc79d46-f778-4bc3-8b82-beaf0ff9630c
+      - HIGGSFIELD_KEY_SECRET=b14902e34ffd4ca44fd409a8f64b3a23efe6d8711af8b4f8b739cdbadfdfa44b
     volumes:
       - ./data/n8n:/home/node/.n8n
       - ./data/n8n/custom:/home/node/custom

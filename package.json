@@ -30,6 +30,7 @@
     "stripe": "^19.0.0"
   },
   "devDependencies": {
+    "n8n-mcp": "^2.29.5",
     "playwright": "^1.57.0"
   }
 }

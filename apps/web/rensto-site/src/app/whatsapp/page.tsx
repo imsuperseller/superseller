@@ -26,7 +26,8 @@ import {
     Clock,
     UserCircle,
     Server,
-    Megaphone
+    Megaphone,
+    Loader2
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
@@ -146,6 +147,8 @@ export default function WhatsAppPage() {
     const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
     const [extraNumbers, setExtraNumbers] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [showEmailModal, setShowEmailModal] = useState(false);
 
     const toggleAddon = (id: string) => {
         setSelectedAddons(prev =>
@@ -156,12 +159,23 @@ export default function WhatsAppPage() {
     };
 
     const handleCheckout = async () => {
+        if (!email && !showEmailModal) {
+            setShowEmailModal(true);
+            return;
+        }
+
         setIsLoading(true);
         try {
             const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ selectedAddons, extraNumbers }),
+                body: JSON.stringify({
+                    flowType: 'managed-plan',
+                    productId: 'managed-base',
+                    customerEmail: email,
+                    selectedAddons,
+                    extraNumbers
+                }),
             });
             const data = await response.json();
             if (data.url) {
@@ -471,6 +485,42 @@ export default function WhatsAppPage() {
                 </section>
             </main>
             <Footer />
+
+            {/* Email Capture Modal */}
+            {showEmailModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="bg-[#110d28] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+                        <h3 className="text-2xl font-bold mb-2">Secure Your Slot</h3>
+                        <p className="text-gray-400 mb-6">
+                            Enter your email to proceed to secure payment. We&apos;ll use this to set up your Dedicated WhatsApp Instance.
+                        </p>
+                        <input
+                            type="email"
+                            placeholder="you@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-4 text-white focus:border-cyan-500/50 outline-none transition-all"
+                            autoFocus
+                        />
+                        <div className="flex gap-3">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setShowEmailModal(false)}
+                                className="flex-1"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleCheckout}
+                                disabled={!email || isLoading}
+                                className="flex-1 font-bold bg-green-500 hover:bg-green-600 text-black"
+                            >
+                                {isLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Continue'}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

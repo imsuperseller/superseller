@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface SchemaProps {
-    type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Product' | 'FAQPage' | 'HowTo' | 'BreadcrumbList';
+    type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Product' | 'FAQPage' | 'HowTo' | 'BreadcrumbList' | 'Service';
     data: any;
 }
 
@@ -81,5 +81,46 @@ export const websiteSchema = {
         '@type': 'SearchAction',
         'target': 'https://rensto.com/marketplace?q={search_term_string}',
         'query-input': 'required name=search_term_string'
+    },
+    // AEO: Speakable schema for Voice AI (Gemini Live / Siri / Alexa)
+    speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['.hero-title', '.hero-description', '.service-tagline']
+    }
+};
+
+export const serviceSchemas = {
+    starter: {
+        name: 'Starter Care Plan',
+        description: 'Monthly automation monitoring and support. 5 hours monthly.',
+        provider: { '@type': 'Organization', name: 'Rensto' },
+        offers: {
+            '@type': 'Offer',
+            price: '497.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock'
+        }
+    },
+    growth: {
+        name: 'Growth Care Plan',
+        description: 'Advanced automation optimization and priority support. 15 hours monthly.',
+        provider: { '@type': 'Organization', name: 'Rensto' },
+        offers: {
+            '@type': 'Offer',
+            price: '997.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock'
+        }
+    },
+    scale: {
+        name: 'Scale Care Plan',
+        description: 'Enterprise-grade automation engineering and strategic planning. 40 hours monthly.',
+        provider: { '@type': 'Organization', name: 'Rensto' },
+        offers: {
+            '@type': 'Offer',
+            price: '2497.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock'
+        }
     }
 };

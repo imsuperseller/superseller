@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { Send, CheckCircle, AlertCircle, User, Mail, Building, MessageSquare, DollarSign, Calendar, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button-enhanced';
 
 interface FormData {
   name: string;
@@ -129,143 +130,165 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {submitStatus === 'error' && (
-        <div className="card bg-red-50 border-red-500/20">
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 mb-6">
           <div className="flex items-center space-x-3">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-            <p className="text-red-600">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <p className="text-red-500 text-sm">
               Something went wrong. Please try again or email us directly.
             </p>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-2">
-            Name *
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label htmlFor="name" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+            Full Name *
           </label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-400 transition-colors">
+              <User size={18} />
+            </div>
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              className={`w-full pl-12 pr-4 py-4 rounded-2xl bg-white/[0.03] border transition-all outline-none text-white ${errors.name ? 'border-red-500/50' : 'border-white/5 focus:border-cyan-500/30'
+                }`}
+              placeholder="Elon Musk"
+            />
+          </div>
+          {errors.name && <p className="text-red-500 text-[10px] font-bold uppercase ml-1">{errors.name}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+            Email Address *
+          </label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-400 transition-colors">
+              <Mail size={18} />
+            </div>
+            <input
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              className={`w-full pl-12 pr-4 py-4 rounded-2xl bg-white/[0.03] border transition-all outline-none text-white ${errors.email ? 'border-red-500/50' : 'border-white/5 focus:border-cyan-500/30'
+                }`}
+              placeholder="elon@spacex.com"
+            />
+          </div>
+          {errors.email && <p className="text-red-500 text-[10px] font-bold uppercase ml-1">{errors.email}</p>}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="company" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+          Company Name
+        </label>
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-400 transition-colors">
+            <Building size={18} />
+          </div>
           <input
             type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.name ? 'border-red-500' : 'border-border'
-              } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
-            placeholder="Your full name"
+            id="company"
+            value={formData.company}
+            onChange={(e) => handleInputChange('company', e.target.value)}
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/[0.03] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white"
+            placeholder="SpaceX"
           />
-          {errors.name && (
-            <p className="text-red-600 text-sm mt-1">{errors.name}</p>
-          )}
         </div>
+      </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-2">
-            Email *
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.email ? 'border-red-500' : 'border-border'
-              } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent`}
-            placeholder="your@email.com"
+      <div className="space-y-2">
+        <label htmlFor="message" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+          Project Intelligence *
+        </label>
+        <div className="relative group">
+          <div className="absolute left-4 top-6 text-slate-600 group-focus-within:text-cyan-400 transition-colors">
+            <MessageSquare size={18} />
+          </div>
+          <textarea
+            id="message"
+            value={formData.message}
+            onChange={(e) => handleInputChange('message', e.target.value)}
+            rows={5}
+            className={`w-full pl-12 pr-4 py-4 rounded-2xl bg-white/[0.03] border transition-all outline-none text-white resize-none ${errors.message ? 'border-red-500/50' : 'border-white/5 focus:border-cyan-500/30'
+              }`}
+            placeholder="What efficiency leaks are we plugging?"
           />
-          {errors.email && (
-            <p className="text-red-600 text-sm mt-1">{errors.email}</p>
-          )}
         </div>
+        {errors.message && <p className="text-red-500 text-[10px] font-bold uppercase ml-1">{errors.message}</p>}
       </div>
 
-      <div>
-        <label htmlFor="company" className="block text-sm font-medium mb-2">
-          Company
-        </label>
-        <input
-          type="text"
-          id="company"
-          value={formData.company}
-          onChange={(e) => handleInputChange('company', e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent"
-          placeholder="Your company name"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium mb-2">
-          Message *
-        </label>
-        <textarea
-          id="message"
-          value={formData.message}
-          onChange={(e) => handleInputChange('message', e.target.value)}
-          rows={5}
-          className={`w-full px-4 py-3 rounded-lg bg-card border ${errors.message ? 'border-red-500' : 'border-border'
-            } focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent resize-none`}
-          placeholder="Tell us about your automation needs..."
-        />
-        {errors.message && (
-          <p className="style={{ color: 'var(--rensto-red)' }} text-sm mt-1">{errors.message}</p>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="budget" className="block text-sm font-medium mb-2">
-            Budget Range
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label htmlFor="budget" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+            Budget Scope
           </label>
-          <select
-            id="budget"
-            value={formData.budget}
-            onChange={(e) => handleInputChange('budget', e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent"
-          >
-            <option value="">Select budget range</option>
-            <option value="under-1k">Under $1,000</option>
-            <option value="1k-5k">$1,000 - $5,000</option>
-            <option value="5k-10k">$5,000 - $10,000</option>
-            <option value="10k-25k">$10,000 - $25,000</option>
-            <option value="25k-plus">$25,000+</option>
-          </select>
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600">
+              <DollarSign size={18} />
+            </div>
+            <select
+              id="budget"
+              value={formData.budget}
+              onChange={(e) => handleInputChange('budget', e.target.value)}
+              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[#110d28] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer"
+            >
+              <option value="">Select Scope</option>
+              <option value="under-1k">Experimental (Under $1k)</option>
+              <option value="1k-5k">Standard ($1k - $5k)</option>
+              <option value="5k-10k">Pro ($5k - $10k)</option>
+              <option value="10k-25k">Enterprise ($10k - $25k)</option>
+              <option value="25k-plus">Strategic ($25k+)</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="timeline" className="block text-sm font-medium mb-2">
-            Timeline
+        <div className="space-y-2">
+          <label htmlFor="timeline" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">
+            Deployment Timeline
           </label>
-          <select
-            id="timeline"
-            value={formData.timeline}
-            onChange={(e) => handleInputChange('timeline', e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:outline-none focus:ring-2 focus:ring-accent1 focus:border-transparent"
-          >
-            <option value="">Select timeline</option>
-            <option value="asap">ASAP</option>
-            <option value="1-2-weeks">1-2 weeks</option>
-            <option value="1-month">1 month</option>
-            <option value="2-3-months">2-3 months</option>
-            <option value="flexible">Flexible</option>
-          </select>
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600">
+              <Calendar size={18} />
+            </div>
+            <select
+              id="timeline"
+              value={formData.timeline}
+              onChange={(e) => handleInputChange('timeline', e.target.value)}
+              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[#110d28] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer"
+            >
+              <option value="">Select Speed</option>
+              <option value="asap">ASAP (Immediate)</option>
+              <option value="1-2-weeks">1-2 Weeks</option>
+              <option value="1-month">1 Month</option>
+              <option value="flexible">Flexible</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={isSubmitting}
-        className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        size="xl"
+        variant="renstoPrimary"
+        className="w-full font-bold h-16 rounded-2xl text-lg group"
       >
         {isSubmitting ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full rensto-animate-glow" />
-            <span>Sending...</span>
-          </>
+          <Loader2 className="w-6 h-6 animate-spin" />
         ) : (
           <>
-            <Send className="w-5 h-5" />
-            <span>Send Message</span>
+            <span>Initialize Project Brief</span>
+            <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </>
         )}
-      </button>
+      </Button>
 
       <p className="text-sm text-muted text-center">
         By submitting this form, you agree to our{' '}

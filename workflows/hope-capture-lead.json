@@ -1,0 +1,86 @@
+{
+    "name": "HOPE-ACTION-TOOLS: Lead Capture",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "hope-capture-lead",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                400,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://n8n.rensto.com/webhook/lead-intake",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"fullName\": \"{{ $json.body.name || '' }}\",\n  \"email\": \"{{ $json.body.email || '' }}\",\n  \"phone\": \"{{ $json.body.phone || '' }}\",\n  \"message\": \"{{ $json.body.notes || '' }}\",\n  \"source\": \"hope-voice-agent\"\n}",
+                "options": {}
+            },
+            "id": "forward-to-intake",
+            "name": "Forward to Intake",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "{\n  \"status\": \"success\",\n  \"message\": \"I've successfully captured those details. Our team will reach out to you soon.\"\n}",
+                "options": {}
+            },
+            "id": "webhook-response",
+            "name": "Respond to ElevenLabs",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        }
+    ],
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+        "templateId": ""
+    },
+    "pinData": {},
+    "active": true,
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Forward to Intake",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Forward to Intake": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to ElevenLabs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

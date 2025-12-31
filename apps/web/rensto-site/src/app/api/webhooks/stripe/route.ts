@@ -126,7 +126,42 @@ export async function POST(req: Request) {
                 }
             }
 
-            // 3. Forward to n8n for QuickBooks and other integrations
+            // 4. Specialized handling for Managed Plans (WhatsApp)
+            if (metadata.flowType === 'managed-plan') {
+                const customerEmail = session.customer_details?.email;
+                if (customerEmail) {
+                    const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
+                    const existingClient = await clientsRef.where('email', '==', customerEmail.toLowerCase()).limit(1).get();
+
+                    const planData = {
+                        email: customerEmail.toLowerCase(),
+                        name: session.customer_details?.name || 'Valued Client',
+                        status: 'active',
+                        subscriptionId: session.subscription as string,
+                        stripeCustomerId: session.customer as string,
+                        planId: metadata.productId || 'managed-base',
+                        addons: metadata.selectedAddons ? metadata.selectedAddons.split(',') : [],
+                        extraNumbers: parseInt(metadata.extraNumbers || '0'),
+                        lastPaidAt: Timestamp.now(),
+                        updatedAt: Timestamp.now()
+                    };
+
+                    if (existingClient.empty) {
+                        await clientsRef.add({ ...planData, createdAt: Timestamp.now() });
+                    } else {
+                        await existingClient.docs[0].ref.update(planData);
+                    }
+
+                    await auditAgent.log({
+                        service: 'firebase',
+                        action: 'managed_plan_provisioned',
+                        status: 'success',
+                        details: { email: customerEmail, plan: planData.planId }
+                    });
+                }
+            }
+
+            // 5. Forward to n8n for QuickBooks and other integrations
             if (n8nWebhookUrl) {
                 await fetch(n8nWebhookUrl, {
                     method: 'POST',

@@ -74,7 +74,9 @@ export const COLLECTIONS = {
     OPTIMIZER_AUDITS: 'optimizer_audits',
     TESTIMONIALS: 'testimonials',
     SERVICE_MANIFESTS: 'service_manifests',
-    USAGE_LOGS: 'usage_logs'
+    USAGE_LOGS: 'usage_logs',
+    CUSTOMIZATION_REQUESTS: 'customizationRequests',
+    SUPPORT_CASES: 'supportCases'
 } as const;
 
 export interface UsageLog {

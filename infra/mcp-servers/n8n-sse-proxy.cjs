@@ -76,6 +76,12 @@ function connectSSE() {
 
     eventSource.onerror = (err) => {
         log(`SSE Error: ${JSON.stringify(err)}`);
+        // Attempt to reconnect after a delay
+        if (eventSource) {
+            eventSource.close();
+        }
+        log('Attempting to reconnect in 5 seconds...');
+        setTimeout(connectSSE, 5000);
     };
 }
 
@@ -92,7 +98,7 @@ async function forwardRequest(request) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            timeout: 5000 // 5 second timeout
+            timeout: 300000 // 300 second timeout (5 minutes)
         });
         log(`Forward request success: ${response.status}`);
         // Note: The response will come back via the SSE stream (onmessage)

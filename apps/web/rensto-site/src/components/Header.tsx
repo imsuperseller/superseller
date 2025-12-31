@@ -15,10 +15,12 @@ import {
   Workflow,
   BarChart3,
   MessageCircle,
-  Brain
+  Brain,
+  Globe,
+  Phone
 } from 'lucide-react';
 
-const CONTACT_PHONE = "1234567890"; // Reusable placeholder
+const CONTACT_PHONE = "12144362102"; // Rensto Voice AI number
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,8 +33,17 @@ export function Header() {
     setCurrentPath(window.location.pathname);
   }, []);
 
-  // Main navigation links - only pages that exist
-  const navigation = [
+  // Main navigation links - localized
+  const isHebrew = currentPath === '/he';
+
+  const navigation = isHebrew ? [
+    { name: 'דף הבית', href: '/he' },
+    { name: 'תהליך', href: '/process' }, // Could add Hebrew versions of these pages later if needed
+    { name: 'תחומי התמחות', href: '/niches' },
+    { name: 'חנות פתרונות', href: '/marketplace' },
+    { name: 'הצעות מחיר', href: '/offers' },
+    { name: 'צור קשר', href: '/contact' },
+  ] : [
     { name: 'Home', href: '/' },
     { name: 'Process', href: '/process' },
     { name: 'Industry Hub', href: '/niches' },
@@ -44,6 +55,7 @@ export function Header() {
   return (
     <header
       className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+      dir={isHebrew ? 'rtl' : 'ltr'}
       style={{
         background: 'rgba(17, 13, 40, 0.98)',
         borderColor: 'rgba(254, 61, 81, 0.3)'
@@ -52,8 +64,8 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
+            <Link href={isHebrew ? "/he" : "/"} className="flex items-center gap-3">
               <div className="w-10 h-10 relative">
                 <Image
                   src="/rensto-logo.webp"
@@ -74,7 +86,7 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center gap-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -87,15 +99,13 @@ export function Header() {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-4">
             <a
-              href={`https://wa.me/${CONTACT_PHONE}?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-medium text-green-400 hover:text-green-300 transition-colors"
+              href={`tel:${CONTACT_PHONE}`}
+              className="flex items-center gap-2 text-sm font-medium text-rensto-cyan hover:text-white transition-colors"
             >
-              <MessageCircle className="h-4 w-4" />
-              <span>WhatsApp</span>
+              <Phone className="h-4 w-4" />
+              <span>Voice AI: +1 (214) 436-2102</span>
             </a>
             <Link href="/custom">
               <Button
@@ -107,7 +117,7 @@ export function Header() {
                   boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
                 }}
               >
-                Get Started
+                {isHebrew ? 'בואו נתחיל' : 'Get Started'}
               </Button>
             </Link>
           </div>
@@ -145,12 +155,12 @@ export function Header() {
             </div>
             <div className="pt-4 pb-3 border-t border-white/10 px-2">
               <Link href="/custom">
-                <Button className="w-full justify-center font-bold" style={{
+                <Button className="w-full justify-center font-bold h-12" style={{
                   background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
                   color: '#ffffff',
                   boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
                 }}>
-                  Get Started
+                  {isHebrew ? 'בואו נתחיל' : 'Get Started'}
                 </Button>
               </Link>
             </div>

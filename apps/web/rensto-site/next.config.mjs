@@ -30,11 +30,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/marketplace',
-        destination: '/subscriptions',
-        permanent: true,
-      },
-      {
         source: '/solutions',
         destination: '/niches',
         permanent: true,
@@ -53,6 +48,11 @@ const nextConfig = {
         source: '/lead-generator.html',
         destination: '/subscriptions',
         permanent: true,
+      },
+      {
+        source: '/dashboard/:clientId*',
+        destination: '/app/dashboard',
+        permanent: false, // Use temporary redirect during migration
       },
     ];
   },

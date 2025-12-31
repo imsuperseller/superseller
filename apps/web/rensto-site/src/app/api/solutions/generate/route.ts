@@ -3,12 +3,12 @@ import OpenAI from 'openai';
 
 
 
-// Solution tier definitions - Rensto pricing
+// Solution tier definitions - Rensto pricing (2026)
 const SOLUTION_TIERS = {
     starter: {
         name: 'Starter',
         basePrice: 2997,
-        monthlyFee: 97,
+        monthlyFee: 497, // Starter Care Plan
         timeline: '1-2 weeks',
         description: 'Essential automation foundation',
         includes: [
@@ -22,7 +22,7 @@ const SOLUTION_TIERS = {
     professional: {
         name: 'Professional',
         basePrice: 4997,
-        monthlyFee: 147,
+        monthlyFee: 997, // Growth Care Plan
         timeline: '2-3 weeks',
         description: 'Comprehensive automation suite',
         includes: [
@@ -38,7 +38,7 @@ const SOLUTION_TIERS = {
     enterprise: {
         name: 'Enterprise',
         basePrice: 9997,
-        monthlyFee: 297,
+        monthlyFee: 2497, // Scale Care Plan
         timeline: '3-4 weeks',
         description: 'Full-service automation partner',
         includes: [
@@ -101,9 +101,9 @@ Generate a JSON response with this exact structure:
 }
 
 PRICING RULES:
-- starter ($2,997): Basic automations, simple pain points
-- professional ($4,997): Complex workflows, multiple integrations (RECOMMEND MOST OFTEN)
-- enterprise ($9,997): Large scale, custom requirements, high-value operations
+- starter ($2,997 setup + $497/mo Care Plan): Basic automations, simple pain points
+- professional ($4,997 setup + $997/mo Care Plan): Complex workflows, multiple integrations (RECOMMEND MOST OFTEN)
+- enterprise ($9,997 setup + $2,497/mo Care Plan): Large scale, custom requirements, high-value operations
 
 ALWAYS be specific and personalized. Reference their actual answers.`;
 

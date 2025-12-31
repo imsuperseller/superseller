@@ -10,7 +10,7 @@ interface WhatsAppButtonProps {
 }
 
 export function WhatsAppButton({
-    phoneNumber = '1234567890', // Placeholder
+    phoneNumber = '12144362102', // Rensto business number
     message = "Hi Rensto, I'm interested in automating my business. I saw your website and want to learn more!"
 }: WhatsAppButtonProps) {
 
@@ -26,7 +26,7 @@ export function WhatsAppButton({
     return (
         <button
             onClick={handleClick}
-            className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 rounded-full bg-green-500 text-white shadow-2xl transition-all hover:scale-110 active:scale-95 group overflow-hidden"
+            className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-16 h-16 rounded-full bg-green-500 text-white shadow-2xl transition-all hover:scale-110 active:scale-95 group overflow-hidden"
             aria-label="Chat on WhatsApp"
             style={{
                 boxShadow: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)'

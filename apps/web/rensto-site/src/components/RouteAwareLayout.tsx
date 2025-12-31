@@ -17,10 +17,14 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   // Main service pages and custom landing pages have their own headers (new dark theme design)
   const isServicePage =
     pathname === '/' ||
+    pathname === '/he' ||
     pathname === '/marketplace' ||
     pathname?.startsWith('/marketplace/') ||
     pathname?.startsWith('/custom') ||
     pathname?.startsWith('/niches') ||
+    pathname?.startsWith('/docs') ||
+    pathname?.startsWith('/subscriptions') ||
+    pathname === '/rensto-components' ||
     pathname === '/solutions' ||
     pathname === '/offers' ||
     pathname === '/contact' ||

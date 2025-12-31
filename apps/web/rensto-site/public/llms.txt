@@ -1,0 +1,41 @@
+# Rensto - AI Automation & Operating Systems
+
+Rensto architects and deploys high-performance AI automation systems for businesses ready to automate their sales, fulfillment, and internal operations.
+
+## Core Products & Services
+
+- **WhatsApp OS**: Elite-level AI WhatsApp architecture for sales and support.
+- **Custom AI Solutions**: End-to-end custom automation development.
+- **Automation Marketplace**: Pre-built workflow templates for immediate deployment.
+- **Care Plans**: Dedicated ongoing support and system optimization.
+
+## Standardized Pricing (2026)
+
+### One-Time Services
+- **Automation Audit**: $497
+- **Sprint Planning**: $1,497
+- **AI Content Engine**: $997
+- **Lead Intake Agent**: $997
+
+### Monthly Care Plans
+- **Starter Care**: $497/mo (5 hours support)
+- **Growth Care**: $997/mo (15 hours support)
+- **Scale Care**: $2,497/mo (40 hours support)
+
+### WhatsApp OS
+- **Base Instance**: $249/mo
+- **Setup Fee**: $497
+- **Extra Numbers**: $149/mo (+ $99 setup)
+
+## Integration Points
+- **API Documentation**: https://rensto.com/docs
+- **Client Dashboard**: https://rensto.com/app/dashboard
+- **Marketplace**: https://rensto.com/marketplace
+
+## Contact & Intake
+- **Booking**: https://rensto.com/contact
+- **Support**: Integrated "Magic Button" in client dashboard for autonomous support.
+
+---
+
+> This file is optimized for AI agents and LLMs to understand the Rensto ecosystem, pricing, and service structure.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -18,12 +18,15 @@ import {
     Plus,
     LogOut,
     Bot,
-    Package
+    Package,
+    ShieldCheck
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
 import NewProductWizard from '@/components/admin/NewProductWizard';
+import SupportQueue from '@/components/admin/SupportQueue';
 import { Template } from '@/lib/firebase';
+import { SupportCase } from '@/types/support';
 
 interface DashboardStats {
     revenue: { current: number; previous: number; change: string };
@@ -68,6 +71,70 @@ export default function AdminDashboardClient({
             console.error('Logout failed', error);
         } finally {
             router.push('/login');
+        }
+    };
+
+    const [supportCases, setSupportCases] = useState<SupportCase[]>([]);
+    const [fetchingSupport, setFetchingSupport] = useState(false);
+
+    useEffect(() => {
+        if (activeTab === 'support') {
+            fetchSupportCases();
+        }
+    }, [activeTab]);
+
+    const fetchSupportCases = async () => {
+        try {
+            setFetchingSupport(true);
+            const response = await fetch('/api/support/list');
+            const data = await response.json();
+            if (data.success) {
+                setSupportCases(data.cases);
+            }
+        } catch (error) {
+            console.error('Failed to fetch support cases', error);
+        } finally {
+            setFetchingSupport(false);
+        }
+    };
+
+    const handleApproveSupport = async (caseId: string) => {
+        try {
+            const response = await fetch('/api/support/update', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    caseId,
+                    status: 'resolved',
+                    resolution: { approved: true }
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                fetchSupportCases(); // Refresh
+            }
+        } catch (error) {
+            console.error('Failed to approve support case', error);
+        }
+    };
+
+    const handleRejectSupport = async (caseId: string, feedback: string) => {
+        try {
+            const response = await fetch('/api/support/update', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    caseId,
+                    status: 'escalated',
+                    resolution: { approved: false, feedback }
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                fetchSupportCases(); // Refresh
+            }
+        } catch (error) {
+            console.error('Failed to reject support case', error);
         }
     };
 
@@ -156,6 +223,7 @@ export default function AdminDashboardClient({
                                 { id: 'analytics', label: 'Analytics', icon: TrendingUp },
                                 { id: 'workflows', label: 'Workflows', icon: Settings },
                                 { id: 'agents', label: 'AI Agents', icon: Bot },
+                                { id: 'support', label: 'Support Queue', icon: ShieldCheck },
                                 { id: 'settings', label: 'Settings', icon: Settings },
                             ].map(item => (
                                 <li key={item.id}>
@@ -346,6 +414,39 @@ export default function AdminDashboardClient({
                                     </h2>
                                 </div>
                                 <NewProductWizard />
+                            </div>
+                        )}
+                        {activeTab === 'support' && (
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div>
+                                        <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent">
+                                            Autonomous Support Operations
+                                        </h2>
+                                        <p className="text-slate-400 mt-1">Monitor and approve agent fixes for Care Plan customers</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                                            <p className="text-xs text-slate-500 uppercase">Active Agents</p>
+                                            <p className="text-xl font-bold text-white">4</p>
+                                        </div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                                            <p className="text-xs text-slate-500 uppercase">Avg Fix Time</p>
+                                            <p className="text-xl font-bold text-cyan-400">12m</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {fetchingSupport ? (
+                                    <div className="flex items-center justify-center p-12">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                                    </div>
+                                ) : (
+                                    <SupportQueue
+                                        cases={supportCases}
+                                        onApprove={handleApproveSupport}
+                                        onReject={handleRejectSupport}
+                                    />
+                                )}
                             </div>
                         )}
                     </div>

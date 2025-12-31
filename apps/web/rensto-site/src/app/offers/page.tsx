@@ -1,70 +1,76 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { env } from '@/lib/env';
 import { formatCurrency } from '@/lib/utils';
-import { Check, Star, Zap, Shield, Users } from 'lucide-react';
+import { Check, Star, Zap, Shield, Users, Loader2, ArrowRight, TrendingUp, Clock, Bot, Rocket, Search } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button-enhanced';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+
+const SearchIcon = Search;
 
 const products = [
   {
     name: 'Automation Audit',
-    price: 499,
-    description: 'I guarantee you\'ll identify $25,000+ in annual savings within 2 hours, or I\'ll refund 100%',
+    price: 497,
+    description: 'A deep architectural review of your current systems. We identify $25,000+ in annual efficiency leaks—guaranteed.',
     features: [
-      'Current process analysis',
-      'Automation opportunities',
-      'Implementation roadmap',
-      'ROI projections',
-      'Priority recommendations'
+      'Operational Bottleneck Audit',
+      'System Architecture Review',
+      'High-Impact Automation Map',
+      'Direct ROI Projections',
+      'Fixed-Price Implementation Plan'
     ],
-    cta: 'Get Audit',
+    cta: 'Get My Audit',
     popular: false,
-    icon: Shield
+    icon: SearchIcon
   },
   {
-    name: 'Sprint Planning',
-    price: 1500,
-    description: 'I guarantee you\'ll see ROI within 60 days, or I\'ll continue working for free until you do',
+    name: 'Blueprint Session',
+    price: 1497,
+    description: 'A comprehensive technical blueprint with full timeline, tech stack, and a ready-to-sign implementation contract.',
     features: [
-      'Detailed workflow design',
-      'Technical architecture',
-      'Implementation timeline',
-      'Resource requirements',
-      'Success metrics'
+      'Full Logical Flowcharts',
+      'Tool Stack Selection',
+      'Data Integration Mapping',
+      'Security & Compliance Check',
+      'Sprint Deployment Schedule'
     ],
-    cta: 'Start Sprint',
+    cta: 'Get My Blueprint',
     popular: true,
     icon: Zap
   },
   {
-    name: 'AI Content Engine',
-    price: 1200,
-    description: 'I guarantee 20% increase in organic traffic within 90 days, or I\'ll continue optimizing for free',
+    name: 'AI Revenue Engine',
+    price: 1497,
+    description: 'Autonomous content and marketing systems designed to scale your reach without increasing headcount.',
     features: [
-      'Content generation workflows',
-      'SEO optimization',
-      'Publishing automation',
-      'Performance tracking',
-      'Content calendar'
+      'Multi-Channel Content Agent',
+      'SEO & Authority Automation',
+      'Lead Magnet Deployment',
+      'Automatic Social Distribution',
+      'Weekly Attribution Reporting'
     ],
-    cta: 'Get Content Engine',
+    cta: 'Deploy Revenue Engine',
     popular: false,
-    icon: Star
+    icon: TrendingUp
   },
   {
-    name: 'Lead Intake Agent',
-    price: 900,
-    description: 'I guarantee 50% reduction in manual lead processing time within 30 days, or full refund plus $500 bonus',
+    name: 'Auto-Secretary',
+    price: 997,
+    description: 'Stop wasting half your day on leads. Cut manual work by 50% in 30 days, or get your money back.',
     features: [
-      'Form automation',
-      'Lead scoring',
-      'CRM integration',
-      'Follow-up sequences',
-      'Analytics dashboard'
+      'Auto-filling forms',
+      'Smart lead sorting',
+      'Syncs with your tools',
+      'Automatic follow-ups',
+      'Your simple dashboard'
     ],
-    cta: 'Get Lead Agent',
+    cta: 'Hire My Auto-Secretary',
     popular: false,
     icon: Users
   }
@@ -73,45 +79,45 @@ const products = [
 const carePlans = [
   {
     name: 'Starter Care',
-    price: 750,
+    price: 497,
     period: 'month',
-    description: '5 hours support + monitoring',
+    description: 'Perfect for small teams needing monitoring',
     features: [
-      '5 hours monthly support',
-      'System monitoring',
-      'Basic troubleshooting',
-      'Monthly reports',
-      'Email support'
+      '5 hours of expert help',
+      '24/7 system watch',
+      'We fix it before it breaks',
+      'Monthly status updates',
+      'Direct email access'
     ],
     cta: 'Start Care Plan',
     popular: false
   },
   {
     name: 'Growth Care',
-    price: 1500,
+    price: 997,
     period: 'month',
-    description: '10 hours + quarterly optimization',
+    description: 'Our most popular plan for active scaling',
     features: [
-      '10 hours monthly support',
-      'Performance optimization',
-      'Quarterly reviews',
-      'Priority support',
-      'Workflow improvements'
+      '15 hours of expert help',
+      'Continuous optimizations',
+      'Quarterly strategy reviews',
+      'Priority fast-lane support',
+      'Constant system upgrades'
     ],
     cta: 'Get Growth Care',
     popular: true
   },
   {
     name: 'Scale Care',
-    price: 3000,
+    price: 2497,
     period: 'month',
-    description: '20 hours + dedicated automation engineer',
+    description: 'A dedicated automation engineer for your team',
     features: [
-      '20 hours monthly support',
-      'Dedicated engineer',
-      'Strategic planning',
-      'Advanced analytics',
-      'Custom development'
+      '40 hours of expert help',
+      'Your own dedicated engineer',
+      'Full strategic planning',
+      'Complete deep-dive stats',
+      'Unlimited custom features'
     ],
     cta: 'Get Scale Care',
     popular: false
@@ -119,6 +125,45 @@ const carePlans = [
 ];
 
 export default function OffersPage() {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [showEmailModal, setShowEmailModal] = useState<string | null>(null);
+
+  const handleCheckout = async (productId: string, flowType: string) => {
+    // If we don't have an email yet, show the modal first
+    if (!email && !showEmailModal) {
+      setShowEmailModal(productId);
+      return;
+    }
+
+    setLoading(productId);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          flowType,
+          productId,
+          customerEmail: email,
+          tier: 'standard'
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error('Checkout failed:', data.error);
+        alert('Checkout failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -167,153 +212,192 @@ export default function OffersPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
         {/* Hero Section */}
-        <section className="py-24 px-4 relative overflow-hidden" style={{ background: 'var(--rensto-bg-primary)' }}>
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              background: 'radial-gradient(circle at 50% 50%, rgba(254, 61, 81, 0.3) 0%, transparent 70%)'
-            }}
-          />
-          <div className="container mx-auto text-center relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Choose Your Automation Path
-            </h1>
-            <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
-              From quick audits to comprehensive care plans, we have solutions that scale with your business needs.
-            </p>
+        <section className="py-24 px-4 relative overflow-hidden min-h-[60vh] flex items-center">
+          <AnimatedGridBackground />
+          <div className="container mx-auto max-w-4xl text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+                Choose Your <br />
+                <span className="gradient-text">Automation Path</span>
+              </h1>
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
+                From deep architectural audits to ongoing systems care.
+                Built for businesses that prioritize efficiency and scale.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Success Guarantee Banner */}
+        <section className="py-12 bg-[#0d0922] border-y border-white/5">
+          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30">
+                <Shield className="w-8 h-8 text-cyan-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">The Rensto Success Guarantee</h3>
+                <p className="text-slate-500 text-sm">Measurable ROI or We Keep Building Until You See It.</p>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* One-Time Services */}
-        <section className="section">
-          <div className="container">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                One-Time Services
-              </h2>
-              <p className="text-xl text-muted max-w-2xl mx-auto">
-                Get started with automation or tackle specific challenges
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section id="one-time" className="py-24 px-4 relative">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product, index) => (
-                <div
+                <motion.div
                   key={index}
                   id={product.name === 'Automation Audit' ? 'audit' : undefined}
-                  className={`card relative group hover:scale-105 transition-transform duration-300 ${product.popular ? 'ring-2 ring-accent2' : ''
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`relative p-8 rounded-3xl border transition-all duration-300 flex flex-col h-full group ${product.popular
+                    ? 'border-cyan-500 bg-cyan-500/[0.03] shadow-[0_0_40px_rgba(6,182,212,0.1)]'
+                    : 'border-white/5 bg-white/[0.02] hover:border-white/20'
                     }`}
                 >
                   {product.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-accent2 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        Most Popular
-                      </span>
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg"
+                      style={{ background: 'var(--rensto-gradient-primary)', color: 'white' }}>
+                      Enterprise Standard
                     </div>
                   )}
 
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 gradient-bg rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <product.icon className="w-8 h-8 text-white" />
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">{product.name}</h3>
+                    <div className="flex items-baseline gap-1 mb-4">
+                      <span className="text-3xl font-bold text-white">{formatCurrency(product.price)}</span>
+                      <span className="text-slate-500 text-xs uppercase tracking-widest">Fixed</span>
                     </div>
-                    <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
-                    <div className="text-3xl font-bold gradient-text mb-2">
-                      {formatCurrency(product.price)}
-                    </div>
-                    <p className="text-muted">{product.description}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed mb-6">{product.description}</p>
                   </div>
 
-                  <ul className="space-y-3 mb-8">
-                    {product.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start space-x-3">
-                        <Check className="w-5 h-5 text-accent1 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
+                  <ul className="space-y-3 mb-10 flex-grow">
+                    {product.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-1" />
+                        <span className="text-xs text-slate-300 leading-tight">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
-                  {getStripeLink(product.name) ? (
-                    <Link
-                      href={getStripeLink(product.name)!}
-                      className="btn-primary w-full text-center block"
-                    >
-                      {product.cta}
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/contact"
-                      className="btn-secondary w-full text-center block"
-                    >
-                      Inquire Now
-                    </Link>
-                  )}
-                </div>
+                  <Button
+                    size="xl"
+                    onClick={() => {
+                      const id = product.name.toLowerCase().replace(/\s+/g, '-');
+                      handleCheckout(id, 'service-purchase');
+                    }}
+                    variant={product.popular ? 'renstoPrimary' : 'renstoSecondary'}
+                    disabled={loading === product.name.toLowerCase().replace(/\s+/g, '-')}
+                    className="w-full font-bold h-14"
+                  >
+                    {loading === product.name.toLowerCase().replace(/\s+/g, '-') ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        {product.cta}
+                        <ArrowRight className="ml-2 w-4 h-4" />
+                      </>
+                    )}
+                  </Button>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
         {/* Care Plans */}
-        <section className="section bg-card/30">
-          <div className="container">
+        <section id="care-plans" className="py-24 px-4 relative bg-[#0d0922]">
+          <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ongoing Care Plans
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
+                Ongoing <span className="text-cyan-400">Scale Plans</span>
               </h2>
-              <p className="text-xl text-muted max-w-2xl mx-auto">
-                Keep your automations running smoothly with ongoing support
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                Dedicated engineering bandwidth to maintain and evolve your automation engine.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {carePlans.map((plan, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className={`card relative group hover:scale-105 transition-transform duration-300 ${plan.popular ? 'ring-2 ring-accent2' : ''
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`p-10 rounded-[2.5rem] border transition-all duration-300 flex flex-col h-full ${plan.popular
+                    ? 'border-cyan-500 bg-cyan-500/[0.05] shadow-[0_0_50px_rgba(6,182,212,0.15)] scale-105 z-10'
+                    : 'border-white/5 bg-white/[0.03]'
                     }`}
                 >
-                  {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-accent2 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        Most Popular
-                      </span>
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
+                    <p className="text-xs text-slate-500 font-medium mb-6 uppercase tracking-widest">{plan.description}</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-white">{formatCurrency(plan.price)}</span>
+                      <span className="text-slate-500 text-sm">/{plan.period}</span>
                     </div>
-                  )}
-
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                    <div className="text-3xl font-bold gradient-text mb-2">
-                      {formatCurrency(plan.price)}/{plan.period}
-                    </div>
-                    <p className="text-muted">{plan.description}</p>
                   </div>
 
-                  <ul className="space-y-3 mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start space-x-3">
-                        <Check className="w-5 h-5 text-accent1 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
+                  <ul className="space-y-4 mb-12 flex-grow">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-4">
+                        <div className="w-5 h-5 rounded-full bg-cyan-500/10 flex items-center justify-center">
+                          <Check className="w-3 h-3 text-cyan-400" />
+                        </div>
+                        <span className="text-sm text-slate-300 font-medium">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
                   {getStripeLink(plan.name) ? (
-                    <Link
-                      href={getStripeLink(plan.name)!}
-                      className="btn-primary w-full text-center block"
-                    >
-                      {plan.cta}
+                    <Link href={getStripeLink(plan.name)!} className="w-full">
+                      <Button
+                        size="xl"
+                        variant={plan.popular ? 'renstoPrimary' : 'renstoSecondary'}
+                        className="w-full font-bold h-16 rounded-2xl"
+                      >
+                        {plan.cta}
+                      </Button>
                     </Link>
                   ) : (
-                    <Link
-                      href="/contact"
-                      className="btn-secondary w-full text-center block"
-                    >
-                      Book a Call
+                    <Link href="/contact" className="w-full">
+                      <Button
+                        size="xl"
+                        variant="renstoNeon"
+                        className="w-full font-bold h-16 rounded-2xl"
+                      >
+                        Schedule Discovery
+                      </Button>
                     </Link>
                   )}
-                </div>
+                </motion.div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Guarantee Seal */}
+        <section className="py-24 px-4 relative">
+          <div className="container mx-auto max-w-3xl text-center">
+            <div className="p-12 rounded-[3rem] border border-cyan-500/30 bg-cyan-500/[0.02] relative overflow-hidden backdrop-blur-xl">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-30" />
+              <Shield className="w-16 h-16 text-cyan-500 mx-auto mb-8" />
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">The Rensto ROI Guarantee</h2>
+              <p className="text-slate-400 text-lg leading-relaxed">
+                We don&apos;t do regular &quot;trials&quot;. We work with serious founders.
+                If we don&apos;t meet the specific ROI targets agreed upon in your Blueprint,
+                we keep working—completely on our dime—until the system delivers exactly what we promised.
+              </p>
             </div>
           </div>
         </section>
@@ -328,17 +412,58 @@ export default function OffersPage() {
               Let&apos;s discuss your specific needs and find the perfect automation solution for your business.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact" className="btn-primary text-lg px-8 py-4">
-                Schedule a Call
-              </Link>
-              <Link href="/process" className="btn-secondary text-lg px-8 py-4">
-                Learn Our Process
-              </Link>
+              <Button asChild size="xl" variant="renstoPrimary">
+                <Link href="/contact">
+                  Schedule a Call
+                </Link>
+              </Button>
+              <Button asChild size="xl" variant="renstoSecondary">
+                <Link href="/process">
+                  Learn Our Process
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
       </main>
       <Footer />
+
+      {/* Email Capture Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#110d28] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h3 className="text-2xl font-bold mb-2">Secure Your Spot</h3>
+            <p className="text-gray-400 mb-6">
+              Enter your email to proceed to secure payment. We&apos;ll use this to deliver your {showEmailModal === 'automation-audit' ? 'Audit Report' : 'Sprint Blueprint'}.
+            </p>
+            <input
+              type="email"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-4 text-white focus:border-red-500/50 outline-none transition-all"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setShowEmailModal(null)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => handleCheckout(showEmailModal, 'service-purchase')}
+                disabled={!email || !!loading}
+                className="flex-1 font-bold"
+                style={{ background: 'var(--rensto-gradient-primary)' }}
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Continue'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

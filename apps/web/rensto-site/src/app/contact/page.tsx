@@ -1,11 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { env } from '@/lib/env';
 import { ContactForm } from '@/components/ContactForm';
-import { Mail, MapPin, Clock, Phone } from 'lucide-react';
+import { Mail, MapPin, Clock, Phone, ArrowRight, MessageSquare, Shield, CheckCircle2 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import { Button } from '@/components/ui/button-enhanced';
 
 const contactInfo = [
   {
@@ -49,7 +52,7 @@ const faqs = [
   },
   {
     question: 'What if I need changes after deployment?',
-    answer: 'We include 30 days of post-deployment support. For ongoing changes, we offer care plans starting at $750/month.'
+    answer: 'We include 30 days of post-deployment support. For ongoing changes, we offer Care Plans starting at $497/month.'
   },
   {
     question: 'Can you integrate with my existing systems?',
@@ -71,135 +74,158 @@ export default function ContactPage() {
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="section bg-gradient-to-br from-background via-background to-accent1/20">
-          <div className="container text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Let&apos;s Build Something Amazing
-            </h1>
-            <p className="text-xl text-muted max-w-3xl mx-auto mb-8">
-              Ready to automate your business processes? Get in touch and let&apos;s discuss how we can help you save time and scale efficiently.
-            </p>
+        <section className="py-24 px-4 relative overflow-hidden min-h-[50vh] flex items-center">
+          <AnimatedGridBackground />
+          <div className="container mx-auto max-w-4xl text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+                Let&apos;s Architect <br />
+                <span className="gradient-text">Your Automation</span>
+              </h1>
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                Ready to reclaim your time? Whether you need a simple bot or a complex business OS,
+                our lead architects are ready to design your path.
+              </p>
+            </motion.div>
           </div>
         </section>
 
         {/* Contact Form & Info */}
-        <section className="section">
-          <div className="container">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Contact Form */}
-              <div>
-                <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
-                <ContactForm />
-              </div>
+        <section className="py-24 px-4 relative">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
 
-              {/* Contact Information */}
-              <div>
-                <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
-                <div className="space-y-6">
-                  {contactInfo.map((info, index) => (
-                    <div key={index} className="card">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0">
-                          <info.icon className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold mb-1">{info.title}</h3>
-                          {info.link ? (
-                            <Link
-                              href={info.link}
-                              className="text-accent1 hover:text-accent2 transition-colors duration-200"
-                            >
-                              {info.value}
-                            </Link>
-                          ) : (
-                            <p className="text-text">{info.value}</p>
-                          )}
-                          <p className="text-sm text-muted mt-1">{info.description}</p>
-                        </div>
-                      </div>
+              {/* Left Column: Form */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="lg:col-span-7 bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-[2.5rem] shadow-2xl backdrop-blur-xl"
+              >
+                <div className="mb-10">
+                  <h2 className="text-3xl font-bold text-white mb-4">Brief Your Architect</h2>
+                  <p className="text-slate-500">Submit your project details and we&apos;ll get back to you with a roadmap.</p>
+                </div>
+                <ContactForm />
+              </motion.div>
+
+              {/* Right Column: Info & Actions */}
+              <div className="lg:col-span-5 space-y-8">
+
+                {/* Voice AI Action */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="p-8 rounded-[2rem] border border-cyan-500/20 bg-cyan-500/[0.03] group hover:border-cyan-500/50 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30">
+                      <Phone className="w-6 h-6 text-cyan-400" />
                     </div>
+                    <div>
+                      <h3 className="font-bold text-white">Instant Voice AI</h3>
+                      <p className="text-xs text-slate-500 uppercase tracking-widest">Available 24/7</p>
+                    </div>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+                    Want to experience our tech right now? Call our Voice AI Agent.
+                    He can answer questions, explain our process, and even book your audit session.
+                  </p>
+                  <a href="tel:12144362102" className="block">
+                    <Button variant="renstoPrimary" className="w-full h-14 font-bold rounded-xl text-lg">
+                      Call +1 (214) 436-2102
+                    </Button>
+                  </a>
+                </motion.div>
+
+                {/* Info Cards */}
+                <div className="grid grid-cols-1 gap-4">
+                  {contactInfo.map((info, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] flex items-center gap-6"
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                        <info.icon className="w-5 h-5 text-slate-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">{info.title}</h4>
+                        {info.link ? (
+                          <Link href={info.link} className="text-white font-medium hover:text-cyan-400 transition-colors block truncate">
+                            {info.value}
+                          </Link>
+                        ) : (
+                          <p className="text-white font-medium">{info.value}</p>
+                        )}
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
 
                 {/* Social Links */}
-                <div className="mt-8 card">
-                  <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-                  <div className="flex space-x-4">
-                    {env.NEXT_PUBLIC_LINKEDIN_URL && (
-                      <Link
-                        href={env.NEXT_PUBLIC_LINKEDIN_URL}
-                        className="text-muted hover:text-accent1 transition-colors duration-200"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        LinkedIn
-                      </Link>
-                    )}
-                    {env.NEXT_PUBLIC_X_URL && (
-                      <Link
-                        href={env.NEXT_PUBLIC_X_URL}
-                        className="text-muted hover:text-accent1 transition-colors duration-200"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        X (Twitter)
-                      </Link>
-                    )}
-                    {env.NEXT_PUBLIC_YOUTUBE_URL && (
-                      <Link
-                        href={env.NEXT_PUBLIC_YOUTUBE_URL}
-                        className="text-muted hover:text-accent1 transition-colors duration-200"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        YouTube
-                      </Link>
-                    )}
+                <div className="p-8 rounded-[2rem] border border-white/5 bg-white/[0.01]">
+                  <h4 className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-6">Connect Elsewhere</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {['LinkedIn', 'X', 'YouTube'].map((social) => (
+                      <button key={social} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                        {social}
+                      </button>
+                    ))}
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="section bg-card/30">
-          <div className="container">
+        <section className="py-24 px-4 relative bg-[#070416]">
+          <div className="container mx-auto max-w-4xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-xl text-muted max-w-2xl mx-auto">
-                Common questions about our process and services
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Pre-Consultation <span className="text-cyan-400">FAQ</span></h2>
+              <p className="text-slate-500">Everything you need to know before we hop on a call.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <div key={index} className="card">
-                  <h3 className="text-lg font-semibold mb-3">{faq.question}</h3>
-                  <p className="text-muted leading-relaxed">{faq.answer}</p>
-                </div>
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-8 rounded-3xl border border-white/5 bg-white/[0.02]"
+                >
+                  <h3 className="text-lg font-bold text-white mb-2">{faq.question}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{faq.answer}</p>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="section bg-gradient-to-r from-accent1/20 to-accent2/20">
-          <div className="container text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Get Started?
+        <section className="py-24 px-4 relative bg-gradient-to-b from-transparent to-cyan-500/10">
+          <div className="container mx-auto max-w-4xl text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white uppercase tracking-tighter">
+              The Path to <span className="gradient-text">Freedom</span> Starts Here
             </h2>
-            <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-              Choose from our automation services or schedule a consultation to discuss your specific needs.
-            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/offers" className="btn-primary text-lg px-8 py-4">
-                View Our Offers
+              <Link href="/offers">
+                <Button size="xl" variant="renstoPrimary">View Systems & Pricing</Button>
               </Link>
-              <Link href="/process" className="btn-secondary text-lg px-8 py-4">
-                Learn Our Process
+              <Link href="/process">
+                <Button size="xl" variant="renstoSecondary">Learn Our Methodology</Button>
               </Link>
             </div>
           </div>

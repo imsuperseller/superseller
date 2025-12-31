@@ -64,13 +64,13 @@ export default function LegalNichePage() {
                         <div className="grid lg:grid-cols-2 gap-12 items-center">
                             <div className="space-y-8">
                                 <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 px-4 py-1.5 uppercase tracking-widest text-[10px] font-mono">
-                                    Legal Automation Architecture
+                                    Tools for Law Firms
                                 </Badge>
                                 <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tight">
-                                    Zero Labor <span className="text-blue-400">Law Firms</span>
+                                    The "No-Leads-Lost" <span className="text-blue-400">Law Firm</span>
                                 </h1>
                                 <p className="text-xl text-slate-400 leading-relaxed">
-                                    Automate client intake, document assembly, and billing cycles. Let your partners focus on high-value litigation while AI handles the bureaucracy.
+                                    Automatic client booking, document assembly, and billing. Let your team focus on the case while our AI handles the paperwork.
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <Link href="/contact?niche=legal">
@@ -124,18 +124,18 @@ export default function LegalNichePage() {
                         <div className="grid md:grid-cols-3 gap-8">
                             <UseCaseCard
                                 icon={Zap}
-                                title="Automated Intake"
-                                desc="Lead qualification via WhatsApp/Web, sync to Clio/MyCase instantly."
+                                title="Automatic Intake"
+                                desc="Get new clients via WhatsApp or Web, and sync them to your law software instantly."
                             />
                             <UseCaseCard
                                 icon={Scale}
-                                title="Document Drafting"
-                                desc="Generate NDAs, contracts, and filings using GPT-4-powered templates."
+                                title="Instant Documents"
+                                desc="Generate contracts and legal papers automatically using pro templates."
                             />
                             <UseCaseCard
                                 icon={BarChart3}
-                                title="Billing Sync"
-                                desc="Automatic time tracking and QuickBooks integration for zero-manual invoicing."
+                                title="Simple Billing"
+                                desc="Track time and bill clients automatically without typing a single invoice."
                             />
                         </div>
                     </div>

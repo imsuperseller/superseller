@@ -26,6 +26,7 @@ import {
     NewWayCheckIcon
 } from '@/components/icons/CustomIcons';
 import { Header } from '@/components/Header';
+import { ElevenLabsWidget } from '@/components/ElevenLabsWidget';
 
 // Types for the flow state
 type FlowState = 'IDLE' | 'BOOTING' | 'INTERRUPTION' | 'QUALIFIED' | 'GENERATING_SOLUTION' | 'PROPOSAL' | 'REVEAL' | 'GENERATING';
@@ -248,6 +249,214 @@ export default function CustomSolutionsPage() {
                 </div>
             </section>
 
+            {/* ===== LIVE DEMO TERMINAL (MOVED UP) ===== */}
+            <section id="terminal" ref={terminalRef} className="py-20 px-4 relative overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10"
+                        style={{ background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.2) 0%, transparent 70%)' }} />
+                </div>
+                <div className="container mx-auto max-w-4xl text-center relative z-10">
+                    <h2 className="text-4xl font-bold text-white mb-4">See It In Action</h2>
+                    <p className="text-xl mb-12 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
+                        Enter your website below. **Hope**, our AI assistant, will analyze your business and show you exactly what your custom system could look like.
+                    </p>
+
+                    {/* STATE: IDLE (URL Input) */}
+                    {flowState === 'IDLE' && (
+                        <div className="max-w-lg mx-auto">
+                            <form onSubmit={handleUrlSubmit} className="relative">
+                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                    <Globe className="w-5 h-5" style={{ color: 'var(--rensto-text-muted)' }} />
+                                </div>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="yourwebsite.com"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-5 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600"
+                                />
+                                <button
+                                    type="submit"
+                                    className="absolute right-2 top-2 bottom-2 px-6 rounded-lg text-white font-semibold transition-all flex items-center gap-2 hover:opacity-90"
+                                    style={{
+                                        background: 'var(--rensto-gradient-secondary)',
+                                        boxShadow: 'var(--rensto-glow-secondary)'
+                                    }}
+                                >
+                                    Analyze
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* STATE: BOOTING - Deep Scan Visual */}
+                    {flowState === 'BOOTING' && (
+                        <div className="relative rounded-3xl p-8 backdrop-blur-xl border overflow-hidden" style={{
+                            background: 'linear-gradient(135deg, rgba(30, 174, 247, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                            borderColor: 'rgba(30, 174, 247, 0.4)',
+                            boxShadow: '0 0 80px rgba(30, 174, 247, 0.2)'
+                        }}>
+                            {/* Animated background pulse */}
+                            <div className="absolute inset-0 pointer-events-none">
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full animate-ping opacity-10" style={{ background: 'var(--rensto-blue)' }} />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full animate-pulse opacity-20" style={{ background: 'var(--rensto-cyan)' }} />
+                            </div>
+
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-8 relative z-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(30, 174, 247, 0.2)' }}>
+                                        <Brain className="w-5 h-5" style={{ color: 'var(--rensto-blue)' }} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-white">RENSTO DEEP SCAN</h3>
+                                        <p className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>Analyzing {url.replace(/^https?:\/\//, '').split('/')[0]}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-xs text-green-400 font-mono">ACTIVE</span>
+                                </div>
+                            </div>
+
+                            {/* Circular Progress Indicator */}
+                            <div className="flex flex-col items-center justify-center py-8 relative z-10">
+                                <div className="relative w-40 h-40">
+                                    <svg className="w-full h-full transform -rotate-90">
+                                        <circle cx="80" cy="80" r="70" stroke="rgba(30, 174, 247, 0.2)" strokeWidth="8" fill="none" />
+                                        <circle
+                                            cx="80" cy="80" r="70"
+                                            stroke="url(#scanGradient-custom)"
+                                            strokeWidth="8"
+                                            fill="none"
+                                            strokeLinecap="round"
+                                            strokeDasharray={`${2 * Math.PI * 70}`}
+                                            strokeDashoffset={`${2 * Math.PI * 70 * (1 - (scanPhase + 1) / 8)}`}
+                                            className="transition-all duration-500 ease-out"
+                                        />
+                                        <defs>
+                                            <linearGradient id="scanGradient-custom" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="var(--rensto-blue)" />
+                                                <stop offset="100%" stopColor="var(--rensto-cyan)" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-4xl font-bold" style={{ color: 'var(--rensto-cyan)' }}>
+                                            {Math.round(((scanPhase + 1) / 8) * 100)}%
+                                        </span>
+                                        <span className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>SCANNING</span>
+                                    </div>
+                                </div>
+
+                                <p className="mt-6 text-lg font-medium animate-pulse" style={{ color: 'var(--rensto-text-primary)' }}>
+                                    {bootLogs[bootLogs.length - 1] || 'Initializing...'}
+                                </p>
+                            </div>
+
+                            {/* Detection Log */}
+                            <div className="mt-4 p-4 rounded-xl font-mono text-xs space-y-1 max-h-32 overflow-y-auto relative z-10" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                                {bootLogs.map((log, i) => (
+                                    <div key={i} className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200" style={{ color: i === bootLogs.length - 1 ? 'var(--rensto-cyan)' : 'var(--rensto-text-muted)' }}>
+                                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                                        <span>{log}</span>
+                                    </div>
+                                ))}
+                                {bootLogs.length < 8 && (
+                                    <div className="flex items-center gap-2 animate-pulse" style={{ color: 'var(--rensto-blue)' }}>
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                        <span>Processing...</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* STATE: INTERRUPTION (Questions) */}
+                    {flowState === 'INTERRUPTION' && (
+                        <div className="bg-slate-900/90 border border-cyan-500/50 rounded-2xl p-8 shadow-[0_0_100px_rgba(6,182,212,0.2)] backdrop-blur-xl text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-slate-800">
+                                <div className="h-full transition-all duration-500 ease-out" style={{ width: `${((interruptionStep + 1) / questions.length) * 100}%`, background: 'var(--rensto-cyan)' }} />
+                            </div>
+
+                            <p className="text-sm mb-2" style={{ color: 'var(--rensto-text-muted)' }}>
+                                Question {interruptionStep + 1} of {questions.length}
+                            </p>
+
+                            <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>
+                                {questions[interruptionStep].text}
+                            </h3>
+
+                            {questions[interruptionStep].type === 'choice' && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {questions[interruptionStep].options?.map((option) => (
+                                        <button
+                                            key={option}
+                                            onClick={() => handleInterruptionAnswer(option)}
+                                            className="p-4 rounded-xl border text-left transition-all hover:scale-[1.02] hover:border-cyan-500/50"
+                                            style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {questions[interruptionStep].type === 'email' && (
+                                <div className="max-w-md mx-auto">
+                                    <input
+                                        type="email"
+                                        placeholder="your@email.com"
+                                        value={emailInput}
+                                        onChange={(e) => setEmailInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && emailInput && handleInterruptionAnswer(emailInput)}
+                                        className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 mb-4"
+                                    />
+                                    <Button
+                                        onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
+                                        disabled={!emailInput}
+                                        className="w-full"
+                                        style={{ background: 'var(--rensto-gradient-secondary)' }}
+                                    >
+                                        Get My Blueprint <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* STATE: QUALIFIED */}
+                    {flowState === 'QUALIFIED' && (
+                        <div className="rounded-2xl p-8 backdrop-blur-xl border text-center" style={{
+                            background: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
+                            borderColor: 'rgba(95, 251, 253, 0.4)'
+                        }}>
+                            <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: 'rgba(95, 251, 253, 0.2)' }}>
+                                <CheckCircle className="w-8 h-8" style={{ color: 'var(--rensto-cyan)' }} />
+                            </div>
+                            <h3 className={`text-2xl font-bold mb-2 ${getQualificationMessage(answers).color}`}>
+                                {getQualificationMessage(answers).title}
+                            </h3>
+                            <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
+                                {getQualificationMessage(answers).subtitle}
+                            </p>
+                            <Button
+                                onClick={handleProceedFromQualified}
+                                className="text-white px-8 py-4 text-lg rounded-xl font-bold"
+                                style={{
+                                    background: 'var(--rensto-gradient-secondary)',
+                                    boxShadow: 'var(--rensto-glow-secondary)'
+                                }}
+                            >
+                                View Your Custom Plan <ArrowRight className="w-5 h-5 ml-2" />
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </section>
+
             {/* ===== OLD WAY VS NEW WAY ===== */}
             <section className="py-24 px-4 relative overflow-hidden">
                 <div className="absolute inset-0 pointer-events-none">
@@ -388,39 +597,42 @@ export default function CustomSolutionsPage() {
                         {[
                             {
                                 Icon: BrainSystemIcon,
-                                title: 'The Brain',
-                                price: 'Custom Quote',
-                                description: 'One-time. The core AI system custom-built for your operations.',
+                                title: 'Automation Audit',
+                                price: '$497',
+                                description: 'AI-driven analysis. Identify $25k+ in savings. Guaranteed.',
                                 gradient: 'linear-gradient(135deg, rgba(30, 174, 247, 0.15) 0%, rgba(17, 13, 40, 0.95) 100%)',
                                 borderColor: 'rgba(30, 174, 247, 0.4)',
                                 iconColor: 'var(--rensto-blue)',
                                 glowColor: 'rgba(30, 174, 247, 0.3)',
-                                popular: true
+                                popular: false,
+                                href: '/offers#audit'
                             },
                             {
                                 Icon: SkillsIcon,
-                                title: 'The Skills',
-                                price: 'Per Add-on',
-                                description: 'One-time upgrades. Add capabilities like voice, analytics, or integrations.',
+                                title: 'Sprint Planning',
+                                price: '$1,497',
+                                description: 'Full architecture & implementation plan with ready-to-sign contract.',
                                 gradient: 'linear-gradient(135deg, rgba(254, 61, 81, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
                                 borderColor: 'rgba(254, 61, 81, 0.3)',
                                 iconColor: 'var(--rensto-primary)',
                                 glowColor: 'rgba(254, 61, 81, 0.2)',
-                                popular: false
+                                popular: true,
+                                href: '/offers'
                             },
                             {
                                 Icon: GuardIcon,
-                                title: 'The Guard',
-                                price: 'Monthly Support',
-                                description: 'Monthly. Monitoring, updates, and priority support.',
+                                title: 'Care Plan',
+                                price: 'From $497/mo',
+                                description: 'Continuous monitoring, updates, and active optimization.',
                                 gradient: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
                                 borderColor: 'rgba(95, 251, 253, 0.3)',
                                 iconColor: 'var(--rensto-cyan)',
                                 glowColor: 'rgba(95, 251, 253, 0.2)',
-                                popular: false
+                                popular: false,
+                                href: '/offers'
                             }
                         ].map((tier) => (
-                            <div key={tier.title} className="group relative">
+                            <Link key={tier.title} href={tier.href} className="group relative">
                                 <div className="absolute inset-0 rounded-3xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500" style={{ background: tier.glowColor }} />
                                 <div
                                     className="relative rounded-3xl p-8 backdrop-blur-xl border transition-all duration-300 group-hover:translate-y-[-4px] h-full flex flex-col"
@@ -441,222 +653,11 @@ export default function CustomSolutionsPage() {
                                     <p className="text-3xl font-bold mb-4" style={{ color: tier.iconColor }}>{tier.price}</p>
                                     <p style={{ color: 'var(--rensto-text-secondary)' }}>{tier.description}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
-                    <p className="text-center mt-10 text-sm" style={{ color: 'var(--rensto-text-muted)' }}>
-                        Compare to: 1 full-time employee = $50,000-$100,000/year + benefits + management overhead.
-                    </p>
                 </div>
-            </section >
-
-            {/* ===== LIVE DEMO TERMINAL ===== */}
-            < section id="terminal" ref={terminalRef} className="py-20 px-4 relative overflow-hidden" >
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-full h-full opacity-10"
-                        style={{ background: 'radial-gradient(circle at 50% 50%, rgba(30, 174, 247, 0.2) 0%, transparent 70%)' }} />
-                </div>
-                <div className="container mx-auto max-w-4xl text-center relative z-10">
-                    <h2 className="text-4xl font-bold text-white mb-4">See It In Action</h2>
-                    <p className="text-xl mb-12 max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-                        Enter your website below. Our AI will analyze your business and show you exactly what your custom system could look like.
-                    </p>
-
-                    {/* STATE: IDLE (URL Input) */}
-                    {flowState === 'IDLE' && (
-                        <div className="max-w-lg mx-auto">
-                            <form onSubmit={handleUrlSubmit} className="relative">
-                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                                    <Globe className="w-5 h-5" style={{ color: 'var(--rensto-text-muted)' }} />
-                                </div>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="yourwebsite.com"
-                                    value={url}
-                                    onChange={(e) => setUrl(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-5 rounded-xl text-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-white placeholder:text-slate-600"
-                                />
-                                <button
-                                    type="submit"
-                                    className="absolute right-2 top-2 bottom-2 px-6 rounded-lg text-white font-semibold transition-all flex items-center gap-2 hover:opacity-90"
-                                    style={{
-                                        background: 'var(--rensto-gradient-secondary)',
-                                        boxShadow: 'var(--rensto-glow-secondary)'
-                                    }}
-                                >
-                                    Analyze
-                                    <ArrowRight className="w-4 h-4" />
-                                </button>
-                            </form>
-                        </div>
-                    )}
-
-                    {/* STATE: BOOTING - Deep Scan Visual */}
-                    {flowState === 'BOOTING' && (
-                        <div className="relative rounded-3xl p-8 backdrop-blur-xl border overflow-hidden" style={{
-                            background: 'linear-gradient(135deg, rgba(30, 174, 247, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
-                            borderColor: 'rgba(30, 174, 247, 0.4)',
-                            boxShadow: '0 0 80px rgba(30, 174, 247, 0.2)'
-                        }}>
-                            {/* Animated background pulse */}
-                            <div className="absolute inset-0 pointer-events-none">
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full animate-ping opacity-10" style={{ background: 'var(--rensto-blue)' }} />
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full animate-pulse opacity-20" style={{ background: 'var(--rensto-cyan)' }} />
-                            </div>
-
-                            {/* Header */}
-                            <div className="flex items-center justify-between mb-8 relative z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(30, 174, 247, 0.2)' }}>
-                                        <Brain className="w-5 h-5" style={{ color: 'var(--rensto-blue)' }} />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-white">RENSTO DEEP SCAN</h3>
-                                        <p className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>Analyzing {url.replace(/^https?:\/\//, '').split('/')[0]}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-xs text-green-400 font-mono">ACTIVE</span>
-                                </div>
-                            </div>
-
-                            {/* Circular Progress Indicator */}
-                            <div className="flex flex-col items-center justify-center py-8 relative z-10">
-                                <div className="relative w-40 h-40">
-                                    <svg className="w-full h-full transform -rotate-90">
-                                        <circle cx="80" cy="80" r="70" stroke="rgba(30, 174, 247, 0.2)" strokeWidth="8" fill="none" />
-                                        <circle
-                                            cx="80" cy="80" r="70"
-                                            stroke="url(#scanGradient)"
-                                            strokeWidth="8"
-                                            fill="none"
-                                            strokeLinecap="round"
-                                            strokeDasharray={`${2 * Math.PI * 70}`}
-                                            strokeDashoffset={`${2 * Math.PI * 70 * (1 - (scanPhase + 1) / 8)}`}
-                                            className="transition-all duration-500 ease-out"
-                                        />
-                                        <defs>
-                                            <linearGradient id="scanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stopColor="var(--rensto-blue)" />
-                                                <stop offset="100%" stopColor="var(--rensto-cyan)" />
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                        <span className="text-4xl font-bold" style={{ color: 'var(--rensto-cyan)' }}>
-                                            {Math.round(((scanPhase + 1) / 8) * 100)}%
-                                        </span>
-                                        <span className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>SCANNING</span>
-                                    </div>
-                                </div>
-
-                                <p className="mt-6 text-lg font-medium animate-pulse" style={{ color: 'var(--rensto-text-primary)' }}>
-                                    {bootLogs[bootLogs.length - 1] || 'Initializing...'}
-                                </p>
-                            </div>
-
-                            {/* Detection Log */}
-                            <div className="mt-4 p-4 rounded-xl font-mono text-xs space-y-1 max-h-32 overflow-y-auto relative z-10" style={{ background: 'rgba(0,0,0,0.4)' }}>
-                                {bootLogs.map((log, i) => (
-                                    <div key={i} className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-200" style={{ color: i === bootLogs.length - 1 ? 'var(--rensto-cyan)' : 'var(--rensto-text-muted)' }}>
-                                        <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                                        <span>{log}</span>
-                                    </div>
-                                ))}
-                                {bootLogs.length < 8 && (
-                                    <div className="flex items-center gap-2 animate-pulse" style={{ color: 'var(--rensto-blue)' }}>
-                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                        <span>Processing...</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* STATE: INTERRUPTION (Questions) */}
-                    {flowState === 'INTERRUPTION' && (
-                        <div className="bg-slate-900/90 border border-cyan-500/50 rounded-2xl p-8 shadow-[0_0_100px_rgba(6,182,212,0.2)] backdrop-blur-xl text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-slate-800">
-                                <div className="h-full transition-all duration-500 ease-out" style={{ width: `${((interruptionStep + 1) / questions.length) * 100}%`, background: 'var(--rensto-cyan)' }} />
-                            </div>
-
-                            <p className="text-sm mb-2" style={{ color: 'var(--rensto-text-muted)' }}>
-                                Question {interruptionStep + 1} of {questions.length}
-                            </p>
-
-                            <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--rensto-text-primary)' }}>
-                                {questions[interruptionStep].text}
-                            </h3>
-
-                            {questions[interruptionStep].type === 'choice' && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {questions[interruptionStep].options?.map((option) => (
-                                        <button
-                                            key={option}
-                                            onClick={() => handleInterruptionAnswer(option)}
-                                            className="p-4 rounded-xl border text-left transition-all hover:scale-[1.02] hover:border-cyan-500/50"
-                                            style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}
-                                        >
-                                            {option}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-
-                            {questions[interruptionStep].type === 'email' && (
-                                <div className="max-w-md mx-auto">
-                                    <input
-                                        type="email"
-                                        placeholder="your@email.com"
-                                        value={emailInput}
-                                        onChange={(e) => setEmailInput(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && emailInput && handleInterruptionAnswer(emailInput)}
-                                        className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 mb-4"
-                                    />
-                                    <Button
-                                        onClick={() => emailInput && handleInterruptionAnswer(emailInput)}
-                                        disabled={!emailInput}
-                                        className="w-full"
-                                        style={{ background: 'var(--rensto-gradient-secondary)' }}
-                                    >
-                                        Get My Blueprint <ArrowRight className="w-4 h-4 ml-2" />
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* STATE: QUALIFIED */}
-                    {flowState === 'QUALIFIED' && (
-                        <div className="rounded-2xl p-8 backdrop-blur-xl border text-center" style={{
-                            background: 'linear-gradient(135deg, rgba(95, 251, 253, 0.1) 0%, rgba(17, 13, 40, 0.95) 100%)',
-                            borderColor: 'rgba(95, 251, 253, 0.4)'
-                        }}>
-                            <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ background: 'rgba(95, 251, 253, 0.2)' }}>
-                                <CheckCircle className="w-8 h-8" style={{ color: 'var(--rensto-cyan)' }} />
-                            </div>
-                            <h3 className={`text-2xl font-bold mb-2 ${getQualificationMessage(answers).color}`}>
-                                {getQualificationMessage(answers).title}
-                            </h3>
-                            <p className="mb-8" style={{ color: 'var(--rensto-text-secondary)' }}>
-                                {getQualificationMessage(answers).subtitle}
-                            </p>
-                            <Button
-                                onClick={handleProceedFromQualified}
-                                className="text-white px-8 py-4 text-lg rounded-xl font-bold"
-                                style={{
-                                    background: 'var(--rensto-gradient-secondary)',
-                                    boxShadow: 'var(--rensto-glow-secondary)'
-                                }}
-                            >
-                                View Your Custom Plan <ArrowRight className="w-5 h-5 ml-2" />
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </section >
+            </section>
 
             {/* ===== GUARANTEE ===== */}
             < section className="py-24 px-4 relative overflow-hidden" >
@@ -670,13 +671,13 @@ export default function CustomSolutionsPage() {
                             <GuaranteeIcon size={72} />
                         </div>
                         <div className="inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4" style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' }}>
-                            30-Day Risk-Free Trial
+                            Rensto Success Guarantee
                         </div>
                         <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-                            100% Satisfaction Guarantee
+                            ROI or We Keep Working
                         </h2>
                         <p style={{ color: 'var(--rensto-text-secondary)' }}>
-                            After the Blueprint phase, if you&apos;re not confident the system will deliver results, we refund you in full. No questions asked. We only get paid when you&apos;re happy.
+                            We don&apos;t do &quot;trials&quot;. We work with committed partners. If the system doesn&apos;t meet the specific ROI targets defined in your Blueprint, we keep optimizing—completely on our own dime—until it does.
                         </p>
                     </div>
                 </div>
@@ -698,6 +699,7 @@ export default function CustomSolutionsPage() {
             </section>
 
             <Footer />
+            <ElevenLabsWidget />
         </div >
     );
 }

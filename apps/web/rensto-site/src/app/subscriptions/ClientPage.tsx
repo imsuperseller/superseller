@@ -1468,11 +1468,11 @@ export default function SubscriptionsPage() {
                       <div className="relative z-10">
                         <div className="flex justify-between items-center mb-8">
                           <div>
-                            <h3 className="text-3xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>Full Automation Retainer</h3>
-                            <Badge className="bg-[#fe3d51] text-white">Elite Partnership</Badge>
+                            <h3 className="text-3xl font-bold mb-2" style={{ color: 'var(--rensto-text-primary)' }}>Growth Care Plan</h3>
+                            <Badge className="bg-[#fe3d51] text-white">Most Popular</Badge>
                           </div>
                           <div className="text-right">
-                            <div className="text-6xl font-bold" style={{ color: 'var(--rensto-primary)' }}>$497<span className="text-xl text-gray-400">/mo</span></div>
+                            <div className="text-6xl font-bold" style={{ color: 'var(--rensto-primary)' }}>$997<span className="text-xl text-gray-400">/mo</span></div>
                           </div>
                         </div>
 

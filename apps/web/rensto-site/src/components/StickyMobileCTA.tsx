@@ -56,7 +56,7 @@ export function StickyMobileCTA() {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-rensto-blue tracking-wider uppercase">Limited Availability</span>
-                            <span className="text-sm font-bold text-white leading-tight">Build Your AI Agent</span>
+                            <span className="text-sm font-bold text-white leading-tight">Get Your Automation Audit</span>
                         </div>
                     </div>
 

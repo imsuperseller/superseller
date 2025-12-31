@@ -1,0 +1,11 @@
+{
+  "data": {
+    "event_type": "call.gather.ended",
+    "payload": {
+      "call_control_id": "test_call_123",
+      "speech": {
+        "transcript": "Tell me about the Automation Audit."
+      }
+    }
+  }
+}

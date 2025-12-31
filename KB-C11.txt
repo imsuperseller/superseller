@@ -1,0 +1,29 @@
+# Knowledge Base: Sales Offers - Audit & Sprint Planning
+
+This document serves as the source of truth for Rensto's core entry-level service offers.
+
+## 1. Automation Audit & Gap Analysis ($499)
+**Goal**: Identify technical bottlenecks and manual overhead in existing operations.
+**Outcome**: A "Custom Solution Blueprint" detailing where AI can save time and money.
+**Guarantee**: "I guarantee you'll identify $25,000+ in annual savings within 2 hours, or I'll refund 100%."
+**Process**:
+- 60-90 minute deep-dive consultation.
+- Full infrastructure review.
+- High-level ROI projections.
+- Priority roadmap for implementation.
+
+## 2. Technical Sprint Planning ($1,500)
+**Goal**: Deep technical architecture for a specific set of 3-5 high-impact workflows.
+**Outcome**: Full technical specifications, n8n pipeline designs, and a 30-day execution plan.
+**Guarantee**: "I guarantee you'll see ROI within 60 days, or I'll continue working for free until you do."
+**Process**:
+- 1:1 Engineering Session.
+- Detailed step-by-step logic design for up to 5 workflows.
+- Tool selection & integration mapping (CRM, ERP, Webhooks).
+- Implementation timeline and resource allocation.
+
+## 3. Product-to-Outcome Mapping
+- If the customer is **confused** or **pre-revenue**: Direct them to the **Audit**.
+- If the customer is **ready to build** but lacks the **engine**: Direct them to **Ready Solutions** (via Marketplace).
+- If the customer has **complex operations** and needs a **bespoke system**: Direct them to **Sprint Planning**.
+- If the customer wants a **fully managed WhatsApp Sales Agent**: Direct them to the **WhatsApp Operating System** page.

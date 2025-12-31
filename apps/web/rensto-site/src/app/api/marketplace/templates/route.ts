@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get('sort') || 'popular';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
+    const filterTag = searchParams.get('tag');
 
     const db = getFirestoreAdmin();
     let query: any = db.collection(COLLECTIONS.TEMPLATES);
@@ -41,8 +42,17 @@ export async function GET(request: NextRequest) {
     const EXCLUDED_TAGS = ['internal', 'tax4us', 'meatpoint', 'dima', 'client-specific', 'archive', 'testing'];
     if (!searchParams.has('includeInternal')) {
       templates = templates.filter((t: any) => {
-        const features = t.features || [];
-        return !features.some((tag: string) => EXCLUDED_TAGS.includes(tag.toLowerCase()));
+        const tags = t.tags || t.features || [];
+        return !tags.some((tag: string) => EXCLUDED_TAGS.includes(tag.toLowerCase()));
+      });
+    }
+
+    // Explicit tag filter
+    if (filterTag) {
+      const tagLower = filterTag.toLowerCase();
+      templates = templates.filter((t: any) => {
+        const tags = t.tags || t.features || [];
+        return tags.some((tag: string) => tag.toLowerCase() === tagLower);
       });
     }
 

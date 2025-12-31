@@ -1,0 +1,368 @@
+{
+    "name": "TELNYX-VOICE-AI-001: Rensto Voice Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "telnyx-voice",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Telnyx Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                250,
+                300
+            ],
+            "webhookId": "telnyx-voice-agent"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Parse Telnyx Call Control webhook payload\nconst payload = $input.item.json.body || $input.item.json;\nconst eventType = payload.data?.event_type || payload.event_type;\nconst callControlId = payload.data?.payload?.call_control_id;\nconst callLegId = payload.data?.payload?.call_leg_id;\nconst from = payload.data?.payload?.from;\nconst to = payload.data?.payload?.to;\nconst state = payload.data?.payload?.state;\n\nconsole.log('[Telnyx] Event:', eventType);\nconsole.log('[Telnyx] Call Control ID:', callControlId);\nconsole.log('[Telnyx] From:', from);\nconsole.log('[Telnyx] To:', to);\n\nreturn {\n  json: {\n    eventType,\n    callControlId,\n    callLegId,\n    from,\n    to,\n    state,\n    rawPayload: payload\n  }\n};"
+            },
+            "id": "parse-event",
+            "name": "Parse Telnyx Event",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "call-initiated",
+                            "leftValue": "={{ $json.eventType }}",
+                            "rightValue": "call.initiated",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        },
+                        {
+                            "id": "call-answered",
+                            "leftValue": "={{ $json.eventType }}",
+                            "rightValue": "call.answered",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        },
+                        {
+                            "id": "call-speak-ended",
+                            "leftValue": "={{ $json.eventType }}",
+                            "rightValue": "call.speak.ended",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        },
+                        {
+                            "id": "call-gather-ended",
+                            "leftValue": "={{ $json.eventType }}",
+                            "rightValue": "call.gather.ended",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "id": "event-router",
+            "name": "Route by Event Type",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.telnyx.com/v2/calls/{{ $json.callControlId }}/actions/answer",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "telnyxApi",
+                "options": {}
+            },
+            "id": "answer-call",
+            "name": "Answer Call",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                850,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.telnyx.com/v2/calls/{{ $json.callControlId }}/actions/speak",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "telnyxApi",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"payload\": \"Hello! Thank you for calling Rensto. I'm your AI assistant. How can I help you with business automation today?\",\n  \"voice\": \"female\",\n  \"language\": \"en-US\"\n}",
+                "options": {}
+            },
+            "id": "greeting-speak",
+            "name": "Speak Greeting",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1050,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.telnyx.com/v2/calls/{{ $json.callControlId }}/actions/gather_using_speak",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "telnyxApi",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"payload\": \"I'm listening. Please tell me what you need help with.\",\n  \"voice\": \"female\",\n  \"language\": \"en-US\",\n  \"valid_digits\": \"\",\n  \"inter_digit_timeout_millis\": 5000,\n  \"timeout_millis\": 30000,\n  \"maximum_digits\": 0,\n  \"minimum_digits\": 0,\n  \"gather_type\": \"speech\"\n}",
+                "options": {}
+            },
+            "id": "gather-speech",
+            "name": "Gather Speech Input",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1250,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Extract speech recognition result from Telnyx gather.ended event\nconst payload = $('Parse Telnyx Event').item.json.rawPayload;\nconst speech = payload.data?.payload?.speech?.transcript || '';\nconst digits = payload.data?.payload?.digits || '';\nconst reason = payload.data?.payload?.reason || '';\n\nconsole.log('[Telnyx] Speech transcript:', speech);\nconsole.log('[Telnyx] Digits:', digits);\nconsole.log('[Telnyx] Reason:', reason);\n\n// Prepare for OpenAI\nconst userMessage = speech || digits || 'I couldn\\'t understand that.';\n\nreturn {\n  json: {\n    userMessage,\n    callControlId: $('Parse Telnyx Event').item.json.callControlId,\n    from: $('Parse Telnyx Event').item.json.from,\n    speechResult: speech,\n    digitsResult: digits,\n    reason\n  }\n};"
+            },
+            "id": "extract-speech",
+            "name": "Extract Speech Result",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                850,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.openai.com/v1/chat/completions",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "openAiApi",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"model\": \"gpt-4o\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are the Rensto AI Voice Agent, a professional and warm business automation consultant.\\n\\nVoice Interaction Rules:\\n- Keep responses SHORT (1-2 sentences max)\\n- Speak naturally, like a human on a phone call\\n- Ask ONE question at a time\\n- Numbers should be spoken clearly\\n\\nCore Services:\\n- Automation Audit ($499) - Find 25k+ in annual savings\\n- Sprint Planning ($1,500) - Full workflow design\\n- Care Plans ($750-3000/mo) - Ongoing support\\n\\nCompany: Rensto, Plano TX | rensto.com\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.userMessage }}\"\n    }\n  ],\n  \"max_tokens\": 150,\n  \"temperature\": 0.7\n}",
+                "options": {}
+            },
+            "id": "openai-response",
+            "name": "Get AI Response",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1050,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Extract OpenAI response\nconst response = $input.item.json;\nconst aiMessage = response.choices?.[0]?.message?.content || 'I\\'m sorry, I didn\\'t catch that. Could you repeat?';\nconst callControlId = $('Extract Speech Result').item.json.callControlId;\n\nconsole.log('[OpenAI] Response:', aiMessage);\n\nreturn {\n  json: {\n    aiMessage,\n    callControlId\n  }\n};"
+            },
+            "id": "format-response",
+            "name": "Format AI Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1250,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.telnyx.com/v2/calls/{{ $json.callControlId }}/actions/gather_using_speak",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "telnyxApi",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"payload\": \"{{ $json.aiMessage }}\",\n  \"voice\": \"female\",\n  \"language\": \"en-US\",\n  \"gather_type\": \"speech\",\n  \"timeout_millis\": 30000\n}",
+                "options": {}
+            },
+            "id": "speak-and-gather",
+            "name": "Speak AI Response & Gather",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1450,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ JSON.stringify({ status: 'ok', event: $('Parse Telnyx Event').item.json.eventType }) }}",
+                "options": {}
+            },
+            "id": "webhook-response",
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                1650,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Telnyx Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Telnyx Event",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Telnyx Event": {
+            "main": [
+                [
+                    {
+                        "node": "Route by Event Type",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Route by Event Type": {
+            "main": [
+                [
+                    {
+                        "node": "Answer Call",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Speak Greeting",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Extract Speech Result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Answer Call": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Speak Greeting": {
+            "main": [
+                [
+                    {
+                        "node": "Gather Speech Input",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gather Speech Input": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Speech Result": {
+            "main": [
+                [
+                    {
+                        "node": "Get AI Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get AI Response": {
+            "main": [
+                [
+                    {
+                        "node": "Format AI Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Format AI Response": {
+            "main": [
+                [
+                    {
+                        "node": "Speak AI Response & Gather",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Speak AI Response & Gather": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null
+}

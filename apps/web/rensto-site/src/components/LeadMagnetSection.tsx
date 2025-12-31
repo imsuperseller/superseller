@@ -54,7 +54,7 @@ export function LeadMagnetSection() {
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02]">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
                         <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
-                            <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20 shrink-0">
                                 <ClipboardCheck className="w-8 h-8 text-red-500" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-2">Free Automation Audit</h3>
@@ -73,7 +73,7 @@ export function LeadMagnetSection() {
                                 />
                                 <Button
                                     disabled={loadingAudit}
-                                    className="w-full font-bold h-12 flex items-center justify-center gap-2"
+                                    className="w-full font-bold h-[56px] flex items-center justify-center gap-2"
                                     style={{
                                         background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
                                         boxShadow: '0 8px 20px rgba(254, 61, 81, 0.3)'
@@ -94,31 +94,34 @@ export function LeadMagnetSection() {
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02]">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
                         <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
-                            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20 shrink-0">
                                 <FileText className="w-8 h-8 text-cyan-400" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-2">AI Readiness Checklist</h3>
                             <p className="text-gray-400 mb-8 flex-grow">
                                 15 critical points to check before deploying your first AI agent. Avoid the common pitfalls that waste thousands.
                             </p>
-                            <Link
-                                href="/thank-you?type=checklist"
-                                className="block mt-auto"
-                                onClick={() => trackEvent('lead_magnet_download', { type: 'checklist' })}
-                            >
-                                <Button
-                                    variant="outline"
-                                    className="w-full font-bold h-12 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all"
+
+                            <div className="mt-auto space-y-6">
+                                <Link
+                                    href="/thank-you?type=checklist"
+                                    className="block"
+                                    onClick={() => trackEvent('lead_magnet_download', { type: 'checklist' })}
                                 >
-                                    Download Checklist
-                                </Button>
-                            </Link>
-                            <div className="mt-6 space-y-2">
-                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                    <CheckCircle2 className="w-3 h-3 text-cyan-400" /> <span>PDF Format (5MB)</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                    <CheckCircle2 className="w-3 h-3 text-cyan-400" /> <span>Used by 200+ businesses</span>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full font-bold h-[56px] border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all"
+                                    >
+                                        Download Checklist
+                                    </Button>
+                                </Link>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                                        <CheckCircle2 className="w-3 h-3 text-cyan-400" /> <span>PDF Format (5MB)</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                                        <CheckCircle2 className="w-3 h-3 text-cyan-400" /> <span>Used by 200+ businesses</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -128,32 +131,35 @@ export function LeadMagnetSection() {
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02]">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
                         <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
-                            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20 shrink-0">
                                 <Zap className="w-8 h-8 text-purple-400" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-2">Mini Case Study</h3>
                             <p className="text-gray-400 mb-8 flex-grow">
-                                How a Law Firm used a "WhatsApp Support Agent" to recoup 40 hours of partner time per month.
+                                How a Law Firm used a &quot;WhatsApp Support Agent&quot; to recoup 40 hours of partner time per month.
                             </p>
-                            <Link
-                                href="/thank-you?type=case-study"
-                                className="block mt-auto"
-                                onClick={() => trackEvent('lead_magnet_click', { type: 'case-study' })}
-                            >
-                                <Button
-                                    variant="outline"
-                                    className="w-full font-bold h-12 border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all"
+
+                            <div className="mt-auto space-y-6">
+                                <Link
+                                    href="/thank-you?type=case-study"
+                                    className="block"
+                                    onClick={() => trackEvent('lead_magnet_click', { type: 'case-study' })}
                                 >
-                                    Read Case Study
-                                </Button>
-                            </Link>
-                            <div className="mt-6 flex items-center gap-1 opacity-50">
-                                <div className="flex -space-x-2">
-                                    {[1, 2, 3].map(i => (
-                                        <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#110d28]" />
-                                    ))}
+                                    <Button
+                                        variant="outline"
+                                        className="w-full font-bold h-[56px] border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all"
+                                    >
+                                        Read Case Study
+                                    </Button>
+                                </Link>
+                                <div className="flex items-center gap-1 opacity-50">
+                                    <div className="flex -space-x-2">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#110d28]" />
+                                        ))}
+                                    </div>
+                                    <span className="text-[10px] text-gray-400 ml-2">Verified Success Story</span>
                                 </div>
-                                <span className="text-[10px] text-gray-400 ml-2">Verified Success Story</span>
                             </div>
                         </div>
                     </div>
