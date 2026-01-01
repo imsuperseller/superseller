@@ -70,10 +70,14 @@ export async function POST(request: Request) {
             message: 'Service instance created and fulfillment initiated.'
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error initiating fulfillment:', error);
         return NextResponse.json(
-            { error: 'Internal server error' },
+            {
+                error: 'Internal server error',
+                message: error.message,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            },
             { status: 500 }
         );
     }
