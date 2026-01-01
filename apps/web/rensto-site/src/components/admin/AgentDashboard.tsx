@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import {
   Play,
   Pause,

@@ -12,9 +12,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { Input } from '@/components/ui/input-enhanced';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label-enhanced';
 import { gsap } from 'gsap';
-import { BRAND } from '@/lib/design-system';
 
 // ReactBits-inspired components
 const GradientText = ({ children }: { children: React.ReactNode }) => (

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { motion } from 'framer-motion';
 
 const translations = {

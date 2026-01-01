@@ -20,6 +20,7 @@ import {
   User,
   LogOut,
   ChevronDown,
+  ClipboardList,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -32,6 +33,7 @@ const navigation = [
   { name: 'Projects', href: '/control/projects', icon: FolderOpen },
   { name: 'Analytics', href: '/control/analytics', icon: BarChart3 },
   { name: 'Workflows', href: '/control/workflows', icon: Workflow },
+  { name: 'Fulfillment Queue', href: '/control/fulfillment', icon: ClipboardList },
   { name: 'Settings', href: '/control/settings', icon: Settings },
   { name: 'System', href: '/control/system', icon: Shield },
 ];

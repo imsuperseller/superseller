@@ -1,6 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import { verifySession } from '@/app/api/auth/magic-link/verify/route';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import ClientDashboardClient, { ProjectData, Deliverable } from './ClientDashboardClient';
 
 // Fallback data

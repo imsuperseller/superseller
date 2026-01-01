@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken, type CustomSolutionsClient } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken, type CustomSolutionsClient } from '@/lib/firebase-admin';
 import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 
 // Cookie name for auth session

@@ -19,11 +19,11 @@ import {
     Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input-enhanced';
 import { Schema } from '@/components/seo/Schema';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-client';

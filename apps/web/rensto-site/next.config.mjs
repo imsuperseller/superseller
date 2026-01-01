@@ -60,19 +60,6 @@ const nextConfig = {
     ];
   },
 
-  // Portal routing configuration
-  async rewrites() {
-    return [
-      {
-        source: '/ben-ginati-portal',
-        destination: '/portal/tax4us',
-      },
-      {
-        source: '/portal/:customer*',
-        destination: '/portal/[customer]/:customer*',
-      },
-    ];
-  },
 
   // Cache headers for optimal CDN and browser caching
   async headers() {
@@ -138,8 +125,6 @@ const nextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         'gsap': false,
-        'socket.io-client': false,
-        'framer-motion': false,
         '@stripe/stripe-js': false,
       };
     } else {

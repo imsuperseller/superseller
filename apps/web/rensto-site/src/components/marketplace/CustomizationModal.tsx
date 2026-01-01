@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { X, Loader2, CheckCircle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
 
 interface ParameterField {
     id: string;

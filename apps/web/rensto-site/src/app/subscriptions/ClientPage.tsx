@@ -22,7 +22,7 @@ import {
   Crown,
   Sparkles
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { TypeformButton } from '@/components/TypeformEmbed';
 
 

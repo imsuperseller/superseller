@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { 
   Database, 
   Users, 

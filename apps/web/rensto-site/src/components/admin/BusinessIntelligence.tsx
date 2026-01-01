@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { } from '@/components/ui/input-enhanced';
-import { } from '@/components/ui/label';
+import { } from '@/components/ui/label-enhanced';
 import {
   BarChart3,
   TrendingUp,

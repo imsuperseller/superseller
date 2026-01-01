@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 
@@ -161,7 +161,25 @@ export async function POST(req: Request) {
                 }
             }
 
-            // 5. Forward to n8n for QuickBooks and other integrations
+            // 5. Specialized handling for other flow types
+            const otherFlows = [
+                'marketplace-install',
+                'marketplace-custom',
+                'ready-solutions',
+                'custom-solutions',
+                'custom-config'
+            ];
+
+            if (otherFlows.includes(metadata.flowType)) {
+                await auditAgent.log({
+                    service: 'stripe',
+                    action: 'specialized_flow_detected',
+                    status: 'success',
+                    details: { flowType: metadata.flowType, sessionId: session.id }
+                });
+            }
+
+            // 6. Forward to n8n for QuickBooks and other integrations
             if (n8nWebhookUrl) {
                 await fetch(n8nWebhookUrl, {
                     method: 'POST',

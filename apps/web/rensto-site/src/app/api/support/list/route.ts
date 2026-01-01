@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 
 /**
  * GET /api/support/list

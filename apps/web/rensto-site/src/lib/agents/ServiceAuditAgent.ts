@@ -70,13 +70,7 @@ export class ServiceAuditAgent {
             keyPresent: !!stripeKey
         });
 
-        // 2. Check eSignatures
-        const esignKey = process.env.ESIGNATURES_API_KEY;
-        results.push({
-            service: 'esignatures',
-            status: esignKey ? 'configured' : 'missing',
-            keyPresent: !!esignKey
-        });
+
 
         // 3. Check Firebase
         try {

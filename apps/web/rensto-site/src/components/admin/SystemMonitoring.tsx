@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { Progress } from '@/components/ui/progress';
 
 interface SystemMetrics {

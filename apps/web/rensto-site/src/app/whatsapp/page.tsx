@@ -33,10 +33,7 @@ import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
-const ArchitectWidget = dynamic(() => import('@/components/ArchitectWidget'), {
-    loading: () => <div className="h-[300px] flex items-center justify-center bg-white/5 rounded-xl border border-white/10 animate-pulse text-xs text-gray-500 italic">Initializing Architect...</div>,
-    ssr: false
-});
+
 
 // Pricing Configuration
 const BASE_PLAN = {
@@ -422,25 +419,7 @@ export default function WhatsAppPage() {
                                         </div>
                                     </div>
 
-                                    {/* Rensto Architect Widget */}
-                                    <div className="mb-6 bg-[#110d28] rounded-xl border border-cyan-500/30 p-4 shadow-[0_0_15px_rgba(34,211,238,0.1)] relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-2 opacity-50">
-                                            <Bot size={40} className="text-cyan-500/10" />
-                                        </div>
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className="relative">
-                                                    <div className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-                                                    <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping opacity-75" />
-                                                </div>
-                                                <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Rensto Architect</span>
-                                            </div>
-                                            <span className="text-[10px] text-gray-500 font-medium bg-white/5 px-2 py-0.5 rounded border border-white/10 italic">
-                                                Ask me anything...
-                                            </span>
-                                        </div>
-                                        <ArchitectWidget />
-                                    </div>
+
 
                                     <Button
                                         className="w-full bg-green-500 hover:bg-green-600 text-black font-bold h-12 text-lg shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all"

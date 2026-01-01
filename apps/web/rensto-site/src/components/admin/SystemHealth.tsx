@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { Activity, Server, Database, Zap, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface SystemStatus {

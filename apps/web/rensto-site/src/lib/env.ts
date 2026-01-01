@@ -15,15 +15,10 @@ const envSchema = z.object({
   NEXT_PUBLIC_X_URL: z.string().url().optional(),
   NEXT_PUBLIC_YOUTUBE_URL: z.string().url().optional(),
   NEXT_PUBLIC_INSTAGRAM_URL: z.string().url().optional(),
-  NEXT_PUBLIC_ROLLBAR_ENABLED: z.string().default('false').transform(val => val === 'true'),
-  ESIGNATURES_API_KEY: z.string().optional(),
-  ASSEMBLYAI_API_KEY: z.string().optional(),
-  ANDYNOCODE_API_KEY: z.string().optional(),
-  APIFY_TOKEN: z.string().optional(),
-  INSTANTLY_API_KEY: z.string().optional(),
+
+  // Removed legacy keys: ESIGNATURES_API_KEY, ASSEMBLYAI_API_KEY, ANDYNOCODE_API_KEY, APIFY_TOKEN, INSTANTLY_API_KEY, TIDYCAL_TOKEN
   RESEND_API_KEY: z.string().optional(),
   SERPAPI_API_KEY: z.string().optional(),
-  TIDYCAL_TOKEN: z.string().optional(),
   N8N_WEBHOOK_URL: z.string().url().optional(),
   N8N_LEAD_INTAKE_URL: z.string().url().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),

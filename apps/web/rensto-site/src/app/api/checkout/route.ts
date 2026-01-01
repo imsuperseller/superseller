@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

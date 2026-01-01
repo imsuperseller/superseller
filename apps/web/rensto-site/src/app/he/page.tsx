@@ -23,7 +23,7 @@ import {
     ArrowRight
 } from 'lucide-react';
 import { ComparisonTable } from '@/components/marketing/ComparisonTable';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge-enhanced';
 
 export default function HebrewLandingPage() {
     return (

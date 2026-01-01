@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
+import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
 import { Template } from '@/types/firestore';
 
@@ -22,12 +22,12 @@ interface AIAgentManagementProps {
 export default function AIAgentManagement({ templates = [] }: AIAgentManagementProps) {
   const initialAgents: AgentStatus[] = templates.length > 0 ? templates.map(t => ({
     id: t.id || 'unknown',
-    name: t.name,
+    name: t.name || 'Unnamed Agent',
     status: 'active',
     performance: Math.floor(Math.random() * 20) + 80,
     lastExecution: new Date().toISOString(),
     errors: 0,
-    isRenstoCore: t.name.toLowerCase().includes('rensto') || t.category === 'AI Agents'
+    isRenstoCore: (t.name?.toLowerCase()?.includes('rensto') || t.category === 'AI Agents') ?? false
   })) : [
     {
       id: 'rensto-master-controller',
@@ -55,12 +55,12 @@ export default function AIAgentManagement({ templates = [] }: AIAgentManagementP
     if (templates.length > 0) {
       setAgents(templates.map(t => ({
         id: t.id || 'unknown',
-        name: t.name,
+        name: t.name || 'Unnamed Agent',
         status: 'active',
         performance: Math.floor(Math.random() * 20) + 80,
         lastExecution: new Date().toISOString(),
         errors: 0,
-        isRenstoCore: t.name.toLowerCase().includes('rensto') || t.category === 'AI Agents'
+        isRenstoCore: (t.name?.toLowerCase()?.includes('rensto') || t.category === 'AI Agents') ?? false
       })));
     }
   }, [templates]);

@@ -28,15 +28,34 @@ const PRODUCT_SCHEMAS: Record<string, FormField[]> = {
     { id: 'targetIndustry', label: 'Target Industry for Competitor Analysis', type: 'select', required: true, options: ['E-commerce', 'Real Estate', 'Finance', 'SaaS', 'Local Services', 'Other'] },
     { id: 'reportEmail', label: 'Email for Weekly Reports', type: 'email', required: true, placeholder: 'reports@yourcompany.com' },
   ],
+  '5pMi01SwffYB6KeX': [ // YouTube AI Clone
+    { id: 'youtubeUrl', label: 'YouTube Channel or Video URL', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
+    { id: 'customInstructions', label: 'Custom Instructions (Mimic style, specific knowledge, etc.)', type: 'textarea', required: false, placeholder: 'e.g. Focus on technical advice provided in the Dev Series playlists.' },
+    { id: 'deploymentChannel', label: 'Primary Deployment Channel', type: 'select', required: true, options: ['WhatsApp', 'Telegram', 'Web Widget'] },
+  ],
+  '5Fl9WUjYTpodcloJ': [ // AI Calendar Assistant
+    { id: 'calendarPlatform', label: 'Primary Calendar Platform', type: 'select', required: true, options: ['Google Calendar', 'Outlook/Office 365', 'iCloud'] },
+    { id: 'bookingLogic', label: 'Standard Booking Length', type: 'select', required: true, options: ['15 mins', '30 mins', '60 mins', 'Custom'] },
+    { id: 'timeZone', label: 'Primary Time Zone', type: 'text', required: true, placeholder: 'e.g. America/New_York' },
+    { id: 'meetingLink', label: 'Meeting Link (Zoom/Google Meet)', type: 'url', required: true, placeholder: 'https://zoom.us/j/...' },
+  ],
   'U6EZ2iLQ4zCGg31H': [ // Call Audio Lead Analyzer
     { id: 'telnyxApiKey', label: 'Telnyx API Key', type: 'text', required: true, placeholder: 'KEY_...' },
     { id: 'workizApiKey', label: 'Workiz API Key (Optional)', type: 'text', required: false, placeholder: 'For CRM sync' },
     { id: 'notificationEmail', label: 'Notification Email', type: 'email', required: true, placeholder: 'leads@company.com' },
   ],
   'stj8DmATqe66D9j4': [ // Floor Plan to Property Tour
-    { id: 'outputStyle', label: 'Interior Design Style', type: 'select', required: true, options: ['Modern', 'Scandinavian', 'Traditional', 'Industrial', 'Minimalist'] },
-    { id: 'deliveryEmail', label: 'Delivery Email', type: 'email', required: true, placeholder: 'video@realestate.com' },
+    { id: 'outputStyle', label: 'Interior Design Style', type: 'select', required: true, options: ['Modern Pan-Asian', 'Scandinavian Minimalist', 'High-End Industrial', 'Mid-Century Modern', 'Traditional Luxury'] },
+    { id: 'focusRoom', label: 'Priority Room for Walkthrough', type: 'select', required: true, options: ['Living Room', 'Kitchen', 'Master Bedroom', 'Patio/Outdoor', 'All Rooms'] },
+    { id: 'deliveryEmail', label: 'Delivery Email for Final Video', type: 'email', required: true, placeholder: 'video@realestate.com' },
     { id: 'brandLogo', label: 'Brand Logo URL (Optional)', type: 'url', required: false, placeholder: 'https://yoursite.com/logo.png' },
+  ],
+  'vCxY2DXUZ8vUb30f': [ // Monthly CRO Insights Bot
+    { id: 'websiteUrl', label: 'Website URL for Analysis', type: 'url', required: true, placeholder: 'https://yourstore.com' },
+    { id: 'primaryConversion', label: 'Primary Conversion Event', type: 'text', required: true, placeholder: 'e.g. Purchase, Add to Cart, Form Submit' },
+    { id: 'ga4PropertyId', label: 'GA4 Property ID', type: 'text', required: true, placeholder: '123456789' },
+    { id: 'clarityProjectId', label: 'Microsoft Clarity Project ID (Optional)', type: 'text', required: false, placeholder: 'abcde123' },
+    { id: 'reportFrequency', label: 'Report Frequency', type: 'select', required: true, options: ['Monthly', 'Bi-Weekly', 'Quarterly'] },
   ],
   'default': [ // Fallback for any product
     { id: 'businessName', label: 'Business Name', type: 'text', required: true, placeholder: 'Acme Corp' },

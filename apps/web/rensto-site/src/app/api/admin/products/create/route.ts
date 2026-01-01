@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getFirestoreAdmin, COLLECTIONS, ServiceManifest } from '@/lib/firebase';
+import { getFirestoreAdmin, COLLECTIONS, ServiceManifest } from '@/lib/firebase-admin';
 import { getStripeAdmin } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
