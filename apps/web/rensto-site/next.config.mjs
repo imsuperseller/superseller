@@ -65,6 +65,17 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // HTML pages - Optimized for Edge caching with stale-while-revalidate
+        // Moved to top so more specific rules (like API) can override
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=31536000, max-age=60',
+          },
+        ],
+      },
+      {
         // Static assets (images, fonts, CSS, JS) - Cache for 1 year
         source: '/_next/static/:path*',
         headers: [
@@ -101,16 +112,6 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          },
-        ],
-      },
-      {
-        // HTML pages - Optimized for Edge caching with stale-while-revalidate
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=3600, stale-while-revalidate=31536000, max-age=60',
           },
         ],
       },
