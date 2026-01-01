@@ -2,132 +2,232 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import * as framer from 'framer-motion';
+const { motion } = framer;
 import { env } from '@/lib/env';
 import { formatCurrency } from '@/lib/utils';
-import { Check, Star, Zap, Shield, Users, Loader2, ArrowRight, TrendingUp, Clock, Bot, Rocket, Search } from 'lucide-react';
+import { Check, Star, Zap, Shield, Users, Loader2, ArrowRight, TrendingUp, Clock, Bot, Rocket, Search, MessageSquare, Target, Workflow } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button-enhanced';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
+import { HelpCircle } from 'lucide-react';
 
 const SearchIcon = Search;
 
-const products = [
-  {
-    name: 'Automation Audit',
-    price: 497,
-    description: 'A deep architectural review of your current systems. We identify $25,000+ in annual efficiency leaks—guaranteed.',
-    features: [
-      'Operational Bottleneck Audit',
-      'System Architecture Review',
-      'High-Impact Automation Map',
-      'Direct ROI Projections',
-      'Fixed-Price Implementation Plan'
+const translations = {
+  en: {
+    title: <>Choose Your <br /><span className="gradient-text">Automation Path</span></>,
+    subtitle: "From deep architectural audits to ongoing systems care. Built for businesses that prioritize efficiency and scale.",
+    guaranteeTitle: "The Rensto Success Guarantee",
+    guaranteeText: "Measurable ROI or We Keep Building Until You See It.",
+    qualifyTag: "Strategic Qualification",
+    qualifyTitle: <>See if your business is ready for <span className="text-cyan-400">Scale.</span></>,
+    qualifyText: "Before deploying an Engine, we need to analyze your current bottlenecks.",
+    expert: "Enterprise Standard",
+    fixed: "Fixed",
+    careTitle: <>Ongoing <span className="text-cyan-400">Scale Plans</span></>,
+    careSubtitle: "Dedicated engineering bandwidth to maintain and evolve your automation engine.",
+    roiTitle: "The Rensto ROI Guarantee",
+    roiText: <>We don&apos;t do regular &quot;trials&quot;. We work with serious founders. If we don&apos;t meet the specific ROI targets agreed upon in your Blueprint, we keep working—completely on our dime—until the system delivers exactly what we promised.</>,
+    ctaTitle: "Not Sure Which Option is Right?",
+    ctaText: "Let's discuss your specific needs and find the perfect automation solution for your business.",
+    scheduleCall: "Schedule a Call",
+    learnProcess: "Learn Our Process",
+    products: [
+      {
+        name: 'Automation Audit',
+        price: 497,
+        description: 'A deep architectural review of your current systems. We identify $25,000+ in annual efficiency leaks—guaranteed.',
+        features: ['Operational Bottleneck Audit', 'System Architecture Review', 'High-Impact Automation Map', 'Direct ROI Projections', 'Fixed-Price Implementation Plan'],
+        cta: 'Get My Audit',
+        popular: false,
+        icon: Search,
+        workflowId: null // This is a service, not a workflow
+      },
+      {
+        name: 'The Lead Machine',
+        price: 997,
+        description: 'Autonomous lead generation using call analysis, ad research, and outreach. Includes our Call Audio Analyzer and Meta Ad Library tools.',
+        features: ['Call Recording Analysis (Telnyx)', 'Meta Ad Library Research', 'AI Lead Scoring', 'Workiz/CRM Sync', 'Daily Lead Reports'],
+        cta: 'Deploy Lead Machine',
+        popular: true,
+        icon: Target,
+        workflowId: 'call-audio-analysis' // Maps to Call Audio Lead Analyzer
+      },
+      {
+        name: 'Autonomous Secretary',
+        price: 497,
+        description: 'Your AI assistant that manages calendars, answers messages, and handles scheduling via WhatsApp and Telegram 24/7.',
+        features: ['AI Calendar Management (TidyCal)', 'WhatsApp Auto-Response', 'Smart Meeting Booking', 'Multi-Language Support', 'Conflict Detection'],
+        cta: 'Hire AI Secretary',
+        popular: false,
+        icon: MessageSquare,
+        workflowId: 'calendar-agent' // Maps to AI Calendar Assistant
+      },
+      {
+        name: 'Knowledge Engine',
+        price: 1497,
+        description: 'Private AI trained on your data. Includes YouTube persona cloning and monthly CRO insights from your analytics.',
+        features: ['YouTube AI Clone', 'Monthly CRO Insights Bot', 'GA4/Clarity Integration', 'Custom Knowledge Base', 'Team Training'],
+        cta: 'Deploy Knowledge Engine',
+        popular: false,
+        icon: Workflow,
+        workflowId: 'youtuber-cloner' // Primary workflow
+      },
+      {
+        name: 'The Content Engine',
+        price: 1497,
+        description: 'AI-powered content generation including celebrity-style video generation and property tour creation from floor plans.',
+        features: ['Celebrity Selfie Video Generator', 'Floor Plan to Property Tour', 'Multi-Channel Distribution', 'AI Video/Image Generation', 'Weekly Growth Reports'],
+        cta: 'See The Results',
+        popular: false,
+        icon: Users,
+        workflowId: 'celebrity-selfie-generator' // Primary workflow
+      }
     ],
-    cta: 'Get My Audit',
-    popular: false,
-    icon: SearchIcon
-  },
-  {
-    name: 'Blueprint Session',
-    price: 1497,
-    description: 'A comprehensive technical blueprint with full timeline, tech stack, and a ready-to-sign implementation contract.',
-    features: [
-      'Full Logical Flowcharts',
-      'Tool Stack Selection',
-      'Data Integration Mapping',
-      'Security & Compliance Check',
-      'Sprint Deployment Schedule'
-    ],
-    cta: 'Get My Blueprint',
-    popular: true,
-    icon: Zap
-  },
-  {
-    name: 'AI Revenue Engine',
-    price: 1497,
-    description: 'Autonomous content and marketing systems designed to scale your reach without increasing headcount.',
-    features: [
-      'Multi-Channel Content Agent',
-      'SEO & Authority Automation',
-      'Lead Magnet Deployment',
-      'Automatic Social Distribution',
-      'Weekly Attribution Reporting'
-    ],
-    cta: 'Deploy Revenue Engine',
-    popular: false,
-    icon: TrendingUp
-  },
-  {
-    name: 'Auto-Secretary',
-    price: 997,
-    description: 'Stop wasting half your day on leads. Cut manual work by 50% in 30 days, or get your money back.',
-    features: [
-      'Auto-filling forms',
-      'Smart lead sorting',
-      'Syncs with your tools',
-      'Automatic follow-ups',
-      'Your simple dashboard'
-    ],
-    cta: 'Hire My Auto-Secretary',
-    popular: false,
-    icon: Users
-  }
-];
+    carePlans: [
 
-const carePlans = [
-  {
-    name: 'Starter Care',
-    price: 497,
-    period: 'month',
-    description: 'Perfect for small teams needing monitoring',
-    features: [
-      '5 hours of expert help',
-      '24/7 system watch',
-      'We fix it before it breaks',
-      'Monthly status updates',
-      'Direct email access'
-    ],
-    cta: 'Start Care Plan',
-    popular: false
+      {
+        name: 'Starter Care',
+        price: 497,
+        period: 'month',
+        description: 'Perfect for small teams needing monitoring',
+        features: ['5 hours of expert help', '24/7 system watch', 'We fix it before it breaks', 'Monthly status updates', 'Direct email access'],
+        cta: 'Start Care Plan',
+        popular: false
+      },
+      {
+        name: 'Growth Care',
+        price: 997,
+        period: 'month',
+        description: 'Our most popular plan for active scaling',
+        features: ['15 hours of expert help', 'Continuous optimizations', 'Quarterly strategy reviews', 'Priority fast-lane support', 'Constant system upgrades'],
+        cta: 'Get Growth Care',
+        popular: true
+      },
+      {
+        name: 'Scale Care',
+        price: 2497,
+        period: 'month',
+        description: 'A dedicated automation engineer for your team',
+        features: ['40 hours of expert help', 'Your own dedicated engineer', 'Full strategic planning', 'Complete deep-dive stats', 'Unlimited custom features'],
+        cta: 'Get Scale Care',
+        popular: false
+      }
+    ]
   },
-  {
-    name: 'Growth Care',
-    price: 997,
-    period: 'month',
-    description: 'Our most popular plan for active scaling',
-    features: [
-      '15 hours of expert help',
-      'Continuous optimizations',
-      'Quarterly strategy reviews',
-      'Priority fast-lane support',
-      'Constant system upgrades'
+  he: {
+    title: <>בחרו את <br /><span className="gradient-text">מסלול האוטומציה</span> שלכם</>,
+    subtitle: "מאודיט ארכיטקטוני מעמיק ועד לליווי שוטף. נבנה עבור עסקים שמתעדפים יעילות וצמיחה.",
+    guaranteeTitle: "התחייבות להצלחה של רנסטו",
+    guaranteeText: "החזר השקעה מדיד או שנמשיך לבנות עד שתראו אותו.",
+    qualifyTag: "בדיקת התאמה אסטרטגית",
+    qualifyTitle: <>בדקו האם העסק שלכם מוכן <span className="text-cyan-400">לסקייל.</span></>,
+    qualifyText: "לפני הטמעת מנוע, אנחנו צריכים לנתח את צווארי הבקבוק הנוכחיים שלכם.",
+    expert: "סטנדרט אנטרפרייז",
+    fixed: "מחיר קבוע",
+    careTitle: <>תוכניות <span className="text-cyan-400">ליווי וצמיחה</span></>,
+    careSubtitle: "שעות פיתוח וניהול ייעודיות לתחזוקה ופיתוח המנוע העסקי שלכם.",
+    roiTitle: "התחייבות ה-ROI של רנסטו",
+    roiText: <>אנחנו לא עושים &quot;ניסיונות&quot;. אנחנו עובדים עם יזמים רציניים. אם לא נעמוד ביעדי ה-ROI שהוגדרו בתוכנית העבודה, נמשיך לעבוד - לחלוטין על חשבוננו - עד שהמערכת תספק בדיוק את מה שהבטחנו.</>,
+    ctaTitle: "לא בטוחים מה מתאים לכם?",
+    ctaText: "בואו נדבר על הצרכים הספציפיים שלכם ונמצא את פתרון האוטומציה המושלם עבור העסק.",
+    scheduleCall: "תיאום שיחה",
+    learnProcess: "למדו על התהליך",
+    products: [
+      {
+        name: 'Automation Audit',
+        price: 497,
+        description: 'בדיקת עומק למערכות הקיימות. אנחנו מזהים דליפות יעילות בשווי $25,000+ בשנה - בהתחייבות.',
+        features: ['סקירת צווארי בקבוק תפעוליים', 'סקירת ארכיטקטורת מערכת', 'מפת אוטומציה בעלת אימפקט גבוה', 'תחזיות ROI ישירות', 'תוכנית הטמעה במחיר קבוע'],
+        cta: 'הזמן אודיט',
+        popular: false,
+        icon: Search,
+        workflowId: null
+      },
+      {
+        name: 'The Lead Machine',
+        price: 997,
+        description: 'יצירת לידים אוטונומית באמצעות ניתוח שיחות, מחקר פרסומות ופניות. כולל מנתח שיחות וכלי Meta Ad Library.',
+        features: ['ניתוח הקלטות שיחות (Telnyx)', 'מחקר Meta Ad Library', 'דירוג לידים AI', 'סנכרון Workiz/CRM', 'דוחות לידים יומיים'],
+        cta: 'הטמע את מנוע הלידים',
+        popular: true,
+        icon: Target,
+        workflowId: 'call-audio-analysis'
+      },
+      {
+        name: 'Autonomous Secretary',
+        price: 497,
+        description: 'העוזרת ה-AI שלכם שמנהלת יומנים, עונה להודעות ומתזמנת פגישות בוואטסאפ וטלגרם 24/7.',
+        features: ['ניהול יומן AI (TidyCal)', 'מענה אוטומטי בוואטסאפ', 'קביעת פגישות חכמה', 'תמיכה רב-שפתית', 'זיהוי התנגשויות'],
+        cta: 'גייס מזכירה אוטונומית',
+        popular: false,
+        icon: MessageSquare,
+        workflowId: 'calendar-agent'
+      },
+      {
+        name: 'Knowledge Engine',
+        price: 1497,
+        description: 'AI פרטי מאומן על הנתונים שלכם. כולל שכפול פרסונה מיוטיוב ותובנות CRO חודשיות.',
+        features: ['שכפול AI מיוטיוב', 'בוט תובנות CRO חודשי', 'אינטגרציית GA4/Clarity', 'בסיס ידע מותאם', 'הדרכת צוות'],
+        cta: 'הטמע את מנוע הידע',
+        popular: false,
+        icon: Workflow,
+        workflowId: 'youtuber-cloner'
+      },
+      {
+        name: 'The Content Engine',
+        price: 1497,
+        description: 'יצירת תוכן מונעת AI כולל סרטוני וידאו בסגנון כוכבים וסיורי נכסים מתוכניות קומה.',
+        features: ['מחולל סרטוני סלפי עם כוכבים', 'תוכנית קומה לסיור נכס', 'הפצה רב-ערוצית', 'יצירת וידאו/תמונות AI', 'דוחות צמיחה שבועיים'],
+        cta: 'צפה בתוצאות',
+        popular: false,
+        icon: Users,
+        workflowId: 'celebrity-selfie-generator'
+      }
     ],
-    cta: 'Get Growth Care',
-    popular: true
-  },
-  {
-    name: 'Scale Care',
-    price: 2497,
-    period: 'month',
-    description: 'A dedicated automation engineer for your team',
-    features: [
-      '40 hours of expert help',
-      'Your own dedicated engineer',
-      'Full strategic planning',
-      'Complete deep-dive stats',
-      'Unlimited custom features'
-    ],
-    cta: 'Get Scale Care',
-    popular: false
-  }
-];
+    carePlans: [
 
-export default function OffersPage() {
+      {
+        name: 'Starter Care',
+        price: 497,
+        period: 'חודש',
+        description: 'מושלם לצוותים קטנים הזקוקים לניטור',
+        features: ['5 שעות מומחה', 'ניטור מערכת 24/7', 'תיקון תקלות לפני שהן קורות', 'עדכוני סטטוס חודשיים', 'גישה ישירה במייל'],
+        cta: 'התחל תוכנית שירות',
+        popular: false
+      },
+      {
+        name: 'Growth Care',
+        price: 997,
+        period: 'חודש',
+        description: 'התוכנית הפופולרית ביותר לצמיחה אקטיבית',
+        features: ['15 שעות מומחה', 'אופטימיזציות שוטפות', 'סקירות אסטרטגיה רבעוניות', 'תמיכה במסלול מהיר', 'שדרוגי מערכת קבועים'],
+        cta: 'בחר בתוכנית צמיחה',
+        popular: true
+      },
+      {
+        name: 'Scale Care',
+        price: 2497,
+        period: 'חודש',
+        description: 'מהנדס אוטומציה ייעודי לצוות שלכם',
+        features: ['40 שעות מומחה', 'מהנדס ייעודי משלכם', 'תכנון אסטרטגי מלא', 'סטטיסטיקות עומק', 'פיצ׳רים מותאמים ללא הגבלה'],
+        cta: 'בחר בתוכנית סקייל',
+        popular: false
+      }
+    ]
+  }
+};
+
+export function OffersPageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [showEmailModal, setShowEmailModal] = useState<string | null>(null);
+
+  const t = translations[lang];
+  const isRtl = lang === 'he';
 
   const handleCheckout = async (productId: string, flowType: string) => {
     // If we don't have an email yet, show the modal first
@@ -204,7 +304,7 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)', direction: isRtl ? 'rtl' : 'ltr' }}>
       <Header />
       <main className="flex-grow">
         <script
@@ -220,13 +320,11 @@ export default function OffersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
-                Choose Your <br />
-                <span className="gradient-text">Automation Path</span>
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-balance leading-tight">
+                {t.title}
               </h1>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
-                From deep architectural audits to ongoing systems care.
-                Built for businesses that prioritize efficiency and scale.
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8 font-sans">
+                {t.subtitle}
               </p>
             </motion.div>
           </div>
@@ -240,10 +338,29 @@ export default function OffersPage() {
                 <Shield className="w-8 h-8 text-cyan-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">The Rensto Success Guarantee</h3>
-                <p className="text-slate-500 text-sm">Measurable ROI or We Keep Building Until You See It.</p>
+                <h3 className="text-xl font-bold text-white font-sans">{t.guaranteeTitle}</h3>
+                <p className="text-slate-500 text-sm font-sans">{t.guaranteeText}</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Qualification Engine - Unified Funnel */}
+        <section id="qualify" className="py-24 px-4 bg-gradient-to-b from-transparent to-[#0a061e]/30">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-4 text-sm font-bold font-sans">
+                <HelpCircle className="w-4 h-4" />
+                {t.qualifyTag}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white font-sans">
+                {t.qualifyTitle}
+              </h2>
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto font-sans">
+                {t.qualifyText}
+              </p>
+            </div>
+            <QualificationQuiz lang={lang} />
           </div>
         </section>
 
@@ -251,7 +368,7 @@ export default function OffersPage() {
         <section id="one-time" className="py-24 px-4 relative">
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product, index) => (
+              {t.products.map((product, index) => (
                 <motion.div
                   key={index}
                   id={product.name === 'Automation Audit' ? 'audit' : undefined}
@@ -265,35 +382,48 @@ export default function OffersPage() {
                     }`}
                 >
                   {product.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg"
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap"
                       style={{ background: 'var(--rensto-gradient-primary)', color: 'white' }}>
-                      Enterprise Standard
+                      {t.expert}
                     </div>
                   )}
 
                   <div className="mb-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">{product.name}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2 font-sans">{product.name}</h3>
                     <div className="flex items-baseline gap-1 mb-4">
-                      <span className="text-3xl font-bold text-white">{formatCurrency(product.price)}</span>
-                      <span className="text-slate-500 text-xs uppercase tracking-widest">Fixed</span>
+                      <span className="text-3xl font-bold text-white font-sans">{formatCurrency(product.price)}</span>
+                      <span className="text-slate-500 text-xs uppercase tracking-widest font-sans">{t.fixed}</span>
                     </div>
-                    <p className="text-sm text-slate-500 leading-relaxed mb-6">{product.description}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed mb-6 font-sans">{product.description}</p>
                   </div>
 
-                  <ul className="space-y-3 mb-10 flex-grow">
+                  <ul className="space-y-3 mb-6 flex-grow">
                     {product.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-1" />
-                        <span className="text-xs text-slate-300 leading-tight">{feature}</span>
+                        <span className="text-xs text-slate-300 leading-tight font-sans">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
+                  {product.workflowId && (
+                    <Link
+                      href={isRtl ? `/he/marketplace/${product.workflowId}` : `/marketplace/${product.workflowId}`}
+                      className="block text-center text-xs text-cyan-400 hover:text-cyan-300 mb-4 underline underline-offset-2 transition-colors"
+                    >
+                      {isRtl ? 'צפה ב-Workflows הכלולים →' : 'View Included Workflows →'}
+                    </Link>
+                  )}
+
                   <Button
                     size="xl"
                     onClick={() => {
-                      const id = product.name.toLowerCase().replace(/\s+/g, '-');
-                      handleCheckout(id, 'service-purchase');
+                      if (product.name === 'Automation Audit') {
+                        handleCheckout('automation-audit', 'service-purchase');
+                      } else {
+                        // All Engines scroll to qualification first
+                        document.getElementById('qualify')?.scrollIntoView({ behavior: 'smooth' });
+                      }
                     }}
                     variant={product.popular ? 'renstoPrimary' : 'renstoSecondary'}
                     disabled={loading === product.name.toLowerCase().replace(/\s+/g, '-')}
@@ -309,6 +439,7 @@ export default function OffersPage() {
                     )}
                   </Button>
                 </motion.div>
+
               ))}
             </div>
           </div>
@@ -318,16 +449,16 @@ export default function OffersPage() {
         <section id="care-plans" className="py-24 px-4 relative bg-[#0d0922]">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
-                Ongoing <span className="text-cyan-400">Scale Plans</span>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white font-sans">
+                {t.careTitle}
               </h2>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                Dedicated engineering bandwidth to maintain and evolve your automation engine.
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto font-sans">
+                {t.careSubtitle}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {carePlans.map((plan, index) => (
+              {t.carePlans.map((plan, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -340,11 +471,11 @@ export default function OffersPage() {
                     }`}
                 >
                   <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
-                    <p className="text-xs text-slate-500 font-medium mb-6 uppercase tracking-widest">{plan.description}</p>
+                    <h3 className="text-2xl font-bold text-white mb-1 font-sans">{plan.name}</h3>
+                    <p className="text-xs text-slate-500 font-medium mb-6 uppercase tracking-widest font-sans">{plan.description}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold text-white">{formatCurrency(plan.price)}</span>
-                      <span className="text-slate-500 text-sm">/{plan.period}</span>
+                      <span className="text-4xl font-bold text-white font-sans">{formatCurrency(plan.price)}</span>
+                      <span className="text-slate-500 text-sm font-sans">/{plan.period}</span>
                     </div>
                   </div>
 
@@ -354,7 +485,7 @@ export default function OffersPage() {
                         <div className="w-5 h-5 rounded-full bg-cyan-500/10 flex items-center justify-center">
                           <Check className="w-3 h-3 text-cyan-400" />
                         </div>
-                        <span className="text-sm text-slate-300 font-medium">{feature}</span>
+                        <span className="text-sm text-slate-300 font-medium font-sans">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -392,11 +523,9 @@ export default function OffersPage() {
             <div className="p-12 rounded-[3rem] border border-cyan-500/30 bg-cyan-500/[0.02] relative overflow-hidden backdrop-blur-xl">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-30" />
               <Shield className="w-16 h-16 text-cyan-500 mx-auto mb-8" />
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">The Rensto ROI Guarantee</h2>
-              <p className="text-slate-400 text-lg leading-relaxed">
-                We don&apos;t do regular &quot;trials&quot;. We work with serious founders.
-                If we don&apos;t meet the specific ROI targets agreed upon in your Blueprint,
-                we keep working—completely on our dime—until the system delivers exactly what we promised.
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">{t.roiTitle}</h2>
+              <p className="text-slate-400 text-lg leading-relaxed font-sans">
+                {t.roiText}
               </p>
             </div>
           </div>
@@ -405,28 +534,28 @@ export default function OffersPage() {
         {/* CTA Section */}
         <section className="section bg-gradient-to-r from-accent1/20 to-accent2/20">
           <div className="container text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Not Sure Which Option is Right?
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 font-sans">
+              {t.ctaTitle}
             </h2>
-            <p className="text-xl text-muted mb-8 max-w-2xl mx-auto">
-              Let&apos;s discuss your specific needs and find the perfect automation solution for your business.
+            <p className="text-xl text-muted mb-8 max-w-2xl mx-auto font-sans">
+              {t.ctaText}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="xl" variant="renstoPrimary">
                 <Link href="/contact">
-                  Schedule a Call
+                  {t.scheduleCall}
                 </Link>
               </Button>
               <Button asChild size="xl" variant="renstoSecondary">
-                <Link href="/process">
-                  Learn Our Process
+                <Link href={isRtl ? '/he/#process' : '/#process'}>
+                  {t.learnProcess}
                 </Link>
               </Button>
             </div>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer lang={lang} />
 
       {/* Email Capture Modal */}
       {showEmailModal && (
@@ -468,12 +597,17 @@ export default function OffersPage() {
   );
 }
 
+export default function OffersPage() {
+  return <OffersPageContent />;
+}
+
 function getStripeLink(productName: string): string | undefined {
   const links = {
     'Automation Audit': env.NEXT_PUBLIC_STRIPE_LINK_AUDIT,
-    'Sprint Planning': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT,
-    'AI Content Engine': env.NEXT_PUBLIC_STRIPE_LINK_CONTENT_STARTER,
-    'Lead Intake Agent': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
+    'The Lead Machine': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE, // Re-mapped for pillar naming
+    'The Content Engine': env.NEXT_PUBLIC_STRIPE_LINK_CONTENT_STARTER,
+    'Autonomous Secretary': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE, // Placeholder or specific link if exists
+    'Knowledge Engine': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT, // Usually a sprint or custom
     'Starter Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_STARTER,
     'Growth Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH,
     'Scale Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE,

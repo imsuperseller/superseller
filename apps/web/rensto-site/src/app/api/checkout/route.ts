@@ -54,20 +54,25 @@ const SERVICES = {
         description: 'AI-driven analysis of your business processes and automation opportunities.',
         price: 49700
     },
-    'sprint-planning': {
-        name: 'Technical Sprint Planning',
-        description: 'Complete implementation roadmap with timeline, costs & ready-to-sign contract.',
+    'the-lead-machine': {
+        name: 'The Lead Machine',
+        description: 'Autonomous outbound engine sourcing leads, enriching data, and sending custom outreach 24/7.',
+        price: 99700
+    },
+    'autonomous-secretary': {
+        name: 'Autonomous Secretary',
+        description: 'AI assistant handling messages, booking meetings, and managing clients on WhatsApp 24/7.',
+        price: 49700
+    },
+    'knowledge-engine': {
+        name: 'Knowledge Engine',
+        description: 'Private intelligence system connected to your company data and best practices.',
         price: 149700
     },
-    'ai-content-engine': {
-        name: 'AI Content Engine',
-        description: 'Personalized SEO content generation and publishing automation.',
-        price: 99700
-    },
-    'lead-intake-agent': {
-        name: 'Lead Intake Agent',
-        description: 'Intelligent form processing, lead scoring, and automated CRM entry.',
-        price: 99700
+    'the-content-engine': {
+        name: 'The Content Engine',
+        description: 'Autonomous systems for high-authority content generation and distribution.',
+        price: 149700
     }
 } as const;
 

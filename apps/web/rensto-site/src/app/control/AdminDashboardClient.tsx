@@ -25,7 +25,7 @@ import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
 import NewProductWizard from '@/components/admin/NewProductWizard';
 import SupportQueue from '@/components/admin/SupportQueue';
-import { Template } from '@/lib/firebase';
+import { Template } from '@/types/firestore';
 import { SupportCase } from '@/types/support';
 
 interface DashboardStats {

@@ -31,7 +31,8 @@ import {
     Lock,
     Wifi,
     X,
-    Bot
+    Bot,
+    Workflow
 } from 'lucide-react';
 import { Schema } from '@/components/seo/Schema';
 import { LeadMagnetSection } from '@/components/LeadMagnetSection';
@@ -45,91 +46,95 @@ import { HelpCircle } from 'lucide-react';
 export default function HomePage() {
     const [selectedService, setSelectedService] = useState<string | null>(null);
 
-    // Three core services - jargon-free
+    // Four core pillars - ROI focused
     const serviceTypes = [
         {
-            id: 'custom',
-            name: 'Built-for-You Systems',
-            tagline: 'Custom Business Setup',
-            description: 'We sit down with you, find your biggest headaches, and build the software to fix them. You own the result.',
-            icon: Mic,
+            id: 'lead-gen',
+            name: 'The Lead Machine',
+            tagline: 'Outbound & Prospecting',
+            description: 'A 24/7 outbound engine that sources leads, enriches data, and sends custom outreach at scale while you sleep.',
+            vsHuman: 'Replaces 3-5 manual SDRs with zero management overhead.',
+            icon: Target,
             features: [
-                'Free Blueprint Session',
-                'Your own private system',
-                'Zero technical work for you',
-                'Priority support line',
-                'Training for your team'
+                'Google Maps/LinkedIn Scraping',
+                'AI Lead Enrichment',
+                'Automated Cold Outreach',
+                'Smart CRM Synchronization',
+                'Daily Lead Reports'
             ],
-            pricing: 'Custom Quote',
-            qualifier: 'For growing businesses',
-            cta: 'Let\'s Talk',
-            href: '/contact',
-            gradient: 'secondary',
-            popular: true,
-            slots: '5 active slots'
-        },
-        {
-            id: 'subscriptions',
-            name: 'Ready-to-Use Tools',
-            tagline: 'Instant Team Boost',
-            description: 'Get our pre-built AI "employees" working in your business by tomorrow. Simple, monthly, effective.',
-            icon: Users,
-            features: [
-                'Automatic Lead Booking',
-                'Smart CRM Sync',
-                'Follow-ups on Autopilot',
-                'Simple Dashboard',
-                'No-hassle setup'
-            ],
-            pricing: 'From $497/mo',
-            qualifier: 'Start saving time today',
-            cta: 'Choose a Tool',
+            pricing: 'From $997/mo',
+            qualifier: 'Scale your sales overnight',
+            cta: 'Build My Engine',
             href: '/offers',
             gradient: 'primary',
-            popular: false,
-            slots: 'Instant Access'
+            popular: true,
+            slots: '3 slots left'
         },
         {
-            id: 'whatsapp',
-            name: 'WhatsApp Secretary',
-            tagline: 'Works while you sleep',
-            description: 'Your own AI assistant that answers WhatsApp messages, books meetings, and handles clients 24/7.',
+            id: 'whatsapp-secretary',
+            name: 'Autonomous Secretary',
+            tagline: 'WhatsApp & Voice AI',
+            description: 'Your own AI assistant that answers messages, books meetings, and handles clients perfectly on WhatsApp and Voice.',
+            vsHuman: 'Available 24/7. Never forgets a follow-up. Never calls in sick.',
             icon: MessageSquare,
             features: [
-                'Answers every message',
-                'Speaks multiple languages',
-                'Never misses a lead',
-                'Auto-Books meetings',
-                'Zero-ban protection'
+                '24/7 WhatsApp Response',
+                'Live Voice AI Calling',
+                'Automated Appointment Booking',
+                'Multi-Language Support',
+                'Zero-Ban Protection'
             ],
-            pricing: 'From $249/mo',
-            qualifier: 'Never miss a call again',
-            cta: 'See How It Works',
+            pricing: 'From $497/mo',
+            qualifier: 'Never miss a lead again',
+            cta: 'Hire My Assistant',
             href: '/whatsapp',
             gradient: 'accent',
             popular: false,
             slots: '⭐ Top Rated'
         },
         {
-            id: 'solutions',
-            name: 'Industry Kits',
-            tagline: 'Best for your Niche',
-            description: 'Whether you\'re a Lawyer or a Shop owner, we have a pre-made kit built for your specific needs.',
-            icon: Package,
+            id: 'rag-systems',
+            name: 'Knowledge Engine',
+            tagline: 'Agentic RAG & Systems',
+            description: 'Connect AI to your company data. A private intelligence system that knows your best practices and projects.',
+            vsHuman: 'The "perfect memory" employee who never needs re-training.',
+            icon: Mic,
             features: [
-                'Law / Health / E-comm',
-                'Proven blueprints',
-                'Set up in 48 hours',
-                'Low one-time cost',
-                'Unlimited growth'
+                'Custom Data Source Sync',
+                'Private AI Knowledge Base',
+                'Team Training Included',
+                'Process Logic Flowcharts',
+                'Strict Data Security'
             ],
-            pricing: 'From $497',
-            qualifier: 'Fastest way to start',
-            cta: 'See your Niche',
-            href: '/niches',
+            pricing: 'From $1,497/mo',
+            qualifier: 'For established teams',
+            cta: 'Secure My Data',
+            href: '/contact',
+            gradient: 'secondary',
+            popular: false,
+            slots: 'Engineering Required'
+        },
+        {
+            id: 'content-engine',
+            name: 'The Content Engine',
+            tagline: 'Traffic & Viral Growth',
+            description: 'Autonomous systems that generate, edit, and distribute high-authority content across all social channels.',
+            vsHuman: 'A full content agency in a box—at a fraction of the cost.',
+            icon: Users,
+            features: [
+                'Multi-Channel Distribution',
+                'AI Video/Image Generation',
+                'SEO Authority Automation',
+                'Trending Topic Analysis',
+                'Weekly Growth Reports'
+            ],
+            pricing: 'From $1,497/mo',
+            qualifier: 'Dominate your market',
+            cta: 'See The Results',
+            href: '/offers',
             gradient: 'primary',
             popular: false,
-            slots: 'Available Now'
+            slots: 'Scaling Fast'
         }
     ];
 
@@ -343,12 +348,19 @@ export default function HomePage() {
                                 className="mt-12 pt-8 border-t"
                                 style={{ borderColor: 'rgba(95, 251, 253, 0.2)' }}
                             >
-                                <p className="text-sm mb-6" style={{ color: 'var(--rensto-text-muted)' }}>
-                                    Trusted by Law Firms, Healthcare Providers, and Agencies
+                                <p className="text-sm mb-6 uppercase tracking-widest font-bold" style={{ color: 'var(--rensto-cyan)', opacity: 0.8 }}>
+                                    Powering high-performance operations for industry leaders
                                 </p>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 opacity-90 items-center justify-items-center">
-                                    {/* Real Client Logos */}
-                                    <div className="h-6 md:h-8 relative w-24 md:w-32">
+                                <div className="mb-8 flex flex-wrap justify-center gap-4 text-xs font-medium" style={{ color: 'var(--rensto-text-muted)' }}>
+                                    <span>Accounting</span>
+                                    <span className="opacity-30">•</span>
+                                    <span>Engineering</span>
+                                    <span className="opacity-30">•</span>
+                                    <span>Healthcare</span>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 opacity-80 items-center justify-items-center max-w-3xl mx-auto">
+                                    {/* Real Client Logos - Normalized Heights */}
+                                    <div className="h-10 relative w-full max-w-[140px]">
                                         <Image
                                             src="/images/logos/logo-tax4us.png"
                                             alt="Tax4US - AI Automation Client"
@@ -356,20 +368,21 @@ export default function HomePage() {
                                             className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
                                         />
                                     </div>
-                                    <div className="h-10 md:h-12 relative w-28 md:w-36">
+                                    <div className="h-10 relative w-full max-w-[140px]">
                                         <Image
                                             src="/images/logos/logo-ardan.png"
-                                            alt="ARDANE - Project Management Client"
+                                            alt="ARDAN - Project Management Client"
                                             fill
-                                            className="object-contain opacity-90 hover:opacity-100 transition-opacity"
+                                            className="object-contain opacity-70 hover:opacity-100 transition-opacity"
+                                            style={{ mixBlendMode: 'screen' }}
                                         />
                                     </div>
-                                    <div className="h-10 md:h-12 relative w-28 md:w-36">
+                                    <div className="h-10 relative w-full max-w-[140px]">
                                         <Image
                                             src="/images/logos/logo-wondercare.png"
-                                            alt="WonderCare"
+                                            alt="WonderCare - Healthcare Automation"
                                             fill
-                                            className="object-contain opacity-90 hover:opacity-100 transition-opacity"
+                                            className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
                                         />
                                     </div>
                                 </div>
@@ -381,6 +394,97 @@ export default function HomePage() {
                 {/* ROI Comparison Section */}
                 <section className="py-24 px-4 border-t border-white/5 bg-[#0a061e]/20">
                     <ComparisonTable />
+                </section>
+
+                {/* Technical Authority & Monitoring Section */}
+                <section className="py-24 px-4 border-t border-white/5 relative overflow-hidden">
+                    {/* Abstract Grid Background */}
+                    <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ background: 'url(/images/grid.svg) repeat' }} />
+
+                    <div className="container mx-auto">
+                        <div className="flex flex-col lg:flex-row items-center gap-16">
+                            <div className="lg:w-1/2">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-6 text-sm font-bold">
+                                    <Zap className="w-4 h-4" />
+                                    The Engine Behind the Result
+                                </div>
+                                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
+                                    Enterprise Grade <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Automation Backend</span>
+                                </h2>
+                                <p className="text-xl text-slate-400 mb-8 max-w-xl">
+                                    While others offer &quot;simple bots&quot;, we architect complex multi-stage workflows in n8n.
+                                    Every system we build includes a **Daily Health Check**—our own code monitoring your business every 60 seconds.
+                                </p>
+
+                                <div className="space-y-6">
+                                    <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                                        <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center shrink-0">
+                                            <Shield className="w-6 h-6 text-cyan-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold">Daily Pulse Monitoring</h4>
+                                            <p className="text-sm text-slate-500">Automatic reporting on uptime, lead volume, and system health delivered to your inbox daily.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                                            <Lock className="w-6 h-6 text-blue-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold">Private & Secure</h4>
+                                            <p className="text-sm text-slate-500">Your systems are hosted in isolated environments. Your data never leaves your private cloud.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="lg:w-1/2 relative">
+                                {/* Workflow Interface Mockup */}
+                                <div className="relative rounded-2xl border border-white/10 bg-[#0d0922] p-4 shadow-2xl overflow-hidden group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 pointer-events-none" />
+
+                                    {/* Mock n8n Header */}
+                                    <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                                            <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+                                            <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                                        </div>
+                                        <div className="text-[10px] font-mono text-slate-500">CORE_SERVICE_FULFILLMENT.json</div>
+                                    </div>
+
+                                    {/* Visual Representation of n8n Nodes */}
+                                    <div className="grid grid-cols-2 gap-4 opacity-80 group-hover:opacity-100 transition-opacity">
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                                            <Zap className="w-8 h-8 text-yellow-400" />
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Trigger</span>
+                                        </div>
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                                            <Bot className="w-8 h-8 text-cyan-400" />
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">AI Branching</span>
+                                        </div>
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                                            <Workflow className="w-8 h-8 text-purple-400" />
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Process Logic</span>
+                                        </div>
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                                            <CheckCircle className="w-8 h-8 text-green-400" />
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Success</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Overlay Pulse */}
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                        <div className="w-32 h-32 rounded-full bg-cyan-500/20 blur-3xl animate-pulse" />
+                                    </div>
+                                </div>
+
+                                {/* Background Glow */}
+                                <div className="absolute -z-10 top-1/2 right-0 w-64 h-64 rounded-full bg-blue-500/20 blur-[100px]" />
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 {/* Qualification Engine - The Core Funnel */}
@@ -492,7 +596,6 @@ export default function HomePage() {
                                         }}
                                         onMouseEnter={() => setSelectedService(service.id)}
                                         onMouseLeave={() => setSelectedService(null)}
-                                        onLeave={() => setSelectedService(null)}
                                     >
                                         {service.popular && (
                                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -528,6 +631,12 @@ export default function HomePage() {
                                             <p className="text-sm min-h-[4.5rem]" style={{ color: 'var(--rensto-text-secondary)' }}>
                                                 {service.description}
                                             </p>
+                                            <div className="h-10 mb-4 bg-red-500/5 border border-red-500/10 rounded-lg flex items-center px-3 gap-2">
+                                                <User className="w-3 h-3 text-red-400 opacity-50" />
+                                                <span className="text-[10px] text-red-200/60 font-medium leading-none italic">
+                                                    {(service as any).vsHuman}
+                                                </span>
+                                            </div>
                                         </div>
 
                                         <div className="mb-6 border-y border-white/5 py-4">
@@ -539,13 +648,15 @@ export default function HomePage() {
                                             </p>
                                         </div>
 
-                                        <div className="space-y-3 mb-8 flex-grow">
-                                            {service.features.map((feature, index) => (
-                                                <div key={index} className="flex items-start gap-3">
-                                                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--rensto-cyan)' }} />
-                                                    <span className="text-xs leading-snug" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
-                                                </div>
-                                            ))}
+                                        <div className="space-y-3 mb-8 flex-grow flex flex-col">
+                                            <div className="flex-grow">
+                                                {service.features.map((feature, index) => (
+                                                    <div key={index} className="flex items-start gap-3 mb-3 last:mb-0">
+                                                        <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--rensto-cyan)' }} />
+                                                        <span className="text-xs leading-snug" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
 
                                         <div className="mt-auto">

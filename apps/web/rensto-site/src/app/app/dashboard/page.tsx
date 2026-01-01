@@ -18,6 +18,7 @@ import {
   Users,
   FileText,
 } from 'lucide-react';
+import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
 // Mock data - replace with real API calls
 const mockData = {
@@ -112,7 +113,7 @@ export default function ClientDashboardPage() {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     return date.toLocaleDateString('en-US', {
@@ -127,7 +128,7 @@ export default function ClientDashboardPage() {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) return 'In minutes';
     if (diffInHours < 24) return `In ${diffInHours}h`;
     return date.toLocaleDateString('en-US', {
@@ -237,12 +238,42 @@ export default function ClientDashboardPage() {
             <CardDescription>Daily agent execution volume</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64 flex items-center justify-center text-slate-400">
-              <div className="text-center">
-                <BarChart3 className="h-12 w-12 mx-auto mb-2" />
-                <p>Chart placeholder</p>
-                <p className="text-sm">Run volume visualization</p>
-              </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={[
+                  { name: 'Mon', runs: 4 },
+                  { name: 'Tue', runs: 7 },
+                  { name: 'Wed', runs: 5 },
+                  { name: 'Thu', runs: 8 },
+                  { name: 'Fri', runs: 12 },
+                  { name: 'Sat', runs: 6 },
+                  { name: 'Sun', runs: 5 },
+                ]}>
+                  <XAxis
+                    dataKey="name"
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}`}
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#1a1438', border: '1px solid #334155' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Bar
+                    dataKey="runs"
+                    fill="#06b6d4"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
@@ -292,8 +323,8 @@ export default function ClientDashboardPage() {
               <div key={run.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
-                    {getTypeIcon(run.name.toLowerCase().includes('wordpress') ? 'content' : 
-                                run.name.toLowerCase().includes('linkedin') ? 'social' : 'automation')}
+                    {getTypeIcon(run.name.toLowerCase().includes('wordpress') ? 'content' :
+                      run.name.toLowerCase().includes('linkedin') ? 'social' : 'automation')}
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">{run.name}</p>

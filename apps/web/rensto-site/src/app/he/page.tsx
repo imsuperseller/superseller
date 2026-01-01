@@ -15,8 +15,15 @@ import {
     TrendingUp,
     Code,
     Users,
-    Shield
+    Shield,
+    Target,
+    Mic,
+    MessageSquare,
+    User,
+    ArrowRight
 } from 'lucide-react';
+import { ComparisonTable } from '@/components/marketing/ComparisonTable';
+import { Badge } from '@/components/ui/badge';
 
 export default function HebrewLandingPage() {
     return (
@@ -62,6 +69,62 @@ export default function HebrewLandingPage() {
                     </div>
                 </section>
 
+                {/* Hebrew Comparison Table */}
+                <section className="py-24 px-4 border-t border-white/5 bg-[#0a061e]/20">
+                    <div className="container mx-auto">
+                        <ComparisonTable />
+                    </div>
+                </section>
+
+                {/* The 4 Pillars in Hebrew */}
+                <section className="py-24 px-4 bg-gradient-to-b from-transparent to-[#0a061e]/30">
+                    <div className="container mx-auto">
+                        <div className="text-center mb-16">
+                            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
+                                4 מנועי <span className="text-cyan-400">הצמיחה</span> שלכם
+                            </h2>
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                                מערכות אוטנומיות מקצה לקצה שבונות לכם אימפריה בזמן שאתם מתמקדים באסטרטגיה.
+                            </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <HebrewPillarCard
+                                name="מנוע הלידים"
+                                tagline="The Lead Machine"
+                                description="מערכת אאוטבואונד שעובדת 24/7, מוצאת לידים, מעשירה נתונים ושולחת פניות מותאמות אישית."
+                                vsHuman="מחליף צוות של 3 אנשי מכירות במחיר של ארוחת ערב."
+                                icon={Target}
+                                href="/offers"
+                            />
+                            <HebrewPillarCard
+                                name="המזכירה האוטונומית"
+                                tagline="Autonomous Secretary"
+                                description="בינה מלאכותית שעונה לוואטסאפ, קובעת פגישות ומנהלת לקוחות בצורה מושלמת."
+                                vsHuman="זמינה 24/7. לעולם לא מפספסת פנייה. לעולם לא חולה."
+                                icon={MessageSquare}
+                                href="/whatsapp"
+                            />
+                            <HebrewPillarCard
+                                name="מנוע הידע"
+                                tagline="Knowledge Engine"
+                                description="חיבור ה-AI לנתוני החברה שלכם. מערכת אינטליגנציה פרטית שמכירה כל פרויקט ונהל עבודה."
+                                vsHuman="העובד עם הזיכרון המושלם שלא צריך ללמד אותו פעמיים."
+                                icon={Mic}
+                                href="/contact"
+                            />
+                            <HebrewPillarCard
+                                name="מנוע התוכן"
+                                tagline="The Content Engine"
+                                description="מערכות אוטונומיות שמייצרות, עורכות ומפיצות תוכן סמכותי בכל הערוצים החברתיים."
+                                vsHuman="סוכנות תוכן שלמה בתוך קופסה - בשבריר מהעלות."
+                                icon={Users}
+                                href="/offers"
+                            />
+                        </div>
+                    </div>
+                </section>
+
                 {/* Hebrew Qualification Section */}
                 <section id="qualify-he" className="py-24 px-4 bg-[#0a061e]/30">
                     <div className="container mx-auto">
@@ -81,16 +144,11 @@ export default function HebrewLandingPage() {
                 </section>
 
                 {/* Local Social Proof */}
-                <section className="py-20 px-4">
+                <section className="py-20 px-4 border-t border-white/5">
                     <div className="container mx-auto max-w-5xl">
                         <h2 className="text-3xl font-bold text-center text-white mb-16">מי שכבר עברו לאוטומציה מלאה:</h2>
-                        <div className="grid md:grid-cols-3 gap-8">
-                            <LocalTestimonial
-                                name="מאור להם הכהן"
-                                role="עו״ד, MLH Law"
-                                text="ההסכמים שלנו נוצרים עכשיו באופן מיידי דרך וואטסאפ. זה שינה את כל זרימת העבודה שלי."
-                                logo="MAOR LAHAM"
-                            />
+                        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
                             <LocalTestimonial
                                 name="בן גינתי"
                                 role="מנכ״ל, Tax4US"
@@ -128,6 +186,37 @@ function LocalTestimonial({ name, role, text, logo }: any) {
             <p className="text-slate-300 mb-6 leading-relaxed italic">״{text}״</p>
             <div className="font-bold text-white">{name}</div>
             <div className="text-sm text-slate-500">{role}</div>
+        </div>
+    );
+}
+
+function HebrewPillarCard({ name, tagline, description, vsHuman, icon: Icon, href }: any) {
+    return (
+        <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 flex flex-col h-full group hover:border-cyan-500/50 transition-all duration-300">
+            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Icon className="w-8 h-8 text-cyan-400" />
+            </div>
+            <div className="mb-4">
+                <div className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest mb-1">{tagline}</div>
+                <h3 className="text-2xl font-bold text-white mb-2">{name}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed mb-6 h-[4.5rem]">
+                    {description}
+                </p>
+                <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3 flex items-center gap-3">
+                    <User className="w-4 h-4 text-red-400 shrink-0 opacity-50" />
+                    <span className="text-[11px] text-red-200/80 italic leading-tight">
+                        {vsHuman}
+                    </span>
+                </div>
+            </div>
+            <div className="mt-auto pt-6">
+                <Link href={href}>
+                    <Button variant="ghost" className="w-full text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/10 gap-2">
+                        למידע נוסף
+                        <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                </Link>
+            </div>
         </div>
     );
 }

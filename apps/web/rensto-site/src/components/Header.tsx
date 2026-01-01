@@ -34,21 +34,21 @@ export function Header() {
   }, []);
 
   // Main navigation links - localized
-  const isHebrew = currentPath === '/he';
+  const isHebrew = currentPath.startsWith('/he');
 
   const navigation = isHebrew ? [
     { name: 'דף הבית', href: '/he' },
-    { name: 'תהליך', href: '/process' }, // Could add Hebrew versions of these pages later if needed
-    { name: 'תחומי התמחות', href: '/niches' },
-    { name: 'חנות פתרונות', href: '/marketplace' },
-    { name: 'הצעות מחיר', href: '/offers' },
-    { name: 'צור קשר', href: '/contact' },
+    { name: 'תהליך', href: '/#process' },
+    { name: 'מקרי בוחן', href: '/he/niches' },
+    { name: 'חנות פתרונות', href: '/he/marketplace' },
+    { name: 'מחירון', href: '/he/offers' },
+    { name: 'צור קשר', href: '/he/contact' },
   ] : [
     { name: 'Home', href: '/' },
-    { name: 'Process', href: '/process' },
-    { name: 'Industry Hub', href: '/niches' },
+    { name: 'Process', href: '/#process' },
+    { name: 'Case Studies', href: '/niches' },
     { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Offers', href: '/offers' },
+    { name: 'Pricing', href: '/offers' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -103,8 +103,10 @@ export function Header() {
             <a
               href={`tel:${CONTACT_PHONE}`}
               className="flex items-center gap-2 text-sm font-medium text-rensto-cyan hover:text-white transition-colors"
+              dir="ltr"
+              style={{ direction: 'ltr' }}
             >
-              <span>Call: +1 (469) 929-9314</span>
+              <span>+1 (469) 929-9314</span>
             </a>
             <Link href="/custom">
               <Button

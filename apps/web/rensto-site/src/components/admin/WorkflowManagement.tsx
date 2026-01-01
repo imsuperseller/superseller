@@ -12,9 +12,10 @@ interface Workflow {
   executionTime: number;
   successRate: number;
   errors: number;
+  tags?: string[];
 }
 
-import { Template } from '@/lib/firebase';
+import { Template } from '@/types/firestore';
 
 interface WorkflowManagementProps {
   templates?: Template[];
@@ -29,7 +30,8 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
     lastExecution: new Date().toISOString(),
     executionTime: Math.floor(Math.random() * 100) + 20,
     successRate: Math.floor(Math.random() * 20) + 80,
-    errors: 0
+    errors: 0,
+    tags: t.tags || []
   })) : [
     // Fallback if no templates
     {
@@ -54,7 +56,8 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
         lastExecution: new Date().toISOString(),
         executionTime: Math.floor(Math.random() * 100) + 20,
         successRate: Math.floor(Math.random() * 20) + 80,
-        errors: 0
+        errors: 0,
+        tags: t.tags || []
       })));
     }
   }, [templates]);
@@ -83,6 +86,15 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
     // Implementation for viewing execution history
   };
 
+  const [filter, setFilter] = useState<'all' | 'marketplace' | 'internal'>('all');
+
+  const filteredWorkflows = workflows.filter(w => {
+    if (filter === 'all') return true;
+    if (filter === 'marketplace') return w.tags?.includes('marketplace');
+    if (filter === 'internal') return w.tags?.includes('internal');
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -90,15 +102,47 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
         <Button>Create New Workflow</Button>
       </div>
 
+      <div className="flex space-x-2 border-b border-gray-700 pb-2">
+        <Button
+          variant={filter === 'all' ? 'default' : 'ghost'}
+          onClick={() => setFilter('all')}
+          size="sm"
+        >
+          All Workflows
+        </Button>
+        <Button
+          variant={filter === 'marketplace' ? 'default' : 'ghost'}
+          onClick={() => setFilter('marketplace')}
+          size="sm"
+        >
+          Marketplace
+        </Button>
+        <Button
+          variant={filter === 'internal' ? 'default' : 'ghost'}
+          onClick={() => setFilter('internal')}
+          size="sm"
+        >
+          Internal Tools
+        </Button>
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {workflows.map((workflow) => (
+        {filteredWorkflows.map((workflow) => (
           <Card key={workflow.id}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                {workflow.name}
-                <Badge className={getStatusColor(workflow.status)}>
-                  {workflow.status}
-                </Badge>
+                <span>{workflow.name}</span>
+                <div className="flex gap-2">
+                  {workflow.tags?.includes('internal') && (
+                    <Badge variant="secondary" className="bg-purple-500/10 text-purple-500 border-purple-500/20">Internal</Badge>
+                  )}
+                  {workflow.tags?.includes('marketplace') && (
+                    <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 border-blue-500/20">Marketplace</Badge>
+                  )}
+                  <Badge className={getStatusColor(workflow.status)}>
+                    {workflow.status}
+                  </Badge>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

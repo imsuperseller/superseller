@@ -22,24 +22,73 @@ import {
 
 const CONTACT_PHONE = "12144362102"; // Rensto WhatsApp number
 
-export function Footer() {
+const translations = {
+  en: {
+    companyDesc: "Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.",
+    navTitle: "Navigation",
+    clientTitle: "Client Access",
+    legalTitle: "Legal",
+    rights: "All rights reserved.",
+    contact: "Contact",
+    aiSupport: "AI Support Agent",
+    links: {
+      home: "Home",
+      marketplace: "Marketplace",
+      custom: "Custom Solutions",
+      offers: "Offers/Pricing",
+      niches: "Industry Hub",
+      login: "Client Dashboard",
+      control: "Admin Control",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service"
+    }
+  },
+  he: {
+    companyDesc: "הפכו את העסק שלכם לאוטונומי באמצעות סוכני AI מתקדמים. בנו, הפיצו ונהלו תהליכי עבודה חכמים שמגדילים את הפעילות שלכם.",
+    navTitle: "ניווט",
+    clientTitle: "גישת לקוחות",
+    legalTitle: "משפטי",
+    rights: "כל הזכויות שמורות.",
+    contact: "צור קשר",
+    aiSupport: "סוכן תמיכה AI",
+    links: {
+      home: "דף הבית",
+      marketplace: "חנות פתרונות",
+      custom: "פתרונות מותאמים",
+      offers: "מחירון וחבילות",
+      niches: "מקרי בוחן",
+      login: "אזור אישי",
+      control: "ממשק ניהול",
+      privacy: "מדיניות פרטיות",
+      terms: "תנאי שימוש"
+    }
+  }
+};
+
+interface FooterProps {
+  lang?: 'en' | 'he';
+}
+
+export function Footer({ lang = 'en' }: FooterProps) {
+  const t = translations[lang];
+  const isRtl = lang === 'he';
   const currentYear = new Date().getFullYear();
 
   const navigation = {
     main: [
-      { name: 'Home', href: '/' },
-      { name: 'Marketplace', href: '/marketplace' },
-      { name: 'Custom Solutions', href: '/custom' },
-      { name: 'Offers/Pricing', href: '/offers' },
-      { name: 'Industry Hub', href: '/niches' },
+      { name: t.links.home, href: isRtl ? '/he' : '/' },
+      { name: t.links.marketplace, href: isRtl ? '/he/marketplace' : '/marketplace' },
+      { name: t.links.custom, href: '/custom' },
+      { name: t.links.offers, href: isRtl ? '/he/offers' : '/offers' },
+      { name: t.links.niches, href: isRtl ? '/he/niches' : '/niches' },
     ],
     business: [
-      { name: 'Client Dashboard', href: '/login', icon: Workflow },
-      { name: 'Admin Control', href: '/control', icon: Settings },
+      { name: t.links.login, href: '/login', icon: Workflow },
+      { name: t.links.control, href: '/control', icon: Settings },
     ],
     legal: [
-      { name: 'Privacy Policy', href: '/legal/privacy' },
-      { name: 'Terms of Service', href: '/legal/terms' },
+      { name: t.links.privacy, href: '/legal/privacy' },
+      { name: t.links.terms, href: '/legal/terms' },
     ],
     social: [
       {
@@ -81,7 +130,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="text-white border-t border-white/5" style={{ background: 'var(--rensto-bg-primary)' }}>
+    <footer className="text-white border-t border-white/5" style={{ background: 'var(--rensto-bg-primary)' }} dir={isRtl ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -100,10 +149,10 @@ export function Footer() {
                   priority
                 />
               </div>
-              <span className="text-xl font-bold">Rensto</span>
+              <span className="text-xl font-bold font-sans">Rensto</span>
             </div>
-            <p className="text-slate-300 mb-4 max-w-md">
-              Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.
+            <p className="text-slate-300 mb-4 max-w-md font-sans leading-relaxed">
+              {t.companyDesc}
             </p>
             <div className="flex space-x-4">
               {navigation.social.map((item) => (
@@ -123,15 +172,15 @@ export function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4">
-              Navigation
+            <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4 font-sans">
+              {t.navTitle}
             </h3>
             <ul className="space-y-3">
               {navigation.main.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-slate-300 hover:text-white transition-colors"
+                    className="text-slate-300 hover:text-white transition-colors font-sans"
                   >
                     {item.name}
                   </Link>
@@ -142,15 +191,15 @@ export function Footer() {
 
           {/* Business Apps */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4">
-              Client Access
+            <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4 font-sans">
+              {t.clientTitle}
             </h3>
             <ul className="space-y-3">
               {navigation.business.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="flex items-center text-slate-300 hover:text-white transition-colors"
+                    className="flex items-center text-slate-300 hover:text-white transition-colors font-sans"
                   >
                     <item.icon className="h-4 w-4 mr-2" />
                     {item.name}
@@ -160,10 +209,10 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent('open-rensto-support'))}
-                  className="flex items-center text-slate-300 hover:text-white transition-colors text-sm"
+                  className="flex items-center text-slate-300 hover:text-white transition-colors text-sm font-sans"
                 >
                   <Bot className="h-4 w-4 mr-2" />
-                  AI Support agent
+                  {t.aiSupport}
                 </button>
               </li>
             </ul>
@@ -178,14 +227,14 @@ export function Footer() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-slate-400 hover:text-white transition-colors text-sm"
+                  className="text-slate-400 hover:text-white transition-colors text-sm font-sans"
                 >
                   {item.name}
                 </Link>
               ))}
             </div>
-            <p className="text-slate-400 text-sm">
-              © {currentYear} Rensto. All rights reserved.
+            <p className="text-slate-400 text-sm font-sans">
+              © {currentYear} Rensto. {t.rights}
             </p>
           </div>
         </div>

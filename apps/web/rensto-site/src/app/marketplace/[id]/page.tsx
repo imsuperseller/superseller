@@ -25,6 +25,9 @@ import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { Input } from '@/components/ui/input';
 import { Schema } from '@/components/seo/Schema';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase-client';
+import { Template } from '@/types/firestore';
 
 interface Workflow {
     id: string;
@@ -40,6 +43,7 @@ interface Workflow {
     features: string[];
     targetMarket: string;
     status: string;
+    video?: string;
 }
 
 export default function WorkflowDetailPage() {
@@ -55,11 +59,29 @@ export default function WorkflowDetailPage() {
     useEffect(() => {
         async function fetchWorkflow() {
             try {
-                const response = await fetch(`/api/marketplace/${id}`);
-                const data = await response.json();
+                // Try fetching from Firestore first
+                const docRef = doc(db, 'templates', id as string);
+                const docSnap = await getDoc(docRef);
 
-                if (data.success) {
-                    setWorkflow(data.workflow);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    // Map Firestore data to Workflow interface
+                    setWorkflow({
+                        id: data.id,
+                        workflowId: data.id,
+                        name: data.name,
+                        category: data.category,
+                        description: data.description,
+                        downloadPrice: data.price, // Map price to downloadPrice
+                        installPrice: 797, // Default upsell
+                        customPrice: 1497, // Default upsell
+                        complexity: 'Intermediate',
+                        setupTime: '2 hours',
+                        features: data.features || [],
+                        targetMarket: 'Small Businesses',
+                        status: 'Active',
+                        video: data.video
+                    });
                 } else {
                     // Fallback to MOCK
                     const mock = MOCK_TEMPLATES.find(m => m.id === id);
@@ -77,12 +99,33 @@ export default function WorkflowDetailPage() {
                             setupTime: '2 hours',
                             features: mock.features,
                             targetMarket: 'Small Businesses',
-                            status: 'Active'
+                            status: 'Active',
+                            video: mock.video
                         });
                     }
                 }
             } catch (error) {
                 console.error('Error fetching workflow:', error);
+                // Fallback to MOCK on error
+                const mock = MOCK_TEMPLATES.find(m => m.id === id);
+                if (mock) {
+                    setWorkflow({
+                        id: mock.id,
+                        workflowId: mock.id,
+                        name: mock.name,
+                        category: mock.category,
+                        description: mock.description,
+                        downloadPrice: mock.price,
+                        installPrice: 797,
+                        customPrice: 1497,
+                        complexity: 'Intermediate',
+                        setupTime: '2 hours',
+                        features: mock.features,
+                        targetMarket: 'Small Businesses',
+                        status: 'Active',
+                        video: mock.video
+                    });
+                }
             } finally {
                 setLoading(false);
             }
@@ -151,7 +194,7 @@ export default function WorkflowDetailPage() {
     const productSchema = {
         name: workflow.name,
         description: workflow.description,
-        image: 'https://rensto.com/workflow-placeholder.jpg',
+        image: workflow.video ? workflow.video.replace('.mp4', '.jpg') : 'https://rensto.com/assets/brand/dashboard_ui_dark.png',
         sku: workflow.workflowId || workflow.id,
         offers: {
             '@type': 'Offer',
@@ -209,6 +252,21 @@ export default function WorkflowDetailPage() {
                                 <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-3 py-1 font-mono uppercase tracking-widest text-[10px]">
                                     {workflow.category}
                                 </Badge>
+
+                                {workflow.video && (
+                                    <div className="rounded-2xl overflow-hidden border border-slate-700/50 relative group shadow-2xl bg-black aspect-video">
+                                        <video
+                                            src={workflow.video}
+                                            autoPlay
+                                            loop
+                                            muted
+                                            playsInline
+                                            controls
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                )}
+
                                 <h1 className="text-4xl md:text-5xl font-bold leading-tight">
                                     {workflow.name}
                                 </h1>
@@ -403,35 +461,67 @@ function IncludeItem({ text }: { text: string }) {
 
 const MOCK_TEMPLATES = [
     {
-        id: 'whatsapp-router',
-        name: 'WhatsApp Business Router',
-        description: 'Intelligently route incoming WhatsApp messages to the correct agent or department accurately.',
-        category: 'Operations',
-        price: 97,
-        features: ['WAHA Integration', 'Intelligent Routing', 'Multi-Agent Support', 'Analytics']
+        id: '4OYGXXMYeJFfAo6X',
+        name: 'Celebrity Selfie Video Generator',
+        description: 'Create personalized AI video journeys through movie history. Upload a photo and get a merged video where the user stars in iconic scenes. Powered by Higgsfield Kling Omni and delivered via WhatsApp.',
+        category: 'Content Engine',
+        price: 297,
+        features: ['AI Face Swap', 'Multi-Scene Stitching', 'WhatsApp Delivery', 'Custom Movie Presets', 'ImgBB Photo Hosting'],
+        video: "http://172.245.56.50/videos/celebrity-selfie-generator.mp4"
     },
     {
-        id: 'rensto-support-agent',
-        name: 'AI Support Specialist',
-        description: '24/7 AI-powered support agent trained on your company knowledge base for instant answers.',
-        category: 'AI Agents',
+        id: '8GC371u1uBQ8WLmu',
+        name: 'Meta Ad Library Analyzer',
+        description: 'Scrapes winning ads from Meta Ad Library and generates detailed replication templates using AI vision analysis. Identifies UGC and testimonial-style ads with precise scene-by-scene breakdowns.',
+        category: 'Lead Machine',
         price: 197,
-        features: ['Gemini RAG', 'Voice Support', 'Knowledge Base Sync', 'Human Handoff']
+        features: ['Ad Scraping', 'AI Video Analysis', 'Template Generation', 'Boost.Space Storage', 'WhatsApp Trigger Support'],
+        video: "http://172.245.56.50/videos/meta-ad-analyzer.mp4"
     },
     {
-        id: 'tax4us-agent',
-        name: 'Tax Compliance Agent',
-        description: 'Specialized AI agent for tax inquiries, law compliance, and customer support with voice support.',
-        category: 'AI Agents',
+        id: '5pMi01SwffYB6KeX',
+        name: 'YouTube AI Clone',
+        description: 'Create an AI persona from any YouTube channel. Extracts transcripts, synthesizes a conversational persona, and lets you chat with the clone via Telegram. Includes Perplexity research tool.',
+        category: 'Knowledge Engine',
+        price: 347,
+        features: ['Transcript Extraction', 'Persona Synthesis', 'Telegram Bot Integration', 'Perplexity Research Tool', 'Session Memory'],
+        video: "http://172.245.56.50/videos/youtube-clone.mp4"
+    },
+    {
+        id: 'U6EZ2iLQ4zCGg31H',
+        name: 'Call Audio Lead Analyzer',
+        description: 'Ingests Telnyx call recordings, transcribes them with AI, and creates qualified leads in Workiz with intelligent categorization. Sends email reports via Outlook.',
+        category: 'Lead Machine',
+        price: 497,
+        features: ['Telnyx Integration', 'Audio Transcription', 'Lead Scoring', 'Workiz CRM Sync', 'Outlook Email Reports'],
+        video: "http://172.245.56.50/videos/call-audio-analyzer.mp4"
+    },
+    {
+        id: '5Fl9WUjYTpodcloJ',
+        name: 'AI Calendar Assistant',
+        description: 'An AI agent that manages your TidyCal calendar. Books meetings, reschedules, checks availability, and detects conflicts via natural chat commands through Telegram or webhooks.',
+        category: 'Autonomous Secretary',
+        price: 147,
+        features: ['Conflict Resolution', 'Natural Language', 'Smart Rescheduling', 'Human Approval Flow', 'Webhook Triggers'],
+        video: "http://172.245.56.50/videos/calendar-assistant.mp4"
+    },
+    {
+        id: 'stj8DmATqe66D9j4',
+        name: 'Floor Plan to Property Tour',
+        description: 'Upload a floor plan and receive a photorealistic video walkthrough. AI generates room renders in multiple styles (Modern, Traditional, Scandinavian) and stitches them into a smooth tour video.',
+        category: 'Content Engine',
+        price: 397,
+        features: ['2D to 3D Conversion', 'Photorealistic Rendering', 'Video Walkthrough', 'Five Interior Styles', 'Email Delivery'],
+        video: "http://172.245.56.50/videos/floor-plan-tour.mp4"
+    },
+    {
+        id: 'vCxY2DXUZ8vUb30f',
+        name: 'Monthly CRO Insights Bot',
+        description: 'Automated monthly analysis of GA4 and Clarity data with actionable CRO recommendations. Identifies rage clicks, scroll depth issues, and generates prioritized action items delivered via Slack.',
+        category: 'Knowledge Engine',
         price: 247,
-        features: ['Legal Knowledge Base', 'Document Analysis', 'Compliance Filtering', 'Voice Processing']
-    },
-    {
-        id: 'meatpoint-agent',
-        name: 'MeatPoint Sales Agent',
-        description: 'Automated sales and support for high-volume retail/wholesale operations via WhatsApp.',
-        category: 'Sales',
-        price: 197,
-        features: ['Inventory Integration', 'Order Processing', 'Customer History', 'Upsell Logic']
+        features: ['Drop-off Analysis', 'Heatmap Integration', 'Monthly Report', 'Slack Reports', 'Error Alerting'],
+        video: "http://172.245.56.50/videos/cro-insights.mp4"
     }
 ];
+

@@ -370,7 +370,7 @@ export function QualificationQuiz({ lang = 'en' }: QuizProps) {
                                 size="xl"
                                 onClick={() => {
                                     // Redirect to audit with context
-                                    window.location.href = `/offers#audit?email=${encodeURIComponent(state.email)}&industry=${state.industry}&potential=${result.potential}`;
+                                    window.location.href = `${isRtl ? '/he' : ''}/offers#audit?email=${encodeURIComponent(state.email)}&industry=${state.industry}&potential=${result.potential}`;
                                 }}
                                 disabled={!state.email}
                                 className="w-full font-bold shadow-[0_10px_30px_rgba(30,174,247,0.3)] bg-gradient-to-r from-blue-600 to-cyan-400 text-white"

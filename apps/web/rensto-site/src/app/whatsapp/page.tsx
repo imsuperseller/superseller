@@ -59,7 +59,8 @@ const ADDONS = [
         description: 'Send & receive images, video, audio, PDFs. Includes auto-download.',
         price: 79,
         setup: 199,
-        icon: MessageSquare
+        icon: MessageSquare,
+        available: true
     },
     {
         id: 'handoff',
@@ -67,7 +68,9 @@ const ADDONS = [
         description: 'Sync with Chatwoot/Zendesk for seamless human takeover.',
         price: 199,
         setup: 399,
-        icon: Users
+        icon: Users,
+        available: false,
+        comingSoon: true
     },
     {
         id: 'groups',
@@ -75,7 +78,8 @@ const ADDONS = [
         description: 'Listen, post, and moderate in WhatsApp Groups.',
         price: 149,
         setup: 299,
-        icon: Users
+        icon: Users,
+        available: true
     },
     {
         id: 'broadcast',
@@ -83,7 +87,9 @@ const ADDONS = [
         description: 'Automate Channels & Status updates (Stories).',
         price: 199,
         setup: 299,
-        icon: Megaphone
+        icon: Megaphone,
+        available: false,
+        comingSoon: true
     },
     {
         id: 'interactive',
@@ -91,7 +97,8 @@ const ADDONS = [
         description: 'Polls, buttons, list messages, and funnels.',
         price: 99,
         setup: 199,
-        icon: Radio
+        icon: Radio,
+        available: true
     },
     {
         id: 'presence',
@@ -99,7 +106,8 @@ const ADDONS = [
         description: 'Typing indicators & online status for realistic feel.',
         price: 99,
         setup: 199,
-        icon: Clock
+        icon: Clock,
+        available: true
     },
     {
         id: 'labels',
@@ -107,7 +115,8 @@ const ADDONS = [
         description: 'Auto-apply labels & sync with CRM stages.',
         price: 79,
         setup: 199,
-        icon: LayoutGrid
+        icon: LayoutGrid,
+        available: true
     },
     {
         id: 'read_ops',
@@ -115,7 +124,8 @@ const ADDONS = [
         description: 'Auto-mark as read, bulk read, unread alerts.',
         price: 79,
         setup: 199,
-        icon: CheckCircle2
+        icon: CheckCircle2,
+        available: true
     },
     {
         id: 'profile',
@@ -123,7 +133,8 @@ const ADDONS = [
         description: 'Programmatic updates to name, bio, and profile pic.',
         price: 49,
         setup: 99,
-        icon: UserCircle
+        icon: UserCircle,
+        available: true
     },
     {
         id: 'security',
@@ -131,7 +142,9 @@ const ADDONS = [
         description: 'IP Allowlisting, HMAC verification, Audit Logs.',
         price: 149,
         setup: 399,
-        icon: Lock
+        icon: Lock,
+        available: false,
+        comingSoon: true
     },
     {
         id: 'reliability',
@@ -139,9 +152,11 @@ const ADDONS = [
         description: 'Dedicated GOWS engine, session recovery, load shaping.',
         price: 249,
         setup: 499,
-        icon: Server
+        icon: Server,
+        available: true
     }
 ];
+
 
 export default function WhatsAppPage() {
     const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
@@ -300,27 +315,37 @@ export default function WhatsAppPage() {
                                     {ADDONS.map(addon => (
                                         <button
                                             key={addon.id}
-                                            onClick={() => toggleAddon(addon.id)}
+                                            onClick={() => addon.available !== false && toggleAddon(addon.id)}
+                                            disabled={addon.available === false}
                                             className={`
                                             relative p-4 rounded-xl text-left transition-all duration-200 border
-                                            ${selectedAddons.includes(addon.id)
-                                                    ? 'bg-green-500/10 border-green-500/50 ring-1 ring-green-500/20'
-                                                    : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'}
+                                            ${addon.available === false
+                                                    ? 'bg-white/[0.02] border-white/5 opacity-60 cursor-not-allowed'
+                                                    : selectedAddons.includes(addon.id)
+                                                        ? 'bg-green-500/10 border-green-500/50 ring-1 ring-green-500/20'
+                                                        : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'}
                                         `}
                                         >
+                                            {addon.comingSoon && (
+                                                <div className="absolute top-3 right-3 px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 rounded text-[10px] font-bold text-orange-400 uppercase tracking-wider">
+                                                    Coming Soon
+                                                </div>
+                                            )}
                                             <div className="flex justify-between items-start mb-2">
-                                                <div className={`p-2 rounded-lg ${selectedAddons.includes(addon.id) ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-gray-400'}`}>
+                                                <div className={`p-2 rounded-lg ${addon.available === false ? 'bg-white/5 text-gray-600' : selectedAddons.includes(addon.id) ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-gray-400'}`}>
                                                     <addon.icon className="w-5 h-5" />
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="font-bold">+${addon.price}<span className="text-xs text-gray-500">/mo</span></div>
-                                                    <div className="text-xs text-gray-500">+${addon.setup} setup</div>
-                                                </div>
+                                                {addon.available !== false && (
+                                                    <div className="text-right">
+                                                        <div className="font-bold">+${addon.price}<span className="text-xs text-gray-500">/mo</span></div>
+                                                        <div className="text-xs text-gray-500">+${addon.setup} setup</div>
+                                                    </div>
+                                                )}
                                             </div>
                                             <h3 className="font-semibold mb-1">{addon.name}</h3>
                                             <p className="text-xs text-gray-400">{addon.description}</p>
 
-                                            {selectedAddons.includes(addon.id) && (
+                                            {selectedAddons.includes(addon.id) && addon.available !== false && (
                                                 <div className="absolute top-4 right-4 text-green-500">
                                                     <Check className="w-5 h-5" />
                                                 </div>
@@ -328,6 +353,7 @@ export default function WhatsAppPage() {
                                         </button>
                                     ))}
                                 </div>
+
 
                                 {/* Extra Numbers Toggle */}
                                 <div className="mt-8 p-6 bg-white/5 border border-white/10 rounded-xl">
