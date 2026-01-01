@@ -16,21 +16,24 @@ export function getFirebaseAdmin(): App {
 
         if (serviceAccountKey) {
             try {
+                // Diagnostic: Check for common corruption patterns
+                const sample = serviceAccountKey.substring(0, 50).replace(/\"/g, "'");
+                const hasRawNewlines = /\n/.test(serviceAccountKey);
+                const hasDoubleEscapes = /\\\\/.test(serviceAccountKey);
+
                 const serviceAccount = JSON.parse(serviceAccountKey);
                 if (serviceAccount.private_key) {
-                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '\r');
                 }
                 firebaseApp = initializeApp({
                     credential: cert(serviceAccount),
                     projectId: serviceAccount.project_id || 'rensto'
                 });
             } catch (error: any) {
-                console.error('FIREBASE_ADMIN_ERROR: Failed to parse or initialize with service account:', error);
-                // Throw the actual error so the API can report it
-                throw new Error(`Firebase Init Failed: ${error.message}. Key starts with: ${serviceAccountKey.substring(0, 20)}...`);
+                const sample = serviceAccountKey ? serviceAccountKey.substring(0, 50).replace(/\"/g, "'") : 'is-null';
+                throw new Error(`Firebase Init Failed: ${error.message}. Len: ${serviceAccountKey?.length}. Sample: ${sample}`);
             }
         } else {
-            console.error('FIREBASE_ADMIN_ERROR: FIREBASE_SERVICE_ACCOUNT_KEY is missing');
             throw new Error('Firebase Init Failed: FIREBASE_SERVICE_ACCOUNT_KEY is missing');
         }
     } else {
