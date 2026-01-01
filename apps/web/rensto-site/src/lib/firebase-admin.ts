@@ -16,25 +16,22 @@ export function getFirebaseAdmin(): App {
 
         if (serviceAccountKey) {
             try {
-                // Diagnostic: Check for common corruption patterns
-                const sample = serviceAccountKey.substring(0, 50).replace(/\"/g, "'");
-                const hasRawNewlines = /\n/.test(serviceAccountKey);
-                const hasDoubleEscapes = /\\\\/.test(serviceAccountKey);
-
                 const serviceAccount = JSON.parse(serviceAccountKey);
                 if (serviceAccount.private_key) {
-                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '\r');
+                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
                 }
                 firebaseApp = initializeApp({
                     credential: cert(serviceAccount),
                     projectId: serviceAccount.project_id || 'rensto'
                 });
             } catch (error: any) {
-                const sample = serviceAccountKey ? serviceAccountKey.substring(0, 50).replace(/\"/g, "'") : 'is-null';
-                throw new Error(`Firebase Init Failed: ${error.message}. Len: ${serviceAccountKey?.length}. Sample: ${sample}`);
+                console.error('Failed to initialize Firebase Admin:', error);
+                throw error;
             }
         } else {
-            throw new Error('Firebase Init Failed: FIREBASE_SERVICE_ACCOUNT_KEY is missing');
+            firebaseApp = initializeApp({
+                projectId: 'rensto'
+            });
         }
     } else {
         firebaseApp = getApps()[0];
