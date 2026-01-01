@@ -60,7 +60,8 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             instanceId,
-            message: 'Service instance created and fulfillment initiated.'
+            message: 'Service instance created and fulfillment initiated. (v2-diag-3)',
+            debug_info: 'v2-diag-3'
         });
 
     } catch (error: any) {
