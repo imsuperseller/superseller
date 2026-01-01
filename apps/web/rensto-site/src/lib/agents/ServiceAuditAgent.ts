@@ -1,4 +1,4 @@
-import { getFirestoreAdmin, COLLECTIONS } from '../firebase';
+import { getFirestoreAdmin, COLLECTIONS } from '../firebase-admin';
 import { getStripeAdmin } from '../stripe';
 import { Timestamp } from 'firebase-admin/firestore';
 

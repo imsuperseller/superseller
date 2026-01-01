@@ -1,8 +1,6 @@
 // Shared Firebase configuration for server-side usage
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
-import { auditAgent } from './agents/ServiceAuditAgent';
-
 // Firebase Admin SDK for server-side operations
 // Note: For client-side, use the config from DashboardContent.tsx
 
