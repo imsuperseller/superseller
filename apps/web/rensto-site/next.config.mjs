@@ -6,6 +6,9 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-avatar', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-label', '@radix-ui/react-progress', '@radix-ui/react-select', '@radix-ui/react-slot', '@radix-ui/react-switch', '@radix-ui/react-tabs', '@radix-ui/react-toast'],
   },
 
+  // Transpile packages that use modern ESM but are not fully compatible with server build
+  transpilePackages: ['recharts'],
+
   // Enable compression
   compress: true,
 
@@ -137,7 +140,6 @@ const nextConfig = {
         'gsap': false,
         'socket.io-client': false,
         'framer-motion': false,
-        'recharts': false,
         '@stripe/stripe-js': false,
       };
     } else {

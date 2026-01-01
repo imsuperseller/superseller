@@ -1,0 +1,146 @@
+{
+  "name": "INT-LEMMY-001: Lemmy Lead Scraper v1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lemmy API Configuration\nconst LEMMY_INSTANCE = 'lemmy.world';\nconst BASE_URL = `https://${LEMMY_INSTANCE}`;\n\n// Communities to scrape (can be configured)\nconst COMMUNITIES = [\n  'technology',\n  'programming',\n  'startups',\n  'business',\n  'entrepreneur'\n];\n\n// Fetch communities list\nconst communitiesResponse = await $http.request({\n  method: 'POST',\n  url: `${BASE_URL}/api/v3/community/list`,\n  headers: {\n    'Content-Type': 'application/json',\n    'User-Agent': 'Rensto-Lemmy-Scraper/1.0'\n  },\n  body: {\n    type_: 'All',\n    sort: 'TopMonth',\n    limit: 50\n  }\n});\n\nreturn communitiesResponse.communities.map(c => ({\n  json: {\n    community_id: c.community.id,\n    community_name: c.community.name,\n    community_title: c.community.title,\n    description: c.community.description,\n    subscribers: c.counts.subscribers,\n    posts: c.counts.posts,\n    comments: c.counts.comments,\n    url: `${BASE_URL}/c/${c.community.name}`\n  }\n}));"
+      },
+      "id": "get-communities",
+      "name": "Get Communities",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fetch posts from each community\nconst BASE_URL = 'https://lemmy.world';\nconst communityName = $json.community_name;\n\nconst postsResponse = await $http.request({\n  method: 'POST',\n  url: `${BASE_URL}/api/v3/post/list`,\n  headers: {\n    'Content-Type': 'application/json',\n    'User-Agent': 'Rensto-Lemmy-Scraper/1.0'\n  },\n  body: {\n    community_name: communityName,\n    type_: 'All',\n    sort: 'Hot',\n    limit: 50,\n    page: 1\n  }\n});\n\nreturn postsResponse.posts.map(p => ({\n  json: {\n    post_id: p.post.id,\n    post_name: p.post.name,\n    post_body: p.post.body,\n    post_url: p.post.url,\n    creator_id: p.post.creator_id,\n    community_id: p.post.community_id,\n    community_name: p.community.name,\n    published: p.post.published,\n    upvotes: p.counts.upvotes,\n    downvotes: p.counts.downvotes,\n    comments: p.counts.comments,\n    score: p.counts.score,\n    hot_rank: p.counts.hot_rank,\n    creator_name: p.creator.name,\n    creator_display_name: p.creator.display_name,\n    creator_avatar: p.creator.avatar,\n    lemmy_url: `${BASE_URL}/post/${p.post.id}`\n  }\n}));"
+      },
+      "id": "fetch-posts",
+      "name": "Fetch Posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract leads from posts\nconst post = $json;\nconst text = `${post.post_name} ${post.post_body || ''}`.toLowerCase();\n\n// Check if potential lead\nconst businessKeywords = [\n  'business', 'company', 'startup', 'service', 'product',\n  'consulting', 'agency', 'freelance', 'hire', 'looking for',\n  'need help', 'contact', 'email', 'website', 'phone'\n];\n\nconst hasBusinessKeyword = businessKeywords.some(keyword => text.includes(keyword));\nconst hasHighEngagement = post.score > 5 || post.comments > 3;\n\nif (!hasBusinessKeyword && !hasHighEngagement) {\n  return []; // Skip non-lead posts\n}\n\n// Extract contact info\nconst emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g;\nconst phoneRegex = /(\\+?\\d{1,3}[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}/g;\nconst urlRegex = /(https?:\\/\\/)?(www\\.)?[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}(\\/[^\\s]*)?/g;\n\nconst email = text.match(emailRegex)?.[0] || null;\nconst phone = text.match(phoneRegex)?.[0] || null;\nconst website = text.match(urlRegex)?.[0] || null;\n\nreturn [{\n  json: {\n    source: 'lemmy',\n    source_type: 'post',\n    source_id: post.post_id,\n    source_url: post.lemmy_url,\n    name: post.creator_display_name || post.creator_name,\n    username: post.creator_name,\n    email: email,\n    phone: phone,\n    website: website,\n    message: post.post_body || post.post_name,\n    community: post.community_name,\n    score: post.score,\n    engagement: post.comments,\n    published: post.published,\n    metadata: {\n      upvotes: post.upvotes,\n      downvotes: post.downvotes,\n      hot_rank: post.hot_rank\n    }\n  }\n}];"
+      },
+      "id": "extract-leads",
+      "name": "Extract Leads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "tableId": "lemmy_leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "source": "={{ $json.source }}",
+            "source_type": "={{ $json.source_type }}",
+            "source_id": "={{ $json.source_id }}",
+            "source_url": "={{ $json.source_url }}",
+            "name": "={{ $json.name }}",
+            "username": "={{ $json.username }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "website": "={{ $json.website }}",
+            "message": "={{ $json.message }}",
+            "community": "={{ $json.community }}",
+            "score": "={{ $json.score }}",
+            "engagement": "={{ $json.engagement }}",
+            "published": "={{ $json.published }}"
+          }
+        },
+        "options": {
+          "uniqueColumn": "source_id"
+        }
+      },
+      "id": "save-to-n8n",
+      "name": "Save to n8n Data Table",
+      "type": "n8n-nodes-base.n8nDataTable",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "base": "appQijHhqqP4z6wGe",
+        "table": "Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Phone": "={{ $json.phone }}",
+            "Website": "={{ $json.website }}",
+            "Source": "={{ $json.source }}",
+            "Source URL": "={{ $json.source_url }}",
+            "Notes": "={{ $json.message }}",
+            "Status": "New"
+          }
+        }
+      },
+      "id": "save-to-airtable",
+      "name": "Save to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "Get Communities", "type": "main", "index": 0 }]]
+    },
+    "Get Communities": {
+      "main": [[{ "node": "Fetch Posts", "type": "main", "index": 0 }]]
+    },
+    "Fetch Posts": {
+      "main": [[{ "node": "Extract Leads", "type": "main", "index": 0 }]]
+    },
+    "Extract Leads": {
+      "main": [[{ "node": "Save to n8n Data Table", "type": "main", "index": 0 }]]
+    },
+    "Save to n8n Data Table": {
+      "main": [[{ "node": "Save to Airtable", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "internal",
+      "id": "internal"
+    },
+    {
+      "name": "lead-generation",
+      "id": "lead-generation"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-31T00:00:00.000Z",
+  "versionId": "1"
+}
+

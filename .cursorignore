@@ -1,3 +1,50 @@
 # Ignore npm global binaries from TypeScript analysis
 /Users/shaifriedman/.npm-global/bin/claude
 /Users/shaifriedman/.npm-global/bin/*
+
+# Exclude large directories that slow down Antigravity indexing
+archives/
+backups/
+workflows/
+scripts/
+docs/
+Customers/
+data/
+assets/
+products/
+schemas/
+test-payloads/
+rensto-marketplace/
+dima/
+ops/
+configs/
+live-systems/
+packages/
+infra/mcp-reference/
+
+# Exclude build artifacts and dependencies
+node_modules/
+**/node_modules/
+**/.next/
+**/dist/
+**/build/
+**/.cache/
+
+# Exclude large binary files
+*.log
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.pdf
+*.db
+*.sqlite
+*.sqlite3
+
+# Exclude workflow JSON files (314 files, mostly large)
+workflows/*.json
+
+# Exclude archived and historical data
+archives/**/*
+backups/**/*

@@ -103,6 +103,10 @@ export interface Template {
     workflowId?: string;
     createdAt?: any;
     updatedAt?: any;
+
+    // Fulfillment Configuration
+    configurationSchema?: FormField[]; // Questions to ask for "Implementation" mode
+    deliveryChecklist?: string[]; // Items to verify for "Download" mode
 }
 
 export interface DownloadEvent {
@@ -112,4 +116,36 @@ export interface DownloadEvent {
     paymentIntentId: string;
     timestamp: any;
     status: string;
+}
+
+export type FormFieldType = 'text' | 'number' | 'email' | 'url' | 'select' | 'textarea' | 'boolean';
+
+export interface FormField {
+    id: string;
+    label: string;
+    type: FormFieldType;
+    required: boolean;
+    placeholder?: string;
+    options?: string[]; // For 'select' type
+    helperText?: string;
+}
+
+export interface ServiceInstance {
+    id: string;
+    clientId: string; // User ID
+    clientEmail: string;
+    productId: string; // Template ID
+    productName: string;
+    status: 'pending_setup' | 'provisioning' | 'active' | 'suspended' | 'cancelled';
+
+    // The user's answers to the configuration schema
+    configuration: Record<string, any>;
+
+    // Administrative links
+    n8nWorkflowId?: string; // The specific instance running for them
+    adminNotes?: string;
+
+    createdAt: any; // Firestore Timestamp
+    activatedAt?: any; // Firestore Timestamp
+    updatedAt: any; // Firestore Timestamp
 }

@@ -17,8 +17,15 @@ import {
   Zap,
   Users,
   FileText,
+  ExternalLink,
+  Loader2,
 } from 'lucide-react';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
+
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase-client';
+import { ServiceInstance } from '@/types/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // Mock data - replace with real API calls
 const mockData = {
@@ -81,6 +88,41 @@ const mockData = {
 };
 
 export default function ClientDashboardPage() {
+  const [services, setServices] = React.useState<ServiceInstance[]>([]);
+  const [loadingServices, setLoadingServices] = React.useState(true);
+  const [userId, setUserId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid);
+        fetchServices(user.uid);
+      } else {
+        // DEV: If no auth, fetch for a demo ID or handle redirect
+        // fetchServices('demo_user');
+        setLoadingServices(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchServices = async (uid: string) => {
+    try {
+      const q = query(
+        collection(db, 'service_instances'),
+        where('clientId', '==', uid)
+      );
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ServiceInstance));
+      setServices(data);
+    } catch (err) {
+      console.error("Error fetching services:", err);
+    } finally {
+      setLoadingServices(false);
+    }
+  };
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -152,6 +194,52 @@ export default function ClientDashboardPage() {
           Run Agent
         </Button>
       </div>
+
+      {/* Active Agents / Services */}
+      {(services.length > 0 || loadingServices) && (
+        <Card variant="renstoNeon" className="rensto-card-neon mb-6 border-cyan-500/30">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Zap className="h-5 w-5 text-cyan-400" />
+              <span>My Agents</span>
+            </CardTitle>
+            <CardDescription>Your active and provisioning automation workers</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingServices ? (
+              <div className="flex items-center gap-2 text-slate-500">
+                <Activity className="animate-spin h-4 w-4" /> Loading agents...
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {services.map(service => (
+                  <div key={service.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                      <div className="font-bold text-lg">{service.productName}</div>
+                      {service.status === 'active' ? (
+                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Active</Badge>
+                      ) : (
+                        <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 animate-pulse">Provisioning</Badge>
+                      )}
+                    </div>
+                    <div className="text-xs text-slate-500 font-mono">ID: {service.id.slice(0, 8)}...</div>
+
+                    {service.status === 'active' && service.n8nWorkflowId ? (
+                      <Button size="sm" className="w-full mt-2 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20">
+                        Open Control Panel <ExternalLink className="ml-2 w-3 h-3" />
+                      </Button>
+                    ) : (
+                      <div className="text-xs text-slate-400 mt-2 flex items-center gap-2">
+                        <Loader2 className="w-3 h-3 animate-spin" /> Architecture building...
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">

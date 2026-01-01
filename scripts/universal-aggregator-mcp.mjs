@@ -22,10 +22,27 @@ const LOG_FILE = '/tmp/universal-aggregator-mcp.log';
 
 function log(msg) {
     const timestamp = new Date().toISOString();
-    fs.appendFileSync(LOG_FILE, `[${timestamp}] ${msg}\n`);
+    try {
+        fs.appendFileSync(LOG_FILE, `[${timestamp}] ${msg}\n`);
+    } catch (e) {
+        // Fallback to stderr if log file is unwritable
+        process.stderr.write(`[LOG ERROR] ${e.message}\n`);
+    }
 }
 
 log('--- UNIVERSAL AGGREGATOR STARTING (OPTIMIZED) ---');
+
+// Robust Error Handling for Process Stability
+process.on('uncaughtException', (error) => {
+    log(`FATAL: Uncaught Exception - ${error.message}`);
+    log(error.stack);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    log(`FATAL: Unhandled Rejection at: ${promise} reason: ${reason}`);
+    process.exit(1);
+});
 
 class UniversalAggregator {
     constructor() {
@@ -183,7 +200,8 @@ class UniversalAggregator {
                     { name: 'stripe_get_balance', description: 'Get Stripe balance', inputSchema: { type: 'object' } },
                     { name: 'stripe_list_invoices', description: 'List invoices', inputSchema: { type: 'object', properties: { limit: { type: 'number' } } } },
                     { name: 'firebase_list_projects', description: 'List Firebase projects', inputSchema: { type: 'object' } },
-                    { name: 'firebase_deploy', description: 'Deploy to Firebase', inputSchema: { type: 'object', properties: { project: { type: 'string' } }, required: ['project'] } }
+                    { name: 'firebase_deploy', description: 'Deploy to Firebase', inputSchema: { type: 'object', properties: { project: { type: 'string' } }, required: ['project'] } },
+                    { name: 'get_status', description: 'Get server health and environment status', inputSchema: { type: 'object' } }
                 ]
             };
         });
@@ -196,7 +214,10 @@ class UniversalAggregator {
                 let result;
                 if (name.startsWith('n8n_')) {
                     const inst = args.instance || 'rensto';
-                    if (name === 'n8n_list_workflows') result = await this.n8nRequest(inst, 'GET', `/workflows?limit=${args.limit || 20}&offset=${args.offset || 0}`);
+                    if (name === 'n8n_list_workflows') {
+                        // Removed 'offset' as it caused errors in some n8n versions
+                        result = await this.n8nRequest(inst, 'GET', `/workflows?limit=${args.limit || 20}`);
+                    }
                     if (name === 'n8n_get_workflow') result = await this.n8nRequest(inst, 'GET', `/workflows/${args.id}`);
                     if (name === 'n8n_execute_workflow') result = await this.n8nRequest(inst, 'POST', `/workflows/${args.id}/run`, args.data || {});
                 } else if (name.startsWith('stripe_')) {
@@ -206,6 +227,18 @@ class UniversalAggregator {
                 } else if (name.startsWith('firebase_')) {
                     if (name === 'firebase_list_projects') result = JSON.parse(await this.runFirebase('projects:list --json'));
                     if (name === 'firebase_deploy') result = JSON.parse(await this.runFirebase(`deploy --project ${args.project} --json`));
+                } else if (name === 'get_status') {
+                    result = {
+                        status: 'online',
+                        version: '1.2.1',
+                        uptime: process.uptime(),
+                        instances: Object.keys(this.instances).map(id => ({
+                            id,
+                            hasKey: !!this.instances[id].key,
+                            url: this.instances[id].url
+                        })),
+                        stripe: { hasKey: !!this.stripeKey }
+                    };
                 }
 
                 return {

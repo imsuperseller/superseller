@@ -295,7 +295,7 @@ export async function POST(req: Request) {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: mode,
-            success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}&tier=${tier || ''}`,
             cancel_url: `${origin}/pricing`,
             metadata: {
                 ...metadata,

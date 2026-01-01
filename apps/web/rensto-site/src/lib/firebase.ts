@@ -76,7 +76,8 @@ export const COLLECTIONS = {
     SERVICE_MANIFESTS: 'service_manifests',
     USAGE_LOGS: 'usage_logs',
     CUSTOMIZATION_REQUESTS: 'customizationRequests',
-    SUPPORT_CASES: 'supportCases'
+    SUPPORT_CASES: 'supportCases',
+    SERVICE_INSTANCES: 'service_instances'
 } as const;
 
 // Export interfaces from definitions file
