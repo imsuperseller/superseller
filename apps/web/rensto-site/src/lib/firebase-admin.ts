@@ -15,29 +15,23 @@ export function getFirebaseAdmin(): App {
         const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
         if (serviceAccountKey) {
-            // Use service account for full access
             try {
                 const serviceAccount = JSON.parse(serviceAccountKey);
-                // Ensure private key handles newlines correctly
                 if (serviceAccount.private_key) {
                     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
                 }
                 firebaseApp = initializeApp({
                     credential: cert(serviceAccount),
-                    projectId: 'rensto'
+                    projectId: serviceAccount.project_id || 'rensto'
                 });
-            } catch (error) {
-                console.error('Failed to parse service account:', error);
-                // Fallback to default credentials
-                firebaseApp = initializeApp({
-                    projectId: 'rensto'
-                });
+            } catch (error: any) {
+                console.error('FIREBASE_ADMIN_ERROR: Failed to parse or initialize with service account:', error);
+                // Throw the actual error so the API can report it
+                throw new Error(`Firebase Init Failed: ${error.message}. Key starts with: ${serviceAccountKey.substring(0, 20)}...`);
             }
         } else {
-            // Use application default credentials (works in GCP/Firebase hosting)
-            firebaseApp = initializeApp({
-                projectId: 'rensto'
-            });
+            console.error('FIREBASE_ADMIN_ERROR: FIREBASE_SERVICE_ACCOUNT_KEY is missing');
+            throw new Error('Firebase Init Failed: FIREBASE_SERVICE_ACCOUNT_KEY is missing');
         }
     } else {
         firebaseApp = getApps()[0];

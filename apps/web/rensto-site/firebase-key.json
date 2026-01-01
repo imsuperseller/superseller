@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "rensto",
+    "private_key_id": "dd4e98dff4ab3f5303eeea09be51b654164de218",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDp9NzaE27AmE0d\nGQw7xFmEG5vIcrR1r7FP8XbtAPczt+2RooXYhiY1ye1YXVGiwxNaA/DO+sfgIzz8\ntrQcAIJ30rHdylEQw3JuSWGvlmHYWtjsEXwTd8B67Pj+km7riovqKyJz0Id//tVU\nOMbqpMbn1g4S6b2waIUxtErThW3p8zM8y+cxq8XJSnvVkJ5KDPvUFB7LGwgWsKVQ\nOWFAdS3a/WERE6sFNrA38iIHfFii15ypJN4RDTF7CqcgiYL/vJqjhLF5X0zwn3rc\ngmKFg0hnFV9H5s0XHOP6BuCb2uFnsByS2iV66FGXIn83by5qZmVCGcGxxtCldTcq\nmZ00XE9xAgMBAAECggEAHlGSMVylVKYoECZH1JL8esdNJ+vdgQbUtqR3If2nC3fB\nfMcQC2BPIVdav8HQK4SWRGsQUPJk5qIKbEGNE7fpMHgIftKSMNbzRGGUHDoj0fLr\+6PEbY1uTz/YgL0fTLz2ptESNOoINUkkAjcdaBkUgcTWrBLId00EPc28iK7Y8KFJ\nSCayhTezG88DJv6xXemmJcxcX+QqM0S0upjjfdPNesTtYFjrgF1wcnRCq/BJr0UW\nCq4v0m/VPzIBNM2AYVOqtWU4XNZrPBs94sGSx6BDZ8u/kNrVuZieKMb+5qwBq3pB\nsunLVH/F1BDr7w9ERtlmj59hMlkD3PBzGQvGXpho1QKBgQD5nmRnQAAZ7js15jjz\nsYhjy+ADO1jcle93MHmThZf9HDNVA29F0WVZhL110Y8467pWgtgLCayAn3PsP0dn\nYYRecRdaha1nNdmVhlcOPYoK+e+pyTi4coEBPyQ3vHCw5Uc1m54gzKHe8Fpy6MVK\n3iyneu1cvpYosb4s2WLtXS7kRwKBgQDv7/hvRx4sN5fpAWcHNJCmJ8cMB9Ru+pfi\nk+4KHSZWQWJh+y+gwV5ZztM34oX1IybhTMj/BJ1v/YWJZEveV/TGdWfkIzS+YLkd\nnNbqBd6u+KRbUg6cB61JBYsqb2DGVUIxp1ePqKpj8mLj05X8FIoecbinFzvsSU9o\nzIfB8euihwKBgFnrLM/kxiSRJNMts6ZVdYQ9lNyVLFWJzVFqLOFvZmjPF86wBg1o\neNHed0FR0/31LJKtX5XaTkGnLuMTiG09O6mpo3gAX46mX1L1qbZ/hJKfpi3LRptq\n4/3G+Qz63L1cWmJ9RGEcVdMxUePC5g8qKXvLVGXsYbsXDCKrzG8k+hdRAoGASGmx\nHcxl48xncW/16yvHGA5bOVtHlrLUkhI5Ph4sCs4y5gVMC4Uwd4Q/JNedvCz+t/JX\nmveGmFz4J034w8Lh4d9fGnAxo99HHxPNnNVmroHmAJWUSSzb9HTS2lzA5Tqn/ppV\nh8rMmdt2UvHxiyGbybJimzMc56P8blGEC1l61xMCgYEA5GAC8uLDiCWPsxBe3X9L\nYcTjZ4BYwM5+Dx1MEhF/muFH85JNV98qrGuN/ic6BBe2QU/BKLaxRQMC6w639EKn\nsZGXrEvryP1j8Kx1meOw1MR+C2o8n/MNlN8YshH2u7+tAmN5wR08hbvz3ufep+Lg\nvs+RSLjgNE84QC0QxLO/4vM=\n-----END PRIVATE KEY-----\n",
+    "client_email": "n8n-firestore@rensto.iam.gserviceaccount.com",
+    "client_id": "109122963868124979432",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/n8n-firestore%40rensto.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+}
