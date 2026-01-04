@@ -352,17 +352,6 @@ export default function WorkflowDetailPage() {
                                 </motion.div>
 
                                 <div className="space-y-6">
-                                    <motion.div variants={itemVariants} className="flex items-center gap-3">
-                                        <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black rounded-full">
-                                            {workflow.category}
-                                        </Badge>
-                                        <div className="h-1 w-1 rounded-full bg-slate-700" />
-                                        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black rounded-full flex items-center gap-2">
-                                            <Shield className="w-3 h-3" />
-                                            Verified Asset
-                                        </Badge>
-                                    </motion.div>
-
                                     <motion.h1 variants={itemVariants} className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.9]">
                                         {workflow.name.split(' ').map((word, i) => (
                                             <span key={i} className={i === 0 ? 'text-white' : 'text-white/40'}>{word} </span>
@@ -415,6 +404,17 @@ export default function WorkflowDetailPage() {
                                         </div>
                                         <div className="text-white font-bold tracking-tight">Interactive Preview Active</div>
                                     </div>
+                                </motion.div>
+
+                                <motion.div variants={itemVariants} className="flex items-center gap-3 pt-4">
+                                    <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black rounded-full">
+                                        {workflow.category}
+                                    </Badge>
+                                    <div className="h-1 w-1 rounded-full bg-slate-700" />
+                                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black rounded-full flex items-center gap-2">
+                                        <Shield className="w-3 h-3" />
+                                        Verified Asset
+                                    </Badge>
                                 </motion.div>
 
                                 {/* Deployment Roadmap */}
