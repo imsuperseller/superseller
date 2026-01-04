@@ -477,14 +477,16 @@ export default function WorkflowDetailPage() {
                                                     onClick={() => setSelectedOption('download')}
                                                     icon={Download}
                                                     price={workflow.downloadPrice}
-                                                    label="Source Blueprint"
+                                                    label="Download Template"
+                                                    desc="Best for tech-savvy users"
                                                 />
                                                 <OptionTab
                                                     active={selectedOption === 'install'}
                                                     onClick={() => setSelectedOption('install')}
                                                     icon={Layout}
                                                     price={workflow.installPrice}
-                                                    label="Managed Install"
+                                                    label="Setup & Installation"
+                                                    desc="We configure everything"
                                                     accent="red"
                                                 />
                                                 <OptionTab
@@ -492,7 +494,8 @@ export default function WorkflowDetailPage() {
                                                     onClick={() => setSelectedOption('custom')}
                                                     icon={Cpu}
                                                     price={workflow.customPrice}
-                                                    label="Custom Engine"
+                                                    label="Bespoke Solution"
+                                                    desc="Tailored for your business"
                                                     accent="purple"
                                                 />
                                             </div>
@@ -807,7 +810,7 @@ function PremiumFeatureCard({ title, desc, idx }: { title: string, desc: string,
     );
 }
 
-function OptionTab({ active, onClick, icon: Icon, price, label, accent = 'cyan' }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, accent?: 'cyan' | 'red' | 'purple' }) {
+function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = 'cyan' }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, desc: string, accent?: 'cyan' | 'red' | 'purple' }) {
     const accents = {
         cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/10', text: 'text-cyan-400', shadow: 'shadow-[0_0_30px_rgba(6,182,212,0.25)]', glow: 'bg-cyan-500/20' },
         red: { border: 'border-[#fe3d51]', bg: 'bg-[#fe3d51]/10', text: 'text-[#fe3d51]', shadow: 'shadow-[0_0_30px_rgba(254,61,81,0.25)]', glow: 'bg-[#fe3d51]/20' },
@@ -819,7 +822,7 @@ function OptionTab({ active, onClick, icon: Icon, price, label, accent = 'cyan' 
         <motion.div
             whileTap={{ scale: 0.97 }}
             onClick={onClick}
-            className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between group h-24 relative overflow-hidden ${active ? `${colors.border} ${colors.bg} ${colors.shadow}` : 'border-white/5 hover:border-white/20 bg-white/[0.01]'
+            className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between group h-28 relative overflow-hidden ${active ? `${colors.border} ${colors.bg} ${colors.shadow}` : 'border-white/5 hover:border-white/20 bg-white/[0.01]'
                 }`}
         >
             {active && <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${colors.glow} blur-3xl opacity-50`} />}
@@ -831,7 +834,7 @@ function OptionTab({ active, onClick, icon: Icon, price, label, accent = 'cyan' 
                 <div className="flex flex-col">
                     <span className={`font-black text-base uppercase tracking-tight ${active ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>{label}</span>
                     <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${active ? colors.text : 'text-slate-600'}`}>
-                        {accent === 'cyan' ? 'Asset Source' : accent === 'red' ? 'White-Glove' : 'Scalable Enterprise'}
+                        {desc}
                     </span>
                 </div>
             </div>
