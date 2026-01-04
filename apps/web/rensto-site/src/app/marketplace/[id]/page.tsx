@@ -572,8 +572,8 @@ export default function WorkflowDetailPage() {
                                             <MessageSquare className="w-7 h-7 text-indigo-400" />
                                         </div>
                                         <div>
-                                            <div className="font-black text-white tracking-tight">Enterprise Advisory</div>
-                                            <p className="text-sm text-slate-500 font-medium">Chat with the architects behind this engine.</p>
+                                            <div className="font-black text-white tracking-tight">Need a custom plan?</div>
+                                            <p className="text-sm text-slate-500 font-medium">Speak with our support team to build your dream system.</p>
                                         </div>
                                     </motion.div>
                                 </motion.div>
@@ -596,9 +596,9 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                                        Advanced Specifications
+                                        What's included
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Technical Infrastructure</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">What we'll build for you</h2>
                                 </div>
 
                                 <div className="grid sm:grid-cols-1 gap-6">
@@ -623,18 +623,18 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-purple-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                                        Operational Intelligence
+                                        Service Details
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">Strategic Blueprint</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">How it works for you</h2>
                                 </div>
 
                                 <div className="space-y-6">
                                     <div className="p-10 rounded-[3rem] bg-gradient-to-br from-purple-600/10 via-white/[0.02] to-transparent border border-purple-500/20 backdrop-blur-xl space-y-12 relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl" />
                                         {[
-                                            { label: 'Primary Market', val: workflow?.targetMarket },
-                                            { label: 'Neural Complexity', val: workflow?.complexity },
-                                            { label: 'Activation Window', val: workflow?.setupTime }
+                                            { label: 'Who is this for?', val: workflow?.targetMarket },
+                                            { label: 'Ease of use', val: workflow?.complexity },
+                                            { label: 'Time to setup', val: workflow?.setupTime }
                                         ].map((item, i) => (
                                             <div key={i} className={`flex justify-between items-end ${i !== 2 ? 'pb-12 border-b border-white/[0.05]' : ''} relative z-10`}>
                                                 <div className="space-y-2">
@@ -655,8 +655,8 @@ export default function WorkflowDetailPage() {
                                             <Globe className="w-8 h-8 text-indigo-400" />
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">Global Edge Distribution</div>
-                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">Engineered for localized low-latency execution on high-compute n8n clusters worldwide.</p>
+                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">Reliable & Secure</div>
+                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">Built to run fast, securely, and reliably for your business every single day.</p>
                                         </div>
                                     </motion.div>
                                 </div>
@@ -673,11 +673,11 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-emerald-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                        Deployment Scenarios
+                                        Ways to help
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Infinite Utility</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Ways it helps you</h2>
                                 </div>
-                                <p className="text-xl text-slate-500 max-w-md font-medium">Wherever there is a digital pulse, this engine can deliver transformative impact.</p>
+                                <p className="text-xl text-slate-500 max-w-md font-medium">Designed to help your service business save time and grow faster.</p>
                             </div>
                             <div className="grid md:grid-cols-3 gap-8">
                                 {workflow.useCases.map((useCase, idx) => {
@@ -709,9 +709,9 @@ export default function WorkflowDetailPage() {
                             <div className="text-center mb-24 space-y-6">
                                 <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em] mb-4">
                                     <HelpCircle className="w-4 h-4" />
-                                    Security & Protocol
+                                    Common Questions
                                 </div>
-                                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">Knowledge Base</h2>
+                                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">Help & FAQ</h2>
                             </div>
                             <div className="space-y-4">
                                 {workflow.faqs.map((faq, idx) => (
@@ -834,8 +834,8 @@ function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = '
             {active && <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${colors.glow} blur-3xl opacity-50`} />}
 
             <div className="flex items-center gap-5 relative z-10">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${active ? colors.bg + ' ' + colors.border + ' border' : 'bg-white/5 border border-white/10'}`}>
-                    <Icon className={`w-6 h-6 ${active ? colors.text : 'text-slate-500 group-hover:text-slate-300'}`} />
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all ${active ? colors.bg + ' ' + colors.border + ' border' : 'bg-white/5 border border-white/10'}`}>
+                    <Icon className={`w-8 h-8 ${active ? colors.text : 'text-slate-500 group-hover:text-slate-300'}`} />
                 </div>
                 <div className="flex flex-col">
                     <span className={`font-black text-base uppercase tracking-tight ${active ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>{label}</span>
