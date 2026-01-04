@@ -2,7 +2,7 @@ import { getFirestoreAdmin, COLLECTIONS } from '../firebase-admin';
 import { getStripeAdmin } from '../stripe';
 import { Timestamp } from 'firebase-admin/firestore';
 
-export type ServiceType = 'firebase' | 'stripe' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'other';
+export type ServiceType = 'firebase' | 'stripe' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'marketplace' | 'other';
 
 export interface AuditLog {
     service: ServiceType;

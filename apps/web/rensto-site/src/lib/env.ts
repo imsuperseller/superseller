@@ -10,6 +10,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_STRIPE_LINK_RETAINER_STARTER: z.string().url().optional(),
   NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH: z.string().url().optional(),
   NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE: z.string().url().optional(),
+  NEXT_PUBLIC_STRIPE_LINK_FULL_ECOSYSTEM: z.string().url().optional(),
   NEXT_PUBLIC_TYPEFORM_CONTACT_URL: z.string().url().optional(),
   NEXT_PUBLIC_LINKEDIN_URL: z.string().url().optional(),
   NEXT_PUBLIC_X_URL: z.string().url().optional(),

@@ -92,8 +92,13 @@ const MOCK_TEMPLATES_EN: Template[] = [
         downloads: 156,
         popular: true,
         features: ["AI Face Swap", "Multi-Scene Stitching", "WhatsApp Delivery"],
-        video: "http://172.245.56.50/videos/celebrity-selfie-generator.mp4",
-        tags: ['marketplace']
+        video: "/videos/celebrity-selfie-generator.mp4",
+        tags: ['marketplace'],
+        readinessStatus: 'Active',
+        configurationSchema: [
+            { id: 'movie_theme', label: 'Movie Theme', type: 'select', required: true, options: ['Action Hero', 'Classic Romance', 'Sci-Fi Explorer', 'Historical Legend'], placeholder: 'Select a theme' },
+            { id: 'user_photo', label: 'Upload Portrait', type: 'text', required: true, placeholder: 'URL to your photo', helperText: 'Front-facing portrait for AI mapping' }
+        ]
     },
     {
         id: '8GC371u1uBQ8WLmu',
@@ -105,8 +110,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         downloads: 89,
         popular: true,
         features: ["Ad Scraping", "AI Video Analysis", "Template Generation"],
-        video: "http://172.245.56.50/videos/meta-ad-analyzer.mp4",
-        tags: ['marketplace']
+        video: "/videos/meta-ad-analyzer.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'competitor_domain', label: 'Competitor Domain', type: 'url', required: true, placeholder: 'https://competitor.com' },
+            { id: 'niche', label: 'Advertising Niche', type: 'text', required: true, placeholder: 'e.g. E-commerce, SaaS' }
+        ]
     },
     {
         id: '5pMi01SwffYB6KeX',
@@ -117,8 +126,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         rating: 4.7,
         downloads: 64,
         features: ["Transcript Extraction", "Persona Synthesis", "Telegram/WhatsApp Integration"],
-        video: "http://172.245.56.50/videos/youtube-clone.mp4",
-        tags: ['marketplace']
+        video: "/videos/youtube-clone.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'channel_url', label: 'YouTube Channel URL', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
+            { id: 'persona_voice', label: 'Clone Voice Style', type: 'select', required: true, options: ['Enthusiastic', 'Analytical', 'Sarcastic', 'Inspirational'] }
+        ]
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
@@ -130,8 +143,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         downloads: 203,
         popular: true,
         features: ["Audio Transcription", "Sentiment Analysis", "CRM Sync"],
-        video: "http://172.245.56.50/videos/call-audio-analyzer.mp4",
-        tags: ['marketplace']
+        video: "/videos/call-audio-analyzer.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'crm_type', label: 'Target CRM', type: 'select', required: true, options: ['Workiz', 'PipeDrive', 'Salesforce', 'HubSpot'] },
+            { id: 'score_threshold', label: 'Lead Score Threshold', type: 'number', required: true, placeholder: '0-100' }
+        ]
     },
     {
         id: '5Fl9WUjYTpodcloJ',
@@ -142,8 +159,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         rating: 4.6,
         downloads: 312,
         features: ["Conflict Resolution", "Natural Language", "Smart Rescheduling"],
-        video: "http://172.245.56.50/videos/calendar-assistant.mp4",
-        tags: ['marketplace']
+        video: "/videos/calendar-assistant.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'calendar_provider', label: 'Calendar Provider', type: 'select', required: true, options: ['Google Calendar', 'Outlook', 'iCloud'] },
+            { id: 'timezone', label: 'Primary Timezone', type: 'text', required: true, placeholder: 'e.g. America/New_York' }
+        ]
     },
     {
         id: 'stj8DmATqe66D9j4',
@@ -154,8 +175,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         rating: 5.0,
         downloads: 45,
         features: ["2D to 3D Conversion", "Photorealistic Rendering", "Video Walkthrough"],
-        video: "http://172.245.56.50/videos/floor-plan-tour.mp4",
-        tags: ['marketplace']
+        video: "/videos/floor-plan-tour.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'floorplan_url', label: 'Floor Plan Image URL', type: 'url', required: true },
+            { id: 'style', label: 'Interior Style', type: 'select', required: true, options: ['Modern', 'Scandinavian', 'Industrial', 'Traditional'] }
+        ]
     },
     {
         id: "vCxY2DXUZ8vUb30f",
@@ -166,8 +191,12 @@ const MOCK_TEMPLATES_EN: Template[] = [
         rating: 4.8,
         downloads: 112,
         features: ["Drop-off Analysis", "Heatmap Integration", "Monthly Report"],
-        video: "http://172.245.56.50/videos/cro-insights.mp4",
-        tags: ['marketplace']
+        video: "/videos/cro-insights.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'ga4_id', label: 'GA4 Measurement ID', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
+            { id: 'domain', label: 'Website Domain', type: 'url', required: true }
+        ]
     }
 ];
 
@@ -182,8 +211,12 @@ const MOCK_TEMPLATES_HE: Template[] = [
         downloads: 156,
         popular: true,
         features: ["החלפת פנים AI", "חיבור סצנות", "שליחה לוואטסאפ"],
-        video: "http://172.245.56.50/videos/celebrity-selfie-generator.mp4",
-        tags: ['marketplace']
+        video: "/videos/celebrity-selfie-generator.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'movie_theme', label: 'נושא הסרט', type: 'select', required: true, options: ['גיבור אקשן', 'רומנטיקה קלאסית', 'חוקר מדע בדיוני', 'אגדה היסטורית'], placeholder: 'בחר נושא' },
+            { id: 'user_photo', label: 'העלאת תמונת פורטרט', type: 'text', required: true, placeholder: 'כתובת תמונה', helperText: 'תמונת פנים למיפוי AI' }
+        ]
     },
     {
         id: '8GC371u1uBQ8WLmu',
@@ -195,8 +228,12 @@ const MOCK_TEMPLATES_HE: Template[] = [
         downloads: 89,
         popular: true,
         features: ["שאיבת מודעות", "ניתוח וידאו AI", "יצירת תבניות"],
-        video: "http://172.245.56.50/videos/meta-ad-analyzer.mp4",
-        tags: ['marketplace']
+        video: "/videos/meta-ad-analyzer.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'competitor_domain', label: 'דומיין מתחרה', type: 'url', required: true, placeholder: 'https://competitor.com' },
+            { id: 'niche', label: 'נישת פרסום', type: 'text', required: true, placeholder: 'למשל: איקומרס, SaaS' }
+        ]
     },
     {
         id: '5pMi01SwffYB6KeX',
@@ -207,8 +244,12 @@ const MOCK_TEMPLATES_HE: Template[] = [
         rating: 4.7,
         downloads: 64,
         features: ["חילוץ תמלול", "סינתזת אישיות", "אינטגרציה לטלגרם"],
-        video: "http://172.245.56.50/videos/youtube-clone.mp4",
-        tags: ['marketplace']
+        video: "/videos/youtube-clone.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'channel_url', label: 'כתובת ערוץ יוטיוב', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
+            { id: 'persona_voice', label: 'סגנון קול השכפול', type: 'select', required: true, options: ['נלהב', 'אנליטי', 'סרקסטי', 'מעורר השראה'] }
+        ]
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
@@ -220,8 +261,12 @@ const MOCK_TEMPLATES_HE: Template[] = [
         downloads: 203,
         popular: true,
         features: ["תמלול אודיו", "ניתוח סנטימנט", "סנכרון CRM"],
-        video: "http://172.245.56.50/videos/call-audio-analyzer.mp4",
-        tags: ['marketplace']
+        video: "/videos/call-audio-analyzer.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'crm_type', label: 'CRM יעד', type: 'select', required: true, options: ['Workiz', 'PipeDrive', 'Salesforce', 'HubSpot'] },
+            { id: 'score_threshold', label: 'סף ציון ליד', type: 'number', required: true, placeholder: '0-100' }
+        ]
     },
     {
         id: '5Fl9WUjYTpodcloJ',
@@ -232,8 +277,12 @@ const MOCK_TEMPLATES_HE: Template[] = [
         rating: 4.6,
         downloads: 312,
         features: ["פתרון התנגשויות", "שפה טבעית", "תזמון חכם מחדש"],
-        video: "http://172.245.56.50/videos/calendar-assistant.mp4",
-        tags: ['marketplace']
+        video: "/videos/calendar-assistant.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'calendar_provider', label: 'ספק יומן', type: 'select', required: true, options: ['Google Calendar', 'Outlook', 'iCloud'] },
+            { id: 'timezone', label: 'אזור זמן ראשי', type: 'text', required: true, placeholder: 'למשל: Asia/Jerusalem' }
+        ]
     },
     {
         id: 'stj8DmATqe66D9j4',
@@ -244,20 +293,28 @@ const MOCK_TEMPLATES_HE: Template[] = [
         rating: 5.0,
         downloads: 45,
         features: ["המרה מ-2D ל-3D", "רינדור פוטוריאליסטי", "סיור וידאו"],
-        video: "http://172.245.56.50/videos/floor-plan-tour.mp4",
-        tags: ['marketplace']
+        video: "/videos/floor-plan-tour.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'floorplan_url', label: 'כתובת תמונת תוכנית קומה', type: 'url', required: true },
+            { id: 'style', label: 'סגנון עיצוב פנים', type: 'select', required: true, options: ['מודרני', 'סקנדינבי', 'תעשייתי', 'מסורתי'] }
+        ]
     },
     {
         id: 'vCxY2DXUZ8vUb30f',
-        name: "רובוט תובנות CRO חודשי",
-        description: "אנליסט אופטימיזציית המרות אוטומטי. מנטר נתוני אתר, מזהה נקודות נטישה ומציע תיקונים חודשיים.",
-        category: "מנוע ידע",
+        name: "Monthly CRO Insights Bot",
+        description: "Automated Conversion Rate Optimization analyst. Monitors site data, identifies drop-off points, and suggests actionable fixes monthly.",
+        category: "Knowledge Engine",
         price: 247,
         rating: 4.8,
         downloads: 112,
-        features: ["ניתוח נטישה", "אינטגרציית מפות חום", "דוח חודשי"],
-        video: "http://172.245.56.50/videos/cro-insights.mp4",
-        tags: ['marketplace']
+        features: ["Drop-off Analysis", "Heatmap Integration", "Monthly Report"],
+        video: "/videos/cro-insights.mp4",
+        tags: ['marketplace'],
+        configurationSchema: [
+            { id: 'ga4_id', label: 'מזהה מדידה GA4', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
+            { id: 'domain', label: 'דומיין האתר', type: 'url', required: true }
+        ]
     }
 ];
 
@@ -307,16 +364,22 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                         return {
                             ...template,
                             ...remote,
-                            video: remote.video || template.video,
-                            tags: remote.tags || template.tags // Merge tags
+                            price: remote.price || template.price || 97, // Fallback to 97
+                            video: remote.video ? remote.video.replace('http://172.245.56.50', '') : template.video,
+                            // Ensure we keep mock tags if Firestore tags is empty or missing
+                            tags: (remote.tags && remote.tags.length > 0) ? remote.tags : template.tags
                         };
                     }
-                    return template;
+                    return {
+                        ...template,
+                        price: template.price || 97
+                    };
                 });
 
-                // Filter for 'marketplace' tag
+                // Filter for 'marketplace' tag AND 'Active' status (default to Draft/Hidden if status is missing)
                 let filteredTemplates = mergedTemplates.filter(t =>
-                    t.tags && t.tags.includes('marketplace')
+                    (t.tags && t.tags.includes('marketplace')) &&
+                    (t.readinessStatus || 'Draft') === 'Active'
                 );
 
                 if (selectedCategory !== 'All' && selectedCategory !== t.categories[0]) {
@@ -547,10 +610,18 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                     onClose={() => setCustomizeModal({ open: false, template: null })}
                     workflowName={customizeModal.template.name}
                     workflowId={customizeModal.template.id}
-                    parametersSchema={MOCK_FLOOR_PLAN_SCHEMA}
+                    parametersSchema={(customizeModal.template.configurationSchema?.map(f => ({
+                        id: f.id,
+                        label: f.label,
+                        type: (f.type === 'textarea' || f.type === 'boolean') ? 'text' : f.type as any,
+                        placeholder: f.placeholder,
+                        required: f.required,
+                        options: f.options,
+                        hint: f.helperText
+                    })) as any) || MOCK_FLOOR_PLAN_SCHEMA}
                     estimatedTime="24-48 hours"
                     complexity="Intermediate"
-                    perRunCost={customizeModal.template.price * 0.1}
+                    perRunCost={(customizeModal.template.price || 97) * 0.1}
                 />
             )}
         </div>
@@ -561,19 +632,19 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
     const [isHovered, setIsHovered] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
 
+    // Start video playback on mount
     useEffect(() => {
         if (template.video && videoRef.current) {
-            if (isHovered) {
-                videoRef.current.currentTime = 0;
-                const playPromise = videoRef.current.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        // Auto-play was prevented
-                    });
-                }
-            } else {
-                videoRef.current.pause();
-            }
+            videoRef.current.play().catch(() => {
+                // Autoplay was prevented - that's ok, video will show first frame
+            });
+        }
+    }, [template.video]);
+
+    // Reset to beginning on hover for better UX
+    useEffect(() => {
+        if (template.video && videoRef.current && isHovered) {
+            videoRef.current.currentTime = 0;
         }
     }, [isHovered, template.video]);
 
@@ -621,31 +692,48 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="h-48 bg-slate-800/50 relative overflow-hidden flex items-center justify-center p-8">
+            <div className="h-48 bg-slate-800/50 relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-[#fe3d51]/5" />
 
-                {/* Video Background on Hover */}
+                {/* Video Thumbnail */}
                 {template.video ? (
-                    <div className={`absolute inset-0 z-0 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-                        <video
-                            ref={videoRef}
-                            src={template.video}
-                            muted
-                            loop
-                            playsInline
-                            className="w-full h-full object-cover opacity-60 mix-blend-screen"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
+                    <video
+                        ref={videoRef}
+                        src={template.video}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <Zap className="w-16 h-16 text-cyan-500/20" strokeWidth={1} />
                     </div>
-                ) : null}
+                )}
+                {/* Subtle overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
 
-                <Zap className={`w-16 h-16 text-cyan-500/20 group-hover:scale-110 transition-transform duration-500 relative z-10 ${isHovered && template.video ? 'opacity-0' : 'opacity-100'}`} strokeWidth={1} />
+                {/* Status Indicator / Badge */}
+                <div className="absolute top-4 left-4 z-20">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-black/40 backdrop-blur-md border border-white/5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
+                        <span className="text-[8px] font-mono text-cyan-400 uppercase tracking-tighter">HD Preview</span>
+                    </div>
+                </div>
 
                 {template.popular && (
-                    <Badge className="absolute top-4 right-4 bg-orange-500/10 text-orange-400 border-orange-500/20 font-mono text-[10px] uppercase z-20">
+                    <Badge className="absolute top-4 right-4 bg-orange-500/10 text-orange-400 border-orange-500/20 font-mono text-[10px] uppercase z-20 shadow-lg backdrop-blur-sm">
                         {t.popular}
                     </Badge>
                 )}
+
+                {/* Hover Play Icon Hint */}
+                <div className={`absolute inset-0 flex items-center justify-center z-10 transition-all duration-300 pointer-events-none ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                    <div className="w-12 h-12 rounded-full bg-cyan-500/20 backdrop-blur-md flex items-center justify-center border border-cyan-500/30">
+                        <ArrowRight className={`w-6 h-6 text-cyan-400 ${isRtl ? 'rotate-180' : ''}`} />
+                    </div>
+                </div>
             </div>
 
             <div className="p-6 flex flex-col flex-grow relative z-10 bg-[#1a1438]/40">

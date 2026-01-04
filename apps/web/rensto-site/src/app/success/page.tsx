@@ -57,6 +57,12 @@ const PRODUCT_SCHEMAS: Record<string, FormField[]> = {
     { id: 'clarityProjectId', label: 'Microsoft Clarity Project ID (Optional)', type: 'text', required: false, placeholder: 'abcde123' },
     { id: 'reportFrequency', label: 'Report Frequency', type: 'select', required: true, options: ['Monthly', 'Bi-Weekly', 'Quarterly'] },
   ],
+  'full-ecosystem': [
+    { id: 'primaryFocus', label: 'Primary Automation Focus', type: 'select', required: true, options: ['Lead Gen', 'Customer Support', 'Internal Ops', 'Content Creation', 'All of the above'] },
+    { id: 'mainPlatform', label: 'Main Communication Platform', type: 'select', required: true, options: ['WhatsApp', 'Telegram', 'Instagram', 'Omnichannel'] },
+    { id: 'urgentNeeds', label: 'Any Urgent Bottlenecks?', type: 'textarea', required: false, placeholder: 'Tell us what needs fixing first...' },
+    { id: 'onboardingCall', label: 'Preferred Onboarding Call Time (Israel Time)', type: 'text', required: true, placeholder: 'e.g. Tomorrow 10:00 AM' },
+  ],
   'default': [ // Fallback for any product
     { id: 'businessName', label: 'Business Name', type: 'text', required: true, placeholder: 'Acme Corp' },
     { id: 'website', label: 'Website URL', type: 'url', required: true, placeholder: 'https://example.com' },

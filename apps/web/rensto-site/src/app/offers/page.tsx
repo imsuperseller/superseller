@@ -85,6 +85,16 @@ const translations = {
         popular: false,
         icon: Users,
         workflowId: 'celebrity-selfie-generator' // Primary workflow
+      },
+      {
+        name: 'Full Ecosystem',
+        price: 5497,
+        description: 'All four pillars plus premium support, video demos, and custom integrations for end‑to‑end automation.',
+        features: ['Automation Audit', 'Lead Machine', 'Autonomous Secretary', 'Knowledge Engine', 'Content Engine', 'Dedicated Implementation Engineer', '24/7 Premium Support'],
+        cta: 'Get Full Ecosystem',
+        popular: true,
+        video: '/videos/full-ecosystem-demo.mp4',
+        workflowId: null
       }
     ],
     carePlans: [
@@ -161,7 +171,7 @@ const translations = {
         name: 'Autonomous Secretary',
         price: 497,
         description: 'העוזרת ה-AI שלכם שמנהלת יומנים, עונה להודעות ומתזמנת פגישות בוואטסאפ וטלגרם 24/7.',
-        features: ['ניהול יומן AI (TidyCal)', 'מענה אוטומטי בוואטסאפ', 'קביעת פגישות חכמה', 'תמיכה רב-שפתית', 'זיהוי התנגשויות'],
+        features: ['ניהול יומן AI (TidyCal)', 'מענה אוטומטי בוואטסאפ', 'קביעת פגישות חכמה', 'תמיכה רב-לשונית', 'זיהוי התנגשויות'],
         cta: 'גייס מזכירה אוטונומית',
         popular: false,
         icon: MessageSquare,
@@ -186,6 +196,16 @@ const translations = {
         popular: false,
         icon: Users,
         workflowId: 'celebrity-selfie-generator'
+      },
+      {
+        name: 'Full Ecosystem',
+        price: 5497,
+        description: 'כל ארבעת העמודים בתוספת תמיכה פרימיום, הדגמות וידאו ואינטגרציות מותאמות אישית לאוטומציה מקצה לקצה.',
+        features: ['אודיט אוטומציה', 'מכונת לידים', 'מזכירה אוטונומית', 'מנוע ידע', 'מנוע תוכן', 'מהנדס הטמעה ייעודי', 'תמיכת פרימיום 24/7'],
+        cta: 'קבל מערכת אקולוגית מלאה',
+        popular: true,
+        video: '/videos/full-ecosystem-demo.mp4',
+        workflowId: null
       }
     ],
     carePlans: [
@@ -368,79 +388,93 @@ export function OffersPageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) {
         <section id="one-time" className="py-24 px-4 relative">
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {t.products.map((product, index) => (
-                <motion.div
-                  key={index}
-                  id={product.name === 'Automation Audit' ? 'audit' : undefined}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`relative p-8 rounded-3xl border transition-all duration-300 flex flex-col h-full group ${product.popular
-                    ? 'border-cyan-500 bg-cyan-500/[0.03] shadow-[0_0_40px_rgba(6,182,212,0.1)]'
-                    : 'border-white/5 bg-white/[0.02] hover:border-white/20'
-                    }`}
-                >
-                  {product.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap"
-                      style={{ background: 'var(--rensto-gradient-primary)', color: 'white' }}>
-                      {t.expert}
-                    </div>
-                  )}
-
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-sans">{product.name}</h3>
-                    <div className="flex items-baseline gap-1 mb-4">
-                      <span className="text-3xl font-bold text-white font-sans">{formatCurrency(product.price)}</span>
-                      <span className="text-slate-500 text-xs uppercase tracking-widest font-sans">{t.fixed}</span>
-                    </div>
-                    <p className="text-sm text-slate-500 leading-relaxed mb-6 font-sans">{product.description}</p>
-                  </div>
-
-                  <ul className="space-y-3 mb-6 flex-grow">
-                    {product.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-1" />
-                        <span className="text-xs text-slate-300 leading-tight font-sans">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {product.workflowId && (
-                    <Link
-                      href={isRtl ? `/he/marketplace/${product.workflowId}` : `/marketplace/${product.workflowId}`}
-                      className="block text-center text-xs text-cyan-400 hover:text-cyan-300 mb-4 underline underline-offset-2 transition-colors"
-                    >
-                      {isRtl ? 'צפה ב-Workflows הכלולים →' : 'View Included Workflows →'}
-                    </Link>
-                  )}
-
-                  <Button
-                    size="xl"
-                    onClick={() => {
-                      if (product.name === 'Automation Audit') {
-                        handleCheckout('automation-audit', 'service-purchase');
-                      } else {
-                        // All Engines scroll to qualification first
-                        document.getElementById('qualify')?.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
-                    variant={product.popular ? 'renstoPrimary' : 'renstoSecondary'}
-                    disabled={loading === product.name.toLowerCase().replace(/\s+/g, '-')}
-                    className="w-full font-bold h-14"
+              {t.products.map((product, index) => {
+                const Icon = product.icon; // Assuming product.icon is a LucideReact component
+                return (
+                  <motion.div
+                    key={index}
+                    id={product.name === 'Automation Audit' ? 'audit' : undefined}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`relative p-8 rounded-3xl border transition-all duration-300 flex flex-col h-full group ${product.popular
+                      ? 'border-cyan-500 bg-cyan-500/[0.03] shadow-[0_0_40px_rgba(6,182,212,0.1)]'
+                      : 'border-white/5 bg-white/[0.02] hover:border-white/20'
+                      }`}
                   >
-                    {loading === product.name.toLowerCase().replace(/\s+/g, '-') ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        {product.cta}
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </>
+                    {product.popular && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap"
+                        style={{ background: 'var(--rensto-gradient-primary)', color: 'white' }}>
+                        {t.expert}
+                      </div>
                     )}
-                  </Button>
-                </motion.div>
 
-              ))}
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        {product.video ? (
+                          <video src={product.video} className="w-12 h-12 object-cover rounded-md" muted loop playsInline />
+                        ) : (
+                          Icon && (
+                            <Icon className="w-6 h-6 text-cyan-400" />
+                          )
+                        )}
+                        <h3 className="text-2xl font-bold text-white font-sans">{product.name}</h3>
+                      </div>
+                      <div className="flex items-baseline gap-1 mb-4">
+                        <span className="text-3xl font-bold text-white font-sans">{formatCurrency(product.price)}</span>
+                        <span className="text-slate-500 text-xs uppercase tracking-widest font-sans">{t.fixed}</span>
+                      </div>
+                      <p className="text-sm text-slate-500 leading-relaxed mb-6 font-sans">{product.description}</p>
+                    </div>
+
+                    <ul className="space-y-3 mb-6 flex-grow">
+                      {product.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-1" />
+                          <span className="text-xs text-slate-300 leading-tight font-sans">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {product.workflowId && (
+                      <Link
+                        href={isRtl ? `/he/marketplace/${product.workflowId}` : `/marketplace/${product.workflowId}`}
+                        className="block text-center text-xs text-cyan-400 hover:text-cyan-300 mb-4 underline underline-offset-2 transition-colors"
+                      >
+                        {isRtl ? 'צפה ב-Workflows הכלולים →' : 'View Included Workflows →'}
+                      </Link>
+                    )}
+
+                    <Button
+                      size="xl"
+                      onClick={() => {
+                        if (product.name === 'Automation Audit') {
+                          handleCheckout('automation-audit', 'service-purchase');
+                        } else if (product.name === 'Full Ecosystem') {
+                          handleCheckout('full-ecosystem', 'service-purchase');
+                        }
+                        else {
+                          // All Engines scroll to qualification first
+                          document.getElementById('qualify')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      variant={product.popular ? 'renstoPrimary' : 'renstoSecondary'}
+                      disabled={loading === product.name.toLowerCase().replace(/\s+/g, '-')}
+                      className="w-full font-bold h-14"
+                    >
+                      {loading === product.name.toLowerCase().replace(/\s+/g, '-') ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          {product.cta}
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -604,10 +638,11 @@ export default function OffersPage() {
 function getStripeLink(productName: string): string | undefined {
   const links = {
     'Automation Audit': env.NEXT_PUBLIC_STRIPE_LINK_AUDIT,
-    'The Lead Machine': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE, // Re-mapped for pillar naming
+    'The Lead Machine': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
     'The Content Engine': env.NEXT_PUBLIC_STRIPE_LINK_CONTENT_STARTER,
-    'Autonomous Secretary': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE, // Placeholder or specific link if exists
-    'Knowledge Engine': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT, // Usually a sprint or custom
+    'Autonomous Secretary': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
+    'Knowledge Engine': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT,
+    'Full Ecosystem': env.NEXT_PUBLIC_STRIPE_LINK_FULL_ECOSYSTEM,
     'Starter Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_STARTER,
     'Growth Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH,
     'Scale Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE,

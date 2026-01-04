@@ -73,6 +73,11 @@ const SERVICES = {
         name: 'The Content Engine',
         description: 'Autonomous systems for high-authority content generation and distribution.',
         price: 149700
+    },
+    'full-ecosystem': {
+        name: 'Full Automation Ecosystem',
+        description: 'All four pillars of Rensto automation plus premium support and custom integrations.',
+        price: 549700
     }
 } as const;
 

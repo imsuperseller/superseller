@@ -33,7 +33,8 @@ export async function GET(request: NextRequest) {
       id: doc.id,
       ...doc.data(),
       // Ensure specific fields exist for frontend
-      downloadPrice: doc.data().price,
+      downloadPrice: doc.data().price || doc.data().downloadPrice || 97,
+      price: doc.data().price || doc.data().downloadPrice || 97,
       rating: doc.data().rating || 0,
       downloads: doc.data().downloads || 0
     }));

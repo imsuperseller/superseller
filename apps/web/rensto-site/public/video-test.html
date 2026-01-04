@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Test</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: sans-serif; padding: 20px; }
+        .video-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .video-card { background: #1a1438; border-radius: 16px; overflow: hidden; }
+        video { width: 100%; height: 200px; object-fit: cover; }
+        h3 { padding: 10px; margin: 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Marketplace Video Test</h1>
+    <p>Testing if videos load and play correctly:</p>
+    
+    <div class="video-container">
+        <div class="video-card">
+            <video src="/videos/celebrity-selfie-generator.mp4" autoplay muted loop playsinline></video>
+            <h3>Celebrity Selfie</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/meta-ad-analyzer.mp4" autoplay muted loop playsinline></video>
+            <h3>Meta Ad Analyzer</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/youtube-clone.mp4" autoplay muted loop playsinline></video>
+            <h3>YouTube Clone</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/call-audio-analyzer.mp4" autoplay muted loop playsinline></video>
+            <h3>Call Audio Analyzer</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/calendar-assistant.mp4" autoplay muted loop playsinline></video>
+            <h3>Calendar Assistant</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/floor-plan-tour.mp4" autoplay muted loop playsinline></video>
+            <h3>Floor Plan Tour</h3>
+        </div>
+        <div class="video-card">
+            <video src="/videos/cro-insights.mp4" autoplay muted loop playsinline></video>
+            <h3>CRO Insights</h3>
+        </div>
+    </div>
+
+    <script>
+        // Force videos to play after load
+        document.querySelectorAll('video').forEach(v => {
+            v.addEventListener('loadeddata', () => {
+                console.log('Video loaded:', v.src);
+                v.play().then(() => console.log('Playing:', v.src)).catch(e => console.error('Play failed:', v.src, e));
+            });
+            v.addEventListener('error', (e) => {
+                console.error('Video error:', v.src, e);
+            });
+        });
+    </script>
+</body>
+</html>
