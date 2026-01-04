@@ -100,7 +100,7 @@ export default function WorkflowDetailPage() {
     const [purchaseLoading, setPurchaseLoading] = useState(false);
     const [customerEmail, setCustomerEmail] = useState('');
     const [showEmailForm, setShowEmailForm] = useState(false);
-    const [selectedOption, setSelectedOption] = useState<'download' | 'install' | 'custom'>('download');
+    const [selectedOption, setSelectedOption] = useState<'download' | 'install'>('download');
     const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
 
     useEffect(() => {
@@ -198,7 +198,7 @@ export default function WorkflowDetailPage() {
     }, [id]);
 
     const handlePurchase = async () => {
-        if (selectedOption === 'custom') {
+        if (selectedOption === 'install') {
             setIsCustomizeOpen(true);
             return;
         }
@@ -465,14 +465,14 @@ export default function WorkflowDetailPage() {
                                         <div className="relative z-10 space-y-10">
                                             <div className="space-y-4">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">Acquisition Tier</span>
-                                                    <Badge variant="outline" className="border-white/10 text-white/40 text-[9px]">v1.4.2</Badge>
+                                                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">Choose your path</span>
+                                                    <Badge variant="outline" className="border-white/10 text-white/40 text-[9px]">v2.4</Badge>
                                                 </div>
                                                 <div className="flex items-baseline gap-3">
                                                     <span className="text-7xl font-black text-white tracking-tighter">
-                                                        {selectedOption === 'custom' ? 'QUOTE' : `$${selectedOption === 'download' ? workflow.downloadPrice : workflow.installPrice}`}
+                                                        {selectedOption === 'install' ? 'GET PRICE' : `$${workflow.downloadPrice}`}
                                                     </span>
-                                                    <span className="text-slate-500 font-bold text-lg">{selectedOption === 'custom' ? 'REQUEST' : 'USD'}</span>
+                                                    <span className="text-slate-500 font-bold text-lg">{selectedOption === 'install' ? 'DISCOVERY' : 'USD'}</span>
                                                 </div>
                                             </div>
 
@@ -482,26 +482,17 @@ export default function WorkflowDetailPage() {
                                                     onClick={() => setSelectedOption('download')}
                                                     icon={Download}
                                                     price={workflow.downloadPrice}
-                                                    label="Download Template"
-                                                    desc="Best for tech-savvy users"
+                                                    label="Download Blueprint"
+                                                    desc="Best for 'do it yourself' pros"
                                                 />
                                                 <OptionTab
                                                     active={selectedOption === 'install'}
                                                     onClick={() => setSelectedOption('install')}
                                                     icon={Layout}
-                                                    price={workflow.installPrice}
-                                                    label="Setup & Installation"
-                                                    desc="We configure everything"
-                                                    accent="red"
-                                                />
-                                                <OptionTab
-                                                    active={selectedOption === 'custom'}
-                                                    onClick={() => setSelectedOption('custom')}
-                                                    icon={Cpu}
                                                     price={0}
-                                                    label="Enterprise Custom"
-                                                    desc="Tailored for your business stack"
-                                                    accent="purple"
+                                                    label="Pro Managed Setup"
+                                                    desc="We build & connect it for you"
+                                                    accent="red"
                                                     isQuote
                                                 />
                                             </div>
@@ -535,15 +526,14 @@ export default function WorkflowDetailPage() {
                                                 <Button
                                                     size="xl"
                                                     className={`w-full h-20 text-xl font-black rounded-2xl shadow-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group ${selectedOption === 'download' ? 'bg-cyan-400 text-black hover:bg-cyan-300' :
-                                                        selectedOption === 'install' ? 'bg-[#fe3d51] text-white hover:bg-[#ff4d61]' :
-                                                            'bg-purple-500 text-white hover:bg-purple-400'
+                                                        'bg-[#fe3d51] text-white hover:bg-[#ff4d61]'
                                                         }`}
                                                     disabled={purchaseLoading}
                                                     onClick={handlePurchase}
                                                 >
                                                     {purchaseLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                                         <div className="flex items-center justify-center gap-3">
-                                                            {selectedOption === 'custom' ? 'Start Custom Inquiry' : 'Initiate Deployment'}
+                                                            {selectedOption === 'install' ? 'Start Price Discovery' : 'Get Personal Blueprint'}
                                                             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                                                         </div>
                                                     )}
@@ -632,9 +622,9 @@ export default function WorkflowDetailPage() {
                                     <div className="p-10 rounded-[3rem] bg-gradient-to-br from-purple-600/10 via-white/[0.02] to-transparent border border-purple-500/20 backdrop-blur-xl space-y-12 relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl" />
                                         {[
-                                            { label: 'Who is this for?', val: workflow?.targetMarket },
-                                            { label: 'Ease of use', val: workflow?.complexity },
-                                            { label: 'Time to setup', val: workflow?.setupTime }
+                                            { label: 'Designed For', val: workflow?.targetMarket },
+                                            { label: 'Process Efficiency', val: '99.9% Automated' },
+                                            { label: 'Time to Active', val: workflow?.setupTime }
                                         ].map((item, i) => (
                                             <div key={i} className={`flex justify-between items-end ${i !== 2 ? 'pb-12 border-b border-white/[0.05]' : ''} relative z-10`}>
                                                 <div className="space-y-2">
@@ -648,15 +638,15 @@ export default function WorkflowDetailPage() {
 
                                     <motion.div
                                         whileHover={{ scale: 1.02 }}
-                                        className="p-10 rounded-[3rem] bg-indigo-500/5 border border-indigo-500/20 flex items-start gap-8 group hover:bg-indigo-500/10 transition-all cursor-cell relative overflow-hidden"
+                                        className="p-10 rounded-[3rem] bg-emerald-500/5 border border-emerald-500/20 flex items-start gap-8 group hover:bg-emerald-500/10 transition-all cursor-cell relative overflow-hidden"
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                        <div className="w-16 h-16 rounded-2xl bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/20 group-hover:bg-indigo-500/40 transition-colors">
-                                            <Globe className="w-8 h-8 text-indigo-400" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center shrink-0 border border-emerald-500/20 group-hover:bg-emerald-500/40 transition-colors">
+                                            <TrendingUp className="w-8 h-8 text-emerald-400" />
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">Reliable & Secure</div>
-                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">Built to run fast, securely, and reliably for your business every single day.</p>
+                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">The Business Impact</div>
+                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">This system is designed to pay for itself within 30 days by recovering lost leads and saving your team 10+ hours of manual work every week.</p>
                                         </div>
                                     </motion.div>
                                 </div>
@@ -673,11 +663,11 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-emerald-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                        Ways to help
+                                        Expected Results
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Ways it helps you</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Real Business Wins</h2>
                                 </div>
-                                <p className="text-xl text-slate-500 max-w-md font-medium">Designed to help your service business save time and grow faster.</p>
+                                <p className="text-xl text-slate-500 max-w-md font-medium">Actual examples of how this system transforms your daily operations.</p>
                             </div>
                             <div className="grid md:grid-cols-3 gap-8">
                                 {workflow.useCases.map((useCase, idx) => {
@@ -748,7 +738,7 @@ export default function WorkflowDetailPage() {
                 onClose={() => setIsCustomizeOpen(false)}
                 workflowName={workflow.name}
                 workflowId={workflow.id}
-                parametersSchema={(workflow.configurationSchema?.map((f: any) => ({
+                parametersSchema={(workflow.configurationSchema?.length ? workflow.configurationSchema.map((f: any) => ({
                     id: f.id,
                     label: f.label,
                     type: (f.type === 'textarea' || f.type === 'boolean') ? 'text' : f.type as any,
@@ -756,9 +746,12 @@ export default function WorkflowDetailPage() {
                     required: f.required,
                     options: f.options,
                     hint: f.helperText
-                })) as any) || [
-                        { id: 'custom_notes', label: 'Customization Requirements', type: 'text', required: true, placeholder: 'Tell us how you want to modify this workflow...' }
-                    ]}
+                })) : [
+                    { id: 'business_goal', label: 'Primary Business Goal', type: 'select', options: ['Save Time / Reduce Manual Work', 'Get More Leads', 'Improve Customer Experience', 'Scale Operations'], required: true, hint: 'What is the #1 thing you want this system to achieve?' },
+                    { id: 'current_process', label: 'Current Process', type: 'text', required: true, placeholder: 'Briefly, how do you handle this task today?', hint: 'This helps us understand how much time we can save you.' },
+                    { id: 'software_stack', label: 'Existing Software', type: 'text', required: false, placeholder: 'e.g. ServiceTitan, Housecall Pro, HubSpot...', hint: 'List any software you want this system to talk to.' },
+                    { id: 'additional_notes', label: 'Special Requirements', type: 'text', required: false, placeholder: 'Anything else we should know?' }
+                ])}
                 estimatedTime="24-48 hours"
                 complexity="Intermediate"
                 perRunCost={workflow.downloadPrice * 0.1}
