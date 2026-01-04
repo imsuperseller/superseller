@@ -198,6 +198,11 @@ export default function WorkflowDetailPage() {
     }, [id]);
 
     const handlePurchase = async () => {
+        if (selectedOption === 'custom') {
+            setIsCustomizeOpen(true);
+            return;
+        }
+
         if (!customerEmail || !customerEmail.includes('@')) {
             setShowEmailForm(true);
             return;
@@ -465,9 +470,9 @@ export default function WorkflowDetailPage() {
                                                 </div>
                                                 <div className="flex items-baseline gap-3">
                                                     <span className="text-7xl font-black text-white tracking-tighter">
-                                                        ${selectedOption === 'download' ? workflow.downloadPrice : selectedOption === 'install' ? workflow.installPrice : workflow.customPrice}
+                                                        {selectedOption === 'custom' ? 'QUOTE' : `$${selectedOption === 'download' ? workflow.downloadPrice : workflow.installPrice}`}
                                                     </span>
-                                                    <span className="text-slate-500 font-bold text-lg">USD</span>
+                                                    <span className="text-slate-500 font-bold text-lg">{selectedOption === 'custom' ? 'REQUEST' : 'USD'}</span>
                                                 </div>
                                             </div>
 
@@ -493,10 +498,11 @@ export default function WorkflowDetailPage() {
                                                     active={selectedOption === 'custom'}
                                                     onClick={() => setSelectedOption('custom')}
                                                     icon={Cpu}
-                                                    price={workflow.customPrice}
-                                                    label="Bespoke Solution"
-                                                    desc="Tailored for your business"
+                                                    price={0}
+                                                    label="Enterprise Custom"
+                                                    desc="Tailored for your business stack"
                                                     accent="purple"
+                                                    isQuote
                                                 />
                                             </div>
 
@@ -537,7 +543,7 @@ export default function WorkflowDetailPage() {
                                                 >
                                                     {purchaseLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                                         <div className="flex items-center justify-center gap-3">
-                                                            Initiate Deployment
+                                                            {selectedOption === 'custom' ? 'Start Custom Inquiry' : 'Initiate Deployment'}
                                                             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                                                         </div>
                                                     )}
@@ -810,7 +816,7 @@ function PremiumFeatureCard({ title, desc, idx }: { title: string, desc: string,
     );
 }
 
-function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = 'cyan' }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, desc: string, accent?: 'cyan' | 'red' | 'purple' }) {
+function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = 'cyan', isQuote = false }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, desc: string, accent?: 'cyan' | 'red' | 'purple', isQuote?: boolean }) {
     const accents = {
         cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/10', text: 'text-cyan-400', shadow: 'shadow-[0_0_30px_rgba(6,182,212,0.25)]', glow: 'bg-cyan-500/20' },
         red: { border: 'border-[#fe3d51]', bg: 'bg-[#fe3d51]/10', text: 'text-[#fe3d51]', shadow: 'shadow-[0_0_30px_rgba(254,61,81,0.25)]', glow: 'bg-[#fe3d51]/20' },
@@ -839,7 +845,9 @@ function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = '
                 </div>
             </div>
             <div className="text-right relative z-10">
-                <span className={`text-2xl font-black ${active ? 'text-white' : 'text-slate-500'}`}>${price}</span>
+                <span className={`text-2xl font-black ${active ? 'text-white' : 'text-slate-500'}`}>
+                    {isQuote ? 'QUOTE' : `$${price}`}
+                </span>
             </div>
 
             {active && (
