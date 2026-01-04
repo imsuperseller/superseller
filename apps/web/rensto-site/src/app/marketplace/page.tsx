@@ -40,34 +40,59 @@ import { CustomizationModal, MOCK_FLOOR_PLAN_SCHEMA } from '@/components/marketp
 
 
 const translations = {
-    // ... translations
     en: {
         badge: "Automation Marketplace",
-        title: <>Build Faster with <span className="text-[#fe3d51]">Pre-Built Tools</span></>,
-        subtitle: <>Browse our library of pre-built modkits and component extensions for your Rensto Engines.<span className="block mt-2 font-semibold text-cyan-400">[BETA] All components currently available via Custom Setup only.</span></>,
-        searchPlaceholder: "Search workflows, tools, or niches...",
-        categories: ['All', 'Lead Machine', 'Autonomous Secretary', 'Knowledge Engine', 'Content Engine', 'Operations', 'Sync'],
-        heroTitle: "Build Faster with",
-        heroHighlight: "Pre-Built Tools",
+        title: <>Ready-to-Run <span className="text-[#fe3d51]">Automations</span> for Small Businesses</>,
+        subtitle: <>Skip the setup. Browse our library of tested, production-ready automations built for speed and reliability.</>,
+        searchPlaceholder: "What do you want to automate today?",
+        categories: [
+            'All',
+            'Lead & Sales',
+            'Comms & Email',
+            'Knowledge & Research',
+            'Creative Content',
+            'Operations',
+            'Sync & Data'
+        ],
         noResultsTitle: "No workflows found",
         noResultsDesc: "Try adjusting your filters or search query.",
         customTitle: <>Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> system?</>,
         customDesc: "If our ready-made tools don't fit exactly how you work, we can build a custom-made system tailored specifically to your daily business operations.",
         bookDiscovery: "Book Discovery Call",
         askQuestion: "Ask a Question",
-        downloads: "downloads",
-        customize: "Customize",
+        downloads: "installs",
+        customize: "Config",
         popular: "Popular",
-        tags: ['n8n', 'AI Agent', 'Operations', 'CRM']
+        tags: ['Real Estate', 'SaaS', 'E-commerce', 'Agency'],
+        trustBanner: [
+            { icon: Check, label: "Tested & Documented" },
+            { icon: ShieldCheck, label: "30-Day Guarantee" },
+            { icon: Bot, label: "Live Expert Support" }
+        ],
+        resultsLabel: "Showing",
+        templatesLabel: "templates",
+        filterByTool: "Filter by tool",
+        clearAll: "Clear All [x]",
+        explore: "Explore",
+        notSureTitle: "Not sure where to start?",
+        notSureDesc: "Our automation experts can help you audit your current processes and recommend the right systems for your specific business goals.",
+        takeQuiz: "Take 2-min Quiz",
+        bookConsult: "Book Free Consult"
     },
     he: {
         badge: "חנות האוטומציות",
-        title: <>בנו מהר יותר עם <span className="text-[#fe3d51]">כלים מוכנים</span></>,
-        subtitle: <>דפדפו בספריית המודולים והרחבות המנוע של רנסטו.<span className="block mt-2 font-semibold text-cyan-400">[בטא] כל הרכיבים זמינים כרגע דרך התקנה מותאמת אישית בלבד.</span></>,
-        searchPlaceholder: "חפש תהליכים, כלים, או נישות...",
-        categories: ['הכל', 'מנוע לידים', 'מזכירה אוטונומית', 'מנוע ידע', 'מנוע תוכן', 'תפעול', 'סנכרון'],
-        heroTitle: "בנו מהר יותר עם",
-        heroHighlight: "כלים מוכנים",
+        title: <>אוטומציות <span className="text-[#fe3d51]">מוכנות להפעלה</span> לעסקים קטנים</>,
+        subtitle: <>דלגו על שלב הפיתוח. ספריית אוטומציות שנבדקו בשטח ומוכנות לעבודה מיידית בארגון שלכם.</>,
+        searchPlaceholder: "מה תרצו לאוטומט היום?",
+        categories: [
+            'הכל',
+            'לידים ומכירות',
+            'תקשורת ואימייל',
+            'ניהול ידע ומחקר',
+            'תוכן יצירתי',
+            'תפעול',
+            'סנכרון ונתונים'
+        ],
         noResultsTitle: "לא נמצאו תהליכים",
         noResultsDesc: "נסו לשנות את מסנני החיפוש.",
         customTitle: <>צריכים מערכת <span className="text-cyan-400 font-sans italic lowercase">מותאמת אישית</span>?</>,
@@ -75,246 +100,245 @@ const translations = {
         bookDiscovery: "תיאום שיחת אפיון",
         askQuestion: "שאל שאלה",
         downloads: "הורדות",
-        customize: "התאמה אישית",
+        customize: "הגדרות",
         popular: "פופולרי",
-        tags: ['n8n', 'סוכן AI', 'תפעול', 'CRM']
+        tags: ['נדל"ן', 'SaaS', 'E-commerce', 'אייג\'נסי'],
+        trustBanner: [
+            { icon: Check, label: "נבדק ומתועד" },
+            { icon: ShieldCheck, label: "אחריות ל-30 יום" },
+            { icon: Bot, label: "תמיכה מומחית" }
+        ],
+        resultsLabel: "מציג",
+        templatesLabel: "תבניות",
+        filterByTool: "סינון לפי כלי",
+        clearAll: "נקה הכל [x]",
+        explore: "פרטים נוספים",
+        notSureTitle: "לא בטוחים מאיפה להתחיל?",
+        notSureDesc: "מומחי האוטומציה שלנו יכולים לעזור לכם לאפיין את התהליכים הקיימים ולהמליץ על המערכות המתאימות למטרות העסקיות שלכם.",
+        takeQuiz: "בדיקת התאמה (2 דקות)",
+        bookConsult: "תיאום שיחת ייעוץ"
     }
 };
 
-const MOCK_TEMPLATES_EN: Template[] = [
+const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[] })[] = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: "Celebrity Selfie Video Generator",
+        outcomeHeadline: "Create Viral AI Movie Clips Instantly",
         description: "Create personalized AI video journeys through movie history. Upload a photo and get a merged video where the user stars in iconic scenes.",
-        category: "Content Engine",
+        category: "Creative Content",
         price: 297,
-        rating: 4.9,
+        rating: 5.0,
         downloads: 156,
         popular: true,
         features: ["AI Face Swap", "Multi-Scene Stitching", "WhatsApp Delivery"],
+        tools: ['whatsapp', 'n8n', 'higgsfield'],
         video: "/videos/celebrity-selfie-generator.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active',
-        configurationSchema: [
-            { id: 'movie_theme', label: 'Movie Theme', type: 'select', required: true, options: ['Action Hero', 'Classic Romance', 'Sci-Fi Explorer', 'Historical Legend'], placeholder: 'Select a theme' },
-            { id: 'user_photo', label: 'Upload Portrait', type: 'text', required: true, placeholder: 'URL to your photo', helperText: 'Front-facing portrait for AI mapping' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '8GC371u1uBQ8WLmu',
         name: "Meta Ad Library Analyzer",
+        outcomeHeadline: "Copy Your Competitors' Winning Ad Patterns",
         description: "Scrapes winning ads from Meta Ad Library and generates detailed replication templates using AI vision analysis.",
-        category: "Lead Machine",
+        category: "Lead & Sales",
         price: 197,
         rating: 4.8,
         downloads: 89,
         popular: true,
         features: ["Ad Scraping", "AI Video Analysis", "Template Generation"],
+        tools: ['meta', 'openai', 'n8n'],
         video: "/videos/meta-ad-analyzer.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'competitor_domain', label: 'Competitor Domain', type: 'url', required: true, placeholder: 'https://competitor.com' },
-            { id: 'niche', label: 'Advertising Niche', type: 'text', required: true, placeholder: 'e.g. E-commerce, SaaS' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '5pMi01SwffYB6KeX',
         name: "YouTube AI Clone",
+        outcomeHeadline: "Turn Any YouTube Channel Into Your Personal Mentor",
         description: "Create an AI persona from any YouTube channel. Extracts transcripts and builds a conversational clone that mimics style and knowledge.",
-        category: "Knowledge Engine",
+        category: "Knowledge & Research",
         price: 347,
         rating: 4.7,
         downloads: 64,
-        features: ["Transcript Extraction", "Persona Synthesis", "Telegram/WhatsApp Integration"],
+        features: ["Transcript Extraction", "Persona Synthesis", "Telegram Integration"],
+        tools: ['youtube', 'telegram', 'perplexity'],
         video: "/videos/youtube-clone.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'channel_url', label: 'YouTube Channel URL', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
-            { id: 'persona_voice', label: 'Clone Voice Style', type: 'select', required: true, options: ['Enthusiastic', 'Analytical', 'Sarcastic', 'Inspirational'] }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
         name: "Call Audio Lead Analyzer",
+        outcomeHeadline: "Never Miss a Lead in Your Call Recordings",
         description: "Analyzes call recordings to qualify leads, extract details, and update CRM. Turns raw audio into actionable structured data.",
-        category: "Lead Machine",
+        category: "Lead & Sales",
         price: 497,
         rating: 4.9,
         downloads: 203,
         popular: true,
-        features: ["Audio Transcription", "Sentiment Analysis", "CRM Sync"],
+        features: ["Audio Transcription", "Sentiment Analysis", "Workiz Sync"],
+        tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'crm_type', label: 'Target CRM', type: 'select', required: true, options: ['Workiz', 'PipeDrive', 'Salesforce', 'HubSpot'] },
-            { id: 'score_threshold', label: 'Lead Score Threshold', type: 'number', required: true, placeholder: '0-100' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '5Fl9WUjYTpodcloJ',
         name: "AI Calendar Assistant",
+        outcomeHeadline: "Let AI Handle Your Entire Booking Schedule",
         description: "Autonomous scheduling agent that handles complex booking logic, availability checks, and natural language coordination.",
-        category: "Autonomous Secretary",
+        category: "Operations",
         price: 147,
         rating: 4.6,
         downloads: 312,
         features: ["Conflict Resolution", "Natural Language", "Smart Rescheduling"],
+        tools: ['tidycal', 'slack', 'google'],
         video: "/videos/calendar-assistant.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'calendar_provider', label: 'Calendar Provider', type: 'select', required: true, options: ['Google Calendar', 'Outlook', 'iCloud'] },
-            { id: 'timezone', label: 'Primary Timezone', type: 'text', required: true, placeholder: 'e.g. America/New_York' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: 'stj8DmATqe66D9j4',
         name: "Floor Plan to Property Tour",
+        outcomeHeadline: "Turn 2D Plans Into Cinematic 3D Tours",
         description: "Converts 2D floor plans into 3D photorealistic video tours. Perfect for real estate marketing and pre-construction sales.",
-        category: "Content Engine",
+        category: "Creative Content",
         price: 397,
         rating: 5.0,
         downloads: 45,
         features: ["2D to 3D Conversion", "Photorealistic Rendering", "Video Walkthrough"],
+        tools: ['n8n', 'openai', 'midjourney'],
         video: "/videos/floor-plan-tour.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'floorplan_url', label: 'Floor Plan Image URL', type: 'url', required: true },
-            { id: 'style', label: 'Interior Style', type: 'select', required: true, options: ['Modern', 'Scandinavian', 'Industrial', 'Traditional'] }
-        ]
+        readinessStatus: 'Active'
     },
     {
-        id: "vCxY2DXUZ8vUb30f",
+        id: 'vCxY2DXUZ8vUb30f',
         name: "Monthly CRO Insights Bot",
+        outcomeHeadline: "Automate Your Website's Growth Strategy",
         description: "Automated Conversion Rate Optimization analyst. Monitors site data, identifies drop-off points, and suggests actionable fixes monthly.",
-        category: "Knowledge Engine",
+        category: "Knowledge & Research",
         price: 247,
         rating: 4.8,
         downloads: 112,
         features: ["Drop-off Analysis", "Heatmap Integration", "Monthly Report"],
+        tools: ['google', 'n8n', 'openai'],
         video: "/videos/cro-insights.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'ga4_id', label: 'GA4 Measurement ID', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
-            { id: 'domain', label: 'Website Domain', type: 'url', required: true }
-        ]
+        readinessStatus: 'Active'
     }
 ];
 
-const MOCK_TEMPLATES_HE: Template[] = [
+const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[] })[] = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: "מחולל סרטוני סלפי מפורסמים",
+        outcomeHeadline: "צרו קליפים קולנועיים ויראליים ברגע",
         description: "צרו מסעות וידאו אישיים בהיסטוריה הקולנועית. העלו תמונה וקבלו סרטון ממוזג בו המשתמש מככב בסצנות אייקוניות.",
-        category: "מנוע תוכן",
+        category: "תוכן יצירתי",
         price: 297,
-        rating: 4.9,
+        rating: 5.0,
         downloads: 156,
         popular: true,
         features: ["החלפת פנים AI", "חיבור סצנות", "שליחה לוואטסאפ"],
+        tools: ['whatsapp', 'n8n', 'higgsfield'],
         video: "/videos/celebrity-selfie-generator.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'movie_theme', label: 'נושא הסרט', type: 'select', required: true, options: ['גיבור אקשן', 'רומנטיקה קלאסית', 'חוקר מדע בדיוני', 'אגדה היסטורית'], placeholder: 'בחר נושא' },
-            { id: 'user_photo', label: 'העלאת תמונת פורטרט', type: 'text', required: true, placeholder: 'כתובת תמונה', helperText: 'תמונת פנים למיפוי AI' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '8GC371u1uBQ8WLmu',
         name: "מנתח ספריית המודעות של מטא",
+        outcomeHeadline: "שכפלו את דפוסי המודעות המנצחות של המתחרים",
         description: "שואב מודעות מנצחות מספריית המודעות של פייסבוק ומייצר תבניות שכפול מפורטות באמצעות ניתוח וידאו AI.",
-        category: "מנוע לידים",
+        category: "לידים ומכירות",
         price: 197,
         rating: 4.8,
         downloads: 89,
         popular: true,
         features: ["שאיבת מודעות", "ניתוח וידאו AI", "יצירת תבניות"],
+        tools: ['meta', 'openai', 'n8n'],
         video: "/videos/meta-ad-analyzer.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'competitor_domain', label: 'דומיין מתחרה', type: 'url', required: true, placeholder: 'https://competitor.com' },
-            { id: 'niche', label: 'נישת פרסום', type: 'text', required: true, placeholder: 'למשל: איקומרס, SaaS' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '5pMi01SwffYB6KeX',
         name: "משכפל יוטיוברים ב-AI",
+        outcomeHeadline: "הפכו כל ערוץ יוטיוב למנטור האישי שלכם",
         description: "צור פרסונת AI מכל ערוץ יוטיוב. מחלץ תמלולים ובונה שכפול שיחה שמחקה את הסגנון והידע.",
-        category: "מנוע ידע",
+        category: "ניהול ידע ומחקר",
         price: 347,
         rating: 4.7,
         downloads: 64,
         features: ["חילוץ תמלול", "סינתזת אישיות", "אינטגרציה לטלגרם"],
+        tools: ['youtube', 'telegram', 'perplexity'],
         video: "/videos/youtube-clone.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'channel_url', label: 'כתובת ערוץ יוטיוב', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
-            { id: 'persona_voice', label: 'סגנון קול השכפול', type: 'select', required: true, options: ['נלהב', 'אנליטי', 'סרקסטי', 'מעורר השראה'] }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
         name: "מנתח שיחות לידים",
+        outcomeHeadline: "לעולם אל תפספסו ליד בהקלטות השיחות שלכם",
         description: "מנתח הקלטות שיחות כדי להכשיר לידים, לחלץ פרטים ולעדכן CRM. הופך שמע גולמי לנתונים מובנים.",
-        category: "מנוע לידים",
+        category: "לידים ומכירות",
         price: 497,
         rating: 4.9,
         downloads: 203,
         popular: true,
-        features: ["תמלול אודיו", "ניתוח סנטימנט", "סנכרון CRM"],
+        features: ["תמלול אודיו", "ניתוח סנטימנט", "סנכרון Workiz"],
+        tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'crm_type', label: 'CRM יעד', type: 'select', required: true, options: ['Workiz', 'PipeDrive', 'Salesforce', 'HubSpot'] },
-            { id: 'score_threshold', label: 'סף ציון ליד', type: 'number', required: true, placeholder: '0-100' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: '5Fl9WUjYTpodcloJ',
         name: "עוזר לוח שנה AI",
+        outcomeHeadline: "תנו ל-AI לנהל לכם את כל לוח הפגישות",
         description: "סוכן תזמון אוטונומי המטפל בלוגיקה מורכבת של הזמנות, בדיקות זמינות ותיאום בשפה טבעית.",
-        category: "מזכירה אוטונומית",
+        category: "תפעול",
         price: 147,
         rating: 4.6,
         downloads: 312,
         features: ["פתרון התנגשויות", "שפה טבעית", "תזמון חכם מחדש"],
+        tools: ['tidycal', 'slack', 'google'],
         video: "/videos/calendar-assistant.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'calendar_provider', label: 'ספק יומן', type: 'select', required: true, options: ['Google Calendar', 'Outlook', 'iCloud'] },
-            { id: 'timezone', label: 'אזור זמן ראשי', type: 'text', required: true, placeholder: 'למשל: Asia/Jerusalem' }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: 'stj8DmATqe66D9j4',
         name: "תוכנית קומה לסיור נכס",
+        outcomeHeadline: "הפכו תוכניות 2D לסיורים קולנועיים ב-3D",
         description: "ממיר תוכניות קומה דו-ממדיות לסיורי וידאו פוטוריאליסטיים תלת-ממדיים. מושלם לשיווק נדל\"ן ומכירות על הנייר.",
-        category: "מנוע תוכן",
+        category: "תוכן יצירתי",
         price: 397,
         rating: 5.0,
         downloads: 45,
         features: ["המרה מ-2D ל-3D", "רינדור פוטוריאליסטי", "סיור וידאו"],
+        tools: ['n8n', 'openai', 'midjourney'],
         video: "/videos/floor-plan-tour.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'floorplan_url', label: 'כתובת תמונת תוכנית קומה', type: 'url', required: true },
-            { id: 'style', label: 'סגנון עיצוב פנים', type: 'select', required: true, options: ['מודרני', 'סקנדינבי', 'תעשייתי', 'מסורתי'] }
-        ]
+        readinessStatus: 'Active'
     },
     {
         id: 'vCxY2DXUZ8vUb30f',
-        name: "Monthly CRO Insights Bot",
-        description: "Automated Conversion Rate Optimization analyst. Monitors site data, identifies drop-off points, and suggests actionable fixes monthly.",
-        category: "Knowledge Engine",
+        name: "מנתח שיפור המרות חודשי",
+        outcomeHeadline: "אוטומציה לאסטרטגיית הצמיחה של האתר שלכם",
+        description: "מנתח אופטימיזציית יחס המרה אוטומטי. מנטר נתוני אתר, מזהה נקודות נטישה ומציע תיקונים חודשיים.",
+        category: "ניהול ידע ומחקר",
         price: 247,
         rating: 4.8,
         downloads: 112,
-        features: ["Drop-off Analysis", "Heatmap Integration", "Monthly Report"],
+        features: ["ניתוח נטישה", "אינטגרציה למפות חום", "דו\"ח חודשי"],
+        tools: ['google', 'n8n', 'openai'],
         video: "/videos/cro-insights.mp4",
         tags: ['marketplace'],
-        configurationSchema: [
-            { id: 'ga4_id', label: 'מזהה מדידה GA4', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
-            { id: 'domain', label: 'דומיין האתר', type: 'url', required: true }
-        ]
+        readinessStatus: 'Active'
     }
 ];
 
@@ -376,10 +400,11 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                     };
                 });
 
-                // Filter for 'marketplace' tag AND 'Active' status (default to Draft/Hidden if status is missing)
+                // Filter for 'marketplace' tag AND 'Active' status
+                // We default to the template's own readinessStatus if remote doesn't provide one
                 let filteredTemplates = mergedTemplates.filter(t =>
                     (t.tags && t.tags.includes('marketplace')) &&
-                    (t.readinessStatus || 'Draft') === 'Active'
+                    (t.readinessStatus === 'Active')
                 );
 
                 if (selectedCategory !== 'All' && selectedCategory !== t.categories[0]) {
@@ -392,7 +417,16 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                     const searchLower = searchQuery.toLowerCase();
                     filteredTemplates = filteredTemplates.filter(t =>
                         t.name.toLowerCase().includes(searchLower) ||
-                        t.description.toLowerCase().includes(searchLower)
+                        t.description.toLowerCase().includes(searchLower) ||
+                        (t as any).outcomeHeadline?.toLowerCase().includes(searchLower)
+                    );
+                }
+
+                if (selectedTag) {
+                    const tagLower = selectedTag.toLowerCase();
+                    filteredTemplates = filteredTemplates.filter(t =>
+                        (t.tags && t.tags.some(tag => tag.toLowerCase() === tagLower)) ||
+                        ((t as any).tools && (t as any).tools.some((tool: string) => tool.toLowerCase() === tagLower))
                     );
                 }
 
@@ -411,7 +445,16 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                     const searchLower = searchQuery.toLowerCase();
                     baseTemplates = baseTemplates.filter(t =>
                         t.name.toLowerCase().includes(searchLower) ||
-                        t.description.toLowerCase().includes(searchLower)
+                        t.description.toLowerCase().includes(searchLower) ||
+                        (t as any).outcomeHeadline?.toLowerCase().includes(searchLower)
+                    );
+                }
+
+                if (selectedTag) {
+                    const tagLower = selectedTag.toLowerCase();
+                    baseTemplates = baseTemplates.filter(t =>
+                        (t.tags && t.tags.some(tag => tag.toLowerCase() === tagLower)) ||
+                        ((t as any).tools && (t as any).tools.some((tool: string) => tool.toLowerCase() === tagLower))
                     );
                 }
                 setTemplates(baseTemplates);
@@ -454,24 +497,66 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
             <main className="flex-grow container mx-auto px-6 py-12 relative z-10">
                 {/* Hero Section */}
                 <div className="text-center mb-16 space-y-4">
-                    <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1.5 uppercase tracking-widest text-[10px] font-mono">
-                        {t.badge}
-                    </Badge>
-                    <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/60">
+                    <div className="flex justify-center mb-4">
+                        <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1.5 uppercase tracking-[0.3em] text-[10px] font-black">
+                            {templates.length} {t.templatesLabel} • {t.badge}
+                        </Badge>
+                    </div>
+                    <h1 className="text-4xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 tracking-tighter leading-[0.9]">
                         {t.title}
                     </h1>
-                    <p className="text-lg text-slate-400 max-w-2xl mx-auto font-sans">
+                    <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
                         {t.subtitle}
                     </p>
+
+                    {/* Trust Banner */}
+                    <div className="flex flex-wrap justify-center items-center gap-8 pt-6 opacity-60">
+                        {t.trustBanner.map((item: any, i: number) => (
+                            <div key={i} className="flex items-center gap-2 group cursor-none">
+                                <item.icon className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors">
+                                    {item.label}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Quick App Filters */}
+                <div className="mb-12">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-4 text-center">{(t as any).filterByTool}</p>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        {[
+                            { id: 'whatsapp', label: 'WhatsApp', icon: '📱' },
+                            { id: 'gmail', label: 'Gmail', icon: '📧' },
+                            { id: 'slack', label: 'Slack', icon: '💬' },
+                            { id: 'meta', label: 'Meta', icon: '🔵' },
+                            { id: 'openai', label: 'OpenAI', icon: '🤖' },
+                            { id: 'n8n', label: 'n8n', icon: '⚡' },
+                            { id: 'youtube', label: 'YouTube', icon: '🎬' }
+                        ].map((tool) => (
+                            <button
+                                key={tool.id}
+                                onClick={() => setSelectedTag(selectedTag === tool.id ? null : tool.id)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:scale-105 active:scale-95 ${selectedTag === tool.id
+                                    ? 'bg-white/10 border-cyan-500/50 text-white shadow-[0_0_20px_rgba(6,182,212,0.1)]'
+                                    : 'bg-white/[0.02] border-white/5 text-slate-500 hover:border-white/10 hover:text-slate-300'
+                                    }`}
+                            >
+                                <span className="text-sm">{tool.icon}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest">{tool.label}</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Search & Filters */}
-                <div className="flex flex-col md:flex-row gap-4 mb-12 items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between sticky top-24 z-30 bg-black/40 backdrop-blur-xl p-3 md:p-4 rounded-2xl md:rounded-3xl border border-white/5 shadow-2xl">
                     <div className="relative w-full md:max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                         <Input
                             placeholder={t.searchPlaceholder}
-                            className="bg-[#1a1438]/50 border-slate-700/50 pl-10 focus:border-cyan-500/50"
+                            className="bg-white/5 border-white/5 pl-11 h-12 rounded-2xl focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all font-medium text-white placeholder:text-slate-600"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -513,11 +598,11 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                         ))}
                     </div>
 
-                    <div className="hidden lg:flex items-center gap-2 border border-slate-700/50 rounded-lg p-1">
+                    <div className="hidden lg:flex items-center gap-2 border border-white/5 bg-white/[0.02] rounded-2xl p-1.5">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={`w-8 h-8 ${viewMode === 'grid' ? 'bg-white/10 text-cyan-400' : 'text-slate-500'}`}
+                            className={`w-9 h-9 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-cyan-500 text-black shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                             onClick={() => setViewMode('grid')}
                         >
                             <LayoutGrid className="w-4 h-4" />
@@ -525,7 +610,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={`w-8 h-8 ${viewMode === 'list' ? 'bg-white/10 text-cyan-400' : 'text-slate-500'}`}
+                            className={`w-9 h-9 rounded-xl transition-all ${viewMode === 'list' ? 'bg-cyan-500 text-black shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                             onClick={() => setViewMode('list')}
                         >
                             <List className="w-4 h-4" />
@@ -533,98 +618,154 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                     </div>
                 </div>
 
+                {/* Results Count & Clear Filters */}
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                            {t.resultsLabel} <span className="text-white px-2 py-0.5 bg-white/5 rounded-md mx-1">{templates.length}</span> {t.templatesLabel}
+                        </span>
+                        {(selectedCategory !== 'All' || searchQuery || selectedTag) && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-[9px] font-black uppercase tracking-widest text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 rounded-lg ml-2"
+                                onClick={() => {
+                                    setSelectedCategory('All');
+                                    setSearchQuery('');
+                                    setSelectedTag(null);
+                                }}
+                            >
+                                {(t as any).clearAll}
+                            </Button>
+                        )}
+                    </div>
+                </div>
+
+
+
                 {/* Workflow Grid */}
-                {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="h-[400px] bg-slate-800/20 rounded-2xl animate-pulse" />
-                        ))}
-                    </div>
-                ) : templates.length > 0 ? (
-                    <div className={viewMode === 'grid'
-                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                        : "flex flex-col gap-4"
-                    }>
-                        {templates.map((template) => (
-                            <WorkflowCard
-                                key={template.id}
-                                template={template}
-                                onClick={handleCardClick}
-                                isRtl={isRtl}
-                                viewMode={viewMode}
-                                t={t}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20 border border-dashed border-slate-700/50 rounded-3xl">
-                        <Workflow className="w-12 h-12 text-slate-600 mx-auto mb-4 opacity-50" />
-                        <h3 className="text-xl font-semibold opacity-70 font-sans">{t.noResultsTitle}</h3>
-                        <p className="text-slate-500 mt-2 font-sans">{t.noResultsDesc}</p>
-                    </div>
-                )}
+                {
+                    loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className="h-[400px] bg-slate-800/20 rounded-2xl animate-pulse" />
+                            ))}
+                        </div>
+                    ) : templates.length > 0 ? (
+                        <div className={viewMode === 'grid'
+                            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                            : "flex flex-col gap-4"
+                        }>
+                            {templates.map((template) => (
+                                <WorkflowCard
+                                    key={template.id}
+                                    template={template}
+                                    onClick={handleCardClick}
+                                    isRtl={isRtl}
+                                    viewMode={viewMode}
+                                    t={t}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 border border-dashed border-slate-700/50 rounded-3xl">
+                            <Workflow className="w-12 h-12 text-slate-600 mx-auto mb-4 opacity-50" />
+                            <h3 className="text-xl font-semibold opacity-70 font-sans">{t.noResultsTitle}</h3>
+                            <p className="text-slate-500 mt-2 font-sans">{t.noResultsDesc}</p>
+                        </div>
+                    )
+                }
 
-                {/* Custom Section */}
-                <div className="mt-24 p-8 md:p-12 rounded-[2rem] relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#fe3d51]/10 via-transparent to-cyan-500/10 opacity-50" />
-                    <div className="absolute inset-0 border border-white/10 rounded-[2rem] group-hover:border-cyan-500/20 transition-colors" />
-
-                    <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
-                        <div className="flex-1 space-y-6 text-center lg:text-left">
-                            <h2 className="text-3xl md:text-4xl font-bold font-mono uppercase tracking-tight">
-                                {t.customTitle}
-                            </h2>
-                            <p className="text-slate-400 text-lg leading-relaxed max-w-xl font-sans">
-                                {t.customDesc}
+                {/* Custom Section & Lead Gen Escape */}
+                <div className="mt-32 space-y-8">
+                    {/* Confused User Section */}
+                    <div className="p-12 rounded-[3rem] bg-cyan-500/5 border border-cyan-500/20 relative overflow-hidden text-center">
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full" />
+                        <div className="relative z-10 space-y-6 max-w-2xl mx-auto">
+                            <div className="flex justify-center">
+                                <span className="text-3xl">🤔</span>
+                            </div>
+                            <h2 className="text-3xl font-black text-white uppercase tracking-tight">{(t as any).notSureTitle}</h2>
+                            <p className="text-lg text-slate-400 font-medium leading-relaxed">
+                                {(t as any).notSureDesc}
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <Link href="/contact?type=custom">
-                                    <Button size="xl" variant="renstoPrimary" className="px-8 font-bold w-full sm:w-auto">
-                                        {t.bookDiscovery}
-                                        <Zap className="ml-2 w-5 h-5 fill-current" />
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                                <Link href="/contact?type=quiz">
+                                    <Button size="xl" className="bg-white text-black hover:bg-slate-200 font-black px-10 rounded-2xl w-full sm:w-auto">
+                                        {(t as any).takeQuiz}
                                     </Button>
                                 </Link>
-                                <Link href="/contact">
-                                    <Button variant="renstoNeon" size="xl" className="w-full sm:w-auto">
-                                        {t.askQuestion}
+                                <Link href="/contact?type=discovery">
+                                    <Button size="xl" variant="outline" className="border-white/10 text-white hover:bg-white/5 font-black px-10 rounded-2xl w-full sm:w-auto">
+                                        {(t as any).bookConsult}
                                     </Button>
                                 </Link>
                             </div>
                         </div>
-                        <div className="lg:w-1/3 flex justify-center">
-                            <div className="w-64 h-64 relative">
-                                <div className="absolute inset-0 bg-cyan-500/20 blur-[80px] rounded-full animate-pulse" />
-                                <Cpu className="w-full h-full text-cyan-400/80 relative z-10" strokeWidth={1} />
+                    </div>
+
+                    {/* Classic Custom Section */}
+                    <div className="p-8 md:p-12 rounded-[3rem] relative overflow-hidden group border border-white/5 bg-white/[0.01]">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#fe3d51]/5 via-transparent to-cyan-500/5 opacity-50" />
+                        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+                            <div className="flex-1 space-y-6 text-center lg:text-left">
+                                <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9]">
+                                    {t.customTitle}
+                                </h2>
+                                <p className="text-slate-500 text-lg leading-relaxed max-w-xl font-medium">
+                                    {t.customDesc}
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                    <Link href="/contact?type=custom">
+                                        <Button size="xl" variant="renstoPrimary" className="px-12 font-black w-full sm:w-auto rounded-2xl h-16">
+                                            {t.bookDiscovery}
+                                            <Zap className="ml-2 w-5 h-5 fill-current" />
+                                        </Button>
+                                    </Link>
+                                    <Link href="/contact">
+                                        <Button variant="ghost" size="xl" className="w-full sm:w-auto text-slate-400 hover:text-white font-black">
+                                            {t.askQuestion}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="lg:w-1/3 flex justify-center">
+                                <div className="w-64 h-64 relative">
+                                    <div className="absolute inset-0 bg-cyan-500/20 blur-[80px] rounded-full animate-pulse" />
+                                    <Cpu className="w-full h-full text-cyan-400/80 relative z-10" strokeWidth={1} />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </main >
 
             <Footer lang={lang} />
 
             {/* Customization Modal */}
-            {customizeModal.template && (
-                <CustomizationModal
-                    isOpen={customizeModal.open}
-                    onClose={() => setCustomizeModal({ open: false, template: null })}
-                    workflowName={customizeModal.template.name}
-                    workflowId={customizeModal.template.id}
-                    parametersSchema={(customizeModal.template.configurationSchema?.map(f => ({
-                        id: f.id,
-                        label: f.label,
-                        type: (f.type === 'textarea' || f.type === 'boolean') ? 'text' : f.type as any,
-                        placeholder: f.placeholder,
-                        required: f.required,
-                        options: f.options,
-                        hint: f.helperText
-                    })) as any) || MOCK_FLOOR_PLAN_SCHEMA}
-                    estimatedTime="24-48 hours"
-                    complexity="Intermediate"
-                    perRunCost={(customizeModal.template.price || 97) * 0.1}
-                />
-            )}
-        </div>
+            {
+                customizeModal.template && (
+                    <CustomizationModal
+                        isOpen={customizeModal.open}
+                        onClose={() => setCustomizeModal({ open: false, template: null })}
+                        workflowName={customizeModal.template?.name || ''}
+                        workflowId={customizeModal.template?.id || ''}
+                        parametersSchema={(customizeModal.template?.configurationSchema?.map(f => ({
+                            id: f.id,
+                            label: f.label,
+                            type: (f.type === 'textarea' || f.type === 'boolean') ? 'text' : f.type as any,
+                            placeholder: f.placeholder,
+                            required: f.required,
+                            options: f.options,
+                            hint: f.helperText
+                        })) as any) || MOCK_FLOOR_PLAN_SCHEMA}
+                        estimatedTime="24-48 hours"
+                        complexity="Intermediate"
+                        perRunCost={(customizeModal.template?.price || 97) * 0.1}
+                    />
+                )
+            }
+        </div >
     );
 }
 
@@ -654,32 +795,49 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
                 onClick={() => onClick?.(template.id)}
                 className="cursor-pointer"
             >
-                <div className="bg-[#1a1438]/40 border border-slate-700/50 p-6 rounded-xl hover:border-cyan-500/50 transition-all flex items-center gap-6 group">
-                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-cyan-500/10 transition-colors relative overflow-hidden">
+                <div className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl hover:border-cyan-500/50 transition-all flex items-center gap-6 group">
+                    <div className="w-16 h-16 bg-slate-900 rounded-xl flex items-center justify-center group-hover:bg-cyan-500/10 transition-colors relative overflow-hidden shrink-0">
                         {template.video ? (
                             <video
                                 src={template.video}
-                                className="w-full h-full object-cover opacity-80"
+                                className="w-full h-full object-cover opacity-60"
                                 muted
                                 loop
                                 playsInline
                             />
                         ) : (
-                            <Zap className="w-6 h-6 text-cyan-400" />
+                            <Zap className="w-8 h-8 text-cyan-400" />
                         )}
                     </div>
                     <div className="flex-grow">
-                        <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors font-sans">{template.name}</h3>
-                        <p className="text-slate-400 text-sm line-clamp-1 font-sans">{template.description}</p>
+                        <h3 className="font-black text-lg text-white group-hover:text-cyan-400 transition-colors uppercase tracking-tight">
+                            {(template as any).outcomeHeadline || template.name}
+                        </h3>
+                        <p className="text-slate-500 text-sm line-clamp-1 font-medium">{template.description}</p>
                     </div>
-                    <div className="text-right flex flex-col items-end gap-1">
-                        <div className="text-xl font-bold font-sans text-white">${template.price}</div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-widest font-sans">
+                    <div className="flex items-center gap-3 shrink-0">
+                        {(template as any).tools?.map((tool: string) => (
+                            <div key={tool} className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center text-[10px] opacity-40 group-hover:opacity-100 transition-opacity">
+                                {tool === 'whatsapp' && '📱'}
+                                {tool === 'gmail' && '📧'}
+                                {tool === 'slack' && '💬'}
+                                {tool === 'meta' && '🔵'}
+                                {tool === 'openai' && '🤖'}
+                                {tool === 'n8n' && '⚡'}
+                                {tool === 'youtube' && '🎬'}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="text-right flex flex-col items-end gap-1 shrink-0 px-6">
+                        <div className="text-2xl font-black text-white">${template.price}</div>
+                        <div className="flex items-center gap-1 text-[9px] font-black text-slate-600 uppercase tracking-widest">
                             <Download className="w-3 h-3" />
                             {template.downloads} {t.downloads}
                         </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-cyan-400 translate-x-0 group-hover:translate-x-1 transition-all" />
+                    <Button size="icon" variant="ghost" className="rounded-full group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                        <ArrowRight className="w-5 h-5" />
+                    </Button>
                 </div>
             </div>
         );
@@ -687,13 +845,13 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
 
     return (
         <Card
-            className="bg-[#1a1438]/40 border-slate-700/50 overflow-hidden group hover:border-cyan-500/50 transition-all flex flex-col h-full rounded-2xl cursor-pointer"
+            className="bg-white/[0.02] border-white/5 overflow-hidden group hover:border-cyan-500/50 transition-all flex flex-col h-full rounded-[2.5rem] cursor-pointer relative shadow-2xl"
             onClick={() => onClick?.(template.id)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="h-48 bg-slate-800/50 relative overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-[#fe3d51]/5" />
+            <div className="h-56 bg-slate-900 relative overflow-hidden flex items-center justify-center shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-[#fe3d51]/10 opacity-30 group-hover:opacity-50 transition-opacity" />
 
                 {/* Video Thumbnail */}
                 {template.video ? (
@@ -704,85 +862,76 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
                         muted
                         loop
                         playsInline
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"
                     />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Zap className="w-16 h-16 text-cyan-500/20" strokeWidth={1} />
                     </div>
                 )}
-                {/* Subtle overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
 
-                {/* Status Indicator / Badge */}
-                <div className="absolute top-4 left-4 z-20">
-                    <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-black/40 backdrop-blur-md border border-white/5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
-                        <span className="text-[8px] font-mono text-cyan-400 uppercase tracking-tighter">HD Preview</span>
+                {/* Tool Icons Floating */}
+                <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                    {(template as any).tools?.map((tool: string) => (
+                        <div key={tool} className="w-8 h-8 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-xs shadow-xl transform -translate-x-12 group-hover:translate-x-0 transition-transform duration-500" style={{ transitionDelay: `${(template as any).tools.indexOf(tool) * 50}ms` }}>
+                            {tool === 'whatsapp' && '📱'}
+                            {tool === 'gmail' && '📧'}
+                            {tool === 'slack' && '💬'}
+                            {tool === 'meta' && '🔵'}
+                            {tool === 'openai' && '🤖'}
+                            {tool === 'n8n' && '⚡'}
+                            {tool === 'youtube' && '🎬'}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Status Indicator */}
+                <div className="absolute bottom-4 left-4 z-20">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[8px] font-black text-white uppercase tracking-widest">Active System</span>
                     </div>
                 </div>
 
                 {template.popular && (
-                    <Badge className="absolute top-4 right-4 bg-orange-500/10 text-orange-400 border-orange-500/20 font-mono text-[10px] uppercase z-20 shadow-lg backdrop-blur-sm">
+                    <Badge className="absolute top-4 right-4 bg-[#fe3d51] text-white border-none font-black text-[9px] uppercase z-20 shadow-xl px-3 py-1 rounded-full tracking-widest">
                         {t.popular}
                     </Badge>
                 )}
 
                 {/* Hover Play Icon Hint */}
-                <div className={`absolute inset-0 flex items-center justify-center z-10 transition-all duration-300 pointer-events-none ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                    <div className="w-12 h-12 rounded-full bg-cyan-500/20 backdrop-blur-md flex items-center justify-center border border-cyan-500/30">
-                        <ArrowRight className={`w-6 h-6 text-cyan-400 ${isRtl ? 'rotate-180' : ''}`} />
+                <div className={`absolute inset-0 flex items-center justify-center z-10 transition-all duration-500 pointer-events-none ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+                    <div className="w-16 h-16 rounded-[2rem] bg-cyan-500 text-black flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.4)]">
+                        <ArrowRight className={`w-8 h-8 ${isRtl ? 'rotate-180' : ''}`} />
                     </div>
                 </div>
             </div>
 
-            <div className="p-6 flex flex-col flex-grow relative z-10 bg-[#1a1438]/40">
-                <div className="space-y-2">
-                    <Badge variant="outline" className="text-cyan-400 border-cyan-400/30 text-[10px] uppercase tracking-wider font-sans">
+            <div className="p-8 flex flex-col flex-grow relative z-10">
+                <div className="space-y-3">
+                    <Badge variant="outline" className="text-cyan-400 border-cyan-400/30 text-[9px] font-black uppercase tracking-[0.2em] px-0 border-none">
                         {template.category}
                     </Badge>
-                    <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors font-sans line-clamp-1">{template.name}</h3>
-                    <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed font-sans">
+                    <h3 className="text-2xl font-black text-white group-hover:text-cyan-400 transition-colors uppercase tracking-tight leading-tight">
+                        {(template as any).outcomeHeadline || template.name}
+                    </h3>
+                    <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed font-medium">
                         {template.description}
                     </p>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 items-center mt-4 mb-auto">
-                    {template.features.slice(0, 3).map(f => (
-                        <span key={f} className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-300 font-sans whitespace-nowrap">
-                            {f}
-                        </span>
-                    ))}
-                </div>
-
-
-                <div className="pt-4 mt-auto flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <div className="text-2xl font-bold font-sans text-white">${template.price}</div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500 uppercase tracking-widest font-mono font-sans">
+                <div className="pt-8 mt-auto flex items-center justify-between border-t border-white/5">
+                    <div className="space-y-1">
+                        <div className="text-3xl font-black text-white tracking-tighter">${template.price}</div>
+                        <div className="flex items-center gap-2 text-[9px] font-black text-slate-600 uppercase tracking-widest">
                             <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
                             {template.rating} • {template.downloads} {t.downloads}
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-xs text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                onCustomize?.();
-                            }}
-                        >
-                            <Settings2 className="w-3 h-3 mr-1" />
-                            {t.customize}
-                        </Button>
-                        <Button size="icon" className="rounded-full bg-white/5 hover:bg-cyan-500 hover:text-black border-slate-700">
-                            <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
-                        </Button>
-                    </div>
+                    <Button size="xl" className="rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black text-xs px-6">
+                        {(t as any).explore}
+                    </Button>
                 </div>
             </div>
         </Card>
