@@ -25,6 +25,9 @@ interface CustomizationModalProps {
     estimatedTime?: string;
     complexity?: 'Basic' | 'Intermediate' | 'Advanced';
     perRunCost?: number;
+    title?: string;
+    description?: string;
+    submitLabel?: string;
 }
 
 export function CustomizationModal({
@@ -36,6 +39,9 @@ export function CustomizationModal({
     estimatedTime = '24-48 hours',
     complexity = 'Intermediate',
     perRunCost,
+    title = 'Project Discovery',
+    description,
+    submitLabel = 'Submit Request',
 }: CustomizationModalProps) {
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,9 +114,9 @@ export function CustomizationModal({
                     <div>
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
                             <Zap className="w-5 h-5 text-cyan-400" />
-                            Customize Workflow
+                            {title}
                         </h2>
-                        <p className="text-sm text-slate-400 mt-1">{workflowName}</p>
+                        <p className="text-sm text-slate-400 mt-1">{description || workflowName}</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -212,7 +218,7 @@ export function CustomizationModal({
                                 {isSubmitting ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                 ) : (
-                                    'Start Customization'
+                                    submitLabel
                                 )}
                             </Button>
                         </div>

@@ -70,6 +70,8 @@ interface Workflow {
     status: string;
     video?: string;
     configurationSchema?: any[];
+    businessImpact?: string;
+    roiExample?: string;
 }
 
 const NoiseTexture = () => (
@@ -131,6 +133,8 @@ export default function WorkflowDetailPage() {
                         customPrice: data.customPrice || 1497,
                         complexity: data.complexity || 'Intermediate',
                         setupTime: data.setupTime || '2 hours',
+                        businessImpact: data.businessImpact || mock?.businessImpact || 'Recovers lost leads and saves your team hours of manual work.',
+                        roiExample: data.roiExample || mock?.roiExample || 'Pays for itself within 30 days.',
                         // Handle features - wrap string to object, try to find matching mock desc if possible
                         features: (data.features && data.features.length > 0)
                             ? (typeof data.features[0] === 'string'
@@ -540,14 +544,21 @@ export default function WorkflowDetailPage() {
                                                 </Button>
                                             </div>
 
-                                            <div className="flex items-center justify-center gap-8 pt-6 border-t border-white/5">
-                                                <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
-                                                    <CreditCard className="w-4 h-4" />
-                                                    <span className="text-[9px] font-bold tracking-widest uppercase">Encrypted</span>
+                                            <div className="space-y-6 pt-6 border-t border-white/5">
+                                                <div className="flex items-center justify-center gap-6 opacity-20 grayscale hover:opacity-50 transition-opacity">
+                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">ServiceTitan</div>
+                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">HubSpot</div>
+                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">Workiz</div>
                                                 </div>
-                                                <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
-                                                    <Activity className="w-4 h-4" />
-                                                    <span className="text-[9px] font-bold tracking-widest uppercase">Verified</span>
+                                                <div className="flex items-center justify-center gap-8">
+                                                    <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
+                                                        <CreditCard className="w-4 h-4" />
+                                                        <span className="text-[9px] font-bold tracking-widest uppercase">Encrypted</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
+                                                        <Activity className="w-4 h-4" />
+                                                        <span className="text-[9px] font-bold tracking-widest uppercase">Verified Asset</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -646,7 +657,9 @@ export default function WorkflowDetailPage() {
                                         </div>
                                         <div className="space-y-3">
                                             <div className="text-2xl font-black text-white tracking-tight uppercase italic">The Business Impact</div>
-                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">This system is designed to pay for itself within 30 days by recovering lost leads and saving your team 10+ hours of manual work every week.</p>
+                                            <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">
+                                                {workflow.businessImpact} <span className="text-emerald-400">{workflow.roiExample}</span>
+                                            </p>
                                         </div>
                                     </motion.div>
                                 </div>
@@ -738,23 +751,18 @@ export default function WorkflowDetailPage() {
                 onClose={() => setIsCustomizeOpen(false)}
                 workflowName={workflow.name}
                 workflowId={workflow.id}
-                parametersSchema={(workflow.configurationSchema?.length ? workflow.configurationSchema.map((f: any) => ({
-                    id: f.id,
-                    label: f.label,
-                    type: (f.type === 'textarea' || f.type === 'boolean') ? 'text' : f.type as any,
-                    placeholder: f.placeholder,
-                    required: f.required,
-                    options: f.options,
-                    hint: f.helperText
-                })) : [
+                title="Project Discovery"
+                description={`Discovery session for ${workflow.name} implementation.`}
+                submitLabel="Start Strategy Session"
+                parametersSchema={[
                     { id: 'business_goal', label: 'Primary Business Goal', type: 'select', options: ['Save Time / Reduce Manual Work', 'Get More Leads', 'Improve Customer Experience', 'Scale Operations'], required: true, hint: 'What is the #1 thing you want this system to achieve?' },
                     { id: 'current_process', label: 'Current Process', type: 'text', required: true, placeholder: 'Briefly, how do you handle this task today?', hint: 'This helps us understand how much time we can save you.' },
                     { id: 'software_stack', label: 'Existing Software', type: 'text', required: false, placeholder: 'e.g. ServiceTitan, Housecall Pro, HubSpot...', hint: 'List any software you want this system to talk to.' },
                     { id: 'additional_notes', label: 'Special Requirements', type: 'text', required: false, placeholder: 'Anything else we should know?' }
-                ])}
+                ]}
                 estimatedTime="24-48 hours"
                 complexity="Intermediate"
-                perRunCost={workflow.downloadPrice * 0.1}
+                perRunCost={undefined}
             />
         </div >
     );
@@ -863,6 +871,8 @@ const MOCK_TEMPLATES = [
         description: 'Create personalized AI video journeys through movie history. Upload a photo and get a merged video where the user stars in iconic scenes. Powered by Higgsfield Kling Omni and delivered via WhatsApp.',
         category: 'Content Engine',
         price: 297,
+        businessImpact: "Creates high-viral brand awareness that traditional ads can't touch.",
+        roiExample: "Generated 1.2M impressions for our last beta user in under 48 hours.",
         kpis: [
             { label: 'Realism', value: '99%', icon: Shield },
             { label: 'Latency', value: '2 min', icon: Clock },
@@ -897,6 +907,8 @@ const MOCK_TEMPLATES = [
         description: 'Scrapes winning ads from Meta Ad Library and generates detailed replication templates using AI vision analysis. Identifies UGC and testimonial-style ads with precise scene-by-scene breakdowns.',
         category: 'Lead Machine',
         price: 197,
+        businessImpact: "Instantly identifies high-converting creative patterns in your specific niche.",
+        roiExample: "Reduced creative testing costs by 40% for home service agencies.",
         features: [
             { title: 'Ad Scraping', desc: 'Automated retrieval of active and historical ads from Meta Library.' },
             { title: 'AI Video Analysis', desc: 'Deep vision processing to extract hook patterns and CTA structures.' },
@@ -933,6 +945,8 @@ const MOCK_TEMPLATES = [
         description: 'Ingests Telnyx call recordings, transcribes them with AI, and creates qualified leads in Workiz with intelligent categorization. Sends email reports via Outlook.',
         category: 'Lead Machine',
         price: 497,
+        businessImpact: "Ensures no sales opportunity ever falls through the cracks of your call recordings.",
+        roiExample: "Recovered $12,400 in 'missed quote' revenue for a single plumbing client last month.",
         features: [
             { title: 'Telnyx Integration', desc: 'Direct webhook processing for incoming recordings and call logs.' },
             { title: 'Audio Transcription', desc: 'High-fidelity voice-to-text conversion for sales and support calls.' },
