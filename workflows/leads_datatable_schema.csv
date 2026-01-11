@@ -1,2 +1,0 @@
-FullName,Email,PhoneNumber,Source,Status,Channel,Intent,Urgency,Message,Company,Website,EnrichmentDataJSON,ReplyEmailSubject,ReplyEmailBody,ReplyWhatsApp,BookingLink,Consent,OptedOut,Owner,Notes,CreatedAt,UpdatedAt
-Sample Lead,sample@example.com,+1234567890,Website Form,New,Web,Quote,High,Looking for automation help,Sample Company,https://example.com,{},Re: Your inquiry,Thank you for reaching out!,Hi! Thanks for your message.,https://tidycal.com/rensto/discovery,true,false,Shai,Initial contact,2024-12-20 23:00,2024-12-20 23:00

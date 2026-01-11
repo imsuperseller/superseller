@@ -7,16 +7,6 @@ import { Button } from '@/components/ui/button-enhanced';
 import {
   Menu,
   X,
-  ChevronDown,
-  User,
-  Settings,
-  LogOut,
-  Zap,
-  Workflow,
-  BarChart3,
-  MessageCircle,
-  Brain,
-  Globe,
   Phone
 } from 'lucide-react';
 
@@ -24,38 +14,19 @@ const CONTACT_PHONE = "14699299314"; // Rensto Voice number
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [currentPath, setCurrentPath] = useState('');
 
-  // Handle client-side state for path-dependent logic (if UI needs it later)
-  useEffect(() => {
-    setMounted(true);
-    setCurrentPath(window.location.pathname);
-  }, []);
-
-  // Main navigation links - localized
-  const isHebrew = currentPath.startsWith('/he');
-
-  const navigation = isHebrew ? [
-    { name: 'דף הבית', href: '/he' },
-    { name: 'תהליך', href: '/#process' },
-    { name: 'מקרי בוחן', href: '/he/niches' },
-    { name: 'חנות פתרונות', href: '/he/marketplace' },
-    { name: 'מחירון', href: '/he/offers' },
-    { name: 'צור קשר', href: '/he/contact' },
-  ] : [
+  const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Process', href: '/#process' },
-    { name: 'Case Studies', href: '/niches' },
+    { name: 'The Pillars', href: '/#pillars' },
+    { name: 'The Bundle', href: '/#ecosystem' },
     { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Pricing', href: '/offers' },
+    { name: 'Pricing', href: '/#pricing' },
     { name: 'Contact', href: '/contact' },
   ];
 
   return (
     <header
       className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
-      dir={isHebrew ? 'rtl' : 'ltr'}
       style={{
         background: 'rgba(17, 13, 40, 0.98)',
         borderColor: 'rgba(254, 61, 81, 0.3)'
@@ -65,7 +36,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <Link href={isHebrew ? "/he" : "/"} className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 relative">
                 <Image
                   src="/rensto-logo.webp"
@@ -93,7 +64,7 @@ export function Header() {
                 href={item.href}
                 className="text-sm font-medium text-white/70 hover:text-white transition-colors"
               >
-                {item.name}
+                <span>{item.name}</span>
               </Link>
             ))}
           </nav>
@@ -102,10 +73,11 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             <a
               href={`tel:${CONTACT_PHONE}`}
-              className="flex items-center gap-2 text-sm font-medium text-rensto-cyan hover:text-white transition-colors"
-              dir="ltr"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-cyan-500/10 border border-cyan-500/30 text-rensto-cyan hover:bg-cyan-500/20 transition-all"
               style={{ direction: 'ltr' }}
+              title="Call our AI Voice Agent"
             >
+              <Phone className="w-4 h-4" />
               <span>+1 (469) 929-9314</span>
             </a>
             <Link href="/custom">
@@ -118,7 +90,7 @@ export function Header() {
                   boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
                 }}
               >
-                {isHebrew ? 'בואו נתחיל' : 'Get Started'}
+                <span>Get Started</span>
               </Button>
             </Link>
           </div>
@@ -150,18 +122,25 @@ export function Header() {
                   className="block px-3 py-2 text-base font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-md"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.name}
+                  <span>{item.name}</span>
                 </Link>
               ))}
             </div>
-            <div className="pt-4 pb-3 border-t border-white/10 px-2">
+            <div className="pt-4 pb-3 border-t border-white/10 px-2 space-y-3">
+              <a
+                href={`tel:${CONTACT_PHONE}`}
+                className="flex items-center justify-center gap-2 w-full h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-rensto-cyan font-bold"
+              >
+                <Phone className="w-5 h-5" />
+                <span>Call AI Agent</span>
+              </a>
               <Link href="/custom">
                 <Button className="w-full justify-center font-bold h-12" style={{
                   background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
                   color: '#ffffff',
                   boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
                 }}>
-                  {isHebrew ? 'בואו נתחיל' : 'Get Started'}
+                  <span>Get Started</span>
                 </Button>
               </Link>
             </div>

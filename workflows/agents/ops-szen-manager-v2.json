@@ -1,0 +1,103 @@
+{
+    "name": "OPS-SZEN-001: Ops-Szen Operations Manager v2",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "cron-trigger",
+            "name": "Every Hour",
+            "type": "n8n-nodes-base.cron",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "list",
+                "collection": "whatsapp_instances"
+            },
+            "id": "firestore-instances",
+            "name": "Firestore - Get WAHA Instances",
+            "type": "n8n-nodes-base.firebaseCloudFirestore",
+            "typeVersion": 1.1,
+            "position": [
+                250,
+                -100
+            ],
+            "credentials": {
+                "firebaseCloudFirestoreApi": {
+                    "id": "firestore-creds",
+                    "name": "Rensto Firestore"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "GET",
+                "url": "http://172.245.56.50:3000/api/sessions",
+                "options": {}
+            },
+            "id": "waha-health",
+            "name": "WAHA - Check Session Health",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                500,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const firestoreInstances = $node[\"Firestore - Get WAHA Instances\"].all();\nconst wahaSessions = $node[\"WAHA - Check Session Health\"].all()[0].json;\n\nconst alerts = [];\n\nfirestoreInstances.forEach(instance => {\n  const session = wahaSessions.find(s => s.name === instance.json.name);\n  if (!session || session.status !== 'CONNECTED') {\n    alerts.push({\n      client: instance.json.clientId,\n      instance: instance.json.name,\n      status: session ? session.status : 'MISSING'\n    });\n  }\n});\n\nreturn [{\n  json: {\n    totalChecked: firestoreInstances.length,\n    alertCount: alerts.length,\n    alerts: alerts,\n    healthy: alerts.length === 0\n  }\n}];"
+            },
+            "id": "check-logic",
+            "name": "Verify Internal Operation Health",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                750,
+                0
+            ]
+        }
+    ],
+    "connections": {
+        "Every Hour": {
+            "main": [
+                [
+                    {
+                        "node": "Firestore - Get WAHA Instances",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Firestore - Get WAHA Instances": {
+            "main": [
+                [
+                    {
+                        "node": "WAHA - Check Session Health",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "WAHA - Check Session Health": {
+            "main": [
+                [
+                    {
+                        "node": "Verify Internal Operation Health",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true
+    }
+}

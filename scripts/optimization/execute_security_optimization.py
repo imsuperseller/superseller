@@ -217,7 +217,7 @@ const corsOptions = {
     'https://rensto.com',
     'https://*.rensto.com',
     'https://vercel.app',
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null
+    process.env.NODE_ENV === 'development' ? 'http://localhost:3002' : null
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

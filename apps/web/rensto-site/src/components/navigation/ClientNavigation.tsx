@@ -19,69 +19,69 @@ import {
 } from 'lucide-react';
 
 const clientNavigation = [
-  { 
-    name: 'Dashboard', 
-    href: '/app/dashboard', 
+  {
+    name: 'Dashboard',
+    href: '/app/dashboard',
     icon: LayoutDashboard,
     description: 'Overview and KPIs'
   },
-  { 
-    name: 'Agents', 
-    href: '/app/agents', 
+  {
+    name: 'Agents',
+    href: '/app/agents',
     icon: Workflow,
     description: 'Manage your AI agents'
   },
-  { 
-    name: 'Approvals', 
-    href: '/app/approvals', 
+  {
+    name: 'Approvals',
+    href: '/app/approvals',
     icon: CheckCircle,
     description: 'Review and approve content'
   },
-  { 
-    name: 'Runs', 
-    href: '/app/runs', 
+  {
+    name: 'Runs',
+    href: '/app/runs',
     icon: Activity,
     description: 'Execution history'
   },
-  { 
-    name: 'Credentials', 
-    href: '/app/credentials', 
+  {
+    name: 'Credentials',
+    href: '/app/credentials',
     icon: Key,
     description: 'Manage integrations'
   },
-  { 
-    name: 'Reports', 
-    href: '/app/reports', 
+  {
+    name: 'Reports',
+    href: '/app/reports',
     icon: FileText,
     description: 'Analytics and reports'
   },
-  { 
-    name: 'Billing', 
-    href: '/app/billing', 
+  {
+    name: 'Billing',
+    href: '/app/billing',
     icon: CreditCard,
     description: 'Usage and payments'
   },
-  { 
-    name: 'Team', 
-    href: '/app/team', 
+  {
+    name: 'Team',
+    href: '/app/team',
     icon: Users,
     description: 'Manage team members'
   },
-  { 
-    name: 'Settings', 
-    href: '/app/settings', 
+  {
+    name: 'Settings',
+    href: '/app/settings',
     icon: Settings,
     description: 'Account preferences'
   },
-  { 
-    name: 'Support', 
-    href: '/app/support', 
+  {
+    name: 'Support',
+    href: '/app/support',
     icon: HelpCircle,
     description: 'Get help and support'
   },
-  { 
-    name: 'Status', 
-    href: '/app/status', 
+  {
+    name: 'Status',
+    href: '/app/status',
     icon: Signal,
     description: 'System status and uptime'
   },
@@ -99,17 +99,17 @@ export function ClientNavigation({ className, collapsed = false }: ClientNavigat
     <nav className={cn('space-y-1', className)}>
       {clientNavigation.map((item) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-        
+
         return (
           <Link
             key={item.name}
             href={item.href}
             className={cn(
               'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
-              'hover:bg-slate-100 hover:text-slate-900',
+              'hover:bg-white/5 hover:text-white',
               isActive
-                ? 'bg-slate-100 text-slate-900 border-r-2 border-blue-500'
-                : 'text-slate-600',
+                ? 'bg-white/10 text-white border-r-2 border-rensto-cyan'
+                : 'text-gray-400',
               collapsed && 'justify-center'
             )}
             title={collapsed ? item.description : undefined}
@@ -117,7 +117,7 @@ export function ClientNavigation({ className, collapsed = false }: ClientNavigat
             <item.icon
               className={cn(
                 'mr-3 h-5 w-5 flex-shrink-0',
-                isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-slate-500',
+                isActive ? 'text-rensto-cyan' : 'text-gray-500 group-hover:text-gray-300',
                 collapsed && 'mr-0'
               )}
             />
@@ -143,23 +143,23 @@ export function ClientNavigationMobile() {
     <nav className="space-y-1 px-2">
       {clientNavigation.map((item) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-        
+
         return (
           <Link
             key={item.name}
             href={item.href}
             className={cn(
               'group flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors',
-              'hover:bg-slate-100 hover:text-slate-900',
+              'hover:bg-white/5 hover:text-white',
               isActive
-                ? 'bg-slate-100 text-slate-900'
-                : 'text-slate-600'
+                ? 'bg-white/10 text-white'
+                : 'text-gray-400'
             )}
           >
             <item.icon
               className={cn(
                 'mr-4 h-6 w-6 flex-shrink-0',
-                isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-slate-500'
+                isActive ? 'text-rensto-cyan' : 'text-gray-500 group-hover:text-gray-300'
               )}
             />
             <span className="flex-1">{item.name}</span>

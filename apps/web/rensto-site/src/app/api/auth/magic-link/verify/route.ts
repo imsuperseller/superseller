@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         if (tokenData.redirectTo) {
             destination = tokenData.redirectTo;
         } else if (tokenData.clientId === 'admin') {
-            destination = '/control';
+            destination = '/admin';
         }
 
         // Set auth cookie and redirect to dashboard

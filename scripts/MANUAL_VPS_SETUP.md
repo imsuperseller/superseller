@@ -11,16 +11,16 @@ Open your terminal and run:
 
 ```bash
 # Test ping
-ping -c 3 173.254.201.134
+ping -c 3 172.245.56.50
 
 # Test SSH (should prompt for password: necmad-zYnfe4-fypwip)
-ssh root@173.254.201.134 "echo 'SSH works'"
+ssh root@172.245.56.50 "echo 'SSH works'"
 
 # Check Docker
-ssh root@173.254.201.134 "docker ps"
+ssh root@172.245.56.50 "docker ps"
 
 # Check n8n container
-ssh root@173.254.201.134 "docker exec n8n_rensto n8n --version"
+ssh root@172.245.56.50 "docker exec n8n_rensto n8n --version"
 ```
 
 ---
@@ -32,10 +32,10 @@ ssh root@173.254.201.134 "docker exec n8n_rensto n8n --version"
 cd "/Users/shaifriedman/New Rensto/rensto"
 
 # Upload CSV to VPS
-scp scripts/boost-space/exports/products.csv root@173.254.201.134:/tmp/products.csv
+scp scripts/boost-space/exports/products.csv root@172.245.56.50:/tmp/products.csv
 
 # SSH into VPS
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 
 # Copy CSV to n8n data directory
 docker exec n8n_rensto mkdir -p /home/node/.n8n/data
@@ -51,10 +51,10 @@ docker exec n8n_rensto ls -la /home/node/.n8n/data/products.csv
 
 ```bash
 # From your local machine (still in rensto directory)
-scp scripts/n8n-backup-and-update-1.119.1.sh root@173.254.201.134:/opt/n8n/
+scp scripts/n8n-backup-and-update-1.119.1.sh root@172.245.56.50:/opt/n8n/
 
 # SSH into VPS
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 
 # Navigate to n8n directory
 cd /opt/n8n
@@ -91,7 +91,7 @@ docker logs n8n_rensto --tail 50
 
 ## Step 5: Import & Validate Workflow
 
-1. **Access n8n UI**: http://173.254.201.134:5678
+1. **Access n8n UI**: http://172.245.56.50:5678
 
 2. **Import workflow**:
    - Click "Import from File"
@@ -113,12 +113,12 @@ docker logs n8n_rensto --tail 50
 
 ### If SSH hangs:
 - Check your network connection
-- Try: `ssh -v root@173.254.201.134` for verbose output
+- Try: `ssh -v root@172.245.56.50` for verbose output
 - Check if port 22 is blocked
 
 ### If Docker commands fail:
-- Check if Docker is running: `ssh root@173.254.201.134 "systemctl status docker"`
-- Check container name: `ssh root@173.254.201.134 "docker ps -a | grep n8n"`
+- Check if Docker is running: `ssh root@172.245.56.50 "systemctl status docker"`
+- Check container name: `ssh root@172.245.56.50 "docker ps -a | grep n8n"`
 
 ### If update fails:
 - Check backup location: `/root/n8n-backups/`
@@ -129,10 +129,10 @@ docker logs n8n_rensto --tail 50
 
 ## Quick Reference
 
-**VPS IP**: 173.254.201.134  
+**VPS IP**: 172.245.56.50  
 **VPS User**: root  
 **VPS Password**: necmad-zYnfe4-fypwip  
-**n8n URL**: http://173.254.201.134:5678  
+**n8n URL**: http://172.245.56.50:5678  
 **Container Name**: n8n_rensto  
 **CSV Location**: `/home/node/.n8n/data/products.csv` (inside container)
 

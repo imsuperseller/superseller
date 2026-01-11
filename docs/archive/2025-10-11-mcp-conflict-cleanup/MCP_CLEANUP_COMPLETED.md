@@ -40,7 +40,7 @@
         "-e", "MCP_MODE=stdio",
         "-e", "LOG_LEVEL=error",
         "-e", "DISABLE_CONSOLE_OUTPUT=true",
-        "-e", "N8N_API_URL=http://173.254.201.134:5678",
+        "-e", "N8N_API_URL=http://172.245.56.50:5678",
         "-e", "N8N_API_KEY=eyJ...",
         "ghcr.io/czlonkowski/n8n-mcp:latest"
       ]

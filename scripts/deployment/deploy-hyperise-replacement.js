@@ -301,7 +301,7 @@ class HyperiseReplacementDeployer {
 
   async testAPIHealth() {
     try {
-      const response = await fetch('http://localhost:3000/health');
+      const response = await fetch('http://localhost:5050/health');
       return await response.json();
     } catch (error) {
       throw new Error(`Health check failed: ${error.message}`);
@@ -310,7 +310,7 @@ class HyperiseReplacementDeployer {
 
   async testShortLinkCreation() {
     try {
-      const response = await fetch('http://localhost:3000/api/short-links/create', {
+      const response = await fetch('http://localhost:5050/api/short-links/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -338,7 +338,7 @@ class HyperiseReplacementDeployer {
 
   async testLandingPageRendering(shortCode) {
     try {
-      const response = await fetch(`http://localhost:3000/p/${shortCode}?name=Test&email=test@example.com`);
+      const response = await fetch(`http://localhost:5050/p/${shortCode}?name=Test&email=test@example.com`);
 
       if (response.ok) {
         const html = await response.text();
@@ -392,7 +392,7 @@ class HyperiseReplacementDeployer {
         attempts++;
 
         try {
-          const response = await fetch('http://localhost:3000/health');
+          const response = await fetch('http://localhost:5050/health');
           if (response.ok) {
             resolve();
           } else {
@@ -509,8 +509,8 @@ class HyperiseReplacementDeployer {
 The Hyperise replacement system has been successfully deployed and tested.
 
 **Access URLs:**
-- **API**: http://localhost:3000
-- **Health Check**: http://localhost:3000/health
+- **API**: http://localhost:5050
+- **Health Check**: http://localhost:5050/health
 - **Database Admin**: http://localhost:8080
 - **Redis Admin**: http://localhost:8081
 

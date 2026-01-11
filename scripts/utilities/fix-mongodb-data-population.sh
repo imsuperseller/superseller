@@ -351,13 +351,13 @@ echo ""
 echo "📤 DEPLOYING TO SERVER..."
 
 # Deploy script to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/fix-mongodb-data.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/fix-mongodb-data.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 EXECUTING ON SERVER..."
 
 # Execute script on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node fix-mongodb-data.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node fix-mongodb-data.js"
 
 echo ""
 echo "🎉 MONGODB DATA POPULATION COMPLETE!"

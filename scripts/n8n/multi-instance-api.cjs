@@ -339,7 +339,7 @@ n8n Multi-Instance API Script
 Usage: node multi-instance-api.js <command> <instance> [args]
 
 Instances:
-  rensto    Rensto VPS (http://173.254.201.134:5678) [default]
+  rensto    Rensto VPS (http://172.245.56.50:5678) [default]
   tax4us    Tax4Us Cloud (https://tax4usllc.app.n8n.cloud)
   shelly    Shelly Cloud (https://shellyins.app.n8n.cloud)
 

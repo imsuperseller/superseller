@@ -50,7 +50,7 @@ echo "🚀 UNIFIED REDIS DEPLOYMENT"
 echo "==========================="
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -124,7 +124,7 @@ SIMPLE_REDIS
                 rediscommander/redis-commander:latest
                 
             echo "✅ Enhanced Redis deployed successfully!"
-            echo "📊 Redis Commander: http://173.254.201.134:8081"
+            echo "📊 Redis Commander: http://172.245.56.50:8081"
 ENHANCED_REDIS
         ;;
         
@@ -173,9 +173,9 @@ ENHANCED_REDIS
                 redis-sentinel --sentinel monitor mymaster redis-master 6379 2 --sentinel auth-pass mymaster rensto_redis_2024
                 
             echo "✅ Redis V2 (Cluster) deployed successfully!"
-            echo "📊 Master: 173.254.201.134:6379"
-            echo "📊 Slave: 173.254.201.134:6380"
-            echo "📊 Sentinel: 173.254.201.134:26379"
+            echo "📊 Master: 172.245.56.50:6379"
+            echo "📊 Slave: 172.245.56.50:6380"
+            echo "📊 Sentinel: 172.245.56.50:26379"
 REDIS_V2
         ;;
         
@@ -214,7 +214,7 @@ echo "🚀 UNIFIED PORTAL DEPLOYMENT"
 echo "============================"
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -363,7 +363,7 @@ STATIC_PORTAL
             npm start &
             
             echo "✅ Next.js portal deployed successfully!"
-            echo "📱 Portal URL: http://173.254.201.134:3000"
+            echo "📱 Portal URL: http://172.245.56.50:3000"
 NEXTJS_DEPLOY
         ;;
         
@@ -414,7 +414,7 @@ echo "🧪 UNIFIED TEST SUITE"
 echo "===================="
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -578,7 +578,7 @@ echo "🔄 UNIFIED WORKFLOW MANAGEMENT"
 echo "=============================="
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -826,10 +826,10 @@ echo ""
 echo "📤 DEPLOYING CONSOLIDATED SCRIPTS..."
 
 # Deploy consolidated scripts
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/deploy-redis.sh root@173.254.201.134:/var/www/html/deploy-redis.sh
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/deploy-portal.sh root@173.254.201.134:/var/www/html/deploy-portal.sh
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/test-suite.sh root@173.254.201.134:/var/www/html/test-suite.sh
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/workflow-management.sh root@173.254.201.134:/var/www/html/workflow-management.sh
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/deploy-redis.sh root@172.245.56.50:/var/www/html/deploy-redis.sh
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/deploy-portal.sh root@172.245.56.50:/var/www/html/deploy-portal.sh
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/test-suite.sh root@172.245.56.50:/var/www/html/test-suite.sh
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/workflow-management.sh root@172.245.56.50:/var/www/html/workflow-management.sh
 
 echo ""
 echo "🧹 REMOVING REDUNDANT SCRIPTS..."

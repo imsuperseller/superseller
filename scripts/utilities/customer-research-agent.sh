@@ -339,15 +339,15 @@ echo ""
 echo "📤 DEPLOYING RESEARCH SYSTEM..."
 
 # Deploy research system to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/customer-research-agent.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/research-ben-ginati.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/research-shelly-mizrahi.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/customer-research-agent.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/research-ben-ginati.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/research-shelly-mizrahi.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 EXECUTING RESEARCH..."
 
 # Install required packages and run research
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && npm install axios cheerio && node research-ben-ginati.js && node research-shelly-mizrahi.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && npm install axios cheerio && node research-ben-ginati.js && node research-shelly-mizrahi.js"
 
 echo ""
 echo "🎉 CUSTOMER RESEARCH COMPLETE!"

@@ -6,7 +6,7 @@
 echo "🚀 Starting MCP Servers on Racknerd VPS..."
 
 # SSH to Racknerd and start MCP servers
-ssh root@173.254.201.134 << 'EOF'
+ssh root@172.245.56.50 << 'EOF'
 
 echo "📡 Connected to Racknerd VPS"
 echo "🔍 Checking current MCP server status..."

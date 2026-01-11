@@ -1,0 +1,125 @@
+{
+    "name": "OPS-SZEN-001: Ops-Szen Management Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "ops-szen/sync",
+                "responseMode": "onReceived",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Webhook - Sync Request",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ],
+            "webhookId": "ops-szen-sync"
+        },
+        {
+            "parameters": {
+                "url": "https://api.gologin.com/browser/profiles",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer {{ $env.GOLOGIN_API_KEY }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "gologin-status",
+            "name": "GoLogin - Check Profiles",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const profiles = $input.all();\nconst healthy = profiles.filter(p => p.json.status === 'ready');\nconst unhealthy = profiles.filter(p => p.json.status !== 'ready');\n\nreturn [{\n  json: {\n    total: profiles.length,\n    healthyCount: healthy.length,\n    unhealthyCount: unhealthy.length,\n    alertNeeded: unhealthy.length > 0\n  }\n}];"
+            },
+            "id": "health-check",
+            "name": "Analyze Profile Health",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "collection": "system_health",
+                "documentId": "gologin_cluster_health",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "healthy": "={{ $json.healthyCount }}",
+                        "lastCheck": "={{ new Date().toISOString() }}"
+                    }
+                }
+            },
+            "id": "firestore-save",
+            "name": "Firestore - Update Health",
+            "type": "n8n-nodes-base.firebaseCloudFirestore",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "firebaseCloudFirestoreApi": {
+                    "id": "firestore-creds",
+                    "name": "Rensto Firestore"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook - Sync Request": {
+            "main": [
+                [
+                    {
+                        "node": "GoLogin - Check Profiles",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GoLogin - Check Profiles": {
+            "main": [
+                [
+                    {
+                        "node": "Analyze Profile Health",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Analyze Profile Health": {
+            "main": [
+                [
+                    {
+                        "node": "Firestore - Update Health",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true
+    }
+}

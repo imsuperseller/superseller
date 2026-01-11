@@ -15,7 +15,7 @@
 1. `brand_palette.png` - Rensto colors: #fe3d51 (red), #bf5700 (orange), #1eaef7 (blue), #5ffbfd (cyan), #110d28 (dark bg)
 2. `shai.png` - Headshot of @shai (founder/talking head videos)
 3. `rensto_logo.png` - Clean logo on transparent background
-4. `n8n_dashboard.png` - Actual n8n workflow interface (173.254.201.134:5678)
+4. `n8n_dashboard.png` - Actual n8n workflow interface (172.245.56.50:5678)
 5. `airtable_interface.png` - Airtable dashboard showing client data
 6. `wordpress_admin.png` - WordPress admin panel (tax4us.co.il style)
 7. `slack_notifications.png` - Slack approval workflow interface

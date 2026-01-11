@@ -18,7 +18,7 @@ class AdminDashboardImplementation {
   constructor() {
     this.config = {
       mcp: {
-        url: 'http://173.254.201.134:5678/webhook/mcp'
+        url: 'http://172.245.56.50:5678/webhook/mcp'
       },
       projectRoot: process.cwd(),
       webAppPath: 'web/rensto-site',

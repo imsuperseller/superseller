@@ -17,8 +17,8 @@
     }
   ],
   "env": {
-    "MCP_RACKNERD_URL": "http://173.254.201.134:4000",
+    "MCP_RACKNERD_URL": "http://172.245.56.50:4000",
     "MCP_CLOUDFLARE_URL": "https://customer-portal-mcp.service-46a.workers.dev",
-    "WEBSOCKET_URL": "ws://173.254.201.134:4000/ws"
+    "WEBSOCKET_URL": "ws://172.245.56.50:4000/ws"
   }
 }

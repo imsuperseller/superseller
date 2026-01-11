@@ -24,7 +24,7 @@ class BMADSmartSyncValidation {
         baseUrl: 'https://api.airtable.com/v0'
       },
       n8n: {
-        apiUrl: process.env.N8N_API_URL || 'http://173.254.201.134:5678',
+        apiUrl: process.env.N8N_API_URL || 'http://172.245.56.50:5678',
         apiKey: process.env.N8N_API_KEY
       },
       stripe: {

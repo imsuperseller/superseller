@@ -41,7 +41,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 ---
 
-### **2. VPS Server (173.254.201.134)** ✅ VERIFIED
+### **2. VPS Server (172.245.56.50)** ✅ VERIFIED
 
 | Service | Status | Details |
 |---------|--------|---------|
@@ -76,7 +76,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 - **Purpose**: Serves Next.js API routes from rensto-site application
 - **Primary Use**: Stripe webhook endpoint (`/api/stripe/webhook/route.ts`)
 - **Webhook Events**: checkout.session.completed, payment_intent.succeeded, subscription events
-- **n8n Integration**: Triggers workflows at http://173.254.201.134:5678
+- **n8n Integration**: Triggers workflows at http://172.245.56.50:5678
 - **Hosted**: Same Vercel deployment as www.rensto.com (different DNS routing)
 
 ---

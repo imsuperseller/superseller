@@ -13,7 +13,7 @@ AIRTABLE_API_KEY=patYourAirtableApiKeyHere
 ADMIN_SECRET_KEY=your-admin-secret-key-here
 
 # App Configuration
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3001
 EOF
     echo "✅ .env.local created"
 else
@@ -33,7 +33,7 @@ echo ""
 echo "📋 Next steps:"
 echo "1. Update .env.local with your actual Airtable API key"
 echo "2. Run: npm run dev"
-echo "3. Visit: http://localhost:3000/admin/login"
+echo "3. Visit: http://localhost:3001/admin/login"
 echo "4. Use demo credentials: admin@rensto.com / admin123"
 echo ""
 echo "🔗 Admin Dashboard Features:"

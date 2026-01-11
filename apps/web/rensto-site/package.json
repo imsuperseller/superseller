@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "dev:simple": "next dev",
-    "dev:port": "next dev -p",
-    "dev:reliable": "next dev",
-    "start:dev": "next dev",
+    "dev": "PORT=3002 next dev --webpack",
+    "dev:3002": "PORT=3002 next dev",
+    "dev:simple": "PORT=3002 next dev",
+    "dev:port": "PORT=3002 next dev",
+    "dev:reliable": "PORT=3002 next dev",
+    "start:dev": "PORT=3002 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -15,9 +16,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "check-port": "node scripts/check-port.js",
-    "populate-data": "node scripts/populate-sample-data.js",
-    "setup": "node scripts/setup-system.js",
-    "test-mongo": "node scripts/test-mongo.js"
+    "setup": "node scripts/setup-system.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",

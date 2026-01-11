@@ -119,8 +119,8 @@ docker compose down
 ## Production Deployment
 
 ### **n8n Production**
-**URL**: http://173.254.201.134:5678
-**VPS**: RackNerd (173.254.201.134)
+**URL**: http://172.245.56.50:5678
+**VPS**: RackNerd (172.245.56.50)
 **Version**: Community Edition v1.113.3
 **Deployment Method**: Direct Docker Compose on VPS (not using local config)
 
@@ -132,7 +132,7 @@ docker compose down
 **Actual Production**: n8n runs on RackNerd VPS with Docker Compose deployed there
 
 ### **MongoDB Production**
-**URL**: mongodb://173.254.201.134:27017
+**URL**: mongodb://172.245.56.50:27017
 **Status**: Running on RackNerd VPS (not via Docker Compose)
 **Purpose**: Optional database for customer projects requiring >50K records
 

@@ -11,17 +11,17 @@ function patchFile() {
   try {
     // Read the file
     let content = fs.readFileSync(PATCH_FILE, 'utf8');
-    
+
     // Check if already patched
     if (content.includes('webhookId, activeVersion, activeVersionId')) {
       console.error('[n8n-mcp-wrapper] File already patched');
       return true;
     }
-    
+
     // Patch the function
     const oldPattern = /const \{ id, createdAt, updatedAt, versionId, versionCounter, meta, staticData, pinData, tags, description, isArchived, usedCredentials, sharedWithProjects, triggerCount, shared, active, \.\.\.cleanedWorkflow \} = workflow;/;
     const newPattern = 'const { id, createdAt, updatedAt, versionId, versionCounter, meta, staticData, pinData, tags, description, isArchived, usedCredentials, sharedWithProjects, triggerCount, shared, active, webhookId, activeVersion, activeVersionId, ...cleanedWorkflow } = workflow;';
-    
+
     if (oldPattern.test(content)) {
       content = content.replace(oldPattern, newPattern);
       fs.writeFileSync(PATCH_FILE, content, 'utf8');
@@ -49,7 +49,7 @@ const dockerArgs = [
   '-e', 'MCP_MODE=stdio',
   '-e', 'LOG_LEVEL=error',
   '-e', 'DISABLE_CONSOLE_OUTPUT=true',
-  '-e', `N8N_API_URL=${process.env.N8N_API_URL || 'http://173.254.201.134:5678'}`,
+  '-e', `N8N_API_URL=${process.env.N8N_API_URL || 'https://n8n.rensto.com'}`,
   '-e', `N8N_API_KEY=${process.env.N8N_API_KEY || ''}`,
   'ghcr.io/czlonkowski/n8n-mcp:2.26.5',
   'sh', '-c', `

@@ -243,7 +243,7 @@ node safety-guard.js emergency
 2. **Backup Manually (Extra Safety)**
    ```bash
    # Before first switch, backup Rensto VPS manually:
-   ssh root@173.254.201.134
+   ssh root@172.245.56.50
    cd /opt/n8n
    docker exec n8n_rensto n8n export:workflow --backup --output=/data/manual-backup-oct8-2025.json
    ```
@@ -251,7 +251,7 @@ node safety-guard.js emergency
 3. **Document Community Nodes**
    ```bash
    # List Rensto VPS community nodes:
-   ssh root@173.254.201.134 "docker exec n8n_rensto n8n list-community-packages"
+   ssh root@172.245.56.50 "docker exec n8n_rensto n8n list-community-packages"
 
    # Keep this list for reference
    ```

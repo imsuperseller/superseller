@@ -127,7 +127,7 @@ export default function TermsOfServicePage() {
                 <h2 className="text-2xl font-semibold mb-4">7. Warranty and Guarantee</h2>
                 <p className="text-muted mb-4">
                   We warrant that our services will be performed in a professional manner consistent with industry standards.
-                  If you are not satisfied with our work, we offer a money-back guarantee within 30 days of project completion.
+                  If you are not satisfied with our delivery, we offer a Rensto Success Guarantee. We will work to rectify any issues or ensure your complete satisfaction if the system does not meet the agreed specifications.
                 </p>
                 <p className="text-muted mb-4">
                   This warranty does not cover issues arising from:

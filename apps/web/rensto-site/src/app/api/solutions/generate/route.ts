@@ -15,7 +15,7 @@ const SOLUTION_TIERS = {
             'Core AI workflow (up to 3 automations)',
             'Basic integration setup',
             'Documentation & training',
-            '30-day support'
+            'Success Guarantee'
         ],
         ideal: 'Businesses ready to automate their most painful process'
     },

@@ -11,7 +11,7 @@
 You now have a complete system for managing multiple n8n instances with automatic switching and safety isolation!
 
 ### Current Status ✅
-- **Rensto VPS**: Configured and ready (`http://173.254.201.134:5678`)
+- **Rensto VPS**: Configured and ready (`http://172.245.56.50:5678`)
 - **Current Instance**: Rensto VPS (active)
 - **Safety Mode**: Isolation enabled
 - **Validation**: Disabled for VPS (can be enabled for customer instances)
@@ -112,7 +112,7 @@ node safety-guard.js report
     "n8n-rensto-vps": {
       "name": "Rensto VPS",
       "type": "vps",
-      "url": "http://173.254.201.134:5678",
+      "url": "http://172.245.56.50:5678",
       "safety": {
         "backupBeforeSwitch": true,
         "validateConnection": false,
@@ -137,7 +137,7 @@ node customer-instance-setup.js quick "Shelly" "https://shelly.n8n.cloud" "api-k
 ### Environment Variables
 When you switch instances, the system automatically updates:
 ```bash
-N8N_API_URL=http://173.254.201.134:5678  # or customer URL
+N8N_API_URL=http://172.245.56.50:5678  # or customer URL
 N8N_API_KEY=your-api-key
 N8N_INSTANCE_TYPE=vps  # or cloud
 N8N_INSTANCE_ID=n8n-rensto-vps
@@ -170,7 +170,7 @@ backups/
 1. **"Instance not accessible"**
    ```bash
    # Check if n8n is running on VPS
-   ssh root@173.254.201.134 "systemctl status n8n"
+   ssh root@172.245.56.50 "systemctl status n8n"
    ```
 
 2. **"API validation failed"**

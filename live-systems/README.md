@@ -187,13 +187,12 @@ npm start
 - `Smart_AI_Blog_Writing_System_for_Gumroad_Download_041225.json` - AI blog system
 
 **Integration Files**:
-- `boost-space-integration.json` - Boost.space integration workflow
 - `shadcn-ui-integration-demo.js` - Shadcn UI demo
 - `start-infrastructure-consolidation.js` - Infrastructure consolidation script
 
 **Status**: ✅ Active - Production workflows
 
-**Usage**: Import workflows into n8n at http://173.254.201.134:5678
+**Usage**: Import workflows into n8n at http://172.245.56.50:5678
 
 ---
 
@@ -287,7 +286,7 @@ node secure-ai-agent.js
 
 ### **Import n8n Workflows**
 
-1. Navigate to http://173.254.201.134:5678
+1. Navigate to http://172.245.56.50:5678
 2. Go to Workflows → Import
 3. Select workflow JSON from `n8n-system/workflows/`
 4. Configure credentials and connections
@@ -318,7 +317,7 @@ node secure-ai-agent.js
 
 - **CLAUDE.md**: Master documentation mentioning live-systems/
 - **admin.rensto.com**: Admin dashboard (needs script integration)
-- **n8n Production**: http://173.254.201.134:5678
+- **n8n Production**: http://172.245.56.50:5678
 - **Customers/ortal/**: Ortal customer scripts (moved from here)
 
 ---

@@ -81,7 +81,7 @@ export default function LeadEnrichmentPage() {
     
     try {
       // Submit to n8n webhook
-      const response = await fetch('http://173.254.201.134:5678/webhook/lead-enrichment', {
+      const response = await fetch('http://172.245.56.50:5678/webhook/lead-enrichment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

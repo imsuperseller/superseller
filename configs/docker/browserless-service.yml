@@ -6,7 +6,7 @@
     container_name: browserless_rensto
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3005:3000"
     environment:
       # Authentication token (change this to a secure random string)
       - TOKEN=browserless-rensto-$(openssl rand -hex 16)

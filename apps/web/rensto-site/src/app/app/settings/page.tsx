@@ -11,59 +11,59 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-600 mt-2">
+        <h1 className="text-3xl font-bold text-rensto-text-primary">Settings</h1>
+        <p className="text-rensto-text-secondary mt-2">
           Manage your account settings and preferences
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="rensto-card">
+        <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-            <CardDescription>Update your account details</CardDescription>
+            <CardTitle className="text-rensto-text-primary">Account Information</CardTitle>
+            <CardDescription className="text-rensto-text-secondary">Update your account details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="name">Full Name</Label>
-              <Input id="name" defaultValue="Ben Ginati" />
+              <Label htmlFor="name" className="text-rensto-text-secondary">Full Name</Label>
+              <Input id="name" defaultValue="Ben Ginati" className="bg-white/5 border-white/10 text-white" />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue="ben@tax4us.co.il" />
+              <Label htmlFor="email" className="text-rensto-text-secondary">Email</Label>
+              <Input id="email" defaultValue="ben@tax4us.co.il" className="bg-white/5 border-white/10 text-white" />
             </div>
             <div>
-              <Label htmlFor="company">Company</Label>
-              <Input id="company" defaultValue="Tax4Us" />
+              <Label htmlFor="company" className="text-rensto-text-secondary">Company</Label>
+              <Input id="company" defaultValue="Tax4Us" className="bg-white/5 border-white/10 text-white" />
             </div>
             <Button variant="renstoPrimary">Save Changes</Button>
           </CardContent>
         </Card>
 
-        <Card className="rensto-card">
+        <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader>
-            <CardTitle>Notifications</CardTitle>
-            <CardDescription>Configure your notification preferences</CardDescription>
+            <CardTitle className="text-rensto-text-primary">Notifications</CardTitle>
+            <CardDescription className="text-rensto-text-secondary">Configure your notification preferences</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label>Email Notifications</Label>
-                <p className="text-sm text-slate-600">Receive email updates about agent runs</p>
+                <Label className="text-rensto-text-primary">Email Notifications</Label>
+                <p className="text-sm text-rensto-text-secondary">Receive email updates about agent runs</p>
               </div>
               <Switch defaultChecked />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <Label>Approval Requests</Label>
-                <p className="text-sm text-slate-600">Get notified when approval is needed</p>
+                <Label className="text-rensto-text-primary">Approval Requests</Label>
+                <p className="text-sm text-rensto-text-secondary">Get notified when approval is needed</p>
               </div>
               <Switch defaultChecked />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <Label>Billing Alerts</Label>
-                <p className="text-sm text-slate-600">Receive billing and usage alerts</p>
+                <Label className="text-rensto-text-primary">Billing Alerts</Label>
+                <p className="text-sm text-rensto-text-secondary">Receive billing and usage alerts</p>
               </div>
               <Switch />
             </div>

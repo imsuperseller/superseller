@@ -357,7 +357,7 @@ class N8nInstanceManager {
   initializeRenstoVPS() {
     const renstoConfig = {
       type: 'vps',
-      url: 'http://173.254.201.134:5678',
+      url: 'http://172.245.56.50:5678',
       apiKey: process.env.N8N_API_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
       credentials: {
         airtable: 'airtable-token',

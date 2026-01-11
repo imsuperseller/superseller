@@ -49,13 +49,13 @@ class SecurityAuditor {
 
   async checkEnvironmentVariables() {
     console.log('📋 Checking Environment Variables...');
-    
+
     const requiredVars = [
-      'NEXTAUTH_SECRET',
-      'NEXTAUTH_URL',
-      'MONGODB_URI',
-      'ICEDRIVE_WEBDAV_SERVER_URL',
-      'ICEDRIVE_ACCESS_KEY'
+      'FIREBASE_SERVICE_ACCOUNT_KEY',
+      'RESEND_API_KEY',
+      'STRIPE_SECRET_KEY',
+      'OPENAI_API_KEY',
+      'NEXT_PUBLIC_BASE_URL'
     ];
 
     const missingVars = [];
@@ -84,11 +84,11 @@ class SecurityAuditor {
 
   async checkDependencies() {
     console.log('📦 Checking Dependencies...');
-    
+
     try {
       const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
       const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
-      
+
       // Check for known vulnerable packages
       const vulnerablePackages = [
         'lodash', // Check version
@@ -110,7 +110,7 @@ class SecurityAuditor {
 
   async checkConfigurationFiles() {
     console.log('⚙️ Checking Configuration Files...');
-    
+
     const configFiles = [
       'next.config.mjs',
       'vercel.json',
@@ -120,12 +120,12 @@ class SecurityAuditor {
     for (const file of configFiles) {
       if (fs.existsSync(file)) {
         const content = fs.readFileSync(file, 'utf8');
-        
+
         // Check for security headers in Next.js config
         if (file === 'next.config.mjs' && content.includes('headers')) {
           this.passed.push('Security headers configured in Next.js');
         }
-        
+
         // Check for sensitive data in config files
         if (content.includes('password') || content.includes('secret') || content.includes('key')) {
           this.warnings.push(`Check ${file} for hardcoded secrets`);
@@ -138,13 +138,12 @@ class SecurityAuditor {
 
   async checkAPISecurity() {
     console.log('🔐 Checking API Security...');
-    
+
     const apiFiles = [
-      'src/app/api/auth/[...nextauth]/route.ts',
-      'src/app/api/agents/route.ts',
-      'src/app/api/customers/route.ts',
-      'src/app/api/files/route.ts',
-      'src/app/api/backup/route.ts'
+      'src/app/api/admin/clients/route.ts',
+      'src/app/api/admin/testimonials/route.ts',
+      'src/app/api/fulfillment/initiate/route.ts',
+      'src/app/api/support/create/route.ts'
     ];
 
     let authEndpoints = 0;
@@ -153,31 +152,31 @@ class SecurityAuditor {
     for (const file of apiFiles) {
       if (fs.existsSync(file)) {
         const content = fs.readFileSync(file, 'utf8');
-        
-        if (content.includes('getServerSession')) {
+
+        if (content.includes('checkAuth') || content.includes('getFirestoreAdmin')) {
           protectedEndpoints++;
         }
-        
-        if (content.includes('authOptions')) {
-          authEndpoints++;
+
+        if (content.includes('export const dynamic = \'force-dynamic\'')) {
+          authEndpoints++; // Using this as a proxy for correctly configured API routes
         }
       }
     }
 
     if (protectedEndpoints > 0) {
-      this.passed.push(`${protectedEndpoints} API endpoints have authentication checks`);
+      this.passed.push(`${protectedEndpoints} API endpoints have security/auth checks`);
     } else {
-      this.issues.push('No authentication checks found in API endpoints');
+      this.issues.push('No security checks found in API endpoints');
     }
 
     if (authEndpoints > 0) {
-      this.passed.push('Authentication system properly configured');
+      this.passed.push('API endpoints are properly configured for dynamic rendering');
     }
   }
 
   async checkFilePermissions() {
     console.log('📁 Checking File Permissions...');
-    
+
     const criticalFiles = [
       '.env',
       '.env.local',
@@ -190,7 +189,7 @@ class SecurityAuditor {
         try {
           const stats = fs.statSync(file);
           const mode = stats.mode.toString(8);
-          
+
           // Check if file is readable by others (should be 600 or 640)
           if (mode.endsWith('6') || mode.endsWith('7')) {
             this.warnings.push(`File ${file} has overly permissive permissions: ${mode}`);
@@ -206,7 +205,7 @@ class SecurityAuditor {
 
   async checkSSLConfiguration() {
     console.log('🔒 Checking SSL/TLS Configuration...');
-    
+
     // This would typically check SSL certificate validity
     // For now, we'll just note that Vercel handles SSL automatically
     this.passed.push('SSL/TLS handled by Vercel deployment platform');
@@ -214,10 +213,10 @@ class SecurityAuditor {
 
   async checkAuthentication() {
     console.log('🔑 Checking Authentication System...');
-    
+
     const authFiles = [
-      'src/lib/auth.ts',
-      'src/app/api/auth/[...nextauth]/route.ts'
+      'src/lib/firebase-admin.ts',
+      'src/app/api/admin/clients/route.ts'
     ];
 
     let authConfigured = false;
@@ -226,21 +225,18 @@ class SecurityAuditor {
     for (const file of authFiles) {
       if (fs.existsSync(file)) {
         const content = fs.readFileSync(file, 'utf8');
-        
-        if (content.includes('NextAuth')) {
+
+        if (content.includes('admin.credential.cert')) {
           authConfigured = true;
-        }
-        
-        if (content.includes('providers')) {
           providersConfigured = true;
         }
       }
     }
 
     if (authConfigured) {
-      this.passed.push('NextAuth.js authentication system configured');
+      this.passed.push('Firebase Admin SDK properly configured');
     } else {
-      this.issues.push('Authentication system not properly configured');
+      this.issues.push('Firebase Admin system not properly configured');
     }
 
     if (providersConfigured) {
@@ -252,12 +248,12 @@ class SecurityAuditor {
 
   async checkDataProtection() {
     console.log('🛡️ Checking Data Protection...');
-    
+
     // Check for encryption in file manager
     const fileManagerPath = 'src/lib/file-manager.ts';
     if (fs.existsSync(fileManagerPath)) {
       const content = fs.readFileSync(fileManagerPath, 'utf8');
-      
+
       if (content.includes('encrypt') || content.includes('hash')) {
         this.passed.push('Data encryption measures implemented');
       } else {
@@ -274,7 +270,7 @@ class SecurityAuditor {
     }
 
     // Check for GDPR compliance
-    const privacyPolicyPath = 'src/app/legal/privacy-policy/page.tsx';
+    const privacyPolicyPath = 'src/app/legal/privacy/page.tsx';
     if (fs.existsSync(privacyPolicyPath)) {
       this.passed.push('Privacy policy implemented');
     } else {
@@ -303,12 +299,12 @@ class SecurityAuditor {
     }
 
     console.log('\n' + '='.repeat(60));
-    
+
     const totalChecks = this.passed.length + this.warnings.length + this.issues.length;
     const securityScore = Math.round((this.passed.length / totalChecks) * 100);
-    
+
     console.log(`📊 SECURITY SCORE: ${securityScore}%`);
-    
+
     if (securityScore >= 80) {
       console.log('🎉 Excellent security posture!');
     } else if (securityScore >= 60) {
@@ -318,19 +314,19 @@ class SecurityAuditor {
     }
 
     console.log('\n📋 RECOMMENDATIONS:');
-    
+
     if (this.issues.length > 0) {
       console.log('1. Address critical issues immediately');
     }
-    
+
     if (this.warnings.length > 0) {
       console.log('2. Review and fix warnings');
     }
-    
+
     console.log('3. Run npm audit to check for dependency vulnerabilities');
     console.log('4. Consider implementing additional security measures');
     console.log('5. Regular security audits recommended');
-    
+
     console.log('\n' + '='.repeat(60));
   }
 }

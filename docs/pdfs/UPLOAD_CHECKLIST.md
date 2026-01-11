@@ -2,7 +2,7 @@
 
 **Generated**: November 17, 2025  
 **Store**: `fileSearchStores/rensto-knowledge-base-ndf9fmymwb2p`  
-**Upload URL**: `http://173.254.201.134:5678/form/0509cfab-f2e9-40fc-a268-8b966efb8305`
+**Upload URL**: `http://172.245.56.50:5678/form/0509cfab-f2e9-40fc-a268-8b966efb8305`
 
 ---
 
@@ -40,7 +40,7 @@
 
 ## 📤 Upload Instructions
 
-1. **Open File Upload Form**: `http://173.254.201.134:5678/form/0509cfab-f2e9-40fc-a268-8b966efb8305`
+1. **Open File Upload Form**: `http://172.245.56.50:5678/form/0509cfab-f2e9-40fc-a268-8b966efb8305`
 2. **Upload each PDF** one by one
 3. **Wait for confirmation** after each upload
 4. **Verify uploads** in Gemini dashboard (if accessible)

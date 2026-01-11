@@ -97,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={outfit.variable}>
+    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`}>
       <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
         <GTMProvider>
           <Providers>

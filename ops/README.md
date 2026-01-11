@@ -102,7 +102,7 @@ App Layout
 - Nodes: Webhook Trigger, Normalize fields, Dedupe by email, Airtable Create, Slack Notify
 - Status: Not yet implemented
 
-**Verification Needed**: Check which workflows exist in production n8n (http://173.254.201.134:5678)
+**Verification Needed**: Check which workflows exist in production n8n (http://172.245.56.50:5678)
 
 ---
 
@@ -121,7 +121,7 @@ n8n:latest:
   - Volume: ./data/n8n
   - Requires: N8N_ENCRYPTION_KEY
 
-# MongoDB: Running on RackNerd server at 173.254.201.134:27017
+# MongoDB: Running on RackNerd server at 172.245.56.50:27017
 # No local MongoDB container needed
 ```
 
@@ -302,7 +302,7 @@ Phase: Infrastructure → Business Applications
 
 ### **What's Implemented**:
 - ✅ Cloudflare tunnel (n8n.rensto.com)
-- ✅ n8n production instance (http://173.254.201.134:5678)
+- ✅ n8n production instance (http://172.245.56.50:5678)
 - ✅ Security requirements (no exposed ports, HTTPS, encrypted credentials)
 - ✅ Data consistency (timezone, naming conventions)
 - ✅ Some design tokens applied to rensto.com
@@ -347,7 +347,7 @@ nano ops/spec.md
 ### **Checking Implementation Status**
 
 **For n8n Workflows**:
-1. Navigate to http://173.254.201.134:5678
+1. Navigate to http://172.245.56.50:5678
 2. Go to Workflows tab
 3. Search for workflow names in spec.md
 4. Verify: leads-daily-followups, projects-digest, finance-unpaid-invoices, assets-renewals
@@ -419,7 +419,7 @@ nano ops/spec.md
 - **/configs/**: Configuration files referenced in spec.md
 - **/infra/**: Infrastructure setup files
 - **/docs/**: General documentation (some files referenced in gates.sh)
-- **n8n Production**: http://173.254.201.134:5678 (workflow implementation)
+- **n8n Production**: http://172.245.56.50:5678 (workflow implementation)
 
 ---
 

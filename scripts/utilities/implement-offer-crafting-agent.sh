@@ -6,7 +6,7 @@ echo "🎯 ADVANCED OFFER CRAFTING AGENT"
 echo "================================"
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -1162,22 +1162,22 @@ echo ""
 echo "📤 DEPLOYING OFFER CRAFTING SYSTEM..."
 
 # Deploy offer crafting system to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-system.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-workflow.json root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-portal-integration.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-admin-integration.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-system.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-workflow.json root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-portal-integration.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/offer-crafting-admin-integration.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 INSTALLING DEPENDENCIES..."
 
 # Install required packages on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && npm install openai"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && npm install openai"
 
 echo ""
 echo "🎯 TESTING OFFER CRAFTING SYSTEM..."
 
 # Test offer crafting system
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node -e \"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node -e \"
 const AdvancedOfferCraftingAgent = require('./offer-crafting-system.js');
 const offerAgent = new AdvancedOfferCraftingAgent();
 

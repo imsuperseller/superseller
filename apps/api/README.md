@@ -62,7 +62,7 @@ STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # API Configuration
-PORT=3001
+PORT=5000
 NODE_ENV=development
 
 # Rate Limiting

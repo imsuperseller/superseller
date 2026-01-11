@@ -45,7 +45,7 @@ cat > /tmp/populate-customer-data.js << 'EOF'
 const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb'); // Added missing import for ObjectId
 
-const MONGODB_URI = 'mongodb://admin:rensto2024@173.254.201.134:27017/rensto?authSource=admin';
+const MONGODB_URI = 'mongodb://admin:rensto2024@172.245.56.50:27017/rensto?authSource=admin';
 
 async function populateCustomerData() {
   const client = new MongoClient(MONGODB_URI);
@@ -308,13 +308,13 @@ echo ""
 echo "📤 DEPLOYING TO SERVER..."
 
 # Deploy script to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/populate-customer-data.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/populate-customer-data.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 EXECUTING ON SERVER..."
 
 # Execute script on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node populate-customer-data.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node populate-customer-data.js"
 
 echo ""
 echo "🎉 CUSTOMER DATA POPULATION COMPLETE!"
@@ -332,7 +332,7 @@ echo "   ✅ Organization: Portal Flanary"
 echo "   ✅ User: ortal.flanary@gmail.com"
 echo "   ✅ Agent: Facebook Group Scraper"
 echo "   ✅ Datasource: Apify Web Scraping"
-echo "   ✅ Portal: http://173.254.201.134/ortal.html"
+echo "   ✅ Portal: http://172.245.56.50/ortal.html"
 echo ""
 echo "📋 MISSING INFORMATION:"
 echo "   ❌ Ben Ginati - Business details needed"

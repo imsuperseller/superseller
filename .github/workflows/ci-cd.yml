@@ -165,7 +165,7 @@ jobs:
         run: |
           echo "✅ Deployment successful!"
           echo "Web: https://rensto-site.vercel.app"
-          echo "n8n: http://173.254.201.134:5678"
+          echo "n8n: http://172.245.56.50:5678"
 
       - name: Notify on failure
         if: needs.deploy-web.result == 'failure' || needs.deploy-infrastructure.result == 'failure'

@@ -55,7 +55,7 @@
 ## 🔧 **N8N INSTANCE CONFIGURATION**
 
 ### **Current Production Instance:**
-- **URL**: `http://173.254.201.134:5678`
+- **URL**: `http://172.245.56.50:5678`
 - **Version**: 1.112.5 (upgraded from 1.110.1)
 - **Container**: `n8n_rensto`
 - **Data Volume**: `n8n_n8n_data` (preserved during upgrade)

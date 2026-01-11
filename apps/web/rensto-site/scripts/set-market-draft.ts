@@ -52,8 +52,15 @@ async function updateTemplatesStatus() {
         console.log('All templates set to Draft.');
 
         // 2. Activate ONLY trusted templates
-        // 4OYGXXMYeJFfAo6X: Celebrity Selfie Video Generator
-        const activeIds = ['4OYGXXMYeJFfAo6X'];
+        const activeIds = [
+            '4OYGXXMYeJFfAo6X', // Celebrity Selfie Video Generator
+            '8GC371u1uBQ8WLmu', // Meta Ad Library Analyzer
+            '5pMi01SwffYB6KeX', // YouTube AI Clone
+            'U6EZ2iLQ4zCGg31H', // Call Audio Lead Analyzer
+            '5Fl9WUjYTpodcloJ', // AI Calendar Assistant
+            'stj8DmATqe66D9j4', // Floor Plan to Property Tour
+            'vCxY2DXUZ8vUb30f'  // Monthly CRO Insights Bot
+        ];
 
         console.log(`Activating specific templates: ${activeIds.join(', ')}...`);
 
@@ -62,7 +69,7 @@ async function updateTemplatesStatus() {
             const ref = db.collection(TEMPLATES_COLLECTION).doc(id);
             activationBatch.update(ref, {
                 readinessStatus: 'Active',
-                video: 'https://rensto.com/videos/celebrity-selfie-generator.mp4'
+                tags: ['marketplace']
             });
         }
 

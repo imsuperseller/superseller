@@ -83,8 +83,8 @@ export const AgentDefinitionSchema = z.object({
   name: z.string(),
   version: z.string(),
   description: z.string(),
-  inputs: z.record(z.any()), // JSON Schema
-  outputs: z.record(z.any()), // JSON Schema
+  inputs: z.record(z.string(), z.any()), // JSON Schema
+  outputs: z.record(z.string(), z.any()), // JSON Schema
   envRequirements: z.array(z.string()),
   category: z.enum(['content', 'social', 'analytics', 'automation', 'custom']),
   tags: z.array(z.string()),
@@ -108,7 +108,7 @@ export const AgentInstanceSchema = z.object({
   schedule: z.string().optional(), // CRON expression
   lastRun: z.date().optional(),
   nextRun: z.date().optional(),
-  settings: z.record(z.any()),
+  settings: z.record(z.string(), z.any()),
   failures: z.array(z.object({
     timestamp: z.date(),
     error: z.string(),
@@ -129,8 +129,8 @@ export const RunSchema = z.object({
   tenantId: z.string(),
   agentInstanceId: z.string(),
   status: z.enum(['queued', 'running', 'completed', 'failed', 'cancelled']),
-  input: z.record(z.any()),
-  output: z.record(z.any()).optional(),
+  input: z.record(z.string(), z.any()),
+  output: z.record(z.string(), z.any()).optional(),
   error: z.string().optional(),
   duration: z.number().optional(), // milliseconds
   cost: z.number().optional(),
@@ -242,7 +242,7 @@ export const ReportSchema = z.object({
     start: z.date(),
     end: z.date(),
   }),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
   summary: z.object({
     totalRuns: z.number(),
     successfulRuns: z.number(),
@@ -276,7 +276,7 @@ export const AuditLogSchema = z.object({
     type: z.string(),
     id: z.string().optional(),
   }),
-  metadata: z.record(z.any()),
+  metadata: z.record(z.string(), z.any()),
   severity: z.enum(['info', 'warning', 'error', 'critical']).default('info'),
 });
 
@@ -308,7 +308,7 @@ export const ApprovalSchema = z.object({
   agentInstanceId: z.string(),
   runId: z.string(),
   type: z.enum(['wordpress', 'social', 'custom']),
-  content: z.record(z.any()),
+  content: z.record(z.string(), z.any()),
   status: z.enum(['pending', 'approved', 'rejected', 'published']),
   requestedBy: z.string(), // User ID
   reviewedBy: z.string().optional(), // User ID
@@ -330,7 +330,7 @@ export const HealthCheckSchema = z.object({
   status: z.enum(['healthy', 'degraded', 'down']),
   responseTime: z.number(), // milliseconds
   error: z.string().optional(),
-  metadata: z.record(z.any()),
+  metadata: z.record(z.string(), z.any()),
   timestamp: z.date(),
 });
 
@@ -381,14 +381,14 @@ export const UpdateTenantSchema = z.object({
 export const CreateAgentInstanceSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   definitionKey: z.string().min(1, 'Agent definition is required'),
-  settings: z.record(z.any()),
+  settings: z.record(z.string(), z.any()),
   schedule: z.string().optional(), // CRON expression
 });
 
 export const UpdateAgentInstanceSchema = z.object({
   name: z.string().min(1, 'Name is required').optional(),
   status: z.enum(['active', 'inactive']).optional(),
-  settings: z.record(z.any()).optional(),
+  settings: z.record(z.string(), z.any()).optional(),
   schedule: z.string().optional(),
 });
 
@@ -409,7 +409,7 @@ export const CreateCredentialSchema = z.object({
     'custom'
   ]),
   label: z.string().min(1, 'Label is required'),
-  data: z.record(z.any()), // Will be encrypted
+  data: z.record(z.string(), z.any()), // Will be encrypted
 });
 
 export const InviteUserSchema = z.object({

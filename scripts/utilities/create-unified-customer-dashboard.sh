@@ -1227,15 +1227,15 @@ echo ""
 echo "📤 DEPLOYING TO SERVER..."
 
 # Deploy all systems to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/unified-customer-dashboard.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/payment-tracking-system.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/file-upload-chat-agent.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/unified-customer-dashboard.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/payment-tracking-system.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/file-upload-chat-agent.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 EXECUTING ON SERVER..."
 
 # Execute on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node unified-customer-dashboard.js && node payment-tracking-system.js && node file-upload-chat-agent.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node unified-customer-dashboard.js && node payment-tracking-system.js && node file-upload-chat-agent.js"
 
 echo ""
 echo "🎉 UNIFIED CUSTOMER DASHBOARD SYSTEM COMPLETE!"

@@ -20,7 +20,7 @@ exit 0
 # Function to test SSH connection
 test_ssh() {
     echo "🔍 Testing SSH connection to Racknerd VPS..."
-    if timeout 10s ssh -o ConnectTimeout=5 -o BatchMode=yes root@173.254.201.134 "echo 'SSH connection successful'" 2>/dev/null; then
+    if timeout 10s ssh -o ConnectTimeout=5 -o BatchMode=yes root@172.245.56.50 "echo 'SSH connection successful'" 2>/dev/null; then
         echo "✅ SSH connection working"
         return 0
     else
@@ -34,7 +34,7 @@ test_port() {
     local port=$1
     local service=$2
     echo "🔍 Testing $service on port $port..."
-    if timeout 5s curl -s "http://173.254.201.134:$port/health" >/dev/null 2>&1; then
+    if timeout 5s curl -s "http://172.245.56.50:$port/health" >/dev/null 2>&1; then
         echo "✅ $service (port $port) is responding"
         return 0
     else
@@ -48,7 +48,7 @@ start_mcp_proxy() {
     echo "🚀 Starting MCP Proxy on port 4000..."
     
     # Create a simple MCP Proxy if it doesn't exist
-    ssh root@173.254.201.134 << 'EOF'
+    ssh root@172.245.56.50 << 'EOF'
         cd /root/rensto/infra/mcp-servers/
         
         # Create MCP Proxy directory if it doesn't exist

@@ -10,7 +10,7 @@
     },
     {
       "name": "SaaS Lead Enrichment",
-      "url": "http://173.254.201.134:5678/webhook/lead-enrichment-saas",
+      "url": "http://172.245.56.50:5678/webhook/lead-enrichment-saas",
       "eventType": "lead.created",
       "timeout": 10,
       "critical": true,

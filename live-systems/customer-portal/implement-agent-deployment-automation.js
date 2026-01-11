@@ -16,7 +16,7 @@ class AgentDeploymentAutomation {
     
     this.n8nConfigs = {
       vps: {
-        url: 'http://173.254.201.134:5678',
+        url: 'http://172.245.56.50:5678',
         apiKey: process.env.N8N_VPS_API_KEY || 'your-vps-api-key',
         headers: {
           'X-N8N-API-KEY': process.env.N8N_VPS_API_KEY || 'your-vps-api-key',

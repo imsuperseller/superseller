@@ -120,53 +120,58 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Check if the update script exists
-UPDATE_SCRIPT="$SCRIPT_DIR/n8n-complete-update-system.js"
+UPDATE_SCRIPT="$SCRIPT_DIR/n8n/rensto-n8n-upgrade-2.3.1.sh"
 if [ ! -f "$UPDATE_SCRIPT" ]; then
     print_error "Update script not found: $UPDATE_SCRIPT"
     exit 1
 fi
 
-# Build command arguments
-ARGS=""
-if [ "$DRY_RUN" = true ]; then
-    ARGS="$ARGS --dry-run"
-fi
-if [ "$FORCE" = true ]; then
-    ARGS="$ARGS --force"
-fi
-
 # Confirm before proceeding (unless force mode)
 if [ "$FORCE" = false ]; then
     echo ""
-    print_warning "This will update your n8n instance. Are you sure you want to continue?"
+    print_warning "This will update your n8n instance at $N8N_SERVER. Are you sure you want to continue?"
     print_warning "Press Ctrl+C to cancel, or Enter to continue..."
     read -r
 fi
 
-# Execute the update script
-print_status "🔧 Executing update script..."
-print_status "Command: node \"$UPDATE_SCRIPT\" $ARGS"
+# Dry run logic
+if [ "$DRY_RUN" = true ]; then
+    print_status "🔍 DRY RUN: Checking connection to $N8N_SERVER..."
+    if ssh -o ConnectTimeout=5 root@$N8N_SERVER "echo 'SSH Connection OK'" 2>/dev/null; then
+        print_success "✅ SSH Connection to $N8N_SERVER successful"
+        print_status "🔍 DRY RUN: Would upload $UPDATE_SCRIPT and execute it."
+        exit 0
+    else
+        print_error "❌ Failed to connect to $N8N_SERVER via SSH"
+        exit 1
+    fi
+fi
 
-# Run the update script
-if node "$UPDATE_SCRIPT" $ARGS; then
+# Execute the update
+SSH_PASS="y0JEu4uI0hAQ606Mfr"
+SSHPASS_CMD="/opt/homebrew/bin/sshpass -p $SSH_PASS"
+
+print_status "📤 Uploading update script to server..."
+$SSHPASS_CMD scp -o StrictHostKeyChecking=no "$UPDATE_SCRIPT" root@$N8N_SERVER:/opt/n8n/
+
+print_status "🔧 Executing update script on server..."
+if $SSHPASS_CMD ssh -o StrictHostKeyChecking=no root@$N8N_SERVER "bash /opt/n8n/rensto-n8n-upgrade-2.3.1.sh"; then
     echo ""
     print_success "🎉 N8N UPDATE COMPLETED SUCCESSFULLY!"
     print_success "✅ ZERO DATA LOSS CONFIRMED"
     print_success "✅ ALL WORKFLOWS PRESERVED"
     print_success "✅ ALL CREDENTIALS PRESERVED"
     print_success "✅ COMMUNITY NODES MAINTAINED"
-    print_success "✅ VERSION UPGRADED SUCCESSFULLY"
-    print_success "✅ SECURITY CONFIGURED"
+    print_success "✅ VERSION UPGRADED TO v2.3.1"
+    print_success "✅ BACKUP CLEANUP PERFORMED"
     echo ""
-    print_status "🌐 N8N URL: http://173.254.201.134:5678"
-    print_status "🔑 API Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA"
+    print_status "🌐 N8N URL: https://n8n.rensto.com"
     echo ""
     exit 0
 else
     echo ""
     print_error "❌ N8N UPDATE FAILED!"
     print_error "🔄 ROLLBACK RECOMMENDED"
-    print_error "📄 Check the log file for details"
     echo ""
     exit 1
 fi

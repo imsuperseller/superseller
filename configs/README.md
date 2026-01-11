@@ -82,7 +82,7 @@ configs/
 
 **config.yml** (NOT in git):
 - Cloudflare Tunnel ingress rules for n8n
-- Routes `n8n.rensto.com` → `http://173.254.201.134:5678`
+- Routes `n8n.rensto.com` → `http://172.245.56.50:5678`
 - Routes `n8n-oauth2.rensto.com` → OAuth2 callbacks
 - **Setup**:
   ```bash

@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const N8N_HOST = 'http://173.254.201.134:5678';
+const N8N_HOST = 'http://172.245.56.50:5678';
 const N8N_PATH = '/mcp/907043da-60a4-4729-882d-d3205ff386fa';
 const N8N_URL = `${N8N_HOST}${N8N_PATH}`;
 const LOG_FILE = path.join(__dirname, 'proxy.log');

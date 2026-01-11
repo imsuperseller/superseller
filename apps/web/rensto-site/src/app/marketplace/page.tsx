@@ -42,9 +42,9 @@ import { CustomizationModal, MOCK_FLOOR_PLAN_SCHEMA } from '@/components/marketp
 const translations = {
     en: {
         badge: "Automation Marketplace",
-        title: <>Ready-to-Run <span className="text-[#fe3d51]">Automations</span> for Small Businesses</>,
-        subtitle: <>Skip the setup. Browse our library of tested, production-ready automations built for speed and reliability.</>,
-        searchPlaceholder: "What do you want to automate today?",
+        title: <>Production-Ready <span className="text-[#fe3d51]">Engines</span> for Growing Businesses</>,
+        subtitle: <>Skip the development phase. Browse our library of tested, production-ready systems activated for speed and reliability.</>,
+        searchPlaceholder: "What outcome do you want to automate today?",
         categories: [
             'All',
             'Lead & Sales',
@@ -56,28 +56,28 @@ const translations = {
         ],
         noResultsTitle: "No workflows found",
         noResultsDesc: "Try adjusting your filters or search query.",
-        customTitle: <>Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> system?</>,
-        customDesc: "If our ready-made tools don't fit exactly how you work, we can build a custom-made system tailored specifically to your daily business operations.",
-        bookDiscovery: "Book Discovery Call",
-        askQuestion: "Ask a Question",
-        downloads: "installs",
+        customTitle: <>Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> infrastructure?</>,
+        customDesc: "If our ready-made tools don't fit exactly how you work, we can deploy a custom ecosystem tailored specifically to your daily business operations.",
+        bookDiscovery: "Schedule Strategic Call",
+        askQuestion: "Talk to a Partner",
+        downloads: "activations",
         customize: "Config",
         popular: "Popular",
         tags: ['Real Estate', 'SaaS', 'E-commerce', 'Agency'],
         trustBanner: [
             { icon: Check, label: "Tested & Documented" },
-            { icon: ShieldCheck, label: "30-Day Guarantee" },
+            { icon: ShieldCheck, label: "Success Guaranteed" },
             { icon: Bot, label: "Live Expert Support" }
         ],
         resultsLabel: "Showing",
-        templatesLabel: "templates",
+        templatesLabel: "systems",
         filterByTool: "Filter by tool",
         clearAll: "Clear All [x]",
         explore: "Explore",
         notSureTitle: "Not sure where to start?",
-        notSureDesc: "Our automation experts can help you audit your current processes and recommend the right systems for your specific business goals.",
-        takeQuiz: "Take 2-min Quiz",
-        bookConsult: "Book Free Consult"
+        notSureDesc: "Our automation partners can help you audit your current processes and recommend the right infrastructure for your specific business goals.",
+        takeQuiz: "2-Minute ROI Quiz",
+        bookConsult: "Book Free Strategic Audit"
     },
     he: {
         badge: "חנות האוטומציות",
@@ -105,7 +105,7 @@ const translations = {
         tags: ['נדל"ן', 'SaaS', 'E-commerce', 'אייג\'נסי'],
         trustBanner: [
             { icon: Check, label: "נבדק ומתועד" },
-            { icon: ShieldCheck, label: "אחריות ל-30 יום" },
+            { icon: ShieldCheck, label: "שביעות רצון מובטחת" },
             { icon: Bot, label: "תמיכה מומחית" }
         ],
         resultsLabel: "מציג",
@@ -120,12 +120,12 @@ const translations = {
     }
 };
 
-const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[] })[] = [
+const MOCK_TEMPLATES_EN: Template[] = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: "Celebrity Selfie Video Generator",
-        outcomeHeadline: "Create Viral AI Movie Clips Instantly",
-        description: "Create personalized AI video journeys through movie history. Upload a photo and get a merged video where the user stars in iconic scenes.",
+        outcomeHeadline: "Drive High-Engagement Brand Awareness with Viral AI Video Experiences",
+        description: "Empower your audience to become the star of your brand's cinematic journey. This automated engine generates high-fidelity AI video experiences where users are seamlessly integrated into iconic scenes, perfect for viral marketing campaigns and hyper-personalized customer engagement.",
         category: "Creative Content",
         price: 297,
         rating: 5.0,
@@ -140,8 +140,8 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: '8GC371u1uBQ8WLmu',
         name: "Meta Ad Library Analyzer",
-        outcomeHeadline: "Copy Your Competitors' Winning Ad Patterns",
-        description: "Scrapes winning ads from Meta Ad Library and generates detailed replication templates using AI vision analysis.",
+        outcomeHeadline: "Scale Your Ads with Proven, Competitor-Tested Creative Patterns",
+        description: "Eliminate guesswork from your creative strategy. This engine scrapes active high-performance ads from the Meta Ad Library and uses AI vision to reverse-engineer their winning hooks, scripts, and visual patterns for your own brand.",
         category: "Lead & Sales",
         price: 197,
         rating: 4.8,
@@ -156,8 +156,8 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: '5pMi01SwffYB6KeX',
         name: "YouTube AI Clone",
-        outcomeHeadline: "Turn Any YouTube Channel Into Your Personal Mentor",
-        description: "Create an AI persona from any YouTube channel. Extracts transcripts and builds a conversational clone that mimics style and knowledge.",
+        outcomeHeadline: "Convert Thousands of Hours of Video Into Your Private Intelligence Engine",
+        description: "Transform any YouTube channel into a searchable, conversational persona. This system extracts full transcript data and synthesizes a custom LLM persona that mirrors an expert's knowledge base and communication style, accessible via Telegram.",
         category: "Knowledge & Research",
         price: 347,
         rating: 4.7,
@@ -170,15 +170,15 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
-        name: "Call Audio Lead Analyzer",
-        outcomeHeadline: "Never Miss a Lead in Your Call Recordings",
-        description: "Analyzes call recordings to qualify leads, extract details, and update CRM. Turns raw audio into actionable structured data.",
+        name: "Voice AI Lead Analyzer",
+        outcomeHeadline: "Scale Your Sales with Autonomous Voice AI Intelligence",
+        description: "Part of the Rensto Voice AI Agent pillar. This engine automatically transcribes call recordings, scores lead intent using sentiment analysis, and syncs qualified opportunities directly to your CRM with intelligent categorization.",
         category: "Lead & Sales",
         price: 497,
         rating: 4.9,
         downloads: 203,
         popular: true,
-        features: ["Audio Transcription", "Sentiment Analysis", "Workiz Sync"],
+        features: ["Voice Transcription", "Sentiment Analysis", "CRM Integration"],
         tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
         tags: ['marketplace'],
@@ -186,15 +186,15 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     },
     {
         id: '5Fl9WUjYTpodcloJ',
-        name: "AI Calendar Assistant",
-        outcomeHeadline: "Let AI Handle Your Entire Booking Schedule",
-        description: "Autonomous scheduling agent that handles complex booking logic, availability checks, and natural language coordination.",
+        name: "AI Appointment Assistant",
+        outcomeHeadline: "Eliminate Scheduling Friction with an Autonomous Booking Representative",
+        description: "Delegate your entire calendar management to an agent that actually understands your business. Handles complex multi-timezone booking, natural language rescheduling requests, and human-in-the-loop approval workflows.",
         category: "Operations",
         price: 147,
         rating: 4.6,
         downloads: 312,
         features: ["Conflict Resolution", "Natural Language", "Smart Rescheduling"],
-        tools: ['tidycal', 'slack', 'google'],
+        tools: ['google', 'slack', 'n8n'],
         video: "/videos/calendar-assistant.mp4",
         tags: ['marketplace'],
         readinessStatus: 'Active'
@@ -202,8 +202,8 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: 'stj8DmATqe66D9j4',
         name: "Floor Plan to Property Tour",
-        outcomeHeadline: "Turn 2D Plans Into Cinematic 3D Tours",
-        description: "Converts 2D floor plans into 3D photorealistic video tours. Perfect for real estate marketing and pre-construction sales.",
+        outcomeHeadline: "Sell Properties Faster with Photorealistic AI Video Walkthroughs",
+        description: "Transform flat 2D floor plans into immersive 4K cinematic walkthroughs. This spatial AI engine renders photorealistic room textures in multiple architectural styles and stitches them into a high-production property tour.",
         category: "Creative Content",
         price: 397,
         rating: 5.0,
@@ -217,8 +217,8 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: 'vCxY2DXUZ8vUb30f',
         name: "Monthly CRO Insights Bot",
-        outcomeHeadline: "Automate Your Website's Growth Strategy",
-        description: "Automated Conversion Rate Optimization analyst. Monitors site data, identifies drop-off points, and suggests actionable fixes monthly.",
+        outcomeHeadline: "Automate Your Growth Strategy with Continuous UX Audits",
+        description: "Turn your GA4 and Clarity data into a prioritized growth roadmap. This system autonomously identifies revenue leaks, rage clicks, and conversion bottlenecks, delivering actionable CRO recommendations directly to your team via Slack.",
         category: "Knowledge & Research",
         price: 247,
         rating: 4.8,
@@ -231,12 +231,12 @@ const MOCK_TEMPLATES_EN: (Template & { outcomeHeadline?: string; tools?: string[
     }
 ];
 
-const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[] })[] = [
+const MOCK_TEMPLATES_HE: Template[] = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: "מחולל סרטוני סלפי מפורסמים",
-        outcomeHeadline: "צרו קליפים קולנועיים ויראליים ברגע",
-        description: "צרו מסעות וידאו אישיים בהיסטוריה הקולנועית. העלו תמונה וקבלו סרטון ממוזג בו המשתמש מככב בסצנות אייקוניות.",
+        outcomeHeadline: "צרו מודעות ויראלית ומודעות למותג באמצעות חוויות וידאו AI",
+        description: "העצימו את הקהל שלכם להפוך לכוכב המסע הקולנועי של המותג שלכם. מנוע אוטומטי המייצר חוויות וידאו AI באיכות גבוהה שבהן המשתמשים משולבים בצורה חלקה בסצנות אייקוניות.",
         category: "תוכן יצירתי",
         price: 297,
         rating: 5.0,
@@ -251,8 +251,8 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: '8GC371u1uBQ8WLmu',
         name: "מנתח ספריית המודעות של מטא",
-        outcomeHeadline: "שכפלו את דפוסי המודעות המנצחות של המתחרים",
-        description: "שואב מודעות מנצחות מספריית המודעות של פייסבוק ומייצר תבניות שכפול מפורטות באמצעות ניתוח וידאו AI.",
+        outcomeHeadline: "שדרגו את הפרסום שלכם עם דפוסי קריאייטיב מוכחים שנבדקו אצל המתחרים",
+        description: "הסירו את חוסר הוודאות מאסטרטגיית הקריאייטיב שלכם. מנוע זה סורק מודעות בעלות ביצועים גבוהים מספריית המודעות של מטא ומשתמש בבינה מלאכותית ויזואלית כדי לפצח את הוקים, התסריטים והדפוסים הוויזואליים המנצחים עבור המותג שלכם.",
         category: "לידים ומכירות",
         price: 197,
         rating: 4.8,
@@ -267,8 +267,8 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: '5pMi01SwffYB6KeX',
         name: "משכפל יוטיוברים ב-AI",
-        outcomeHeadline: "הפכו כל ערוץ יוטיוב למנטור האישי שלכם",
-        description: "צור פרסונת AI מכל ערוץ יוטיוב. מחלץ תמלולים ובונה שכפול שיחה שמחקה את הסגנון והידע.",
+        outcomeHeadline: "הפכו אלפי שעות וידאו למנוע אינטליגנציה פרטי",
+        description: "הפכו כל ערוץ יוטיוב לפרסונה חיפושית ושיחתית. המערכת מחלצת נתוני תמלול מלאים ומסנתזת פרסונת LLM מותאמת אישית שמשקפת את בסיס הידע וסגנון התקשורת של המומחה, נגישה דרך טלגרם.",
         category: "ניהול ידע ומחקר",
         price: 347,
         rating: 4.7,
@@ -281,15 +281,15 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
-        name: "מנתח שיחות לידים",
-        outcomeHeadline: "לעולם אל תפספסו ליד בהקלטות השיחות שלכם",
-        description: "מנתח הקלטות שיחות כדי להכשיר לידים, לחלץ פרטים ולעדכן CRM. הופך שמע גולמי לנתונים מובנים.",
+        name: "מנתח לידים ב-Voice AI",
+        outcomeHeadline: "שדרגו את המכירות שלכם עם אינטליגנציה קולית אוטונומית",
+        description: "חלק מעמוד ה-Voice AI Agent של Rensto. מנוע זה מתמלל אוטומטית הקלטות שיחות, מדרג כוונת ליד באמצעות ניתוח סנטימנט ומסנכרן הזדמנויות כשירות ישירות ל-CRM שלכם.",
         category: "לידים ומכירות",
         price: 497,
         rating: 4.9,
         downloads: 203,
         popular: true,
-        features: ["תמלול אודיו", "ניתוח סנטימנט", "סנכרון Workiz"],
+        features: ["תמלול קולי", "ניתוח סנטימנט", "סנכרון CRM"],
         tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
         tags: ['marketplace'],
@@ -297,15 +297,15 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     },
     {
         id: '5Fl9WUjYTpodcloJ',
-        name: "עוזר לוח שנה AI",
-        outcomeHeadline: "תנו ל-AI לנהל לכם את כל לוח הפגישות",
-        description: "סוכן תזמון אוטונומי המטפל בלוגיקה מורכבת של הזמנות, בדיקות זמינות ותיאום בשפה טבעית.",
+        name: "עוזר קביעת פגישות ב-AI",
+        outcomeHeadline: "בטלו את החיכוך בתזמון פגישות עם נציג הזמנות אוטונומי",
+        description: "האצילו את כל ניהול היומן שלכם לסוכן שבאמת מבין את העסק שלכם. מטפל בהזמנות מורכבות במספר אזורי זמן, בקשות תזמון בשפה טבעית ותהליכי אישור אנושיים.",
         category: "תפעול",
         price: 147,
         rating: 4.6,
         downloads: 312,
         features: ["פתרון התנגשויות", "שפה טבעית", "תזמון חכם מחדש"],
-        tools: ['tidycal', 'slack', 'google'],
+        tools: ['google', 'slack', 'n8n'],
         video: "/videos/calendar-assistant.mp4",
         tags: ['marketplace'],
         readinessStatus: 'Active'
@@ -313,8 +313,8 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: 'stj8DmATqe66D9j4',
         name: "תוכנית קומה לסיור נכס",
-        outcomeHeadline: "הפכו תוכניות 2D לסיורים קולנועיים ב-3D",
-        description: "ממיר תוכניות קומה דו-ממדיות לסיורי וידאו פוטוריאליסטיים תלת-ממדיים. מושלם לשיווק נדל\"ן ומכירות על הנייר.",
+        outcomeHeadline: "מכרו נכסים מהר יותר עם סיורי וידאו פוטוריאליסטיים ב-AI",
+        description: "הפכו תוכניות קומה 2D שטוחות לסיורים קולנועיים סוחפים ב-4K. מנוע spatial AI זה מרנדר טקסטורות חדרים פוטוריאליסטיות במגוון סגנונות אדריכליים ומחבר אותם לסיור נכס באיכות הפקה גבוהה.",
         category: "תוכן יצירתי",
         price: 397,
         rating: 5.0,
@@ -328,8 +328,8 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
     {
         id: 'vCxY2DXUZ8vUb30f',
         name: "מנתח שיפור המרות חודשי",
-        outcomeHeadline: "אוטומציה לאסטרטגיית הצמיחה של האתר שלכם",
-        description: "מנתח אופטימיזציית יחס המרה אוטומטי. מנטר נתוני אתר, מזהה נקודות נטישה ומציע תיקונים חודשיים.",
+        outcomeHeadline: "הפכו את אסטרטגיית הצמיחה שלכם לאוטומטית עם ביקורות UX רציפות",
+        description: "הפכו את נתוני ה-GA4 והקלאריטי שלכם למפת דרכים מתועדפת לצמיחה. מערכת זו מזהה באופן אוטונומי דליפות הכנסה, הקלקות של תסכול וצווארי בקבוק בהמרות, ומספקת המלצות CRO מעשיות ישירות לצוות שלכם.",
         category: "ניהול ידע ומחקר",
         price: 247,
         rating: 4.8,
@@ -343,9 +343,8 @@ const MOCK_TEMPLATES_HE: (Template & { outcomeHeadline?: string; tools?: string[
 ];
 
 
-export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) {
-    const t = translations[lang];
-    const isRtl = lang === 'he';
+export function MarketplacePageContent() {
+    const t = translations.en;
     const router = useRouter(); // Initialize router
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
@@ -362,109 +361,66 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
         const fetchTemplates = async () => {
             setLoading(true);
             try {
-                // Fetch from Firestore 'templates' collection
                 const templatesRef = collection(db, 'templates');
                 const snapshot = await getDocs(templatesRef);
 
-                const remoteTemplates: Record<string, Partial<Template>> = {};
+                const allTemplates: Template[] = [];
                 snapshot.forEach(doc => {
-                    remoteTemplates[doc.id] = doc.data() as Partial<Template>;
+                    const data = doc.data() as Template;
+                    allTemplates.push({
+                        ...data,
+                        id: doc.id,
+                        businessImpact: data.businessImpact,
+                        roiExample: data.roiExample,
+                    });
                 });
 
-                const baseTemplates = isRtl ? MOCK_TEMPLATES_HE : MOCK_TEMPLATES_EN;
-
-                // Merge data: prioritize Firestore -> MOCK
-                // But only if Firestore doc exists with same ID
-                // Filter out ANY template that does not have the 'marketplace' tag
-                // This applies to both base templates (if we add internal ones to MOCK) 
-                // and remote templates (which might override or be new).
-                // Logic:
-                // 1. Merge remote data into base templates.
-                // 2. Filter the result.
-
-                let mergedTemplates = baseTemplates.map(template => {
-                    const remote = remoteTemplates[template.id];
-                    if (remote) {
-                        return {
-                            ...template,
-                            ...remote,
-                            price: remote.price || template.price || 97, // Fallback to 97
-                            video: remote.video ? remote.video.replace('http://172.245.56.50', '') : template.video,
-                            // Ensure we keep mock tags if Firestore tags is empty or missing
-                            tags: (remote.tags && remote.tags.length > 0) ? remote.tags : template.tags
-                        };
-                    }
-                    return {
-                        ...template,
-                        price: template.price || 97
-                    };
+                // Filter for 'marketplace' tag
+                let filteredTemplates = allTemplates.filter(t => {
+                    const tags = Array.isArray(t.tags) ? t.tags : [];
+                    return tags.some(tag => tag.toLowerCase() === 'marketplace');
                 });
 
-                // Filter for 'marketplace' tag AND 'Active' status
-                // We default to the template's own readinessStatus if remote doesn't provide one
-                let filteredTemplates = mergedTemplates.filter(t =>
-                    (t.tags && t.tags.includes('marketplace')) &&
-                    (t.readinessStatus === 'Active')
-                );
-
+                // Apply Filters
                 if (selectedCategory !== 'All' && selectedCategory !== t.categories[0]) {
                     filteredTemplates = filteredTemplates.filter(t =>
-                        t.category.toLowerCase() === selectedCategory.toLowerCase()
+                        (t.category || '').toLowerCase() === selectedCategory.toLowerCase()
                     );
                 }
 
                 if (searchQuery) {
                     const searchLower = searchQuery.toLowerCase();
                     filteredTemplates = filteredTemplates.filter(t =>
-                        t.name.toLowerCase().includes(searchLower) ||
-                        t.description.toLowerCase().includes(searchLower) ||
-                        (t as any).outcomeHeadline?.toLowerCase().includes(searchLower)
+                        (t.name || '').toLowerCase().includes(searchLower) ||
+                        (t.description || '').toLowerCase().includes(searchLower) ||
+                        ((t as any).outcomeHeadline || '').toLowerCase().includes(searchLower)
                     );
                 }
 
                 if (selectedTag) {
                     const tagLower = selectedTag.toLowerCase();
                     filteredTemplates = filteredTemplates.filter(t =>
-                        (t.tags && t.tags.some(tag => tag.toLowerCase() === tagLower)) ||
-                        ((t as any).tools && (t as any).tools.some((tool: string) => tool.toLowerCase() === tagLower))
+                        (Array.isArray(t.tags) && t.tags.some(tag => tag.toLowerCase() === tagLower)) ||
+                        (Array.isArray((t as any).tools) && (t as any).tools.some((tool: string) => tool.toLowerCase() === tagLower))
                     );
+                }
+
+                // If Firestore is empty, fallback to mocks
+                if (filteredTemplates.length === 0) {
+                    throw new Error("No templates found in Firestore");
                 }
 
                 setTemplates(filteredTemplates);
             } catch (error) {
                 console.error("Error fetching templates, using fallback:", error);
-
-                // FALLBACK Logic same as before
-                let baseTemplates = isRtl ? MOCK_TEMPLATES_HE : MOCK_TEMPLATES_EN;
-                if (selectedCategory !== 'All' && selectedCategory !== 'הכל') {
-                    baseTemplates = baseTemplates.filter(t =>
-                        t.category.toLowerCase() === selectedCategory.toLowerCase()
-                    );
-                }
-                if (searchQuery) {
-                    const searchLower = searchQuery.toLowerCase();
-                    baseTemplates = baseTemplates.filter(t =>
-                        t.name.toLowerCase().includes(searchLower) ||
-                        t.description.toLowerCase().includes(searchLower) ||
-                        (t as any).outcomeHeadline?.toLowerCase().includes(searchLower)
-                    );
-                }
-
-                if (selectedTag) {
-                    const tagLower = selectedTag.toLowerCase();
-                    baseTemplates = baseTemplates.filter(t =>
-                        (t.tags && t.tags.some(tag => tag.toLowerCase() === tagLower)) ||
-                        ((t as any).tools && (t as any).tools.some((tool: string) => tool.toLowerCase() === tagLower))
-                    );
-                }
-                setTemplates(baseTemplates);
+                setTemplates(MOCK_TEMPLATES_EN);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchTemplates();
-    }, [selectedCategory, searchQuery, selectedTag, isRtl]);
+    }, [selectedCategory, searchQuery, selectedTag]);
 
 
     const breadcrumbData = {
@@ -489,7 +445,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
     };
 
     return (
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)', direction: isRtl ? 'rtl' : 'ltr' }}>
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
             <Header />
             <Schema type="BreadcrumbList" data={breadcrumbData} />
             <AnimatedGridBackground />
@@ -499,7 +455,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                 <div className="text-center mb-16 space-y-4">
                     <div className="flex justify-center mb-4">
                         <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1.5 uppercase tracking-[0.3em] text-[10px] font-black">
-                            {templates.length} {t.templatesLabel} • {t.badge}
+                            {t.badge}
                         </Badge>
                     </div>
                     <h1 className="text-4xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40 tracking-tighter leading-[0.9]">
@@ -532,7 +488,6 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                             { id: 'slack', label: 'Slack', icon: '💬' },
                             { id: 'meta', label: 'Meta', icon: '🔵' },
                             { id: 'openai', label: 'OpenAI', icon: '🤖' },
-                            { id: 'n8n', label: 'n8n', icon: '⚡' },
                             { id: 'youtube', label: 'YouTube', icon: '🎬' }
                         ].map((tool) => (
                             <button
@@ -661,7 +616,6 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                                     key={template.id}
                                     template={template}
                                     onClick={handleCardClick}
-                                    isRtl={isRtl}
                                     viewMode={viewMode}
                                     t={t}
                                 />
@@ -696,7 +650,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                                     </Button>
                                 </Link>
                                 <Link href="/contact?type=discovery">
-                                    <Button size="xl" variant="outline" className="border-white/10 text-white hover:bg-white/5 font-black px-10 rounded-2xl w-full sm:w-auto">
+                                    <Button size="xl" variant="renstoSecondary" className="font-black px-10 rounded-2xl w-full sm:w-auto shadow-[0_0_20px_rgba(6,182,212,0.2)]">
                                         {(t as any).bookConsult}
                                     </Button>
                                 </Link>
@@ -716,15 +670,15 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                                     {t.customDesc}
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                    <Link href="/contact?type=custom">
+                                    <Link href="/custom">
                                         <Button size="xl" variant="renstoPrimary" className="px-12 font-black w-full sm:w-auto rounded-2xl h-16">
                                             {t.bookDiscovery}
                                             <Zap className="ml-2 w-5 h-5 fill-current" />
                                         </Button>
                                     </Link>
                                     <Link href="/contact">
-                                        <Button variant="ghost" size="xl" className="w-full sm:w-auto text-slate-400 hover:text-white font-black">
-                                            {t.askQuestion}
+                                        <Button variant="ghost" size="xl" className="w-full sm:w-auto text-slate-400 hover:text-cyan-400 font-black transition-colors">
+                                            {(t as any).askQuestion}
                                         </Button>
                                     </Link>
                                 </div>
@@ -740,7 +694,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
                 </div>
             </main >
 
-            <Footer lang={lang} />
+            <Footer />
 
             {/* Customization Modal */}
             {
@@ -769,7 +723,7 @@ export function MarketplacePageContent({ lang = 'en' }: { lang?: 'en' | 'he' }) 
     );
 }
 
-function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { template: Template; viewMode: 'grid' | 'list'; onCustomize?: () => void; t: any; isRtl: boolean; onClick?: (id: string) => void }) {
+function WorkflowCard({ template, viewMode, onCustomize, t, onClick }: { template: Template; viewMode: 'grid' | 'list'; onCustomize?: () => void; t: any; onClick?: (id: string) => void }) {
     const [isHovered, setIsHovered] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -902,7 +856,7 @@ function WorkflowCard({ template, viewMode, onCustomize, t, isRtl, onClick }: { 
                 {/* Hover Play Icon Hint */}
                 <div className={`absolute inset-0 flex items-center justify-center z-10 transition-all duration-500 pointer-events-none ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
                     <div className="w-16 h-16 rounded-[2rem] bg-cyan-500 text-black flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.4)]">
-                        <ArrowRight className={`w-8 h-8 ${isRtl ? 'rotate-180' : ''}`} />
+                        <ArrowRight className="w-8 h-8" />
                     </div>
                 </div>
             </div>

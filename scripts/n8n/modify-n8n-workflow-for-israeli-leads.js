@@ -13,7 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 class N8NWorkflowModifier {
   constructor() {
     this.workflowId = 'cgk7FI57o6cg3eju';
-    this.n8nBaseUrl = 'http://173.254.201.134:5678';
+    this.n8nBaseUrl = 'http://172.245.56.50:5678';
     this.supabaseUrl = 'https://zjfnwpsmfbqslkkbpwqq.supabase.co';
     this.supabaseKey = 'sb_secret_-Xb6R_t9AuYmzjheZwhxnQ_LBt4cwuR';
     this.supabase = createClient(this.supabaseUrl, this.supabaseKey);

@@ -42,7 +42,7 @@ portal.rensto.com   → Vercel (customer portals - planned)
 - Note: Webflow scripts CDN still exists (`rensto-webflow-scripts.vercel.app`) but may not be needed
 
 ### **n8n Workflows**:
-- Hosted on RackNerd VPS: `173.254.201.134:5678`
+- Hosted on RackNerd VPS: `172.245.56.50:5678`
 - 68 active workflows
 - Naming convention: `{TYPE}-{FUNCTION}-{VERSION}` (e.g., `STRIPE-MARKETPLACE-001`)
 
@@ -197,7 +197,7 @@ Examples:
 ### **n8n API Access Policy** (STRICTLY ENFORCED):
 
 ⛔ **FORBIDDEN - NEVER USE THESE**:
-1. ❌ Direct curl calls to n8n APIs (173.254.201.134:5678, tax4usllc.app.n8n.cloud, shellyins.app.n8n.cloud)
+1. ❌ Direct curl calls to n8n APIs (172.245.56.50:5678, tax4usllc.app.n8n.cloud, shellyins.app.n8n.cloud)
 2. ❌ Direct HTTP requests with X-N8N-API-KEY header
 3. ❌ Any Bash commands that call n8n endpoints directly
 4. ❌ npx n8n-mcp commands via Bash tool
@@ -251,7 +251,7 @@ Examples:
 - Vercel Dashboard: https://vercel.com/dashboard
 - Cloudflare Dashboard: https://dash.cloudflare.com
 - Webflow Dashboard: https://webflow.com (archived site - not active)
-- n8n Instance: http://173.254.201.134:5678
+- n8n Instance: http://172.245.56.50:5678
 
 ### **Credentials**:
 - Stored in: `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials
@@ -267,7 +267,7 @@ Examples:
 - API endpoint? → **Vercel rensto.com/api** (`/apps/web/rensto-site/src/app/api/`)
 - Admin dashboard? → **Vercel admin.rensto.com** (`/apps/web/admin-dashboard/`)
 - Customer portal? → **Vercel portal.rensto.com** (`/live-systems/customer-portal/`)
-- Workflow automation? → **n8n** (173.254.201.134:5678)
+- Workflow automation? → **n8n** (172.245.56.50:5678)
 
 ### "Which database should I use?"
 - Workflow data? → **n8n Data Tables**

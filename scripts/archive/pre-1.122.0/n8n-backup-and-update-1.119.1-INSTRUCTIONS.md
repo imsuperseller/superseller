@@ -8,11 +8,11 @@
 
 ## Quick Execution
 
-**On RackNerd VPS** (173.254.201.134):
+**On RackNerd VPS** (172.245.56.50):
 
 ```bash
 # SSH into server
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 
 # Navigate to n8n directory
 cd /opt/n8n
@@ -36,7 +36,7 @@ Backups stored in: `/root/n8n-backups/YYYY-MM-DD_HHMMSS/`
 
 ## After Update
 
-1. Verify n8n is running: http://173.254.201.134:5678
+1. Verify n8n is running: http://172.245.56.50:5678
 2. Test validation tools work
 3. Test a few workflows
 4. If issues: Restore from backup

@@ -438,7 +438,7 @@ echo ""
 echo "📤 DEPLOYING OPTIMIZED CONFIGURATIONS..."
 
 # Deploy optimized configurations to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r config root@173.254.201.134:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r config root@172.245.56.50:/var/www/html/
 
 echo ""
 echo "🎉 PHASE 4-5: FILE CLEANUP & CONFIGURATION OPTIMIZATION COMPLETE!"

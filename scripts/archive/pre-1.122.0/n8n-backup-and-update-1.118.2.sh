@@ -10,7 +10,7 @@ set -e  # Exit on any error
 BACKUP_DIR="/root/n8n-backups/$(date +%Y-%m-%d_%H%M%S)"
 CONTAINER_NAME="n8n_rensto"
 VOLUME_NAME="n8n_n8n_data"
-N8N_SERVER="173.254.201.134"
+N8N_SERVER="172.245.56.50"
 TARGET_VERSION="1.119.1"
 DOCKER_COMPOSE_DIR="/opt/n8n"
 

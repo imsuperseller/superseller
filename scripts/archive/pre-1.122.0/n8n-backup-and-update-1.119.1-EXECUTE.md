@@ -4,13 +4,13 @@
 
 **Option A: Using SCP (from your local machine)**
 ```bash
-scp /Users/shaifriedman/New\ Rensto/rensto/scripts/n8n-backup-and-update-1.119.1.sh root@173.254.201.134:/opt/n8n/
+scp /Users/shaifriedman/New\ Rensto/rensto/scripts/n8n-backup-and-update-1.119.1.sh root@172.245.56.50:/opt/n8n/
 # Password: necmad-zYnfe4-fypwip
 ```
 
 **Option B: Copy-paste script content**
 ```bash
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 # Password: necmad-zYnfe4-fypwip
 cd /opt/n8n
 nano n8n-backup-and-update-1.119.1.sh
@@ -21,7 +21,7 @@ chmod +x n8n-backup-and-update-1.119.1.sh
 ## Step 2: Run the Script
 
 ```bash
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 # Password: necmad-zYnfe4-fypwip
 cd /opt/n8n
 bash n8n-backup-and-update-1.119.1.sh --yes
@@ -42,7 +42,7 @@ You should see:
 
 ## After Update
 
-1. Check n8n is running: http://173.254.201.134:5678
+1. Check n8n is running: http://172.245.56.50:5678
 2. Test validation tools work (they should now!)
-3. Test the workflow: http://173.254.201.134:5678/workflow/CPyj0qf6tofQQyDT
+3. Test the workflow: http://172.245.56.50:5678/workflow/CPyj0qf6tofQQyDT
 

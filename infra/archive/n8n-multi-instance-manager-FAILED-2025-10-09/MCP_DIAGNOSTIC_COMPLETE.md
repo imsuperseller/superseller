@@ -164,7 +164,7 @@
 **Continue using**:
 ```bash
 curl -H "X-N8N-API-KEY: eyJ..." \
-  http://173.254.201.134:5678/api/v1/workflows
+  http://172.245.56.50:5678/api/v1/workflows
 ```
 
 **What I can do for you**:

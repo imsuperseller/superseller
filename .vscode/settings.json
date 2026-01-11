@@ -10,5 +10,17 @@
     "terminal.integrated.cwd": "${workspaceFolder}",
     "terminal.integrated.env.osx": {
         "PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    },
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/.next": true,
+        "**/dist": true,
+        "**/apps/**/node_modules": true,
+        "**/infra/**/node_modules": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/.next": true,
+        "**/dist": true
     }
 }

@@ -34,15 +34,15 @@ try {
 process.env.MCP_MODE = 'stdio';
 process.env.LOG_LEVEL = 'error';
 process.env.DISABLE_CONSOLE_OUTPUT = 'true';
-process.env.N8N_API_URL = 'http://n8n.rensto.com';
-process.env.N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTE2NzEwfQ.JbIeOnRil3E3_P44LjAWhiY9KRcAHkuuVhJghABz3aQ';
+process.env.N8N_API_URL = 'https://n8n.rensto.com';
+process.env.N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY2OTM4NjY0fQ.3itUOIDGe-_0vpK4K0X0a99YRh8puycRXnqz_sQwtbE';
 process.env.N8N_INSTANCE_ID = 'rensto-selfhosted';
 process.env.ENABLE_ALL_TOOLS = 'true';
 process.env.NODE_DB_PATH = '/Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/data/nodes.db';
 
 try {
   fs.appendFileSync(logFile, `[${new Date().toISOString()}] Env vars set, spawning n8n-mcp\n`);
-} catch (e) {}
+} catch (e) { }
 
 // Path to n8n-mcp entry point
 const n8nMcpPath = '/Users/shaifriedman/.npm-global/lib/node_modules/n8n-mcp/dist/mcp/index.js';
@@ -59,7 +59,7 @@ const n8nMcp = spawn('node', [n8nMcpPath], {
 n8nMcp.on('error', (error) => {
   try {
     fs.appendFileSync(logFile, `[${new Date().toISOString()}] ERROR: ${error.message}\n`);
-  } catch (e) {}
+  } catch (e) { }
   console.error('[n8n-rensto-wrapper] Failed to start n8n-mcp:', error);
   process.exit(1);
 });
@@ -67,7 +67,7 @@ n8nMcp.on('error', (error) => {
 n8nMcp.on('exit', (code) => {
   try {
     fs.appendFileSync(logFile, `[${new Date().toISOString()}] n8n-mcp exited with code: ${code}\n`);
-  } catch (e) {}
+  } catch (e) { }
   process.exit(code || 0);
 });
 

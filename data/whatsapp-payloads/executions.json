@@ -107,7 +107,7 @@
                   "messageId": "3B60EE6E7C1463A09C51",
                   "messageType": "text",
                   "textContent": "analyze",
-                  "mediaUrl": "http://173.254.201.134:3000/api/files/rensto-whatsapp/3B60EE6E7C1463A09C51.pdf"
+                  "mediaUrl": "http://172.245.56.50:3000/api/files/rensto-whatsapp/3B60EE6E7C1463A09C51.pdf"
                 }
               }
             ]

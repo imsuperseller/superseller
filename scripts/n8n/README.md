@@ -63,7 +63,7 @@ Expected output:
 🏥 Checking health of all n8n instances...
 
 Checking Rensto VPS...
-  ✅ healthy - http://173.254.201.134:5678
+  ✅ healthy - http://172.245.56.50:5678
 Checking Tax4Us Cloud...
   ✅ healthy - https://tax4usllc.app.n8n.cloud
 Checking Shelly Cloud...
@@ -160,7 +160,7 @@ All credentials are in `n8n-config.js`:
 ### Instance Types
 
 **1. Rensto VPS** (Self-hosted):
-- URL: `http://173.254.201.134:5678`
+- URL: `http://172.245.56.50:5678`
 - Type: Internal workflows
 - Workflows: 68
 - Version: v1.113.3

@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const url = 'http://173.254.201.134:5678/mcp/907043da-60a4-4729-882d-d3205ff386fa';
+const url = 'http://172.245.56.50:5678/mcp/907043da-60a4-4729-882d-d3205ff386fa';
 
 async function test() {
     try {

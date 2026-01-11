@@ -4,17 +4,18 @@ import Stripe from 'stripe';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
+import { emails } from '@/lib/email';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL!;
+const n8nWebhookUrl = process.env.N8N_STRIPE_WEBHOOK_URL!;
 
 export async function POST(req: Request) {
     const body = await req.text();
-    const sig = (await headers()).get('stripe-signature')!;
+    const sig = req.headers.get('stripe-signature')!;
 
     let event: Stripe.Event;
 
@@ -39,20 +40,21 @@ export async function POST(req: Request) {
             await db.collection('payments').add({
                 stripeSessionId: session.id,
                 customerId: session.customer,
-                customerEmail: session.customer_details?.email,
-                amountTotal: session.amount_total,
-                currency: session.currency,
-                flowType: metadata.flowType,
-                productId: metadata.productId || metadata.workflowId,
-                tier: metadata.tier,
+                customerEmail: session.customer_details?.email || null,
+                amountTotal: session.amount_total ?? 0,
+                currency: session.currency || 'usd',
+                flowType: metadata.flowType || 'unknown',
+                productId: metadata.productId || metadata.workflowId || null,
+                tier: metadata.tier || null,
                 platform: metadata.platform || 'rensto-web',
                 timestamp: Timestamp.now()
             });
 
             // 2. Specialized handling for Marketplace Templates
             if (metadata.flowType === 'marketplace-template') {
-                const templateId = metadata.productId || metadata.workflowId;
+                const templateId = (metadata.productId || metadata.workflowId) as string;
                 const customerEmail = session.customer_details?.email;
+                const customerName = session.customer_details?.name || 'Valued Client';
 
                 // Create a secure download token
                 const tokenData = `${templateId}:${customerEmail}:${Date.now()}`;
@@ -70,12 +72,47 @@ export async function POST(req: Request) {
                     timestamp: Timestamp.now()
                 });
 
+                // CORE 7 UPGRADE: If this is a Core 7 template, provision a service instance for "Activation"
+                const CORE_7_IDS = [
+                    '4OYGXXMYeJFfAo6X', // Celebrity Selfie
+                    '8GC371u1uBQ8WLmu', // Meta Ad Analyzer
+                    '5pMi01SwffYB6KeX', // YouTube Clone
+                    'U6EZ2iLQ4zCGg31H', // Call Analyzer
+                    '5Fl9WUjYTpodcloJ', // Calendar Assistant
+                    'stj8DmATqe66D9j4', // Floor Plan Property Tour
+                    'vCxY2DXUZ8vUb30f'  // CRO Insights
+                ];
+
+                if (CORE_7_IDS.includes(templateId)) {
+                    await db.collection(COLLECTIONS.SERVICE_INSTANCES).add({
+                        clientId: metadata.clientId || session.id, // Use metadata.clientId
+                        clientEmail: customerEmail,
+                        productName: metadata.productName || 'Rensto Template',
+                        productId: templateId,
+                        status: 'pending_setup',
+                        type: 'marketplace_implementation',
+                        stripeSessionId: session.id,
+                        createdAt: Timestamp.now(),
+                        updatedAt: Timestamp.now()
+                    });
+                }
+
                 await auditAgent.log({
                     service: 'firebase',
                     action: 'purchase_recorded',
                     status: 'success',
                     details: { templateId, customerEmail, downloadUrl }
                 });
+
+                // Send download delivery email
+                if (customerEmail) {
+                    await emails.downloadDelivery(
+                        customerEmail,
+                        metadata.productName || 'Rensto Template',
+                        downloadUrl,
+                        session.id
+                    );
+                }
             }
 
             // 3. Specialized handling for Service Purchases (e.g. Automation Audit)
@@ -123,40 +160,217 @@ export async function POST(req: Request) {
                             details: { clientId: existingClient.docs[0].id, email: customerEmail }
                         });
                     }
+
+                    // Send welcome email for service purchases
+                    await emails.welcome(customerEmail, session.customer_details?.name || undefined);
+
+                    // Send receipt
+                    if (session.amount_total) {
+                        await emails.invoiceReceipt(
+                            customerEmail,
+                            metadata.productId || 'Automation Service',
+                            session.amount_total / 100,
+                            session.id
+                        );
+                    }
+                }
+            }
+
+            // NEW: Handle Pillar/Service Purchases (Get More Leads, Automated Outreach, etc.)
+            if (metadata.flowType === 'pillar-purchase' || metadata.flowType === 'service-pillar') {
+                const customerEmail = session.customer_details?.email?.toLowerCase();
+                const pillarId = metadata.pillarId as 'leads' | 'outreach' | 'voice' | 'content';
+
+                if (customerEmail && pillarId) {
+                    // Find user by email
+                    const userDocId = customerEmail.replace(/[^a-z0-9]/g, '_');
+                    const userRef = db.collection('users').doc(userDocId);
+                    const userSnap = await userRef.get();
+
+                    if (userSnap.exists) {
+                        const userData = userSnap.data()!;
+                        const currentPillars: string[] = userData.entitlements?.pillars || [];
+
+                        // Add pillar if not already present
+                        if (!currentPillars.includes(pillarId)) {
+                            const updatedPillars = [...currentPillars, pillarId];
+                            await userRef.update({
+                                'entitlements.pillars': updatedPillars,
+                                'entitlements.freeLeadsTrial': pillarId === 'leads' ? false : userData.entitlements?.freeLeadsTrial,
+                                'stripeCustomerId': session.customer,
+                                updatedAt: Timestamp.now()
+                            });
+
+                            await auditAgent.log({
+                                service: 'stripe',
+                                action: 'pillar_entitlement_granted',
+                                status: 'success',
+                                details: { email: customerEmail, pillar: pillarId, allPillars: updatedPillars }
+                            });
+                        }
+                    } else {
+                        // Create new user with pillar entitlement
+                        await userRef.set({
+                            email: customerEmail,
+                            name: session.customer_details?.name || null,
+                            createdAt: Timestamp.now(),
+                            dashboardToken: require('uuid').v4().slice(0, 8),
+                            stripeCustomerId: session.customer,
+                            entitlements: {
+                                freeLeadsTrial: false,
+                                freeLeadsRemaining: 0,
+                                pillars: [pillarId],
+                                marketplaceProducts: [],
+                                customSolution: null
+                            }
+                        });
+
+                        await auditAgent.log({
+                            service: 'stripe',
+                            action: 'user_created_with_pillar',
+                            status: 'success',
+                            details: { email: customerEmail, pillar: pillarId }
+                        });
+                    }
+
+                    // Send welcome email
+                    await emails.welcome(customerEmail, session.customer_details?.name || undefined);
                 }
             }
 
             // 4. Specialized handling for Managed Plans (WhatsApp)
             if (metadata.flowType === 'managed-plan') {
-                const customerEmail = session.customer_details?.email;
-                if (customerEmail) {
-                    const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
-                    const existingClient = await clientsRef.where('email', '==', customerEmail.toLowerCase()).limit(1).get();
+                const customerEmail = session.customer_details?.email?.toLowerCase();
+                const userName = session.customer_details?.name || 'Valued Client';
 
-                    const planData = {
-                        email: customerEmail.toLowerCase(),
-                        name: session.customer_details?.name || 'Valued Client',
-                        status: 'active',
-                        subscriptionId: session.subscription as string,
+                if (customerEmail) {
+                    const usersRef = db.collection(COLLECTIONS.USERS);
+                    const subscriptionsRef = db.collection(COLLECTIONS.SUBSCRIPTIONS);
+                    const instancesRef = db.collection(COLLECTIONS.WHATSAPP_INSTANCES);
+
+                    // A. Find or Create User
+                    let userId = '';
+                    const existingUser = await usersRef.where('email', '==', customerEmail).limit(1).get();
+
+                    if (existingUser.empty) {
+                        const newUser = await usersRef.add({
+                            email: customerEmail,
+                            name: userName,
+                            status: 'active',
+                            emailVerified: true,
+                            businessType: 'other', // Default, user can update later
+                            businessSize: 'small_team',
+                            activeServices: {
+                                marketplace: false,
+                                whatsapp: true,
+                                subscriptions: true,
+                                care_plan: 'none'
+                            },
+                            stripeCustomerId: session.customer,
+                            source: 'paid_ad', // Assumed from checkout
+                            createdAt: Timestamp.now(),
+                            updatedAt: Timestamp.now()
+                        });
+                        userId = newUser.id;
+                    } else {
+                        userId = existingUser.docs[0].id;
+                        await usersRef.doc(userId).update({
+                            'activeServices.whatsapp': true,
+                            'activeServices.subscriptions': true,
+                            stripeCustomerId: session.customer,
+                            updatedAt: Timestamp.now()
+                        });
+                    }
+
+                    // B. Create Subscription Record
+                    const subscriptionData = {
+                        userId,
+                        userEmail: customerEmail,
+                        stripeSubscriptionId: session.subscription as string,
                         stripeCustomerId: session.customer as string,
-                        planId: metadata.productId || 'managed-base',
-                        addons: metadata.selectedAddons ? metadata.selectedAddons.split(',') : [],
-                        extraNumbers: parseInt(metadata.extraNumbers || '0'),
-                        lastPaidAt: Timestamp.now(),
+                        stripePriceId: metadata.priceId || 'managed-base', // Ideally from line items but metadata is easier
+                        subscriptionType: 'whatsapp',
+                        whatsappBundle: metadata.whatsappBundle || 'manual_custom',
+                        amount: session.amount_total || 0,
+                        currency: session.currency || 'usd',
+                        billingInterval: 'month',
+                        status: 'active',
+                        currentPeriodStart: Timestamp.now(),
+                        currentPeriodEnd: Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)), // Approx
+                        cancelAtPeriodEnd: false,
+                        createdAt: Timestamp.now(),
                         updatedAt: Timestamp.now()
                     };
+                    const subDoc = await subscriptionsRef.add(subscriptionData);
 
-                    if (existingClient.empty) {
-                        await clientsRef.add({ ...planData, createdAt: Timestamp.now() });
-                    } else {
-                        await existingClient.docs[0].ref.update(planData);
+                    // C. Create WhatsApp Instance
+                    // Derive features based on bundle
+                    const bundle = metadata.whatsappBundle;
+                    const features = {
+                        instantResponse: true,
+                        faqAutoAnswer: true,
+                        leadCapture: true,
+                        qualification: false,
+                        appointmentBooking: false,
+                        quoteSending: false,
+                        objectionHandling: false,
+                        multiLanguage: false,
+                        humanEscalation: false
+                    };
+
+                    if (bundle === 'auto_qualify_book' || bundle === 'full_ai_sales_rep') {
+                        features.qualification = true;
+                        features.appointmentBooking = true;
                     }
+                    if (bundle === 'full_ai_sales_rep') {
+                        features.quoteSending = true;
+                        features.objectionHandling = true;
+                        features.multiLanguage = true;
+                        features.humanEscalation = true;
+                    }
+
+                    // Parse Addons
+                    const addonList = metadata.selectedAddons ? (metadata.selectedAddons as string).split(',') : [];
+                    const addOns = {
+                        sendPhotosQuotes: addonList.includes('media'),
+                        teamInbox: addonList.includes('groups'),
+                        smartMenus: addonList.includes('interactive'),
+                        multiLocation: addonList.includes('reliability')
+                    };
+
+                    await instancesRef.add({
+                        userId,
+                        userEmail: customerEmail,
+                        businessName: userName + "'s Business", // Placeholder
+                        businessType: 'other',
+                        phoneNumber: '', // To be provisioned
+                        bundle: bundle || 'custom',
+                        bundleFeatures: features,
+                        addOns: addOns,
+                        status: 'pending_setup',
+                        metrics: {
+                            totalMessages: 0,
+                            averageResponseTime: 0,
+                            leadsCaptured: 0,
+                            appointmentsBooked: 0,
+                            quotesSent: 0,
+                            humanEscalations: 0
+                        },
+                        subscriptionId: subDoc.id,
+                        createdAt: Timestamp.now(),
+                        updatedAt: Timestamp.now()
+                    });
 
                     await auditAgent.log({
                         service: 'firebase',
-                        action: 'managed_plan_provisioned',
+                        action: 'managed_plan_provisioned_v2',
                         status: 'success',
-                        details: { email: customerEmail, plan: planData.planId }
+                        details: {
+                            userId,
+                            email: customerEmail,
+                            bundle: metadata.whatsappBundle,
+                            subscriptionId: subDoc.id
+                        }
                     });
                 }
             }

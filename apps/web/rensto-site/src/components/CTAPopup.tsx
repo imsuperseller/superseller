@@ -22,7 +22,7 @@ export function CTAPopup({
     const [canShow, setCanShow] = useState(false);
 
     // Routes where popup should not appear
-    const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/control');
+    const isAdminRoute = pathname?.startsWith('/admin');
     const isAppRoute = pathname?.startsWith('/app') || pathname?.startsWith('/portal');
     const isLoginRoute = pathname === '/login';
     const isOnboardingRoute = pathname?.startsWith('/onboarding') || pathname?.startsWith('/offer');

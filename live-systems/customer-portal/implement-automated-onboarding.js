@@ -91,7 +91,7 @@ class AutomatedOnboardingSystem {
         agents: [],
         questions: [],
         portal: {
-          url: `http://173.254.201.134/${customerId}-portal.html`,
+          url: `http://172.245.56.50/${customerId}-portal.html`,
           username: customerId,
           password: this.generatePassword(),
           features: [

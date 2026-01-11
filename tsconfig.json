@@ -8,11 +8,26 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true
   },
-  "files": [],
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts"
+  ],
   "exclude": [
-    "**/*"
+    "node_modules",
+    "**/node_modules",
+    "workflows/**",
+    "scripts/**",
+    "infra/mcp-reference/**",
+    "infra/**/*.json",
+    "apps/**/node_modules/**",
+    "apps/**/.next/**",
+    "apps/**/dist/**",
+    "apps/**/build/**",
+    "**/*.json",
+    "**/*.md",
+    "**/*.log"
   ]
 }

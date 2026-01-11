@@ -19,7 +19,7 @@ This system allows you to:
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐ │
 │  │   Rensto VPS    │  │  Customer A     │  │  Customer B  │ │
-│  │ 173.254.201.134 │  │  n8n.cloud     │  │  n8n.cloud   │ │
+│  │ 172.245.56.50 │  │  n8n.cloud     │  │  n8n.cloud   │ │
 │  │                 │  │                 │  │              │ │
 │  │ • 68 workflows  │  │ • Customer     │  │ • Customer   │ │
 │  │ • Internal ops  │  │   workflows    │  │   workflows  │ │
@@ -110,7 +110,7 @@ node safety-guard.js report
 
 | Instance | Type | URL | Status | Workflows |
 |----------|------|-----|--------|-----------|
-| Rensto VPS | VPS | http://173.254.201.134:5678 | 🟢 Active | 68 |
+| Rensto VPS | VPS | http://172.245.56.50:5678 | 🟢 Active | 68 |
 | Customer: Tax4Us | Cloud | https://tax4us.n8n.cloud | ⚪ Inactive | 12 |
 | Customer: Shelly | Cloud | https://shelly.n8n.cloud | ⚪ Inactive | 8 |
 

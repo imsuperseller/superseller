@@ -98,7 +98,7 @@ n8n:latest:
   - Volume: ./data/n8n
   - Requires: N8N_ENCRYPTION_KEY
 
-# MongoDB is now running on Racknerd server at 173.254.201.134:27017
+# MongoDB is now running on Racknerd server at 172.245.56.50:27017
 # No local MongoDB container needed
 ```
 

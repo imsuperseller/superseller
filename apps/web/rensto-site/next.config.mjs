@@ -57,6 +57,16 @@ const nextConfig = {
         destination: '/app/dashboard',
         permanent: false, // Use temporary redirect during migration
       },
+      {
+        source: '/control/:path*',
+        destination: '/admin/:path*',
+        permanent: true,
+      },
+      {
+        source: '/workflow-dashboard',
+        destination: '/admin',
+        permanent: true,
+      },
     ];
   },
 

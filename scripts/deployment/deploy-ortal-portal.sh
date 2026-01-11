@@ -4,7 +4,7 @@
 echo "🚀 Deploying Ortal's Portal..."
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -188,7 +188,7 @@ cat > /tmp/ortal-portal.html << 'EOF'
                 <div class="space-y-4">
                     <div>
                         <p class="text-sm font-medium text-slate-600">n8n Webhook URL:</p>
-                        <p class="text-sm text-slate-900 font-mono bg-slate-100 p-2 rounded">http://173.254.201.134:5678/webhook/facebook-scraper</p>
+                        <p class="text-sm text-slate-900 font-mono bg-slate-100 p-2 rounded">http://172.245.56.50:5678/webhook/facebook-scraper</p>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-slate-600">Test Payload:</p>
@@ -207,7 +207,7 @@ cat > /tmp/ortal-portal.html << 'EOF'
             alert('🚀 Starting Facebook Group Scraper...\n\nThis will:\n• Scrape 50+ Jewish community Facebook groups\n• Extract member data for lead generation\n• Create custom audiences for marketing\n\nEstimated time: 2-3 minutes');
             
             // Simulate API call
-            fetch('http://173.254.201.134:5678/webhook/facebook-scraper', {
+            fetch('http://172.245.56.50:5678/webhook/facebook-scraper', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ cat > /tmp/ortal-portal.html << 'EOF'
         }
 
         function viewN8nWorkflow() {
-            window.open('http://173.254.201.134:5678', '_blank');
+            window.open('http://172.245.56.50:5678', '_blank');
         }
 
         function viewAnalytics() {

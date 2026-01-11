@@ -12,72 +12,69 @@ const SUBSCRIPTIONS = {
     'all-access': {
         name: 'Rensto All-Access Pass',
         description: 'Monthly unlimited access to all workflows, agents, and the Model Optimizer.',
-        price: 49700,
-        mode: 'subscription',
-        interval: 'month'
+        priceId: 'price_all_access_placeholder', // To be created if needed, keeping for now
+        unitAmount: 49700
     },
     'managed-base': {
         name: 'Managed WhatsApp Agent - Base',
         description: 'Elite Level Architecture + Dedicated Instance',
-        price: 24900,
-        mode: 'subscription',
-        interval: 'month',
+        priceId: 'price_managed_base_placeholder',
+        unitAmount: 24900,
         setupFee: 49900
     },
     'starter-care': {
         name: 'Starter Care Plan',
-        description: '5 hours/mo development + system monitoring.',
-        price: 49700,
-        mode: 'subscription',
-        interval: 'month'
+        description: 'Monitor automations, fix breaks, 1 monthly check-in. (5 hrs/mo)',
+        priceId: 'price_1SniAJDE8rt1dEs181LWczCJ'
     },
     'growth-care': {
         name: 'Growth Care Plan',
-        description: '15 hours/mo development + priority support.',
-        price: 99700,
-        mode: 'subscription',
-        interval: 'month'
+        description: 'Build new automations, optimization, strategy calls. (15 hrs/mo)',
+        priceId: 'price_1SniAKDE8rt1dEs1o3M5ieNG'
     },
     'scale-care': {
         name: 'Scale Care Plan',
-        description: '40 hours/mo development + dedicated engineer.',
-        price: 249700,
-        mode: 'subscription',
-        interval: 'month'
+        description: 'Dedicated engineer, custom features, priority response. (40 hrs/mo)',
+        priceId: 'price_1SniAKDE8rt1dEs1T4QKSDDt'
     }
 } as const;
 
-// One-time Service Offers Map
+// One-time Service Offers Map (Now Recurring Pillars)
 const SERVICES = {
     'automation-audit': {
         name: 'Automation Audit & Gap Analysis',
         description: 'AI-driven analysis of your business processes and automation opportunities.',
-        price: 49700
+        unitAmount: 49700
+    },
+    'crm-setup': {
+        name: 'done-for-you CRM Integration',
+        description: 'Expert configuration of your CRM webhook connection.',
+        unitAmount: 29700
     },
     'the-lead-machine': {
         name: 'The Lead Machine',
         description: 'Autonomous outbound engine sourcing leads, enriching data, and sending custom outreach 24/7.',
-        price: 99700
+        priceId: 'price_1SnYffDE8rt1dEs1oFKGGkQx'
     },
     'autonomous-secretary': {
-        name: 'Autonomous Secretary',
+        name: 'Voice AI Agent',
         description: 'AI assistant handling messages, booking meetings, and managing clients on WhatsApp 24/7.',
-        price: 49700
+        priceId: 'price_1SniAIDE8rt12LERfNwT'
     },
     'knowledge-engine': {
         name: 'Knowledge Engine',
         description: 'Private intelligence system connected to your company data and best practices.',
-        price: 149700
+        priceId: 'price_1SniAIDE8rt1dEs1K6TItcyb'
     },
     'the-content-engine': {
         name: 'The Content Engine',
         description: 'Autonomous systems for high-authority content generation and distribution.',
-        price: 149700
+        priceId: 'price_1SniAJDE8rt1dEs1Cn01ETVN'
     },
     'full-ecosystem': {
         name: 'Full Automation Ecosystem',
         description: 'All four pillars of Rensto automation plus premium support and custom integrations.',
-        price: 549700
+        priceId: 'price_1SniAJDE8rt1dEs1477uILmI'
     }
 } as const;
 
@@ -107,18 +104,27 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: 'Subscription product not found' }, { status: 404 });
             }
 
-            lineItems.push({
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: sub.name,
-                        description: sub.description,
+            if (sub.priceId && sub.priceId.startsWith('price_')) {
+                // Use static Price ID
+                lineItems.push({
+                    price: sub.priceId,
+                    quantity: 1,
+                });
+            } else {
+                // Fallback for placeholders
+                lineItems.push({
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: sub.name,
+                            description: sub.description,
+                        },
+                        unit_amount: (sub as any).unitAmount || (sub as any).price,
+                        recurring: { interval: 'month' },
                     },
-                    unit_amount: sub.price,
-                    recurring: { interval: sub.interval as any },
-                },
-                quantity: 1,
-            });
+                    quantity: 1,
+                });
+            }
         }
 
         // 2. Marketplace Blueprint Download
@@ -182,7 +188,7 @@ export async function POST(req: Request) {
                         name: plan.name,
                         description: plan.description,
                     },
-                    unit_amount: plan.price,
+                    unit_amount: plan.unitAmount,
                     recurring: { interval: 'month' },
                 },
                 quantity: 1,
@@ -205,17 +211,13 @@ export async function POST(req: Request) {
 
             // Dynamic Add-ons
             const ADDON_DATA: Record<string, { name: string, price: number, setup: number }> = {
-                'media': { name: 'Media Messaging Pack', price: 7900, setup: 19900 },
-                'handoff': { name: 'Human Handoff Inbox', price: 19900, setup: 39900 },
-                'groups': { name: 'Groups Automation', price: 14900, setup: 29900 },
+                'media': { name: 'Send Photos & Quotes', price: 7900, setup: 19900 },
+                'handoff': { name: 'Alert Me Button', price: 19900, setup: 39900 },
+                'groups': { name: 'Team Inbox', price: 14900, setup: 29900 },
                 'broadcast': { name: 'Broadcast Pack', price: 19900, setup: 29900 },
-                'interactive': { name: 'Interactive Pack', price: 9900, setup: 19900 },
-                'presence': { name: 'Presence Timing', price: 9900, setup: 19900 },
-                'labels': { name: 'Business Labels', price: 7900, setup: 19900 },
-                'read_ops': { name: 'Read Operations', price: 7900, setup: 19900 },
-                'profile': { name: 'Profile Management', price: 4900, setup: 9900 },
-                'security': { name: 'Security Hardening', price: 14900, setup: 39900 },
-                'reliability': { name: 'Reliability & Scale', price: 24900, setup: 49900 }
+                'interactive': { name: 'Smart Menus', price: 9900, setup: 19900 },
+                'reliability': { name: 'Multi-Location', price: 24900, setup: 49900 },
+                'security': { name: 'Security Hardening', price: 14900, setup: 39900 }
             };
 
             for (const addonId of selectedAddons) {
@@ -264,15 +266,21 @@ export async function POST(req: Request) {
                 });
             }
 
+            // Map frontend bundle ID to Firestore enum
+            let whatsappBundleString = '';
+            if (body.selectedBundleId === 'bundle-1') whatsappBundleString = 'never_miss_lead';
+            else if (body.selectedBundleId === 'bundle-2') whatsappBundleString = 'auto_qualify_book';
+            else if (body.selectedBundleId === 'bundle-3') whatsappBundleString = 'full_ai_sales_rep';
+
             Object.assign(metadata, {
                 selectedAddons: selectedAddons.join(','),
-                extraNumbers: extraNumbers.toString()
+                extraNumbers: extraNumbers.toString(),
+                whatsappBundle: whatsappBundleString
             });
         }
 
         // 4. One-time Service Purchases (Audit, Sprint)
         else if (flowType === 'service-purchase') {
-            mode = 'payment';
             const serviceKey = productId as keyof typeof SERVICES;
             const service = SERVICES[serviceKey];
 
@@ -280,20 +288,75 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: 'Service not found' }, { status: 404 });
             }
 
-            lineItems.push({
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: service.name,
-                        description: service.description,
+            if ('priceId' in service && service.priceId) {
+                // Official Pillar -> Subscription mode
+                mode = 'subscription';
+                lineItems.push({
+                    price: service.priceId as string,
+                    quantity: 1,
+                });
+            } else {
+                // One-time Audit -> Payment mode
+                mode = 'payment';
+                lineItems.push({
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: service.name,
+                            description: service.description,
+                        },
+                        unit_amount: (service as any).unitAmount || (service as any).price,
                     },
-                    unit_amount: service.price,
+                    quantity: 1,
+                });
+            }
+        }
+
+        // 5. Pillar-Purchase (for dashboard entitlements - leads, outreach, voice, content)
+        else if (flowType === 'pillar-purchase') {
+            mode = 'subscription';
+            const pillarId = productId as 'leads' | 'outreach' | 'voice' | 'content';
+
+            const PILLAR_PRICES: Record<string, { priceId: string; name: string; description: string }> = {
+                'leads': {
+                    priceId: 'price_1SnYffDE8rt1dEs1oFKGGkQx', // The Lead Machine
+                    name: 'Get More Leads',
+                    description: 'Automated lead generation for your business'
                 },
+                'outreach': {
+                    priceId: 'price_1SniAIDE8rt12LERfNwT', // Voice AI / same tier
+                    name: 'Automated Outreach',
+                    description: 'Email & SMS follow-up sequences'
+                },
+                'voice': {
+                    priceId: 'price_1SniAIDE8rt12LERfNwT',
+                    name: 'AI Phone Agent',
+                    description: '24/7 AI voice assistant'
+                },
+                'content': {
+                    priceId: 'price_1SniAJDE8rt1dEs1Cn01ETVN',
+                    name: 'Content Engine',
+                    description: 'Automated content generation & publishing'
+                }
+            };
+
+            const pillar = PILLAR_PRICES[pillarId];
+            if (!pillar) {
+                return NextResponse.json({ error: 'Invalid pillar ID' }, { status: 400 });
+            }
+
+            lineItems.push({
+                price: pillar.priceId,
                 quantity: 1,
+            });
+
+            Object.assign(metadata, {
+                pillarId,
+                pillarName: pillar.name
             });
         }
 
-        const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002';
 
         const session = await stripe.checkout.sessions.create({
             customer_email: customerEmail,

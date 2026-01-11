@@ -343,15 +343,15 @@ export function QualificationQuiz({ lang = 'en' }: QuizProps) {
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-                                <div className="text-slate-400 text-sm mb-1 uppercase tracking-wider font-semibold">{t.savingsLabel}</div>
-                                <div className="text-3xl font-bold text-white" dir="ltr">${result.savings.toLocaleString()}</div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            <div className="p-5 md:p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+                                <div className="text-slate-400 text-[10px] md:text-sm mb-1 uppercase tracking-wider font-semibold">{t.savingsLabel}</div>
+                                <div className="text-2xl md:text-3xl font-bold text-white" dir="ltr">${result.savings.toLocaleString()}</div>
                                 <p className="text-[10px] text-slate-600 mt-2">{t.savingsSub}</p>
                             </div>
-                            <div className="p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-center">
-                                <div className="text-cyan-400 text-sm mb-1 uppercase tracking-wider font-semibold">{t.planLabel}</div>
-                                <div className="text-3xl font-bold text-white">{result.recommendation}</div>
+                            <div className="p-5 md:p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-center">
+                                <div className="text-cyan-400 text-[10px] md:text-sm mb-1 uppercase tracking-wider font-semibold">{t.planLabel}</div>
+                                <div className="text-2xl md:text-3xl font-bold text-white">{result.recommendation}</div>
                                 <p className="text-[10px] text-cyan-600 mt-2">{t.planSub}</p>
                             </div>
                         </div>
@@ -368,15 +368,38 @@ export function QualificationQuiz({ lang = 'en' }: QuizProps) {
                             </div>
                             <Button
                                 size="xl"
-                                onClick={() => {
-                                    // Redirect to audit with context
-                                    window.location.href = `${isRtl ? '/he' : ''}/offers#audit?email=${encodeURIComponent(state.email)}&industry=${state.industry}&potential=${result.potential}`;
+                                onClick={async () => {
+                                    // Submit to API route (which handles Firestore + n8n)
+                                    try {
+                                        await fetch('/api/custom-solutions/intake', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                clientId: `quiz-${Date.now()}`,
+                                                config: {
+                                                    email: state.email,
+                                                    industry: state.industry,
+                                                    painPoint: state.painPoint,
+                                                    hoursLost: state.hoursLost,
+                                                    potential: result.potential,
+                                                    savings: result.savings,
+                                                    source: 'qualification_quiz',
+                                                    submittedAt: new Date().toISOString()
+                                                }
+                                            })
+                                        });
+                                    } catch (e) {
+                                        console.error('Lead capture failed', e);
+                                    }
+
+                                    // Redirect to offers page with context
+                                    window.location.href = `/offers#audit?email=${encodeURIComponent(state.email)}&industry=${state.industry}&potential=${result.potential}`;
                                 }}
                                 disabled={!state.email}
                                 className="w-full font-bold shadow-[0_10px_30px_rgba(30,174,247,0.3)] bg-gradient-to-r from-blue-600 to-cyan-400 text-white"
                             >
                                 {t.cta}
-                                <ArrowRight className={`w-5 h-5 ${isRtl ? 'rotate-180' : ''}`} />
+                                <ArrowRight className="w-5 h-5" />
                             </Button>
                             <button
                                 onClick={reset}

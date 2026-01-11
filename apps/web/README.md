@@ -124,7 +124,7 @@ cp .env.example .env  # Configure environment variables
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3001
 
 #### Rensto Site
 
@@ -135,7 +135,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3002
 
 ## ⚙️ Environment Variables
 

@@ -12,7 +12,7 @@ const path = require('path');
 process.env.MCP_MODE = 'stdio';
 process.env.LOG_LEVEL = 'error';
 process.env.DISABLE_CONSOLE_OUTPUT = 'true';
-process.env.N8N_API_URL = process.env.N8N_API_URL || 'http://173.254.201.134:5678';
+process.env.N8N_API_URL = process.env.N8N_API_URL || 'http://172.245.56.50:5678';
 process.env.N8N_API_KEY = process.env.N8N_API_KEY || '';
 
 // Find n8n-mcp binary

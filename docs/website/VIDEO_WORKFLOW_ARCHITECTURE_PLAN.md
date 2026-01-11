@@ -11,7 +11,7 @@
 ### **What You Have Now** (`8GC371u1uBQ8WLmu`)
 
 **Workflow Name**: "Rensto Website Video Generator"  
-**URL**: http://173.254.201.134:5678/workflow/8GC371u1uBQ8WLmu  
+**URL**: http://172.245.56.50:5678/workflow/8GC371u1uBQ8WLmu  
 **Purpose**: Generate Sora 2 prompts from winning Meta Ad Library ads (UGC-style social media ads)
 
 **What It Does**:
@@ -331,7 +331,7 @@ Add to Website (Testimonials section)
 
 1. **Test the Workflow**:
    ```bash
-   curl "http://173.254.201.134:5678/webhook/4f2edfb2-eb77-4c8d-8f83-462cba2b5e16?recordId=297"
+   curl "http://172.245.56.50:5678/webhook/4f2edfb2-eb77-4c8d-8f83-462cba2b5e16?recordId=297"
    ```
 
 2. **Check Boost.space Note** (ID: 297):

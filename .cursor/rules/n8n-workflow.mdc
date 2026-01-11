@@ -23,7 +23,7 @@ alwaysApply: false
 7. Use `n8n_autofix_workflow` to fix common errors
 
 ## Rensto Project Rules
-- **Default Instance**: Rensto VPS (http://173.254.201.134:5678)
+- **Default Instance**: Rensto VPS (http://172.245.56.50:5678)
 - **68 Rensto Workflows**: Internal operations, customer templates, testing
 - **Customer Workflows**: Export from customer instances, work locally, re-import
 - **Naming Convention**:

@@ -14,7 +14,7 @@
         "-e",
         "DISABLE_CONSOLE_OUTPUT=true",
         "-e",
-        "N8N_API_URL=http://173.254.201.134:5678",
+        "N8N_API_URL=http://172.245.56.50:5678",
         "-e",
         "N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2MDkyMDIxfQ.YKPTmHyLr1_kXX2JMY7hsPy4jvnCJDL71mOCltoUbQc",
         "ghcr.io/czlonkowski/n8n-mcp:latest"

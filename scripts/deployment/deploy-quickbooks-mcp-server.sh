@@ -6,7 +6,7 @@
 echo "🚀 DEPLOYING QUICKBOOKS MCP SERVER TO RACKNERD VPS"
 
 # Configuration
-RACKNERD_IP="173.254.201.134"
+RACKNERD_IP="172.245.56.50"
 RACKNERD_PASS="05ngBiq2pTA8XSF76x"
 MCP_SERVERS_DIR="/opt/mcp-servers"
 
@@ -103,7 +103,7 @@ cat > DEPLOYMENT_INSTRUCTIONS.md << 'EOF'
 
 1. **SSH to Racknerd VPS:**
    ```bash
-   ssh root@173.254.201.134
+   ssh root@172.245.56.50
    # Password: 05ngBiq2pTA8XSF76x
    ```
 
@@ -140,6 +140,6 @@ echo "  - quickbooks-mcp-deploy.sh (deployment script)"
 echo "  - DEPLOYMENT_INSTRUCTIONS.md (manual instructions)"
 echo ""
 echo "🚀 Next steps:"
-echo "1. SSH to Racknerd VPS: ssh root@173.254.201.134"
+echo "1. SSH to Racknerd VPS: ssh root@172.245.56.50"
 echo "2. Upload and run: ./quickbooks-mcp-deploy.sh"
 echo "3. Verify installation and test connection"

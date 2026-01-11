@@ -24,7 +24,7 @@ const features = [
   {
     icon: Clock,
     title: "Fixed Pricing",
-    description: "No hourly billing surprises. Clear scope, deliverables, and money-back guarantee."
+    description: "No hourly billing surprises. Clear scope, deliverables, and a total satisfaction guarantee."
   },
   {
     icon: Code,

@@ -19,25 +19,25 @@ class RateLimiter {
   private config: RateLimitConfig;
 
   constructor(config: RateLimitConfig) {
-    this.config = {
-      windowMs: 15 * 60 * 1000, // 15 minutes default
-      maxRequests: 100, // 100 requests per window default
+    const defaults: RateLimitConfig = {
+      windowMs: 15 * 60 * 1000,
+      maxRequests: 100,
       message: 'Too many requests, please try again later.',
       statusCode: 429,
-      ...config,
     };
+    this.config = { ...defaults, ...config };
   }
 
   private getClientIdentifier(req: NextRequest): string {
-    // Use IP address as primary identifier
-    const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
-    
+    // Use IP address from headers or req properties
+    const ip = req.headers.get('x-real-ip') || req.headers.get('x-forwarded-for') || 'unknown';
+
     // Add user agent for additional uniqueness
     const userAgent = req.headers.get('user-agent') || '';
-    
+
     // Add route path for per-route limiting
     const path = req.nextUrl?.pathname || '';
-    
+
     return `${ip}:${userAgent}:${path}`;
   }
 
@@ -52,31 +52,31 @@ class RateLimiter {
 
   check(req: NextRequest): { allowed: boolean; remaining: number; resetTime: number } {
     this.cleanup();
-    
+
     const identifier = this.getClientIdentifier(req);
     const now = Date.now();
-    
+
     if (!this.store[identifier]) {
       this.store[identifier] = {
         count: 0,
         resetTime: now + this.config.windowMs,
       };
     }
-    
+
     const record = this.store[identifier];
-    
+
     // Check if window has reset
     if (now > record.resetTime) {
       record.count = 0;
       record.resetTime = now + this.config.windowMs;
     }
-    
+
     // Increment request count
     record.count++;
-    
+
     const allowed = record.count <= this.config.maxRequests;
     const remaining = Math.max(0, this.config.maxRequests - record.count);
-    
+
     return {
       allowed,
       remaining,
@@ -87,11 +87,11 @@ class RateLimiter {
   middleware() {
     return (req: NextRequest) => {
       const result = this.check(req);
-      
+
       if (!result.allowed) {
         return NextResponse.json(
           { error: this.config.message },
-          { 
+          {
             status: this.config.statusCode,
             headers: {
               'X-RateLimit-Limit': this.config.maxRequests.toString(),
@@ -102,7 +102,7 @@ class RateLimiter {
           }
         );
       }
-      
+
       return null;
     };
   }
@@ -140,11 +140,11 @@ export function withRateLimit(
 ) {
   return async (req: NextRequest): Promise<NextResponse> => {
     const rateLimitResult = rateLimiter.middleware()(req);
-    
+
     if (rateLimitResult) {
       return rateLimitResult;
     }
-    
+
     return handler(req);
   };
 }

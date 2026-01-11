@@ -9,7 +9,7 @@ echo "🚀 Deploying Airtable MCP Server to Racknerd VPS (Simple)"
 echo "========================================================="
 
 # Configuration
-VPS_IP="173.254.201.134"
+VPS_IP="172.245.56.50"
 VPS_USER="root"
 VPS_PASS="05ngBiq2pTA8XSF76x"
 DEPLOY_PATH="/opt/mcp-servers/airtable-mcp-server"

@@ -6,7 +6,7 @@ echo "🎯 BUG DETECTION & SYSTEM MONITORING AGENTS"
 echo "============================================"
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -181,7 +181,7 @@ class BugDetectionAndMonitoringSystem {
       
       // Check application response time
       const startTime = Date.now();
-      const response = await axios.get('http://localhost:3000/api/health', { timeout: 5000 });
+      const response = await axios.get('http://localhost:3002/api/health', { timeout: 5000 });
       const responseTime = Date.now() - startTime;
       
       const healthStatus = {
@@ -465,7 +465,7 @@ class BugDetectionAndMonitoringSystem {
     try {
       // Check application response time
       const startTime = Date.now();
-      await axios.get('http://localhost:3000/api/health');
+      await axios.get('http://localhost:3002/api/health');
       const responseTime = Date.now() - startTime;
       
       // Check database query performance
@@ -1142,15 +1142,15 @@ echo ""
 echo "📤 DEPLOYING BUG DETECTION SYSTEM..."
 
 # Deploy bug detection system to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-system.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-workflow.json root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-admin-integration.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-system.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-workflow.json root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/bug-detection-admin-integration.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🎯 TESTING BUG DETECTION SYSTEM..."
 
 # Test bug detection system
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node -e \"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node -e \"
 const BugDetectionAndMonitoringSystem = require('./bug-detection-system.js');
 const bugDetection = new BugDetectionAndMonitoringSystem();
 

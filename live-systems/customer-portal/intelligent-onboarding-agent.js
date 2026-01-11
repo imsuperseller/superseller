@@ -24,7 +24,7 @@ class IntelligentOnboardingAgent {
         baseURL: 'https://openrouter.ai/api/v1'
       },
       n8n: {
-        url: 'http://173.254.201.134:5678',
+        url: 'http://172.245.56.50:5678',
         apiKey: process.env.N8N_API_KEY
       }
     };

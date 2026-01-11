@@ -66,32 +66,32 @@ export default function StatusPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'operational':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
       case 'degraded':
-        return <AlertTriangle className="h-5 w-5 text-orange-600" />;
+        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
       case 'outage':
-        return <XCircle className="h-5 w-5 text-red-600" />;
+        return <XCircle className="h-5 w-5 text-red-500" />;
       default:
-        return <Activity className="h-5 w-5 text-slate-600" />;
+        return <Activity className="h-5 w-5 text-rensto-text-secondary" />;
     }
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">System Status</h1>
-        <p className="text-slate-600 mt-2">
+        <h1 className="text-3xl font-bold text-rensto-text-primary">System Status</h1>
+        <p className="text-rensto-text-secondary mt-2">
           Monitor the health and performance of your agent services
         </p>
       </div>
 
-      <Card className="rensto-card">
+      <Card variant="renstoNeon" className="rensto-card-neon">
         <CardHeader>
           <div className="flex items-center space-x-4">
             {getStatusIcon(systemStatus.overall)}
             <div>
-              <CardTitle>All Systems Operational</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-rensto-text-primary">All Systems Operational</CardTitle>
+              <CardDescription className="text-rensto-text-secondary">
                 All services are running normally
               </CardDescription>
             </div>
@@ -101,14 +101,14 @@ export default function StatusPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {systemStatus.services.map((service, index) => (
-          <Card key={index} className="rensto-card">
+          <Card key={index} variant="renstoNeon" className="rensto-card-neon">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   {getStatusIcon(service.status)}
                   <div>
-                    <CardTitle className="text-lg">{service.name}</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-lg text-rensto-text-primary">{service.name}</CardTitle>
+                    <CardDescription className="text-rensto-text-secondary">
                       Last checked: {service.lastCheck}
                     </CardDescription>
                   </div>
@@ -119,15 +119,14 @@ export default function StatusPage() {
             <CardContent>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-600">Uptime</span>
-                  <span className="font-medium">{service.uptime}</span>
+                  <span className="text-sm text-rensto-text-secondary">Uptime</span>
+                  <span className="font-medium text-rensto-text-primary">{service.uptime}</span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
+                <div className="w-full bg-white/10 rounded-full h-2">
                   <div
-                    className={`h-2 rounded-full ${
-                      service.status === 'operational' ? 'bg-green-500' :
-                      service.status === 'degraded' ? 'bg-orange-500' : 'bg-red-500'
-                    }`}
+                    className={`h-2 rounded-full ${service.status === 'operational' ? 'bg-green-500' :
+                        service.status === 'degraded' ? 'bg-orange-500' : 'bg-red-500'
+                      }`}
                     style={{ width: service.uptime }}
                   ></div>
                 </div>

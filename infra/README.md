@@ -42,7 +42,6 @@ infra/
 | **webflow-mcp-server** | 48M | infra/mcp-servers/webflow-mcp-server/ | Webflow CMS & Designer API (42 tools) |
 | **make-mcp-server** | 31M | infra/mcp-servers/make-mcp-server/ | Make.com workflow automation |
 | **typeform-mcp-server** | 22M | infra/mcp-servers/typeform-mcp-server/ | Typeform forms & responses |
-| **boost-space-mcp-server** | 16M | infra/mcp-servers/boost-space-mcp-server/ | Boost.space automation platform |
 | **quickbooks-mcp-server** | 7.6M | infra/mcp-servers/quickbooks-mcp-server/ | QuickBooks financial data |
 | **tidycal-mcp-server** | 7.4M | infra/mcp-servers/tidycal-mcp-server/ | TidyCal scheduling |
 
@@ -75,7 +74,6 @@ infra/
 | mongodb-mcp-server | 4K | 🚧 WIP | MongoDB integration (skeleton) |
 | github-mcp-server | 4K | 🚧 WIP | GitHub integration (skeleton) |
 | vercel-mcp-server | 4K | 🚧 WIP | Vercel deployment (skeleton) |
-| boost-space-mcp-server.js | 12K | 📦 Single file | Standalone version |
 
 ### **MCP Server Management**
 
@@ -97,7 +95,7 @@ infra/
 **Testing MCP Servers**:
 ```bash
 # Test n8n-mcp
-docker run -i --rm -e N8N_API_URL=http://173.254.201.134:5678 -e N8N_API_KEY=... ghcr.io/czlonkowski/n8n-mcp:latest
+docker run -i --rm -e N8N_API_URL=http://172.245.56.50:5678 -e N8N_API_KEY=... ghcr.io/czlonkowski/n8n-mcp:latest
 
 # Test local MCP server
 node infra/mcp-servers/your-server/server.js
@@ -209,7 +207,7 @@ npm run dev              # http://localhost:3000
 
 **Contents**:
 - Service unit files for n8n, databases, etc.
-- Used on RackNerd VPS (173.254.201.134)
+- Used on RackNerd VPS (172.245.56.50)
 
 **Usage**:
 ```bash
@@ -318,10 +316,10 @@ npm install           # Update dependencies
 
 ```bash
 # Copy systemd services
-scp infra/systemd/*.service root@173.254.201.134:/etc/systemd/system/
+scp infra/systemd/*.service root@172.245.56.50:/etc/systemd/system/
 
 # SSH into VPS
-ssh root@173.254.201.134
+ssh root@172.245.56.50
 sudo systemctl daemon-reload
 sudo systemctl enable your-service
 sudo systemctl start your-service
@@ -367,7 +365,7 @@ rclone sync infra/ remote:rensto-infra-backup/
 ## 📞 Questions?
 
 **For MCP servers**: Check `~/.cursor/mcp.json` for active configurations
-**For VPS access**: SSH to root@173.254.201.134
+**For VPS access**: SSH to root@172.245.56.50
 **For adding new infrastructure**: Follow patterns in existing subdirectories
 
 ---

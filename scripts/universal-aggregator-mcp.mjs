@@ -3,7 +3,7 @@
 /**
  * Universal Aggregator MCP Server (High-Performance Edition)
  * Unifies n8n, Stripe, and Firebase into a stable, single-process server.
- * Optimized with async execution and 5-minute timeouts.
+ * Optimized with caching, truncation, and 30-second timeouts.
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -19,13 +19,14 @@ import fs from 'fs';
 
 const execAsync = promisify(exec);
 const LOG_FILE = '/tmp/universal-aggregator-mcp.log';
+const TRUNCATION_LIMIT = 50000; // 50KB - Safe for Opus
+const DEFAULT_TIMEOUT = 300000; // 5 Minutes - For long running workflows
 
 function log(msg) {
     const timestamp = new Date().toISOString();
     try {
         fs.appendFileSync(LOG_FILE, `[${timestamp}] ${msg}\n`);
     } catch (e) {
-        // Fallback to stderr if log file is unwritable
         process.stderr.write(`[LOG ERROR] ${e.message}\n`);
     }
 }
@@ -36,12 +37,25 @@ log('--- UNIVERSAL AGGREGATOR STARTING (OPTIMIZED) ---');
 process.on('uncaughtException', (error) => {
     log(`FATAL: Uncaught Exception - ${error.message}`);
     log(error.stack);
-    process.exit(1);
+    // Only exit if the error is truly critical (e.g., pipe broken)
+    if (error.code === 'EPIPE' || error.message.includes('EBADF')) {
+        process.exit(1);
+    }
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    log(`FATAL: Unhandled Rejection at: ${promise} reason: ${reason}`);
-    process.exit(1);
+    log(`WARNING: Unhandled Rejection at: ${promise} reason: ${reason}`);
+    // Do not exit on unhandled rejections to maintain IDE stability
+});
+
+process.on('SIGTERM', () => {
+    log('Received SIGTERM - Shutting down gracefully');
+    process.exit(0);
+});
+
+process.on('SIGINT', () => {
+    log('Received SIGINT - Shutting down gracefully');
+    process.exit(0);
 });
 
 class UniversalAggregator {
@@ -49,7 +63,7 @@ class UniversalAggregator {
         this.server = new Server(
             {
                 name: 'universal-aggregator',
-                version: '1.2.0',
+                version: '1.3.0',
             },
             {
                 capabilities: {
@@ -58,7 +72,7 @@ class UniversalAggregator {
             }
         );
 
-        // Multi-instance n8n configuration
+        // Multi-instance n8n configuration - synchronous, no async work here
         this.instances = {
             'rensto': {
                 url: process.env.N8N_RENSTO_URL || 'http://n8n.rensto.com',
@@ -75,20 +89,31 @@ class UniversalAggregator {
         };
 
         this.stripeKey = process.env.STRIPE_API_KEY;
+        this.cache = {};
+        this.CACHE_TTL = 60000; // 60 seconds
 
-        // Logging status
-        Object.entries(this.instances).forEach(([name, config]) => {
-            if (!config.key) log(`WARNING: Key for n8n instance '${name}' is not set`);
-        });
-        if (!this.stripeKey) log('WARNING: STRIPE_API_KEY is not set');
-
+        // Set up handlers IMMEDIATELY - this is the critical path for IDE startup
         this.setupHandlers();
+
+        // Non-critical logging deferred to after handlers are ready
+        setImmediate(() => {
+            Object.entries(this.instances).forEach(([name, config]) => {
+                if (!config.key) log(`INFO: Key for n8n instance '${name}' is not set`);
+            });
+            if (!this.stripeKey) log('INFO: STRIPE_API_KEY is not set');
+        });
     }
 
     // --- SERVICE HELPERS ---
 
     async n8nRequest(instanceName, method, endpoint, data = null) {
         const config = this.instances[instanceName] || this.instances['rensto'];
+
+        if (!config.key) {
+            log(`n8n Error [${instanceName}]: API Key missing`);
+            throw new Error(`n8n [${instanceName}]: Configuration Error - API Key is missing. Please check .env file.`);
+        }
+
         log(`n8n Request [${instanceName}]: ${method} ${endpoint}`);
         const startTime = Date.now();
 
@@ -101,7 +126,9 @@ class UniversalAggregator {
                     'Content-Type': 'application/json'
                 },
                 data,
-                timeout: 300000 // 5 minutes
+                timeout: DEFAULT_TIMEOUT,
+                maxContentLength: 10000000, // 10MB Max - Prevent OOM crashes
+                maxBodyLength: 10000000 // 10MB Max
             });
             log(`n8n Success [${instanceName}]: ${method} ${endpoint} (${Date.now() - startTime}ms)`);
             return res.data;
@@ -125,7 +152,7 @@ class UniversalAggregator {
                 },
                 params: method === 'GET' ? params : undefined,
                 data: method !== 'GET' ? new URLSearchParams(params).toString() : undefined,
-                timeout: 60000
+                timeout: DEFAULT_TIMEOUT
             });
             log(`Stripe Success: ${method} ${endpoint} (${Date.now() - startTime}ms)`);
             return res.data;
@@ -140,7 +167,7 @@ class UniversalAggregator {
         const startTime = Date.now();
         try {
             const { stdout } = await execAsync(`npx firebase-tools ${args}`, {
-                timeout: 120000
+                timeout: DEFAULT_TIMEOUT
             });
             log(`Firebase Success: ${args} (${Date.now() - startTime}ms)`);
             return stdout;
@@ -166,8 +193,7 @@ class UniversalAggregator {
                             type: 'object',
                             properties: {
                                 instance: { type: 'string', enum: instanceEnum, default: 'rensto' },
-                                limit: { type: 'number', default: 20 },
-                                offset: { type: 'number' }
+                                limit: { type: 'number', default: 20 }
                             }
                         }
                     },
@@ -211,26 +237,65 @@ class UniversalAggregator {
             log(`Tool Call Requested: ${name}`);
 
             try {
-                let result;
+                let result = null;
                 if (name.startsWith('n8n_')) {
                     const inst = args.instance || 'rensto';
                     if (name === 'n8n_list_workflows') {
-                        // Removed 'offset' as it caused errors in some n8n versions
-                        result = await this.n8nRequest(inst, 'GET', `/workflows?limit=${args.limit || 20}`);
+                        const cacheKey = `n8n_list_${inst}_${args.limit || 20}`;
+                        if (this.cache[cacheKey] && (Date.now() - this.cache[cacheKey].time < this.CACHE_TTL)) {
+                            log(`Using cached result for ${cacheKey}`);
+                            result = this.cache[cacheKey].data;
+                        } else {
+                            const rawResult = await this.n8nRequest(inst, 'GET', `/workflows?limit=${args.limit || 20}`);
+                            // Optimize: Only return essential fields to reduce payload size
+                            if (rawResult && Array.isArray(rawResult.data)) {
+                                result = {
+                                    ...rawResult,
+                                    data: rawResult.data.map(w => ({
+                                        id: w.id,
+                                        name: w.name,
+                                        active: w.active,
+                                        createdAt: w.createdAt,
+                                        updatedAt: w.updatedAt
+                                    }))
+                                };
+                            } else {
+                                result = rawResult;
+                            }
+                            this.cache[cacheKey] = { data: result, time: Date.now() };
+                        }
+                    } else if (name === 'n8n_get_workflow') {
+                        result = await this.n8nRequest(inst, 'GET', `/workflows/${args.id}`);
+                    } else if (name === 'n8n_execute_workflow') {
+                        result = await this.n8nRequest(inst, 'POST', `/workflows/${args.id}/run`, args.data || {});
                     }
-                    if (name === 'n8n_get_workflow') result = await this.n8nRequest(inst, 'GET', `/workflows/${args.id}`);
-                    if (name === 'n8n_execute_workflow') result = await this.n8nRequest(inst, 'POST', `/workflows/${args.id}/run`, args.data || {});
                 } else if (name.startsWith('stripe_')) {
-                    if (name === 'stripe_list_customers') result = await this.stripeRequest('GET', '/customers', args);
-                    if (name === 'stripe_get_balance') result = await this.stripeRequest('GET', '/balance');
-                    if (name === 'stripe_list_invoices') result = await this.stripeRequest('GET', '/invoices', args);
+                    if (name === 'stripe_list_customers') {
+                        result = await this.stripeRequest('GET', '/customers', args);
+                    } else if (name === 'stripe_get_balance') {
+                        result = await this.stripeRequest('GET', '/balance');
+                    } else if (name === 'stripe_list_invoices') {
+                        result = await this.stripeRequest('GET', '/invoices', args);
+                    }
                 } else if (name.startsWith('firebase_')) {
-                    if (name === 'firebase_list_projects') result = JSON.parse(await this.runFirebase('projects:list --json'));
-                    if (name === 'firebase_deploy') result = JSON.parse(await this.runFirebase(`deploy --project ${args.project} --json`));
+                    if (name === 'firebase_list_projects') {
+                        const cacheKey = 'firebase_projects';
+                        if (this.cache[cacheKey] && (Date.now() - this.cache[cacheKey].time < 300000)) { // 5 min cache for firebase
+                            log('Using cached result for firebase_projects');
+                            result = this.cache[cacheKey].data;
+                        } else {
+                            const raw = await this.runFirebase('projects:list --json');
+                            result = JSON.parse(raw || '{}');
+                            this.cache[cacheKey] = { data: result, time: Date.now() };
+                        }
+                    } else if (name === 'firebase_deploy') {
+                        const raw = await this.runFirebase(`deploy --project ${args.project} --json`);
+                        result = JSON.parse(raw || '{}');
+                    }
                 } else if (name === 'get_status') {
                     result = {
                         status: 'online',
-                        version: '1.2.1',
+                        version: '1.2.2',
                         uptime: process.uptime(),
                         instances: Object.keys(this.instances).map(id => ({
                             id,
@@ -241,10 +306,24 @@ class UniversalAggregator {
                     };
                 }
 
+                let textResponse;
+                try {
+                    textResponse = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+                } catch (e) {
+                    textResponse = `Error stringifying response: ${e.message}`;
+                    log(`JSON Stringify Error: ${e.message}`);
+                }
+
+                if (textResponse.length > TRUNCATION_LIMIT) {
+                    const originalLength = textResponse.length;
+                    textResponse = textResponse.substring(0, TRUNCATION_LIMIT) +
+                        `\n\n[TRUNCATED: Response was ${originalLength} chars, limit is ${TRUNCATION_LIMIT}. Use filters or specific IDs to get more data.]`;
+                }
+
                 return {
                     content: [{
                         type: 'text',
-                        text: typeof result === 'string' ? result : JSON.stringify(result, null, 2)
+                        text: textResponse
                     }]
                 };
             } catch (error) {

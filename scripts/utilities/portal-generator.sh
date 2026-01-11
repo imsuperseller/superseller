@@ -6,7 +6,7 @@ echo "🎯 CUSTOMER PORTAL GENERATOR SYSTEM"
 echo "==================================="
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -690,12 +690,12 @@ class CustomerPortalGenerator {
     const { filepath, filename } = portalData;
 
     // Copy to server
-    const command = `sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no ${filepath} root@173.254.201.134:/var/www/html/${filename}`;
+    const command = `sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no ${filepath} root@172.245.56.50:/var/www/html/${filename}`;
 
     require('child_process').execSync(command);
 
     return {
-      url: `http://173.254.201.134/${filename}`,
+      url: `http://172.245.56.50/${filename}`,
       filename,
       deployed: true
     };

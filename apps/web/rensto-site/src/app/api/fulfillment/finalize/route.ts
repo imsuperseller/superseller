@@ -1,7 +1,10 @@
+import { NextRequest, NextResponse } from 'next/server';
 
-import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { emails } from '@/lib/email';
 
 export async function POST(request: Request) {
     try {
@@ -49,6 +52,21 @@ export async function POST(request: Request) {
             });
         } catch (e) {
             console.warn('Failed to trigger activation webhook:', e);
+        }
+
+        // Send fulfillment complete email
+        const clientEmail = doc.data()?.clientEmail;
+        if (clientEmail) {
+            try {
+                await emails.fulfillmentComplete(
+                    clientEmail,
+                    doc.data()?.clientId || 'Valued Customer',
+                    doc.data()?.productName || 'Rensto Service',
+                    `https://rensto.com/dashboard/${doc.data()?.clientId}`
+                );
+            } catch (emailError) {
+                console.error('Failed to send fulfillment complete email:', emailError);
+            }
         }
 
         return NextResponse.json({

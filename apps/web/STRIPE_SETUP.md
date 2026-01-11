@@ -14,7 +14,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 N8N_WEBHOOK_URL=http://n8n.rensto.com/webhook/lead-enrichment-saas
 
 # App URL
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3002
 ```
 
 ## Stripe Setup Steps

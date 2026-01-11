@@ -32,7 +32,7 @@ warning() {
 # Test SSH connectivity
 test_ssh_connectivity() {
     log "Testing SSH connectivity to Racknerd VPS..."
-    if timeout 10 sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@173.254.201.134 "echo 'SSH OK'" >/dev/null 2>&1; then
+    if timeout 10 sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@172.245.56.50 "echo 'SSH OK'" >/dev/null 2>&1; then
         success "SSH connectivity working"
         return 0
     else
@@ -44,13 +44,13 @@ test_ssh_connectivity() {
 # Test network connectivity
 test_network_connectivity() {
     log "Testing network connectivity..."
-    if timeout 5 ping -c 3 173.254.201.134 >/dev/null 2>&1; then
+    if timeout 5 ping -c 3 172.245.56.50 >/dev/null 2>&1; then
         success "Ping to Racknerd VPS working"
     else
         warning "Ping to Racknerd VPS failed"
     fi
     
-    if timeout 5 nslookup 173.254.201.134 >/dev/null 2>&1; then
+    if timeout 5 nslookup 172.245.56.50 >/dev/null 2>&1; then
         success "DNS resolution working"
     else
         warning "DNS resolution failed"
@@ -93,7 +93,7 @@ test_make_scenarios() {
 test_n8n_api() {
     log "Testing n8n API..."
     response=$(curl -s -H "X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA" \
-        "http://173.254.201.134:5678/api/v1/workflows" 2>/dev/null)
+        "http://172.245.56.50:5678/api/v1/workflows" 2>/dev/null)
     
     if echo "$response" | grep -q "data"; then
         success "n8n API working"
@@ -121,7 +121,7 @@ test_make_cloud_mcp() {
 test_n8n_workflow() {
     log "Testing n8n workflow..."
     response=$(curl -s -H "X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA" \
-        "http://173.254.201.134:5678/api/v1/workflows/VAe4gfpuhGBbeW2u" 2>/dev/null)
+        "http://172.245.56.50:5678/api/v1/workflows/VAe4gfpuhGBbeW2u" 2>/dev/null)
     
     if echo "$response" | grep -q "id"; then
         success "n8n workflow accessible"
@@ -137,7 +137,7 @@ test_n8n_workflow() {
 test_n8n_workflow_status() {
     log "Testing n8n workflow status..."
     response=$(curl -s -H "X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA" \
-        "http://173.254.201.134:5678/api/v1/executions?workflowId=VAe4gfpuhGBbeW2u&limit=1" 2>/dev/null)
+        "http://172.245.56.50:5678/api/v1/executions?workflowId=VAe4gfpuhGBbeW2u&limit=1" 2>/dev/null)
     
     if echo "$response" | grep -q "data"; then
         success "n8n workflow status accessible"

@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import { NoiseTexture } from '@/components/ui/premium';
 import {
     Quote,
     Award,
@@ -52,8 +56,8 @@ const BASE_PLAN = {
 const ADDONS = [
     {
         id: 'media',
-        name: 'Media Messaging Pack',
-        description: 'Send & receive images, video, audio, PDFs. Includes auto-download.',
+        name: 'Send Photos & Quotes',
+        description: 'Let customers send you job photos, and send back estimates.',
         price: 79,
         setup: 199,
         icon: MessageSquare,
@@ -61,8 +65,8 @@ const ADDONS = [
     },
     {
         id: 'handoff',
-        name: 'Human Handoff Inbox',
-        description: 'Sync with Chatwoot/Zendesk for seamless human takeover.',
+        name: 'Alert Me Button',
+        description: 'Customer can request to talk to a human anytime.',
         price: 199,
         setup: 399,
         icon: Users,
@@ -71,8 +75,8 @@ const ADDONS = [
     },
     {
         id: 'groups',
-        name: 'Groups Automation',
-        description: 'Listen, post, and moderate in WhatsApp Groups.',
+        name: 'Team Inbox',
+        description: 'Multiple people can manage the same WhatsApp.',
         price: 149,
         setup: 299,
         icon: Users,
@@ -90,47 +94,20 @@ const ADDONS = [
     },
     {
         id: 'interactive',
-        name: 'Interactive Pack',
-        description: 'Polls, buttons, list messages, and funnels.',
+        name: 'Smart Menus',
+        description: 'Let customers tap buttons to select services instead of typing.',
         price: 99,
         setup: 199,
         icon: Radio,
         available: true
     },
     {
-        id: 'presence',
-        name: 'Presence Timing',
-        description: 'Typing indicators & online status for realistic feel.',
-        price: 99,
-        setup: 199,
-        icon: Clock,
-        available: true
-    },
-    {
-        id: 'labels',
-        name: 'Business Labels',
-        description: 'Auto-apply labels & sync with CRM stages.',
-        price: 79,
-        setup: 199,
-        icon: LayoutGrid,
-        available: true
-    },
-    {
-        id: 'read_ops',
-        name: 'Read Operations',
-        description: 'Auto-mark as read, bulk read, unread alerts.',
-        price: 79,
-        setup: 199,
-        icon: CheckCircle2,
-        available: true
-    },
-    {
-        id: 'profile',
-        name: 'Profile Management',
-        description: 'Programmatic updates to name, bio, and profile pic.',
-        price: 49,
-        setup: 99,
-        icon: UserCircle,
+        id: 'reliability',
+        name: 'Multi-Location',
+        description: 'Run separate agents for each business location.',
+        price: 249,
+        setup: 499,
+        icon: Server,
         available: true
     },
     {
@@ -142,32 +119,90 @@ const ADDONS = [
         icon: Lock,
         available: false,
         comingSoon: true
+    }
+];
+
+const BUNDLES = [
+    {
+        id: 'bundle-1',
+        name: 'Never Miss a Lead',
+        tagline: 'Entry Level',
+        description: 'Instant response 24/7. Stop losing money to missed calls.',
+        features: [
+            'Instant response 24/7 (within seconds)',
+            'Answer FAQs automatically',
+            'Capture name, phone, email',
+            'Send info to your phone/CRM'
+        ],
+        includedAddons: [],
+        highlight: false
     },
     {
-        id: 'reliability',
-        name: 'Reliability & Scale',
-        description: 'Dedicated GOWS engine, session recovery, load shaping.',
-        price: 249,
-        setup: 499,
-        icon: Server,
-        available: true
+        id: 'bundle-2',
+        name: 'Auto-Qualify & Book',
+        tagline: 'Most Popular',
+        description: 'Filter tire-kickers and book appointments while you sleep.',
+        features: [
+            'Everything in Bundle 1',
+            'Ask qualifying questions',
+            'Book appointments directly',
+            'Send confirmation + reminders',
+            'Re-engage cold leads'
+        ],
+        includedAddons: ['interactive'],
+        highlight: true
+    },
+    {
+        id: 'bundle-3',
+        name: 'Full AI Sales Rep',
+        tagline: 'Premium',
+        description: 'Handle quotes, objections, and complex sales flows.',
+        features: [
+            'Everything in Bundle 2',
+            'Send quotes/estimates',
+            'Handle objections',
+            'Multi-language support',
+            'Escalate to human'
+        ],
+        includedAddons: ['interactive', 'media', 'handoff'],
+        highlight: false
     }
 ];
 
 
 export default function WhatsAppPage() {
     const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+    const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
     const [extraNumbers, setExtraNumbers] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [showEmailModal, setShowEmailModal] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const toggleAddon = (id: string) => {
+        setSelectedBundleId(null); // Switch to custom mode
         setSelectedAddons(prev =>
             prev.includes(id)
                 ? prev.filter(a => a !== id)
                 : [...prev, id]
         );
+    };
+
+    const selectBundle = (bundleId: string) => {
+        const bundle = BUNDLES.find(b => b.id === bundleId);
+        if (bundle) {
+            setSelectedAddons(bundle.includedAddons);
+            setSelectedBundleId(bundleId);
+            // Scroll to configurator
+            const configElement = document.getElementById('configurator');
+            if (configElement) {
+                configElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
     };
 
     const handleCheckout = async () => {
@@ -186,7 +221,8 @@ export default function WhatsAppPage() {
                     productId: 'managed-base',
                     customerEmail: email,
                     selectedAddons,
-                    extraNumbers
+                    extraNumbers,
+                    selectedBundleId: selectedBundleId || undefined
                 }),
             });
             const data = await response.json();
@@ -227,7 +263,12 @@ export default function WhatsAppPage() {
     }, [selectedAddons, extraNumbers]);
 
     return (
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div
+            className="min-h-screen flex flex-col bg-[#0f0c29]"
+            style={{ background: 'radial-gradient(circle at top center, #1a1438 0%, #0f0c29 100%)' }}
+        >
+            {mounted && <NoiseTexture opacity={0.3} />}
+            {mounted && <AnimatedGridBackground />}
             <Header />
             <main className="flex-grow">
                 {/* Hero Section */}
@@ -235,22 +276,27 @@ export default function WhatsAppPage() {
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#110d28] to-[#110d28]" />
 
                     <div className="container relative mx-auto px-4 text-center z-10">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-cyan-400 text-sm font-medium mb-6 animate-fadeIn">
-                            <Shield className="w-4 h-4 text-cyan-400" />
-                            <span>No Contracts. Cancel Anytime. You Control the Cost.</span>
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className="flex flex-col items-center"
+                        >
+                            <Badge className="mb-8 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-4 py-2">
+                                <MessageSquare className="w-4 h-4 mr-2" />
+                                WhatsApp AI Agent
+                            </Badge>
 
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-                            Your 24/7 AI-Powered <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-red-600">
-                                WhatsApp Sales Agent
-                            </span>
-                        </h1>
+                            <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter text-white uppercase italic mb-8">
+                                Your 24/7 AI-Powered<br />
+                                <span className="text-cyan-400">WhatsApp Sales Agent</span>
+                            </h1>
 
-                        <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
-                            Automate customer engagement with a human-like WhatsApp AI Agent.
-                            Scale sales, support, and CRM workflows instantly. Zero commitments.
-                        </p>
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-16 font-medium">
+                                Automate customer engagement with a human-like WhatsApp AI Agent.
+                                Scale sales, support, and CRM workflows instantly. Zero commitments.
+                            </p>
+                        </motion.div>
 
                         <div className="flex flex-col md:flex-row gap-8 items-stretch max-w-6xl mx-auto">
                             {/* Video Placeholder - Dominant */}
@@ -298,8 +344,65 @@ export default function WhatsAppPage() {
                     </div>
                 </section>
 
+                {/* Bundles Section */}
+                <section className="py-20 relative">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-16">
+                            <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white mb-4">Choose Your <span className="text-cyan-400">Growth Engine</span></h2>
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">Start with what you need today. Scale up anytime.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            {BUNDLES.map(bundle => (
+                                <motion.div
+                                    key={bundle.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className={`
+                                        relative p-8 rounded-[2.5rem] border flex flex-col items-center text-center group cursor-pointer transition-all duration-300 h-full
+                                        ${bundle.highlight
+                                            ? 'bg-cyan-500/5 border-cyan-500/30 hover:bg-cyan-500/10 shadow-[0_0_30px_rgba(6,182,212,0.1)] scale-105 z-10'
+                                            : 'bg-white/[0.03] border-white/5 hover:border-white/20 hover:bg-white/[0.05]'}
+                                    `}
+                                    onClick={() => selectBundle(bundle.id)}
+                                >
+                                    {bundle.highlight && (
+                                        <div className="absolute -top-4 px-6 py-2 bg-cyan-400 text-black font-black text-xs uppercase tracking-widest rounded-full shadow-lg">
+                                            {bundle.tagline}
+                                        </div>
+                                    )}
+                                    {!bundle.highlight && (
+                                        <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">{bundle.tagline}</div>
+                                    )}
+
+                                    <h3 className="text-2xl font-bold mb-4 mt-2">{bundle.name}</h3>
+                                    <p className="text-sm text-gray-400 mb-8 min-h-[40px]">{bundle.description}</p>
+
+                                    <ul className="space-y-4 mb-8 text-left w-full">
+                                        {bundle.features.map((feat, i) => (
+                                            <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                                                <CheckCircle2 className={`w-5 h-5 shrink-0 ${bundle.highlight ? 'text-cyan-400' : 'text-gray-500'}`} />
+                                                <span>{feat}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="mt-auto pt-8 w-full">
+                                        <Button
+                                            className={`w-full font-bold ${bundle.highlight ? 'bg-cyan-500 hover:bg-cyan-400 text-black' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                                        >
+                                            Select This Bundle
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Configurator Section */}
-                <section className="py-20 bg-zinc-950 border-t border-white/5">
+                <section id="configurator" className="py-20 bg-zinc-950 border-t border-white/5">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col lg:flex-row gap-12">
 

@@ -32,7 +32,7 @@ warning() {
 # Test SSH connectivity
 test_ssh_connectivity() {
     log "Testing SSH connectivity to Racknerd VPS..."
-    if timeout 10 sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@173.254.201.134 "echo 'SSH OK'" >/dev/null 2>&1; then
+    if timeout 10 sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@172.245.56.50 "echo 'SSH OK'" >/dev/null 2>&1; then
         success "SSH connectivity working"
         return 0
     else
@@ -44,13 +44,13 @@ test_ssh_connectivity() {
 # Test network connectivity
 test_network_connectivity() {
     log "Testing network connectivity..."
-    if timeout 5 ping -c 3 173.254.201.134 >/dev/null 2>&1; then
+    if timeout 5 ping -c 3 172.245.56.50 >/dev/null 2>&1; then
         success "Ping to Racknerd VPS working"
     else
         warning "Ping to Racknerd VPS failed"
     fi
     
-    if timeout 5 nslookup 173.254.201.134 >/dev/null 2>&1; then
+    if timeout 5 nslookup 172.245.56.50 >/dev/null 2>&1; then
         success "DNS resolution working"
     else
         warning "DNS resolution failed"

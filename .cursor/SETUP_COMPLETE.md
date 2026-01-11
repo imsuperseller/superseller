@@ -10,7 +10,7 @@
 ### **Docker-Based MCPs** (2)
 1. **n8n-mcp** - n8n workflow automation
    - Image: `ghcr.io/czlonkowski/n8n-mcp:latest`
-   - Connects to: RackNerd VPS (173.254.201.134:5678)
+   - Connects to: RackNerd VPS (172.245.56.50:5678)
    - Status: ✅ Running
 
 2. **stripe** - Stripe payment APIs
@@ -31,7 +31,6 @@
 10. **tidycal** - Calendar management (⚠️ needs API key)
 11. **make** - Make.com workflows
 12. **typeform** - Form management
-13. **boost-space** - Boost.space infrastructure
 
 ---
 

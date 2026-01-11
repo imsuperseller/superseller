@@ -18,10 +18,19 @@ import {
     AlertCircle,
     Bot,
     Sparkles,
-    Zap
+    Zap,
+    Users,
+    Send,
+    Phone,
+    Lock,
+    Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
+import { UserEntitlements, getVisibleTabs, DashboardTabConfig } from '@/types/entitlements';
+import LeadsTab, { Lead } from '@/components/dashboard/LeadsTab';
+import { BundleUpsell } from '@/components/dashboard/UpsellComponents';
+import { ImpersonationBanner, useImpersonation } from '@/components/dashboard/ImpersonationBanner';
 
 // Types
 export interface Deliverable {
@@ -58,10 +67,25 @@ export interface ProjectData {
 
 interface ClientDashboardClientProps {
     project: ProjectData;
+    entitlements?: UserEntitlements;
+    leads?: Lead[];
 }
 
-export default function ClientDashboardClient({ project }: ClientDashboardClientProps) {
-    const [activeTab, setActiveTab] = useState<'overview' | 'deliverables' | 'invoices' | 'usage' | 'agent'>('overview');
+export default function ClientDashboardClient({ project, entitlements, leads = [] }: ClientDashboardClientProps) {
+    // Get visible tabs based on entitlements
+    const defaultEntitlements: UserEntitlements = {
+        freeLeadsTrial: false,
+        pillars: [],
+        marketplaceProducts: [],
+        customSolution: project ? { projectId: project.id || '', status: project.status as any, packageName: project.packageName } : null
+    };
+    const userEntitlements = entitlements || defaultEntitlements;
+    const visibleTabs = getVisibleTabs(userEntitlements);
+
+    const [activeTab, setActiveTab] = useState<string>('overview');
+
+    // Check if admin is impersonating
+    const { isImpersonating, clientInfo, exitImpersonation } = useImpersonation();
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -95,9 +119,18 @@ export default function ClientDashboardClient({ project }: ClientDashboardClient
             className="min-h-screen"
             style={{ backgroundColor: 'var(--rensto-bg-primary)' }}
         >
+            {/* Impersonation Banner */}
+            {isImpersonating && clientInfo && (
+                <ImpersonationBanner
+                    clientName={clientInfo.name}
+                    clientEmail={clientInfo.email}
+                    onExit={exitImpersonation}
+                />
+            )}
+
             {/* Header */}
             <header
-                className="border-b px-8 py-6"
+                className={`border-b px-8 py-6 ${isImpersonating ? 'mt-12' : ''}`}
                 style={{
                     backgroundColor: 'var(--rensto-bg-card)',
                     borderColor: 'var(--rensto-bg-secondary)'
@@ -134,27 +167,31 @@ export default function ClientDashboardClient({ project }: ClientDashboardClient
             <div className="max-w-6xl mx-auto px-8 py-8">
                 {/* Tabs */}
                 <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-none">
-                    {[
-                        { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-                        { id: 'agent', label: 'Agent Hub', icon: Bot },
-                        { id: 'deliverables', label: 'Deliverables', icon: Package },
-                        { id: 'invoices', label: 'Invoices', icon: CreditCard },
-                        { id: 'usage', label: 'LLM Usage', icon: TrendingUp },
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap"
-                            style={{
-                                backgroundColor: activeTab === tab.id ? 'var(--rensto-bg-secondary)' : 'transparent',
-                                color: activeTab === tab.id ? 'var(--rensto-cyan)' : 'var(--rensto-text-muted)',
-                                border: activeTab === tab.id ? '1px solid var(--rensto-cyan)' : '1px solid transparent'
-                            }}
-                        >
-                            <tab.icon className="w-4 h-4" />
-                            {tab.label}
-                        </button>
-                    ))}
+                    {visibleTabs.filter(tab => tab.visible).map(tab => {
+                        const IconMap: Record<string, any> = {
+                            LayoutDashboard, Bot, Package, CreditCard, TrendingUp,
+                            Users, Send, Phone, FileText, Briefcase
+                        };
+                        const TabIcon = IconMap[tab.icon] || LayoutDashboard;
+
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => !tab.locked && setActiveTab(tab.id)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap ${tab.locked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                style={{
+                                    backgroundColor: activeTab === tab.id ? 'var(--rensto-bg-secondary)' : 'transparent',
+                                    color: activeTab === tab.id ? 'var(--rensto-cyan)' : 'var(--rensto-text-muted)',
+                                    border: activeTab === tab.id ? '1px solid var(--rensto-cyan)' : '1px solid transparent'
+                                }}
+                                title={tab.locked ? tab.upsellMessage : undefined}
+                            >
+                                {tab.locked && <Lock className="w-3 h-3" />}
+                                <TabIcon className="w-4 h-4" />
+                                {tab.label}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Overview Tab */}
@@ -338,7 +375,7 @@ export default function ClientDashboardClient({ project }: ClientDashboardClient
                             </h2>
                             <div className="grid md:grid-cols-2 gap-3">
                                 <a
-                                    href="https://tidycal.com/rensto/custom-support"
+                                    href="/contact?type=support"
                                     target="_blank"
                                     className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80"
                                     style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
@@ -362,6 +399,28 @@ export default function ClientDashboardClient({ project }: ClientDashboardClient
                                 </a>
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {/* Leads Tab */}
+                {activeTab === 'leads' && (
+                    <div className="space-y-6">
+                        <LeadsTab
+                            leads={leads}
+                            isFreeTrialUser={userEntitlements.freeLeadsTrial && !userEntitlements.pillars.includes('leads')}
+                            freeLeadsRemaining={userEntitlements.freeLeadsRemaining}
+                            onUpgradeClick={() => window.location.href = '/pricing?upgrade=leads'}
+                        />
+
+                        {/* Bundle Upsell */}
+                        {userEntitlements.pillars.length < 4 && (
+                            <div className="mt-8">
+                                <BundleUpsell
+                                    ownedServices={userEntitlements.pillars}
+                                    onUpgrade={() => window.location.href = '/pricing?upgrade=bundle'}
+                                />
+                            </div>
+                        )}
                     </div>
                 )}
 

@@ -14,7 +14,7 @@ const execAsync = util.promisify(exec);
 class BoostSpaceMCPServerDeployer {
     constructor() {
         this.vpsConfig = {
-            host: '173.254.201.134',
+            host: '172.245.56.50',
             port: 22,
             user: 'root',
             password: '05ngBiq2pTA8XSF76x'

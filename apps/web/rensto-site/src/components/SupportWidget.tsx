@@ -188,13 +188,13 @@ export function SupportWidget({
                                             )}
                                         </div>
                                         {isCustomer ? (
-                                            <Link href="https://tidycal.com/rensto/paid-consult" className="block">
+                                            <Link href="/contact?type=consult" className="block">
                                                 <Button variant="renstoPrimary" className="w-full text-xs h-9">
                                                     Book 1:1 Consultation ($150/hr)
                                                 </Button>
                                             </Link>
                                         ) : (
-                                            <Link href="https://tidycal.com/rensto/30-minute-audit" className="block">
+                                            <Link href="/contact?type=audit" className="block">
                                                 <Button variant="renstoSecondary" className="w-full text-xs h-9">
                                                     Book Free 30m Strategy Call
                                                 </Button>

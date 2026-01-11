@@ -23,11 +23,13 @@
     "@anthropic-ai/sdk": "^0.63.1",
     "@google/genai": "^1.20.0",
     "@google/generative-ai": "^0.24.1",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "@notionhq/client": "^5.1.0",
     "axios": "^1.13.2",
     "eventsource": "^4.0.0",
     "express": "^5.1.0",
-    "stripe": "^19.0.0"
+    "stripe": "^19.0.0",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "n8n-mcp": "^2.29.5",

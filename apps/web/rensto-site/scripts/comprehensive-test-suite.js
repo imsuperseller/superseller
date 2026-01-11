@@ -38,7 +38,7 @@ class ComprehensiveTestSuite {
 
   async testBuildSystem() {
     console.log('🔨 Testing Build System...');
-    
+
     try {
       // Test build process
       execSync('npm run build', { stdio: 'pipe' });
@@ -49,7 +49,8 @@ class ComprehensiveTestSuite {
 
     // Test development server startup
     try {
-      const devProcess = execSync('timeout 10s npm run dev:simple', { stdio: 'pipe' });
+      // Use npx to ensure accessibility
+      const devProcess = execSync('timeout 10s npx next dev', { stdio: 'pipe' });
       this.addResult('Dev Server', 'PASS', 'Development server starts successfully');
     } catch (error) {
       if (error.status === 124) { // timeout
@@ -62,14 +63,14 @@ class ComprehensiveTestSuite {
 
   async testCodeQuality() {
     console.log('📝 Testing Code Quality...');
-    
+
     try {
-      const lintOutput = execSync('npm run lint', { stdio: 'pipe' }).toString();
+      const lintOutput = execSync('npx next lint src', { stdio: 'pipe' }).toString();
       const errorCount = (lintOutput.match(/Error:/g) || []).length;
       const warningCount = (lintOutput.match(/Warning:/g) || []).length;
-      
+
       if (errorCount === 0) {
-        this.addResult('Linting', 'PASS', 'No linting errors found');
+        this.addResult('Linting', 'PASS', 'No linting errors found in src/');
       } else {
         this.addResult('Linting', 'WARN', `${errorCount} errors, ${warningCount} warnings found`);
       }
@@ -88,33 +89,33 @@ class ComprehensiveTestSuite {
 
   async testDatabase() {
     console.log('🗄️ Testing Database...');
-    
+
     try {
-      execSync('npm run test-mongo', { stdio: 'pipe' });
-      this.addResult('MongoDB Connection', 'PASS', 'Database connection successful');
+      execSync('npx tsx scripts/check_firestore_templates.ts', { stdio: 'pipe' });
+      this.addResult('Firestore Connection', 'PASS', 'Database connection and layout successful');
     } catch (error) {
-      this.addResult('MongoDB Connection', 'FAIL', `Database connection failed: ${error.message}`);
+      this.addResult('Firestore Connection', 'FAIL', `Database connection failed: ${error.message}`);
     }
 
     // Test data population
     try {
-      execSync('npm run populate-data', { stdio: 'pipe' });
-      this.addResult('Data Population', 'PASS', 'Sample data populated successfully');
+      execSync('npx tsx scripts/seed-client-sections.ts', { stdio: 'pipe' });
+      this.addResult('Data Seeding', 'PASS', 'Firestore seeding logic valid');
     } catch (error) {
-      this.addResult('Data Population', 'WARN', `Data population issues: ${error.message}`);
+      this.addResult('Data Seeding', 'WARN', `Data seeding issues: ${error.message}`);
     }
   }
 
   async testPerformance() {
     console.log('⚡ Testing Performance...');
-    
+
     try {
       const perfOutput = execSync('node scripts/performance-optimizer.js', { stdio: 'pipe' }).toString();
-      
+
       if (perfOutput.includes('PERFORMANCE SCORE:')) {
         const scoreMatch = perfOutput.match(/PERFORMANCE SCORE: (\d+)%/);
         const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
-        
+
         if (score >= 60) {
           this.addResult('Performance', 'PASS', `Performance score: ${score}%`);
         } else {
@@ -138,14 +139,14 @@ class ComprehensiveTestSuite {
 
   async testSecurity() {
     console.log('🔒 Testing Security...');
-    
+
     try {
-      const securityOutput = execSync('node scripts/security-auditor.js', { stdio: 'pipe' }).toString();
-      
+      const securityOutput = execSync('node scripts/security-audit.js', { stdio: 'pipe' }).toString();
+
       if (securityOutput.includes('SECURITY SCORE:')) {
         const scoreMatch = securityOutput.match(/SECURITY SCORE: (\d+)%/);
         const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
-        
+
         if (score >= 70) {
           this.addResult('Security Audit', 'PASS', `Security score: ${score}%`);
         } else {
@@ -161,14 +162,14 @@ class ComprehensiveTestSuite {
     // Check for sensitive files
     const sensitiveFiles = ['.env', '.env.local', '.env.production'];
     let hasEnvFile = false;
-    
+
     for (const file of sensitiveFiles) {
       if (fs.existsSync(file)) {
         hasEnvFile = true;
         break;
       }
     }
-    
+
     if (hasEnvFile) {
       this.addResult('Environment Files', 'PASS', 'Environment configuration files present');
     } else {
@@ -178,10 +179,10 @@ class ComprehensiveTestSuite {
 
   async testDependencies() {
     console.log('📦 Testing Dependencies...');
-    
+
     try {
       const auditOutput = execSync('npm audit --audit-level=high', { stdio: 'pipe' }).toString();
-      
+
       if (auditOutput.includes('found 0 vulnerabilities')) {
         this.addResult('Security Vulnerabilities', 'PASS', 'No high-severity vulnerabilities found');
       } else {
@@ -194,7 +195,7 @@ class ComprehensiveTestSuite {
     // Check for outdated packages
     try {
       const outdatedOutput = execSync('npm outdated', { stdio: 'pipe' }).toString();
-      
+
       if (outdatedOutput.trim() === '') {
         this.addResult('Package Updates', 'PASS', 'All packages are up to date');
       } else {
@@ -208,11 +209,11 @@ class ComprehensiveTestSuite {
 
   async testConfiguration() {
     console.log('⚙️ Testing Configuration...');
-    
+
     // Check package.json
     try {
       const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-      
+
       if (packageJson.scripts && packageJson.scripts.build) {
         this.addResult('Package.json', 'PASS', 'Package.json configuration valid');
       } else {
@@ -222,15 +223,15 @@ class ComprehensiveTestSuite {
       this.addResult('Package.json', 'FAIL', `Package.json error: ${error.message}`);
     }
 
-    // Check Next.js config
+    // Check Firebase config
     try {
-      if (fs.existsSync('next.config.mjs')) {
-        this.addResult('Next.js Config', 'PASS', 'Next.js configuration file present');
+      if (fs.existsSync('src/lib/firebase-admin.ts')) {
+        this.addResult('Firebase Config', 'PASS', 'Firebase configuration file present');
       } else {
-        this.addResult('Next.js Config', 'FAIL', 'Missing next.config.mjs');
+        this.addResult('Firebase Config', 'FAIL', 'Missing firebase-admin.ts');
       }
     } catch (error) {
-      this.addResult('Next.js Config', 'FAIL', `Next.js config error: ${error.message}`);
+      this.addResult('Firebase Config', 'FAIL', `Firebase config error: ${error.message}`);
     }
 
     // Check TypeScript config
@@ -247,12 +248,12 @@ class ComprehensiveTestSuite {
 
   async testFileStructure() {
     console.log('📁 Testing File Structure...');
-    
+
     const requiredDirs = [
       'src/app',
       'src/components',
       'src/lib',
-      'src/models',
+      'src/types',
       'public',
       'scripts'
     ];
@@ -260,8 +261,7 @@ class ComprehensiveTestSuite {
     const requiredFiles = [
       'src/app/page.tsx',
       'src/app/layout.tsx',
-      'src/lib/auth.ts',
-      'src/lib/mongodb.ts',
+      'src/lib/firebase-admin.ts',
       'package.json',
       'next.config.mjs',
       'tsconfig.json'
@@ -314,7 +314,7 @@ class ComprehensiveTestSuite {
 
   printResults() {
     const duration = Date.now() - this.startTime;
-    
+
     console.log('\n' + '='.repeat(80));
     console.log('🧪 COMPREHENSIVE TEST SUITE RESULTS');
     console.log('='.repeat(80));
@@ -349,15 +349,15 @@ class ComprehensiveTestSuite {
     }
 
     console.log('\n🎯 RECOMMENDATIONS:');
-    
+
     if (this.results.failed > 0) {
       console.log('1. Fix failed tests before deployment');
     }
-    
+
     if (this.results.warnings > 0) {
       console.log('2. Address warnings to improve system quality');
     }
-    
+
     if (successRate >= 90) {
       console.log('3. System is ready for production deployment');
     } else if (successRate >= 70) {

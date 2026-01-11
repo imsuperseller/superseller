@@ -6,7 +6,7 @@ Specialized n8n workflow creation and management agents for Rensto with **npx-ba
 ## 🚀 Features
 
 ### npx-Based Multi-Instance Support
-- **n8n-rensto**: npx-based MCP server → Internal workflows (173.254.201.134:5678)
+- **n8n-rensto**: npx-based MCP server → Internal workflows (172.245.56.50:5678)
 - **n8n-tax4us**: npx-based MCP server → Customer workflows (tax4usllc.app.n8n.cloud)
 - **n8n-shelly**: npx-based MCP server → Customer workflows (shellyins.app.n8n.cloud)
 
@@ -38,7 +38,7 @@ Specialized n8n workflow creation and management agents for Rensto with **npx-ba
 ### Environment Variables
 ```bash
 # Rensto VPS
-N8N_RENSTO_VPS_URL=http://173.254.201.134:5678
+N8N_RENSTO_VPS_URL=http://172.245.56.50:5678
 N8N_RENSTO_VPS_KEY=your_rensto_vps_api_key
 
 # Tax4Us Cloud

@@ -1,1 +1,0 @@
-zsh: read-only variable: status

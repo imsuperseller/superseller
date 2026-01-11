@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -22,73 +23,52 @@ import {
 
 const CONTACT_PHONE = "12144362102"; // Rensto WhatsApp number
 
-const translations = {
-  en: {
-    companyDesc: "Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.",
-    navTitle: "Navigation",
-    clientTitle: "Client Access",
-    legalTitle: "Legal",
-    rights: "All rights reserved.",
-    contact: "Contact",
-    aiSupport: "AI Support Agent",
-    links: {
-      home: "Home",
-      marketplace: "Marketplace",
-      custom: "Custom Solutions",
-      offers: "Offers/Pricing",
-      niches: "Industry Hub",
-      login: "Client Dashboard",
-      control: "Admin Control",
-      privacy: "Privacy Policy",
-      terms: "Terms of Service"
-    }
-  },
-  he: {
-    companyDesc: "הפכו את העסק שלכם לאוטונומי באמצעות סוכני AI מתקדמים. בנו, הפיצו ונהלו תהליכי עבודה חכמים שמגדילים את הפעילות שלכם.",
-    navTitle: "ניווט",
-    clientTitle: "גישת לקוחות",
-    legalTitle: "משפטי",
-    rights: "כל הזכויות שמורות.",
-    contact: "צור קשר",
-    aiSupport: "סוכן תמיכה AI",
-    links: {
-      home: "דף הבית",
-      marketplace: "חנות פתרונות",
-      custom: "פתרונות מותאמים",
-      offers: "מחירון וחבילות",
-      niches: "מקרי בוחן",
-      login: "אזור אישי",
-      control: "ממשק ניהול",
-      privacy: "מדיניות פרטיות",
-      terms: "תנאי שימוש"
-    }
-  }
+const companyDesc = "Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.";
+const navTitle = "Navigation";
+const clientTitle = "Client Access";
+const legalTitle = "Legal";
+const rights = "All rights reserved.";
+const contact = "Contact";
+const aiSupport = "AI Support Agent";
+const links = {
+  home: "Home",
+  marketplace: "Marketplace",
+  custom: "Custom Solutions",
+  offers: "Offers/Pricing",
+  niches: "Industry Hub",
+  login: "Client Dashboard",
+  control: "Admin Control",
+  privacy: "Privacy Policy",
+  terms: "Terms of Service"
 };
 
-interface FooterProps {
-  lang?: 'en' | 'he';
-}
+export function Footer() {
+  const [mounted, setMounted] = useState(false);
 
-export function Footer({ lang = 'en' }: FooterProps) {
-  const t = translations[lang];
-  const isRtl = lang === 'he';
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const currentYear = new Date().getFullYear();
+
+  if (!mounted) {
+    return null;
+  }
 
   const navigation = {
     main: [
-      { name: t.links.home, href: isRtl ? '/he' : '/' },
-      { name: t.links.marketplace, href: isRtl ? '/he/marketplace' : '/marketplace' },
-      { name: t.links.custom, href: '/custom' },
-      { name: t.links.offers, href: isRtl ? '/he/offers' : '/offers' },
-      { name: t.links.niches, href: isRtl ? '/he/niches' : '/niches' },
+      { name: links.home, href: '/' },
+      { name: links.marketplace, href: '/marketplace' },
+      { name: links.custom, href: '/custom' },
+      { name: links.offers, href: '/#pricing' },
+      { name: links.niches, href: '/niches' },
     ],
     business: [
-      { name: t.links.login, href: '/login', icon: Workflow },
-      { name: t.links.control, href: '/control', icon: Settings },
+      { name: links.login, href: '/login', icon: Workflow },
     ],
     legal: [
-      { name: t.links.privacy, href: '/legal/privacy' },
-      { name: t.links.terms, href: '/legal/terms' },
+      { name: links.privacy, href: '/legal/privacy' },
+      { name: links.terms, href: '/legal/terms' },
     ],
     social: [
       {
@@ -125,12 +105,11 @@ export function Footer({ lang = 'en' }: FooterProps) {
         href: `https://wa.me/${CONTACT_PHONE}?text=Hi%20Rensto%2C%20I'm%20interested%20in%20automating%20my%20business.`,
         icon: MessageCircle,
       },
-      // GitHub removed
     ],
   };
 
   return (
-    <footer className="text-white border-t border-white/5" style={{ background: 'var(--rensto-bg-primary)' }} dir={isRtl ? 'rtl' : 'ltr'}>
+    <footer className="text-white border-t border-white/5" style={{ background: 'var(--rensto-bg-primary)' }}>
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -152,7 +131,7 @@ export function Footer({ lang = 'en' }: FooterProps) {
               <span className="text-xl font-bold font-sans">Rensto</span>
             </div>
             <p className="text-slate-300 mb-4 max-w-md font-sans leading-relaxed">
-              {t.companyDesc}
+              {companyDesc}
             </p>
             <div className="flex space-x-4">
               {navigation.social.map((item) => (
@@ -173,7 +152,7 @@ export function Footer({ lang = 'en' }: FooterProps) {
           {/* Navigation */}
           <div>
             <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4 font-sans">
-              {t.navTitle}
+              {navTitle}
             </h3>
             <ul className="space-y-3">
               {navigation.main.map((item) => (
@@ -192,7 +171,7 @@ export function Footer({ lang = 'en' }: FooterProps) {
           {/* Business Apps */}
           <div>
             <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase mb-4 font-sans">
-              {t.clientTitle}
+              {clientTitle}
             </h3>
             <ul className="space-y-3">
               {navigation.business.map((item) => (
@@ -212,7 +191,7 @@ export function Footer({ lang = 'en' }: FooterProps) {
                   className="flex items-center text-slate-300 hover:text-white transition-colors text-sm font-sans"
                 >
                   <Bot className="h-4 w-4 mr-2" />
-                  {t.aiSupport}
+                  {aiSupport}
                 </button>
               </li>
             </ul>
@@ -234,7 +213,7 @@ export function Footer({ lang = 'en' }: FooterProps) {
               ))}
             </div>
             <p className="text-slate-400 text-sm font-sans">
-              © {currentYear} Rensto. {t.rights}
+              © {currentYear} Rensto. {rights}
             </p>
           </div>
         </div>

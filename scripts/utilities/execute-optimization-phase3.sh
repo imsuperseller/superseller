@@ -543,11 +543,11 @@ echo ""
 echo "📤 DEPLOYING ORGANIZED STRUCTURE..."
 
 # Deploy the organized structure to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r scripts root@173.254.201.134:/var/www/html/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r config root@173.254.201.134:/var/www/html/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r docs root@173.254.201.134:/var/www/html/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r workflows root@173.254.201.134:/var/www/html/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r data root@173.254.201.134:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r scripts root@172.245.56.50:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r config root@172.245.56.50:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r docs root@172.245.56.50:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r workflows root@172.245.56.50:/var/www/html/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r data root@172.245.56.50:/var/www/html/
 
 echo ""
 echo "🎉 PHASE 3: FILE ORGANIZATION COMPLETE!"

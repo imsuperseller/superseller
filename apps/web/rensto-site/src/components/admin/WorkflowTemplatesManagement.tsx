@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button-enhanced';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  ExternalLink, 
-  Play, 
-  Pause, 
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  ExternalLink,
+  Play,
+  Pause,
   AlertTriangle,
   BarChart3,
   Users,
@@ -59,8 +59,8 @@ export default function WorkflowTemplatesManagement() {
           status: 'Deployed',
           deploymentStatus: 'Active',
           documentationUrl: 'https://github.com/rensto/rensto/blob/main/docs/workflow-templates/n8n-workflows/01-advanced-business-process-automation.md',
-          n8nWorkflowId: 'rawczJckEDeStnVL',
-          webhookUrl: 'http://n8n.rensto.com/webhook/business-process-automation',
+          n8nWorkflowId: '0Ss043Wge5zasNWy',
+          webhookUrl: 'https://n8n.rensto.com/webhook/lead-machine-prod',
           lastDeployed: '2025-01-25',
           successRate: 95,
           errorCount: 2,
@@ -93,9 +93,24 @@ export default function WorkflowTemplatesManagement() {
           errorCount: 0,
           rgid: 'RGID_WORKFLOW_N8N_03_1737820800000_c3d4e5f6'
         },
+        {
+          id: 'lead-machine-01',
+          templateId: 'n8n-LM',
+          name: 'The Lead Machine',
+          type: 'n8n',
+          status: 'Deployed',
+          deploymentStatus: 'Active',
+          documentationUrl: 'https://github.com/rensto/rensto/blob/main/docs/workflow-templates/n8n-workflows/lead-machine.md',
+          n8nWorkflowId: '0Ss043Wge5zasNWy',
+          webhookUrl: 'https://n8n.rensto.com/webhook/lead-machine',
+          lastDeployed: '2025-01-25',
+          successRate: 100,
+          errorCount: 0,
+          rgid: 'RGID_WORKFLOW_N8N_LM_PROD'
+        },
         // Add other templates...
       ];
-      
+
       setTemplates(mockTemplates);
       setError(null);
     } catch (err) {
@@ -163,8 +178,8 @@ export default function WorkflowTemplatesManagement() {
       // This would trigger the deployment process
       console.log('Deploying template:', template.name);
       // Update the template status
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
+      setTemplates(prev => prev.map(t =>
+        t.id === template.id
           ? { ...t, status: 'Deployed', deploymentStatus: 'Active' }
           : t
       ));
@@ -176,8 +191,8 @@ export default function WorkflowTemplatesManagement() {
   const handleToggleStatus = async (template: WorkflowTemplate) => {
     try {
       const newStatus = template.deploymentStatus === 'Active' ? 'Inactive' : 'Active';
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
+      setTemplates(prev => prev.map(t =>
+        t.id === template.id
           ? { ...t, deploymentStatus: newStatus }
           : t
       ));
@@ -262,7 +277,7 @@ export default function WorkflowTemplatesManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {templates.length > 0 
+              {templates.length > 0
                 ? (templates.reduce((acc, t) => acc + t.successRate, 0) / templates.length).toFixed(1)
                 : 0}%
             </div>
@@ -341,7 +356,7 @@ export default function WorkflowTemplatesManagement() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-2">Links</h4>
                     <div className="space-y-1">

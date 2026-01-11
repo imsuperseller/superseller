@@ -30,7 +30,7 @@ class ProjectDeliveryAutomation {
         apiKey: process.env.STRIPE_SECRET_KEY
       },
       n8n: {
-        apiUrl: process.env.N8N_API_URL || 'http://173.254.201.134:5678',
+        apiUrl: process.env.N8N_API_URL || 'http://172.245.56.50:5678',
         apiKey: process.env.N8N_API_KEY
       }
     };

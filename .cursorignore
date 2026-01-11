@@ -42,8 +42,15 @@ node_modules/
 *.sqlite
 *.sqlite3
 
-# Exclude workflow JSON files (314 files, mostly large)
-workflows/*.json
+# Exclude workflow JSON files (227 files, mostly large - 70MB total)
+workflows/**/*.json
+workflows/**/*
+
+# Exclude scripts directory (483 files, 74MB)
+scripts/**/*
+
+# Exclude infra/mcp-reference (large reference code, 567MB total)
+infra/mcp-reference/**/*
 
 # Exclude archived and historical data
 archives/**/*

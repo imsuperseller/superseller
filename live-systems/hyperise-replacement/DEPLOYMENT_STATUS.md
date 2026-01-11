@@ -148,7 +148,7 @@
 - [ ] Generate webhook secret (256-bit random string)
 - [ ] Generate strong PostgreSQL password
 - [ ] Add OpenAI API key from Rensto .env (`sk-proj-FoOKoUr4X...`)
-- [ ] Configure n8n webhook URL (`http://173.254.201.134:5678/webhook/hyperise`)
+- [ ] Configure n8n webhook URL (`http://172.245.56.50:5678/webhook/hyperise`)
 - [ ] Configure SMTP (Gmail or SendGrid)
 - [ ] Set BASE_URL to production domain
 - [ ] Set NODE_ENV=production
@@ -186,7 +186,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ANALYTICS_RETENTION_DAYS=90
 WEBHOOK_SECRET=[GENERATE_256_BIT_SECRET]
 
-N8N_WEBHOOK_URL=http://173.254.201.134:5678/webhook/hyperise
+N8N_WEBHOOK_URL=http://172.245.56.50:5678/webhook/hyperise
 MAKE_COM_WEBHOOK_URL=[IF_NEEDED]
 CUSTOMER_CRM_API_KEY=[IF_NEEDED]
 ```
@@ -208,7 +208,7 @@ openssl rand -base64 32
 ### **Phase 2: VPS Deployment** (2-3 hours)
 
 **Option A: Deploy to RackNerd VPS (Recommended)**:
-- **VPS**: 173.254.201.134 (same as n8n)
+- **VPS**: 172.245.56.50 (same as n8n)
 - **Pros**: Already have VPS, same network as n8n
 - **Cons**: Need to ensure resource availability
 
@@ -220,7 +220,7 @@ openssl rand -base64 32
 - **Cons**: Additional VPS cost
 
 **Deployment Steps** (Option A - RackNerd):
-1. SSH into VPS: `ssh root@173.254.201.134`
+1. SSH into VPS: `ssh root@172.245.56.50`
 2. Create directory: `mkdir -p /opt/hyperise && cd /opt/hyperise`
 3. Clone/copy source code
 4. Create production .env file

@@ -299,7 +299,7 @@ Rensto
 - **Signatures**: Technical signature with contact information
 
 ### **n8n Workflow Configuration**
-- **Webhook URL**: `http://173.254.201.134:5678/webhook/email-webhook`
+- **Webhook URL**: `http://172.245.56.50:5678/webhook/email-webhook`
 - **Gmail Credentials**: `fTyaZH1mJ8TQ95L6`
 - **Airtable Credentials**: `3lTwFd8waEI1UQEW`
 

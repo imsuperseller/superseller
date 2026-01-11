@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import { emails } from '@/lib/email';
 
 /**
  * POST /api/support/create
@@ -110,6 +111,9 @@ export async function POST(req: NextRequest) {
             caseId: docRef.id,
             message: 'Support case created successfully. Our AI agent will analyze it shortly.',
         });
+
+        // Note: Support ticket email would need customer email lookup
+        // This is handled by n8n webhook which has access to customer data
 
     } catch (error: any) {
         console.error('Support case creation error:', error);

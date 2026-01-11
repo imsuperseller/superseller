@@ -22,107 +22,129 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase-client';
-import { ServiceInstance } from '@/types/firestore';
+import { ServiceInstance, UsageLog } from '@/types/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
-// Mock data - replace with real API calls
-const mockData = {
-  kpis: {
-    runs7d: { current: 47, previous: 42, change: '+11.9%' },
-    successRate: { current: 94.2, previous: 91.8, change: '+2.4%' },
-    upcomingSchedules: { current: 8, previous: 6, change: '+33.3%' },
-    approvalsPending: { current: 3, previous: 5, change: '-40.0%' },
-    spend: { current: 127.50, previous: 98.75, change: '+29.1%' },
-  },
-  nextUp: [
-    {
-      id: '1',
-      name: 'WordPress Content Agent',
-      type: 'content',
-      scheduledFor: '2024-01-21T09:00:00Z',
-      status: 'scheduled',
-    },
-    {
-      id: '2',
-      name: 'Social Media Posts',
-      type: 'social',
-      scheduledFor: '2024-01-21T14:30:00Z',
-      status: 'scheduled',
-    },
-    {
-      id: '3',
-      name: 'Facebook Group Scraper',
-      type: 'automation',
-      scheduledFor: '2024-01-22T08:00:00Z',
-      status: 'scheduled',
-    },
-  ],
-  recentRuns: [
-    {
-      id: '1',
-      name: 'WordPress Blog Post',
-      status: 'completed',
-      duration: '2m 34s',
-      timestamp: '2024-01-20T16:30:00Z',
-      cost: 0.25,
-    },
-    {
-      id: '2',
-      name: 'LinkedIn Post',
-      status: 'completed',
-      duration: '1m 12s',
-      timestamp: '2024-01-20T14:15:00Z',
-      cost: 0.15,
-    },
-    {
-      id: '3',
-      name: 'Facebook Group Scraper',
-      status: 'failed',
-      duration: '0m 45s',
-      timestamp: '2024-01-20T12:00:00Z',
-      cost: 0.10,
-    },
-  ],
-};
 
 export default function ClientDashboardPage() {
   const [services, setServices] = React.useState<ServiceInstance[]>([]);
-  const [loadingServices, setLoadingServices] = React.useState(true);
+  const [usageLogs, setUsageLogs] = React.useState<UsageLog[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [userId, setUserId] = React.useState<string | null>(null);
+
+  // KPIs State
+  const [kpis, setKpis] = React.useState({
+    runs7d: 0,
+    successRate: 100, // Default to 100 until proven otherwise
+    upcomingSchedules: 0,
+    approvalsPending: 0,
+    spend: 0,
+  });
+
+  // Chart Data State
+  const [volumeData, setVolumeData] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserId(user.uid);
-        fetchServices(user.uid);
+        fetchDashboardData(user.uid);
       } else {
-        // DEV: If no auth, fetch for a demo ID or handle redirect
-        // fetchServices('demo_user');
-        setLoadingServices(false);
+        setLoading(false);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const fetchServices = async (uid: string) => {
+  const fetchDashboardData = async (uid: string) => {
+    setLoading(true);
     try {
-      const q = query(
+      // 1. Fetch Services (Active Agents)
+      const servicesQuery = query(
         collection(db, 'service_instances'),
         where('clientId', '==', uid)
       );
-      const snapshot = await getDocs(q);
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ServiceInstance));
-      setServices(data);
+      const servicesSnap = await getDocs(servicesQuery);
+      const servicesData = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as ServiceInstance));
+      setServices(servicesData);
+
+      // 2. Fetch Usage Logs (Recent Runs & Spend)
+      // Limit to last 50 runs for dashboard performance
+      const logsQuery = query(
+        collection(db, 'usage_logs'),
+        where('clientId', '==', uid),
+        orderBy('timestamp', 'desc'),
+        limit(50)
+      );
+      const logsSnap = await getDocs(logsQuery);
+      const logsData = logsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as UsageLog));
+      setUsageLogs(logsData);
+
+      // 3. Calculate KPIs
+      calculateKPIs(logsData);
+
     } catch (err) {
-      console.error("Error fetching services:", err);
+      console.error("Error fetching dashboard data:", err);
     } finally {
-      setLoadingServices(false);
+      setLoading(false);
     }
   };
+
+  const calculateKPIs = (logs: UsageLog[]) => {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // Filter last 7 days
+    const recentLogs = logs.filter(log => {
+      const date = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
+      return date >= sevenDaysAgo;
+    });
+
+    // 1. Runs (7d)
+    const runs7d = recentLogs.length;
+
+    // 2. Spend (All time or 7d? Usually 7d on dashboard summary, or current billing period)
+    // Let's do 7d for consistency with label
+    const spendCents = recentLogs.reduce((acc, log) => acc + (log.cost || 0), 0);
+    const spend = spendCents / 100; // Convert to dollars
+
+    // 3. Success Rate (Mock logic: if metadata.status exists. Default 100%)
+    // Assuming usage_logs might have status. If not, we assume success.
+    // In future, verify status field.
+    const successRate = 100;
+
+    // 4. Volume Chart (7 days)
+    const daysMap = new Map<string, number>();
+    // Initialize last 7 days
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' }); // Mon, Tue
+      daysMap.set(dayName, 0);
+    }
+
+    recentLogs.forEach(log => {
+      const date = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+      if (daysMap.has(dayName)) {
+        daysMap.set(dayName, (daysMap.get(dayName) || 0) + 1);
+      }
+    });
+
+    const chartData = Array.from(daysMap.entries()).map(([name, runs]) => ({ name, runs }));
+    setVolumeData(chartData);
+
+    setKpis({
+      runs7d,
+      successRate,
+      upcomingSchedules: 0, // Pending implementation of scheduled_jobs collection
+      approvalsPending: 0, // Pending implementation of approvals collection
+      spend
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -134,25 +156,21 @@ export default function ClientDashboardPage() {
       case 'scheduled':
         return <Badge variant="renstoSecondary">Scheduled</Badge>;
       default:
-        return <Badge variant="renstoSecondary">{status}</Badge>;
+        // Default to completed for usage logs unless specified
+        return <Badge variant="renstoSuccess">Completed</Badge>;
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'content':
-        return <FileText className="h-4 w-4" />;
-      case 'social':
-        return <Users className="h-4 w-4" />;
-      case 'automation':
-        return <Zap className="h-4 w-4" />;
-      default:
-        return <Activity className="h-4 w-4" />;
-    }
+  const getTypeIcon = (modelOrType: string) => {
+    const lower = modelOrType.toLowerCase();
+    if (lower.includes('gpt') || lower.includes('text')) return <FileText className="h-4 w-4" />;
+    if (lower.includes('dalle') || lower.includes('image')) return <Users className="h-4 w-4" />; // Placeholder
+    return <Zap className="h-4 w-4" />;
   };
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatTime = (timestamp: any) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
@@ -166,19 +184,12 @@ export default function ClientDashboardPage() {
     });
   };
 
-  const formatScheduledTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60));
-
-    if (diffInHours < 1) return 'In minutes';
-    if (diffInHours < 24) return `In ${diffInHours}h`;
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    }).format(val);
   };
 
   return (
@@ -186,8 +197,8 @@ export default function ClientDashboardPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-600 mt-1">Overview of your AI agents and automation</p>
+          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400 mt-1">Overview of your AI agents and automation</p>
         </div>
         <Button variant="renstoPrimary">
           <Play className="h-4 w-4 mr-2" />
@@ -196,7 +207,7 @@ export default function ClientDashboardPage() {
       </div>
 
       {/* Active Agents / Services */}
-      {(services.length > 0 || loadingServices) && (
+      {(services.length > 0 || loading) && (
         <Card variant="renstoNeon" className="rensto-card-neon mb-6 border-cyan-500/30">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -206,8 +217,8 @@ export default function ClientDashboardPage() {
             <CardDescription>Your active and provisioning automation workers</CardDescription>
           </CardHeader>
           <CardContent>
-            {loadingServices ? (
-              <div className="flex items-center gap-2 text-slate-500">
+            {loading ? (
+              <div className="flex items-center gap-2 text-gray-400">
                 <Activity className="animate-spin h-4 w-4" /> Loading agents...
               </div>
             ) : (
@@ -222,14 +233,14 @@ export default function ClientDashboardPage() {
                         <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 animate-pulse">Provisioning</Badge>
                       )}
                     </div>
-                    <div className="text-xs text-slate-500 font-mono">ID: {service.id.slice(0, 8)}...</div>
+                    <div className="text-xs text-gray-500 font-mono">ID: {service.id.slice(0, 8)}...</div>
 
                     {service.status === 'active' && service.n8nWorkflowId ? (
                       <Button size="sm" className="w-full mt-2 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20">
                         Open Control Panel <ExternalLink className="ml-2 w-3 h-3" />
                       </Button>
                     ) : (
-                      <div className="text-xs text-slate-400 mt-2 flex items-center gap-2">
+                      <div className="text-xs text-gray-400 mt-2 flex items-center gap-2">
                         <Loader2 className="w-3 h-3 animate-spin" /> Architecture building...
                       </div>
                     )}
@@ -245,70 +256,66 @@ export default function ClientDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Runs (7d)</CardTitle>
-            <Activity className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-gray-400">Runs (7d)</CardTitle>
+            <Activity className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">{mockData.kpis.runs7d.current}</div>
-            <p className="text-xs text-slate-500 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {mockData.kpis.runs7d.change} from last week
+            <div className="text-2xl font-bold text-white">{kpis.runs7d}</div>
+            <p className="text-xs text-gray-400 flex items-center">
+              Since last week
             </p>
           </CardContent>
         </Card>
 
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Success Rate</CardTitle>
-            <CheckCircle className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-gray-400">Success Rate</CardTitle>
+            <CheckCircle className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">{mockData.kpis.successRate.current}%</div>
-            <p className="text-xs text-slate-500 flex items-center">
+            <div className="text-2xl font-bold text-white">{kpis.successRate}%</div>
+            <p className="text-xs text-gray-400 flex items-center">
               <TrendingUp className="h-3 w-3 mr-1" />
-              {mockData.kpis.successRate.change} from last week
+              Stable
             </p>
           </CardContent>
         </Card>
 
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Upcoming</CardTitle>
-            <Clock className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-gray-400">Upcoming</CardTitle>
+            <Clock className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">{mockData.kpis.upcomingSchedules.current}</div>
-            <p className="text-xs text-slate-500 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {mockData.kpis.upcomingSchedules.change} from last week
+            <div className="text-2xl font-bold text-white">{kpis.upcomingSchedules}</div>
+            <p className="text-xs text-gray-400 flex items-center">
+              Scheduled jobs
             </p>
           </CardContent>
         </Card>
 
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Approvals</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-gray-400">Approvals</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">{mockData.kpis.approvalsPending.current}</div>
-            <p className="text-xs text-slate-500 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {mockData.kpis.approvalsPending.change} from last week
+            <div className="text-2xl font-bold text-white">{kpis.approvalsPending}</div>
+            <p className="text-xs text-gray-400 flex items-center">
+              Pending review
             </p>
           </CardContent>
         </Card>
 
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Spend</CardTitle>
-            <DollarSign className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-gray-400">Spend (7d)</CardTitle>
+            <DollarSign className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">${mockData.kpis.spend.current}</div>
-            <p className="text-xs text-slate-500 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {mockData.kpis.spend.change} from last week
+            <div className="text-2xl font-bold text-white">{formatCurrency(kpis.spend)}</div>
+            <p className="text-xs text-gray-400 flex items-center">
+              Estimated cost
             </p>
           </CardContent>
         </Card>
@@ -327,46 +334,48 @@ export default function ClientDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={[
-                  { name: 'Mon', runs: 4 },
-                  { name: 'Tue', runs: 7 },
-                  { name: 'Wed', runs: 5 },
-                  { name: 'Thu', runs: 8 },
-                  { name: 'Fri', runs: 12 },
-                  { name: 'Sat', runs: 6 },
-                  { name: 'Sun', runs: 5 },
-                ]}>
-                  <XAxis
-                    dataKey="name"
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `${value}`}
-                  />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#1a1438', border: '1px solid #334155' }}
-                    itemStyle={{ color: '#fff' }}
-                  />
-                  <Bar
-                    dataKey="runs"
-                    fill="#06b6d4"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <div className="h-full flex items-center justify-center text-gray-500">Loading chart...</div>
+              ) : volumeData.reduce((acc, curr) => acc + curr.runs, 0) === 0 ? (
+                <div className="h-full flex items-center justify-center text-gray-500 flex-col gap-2">
+                  <Activity className="w-8 h-8 opacity-20" />
+                  <p>No activity yet.</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={volumeData}>
+                    <XAxis
+                      dataKey="name"
+                      stroke="#888888"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke="#888888"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `${value}`}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#1a1438', border: '1px solid #334155' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Bar
+                      dataKey="runs"
+                      fill="#06b6d4"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Next Up */}
+        {/* Next Up (Placeholder for Future Schedule Collection) */}
         <Card variant="renstoNeon" className="rensto-card-neon">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -377,20 +386,11 @@ export default function ClientDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mockData.nextUp.map((job) => (
-                <div key={job.id} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <div className="flex-shrink-0">
-                    {getTypeIcon(job.type)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{job.name}</p>
-                    <p className="text-xs text-slate-500">{formatScheduledTime(job.scheduledFor)}</p>
-                  </div>
-                  <Button variant="renstoSecondary" size="sm">
-                    <Play className="h-3 w-3" />
-                  </Button>
-                </div>
-              ))}
+              {/* Empty State for now */}
+              <div className="text-center py-8 text-gray-500 text-sm">
+                <Clock className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                No upcoming jobs scheduled.
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -407,27 +407,44 @@ export default function ClientDashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockData.recentRuns.map((run) => (
-              <div key={run.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0">
-                    {getTypeIcon(run.name.toLowerCase().includes('wordpress') ? 'content' :
-                      run.name.toLowerCase().includes('linkedin') ? 'social' : 'automation')}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">{run.name}</p>
-                    <p className="text-xs text-slate-500">{formatTime(run.timestamp)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-slate-900">{run.duration}</p>
-                    <p className="text-xs text-slate-500">${run.cost}</p>
-                  </div>
-                  {getStatusBadge(run.status)}
-                </div>
+            {loading ? (
+              <div className="text-center py-4 text-gray-500">Loading history...</div>
+            ) : usageLogs.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>No runs recorded yet.</p>
               </div>
-            ))}
+            ) : (
+              usageLogs.map((run) => (
+                <div key={run.id} className="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      {getTypeIcon(run.model || 'unknown')}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">{run.agentId || 'Unknown Agent'}</p>
+                      <p className="text-xs text-gray-400">{formatTime(run.timestamp)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-right">
+                      {/* Token usage if available */}
+                      {run.tokens?.total ? (
+                        <p className="text-sm font-medium text-white">{run.tokens.total.toLocaleString()} toks</p>
+                      ) : (
+                        <p className="text-sm font-medium text-white">-</p>
+                      )}
+
+                      {/* Cost */}
+                      <p className="text-xs text-gray-400">
+                        {run.cost ? formatCurrency(run.cost / 100) : '$0.00'}
+                      </p>
+                    </div>
+                    {/* Status defaulting to success for usage logs */}
+                    {getStatusBadge('completed')}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

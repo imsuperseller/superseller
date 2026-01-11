@@ -10,7 +10,7 @@ echo "Importing Remaining n8n Workflows v3"
 echo "=========================================="
 
 # Configuration
-N8N_URL="http://173.254.201.134:5678"
+N8N_URL="http://172.245.56.50:5678"
 API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWJlOWY1MC1hYjM2LTRiMjEtYjE0ZS03ZmJkOTc1YjVkM2MiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1MTk0ODMxfQ.jWtkUl32xeGcxAIWabry6z8gWCF4CMjCSCjeAjiphgE"
 WORKFLOWS_DIR="./n8n-workflows"
 

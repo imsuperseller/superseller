@@ -50,7 +50,6 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 | **make-mcp** | infra/mcp-servers/make-mcp-server/ | ✅ Configured | Make.com workflow automation |
 | **typeform-mcp** | infra/mcp-servers/typeform-mcp-server/ | ✅ Configured | Typeform API (5 forms) |
 | **tidycal-mcp** | infra/mcp-servers/tidycal-mcp-server/ | ✅ Configured | TidyCal scheduling API |
-| **boost-space-mcp** | infra/mcp-servers/boost-space-mcp-server/ | ✅ Configured | Boost.space (110 infrastructure records) |
 
 **Note**: Local servers require Node.js runtime, must be in correct directory.
 

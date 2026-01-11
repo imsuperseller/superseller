@@ -68,7 +68,7 @@ A comprehensive automation marketplace platform built with Next.js, featuring 18
 
 6. **Open your browser**
    ```
-   http://localhost:3000
+   http://localhost:3003
    ```
 
 ## 📁 Project Structure
@@ -104,7 +104,7 @@ Copy `env.example` to `.env.local` and configure:
 
 ```bash
 # Required
-NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL=http://localhost:3003
 NEXTAUTH_SECRET=your-secret-here
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
@@ -216,7 +216,7 @@ AIRTABLE_API_KEY=your-airtable-api-key
 
 2. **Run container**
    ```bash
-   docker run -p 3000:3000 rensto-marketplace
+   docker run -p 3003:3003 rensto-marketplace
    ```
 
 ### Manual Deployment

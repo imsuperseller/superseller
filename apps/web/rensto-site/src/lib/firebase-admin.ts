@@ -50,6 +50,7 @@ export function getFirestoreAdmin(): Firestore {
 
 // Collection names
 export const COLLECTIONS = {
+    // Existing collections
     CUSTOM_SOLUTIONS_CLIENTS: 'customSolutionsClients',
     MAGIC_LINK_TOKENS: 'magicLinkTokens',
     TEMPLATES: 'templates',
@@ -69,7 +70,19 @@ export const COLLECTIONS = {
     USAGE_LOGS: 'usage_logs',
     CUSTOMIZATION_REQUESTS: 'customizationRequests',
     SUPPORT_CASES: 'supportCases',
-    SERVICE_INSTANCES: 'service_instances'
+    SERVICE_INSTANCES: 'service_instances',
+
+    // New collections (Jan 2026 - Optimized for SMB Service Businesses)
+    USERS: 'users',
+    WHATSAPP_INSTANCES: 'whatsapp_instances',
+    WHATSAPP_MESSAGES: 'whatsapp_messages',
+    APPOINTMENT_BOOKINGS: 'appointment_bookings',
+    SUBSCRIPTIONS: 'subscriptions',
+    CARE_PLAN_DELIVERABLES: 'care_plan_deliverables',
+    LEADS: 'leads',
+    BUSINESS_NICHES: 'business_niches',
+    RESPONSE_TIME_METRICS: 'response_time_metrics',
+    LAUNCH_TASKS: 'launch_tasks'
 } as const;
 
 // Export interfaces from definitions file

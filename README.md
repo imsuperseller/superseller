@@ -49,9 +49,9 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 │                    LEAD MACHINE CORE                        │
 ├─────────────────────────────────────────────────────────────┤
 │  Frontend (React)  │  API Gateway  │  AI Engine  │  CRM    │
-│  - Customer Portal │  - REST API   │  - Gemini   │  - Airtable │
-│  - Admin Dashboard │  - Webhooks   │  - Claude   │  - Custom │
-│  - White-label     │  - Auth       │  - OpenAI   │  - Export │
+│  - Customer Portal │  - REST API   │  - Gemini   │  - Custom │
+│  - Admin Dashboard │  - Webhooks   │  - Claude   │  - Export │
+│  - White-label     │  - Auth       │  - OpenAI   │           │
 └─────────────────────────────────────────────────────────────┘
 │                    INTEGRATION LAYER                        │
 ├─────────────────────────────────────────────────────────────┤
@@ -67,6 +67,19 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 │  - CDN             │  - Database         │  - Integration  │
 │  - Edge Functions  │  - AI Processing    │  - Monitoring   │
 └─────────────────────────────────────────────────────────────┘
+```
+
+## 🔧 **DEVELOPMENT PORTS**
+
+To avoid conflicts with external tools and reservation requirements, the following ports are designated for local development:
+
+- **Website (Next.js)**: `3001` (Strictly avoid `3000`)
+- **n8n Local**: `5678` (Default)
+
+To start the website on the correct port:
+```bash
+cd apps/web/rensto-site
+npm run dev:3001
 ```
 
 ## 🚀 **QUICK START**
@@ -99,26 +112,24 @@ npm start
 3. Set up database connections
 4. Configure webhook endpoints
 
-## 📊 **CURRENT STATUS**
+## 📊 **CURRENT STATUS (Jan 2026)**
 
 ### **✅ COMPLETED**
-- **System Audit**: Found and catalogued all 15+ lead generation systems
-- **BMAD Planning**: Comprehensive consolidation strategy
-- **Architecture Design**: Technical architecture for unified system
-- **Code Implementation**: Working unified lead generation machine
-- **API Development**: Complete RESTful API system
-- **Documentation**: Comprehensive setup and usage guides
-- **Documentation Cleanup**: Updated, removed, and archived outdated files
+- **Core Platform**: Moved to Next.js 16 + React 19 architecture.
+- **Database**: Firestore as Primary Source of Truth for service instances and customers.
+- **Fulfillment**: Integrated with n8n via secure webhooks and Admin Fulfillment Queue.
+- **Documentation**: Consolidated `CLAUDE.md` and sanitized codebase from legacy residue.
+- **Payments**: Stripe webhooks consolidated and Firestore-integrated.
 
 ### **🔄 IN PROGRESS**
-- **Testing**: Unified system testing with real data
-- **Deployment**: Production deployment planning
+- **Admin fulfillment queue**: Finalizing UI and activation logic.
+- **Product Schemas**: Completing specialized configuration forms for all services.
+- **Testing**: Unified system testing with Firestore and real-time triggers.
 
-### **📋 PENDING**
-- **White-Label Portals**: Customer portal development
-- **Payment Integration**: Stripe + QuickBooks integration
-- **n8n Integration**: Workflow automation integration
-- **MCP Compatibility**: Model Context Protocol integration
+### **📋 PENDING / RETIRED**
+- **Legacy Sync**: Boost.space and Airtable syncs are currently DEPRACTED/RETIRED in favor of direct Firestore usage.
+- **White-Label Portals**: Customer portal development (Phase 2).
+- **Payment Integration**: QuickBooks integration (n8n-based).
 
 ## 🎯 **USE CASES**
 

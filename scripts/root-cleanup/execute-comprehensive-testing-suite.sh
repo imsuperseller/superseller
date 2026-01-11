@@ -44,7 +44,7 @@ echo "📊 PHASE 1: MCP SERVER CONNECTIVITY TESTS"
 echo "=========================================="
 
 # Test all MCP servers
-run_test "n8n-mcp Server" "curl -s http://173.254.201.134:5678/api/v1/workflows > /dev/null"
+run_test "n8n-mcp Server" "curl -s http://172.245.56.50:5678/api/v1/workflows > /dev/null"
 run_test "Make.com MCP Server" "node infra/mcp-servers/make-mcp-server/server.js --help > /dev/null 2>&1"
 run_test "Airtable MCP Server" "npx airtable-mcp-server --help > /dev/null 2>&1"
 run_test "Stripe MCP Server" "docker run --rm mcp/stripe --help > /dev/null 2>&1"
@@ -55,14 +55,14 @@ echo "================================="
 
 # Test external API connectivity
 run_test "Make.com API" "curl -s -H 'Authorization: Token 5de41d0c-ecb2-4248-8e82-a935598c77e4' 'https://us2.make.com/api/v2/scenarios?teamId=1300459&limit=1' > /dev/null"
-run_test "n8n API" "curl -s -H 'X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA' 'http://173.254.201.134:5678/api/v1/workflows' > /dev/null"
-run_test "SSH Connectivity" "ssh -o ConnectTimeout=5 root@173.254.201.134 'echo test' > /dev/null 2>&1"
+run_test "n8n API" "curl -s -H 'X-N8N-API-KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU4NTI1MTMxfQ.AAnkDkilxRsKdqGKLIF8oST7Caoe9s5d2lYrMEf3acA' 'http://172.245.56.50:5678/api/v1/workflows' > /dev/null"
+run_test "SSH Connectivity" "ssh -o ConnectTimeout=5 root@172.245.56.50 'echo test' > /dev/null 2>&1"
 
 echo "📊 PHASE 3: N8N WORKFLOW TESTS"
 echo "=============================="
 
 # Test n8n workflow execution
-run_test "N8N Workflow Webhook" "curl -s -X POST 'http://173.254.201.134:5678/webhook/lead-enrichment-saas' -H 'Content-Type: application/json' -d '{\"firstName\":\"Test\",\"lastName\":\"User\",\"email\":\"test@example.com\",\"businessDescription\":\"Test business\",\"targetLeads\":\"test leads\",\"pricingTier\":\"professional\",\"leadQuantity\":100}' > /dev/null"
+run_test "N8N Workflow Webhook" "curl -s -X POST 'http://172.245.56.50:5678/webhook/lead-enrichment-saas' -H 'Content-Type: application/json' -d '{\"firstName\":\"Test\",\"lastName\":\"User\",\"email\":\"test@example.com\",\"businessDescription\":\"Test business\",\"targetLeads\":\"test leads\",\"pricingTier\":\"professional\",\"leadQuantity\":100}' > /dev/null"
 
 echo "📊 PHASE 4: FRONTEND COMPONENT TESTS"
 echo "==================================="
@@ -96,7 +96,7 @@ echo "📊 PHASE 8: PERFORMANCE TESTS"
 echo "============================="
 
 # Test response times
-run_test "N8N Response Time" "timeout 5 curl -s http://173.254.201.134:5678/api/v1/workflows > /dev/null"
+run_test "N8N Response Time" "timeout 5 curl -s http://172.245.56.50:5678/api/v1/workflows > /dev/null"
 run_test "Make.com Response Time" "timeout 5 curl -s -H 'Authorization: Token 5de41d0c-ecb2-4248-8e82-a935598c77e4' 'https://us2.make.com/api/v2/scenarios?teamId=1300459&limit=1' > /dev/null"
 
 echo "📊 PHASE 9: END-TO-END INTEGRATION TESTS"

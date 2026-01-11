@@ -32,6 +32,7 @@ import {
     Copy,
     Share2,
     ChevronLeft,
+    ChevronRight,
     Workflow as WorkflowIcon,
     Star,
     Layout,
@@ -72,6 +73,20 @@ interface Workflow {
     configurationSchema?: any[];
     businessImpact?: string;
     roiExample?: string;
+    oneTimeCost?: number;
+    maintenanceCost?: number;
+    maintenanceExplanation?: string;
+    aiPromptScript?: string;
+    soraVideoPrompt?: string;
+    outcomeHeadline?: string;
+    guarantee?: string;
+    creator?: {
+        name: string;
+        bio: string;
+        photo?: string;
+        expertise: string[];
+    };
+    isTargetTier?: boolean;
 }
 
 const NoiseTexture = () => (
@@ -95,6 +110,70 @@ const GlowContainer = ({ children, className }: { children: React.ReactNode, cla
 );
 
 export default function WorkflowDetailPage() {
+    const isRtl = false;
+    const t = {
+        back: 'Back to Marketplace',
+        choosePath: 'Choose your path',
+        config: 'Start Price Discovery',
+        blueprint: 'Get Personal Blueprint',
+        deployment: 'Deployment Roadmap',
+        verified: 'Verified Asset',
+        chooseOption: 'Choose your path',
+        downloadLabel: 'Download Blueprint',
+        downloadDesc: 'Best for "do it yourself" pros',
+        installLabel: 'Pro Managed Setup',
+        installDesc: 'We build & connect it for you',
+        deliveryAddress: 'Delivery Address',
+        secureCheckout: 'Secure Checkout',
+        secureDesc: 'Instant activation via encrypted Stripe link.',
+        cloudSync: 'Cloud Sync',
+        cloudDesc: 'Direct delivery of the n8n blueprint to your inbox.',
+        goLive: 'Go Live',
+        goLiveDesc: 'Import, configure keys, and start automating.',
+        expectedResults: 'Expected Results',
+        realBusinessWins: 'Real Business Wins',
+        transformOps: 'Actual examples of how this system transforms your daily operations.',
+        builtByExperts: 'Built By The Experts',
+        commonQuestions: 'Common Questions',
+        helpFaq: 'Help & FAQ',
+        whatsIncluded: "What's included",
+        whatBuild: "What we'll build for you",
+        howItWorks: 'How it works for you',
+        serviceDetails: 'Service Details',
+        designedFor: 'Designed For',
+        processEff: 'Process Efficiency',
+        timeToActive: 'Time to Active',
+        businessImpact: 'The Business Impact',
+        customPlan: 'Need a custom plan?',
+        speakSupport: 'Speak with our support team to build your dream system.',
+        mostPopular: 'Most Popular',
+        discovery: 'Discovery',
+        getPrice: 'Get Price',
+        interactivePreview: 'Interactive Preview Active',
+        blueprintTitle: 'BLUEPRINT',
+        notFound: 'Workflow Not Found',
+        home: 'Home',
+        marketplace: 'Marketplace',
+        verifiedBadge: 'Verified',
+        sslEncrypted: 'SSL Encrypted',
+        stripeSecure: 'Stripe Secure',
+        projectDiscovery: 'Project Discovery',
+        discoveryDesc: 'Discovery session for {{name}} implementation.',
+        estimatedTime: '24-48 hours',
+        complexity: 'Intermediate',
+        goalLabel: 'Primary Business Goal',
+        goalHint: 'What is the #1 thing you want this system to achieve?',
+        goalOptions: ['Save Time / Reduce Manual Work', 'Get More Leads', 'Improve Customer Experience', 'Scale Operations'],
+        currentProcessLabel: 'Current Process',
+        currentProcessPlaceholder: 'Briefly, how do you handle this task today?',
+        currentProcessHint: 'This helps us understand how much time we can save you.',
+        softwareLabel: 'Existing Software',
+        softwarePlaceholder: 'e.g. ServiceTitan, Housecall Pro, HubSpot...',
+        softwareHint: 'List any software you want this system to talk to.',
+        notesLabel: 'Special Requirements',
+        notesPlaceholder: 'Anything else we should know?'
+    };
+
     const { id } = useParams();
     const router = useRouter();
     const [workflow, setWorkflow] = useState<Workflow | null>(null);
@@ -111,86 +190,59 @@ export default function WorkflowDetailPage() {
 
     useEffect(() => {
         async function fetchWorkflow() {
+            setLoading(true);
             try {
-                // Try fetching from Firestore first
                 const docRef = doc(db, 'templates', id as string);
                 const docSnap = await getDoc(docRef);
 
-                // Find corresponding mock template for fallbacks
-                const mock = (MOCK_TEMPLATES as any).find((m: any) => m.id === id);
-
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    // Map Firestore data to Workflow interface, with MOCK fallbacks for rich content
-                    setWorkflow({
-                        id: data.id || id as string,
-                        workflowId: data.id || id as string,
-                        name: data.name || mock?.name || 'Unnamed Workflow',
-                        category: data.category || mock?.category || 'Automation',
-                        description: data.description || mock?.description || 'No description available.',
-                        downloadPrice: data.price || data.downloadPrice || mock?.price || 97,
+                    const data = docSnap.data() as Template;
+
+                    // Unified Mapping Logic (Server-side fields prioritized)
+                    const mapping: any = {
+                        ...data,
+                        id: docSnap.id,
+                        workflowId: data.id || docSnap.id,
+                        name: data.name,
+                        description: data.description,
+                        outcomeHeadline: data.outcomeHeadline,
+                        features: data.features || [],
+                        businessImpact: data.businessImpact,
+                        roiExample: data.roiExample,
+                        maintenanceExplanation: data.maintenanceExplanation,
+                        guarantee: data.guarantee,
+                        kpis: data.kpis || [],
+                        useCases: data.useCases || [],
+                        faqs: data.faqs || [],
+                        creator: data.creator,
+                        downloadPrice: data.price || 97,
                         installPrice: data.installPrice || 797,
                         customPrice: data.customPrice || 1497,
-                        complexity: data.complexity || 'Intermediate',
-                        setupTime: data.setupTime || '2 hours',
-                        businessImpact: data.businessImpact || mock?.businessImpact || 'Recovers lost leads and saves your team hours of manual work.',
-                        roiExample: data.roiExample || mock?.roiExample || 'Pays for itself within 30 days.',
-                        // Handle features - wrap string to object, try to find matching mock desc if possible
-                        features: (data.features && data.features.length > 0)
-                            ? (typeof data.features[0] === 'string'
-                                ? data.features.map((f: string) => {
-                                    const matchingMockFeature = mock?.features?.find((mf: any) =>
-                                        mf.title.toLowerCase().includes(f.toLowerCase()) ||
-                                        f.toLowerCase().includes(mf.title.toLowerCase())
-                                    );
-                                    return {
-                                        title: f,
-                                        desc: matchingMockFeature?.desc || 'Neural-optimized core module engineered for horizontal scaling and mission-critical reliability.'
-                                    };
-                                })
-                                : data.features)
-                            : (mock?.features || []),
-                        useCases: data.useCases || mock?.useCases || [],
-                        faqs: data.faqs || mock?.faqs || [],
-                        kpis: (data.kpis && data.kpis.length > 0) ? data.kpis : (mock?.kpis || []),
-                        targetMarket: data.targetMarket || mock?.targetMarket || 'Small Businesses',
-                        status: data.readinessStatus || data.status || 'Active',
-                        video: (data.video && data.video.trim() !== '') ? data.video.replace('http://172.245.56.50', '') : (mock && mock.video ? mock.video.replace('http://172.245.56.50', '') : undefined),
-                        configurationSchema: data.configurationSchema || mock?.configurationSchema
-                    });
-                } else {
-                    // Fallback to MOCK
-                    if (mock) {
-                        setWorkflow({
-                            ...mock,
-                            features: mock.features || [],
-                            downloadPrice: mock.price || 97,
-                            installPrice: 797,
-                            customPrice: 1497,
-                            complexity: 'Intermediate',
-                            setupTime: '2 hours',
-                            targetMarket: 'Small Businesses',
-                            status: 'Active',
-                            video: mock.video ? mock.video.replace('http://172.245.56.50', '') : undefined,
-                        } as any);
+                        status: data.readinessStatus || 'Active',
+                        video: data.video ? data.video.replace('http://172.245.56.50', '') : undefined,
+                    };
+
+                    if (mapping.features.length > 0 && typeof mapping.features[0] === 'string') {
+                        mapping.features = mapping.features.map((f: string) => ({
+                            title: f,
+                            desc: 'Outcome-optimized core module engineered for horizontal scaling and mission-critical reliability.'
+                        }));
                     }
+                    setWorkflow(mapping);
+                } else {
+                    throw new Error("Template not found in Firestore");
                 }
             } catch (error) {
                 console.error('Error fetching workflow:', error);
-                // Fallback to MOCK on error
+                // Last resort fallback (Mock)
                 const mock = (MOCK_TEMPLATES as any).find((m: any) => m.id === id);
                 if (mock) {
                     setWorkflow({
                         ...mock,
-                        features: mock.features || [],
                         downloadPrice: mock.price || 97,
                         installPrice: 797,
                         customPrice: 1497,
-                        complexity: 'Intermediate',
-                        setupTime: '2 hours',
-                        targetMarket: 'Small Businesses',
-                        status: 'Active',
-                        video: mock.video ? mock.video.replace('http://172.245.56.50', '') : undefined,
+                        status: 'Active'
                     } as any);
                 }
             } finally {
@@ -246,8 +298,8 @@ export default function WorkflowDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#110d28] flex items-center justify-center">
-                <Loader2 className="w-12 h-12 text-[#fe3d51] animate-spin" />
+            <div className="min-h-screen bg-[#0f0c29] flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-cyan-500 animate-spin" />
             </div>
         );
     }
@@ -255,9 +307,9 @@ export default function WorkflowDetailPage() {
     if (!workflow) {
         return (
             <div className="min-h-screen bg-[#110d28] flex flex-col items-center justify-center text-white space-y-6">
-                <h1 className="text-4xl font-bold">Workflow Not Found</h1>
+                <h1 className="text-4xl font-bold">{t.notFound}</h1>
                 <Button onClick={() => router.push('/marketplace')} variant="ghost">
-                    <ArrowLeft className="mr-2 w-4 h-4" /> Back to Marketplace
+                    <ArrowLeft className="mr-2 w-4 h-4" /> {t.back}
                 </Button>
             </div>
         );
@@ -282,13 +334,13 @@ export default function WorkflowDetailPage() {
             {
                 '@type': 'ListItem',
                 position: 1,
-                name: 'Home',
+                name: t.home,
                 item: 'https://rensto.com'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
-                name: 'Marketplace',
+                name: t.marketplace,
                 item: 'https://rensto.com/marketplace'
             },
             {
@@ -356,15 +408,21 @@ export default function WorkflowDetailPage() {
                                         <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mr-3 group-hover:bg-white/10 transition-colors">
                                             <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                                         </div>
-                                        Back to Marketplace
+                                        {t.back}
                                     </Link>
                                 </motion.div>
 
                                 <div className="space-y-6">
                                     <motion.h1 variants={itemVariants} className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.9]">
-                                        {workflow.name.split(' ').map((word, i) => (
-                                            <span key={i} className={i === 0 ? 'text-white' : 'text-white/40'}>{word} </span>
-                                        ))}
+                                        {workflow.outcomeHeadline ? (
+                                            workflow.outcomeHeadline.split(' ').map((word, i) => (
+                                                <span key={i} className={i === 0 ? 'text-white' : 'text-white/40'}>{word} </span>
+                                            ))
+                                        ) : (
+                                            workflow.name.split(' ').map((word, i) => (
+                                                <span key={i} className={i === 0 ? 'text-white' : 'text-white/40'}>{word} </span>
+                                            ))
+                                        )}
                                     </motion.h1>
 
                                     <motion.p variants={itemVariants} className="text-xl text-slate-400 leading-relaxed max-w-2xl font-medium">
@@ -411,7 +469,7 @@ export default function WorkflowDetailPage() {
                                         <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <Eye className="w-5 h-5 text-white" />
                                         </div>
-                                        <div className="text-white font-bold tracking-tight">Interactive Preview Active</div>
+                                        <div className="text-white font-bold tracking-tight">{t.interactivePreview}</div>
                                     </div>
                                 </motion.div>
 
@@ -422,7 +480,7 @@ export default function WorkflowDetailPage() {
                                     <div className="h-1 w-1 rounded-full bg-slate-700" />
                                     <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1.5 uppercase tracking-[0.2em] text-[10px] font-black rounded-full flex items-center gap-2">
                                         <Shield className="w-3 h-3" />
-                                        Verified Asset
+                                        {t.verified}
                                     </Badge>
                                 </motion.div>
 
@@ -431,26 +489,26 @@ export default function WorkflowDetailPage() {
                                     <div className="flex items-center gap-4">
                                         <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-cyan-500" />
                                         <div className="text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
-                                            Deployment Roadmap
+                                            {t.deployment}
                                         </div>
                                     </div>
                                     <div className="grid md:grid-cols-3 gap-6">
                                         <StepCard
                                             number="01"
-                                            title="Secure Checkout"
-                                            desc="Instant activation via encrypted Stripe link."
+                                            title={t.secureCheckout}
+                                            desc={t.secureDesc}
                                             icon={Lock}
                                         />
                                         <StepCard
                                             number="02"
-                                            title="Cloud Sync"
-                                            desc="Direct delivery of the n8n blueprint to your inbox."
+                                            title={t.cloudSync}
+                                            desc={t.cloudDesc}
                                             icon={Mail}
                                         />
                                         <StepCard
                                             number="03"
-                                            title="Go Live"
-                                            desc="Import, configure keys, and start automating."
+                                            title={t.goLive}
+                                            desc={t.goLiveDesc}
                                             icon={Rocket}
                                         />
                                     </div>
@@ -469,15 +527,21 @@ export default function WorkflowDetailPage() {
                                         <div className="relative z-10 space-y-10">
                                             <div className="space-y-4">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">Choose your path</span>
+                                                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">{t.choosePath}</span>
                                                     <Badge variant="outline" className="border-white/10 text-white/40 text-[9px]">v2.4</Badge>
                                                 </div>
                                                 <div className="flex items-baseline gap-3">
                                                     <span className="text-7xl font-black text-white tracking-tighter">
-                                                        {selectedOption === 'install' ? 'GET PRICE' : `$${workflow.downloadPrice}`}
+                                                        {selectedOption === 'install' ? t.getPrice : `$${workflow.downloadPrice}`}
                                                     </span>
-                                                    <span className="text-slate-500 font-bold text-lg">{selectedOption === 'install' ? 'DISCOVERY' : 'USD'}</span>
+                                                    <span className="text-slate-500 font-bold text-lg">{selectedOption === 'install' ? t.discovery : (t as any).blueprintTitle}</span>
                                                 </div>
+                                                {workflow.guarantee && (
+                                                    <div className="flex items-center gap-2 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                                                        <Check className="w-3 h-3" />
+                                                        {workflow.guarantee}
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <div className="space-y-3">
@@ -486,16 +550,19 @@ export default function WorkflowDetailPage() {
                                                     onClick={() => setSelectedOption('download')}
                                                     icon={Download}
                                                     price={workflow.downloadPrice}
-                                                    label="Download Blueprint"
-                                                    desc="Best for 'do it yourself' pros"
+                                                    label={t.downloadLabel}
+                                                    desc={t.downloadDesc}
+                                                    t={t}
+                                                    isPopular={workflow.isTargetTier}
                                                 />
                                                 <OptionTab
                                                     active={selectedOption === 'install'}
                                                     onClick={() => setSelectedOption('install')}
                                                     icon={Layout}
                                                     price={0}
-                                                    label="Pro Managed Setup"
-                                                    desc="We build & connect it for you"
+                                                    label={t.installLabel}
+                                                    desc={t.installDesc}
+                                                    t={t}
                                                     accent="red"
                                                     isQuote
                                                 />
@@ -512,7 +579,7 @@ export default function WorkflowDetailPage() {
                                                         >
                                                             <div className="flex items-center justify-between">
                                                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                                                                    Delivery Address
+                                                                    {t.deliveryAddress}
                                                                 </label>
                                                                 <Star className="w-3 h-3 text-cyan-500" />
                                                             </div>
@@ -537,7 +604,7 @@ export default function WorkflowDetailPage() {
                                                 >
                                                     {purchaseLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                                                         <div className="flex items-center justify-center gap-3">
-                                                            {selectedOption === 'install' ? 'Start Price Discovery' : 'Get Personal Blueprint'}
+                                                            {selectedOption === 'install' ? t.config : t.blueprint}
                                                             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                                                         </div>
                                                     )}
@@ -545,19 +612,19 @@ export default function WorkflowDetailPage() {
                                             </div>
 
                                             <div className="space-y-6 pt-6 border-t border-white/5">
-                                                <div className="flex items-center justify-center gap-6 opacity-20 grayscale hover:opacity-50 transition-opacity">
-                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">ServiceTitan</div>
-                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">HubSpot</div>
-                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic">Workiz</div>
+                                                <div className="flex items-center justify-center gap-6 opacity-40 grayscale hover:opacity-100 transition-all">
+                                                    <svg className="h-4 fill-white" viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg"><path d="M37.362 5.093c-.886 0-1.42.443-1.42 1.259 0 .852.798 1.136 1.348 1.33.585.195.834.337.834.621 0 .302-.284.479-.727.479-.585 0-1.047-.213-1.384-.532l-.46.816a3.1 3.1 0 001.95.639c.993 0 1.633-.514 1.633-1.4 0-.852-.798-1.154-1.365-1.348-.39-.125-.816-.302-.816-.585 0-.213.213-.426.657-.426.479 0 .87.16.1.18c.316l.443-.886 a3.0 3.0 0 0 0-1.405-.246zm-5.75-.408l-1.047 10.435h1.755l1.047-10.435h-1.755zm-4.704 0L24.8 10.155l-.657-5.47h-1.72l1.633 10.435hh1.808l3.194-10.435h-1.968zm-9.352 0c-2.43 0-4.043 1.632-4.043 3.9h1.773c0-1.294.762-2.11 2.27-2.11.46 0 1.01.124 1.01.124l-.195 1.578s-.691-.124-1.223-.124c-2.023 0-3.6 1.206-3.6 3.017 0 1.63 1.294 2.5 2.768 2.5.886 0 1.578-.32 1.578-.32l.142-1.348s-.55.195-1.01.195c-.852 0-1.474-.479-1.474-1.1s.62-.976 1.474-.976c.55 0 1.154.213 1.154.213 l.426-3.4s-.55-.16-1.082-.16h.001zM4.0 5.483L2.4 10.155.746 5.483H0l2.642 7.842L3.62 16.0h1.755l.833-2.677L8.913 5.3h-1.633z" /></svg>
+                                                    <div className="h-4 w-[1px] bg-white/10" />
+                                                    <div className="text-[10px] font-black tracking-widest text-white uppercase italic opacity-40">{t.verifiedBadge}</div>
                                                 </div>
                                                 <div className="flex items-center justify-center gap-8">
                                                     <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
                                                         <CreditCard className="w-4 h-4" />
-                                                        <span className="text-[9px] font-bold tracking-widest uppercase">Encrypted</span>
+                                                        <span className="text-[9px] font-bold tracking-widest uppercase">{t.sslEncrypted}</span>
                                                     </div>
                                                     <div className="flex items-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all cursor-crosshair">
-                                                        <Activity className="w-4 h-4" />
-                                                        <span className="text-[9px] font-bold tracking-widest uppercase">Verified Asset</span>
+                                                        <Shield className="w-4 h-4" />
+                                                        <span className="text-[9px] font-bold tracking-widest uppercase">{t.stripeSecure}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -573,8 +640,8 @@ export default function WorkflowDetailPage() {
                                             <MessageSquare className="w-7 h-7 text-indigo-400" />
                                         </div>
                                         <div>
-                                            <div className="font-black text-white tracking-tight">Need a custom plan?</div>
-                                            <p className="text-sm text-slate-500 font-medium">Speak with our support team to build your dream system.</p>
+                                            <div className="font-black text-white tracking-tight">{(t as any).customPlan}</div>
+                                            <p className="text-sm text-slate-500 font-medium">{(t as any).speakSupport}</p>
                                         </div>
                                     </motion.div>
                                 </motion.div>
@@ -597,9 +664,9 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                                        What's included
+                                        {(t as any).whatsIncluded}
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">What we'll build for you</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">{(t as any).whatBuild}</h2>
                                 </div>
 
                                 <div className="grid sm:grid-cols-1 gap-6">
@@ -624,18 +691,18 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-purple-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                                        Service Details
+                                        {(t as any).serviceDetails}
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">How it works for you</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">{(t as any).howItWorks}</h2>
                                 </div>
 
                                 <div className="space-y-6">
                                     <div className="p-10 rounded-[3rem] bg-gradient-to-br from-purple-600/10 via-white/[0.02] to-transparent border border-purple-500/20 backdrop-blur-xl space-y-12 relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl" />
                                         {[
-                                            { label: 'Designed For', val: workflow?.targetMarket },
-                                            { label: 'Process Efficiency', val: '99.9% Automated' },
-                                            { label: 'Time to Active', val: workflow?.setupTime }
+                                            { label: (t as any).designedFor, val: workflow?.targetMarket },
+                                            { label: (t as any).processEff, val: '99.9% Automated' },
+                                            { label: (t as any).timeToActive, val: workflow?.setupTime }
                                         ].map((item, i) => (
                                             <div key={i} className={`flex justify-between items-end ${i !== 2 ? 'pb-12 border-b border-white/[0.05]' : ''} relative z-10`}>
                                                 <div className="space-y-2">
@@ -656,7 +723,7 @@ export default function WorkflowDetailPage() {
                                             <TrendingUp className="w-8 h-8 text-emerald-400" />
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">The Business Impact</div>
+                                            <div className="text-2xl font-black text-white tracking-tight uppercase italic">{(t as any).businessImpact}</div>
                                             <p className="text-base text-slate-400 leading-relaxed font-semibold opacity-70 group-hover:opacity-100 transition-opacity">
                                                 {workflow.businessImpact} <span className="text-emerald-400">{workflow.roiExample}</span>
                                             </p>
@@ -676,11 +743,11 @@ export default function WorkflowDetailPage() {
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3 text-emerald-400 font-black text-[11px] uppercase tracking-[0.3em]">
                                         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                        Expected Results
+                                        {(t as any).expectedResults}
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Real Business Wins</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">{(t as any).realBusinessWins}</h2>
                                 </div>
-                                <p className="text-xl text-slate-500 max-w-md font-medium">Actual examples of how this system transforms your daily operations.</p>
+                                <p className="text-xl text-slate-500 max-w-md font-medium">{(t as any).transformOps}</p>
                             </div>
                             <div className="grid md:grid-cols-3 gap-8">
                                 {workflow.useCases.map((useCase, idx) => {
@@ -705,6 +772,46 @@ export default function WorkflowDetailPage() {
                     </section>
                 )}
 
+                {/* Creator Section */}
+                {workflow.creator && (
+                    <section className="py-32 px-6 relative border-t border-white/5 bg-white/[0.01]">
+                        <div className="container mx-auto max-w-4xl relative z-10">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                className="flex flex-col md:flex-row items-center gap-12 text-center md:text-left"
+                            >
+                                <div className="w-40 h-40 rounded-[2.5rem] bg-gradient-to-br from-cyan-500 to-purple-600 p-[2px] shrink-0 transform -rotate-6 hover:rotate-0 transition-transform duration-500 group cursor-pointer shadow-2xl">
+                                    <div className="w-full h-full rounded-[2.4rem] bg-[#0f0c29] flex items-center justify-center overflow-hidden">
+                                        {workflow.creator.photo ? (
+                                            <img src={workflow.creator.photo} alt={workflow.creator.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <Users className="w-16 h-16 text-white/10 group-hover:text-cyan-400/50 transition-colors" />
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="space-y-6 flex-1">
+                                    <div className="space-y-2">
+                                        <div className="text-cyan-400 font-black text-[10px] uppercase tracking-[0.3em]">{(t as any).builtByExperts}</div>
+                                        <h2 className="text-4xl font-black text-white tracking-tight">{workflow.creator.name}</h2>
+                                    </div>
+                                    <p className="text-lg text-slate-400 leading-relaxed font-medium">
+                                        {workflow.creator.bio}
+                                    </p>
+                                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                                        {workflow.creator.expertise.map((exp, i) => (
+                                            <Badge key={i} className="bg-white/5 text-slate-400 border-white/10 px-4 py-2 text-[9px] font-bold uppercase tracking-widest rounded-xl">
+                                                {exp}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </section>
+                )}
+
                 {/* FAQ Section */}
                 {workflow.faqs && workflow.faqs.length > 0 && (
                     <section className="py-32 px-6 relative">
@@ -712,9 +819,9 @@ export default function WorkflowDetailPage() {
                             <div className="text-center mb-24 space-y-6">
                                 <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em] mb-4">
                                     <HelpCircle className="w-4 h-4" />
-                                    Common Questions
+                                    {(t as any).commonQuestions}
                                 </div>
-                                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">Help & FAQ</h2>
+                                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter">{(t as any).helpFaq}</h2>
                             </div>
                             <div className="space-y-4">
                                 {workflow.faqs.map((faq, idx) => (
@@ -751,19 +858,45 @@ export default function WorkflowDetailPage() {
                 onClose={() => setIsCustomizeOpen(false)}
                 workflowName={workflow.name}
                 workflowId={workflow.id}
-                title="Project Discovery"
-                description={`Discovery session for ${workflow.name} implementation.`}
-                submitLabel="Start Strategy Session"
+                title={t.projectDiscovery}
+                description={t.discoveryDesc.replace('{{name}}', workflow.name)}
+                submitLabel={t.getPrice}
+                oneTimeCost={workflow.oneTimeCost}
+                maintenanceCost={workflow.maintenanceCost}
+                maintenanceExplanation={workflow.maintenanceExplanation}
                 parametersSchema={[
-                    { id: 'business_goal', label: 'Primary Business Goal', type: 'select', options: ['Save Time / Reduce Manual Work', 'Get More Leads', 'Improve Customer Experience', 'Scale Operations'], required: true, hint: 'What is the #1 thing you want this system to achieve?' },
-                    { id: 'current_process', label: 'Current Process', type: 'text', required: true, placeholder: 'Briefly, how do you handle this task today?', hint: 'This helps us understand how much time we can save you.' },
-                    { id: 'software_stack', label: 'Existing Software', type: 'text', required: false, placeholder: 'e.g. ServiceTitan, Housecall Pro, HubSpot...', hint: 'List any software you want this system to talk to.' },
-                    { id: 'additional_notes', label: 'Special Requirements', type: 'text', required: false, placeholder: 'Anything else we should know?' }
+                    { id: 'business_goal', label: t.goalLabel, type: 'select', options: t.goalOptions, required: true, hint: t.goalHint },
+                    { id: 'current_process', label: t.currentProcessLabel, type: 'text', required: true, placeholder: t.currentProcessPlaceholder, hint: t.currentProcessHint },
+                    { id: 'software_stack', label: t.softwareLabel, type: 'text', required: false, placeholder: t.softwarePlaceholder, hint: t.softwareHint },
+                    { id: 'additional_notes', label: t.notesLabel, type: 'text', required: false, placeholder: t.notesPlaceholder }
                 ]}
-                estimatedTime="24-48 hours"
-                complexity="Intermediate"
+                estimatedTime={t.estimatedTime}
+                complexity={t.complexity as any}
                 perRunCost={undefined}
             />
+
+            {/* Mobile Sticky CTA */}
+            <div className="lg:hidden fixed bottom-6 left-6 right-6 z-[100] pointer-events-none">
+                <motion.div
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="pointer-events-auto"
+                >
+                    <Button
+                        size="xl"
+                        className={`w-full h-16 text-lg font-black rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl border border-white/10 relative overflow-hidden group ${selectedOption === 'download' ? 'bg-cyan-400 text-black' : 'bg-[#fe3d51] text-white'}`}
+                        onClick={handlePurchase}
+                    >
+                        {purchaseLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                            <div className="flex items-center justify-center gap-2">
+                                {selectedOption === 'install' ? t.getPrice : `${t.downloadLabel} - $${workflow.downloadPrice}`}
+                                {isRtl ? <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> : <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                            </div>
+                        )}
+                    </Button>
+                </motion.div>
+            </div>
         </div >
     );
 }
@@ -817,7 +950,7 @@ function PremiumFeatureCard({ title, desc, idx }: { title: string, desc: string,
     );
 }
 
-function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = 'cyan', isQuote = false }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, desc: string, accent?: 'cyan' | 'red' | 'purple', isQuote?: boolean }) {
+function OptionTab({ active, onClick, icon: Icon, price, label, desc, t, accent = 'cyan', isQuote = false, isPopular = false }: { active: boolean, onClick: () => void, icon: any, price: number, label: string, desc: string, t: any, accent?: 'cyan' | 'red' | 'purple', isQuote?: boolean, isPopular?: boolean }) {
     const accents = {
         cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/10', text: 'text-cyan-400', shadow: 'shadow-[0_0_30px_rgba(6,182,212,0.25)]', glow: 'bg-cyan-500/20' },
         red: { border: 'border-[#fe3d51]', bg: 'bg-[#fe3d51]/10', text: 'text-[#fe3d51]', shadow: 'shadow-[0_0_30px_rgba(254,61,81,0.25)]', glow: 'bg-[#fe3d51]/20' },
@@ -832,6 +965,14 @@ function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = '
             className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between group h-28 relative overflow-hidden ${active ? `${colors.border} ${colors.bg} ${colors.shadow}` : 'border-white/5 hover:border-white/20 bg-white/[0.01]'
                 }`}
         >
+            {isPopular && (
+                <div className="absolute top-0 right-10">
+                    <div className="bg-cyan-500 text-black text-[8px] font-black px-3 py-1 rounded-b-lg uppercase tracking-widest shadow-lg">
+                        {(t as any).mostPopular}
+                    </div>
+                </div>
+            )}
+
             {active && <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${colors.glow} blur-3xl opacity-50`} />}
 
             <div className="flex items-center gap-5 relative z-10">
@@ -847,7 +988,7 @@ function OptionTab({ active, onClick, icon: Icon, price, label, desc, accent = '
             </div>
             <div className="text-right relative z-10">
                 <span className={`text-2xl font-black ${active ? 'text-white' : 'text-slate-500'}`}>
-                    {isQuote ? 'QUOTE' : `$${price}`}
+                    {isQuote ? t.discovery : `$${price}`}
                 </span>
             </div>
 
@@ -868,15 +1009,28 @@ const MOCK_TEMPLATES = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: 'Celebrity Selfie Video Generator',
-        description: 'Create personalized AI video journeys through movie history. Upload a photo and get a merged video where the user stars in iconic scenes. Powered by Higgsfield Kling Omni and delivered via WhatsApp.',
+        outcomeHeadline: 'Drive High-Engagement Brand Awareness with Viral AI Video Experiences',
+        description: 'Empower your audience to become the star of your brand\'s cinematic journey. This automated engine generates high-fidelity AI video experiences where users are seamlessly integrated into iconic scenes, perfect for viral marketing campaigns and hyper-personalized customer engagement.',
         category: 'Content Engine',
         price: 297,
+        guarantee: 'Satisfaction Guaranteed',
+        isTargetTier: true,
+        creator: {
+            name: 'Rensto Labs',
+            bio: 'Expert AI automation team specializing in viral content engines.',
+            expertise: ['Neural Video Synthesis', 'Social Growth', 'Automation Architecture']
+        },
         businessImpact: "Creates high-viral brand awareness that traditional ads can't touch.",
         roiExample: "Generated 1.2M impressions for our last beta user in under 48 hours.",
+        oneTimeCost: 2497,
+        maintenanceCost: 197,
+        maintenanceExplanation: "Includes ongoing Higgsfield API credits, Kling Omni neural model updates, and multi-scene stitching server maintenance.",
+        aiPromptScript: "Analyze the user's face structure and map it to the character in the action movie scene. Ensure lighting consistency and 24fps motion smoothing.",
+        soraVideoPrompt: "A cinematic cinematic movie trailer featuring a personalized character in a high-speed chase through a futuristic city, hyper-realistic reflections.",
         kpis: [
-            { label: 'Realism', value: '99%', icon: Shield },
-            { label: 'Latency', value: '2 min', icon: Clock },
-            { label: 'Social Impact', value: 'Viral', icon: TrendingUp }
+            { label: 'Brand Retention', value: '85%+', icon: Shield },
+            { label: 'Processing Time', value: '< 2 min', icon: Clock },
+            { label: 'Viral Potential', value: 'Extreme', icon: TrendingUp }
         ],
         features: [
             { title: 'AI Face Swap', desc: 'State-of-the-art neural mapping for seamless character integration.' },
@@ -893,7 +1047,10 @@ const MOCK_TEMPLATES = [
         faqs: [
             { q: 'How many scenes are included?', a: 'By default, each generation stitches 3 iconic scenes together for a 15-second cinematic experience.' },
             { q: 'Is my data safe?', a: 'Yes. We use ephemeral processing. Your source photo is deleted immediately after the video is generated.' },
-            { q: 'Can I add my own clips?', a: 'Professional tiers allow custom template creation. Contact our team for enterprise API access.' }
+            { q: 'Can I add my own clips?', a: 'Professional tiers allow custom template creation with your brand\'s specific B-roll or cinematic assets.' },
+            { q: 'How does this drive business revenue?', a: 'High-engagement personalized content typically sees 3-5x higher share rates than static ads, significantly reducing your effective CAC.' },
+            { q: 'Can we white-label the delivery?', a: 'Absolutely. The WhatsApp delivery module can be fully branded with your logo, business name, and custom messaging templates.' },
+            { q: 'Is there an enterprise API available?', a: 'Yes. For high-volume requirements, we offer direct API access to our neural rendering cluster for seamless app integration.' }
         ],
         video: "/videos/celebrity-selfie-generator.mp4",
         configurationSchema: [
@@ -904,9 +1061,17 @@ const MOCK_TEMPLATES = [
     {
         id: '8GC371u1uBQ8WLmu',
         name: 'Meta Ad Library Analyzer',
-        description: 'Scrapes winning ads from Meta Ad Library and generates detailed replication templates using AI vision analysis. Identifies UGC and testimonial-style ads with precise scene-by-scene breakdowns.',
+        outcomeHeadline: 'Scale Your Ads with Proven, Competitor-Tested Creative Patterns',
+        description: 'Eliminate guesswork from your creative strategy. This engine scrapes active high-performance ads from the Meta Ad Library and uses AI vision to reverse-engineer their winning hooks, scripts, and visual patterns for your own brand.',
         category: 'Lead Machine',
         price: 197,
+        guarantee: 'Satisfaction Guaranteed',
+        isTargetTier: true,
+        creator: {
+            name: 'Shaf Studio',
+            bio: 'Performance marketing engineers with $10M+ in managed ad spend.',
+            expertise: ['Competitive Intelligence', 'Ad Hooks', 'Meta Ads']
+        },
         businessImpact: "Instantly identifies high-converting creative patterns in your specific niche.",
         roiExample: "Reduced creative testing costs by 40% for home service agencies.",
         features: [
@@ -915,25 +1080,39 @@ const MOCK_TEMPLATES = [
             { title: 'Template Generation', desc: 'Instant creation of high-converting scripts based on winning ad logic.' },
             { title: 'Boost.Space Storage', desc: 'Organized data sink for competitor research and creative assets.' }
         ],
+        oneTimeCost: 1497,
+        maintenanceCost: 147,
+        maintenanceExplanation: "Covers daily Meta Ad Library scrapes, AI vision processing credits, and creative template database maintenance.",
         video: "/videos/meta-ad-analyzer.mp4",
         configurationSchema: [
             { id: 'competitor_domain', label: 'Competitor Domain', type: 'url', required: true, placeholder: 'https://competitor.com' },
-            { id: 'niche', label: 'Advertising Niche', type: 'text', required: true, placeholder: 'e.g. E-commerce, SaaS' }
+            { i: 'niche', label: 'Advertising Niche', type: 'text', required: true, placeholder: 'e.g. E-commerce, SaaS' }
         ]
     },
     {
         id: '5pMi01SwffYB6KeX',
         name: 'YouTube AI Clone',
-        description: 'Create an AI persona from any YouTube channel. Extracts transcripts, synthesizes a conversational persona, and lets you chat with the clone via Telegram. Includes Perplexity research tool.',
+        outcomeHeadline: 'Convert Thousands of Hours of Video Into Your Private Intelligence Engine',
+        description: 'Transform any YouTube channel into a searchable, conversational persona. This system extracts full transcript data and synthesizes a custom LLM persona that mirrors an expert\'s knowledge base and communication style, accessible via Telegram.',
         category: 'Knowledge Engine',
         price: 347,
+        guarantee: 'Satisfaction Guaranteed',
+        creator: {
+            name: 'Rensto Labs',
+            bio: 'Expert AI automation team specializing in knowledge management.',
+            expertise: ['Persona Synthesis', 'LLM Fine-tuning', 'Knowledge Retrieval']
+        },
         features: [
             { title: 'Transcript Extraction', desc: 'Clean, formatted text retrieval from any video ID or channel URL.' },
             { title: 'Persona Synthesis', desc: 'Training OpenAI models to mirror specific speech patterns and knowledge bases.' },
             { title: 'Telegram Bot Integration', desc: 'Real-time conversational interface for mobile and desktop chat.' },
             { title: 'Perplexity Research', desc: 'Real-time fact checking and source citation for AI generated responses.' }
         ],
+        oneTimeCost: 1897,
+        maintenanceCost: 197,
+        maintenanceExplanation: "Includes transcript extraction throughput, OpenAI persona training tokens, and Perplexity research API integration.",
         video: "/videos/youtube-clone.mp4",
+        roiExample: "Synthesized 2,400+ hours of training data into an instant-response advisory bot.",
         configurationSchema: [
             { id: 'channel_url', label: 'YouTube Channel URL', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
             { id: 'persona_voice', label: 'Clone Voice Style', type: 'select', required: true, options: ['Enthusiastic', 'Analytical', 'Sarcastic', 'Inspirational'] }
@@ -942,9 +1121,17 @@ const MOCK_TEMPLATES = [
     {
         id: 'U6EZ2iLQ4zCGg31H',
         name: 'Call Audio Lead Analyzer',
-        description: 'Ingests Telnyx call recordings, transcribes them with AI, and creates qualified leads in Workiz with intelligent categorization. Sends email reports via Outlook.',
+        outcomeHeadline: 'Recover Lost Revenue Hidden in Your Voice Recordings',
+        description: 'Stop letting sales opportunities slip through the cracks. Our Telnyx-powered engine automatically transcribes call recordings, scores lead intent using sentiment analysis, and syncs qualified opportunities directly to your CRM with intelligent categorization.',
         category: 'Lead Machine',
         price: 497,
+        guarantee: 'Satisfaction Guaranteed',
+        isTargetTier: true,
+        creator: {
+            name: 'ServiceFlow Pro',
+            bio: 'Service industry specialists focused on CRM automation.',
+            expertise: ['Workiz Integration', 'Voice AI', 'Lead Capture']
+        },
         businessImpact: "Ensures no sales opportunity ever falls through the cracks of your call recordings.",
         roiExample: "Recovered $12,400 in 'missed quote' revenue for a single plumbing client last month.",
         features: [
@@ -953,6 +1140,9 @@ const MOCK_TEMPLATES = [
             { title: 'Lead Scoring', desc: 'Sentiment analysis and intent detection to prioritize high-value prospects.' },
             { title: 'Workiz CRM Sync', desc: 'Automated entry and categorization within your existing operations stack.' }
         ],
+        oneTimeCost: 2497,
+        maintenanceCost: 247,
+        maintenanceExplanation: "Covers Telnyx recording hooks, AI audio-to-text transcription credits, and secure Workiz CRM lead synchronization.",
         video: "/videos/call-audio-analyzer.mp4",
         configurationSchema: [
             { id: 'crm_type', label: 'Target CRM', type: 'select', required: true, options: ['Workiz', 'PipeDrive', 'Salesforce', 'HubSpot'] },
@@ -962,16 +1152,27 @@ const MOCK_TEMPLATES = [
     {
         id: '5Fl9WUjYTpodcloJ',
         name: 'AI Calendar Assistant',
-        description: 'An AI agent that manages your TidyCal calendar. Books meetings, reschedules, checks availability, and detects conflicts via natural chat commands through Telegram or webhooks.',
-        category: 'Autonomous Secretary',
+        outcomeHeadline: 'Eliminate Scheduling Friction with an Autonomous Booking Agent',
+        description: 'Delegate your entire calendar management to an agent that actually understands your business. Handles complex multi-timezone booking, natural language rescheduling requests, and human-in-the-loop approval workflows via Telegram or Slack.',
+        category: 'Voice AI Agent',
         price: 147,
+        guarantee: 'Satisfaction Guaranteed',
+        creator: {
+            name: 'Rensto Labs',
+            bio: 'Expert AI automation team specializing in autonomous agents.',
+            expertise: ['Agentic Workflows', 'Natural Language Scheduling', 'API Orchestration']
+        },
         features: [
             { title: 'Conflict Resolution', desc: 'Intelligent handling of double-bookings and time-zone overlaps.' },
             { title: 'Natural Language', desc: 'Process scheduling requests like "Move my Tuesday 10am to next Monday".' },
             { title: 'Human Approval Flow', desc: 'Optional Slack/WhatsApp confirmation before finalizing bookings.' },
             { title: 'Webhook Triggers', desc: 'Connect to external apps to trigger bookings from lead forms.' }
         ],
+        oneTimeCost: 897,
+        maintenanceCost: 87,
+        maintenanceExplanation: "Includes webhook monitoring, natural language scheduling API credits, and conflict resolution logic maintenance.",
         video: "/videos/calendar-assistant.mp4",
+        roiExample: "Saved an average of 12 hours per month in administrative coordination per user.",
         configurationSchema: [
             { id: 'calendar_provider', label: 'Calendar Provider', type: 'select', required: true, options: ['Google Calendar', 'Outlook', 'iCloud'] },
             { id: 'timezone', label: 'Primary Timezone', type: 'text', required: true, placeholder: 'e.g. America/New_York' }
@@ -980,16 +1181,28 @@ const MOCK_TEMPLATES = [
     {
         id: 'stj8DmATqe66D9j4',
         name: 'Floor Plan to Property Tour',
-        description: 'Upload a floor plan and receive a photorealistic video walkthrough. AI generates room renders in multiple styles (Modern, Traditional, Scandinavian) and stitches them into a smooth tour video.',
+        outcomeHeadline: 'Sell Properties Faster with Photorealistic AI Video Walkthroughs',
+        description: 'Transform flat 2D floor plans into immersive 4K cinematic walkthroughs. This spatial AI engine renders photorealistic room textures in multiple architectural styles and stitches them into a high-production property tour.',
         category: 'Content Engine',
         price: 397,
+        guarantee: 'Satisfaction Guaranteed',
+        isTargetTier: true,
+        creator: {
+            name: 'VisioReal',
+            bio: 'Pioneers in AI-driven architectural visualization.',
+            expertise: ['Spatial AI', 'Photorealistic Rendering', 'PropTech']
+        },
         features: [
             { title: '2D to 3D Conversion', desc: 'Neural reconstruction of spatial layouts from simple image files.' },
             { title: 'Photorealistic Rendering', desc: 'Ray-traced quality visuals with accurate lighting and material textures.' },
             { title: 'Video Walkthrough', desc: 'Dynamic camera paths that explore the property in 4K resolution.' },
             { title: 'Multi-Style Options', desc: 'Switch between Modern, Industrial and Classic themes instantly.' }
         ],
+        oneTimeCost: 1997,
+        maintenanceCost: 197,
+        maintenanceExplanation: "Includes neural reconstruction processing, 4K rendering cloud credits, and episodic walkthrough stitching maintenance.",
         video: "/videos/floor-plan-tour.mp4",
+        roiExample: "Boosted pre-construction sales engagement by 230% for luxury developments.",
         configurationSchema: [
             { id: 'floorplan_url', label: 'Floor Plan Image URL', type: 'url', required: true },
             { id: 'style', label: 'Interior Style', type: 'select', required: true, options: ['Modern', 'Scandinavian', 'Industrial', 'Traditional'] }
@@ -998,19 +1211,161 @@ const MOCK_TEMPLATES = [
     {
         id: 'vCxY2DXUZ8vUb30f',
         name: 'Monthly CRO Insights Bot',
-        description: 'Automated monthly analysis of GA4 and Clarity data with actionable CRO recommendations. Identifies rage clicks, scroll depth issues, and generates prioritized action items delivered via Slack.',
+        outcomeHeadline: 'Automate Your Growth Strategy with Continuous UX Audits',
+        description: 'Turn your GA4 and Clarity data into a prioritized growth roadmap. This system autonomously identifies revenue leaks, rage clicks, and conversion bottlenecks, delivering actionable CRO recommendations directly to your team via Slack.',
         category: 'Knowledge Engine',
         price: 247,
+        guarantee: 'Satisfaction Guaranteed',
+        creator: {
+            name: 'Shaf Studio',
+            bio: 'Data-driven optimization specialists focused on user behavior.',
+            expertise: ['UX Analysis', 'Google Analytics 4', 'Conversion Optimization']
+        },
         features: [
             { title: 'Drop-off Analysis', desc: 'Detection of funnel leaks and navigation bottlenecks across the journey.' },
             { title: 'Heatmap Integration', desc: 'Correlating click density with user conversion intent scores.' },
             { title: 'Slack Reporting', desc: 'Beautifully formatted monthly summaries sent directly to team channels.' },
             { title: 'Action Item Prioritization', desc: 'Ranking fixes by estimated ROI and development effort.' }
         ],
+        oneTimeCost: 1297,
+        maintenanceCost: 127,
+        maintenanceExplanation: "Covers GA4/Clarity data warehouse storage, automated monthly insight generation, and secure Slack communication maintenance.",
         video: "/videos/cro-insights.mp4",
+        roiExample: "Identified $4,200/mo in potential recovered revenue from cart-abandonment UX leaks.",
         configurationSchema: [
             { id: 'ga4_id', label: 'GA4 Measurement ID', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
             { id: 'domain', label: 'Website Domain', type: 'url', required: true }
         ]
+    }
+];
+
+const MOCK_TEMPLATES_HE = [
+    {
+        id: '4OYGXXMYeJFfAo6X',
+        name: 'מחולל סרטוני סלפי מפורסמים',
+        outcomeHeadline: 'צרו מודעות ויראלית ומודעות למותג באמצעות חוויות וידאו AI',
+        description: 'העצימו את הקהל שלכם להפוך לכוכב המסע הקולנועי של המותג שלכם. מנוע אוטומטי המייצר חוויות וידאו AI באיכות גבוהה שבהן המשתמשים משולבים בצורה חלקה בסצנות אייקוניות.',
+        category: 'מנוע תוכן',
+        price: 297,
+        guarantee: 'שביעות רצון מובטחת',
+        isTargetTier: true,
+        creator: {
+            name: 'מעבדות רנסטו',
+            bio: 'צוות מומחי אוטומציה של AI המתמחה במנועי תוכן ויראליים.',
+            expertise: ['סינתזת וידאו עצבית', 'צמיחה חברתית', 'ארכיטקטורת אוטומציה']
+        },
+        businessImpact: "יוצר מודעות למותג ויראלית גבוהה שמודעות מסורתיות לא יכולות להגיע אליה.",
+        roiExample: "ייצר 1.2 מיליון חשיפות עבור משתמש הבטא האחרון שלנו תוך פחות מ-48 שעות.",
+        oneTimeCost: 2497,
+        maintenanceCost: 197,
+        maintenanceExplanation: "כולל קרדיטים ל-API של Higgsfield, עדכוני מודל עצבי Kling Omni, ותחזוקת שרת לחיבור מספר סצנות.",
+        kpis: [
+            { label: 'שימור מותג', value: '85%+', icon: Shield },
+            { label: 'זמן עיבוד', value: '< 2 דק׳', icon: Clock },
+            { label: 'פוטנציאל ויראלי', value: 'קיצוני', icon: TrendingUp }
+        ],
+        features: [
+            { title: 'החלפת פנים AI', desc: 'מיפוי עצבי מתקדם לשילוב דמויות חלק.' },
+            { title: 'חיבור מספר סצנות', desc: 'עריכה ותיקון צבע אוטומטיים על פני קטעי סרטים אגדיים.' },
+            { title: 'גילוי בוואטסאפ', desc: 'משלוח מיידי לכל מכשיר נייד ללא התקנת אפליקציה.' }
+        ],
+        faqs: [
+            { q: 'כמה סצנות כלולות?', a: 'כברירת מחדל, כל יצירה מחברת 3 סצנות אייקוניות יחד לחוויה קולנועית של 15 שניות.' },
+            { q: 'האם המידע שלי בטוח?', a: 'כן. אנחנו משתמשים בעיבוד זמני. תמונת המקור שלך נמחקת מיד לאחר יצירת הווידאו.' }
+        ],
+        video: "/videos/celebrity-selfie-generator.mp4"
+    },
+    {
+        id: '8GC371u1uBQ8WLmu',
+        name: 'מנתח ספריית המודעות של מטא',
+        outcomeHeadline: 'שדרגו את הפרסום שלכם עם דפוסי קריאייטיב מוכחים שנבדקו אצל המתחרים',
+        description: 'הסירו את חוסר הוודאות מאסטרטגיית הקריאייטיב שלכם. מנוע זה סורק מודעות בעלות ביצועים גבוהים מספריית המודעות של מטא ומשתמש בבינה מלאכותית ויזואלית כדי לפצח את הוקים, התסריטים והדפוסים הוויזואליים המנצחים עבור המותג שלכם.',
+        category: 'מנוע לידים',
+        price: 197,
+        guarantee: 'שביעות רצון מובטחת',
+        isTargetTier: true,
+        roiExample: "הפחתת עלויות בדיקת קריאייטיב ב-40% עבור סוכנויות שירותי בית.",
+        features: [
+            { title: 'שאיבת מודעות', desc: 'שליפה אוטומטית של מודעות פעילות והיסטוריות מספריית מטא.' },
+            { title: 'ניתוח וידאו AI', desc: 'עיבוד ויזואלי עמוק לחילוץ דפוסי הוק ומבנה CTA.' }
+        ],
+        video: "/videos/meta-ad-analyzer.mp4"
+    },
+    {
+        id: '5pMi01SwffYB6KeX',
+        name: 'משכפל יוטיוברים ב-AI',
+        outcomeHeadline: 'הפכו אלפי שעות וידאו למנוע אינטליגנציה פרטי',
+        description: 'הפכו כל ערוץ יוטיוב לפרסונה חיפושית ושיחתית. המערכת מחלצת נתוני תמלול מלאים ומסנתזת פרסונת LLM מותאמת אישית שמשקפת את בסיס הידע וסגנון התקשורת של המומחה, נגישה דרך טלגרם.',
+        category: 'מנוע ידע',
+        price: 347,
+        guarantee: 'שביעות רצון מובטחת',
+        roiExample: "סינתזה של 2,400+ שעות נתוני אימון לבוט ייעוץ בעל תגובה מיידית.",
+        features: [
+            { title: 'חילוץ תמלול', desc: 'שליפת טקסט נקייה ומפורמטת מכל מזהה וידאו או כתובת ערוץ.' },
+            { title: 'סינתזת פרסונה', desc: 'אימון מודלי OpenAI לשיקוף דפוסי דיבור ובסיסי ידע ספציפיים.' }
+        ],
+        video: "/videos/youtube-clone.mp4"
+    },
+    {
+        id: 'U6EZ2iLQ4zCGg31H',
+        name: 'מנתח שיחות לידים',
+        outcomeHeadline: 'החזירו הכנסות אבודות החבויות בהקלטות השיחות שלכם',
+        description: 'הפסיקו לתת להזדמנויות מכירה לחמוק מבין האצבעות. מנוע מבוסס Telnyx שלנו מתמלל אוטומטית הקלטות שיחות, מדרג כוונת ליד באמצעות ניתוח סנטימנט ומסנכרן הזדמנויות כשירות ישירות ל-CRM שלכם.',
+        category: 'מנוע לידים',
+        price: 497,
+        guarantee: 'שביעות רצון מובטחת',
+        isTargetTier: true,
+        roiExample: "החזר הכנסות של $12,400 ב-׳הצעות מחיר שהוחמצו׳ עבור לקוח אינסטלציה יחיד בחודש האחרון.",
+        features: [
+            { title: 'אינטגרציית Telnyx', desc: 'עיבוד ישיר של הקלטות ויומני שיחות.' },
+            { title: 'תמלול אודיו', desc: 'המרה איכותית של קול לטקסט עבור שיחות מכירה ותמיכה.' }
+        ],
+        video: "/videos/call-audio-analyzer.mp4"
+    },
+    {
+        id: '5Fl9WUjYTpodcloJ',
+        name: 'עוזר לוח שנה AI',
+        outcomeHeadline: 'בטלו את החיכוך בתזמון פגישות עם סוכן הזמנות אוטונומי',
+        description: 'האצילו את כל ניהול היומן שלכם לסוכן שבאמת מבין את העסק שלכם. מטפל בהזמנות מורכבות במספר אזורי זמן, בקשות תזמון בשפה טבעית ותהליכי אישור אנושיים דרך טלגרם או סלאק.',
+        category: 'מזכירה אוטונומית',
+        price: 147,
+        guarantee: 'שביעות רצון מובטחת',
+        roiExample: "חסכון ממוצע של 12 שעות בחודש בתיאום אדמיניסטרטיבי למשתמש.",
+        features: [
+            { title: 'פתרון התנגשויות', desc: 'טיפול חכם בכפל הזמנות וחפיפות בזמני זמן.' },
+            { title: 'שפה טבעית', desc: 'עיבוד בקשות תזמון כמו \"הזז את הפגישה שלי מיום שלישי ב-10 בבוקר ליום שני הבא\".' }
+        ],
+        video: "/videos/calendar-assistant.mp4"
+    },
+    {
+        id: 'stj8DmATqe66D9j4',
+        name: 'תוכנית קומה לסיור נכס',
+        outcomeHeadline: 'מכרו נכסים מהר יותר עם סיורי וידאו פוטוריאליסטיים ב-AI',
+        description: 'הפכו תוכניות קומה 2D שטוחות לסיורים קולנועיים סוחפים ב-4K. מנוע spatial AI זה מרנדר טקסטורות חדרים פוטוריאליסטיות במגוון סגנונות אדריכליים ומחבר אותם לסיור נכס באיכות הפקה גבוהה.',
+        category: 'מנוע תוכן',
+        price: 397,
+        guarantee: 'שביעות רצון מובטחת',
+        isTargetTier: true,
+        roiExample: "שיפור מעורבות במכירות לפני בנייה ב-230% עבור פרויקטי יוקרה.",
+        features: [
+            { title: 'המרה מ-2D ל-3D', desc: 'שחזור עצבי של פריסות מרחביות מקבצי תמונה פשוטים.' },
+            { title: 'רינדור פוטוריאליסטי', desc: 'ויזואליה באיכות ריי-טרייסינג עם תאורה וטקסטורות חומרים מדויקות.' }
+        ],
+        video: "/videos/floor-plan-tour.mp4"
+    },
+    {
+        id: 'vCxY2DXUZ8vUb30f',
+        name: 'מנתח שיפור המרות חודשי',
+        outcomeHeadline: 'הפכו את אסטרטגיית הצמיחה שלכם לאוטומטית עם ביקורות UX רציפות',
+        description: 'הפכו את נתוני ה-GA4 והקלאריטי שלכם למפת דרכים מתועדפת לצמיחה. מערכת זו מזהה באופן אוטונומי דליפות הכנסה, הקלקות של תסכול וצווארי בקבוק בהמרות, ומספקת המלצות CRO מעשיות ישירות לצוות שלכם.',
+        category: 'מנוע ידע',
+        price: 247,
+        guarantee: 'שביעות רצון מובטחת',
+        roiExample: "זיהוי של $4,200 בחודש בהכנסות פוטנציאליות מדליפות UX בסל הקניות.",
+        features: [
+            { title: 'ניתוח נטישה', desc: 'זיהוי דליפות משפך וצווארי בקבוק בניווט לאורך המסע.' },
+            { title: 'אינטגרציית מפות חום', desc: 'קישור דחיסות הקלקות עם ציוני כוונת המרת משתמשים.' }
+        ],
+        video: "/videos/cro-insights.mp4"
     }
 ];

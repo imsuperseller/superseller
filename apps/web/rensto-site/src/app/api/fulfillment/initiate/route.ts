@@ -1,8 +1,11 @@
-
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
+
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
 import { FieldValue } from 'firebase-admin/firestore';
+import { emails } from '@/lib/email';
 
 // In production, this would be an env var
 const N8N_FULFILLMENT_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
@@ -55,6 +58,19 @@ export async function POST(request: Request) {
             });
         } catch (webhookError) {
             console.error('Failed to trigger fulfillment webhook:', webhookError);
+        }
+
+        // 3. Send fulfillment started email
+        if (clientEmail) {
+            try {
+                await emails.fulfillmentStarted(
+                    clientEmail,
+                    clientId, // Using clientId as name fallback
+                    productName || 'Rensto Service'
+                );
+            } catch (emailError) {
+                console.error('Failed to send fulfillment email:', emailError);
+            }
         }
 
         return NextResponse.json({

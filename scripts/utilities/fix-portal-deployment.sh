@@ -17,31 +17,31 @@ echo "🔧 FIXING DEPLOYMENT..."
 # First, let's check what's on the server
 echo ""
 echo "📋 CHECKING SERVER STATUS..."
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "ls -la /var/www/html/ | grep -E '(portal|login)'"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "ls -la /var/www/html/ | grep -E '(portal|login)'"
 
 echo ""
 echo "🎯 CREATING PORTAL FILES ON SERVER..."
 
 # Create the portal files directly on the server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node create-customer-portal-pages.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node create-customer-portal-pages.js"
 
 echo ""
 echo "📤 DEPLOYING PORTAL FILES..."
 
 # Deploy the generated HTML files to web server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cp /tmp/ben-ginati-portal.html /var/www/html/ && cp /tmp/ortal-flanary-portal.html /var/www/html/ && cp /tmp/shelly-mizrahi-portal.html /var/www/html/"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cp /tmp/ben-ginati-portal.html /var/www/html/ && cp /tmp/ortal-flanary-portal.html /var/www/html/ && cp /tmp/shelly-mizrahi-portal.html /var/www/html/"
 
 echo ""
 echo "🔐 CREATING LOGIN SYSTEM..."
 
 # Create login system on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node create-login-system.js"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node create-login-system.js"
 
 echo ""
 echo "📤 DEPLOYING LOGIN SYSTEM..."
 
 # Deploy login system to web server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cp /tmp/login.html /var/www/html/"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cp /tmp/login.html /var/www/html/"
 
 echo ""
 echo "🔍 VERIFYING DEPLOYMENT..."
@@ -49,26 +49,26 @@ echo "🔍 VERIFYING DEPLOYMENT..."
 # Check if files are now accessible
 echo ""
 echo "📋 CHECKING SERVER FILES..."
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "ls -la /var/www/html/ | grep -E '(portal|login)'"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "ls -la /var/www/html/ | grep -E '(portal|login)'"
 
 echo ""
 echo "🌐 TESTING ACCESS..."
 
 # Test each portal
 echo "Testing Ben Ginati Portal..."
-curl -s -o /dev/null -w "%{http_code}" http://173.254.201.134/ben-ginati-portal.html
+curl -s -o /dev/null -w "%{http_code}" http://172.245.56.50/ben-ginati-portal.html
 
 echo ""
 echo "Testing Ortal Flanary Portal..."
-curl -s -o /dev/null -w "%{http_code}" http://173.254.201.134/ortal-flanary-portal.html
+curl -s -o /dev/null -w "%{http_code}" http://172.245.56.50/ortal-flanary-portal.html
 
 echo ""
 echo "Testing Shelly Mizrahi Portal..."
-curl -s -o /dev/null -w "%{http_code}" http://173.254.201.134/shelly-mizrahi-portal.html
+curl -s -o /dev/null -w "%{http_code}" http://172.245.56.50/shelly-mizrahi-portal.html
 
 echo ""
 echo "Testing Login Page..."
-curl -s -o /dev/null -w "%{http_code}" http://173.254.201.134/login.html
+curl -s -o /dev/null -w "%{http_code}" http://172.245.56.50/login.html
 
 echo ""
 echo "🎯 CREATING FINAL VERIFICATION..."
@@ -81,7 +81,7 @@ const http = require('http');
 
 class FinalVerifier {
   constructor() {
-    this.baseUrl = 'http://173.254.201.134';
+    this.baseUrl = 'http://172.245.56.50';
     this.results = [];
   }
 
@@ -243,10 +243,10 @@ class FinalVerifier {
     
     console.log('\n🌐 CUSTOMER PORTAL ACCESS:');
     console.log('==========================');
-    console.log('Login Page: http://173.254.201.134/login.html');
-    console.log('Ben Ginati: http://173.254.201.134/ben-ginati-portal.html');
-    console.log('Ortal Flanary: http://173.254.201.134/ortal-flanary-portal.html');
-    console.log('Shelly Mizrahi: http://173.254.201.134/shelly-mizrahi-portal.html');
+    console.log('Login Page: http://172.245.56.50/login.html');
+    console.log('Ben Ginati: http://172.245.56.50/ben-ginati-portal.html');
+    console.log('Ortal Flanary: http://172.245.56.50/ortal-flanary-portal.html');
+    console.log('Shelly Mizrahi: http://172.245.56.50/shelly-mizrahi-portal.html');
     
     console.log('\n🔑 CUSTOMER CREDENTIALS:');
     console.log('=======================');
@@ -267,8 +267,8 @@ echo ""
 echo "📤 DEPLOYING FINAL VERIFICATION..."
 
 # Deploy and run final verification
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/final-verification.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node final-verification.js"
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/final-verification.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node final-verification.js"
 
 echo ""
 echo "🎉 PORTAL DEPLOYMENT FIXED!"
@@ -281,7 +281,7 @@ echo "✅ Real data integrated and displayed"
 echo "✅ All portal features operational"
 echo ""
 echo "🌐 CUSTOMER PORTALS READY FOR ACCESS:"
-echo "   Login: http://173.254.201.134/login.html"
-echo "   Ben Ginati: http://173.254.201.134/ben-ginati-portal.html"
-echo "   Ortal Flanary: http://173.254.201.134/ortal-flanary-portal.html"
-echo "   Shelly Mizrahi: http://173.254.201.134/shelly-mizrahi-portal.html"
+echo "   Login: http://172.245.56.50/login.html"
+echo "   Ben Ginati: http://172.245.56.50/ben-ginati-portal.html"
+echo "   Ortal Flanary: http://172.245.56.50/ortal-flanary-portal.html"
+echo "   Shelly Mizrahi: http://172.245.56.50/shelly-mizrahi-portal.html"

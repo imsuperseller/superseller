@@ -1,10 +1,15 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: November 18, 2025 (Documentation Consolidation, MCP Cleanup)
-**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 10 MCP Servers Active (n8n, Airtable, Notion, Typeform, Stripe, TidyCal, Supabase, Boost.space, Shadcn, Context7), ✅ Design System Complete (Brand colors, Outfit font, dark theme, logo, standardized headers)
+**Last Updated**: January 4, 2026 (Bible Consolidation Complete)
+**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 6 MCP Servers Active (n8n, Stripe, TidyCal, Supabase, Shadcn, Context7), ✅ Design System Complete (Brand colors, Outfit font, dark theme, logo, standardized headers)
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
+> [!IMPORTANT]
+> **📖 Rensto Bible**: For the canonical, consolidated documentation, see **[`docs/BIBLE.md`](file:///Users/shaifriedman/New%20Rensto/rensto/docs/BIBLE.md)** and its sub-documents:
+> - [Business Model](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/MODEL.md) | [Technical Stack](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/STACK.md) | [Design System](file:///Users/shaifriedman/New%20Rensto/rensto/docs/design/SYSTEM.md) | [Jargon Dictionary](file:///Users/shaifriedman/New%20Rensto/rensto/docs/reference/JARGON.md)
+
 ---
+
 
 ## 📖 TABLE OF CONTENTS
 
@@ -62,58 +67,39 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ## 2. CURRENT ARCHITECTURE
 
 ### **Data Flow Philosophy**
-**"Boost.space Primary, n8n Operational, Airtable Archive"**
+**"Firebase/Firestore Primary, n8n Operational, Boost.space Archive"**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│        PRIMARY: Boost.space (Lifetime Plan - No Limits)      │
-│  Infrastructure, products, customers, projects, financial  │
-│  URL: https://superseller.boost.space                      │
-│  Spaces: 39 (Infra), 41 (Refs), 45 (Workflows), 51 (Market)│
+│        PRIMARY: Firebase/Firestore (Real-time DB)           │
+│  Service instances, customer metadata, payments, leads      │
+│  Used by: rensto-site (Next.js)                             │
 └─────────────────────────────────────────────────────────────┘
-                          ↓ Real-time sync
+                          ↓ Fulfillment
 ┌─────────────────────────────────────────────────────────────┐
-│      OPERATIONAL: n8n Data Tables (RackNerd VPS)            │
-│  Workflow execution data, leads, customer interactions      │
-│  Storage: n8n.rensto.com (172.245.56.50:5678)              │
-└─────────────────────────────────────────────────────────────┘
-                          ↓ Archive/Backup
-┌─────────────────────────────────────────────────────────────┐
-│        ARCHIVE: Airtable (Rate Limited - Backup Only)       │
-│  Historical data, manual editing (when API available)       │
-│  11 bases, ~867 records (migrating to Boost.space)         │
-│  ⚠️ Rate limited: Cannot query via API (use CSV exports)   │
-└─────────────────────────────────────────────────────────────┘
-                          ↓ Documentation
-┌─────────────────────────────────────────────────────────────┐
-│         TERTIARY: Notion (Documentation Only)               │
-│  High-level docs, team wiki, 15-20 strategic docs           │
-│  Reduced from 67 to 15-20 essential documents              │
+│      OPERATIONAL: n8n (RackNerd VPS)                        │
+│  Workflow orchestration, specialized fulfillment prompts    │
+│  URL: https://n8n.rensto.com (172.245.56.50:5678)           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### **Data Storage Decision Matrix**
 
-**Store in Boost.space** (PRIMARY):
-- Infrastructure metadata (MCP servers, credentials, nodes, integrations)
-- Marketplace products and purchases
-- Customer and project data
-- Financial data (invoices, expenses)
-- Reference data (companies, business references)
-- **No rate limits** (lifetime plan)
+**Store in Firestore** (PRIMARY):
+- Service instances and configuration
+- Customer profiles and purchase history
+- Lead data for active projects
+- Admin fulfillment queue data
 
-**Store in n8n Data Tables** (OPERATIONAL):
-- Workflow execution data
-- Lead generation data (LinkedIn, Google Maps, Facebook)
-- Customer interaction tracking
-- Queue/processing data
-- Event streams and webhooks
-- Real-time operational metrics
+**Store in n8n** (OPERATIONAL):
+- Workflow execution state
+- Immediate webhook processing
+- Multi-step automation logic
 
-**Archive in Airtable** (BACKUP ONLY):
-- Historical data (migrating to Boost.space)
-- Manual editing (when API available)
-- ⚠️ **Rate limited** - Use CSV exports for migration
+**Archive in Boost.space/Airtable** (LEGACY/REFERENCE):
+- Historical infrastructure metadata
+- Backup of legacy product catalogs
+- Reference data not yet migrated to Firestore
 
 **Sync to Notion** (DOCUMENTATION):
 - Strategic planning docs
@@ -158,9 +144,12 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ### **n8n Workflows** (68 Total)
 
 **Production Environment**:
-- **URL**: http://n8n.rensto.com (or http://172.245.56.50:5678)
+- **URL**: https://n8n.rensto.com (172.245.56.50)
 - **Version**: Community Edition v1.122.5
 - **VPS**: RackNerd (172.245.56.50)
+- **Production IDs**: 
+  - WhatsApp Router: `1LWTwUuN6P6uq2Ha` (Active)
+  - Voice AI: `MqMYMeA9U9PEX1cH` (Active)
 - **API Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (stored in env)
 
 **Active Workflows by Type**:
@@ -314,7 +303,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - Amazon Seller, Dentist, HVAC, Roofer, Locksmith, Real Estate, Lawyer, etc.
 - Each has dedicated landing page on Webflow
 
-**Status**: ✅ **STRIPE CHECKOUT LIVE** (Oct 7, 2025), ⚠️ Typeforms need verification (see documentation gaps)
+**Status**: ✅ **STRIPE CHECKOUT LIVE** (Oct 7, 2025), ✅ Forms migrated to code (/custom)
 
 ### **3. Subscriptions** (Lead Generation Services)
 
@@ -344,7 +333,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 **Process**:
 1. **Discovery Call** (Voice AI consultation - ❌ NOT IMPLEMENTED)
-2. **Needs Assessment** (Typeform - ✅ CREATED: ID `01JKTNHQXKAWM6W90F0A6JQNJ7`)
+2. **Needs Assessment** (Custom Form - ✅ IMPLEMENTED: `/custom`)
 3. **Proposal** (Manual - needs automation)
 4. **Build** (n8n workflows + integrations)
 5. **Delivery** (Customer portal - ⚠️ NEEDS UPDATING)
@@ -707,75 +696,41 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 
 ---
 
-## 10. IMPLEMENTATION STATUS
+## 10. IMPLEMENTATION STATUS (Jan 2026)
 
 ### **✅ FULLY IMPLEMENTED**
+1. **Fulfillment Pipeline**: Firestore + n8n orchestration for service delivery.
+2. **Admin Fulfillment Queue**: Centralized dashboard for service activation.
+3. **Core Platform**: Next.js 16/React 19 site with Firestore primary storage.
+4. **Stripe Integration**: Automated flow from purchase to Firestore lead creation and n8n notification.
+5. **Product Schemas**: Specialized configuration forms for high-value services (YouTube AI, Calendar Assistant).
 
-1. **n8n Workflow Organization**: 68 workflows categorized and migrated to Boost.space
-2. **Boost.space Migration**: ✅ Complete (110 records, $0/month cost)
-3. **Lead Generation System**: INT-LEAD-001 active, generating leads via LinkedIn/GMaps
-4. **BMAD Methodology**: Framework operational, used across all projects
-5. **Airtable Infrastructure**: 11 bases with 867 records (needs cleanup)
-6. **Notion Integration**: 3 databases accessible, needs sync automation
-7. **MCP Servers**: 12 active (n8n, Airtable, Notion, Typeform, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Context7) + 1 disabled (QuickBooks - needs Node.js wrapper)
-8. **Webflow Website**: ✅ LIVE - 19 pages with GitHub auto-deploy Stripe checkout (Oct 7, 2025)
-9. **Design System**: ✅ Complete (November 14, 2025) - Brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd), Outfit font, dark theme (#110d28), logo on all service pages, standardized headers
+### **⚠️ PARTIALLY IMPLEMENTED / REFACTORING**
+1. **Legacy Sync**: Boost.space and Airtable references are being purged or archived.
+2. **Support Agent**: Specialized AI agents for niche-specific support (in-progress).
+3. **Automation Audit**: Specialized pitch and scorecard generation (migrating from legacy MVPs).
 
-### **⚠️ PARTIALLY IMPLEMENTED**
-
-1. **Data Sync**: INT-TECH-005 exists but manual (needs scheduled automation)
-2. **Admin Dashboard**: Exists at admin.rensto.com but outdated (August 2024)
-3. **Customer Portal**: Attempted builds exist, needs updating for new business model
-4. **Financial Tracking**: Airtable base exists (38 records), no automation
-5. **Affiliate Tracking**: Links exist, no Airtable tracking table
-
-### **❌ NOT IMPLEMENTED**
-
-1. **Stripe Payment Flows**: 0 of 5 payment types connected
-2. **Typeforms**: 1 of 5 created (only Custom Solutions consultation)
-3. **Subscription Types**: 1 of 3 defined (Lead Generation only)
-4. **Voice AI**: Fully documented, zero deployment
-5. **eSignatures**: Fully documented, zero deployment
-6. **ReactBits Component Library**: Planned, not built
-7. **Hyperise Replacement**: Built, not deployed (costing $50-200/month)
-8. **Customer Journey Tracking**: No Airtable implementation
-9. **QuickBooks Automation**: MCP server exists, no workflows
-10. **Email Persona System**: Designed (6 personas), not deployed
-11. **Billing Portal**: Referenced in code, not deployed
-12. **Marketplace Auto-Deploy**: Mentioned, not built
-13. **Workflow Generator**: Mentioned, not built
-14. **LightRAG/Knowledge Graph**: Config files exist, not deployed
-15. **Affiliate Portal**: Mentioned, not built
-16. **Webflow Stripe Integration**: ✅ LIVE (19 pages with GitHub-hosted scripts, Oct 7, 2025)
-17. **Airtable-Webflow Sync**: Not connected (dynamic content not working)
-18. **Template Auto-Deployment**: Not implemented
+### **❌ NOT IMPLEMENTED / RETIRED**
+1. **Voice AI**: Legacy architecture (Needs refactoring for Firestore).
+2. **eSignatures**: Legacy architecture (Needs refactoring for Firestore).
+3. **Marketplace Auto-Deploy**: Manual fulfillment currently preferred for quality control.
 
 ---
 
-## 11. CRITICAL GAPS
+## 11. REVENUE-FIRST SYSTEM STATUS
 
-### **Priority 1: REVENUE COLLECTION** ✅ **COMPLETE & DEPLOYED (Oct 7, 2025)**
+### **✅ ALL PAYMENT FLOWS ACTIVE**
 
-✅ **ALL 5 PAYMENT FLOWS LIVE ON PRODUCTION WEBSITE**
-
-**Status**: All 5 payment flows LIVE via GitHub/Vercel auto-deploy system
-**Deployment Method**: GitHub-hosted scripts, auto-deploy on push
-**Pages Live**: 19 of 20 (95% coverage)
-**Revenue Potential**: $11K+ one-time + $2,894/month recurring
-
-**✅ DEPLOYED** (Completed Oct 7, 2025):
-1. ✅ Marketplace Template Purchase ($29-$197) - LIVE on /marketplace
-2. ✅ Marketplace Full-Service Install ($797-$3,500+) - LIVE on /marketplace
-3. ✅ Subscriptions Monthly ($299-$1,499) - LIVE on /subscriptions
-4. ✅ Ready Solutions Package ($890-$2,990) - LIVE on /ready-solutions + 15 niche pages
-5. ✅ Custom Solutions Entry-Level ($297-$1,997) - LIVE on /custom-solutions
+All 5 core payment flows are operational and integrated with Firestore:
+1. **Marketplace Purchase**: Automated lead creation and download token generation.
+2. **Marketplace Install**: Admin queue notification for manual setup.
+3. **Subscriptions**: Firestore client provisioning and automated billing via Stripe.
+4. **Ready Solutions**: Specialized configuration capture and n8n orchestration.
+5. **Custom Solutions**: Consultation capture and project initiation in Firestore.
 
 **GitHub Auto-Deploy System**:
-- **Repository**: https://github.com/imsuperseller/rensto-webflow-scripts
-- **CDN**: https://rensto-webflow-scripts.vercel.app
-- **Deployment Time**: 30 seconds from git push to production
-- **Architecture**: 9 modular JavaScript files (745 lines total)
-- **Integration**: 2 script tags per page (stripe-core.js + page-specific checkout.js)
+- **Status**: ✅ Operational (Syncs with Vercel for immediate updates).
+- **Architecture**: Modular scripts for zero-latency checkout.
 
 **Service Pages Deployed** (4/4):
 - ✅ Marketplace (/marketplace)
@@ -1015,8 +970,8 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
 **Gateway Worker** (`apps/gateway-worker/` - 340K):
 - **Platform**: Cloudflare Workers + KV
 - **Purpose**: API gateway, multi-tenant routing, rate limiting, idempotency
-- **Handlers**: Typeform webhook, Admin dashboard MCP (consolidated Oct 5, 2025)
-- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter, Typeform, Make.com
+- **Handlers**: Custom webhooks, Admin dashboard MCP (consolidated Oct 5, 2025)
+- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter, Make.com
 - **Status**: ⚠️ KV namespaces need configuration
 - **Security**: HMAC signature validation, per-tenant rate limits, Typeform signature verification
 - **Documentation**: `apps/gateway-worker/README.md`
@@ -1091,7 +1046,7 @@ BMAD incorporates Ryan Deiss' Customer Value Journey framework:
    - **Integration**: Works with n8n workflows for enhanced AI capabilities
 3. Airtable MCP
 4. Notion MCP
-5. Typeform MCP
+5. Code-based Forms (/custom)
 6. Make MCP
 7. Stripe MCP (Docker-based)
 8. TidyCal MCP
@@ -1218,7 +1173,7 @@ All API keys stored in: `~/.cursor/mcp.json`
 2. **Context7 MCP** - Documentation lookup and research
 3. **Airtable MCP** - Database operations
 4. **Notion MCP** - Documentation management
-5. **Typeform MCP** - Form handling
+5. **Code-based Forms** - Form handling via custom components
 6. **Make MCP** - Automation platform
 7. **Stripe MCP** - Payment processing
 8. **TidyCal MCP** - Calendar management

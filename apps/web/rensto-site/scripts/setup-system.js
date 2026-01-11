@@ -49,7 +49,7 @@ class SystemSetup {
 
   async checkEnvironment() {
     console.log('🔍 Checking environment variables...');
-    
+
     const requiredEnvVars = [
       'MONGODB_URI',
       'NEXTAUTH_SECRET',
@@ -78,10 +78,10 @@ class SystemSetup {
 
   async createCollections() {
     console.log('📁 Creating database collections...');
-    
+
     const collections = [
       'users',
-      'organizations', 
+      'organizations',
       'agents',
       'workflows',
       'analytics',
@@ -105,7 +105,7 @@ class SystemSetup {
 
   async createAdminUser() {
     console.log('👤 Creating admin user...');
-    
+
     const usersCollection = this.db.collection('users');
 
     // Check if admin user already exists
@@ -143,13 +143,13 @@ class SystemSetup {
     console.log('✅ Admin user created successfully');
     console.log(`   Email: ${CONFIG.adminEmail}`);
     console.log(`   Password: ${CONFIG.adminPassword}`);
-    
+
     return adminUser;
   }
 
   async verifyDatabaseConnection() {
     console.log('🔍 Verifying database connection...');
-    
+
     try {
       // Test basic operations
       const usersCollection = this.db.collection('users');
@@ -164,7 +164,7 @@ class SystemSetup {
 
   async runHealthChecks() {
     console.log('🏥 Running health checks...');
-    
+
     const checks = {
       database: false,
       adminUser: false,
@@ -203,12 +203,12 @@ class SystemSetup {
     }
 
     const allHealthy = Object.values(checks).every(check => check);
-    
+
     console.log('📊 Health check results:');
     console.log(`   Database: ${checks.database ? '✅' : '❌'}`);
     console.log(`   Admin User: ${checks.adminUser ? '✅' : '❌'}`);
     console.log(`   Collections: ${checks.collections ? '✅' : '❌'}`);
-    
+
     return allHealthy;
   }
 
@@ -236,16 +236,16 @@ class SystemSetup {
       const healthy = await this.runHealthChecks();
 
       console.log('\n🎉 System setup completed!');
-      
+
       if (healthy) {
         console.log('✅ All systems are healthy and ready to use');
         console.log('\n🔑 Login credentials:');
-        console.log(`   URL: http://localhost:3000/login`);
+        console.log(`   URL: http://localhost:3002/login`);
         console.log(`   Email: ${CONFIG.adminEmail}`);
         console.log(`   Password: ${CONFIG.adminPassword}`);
         console.log('\n📊 Next steps:');
         console.log('   1. Start the development server: npm run dev');
-        console.log('   2. Visit http://localhost:3000/login');
+        console.log('   2. Visit http://localhost:3002/login');
         console.log('   3. Login with the credentials above');
         console.log('   4. Use the Data Population feature to add sample data');
       } else {
@@ -266,7 +266,7 @@ class SystemSetup {
 // CLI interface
 async function main() {
   const setup = new SystemSetup();
-  
+
   try {
     const success = await setup.setup();
     process.exit(success ? 0 : 1);

@@ -4,7 +4,7 @@
       "id": "n8n-rensto-vps",
       "name": "Rensto VPS",
       "type": "vps",
-      "url": "http://173.254.201.134:5678",
+      "url": "http://172.245.56.50:5678",
       "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
       "credentials": {
         "airtable": "airtable-token",

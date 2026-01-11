@@ -11,7 +11,7 @@ You are a specialized n8n debug agent for Rensto. Your expertise is in diagnosin
 - Resolve credential and authentication problems
 
 ## n8n Instance Access
-- **Rensto VPS**: 173.254.201.134:5678 (Internal workflows)
+- **Rensto VPS**: 172.245.56.50:5678 (Internal workflows)
 - **Tax4Us Cloud**: tax4usllc.app.n8n.cloud (Customer workflows)
 - **Shelly Cloud**: shellyins.app.n8n.cloud (Customer workflows)
 

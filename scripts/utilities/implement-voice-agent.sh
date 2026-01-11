@@ -6,7 +6,7 @@ echo "🎯 VOICE AGENT IMPLEMENTATION"
 echo "============================="
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 
@@ -830,22 +830,22 @@ echo ""
 echo "📤 DEPLOYING VOICE AGENT SYSTEM..."
 
 # Deploy voice agent system to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-system.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-workflow.json root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-portal-integration.js root@173.254.201.134:/tmp/
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-admin-integration.js root@173.254.201.134:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-system.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-workflow.json root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-portal-integration.js root@172.245.56.50:/tmp/
+sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no /tmp/voice-agent-admin-integration.js root@172.245.56.50:/tmp/
 
 echo ""
 echo "🚀 INSTALLING DEPENDENCIES..."
 
 # Install required packages on server
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && npm install twilio axios"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && npm install twilio axios"
 
 echo ""
 echo "🎯 TESTING VOICE AGENT SYSTEM..."
 
 # Test voice agent system
-sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@173.254.201.134 "cd /tmp && node -e \"
+sshpass -p "05ngBiq2pTA8XSF76x" ssh -o StrictHostKeyChecking=no root@172.245.56.50 "cd /tmp && node -e \"
 const VoiceAgentSystem = require('./voice-agent-system.js');
 const voiceAgent = new VoiceAgentSystem();
 

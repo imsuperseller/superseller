@@ -8,7 +8,7 @@ set -e
 echo "🚀 Importing Facebook Group Scraper Workflow to n8n..."
 
 # Server details
-SERVER_IP="173.254.201.134"
+SERVER_IP="172.245.56.50"
 SERVER_USER="root"
 SERVER_PASS="05ngBiq2pTA8XSF76x"
 N8N_PORT="5678"

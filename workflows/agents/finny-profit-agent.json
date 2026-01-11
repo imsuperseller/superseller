@@ -1,0 +1,166 @@
+{
+    "name": "FIN-PROFIT-001: Finny Financials Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "GET",
+                "path": "finny/report",
+                "responseMode": "onReceived",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Webhook - Trigger Report",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ],
+            "webhookId": "finny-report-trigger"
+        },
+        {
+            "parameters": {
+                "operation": "list",
+                "limit": 10,
+                "filters": {
+                    "customer": "={{ $json.query.stripeCustomerId }}"
+                }
+            },
+            "id": "stripe-list-payments",
+            "name": "Stripe - Get Payments",
+            "type": "n8n-nodes-base.stripe",
+            "typeVersion": 1,
+            "position": [
+                460,
+                200
+            ],
+            "credentials": {
+                "stripeApi": {
+                    "id": "B9WHEOJGtVQ2KJdv",
+                    "name": "Rensto Primary"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "reportName": "ProfitAndLoss",
+                "options": {
+                    "startDate": "={{ $json.query.startDate || '2026-01-01' }}",
+                    "endDate": "={{ $json.query.endDate || '2026-01-31' }}"
+                }
+            },
+            "id": "quickbooks-get-pnl",
+            "name": "QuickBooks - Get P&L",
+            "type": "n8n-nodes-base.quickbooks",
+            "typeVersion": 1,
+            "position": [
+                460,
+                400
+            ],
+            "credentials": {
+                "quickbooksOAuth2Api": {
+                    "id": "d15JMAyxpZ1Lfm7e",
+                    "name": "Rensto QuickBooks"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Merge Stripe and QuickBooks data\nconst stripeData = $node[\"Stripe - Get Payments\"].all();\nconst qbData = $node[\"QuickBooks - Get P&L\"].all();\nconst customerId = $node[\"Webhook - Trigger Report\"].first().json.query.customerId;\n\nconst totalRevenue = stripeData.reduce((sum, item) => sum + (item.json.amount / 100), 0);\nconst healthScore = totalRevenue > 1000 ? 'A' : 'B';\n\nreturn [{\n  json: {\n    customerId,\n    totalRevenue,\n    healthScore,\n    reportDate: new Date().toISOString(),\n    rawData: {\n      stripe: stripeData.map(i => i.json),\n      quickbooks: qbData.map(i => i.json)\n    }\n  }\n}];"
+            },
+            "id": "merge-data",
+            "name": "Aggregate Metrics",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "collection": "analytics",
+                "documentId": "={{ $json.customerId }}_finance",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "rev": "={{ $json.totalRevenue }}",
+                        "score": "={{ $json.healthScore }}",
+                        "lastUpdate": "={{ $json.reportDate }}"
+                    }
+                }
+            },
+            "id": "firestore-save",
+            "name": "Firestore - Save Analytics",
+            "type": "n8n-nodes-base.firebaseCloudFirestore",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "firebaseCloudFirestoreApi": {
+                    "id": "firestore-creds",
+                    "name": "Rensto Firestore"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook - Trigger Report": {
+            "main": [
+                [
+                    {
+                        "node": "Stripe - Get Payments",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "QuickBooks - Get P&L",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Stripe - Get Payments": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate Metrics",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "QuickBooks - Get P&L": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate Metrics",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate Metrics": {
+            "main": [
+                [
+                    {
+                        "node": "Firestore - Save Analytics",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true
+    }
+}

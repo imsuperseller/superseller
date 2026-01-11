@@ -110,7 +110,7 @@
 - **Local Files** - LightRAG vector indices
 
 **Infrastructure:**
-- **VPS**: 173.254.201.134 (existing n8n server)
+- **VPS**: 172.245.56.50 (existing n8n server)
 - **Docker**: n8n container
 - **HTTPS**: Cloudflare Tunnel (n8n.rensto.com)
 - **AI**: OpenAI API (no local hosting required)

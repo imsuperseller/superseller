@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
@@ -12,10 +12,6 @@ import {
     CheckCircle,
     Check,
     Star,
-    Zap,
-    Target,
-    Shield,
-    Clock,
     TrendingUp,
     Facebook,
     Instagram,
@@ -32,19 +28,80 @@ import {
     Wifi,
     X,
     Bot,
-    Workflow
+    Workflow,
+    Zap,
+    Target,
+    Shield,
+    Clock
 } from 'lucide-react';
 import { Schema } from '@/components/seo/Schema';
 import { LeadMagnetSection } from '@/components/LeadMagnetSection';
+import { HelpCircle, Search, Settings, ShieldCheck } from 'lucide-react';
+import { NoiseTexture, PillarsVisualization } from '@/components/ui/premium';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
 import { ComparisonTable } from '@/components/marketing/ComparisonTable';
-import { HelpCircle } from 'lucide-react';
+import { Client, Testimonial } from '@/types/firestore';
+import * as framer from 'framer-motion';
+const { motion } = framer;
+import { env } from '@/lib/env';
+import { formatCurrency } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
+interface HomePageProps {
+    initialLogos?: Client[];
+    initialTestimonials?: Testimonial[];
+}
 
-export default function HomePage() {
+export default function HomePage({ initialLogos, initialTestimonials }: HomePageProps) {
     const [selectedService, setSelectedService] = useState<string | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    // Checkout states
+    const [loading, setLoading] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [showEmailModal, setShowEmailModal] = useState<string | null>(null);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const handleCheckout = async (productId: string, flowType: string) => {
+        if (!email && !showEmailModal) {
+            setShowEmailModal(productId);
+            return;
+        }
+
+        setLoading(productId);
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    flowType,
+                    productId,
+                    customerEmail: email,
+                    tier: 'standard'
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                console.error('Checkout failed:', data.error);
+                alert('Checkout failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setLoading(null);
+        }
+    };
 
     // Four core pillars - ROI focused
     const serviceTypes = [
@@ -56,37 +113,37 @@ export default function HomePage() {
             vsHuman: 'Replaces 3-5 manual SDRs with zero management overhead.',
             icon: Target,
             features: [
-                'Google Maps/LinkedIn Scraping',
-                'AI Lead Enrichment',
-                'Automated Cold Outreach',
+                'Automated Lead Sourcing',
+                'AI Data Enrichment',
+                'Multi-Channel Outreach',
                 'Smart CRM Synchronization',
-                'Daily Lead Reports'
+                'Daily Performance Reports'
             ],
             pricing: 'From $997/mo',
             qualifier: 'Scale your sales overnight',
-            cta: 'Build My Engine',
+            cta: 'Activate My Engine',
             href: '/offers',
             gradient: 'primary',
             popular: true,
             slots: '3 slots left'
         },
         {
-            id: 'whatsapp-secretary',
-            name: 'Autonomous Secretary',
-            tagline: 'WhatsApp & Voice AI',
-            description: 'Your own AI assistant that answers messages, books meetings, and handles clients perfectly on WhatsApp and Voice.',
-            vsHuman: 'Available 24/7. Never forgets a follow-up. Never calls in sick.',
-            icon: MessageSquare,
+            id: 'voice-ai-agent',
+            name: 'Voice AI Agent',
+            tagline: 'Autonomous Receptionist',
+            description: 'A 24/7 AI sales rep and receptionist that handles calls, books meetings, and syncs perfectly with your CRM.',
+            vsHuman: 'Available 24/7. Never forgets a follow-up. 1/10th the cost of a human.',
+            icon: Mic,
             features: [
-                '24/7 WhatsApp Response',
-                'Live Voice AI Calling',
+                '24/7 Inbound/Outbound Calls',
                 'Automated Appointment Booking',
+                'Live CRM Data Integration',
                 'Multi-Language Support',
-                'Zero-Ban Protection'
+                'Meeting Lead Qualification'
             ],
             pricing: 'From $497/mo',
-            qualifier: 'Never miss a lead again',
-            cta: 'Hire My Assistant',
+            qualifier: 'Never miss a call again',
+            cta: 'Partner With My Agent',
             href: '/whatsapp',
             gradient: 'accent',
             popular: false,
@@ -95,16 +152,16 @@ export default function HomePage() {
         {
             id: 'rag-systems',
             name: 'Knowledge Engine',
-            tagline: 'Agentic RAG & Systems',
-            description: 'Connect AI to your company data. A private intelligence system that knows your best practices and projects.',
-            vsHuman: 'The "perfect memory" employee who never needs re-training.',
-            icon: Mic,
+            tagline: 'Custom Knowledge RAG',
+            description: 'Connect AI to your company data. A private intelligence system with the "perfect memory" of your organization.',
+            vsHuman: 'The employee who knows every project and best practice instantly.',
+            icon: Shield,
             features: [
-                'Custom Data Source Sync',
+                'Live Data Source Sync',
                 'Private AI Knowledge Base',
-                'Team Training Included',
-                'Process Logic Flowcharts',
-                'Strict Data Security'
+                'Internal Workflow Logic',
+                'Context-Aware Assistance',
+                'Enterprise-Grade Security'
             ],
             pricing: 'From $1,497/mo',
             qualifier: 'For established teams',
@@ -112,31 +169,90 @@ export default function HomePage() {
             href: '/contact',
             gradient: 'secondary',
             popular: false,
-            slots: 'Engineering Required'
+            slots: 'Advanced Systems'
         },
         {
             id: 'content-engine',
             name: 'The Content Engine',
-            tagline: 'Traffic & Viral Growth',
-            description: 'Autonomous systems that generate, edit, and distribute high-authority content across all social channels.',
-            vsHuman: 'A full content agency in a box—at a fraction of the cost.',
+            tagline: 'Idea to Content Pipeline',
+            description: 'Autonomous systems that handle research, ideation, and generation of high-authority content at scale.',
+            vsHuman: 'A full content agency engine that never runs out of ideas.',
             icon: Users,
             features: [
+                'Content Research & Ideation',
+                'Automated Video/Image Gen',
                 'Multi-Channel Distribution',
-                'AI Video/Image Generation',
-                'SEO Authority Automation',
-                'Trending Topic Analysis',
+                'Authority Building Logic',
                 'Weekly Growth Reports'
             ],
             pricing: 'From $1,497/mo',
             qualifier: 'Dominate your market',
-            cta: 'See The Results',
+            cta: 'Start Creating',
             href: '/offers',
             gradient: 'primary',
             popular: false,
             slots: 'Scaling Fast'
         }
     ];
+
+    const ecosystemBundle = {
+        id: 'full-ecosystem',
+        name: 'Full Ecosystem',
+        price: 5497,
+        description: 'All four pillars plus premium support, custom integrations, and a dedicated engineer for end‑to‑end automation.',
+        features: ['Lead Machine Engine', 'Voice AI Agent System', 'Knowledge Engine (RAG)', 'The Content Engine', 'Strategic Roadmap', 'Dedicated Automation Partner', '24/7 Priority Support'],
+        cta: 'Claim The Ecosystem Bundle',
+        popular: true,
+        icon: Zap
+    };
+
+    const carePlans = [
+        {
+            id: 'starter-care',
+            name: 'Starter Care',
+            price: 497,
+            period: 'month',
+            description: 'Perfect for small teams needing monitoring',
+            features: ['Monitor automations & Fix breaks', '1 monthly check-in (15 min)', 'Update FAQs & Responses', 'Basic performance report', '5 hours/mo included'],
+            cta: 'Start Care Plan',
+            popular: false
+        },
+        {
+            id: 'growth-care',
+            name: 'Growth Care',
+            price: 997,
+            period: 'month',
+            description: 'Our most popular plan for active scaling',
+            features: ['Deploy 1-2 new growth flows/mo', 'Optimize flows & A/B test', 'Quarterly strategy call (1h)', 'CRM synchronization & care', '15 hours/mo included'],
+            cta: 'Get Growth Care',
+            popular: true
+        },
+        {
+            id: 'scale-care',
+            name: 'Scale Care',
+            price: 2497,
+            period: 'month',
+            description: 'A dedicated automation partner for your team',
+            features: ['Dedicated expert (same person)', 'Activate custom capabilities on request', 'Weekly sync calls', 'Full analytics dashboard', 'Priority response (<4 hrs)'],
+            cta: 'Get Scale Care',
+            popular: false
+        }
+    ];
+
+    function getStripeLink(productName: string): string | undefined {
+        const links = {
+            'Strategic Audit': env.NEXT_PUBLIC_STRIPE_LINK_AUDIT,
+            'The Lead Machine': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
+            'The Content Engine': env.NEXT_PUBLIC_STRIPE_LINK_CONTENT_STARTER,
+            'Voice AI Agent': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
+            'Knowledge Engine': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT,
+            'Full Ecosystem': env.NEXT_PUBLIC_STRIPE_LINK_FULL_ECOSYSTEM,
+            'Starter Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_STARTER,
+            'Growth Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH,
+            'Scale Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE,
+        };
+        return links[productName as keyof typeof links];
+    }
 
     // Social proof stats - Concrete Numbers
     const stats = [
@@ -146,36 +262,64 @@ export default function HomePage() {
         { value: '24/7', label: 'Support Coverage', icon: Shield }
     ];
 
-    // Testimonials with real clients
-    const testimonials = [
-        {
-            quote: "The Automated Website Team changed how we handle our site. It's like having a full tech team on standby 24/7.",
-            author: "Ben Ginati",
-            role: "CEO, Tax4US LLC",
-            result: "24/7 Website Support",
-            image: "/images/testimonials/client-testimonial-ben.jpg"
-        },
-        {
-            quote: "The Monday.com automations save me hours every single day. I can finally focus on patient care.",
-            author: "Ortal Flanary",
-            role: "Founder, Wonder.care",
-            result: "Time-Saving Automations",
-            image: "/images/testimonials/client-testimonial-ortal.jpg"
-        },
-        {
-            quote: "The project management automations cut our administrative overhead by 40%. Best investment we've made.",
-            author: "Aviad Hazout",
-            role: "CEO, Ardan Management & Engineering",
-            result: "Project Automation",
-            image: "/images/clients/client-aviad-hazout.jpg"
-        }
-    ];
+    // Testimonials with real clients - merge database results if available
+    const testimonials = initialTestimonials && initialTestimonials.length > 0
+        ? initialTestimonials.map(t => ({
+            quote: t.quote,
+            author: t.author,
+            role: t.role,
+            result: t.result,
+            image: t.imageUrl,
+            label: t.label
+        }))
+        : [
+            {
+                quote: "The Automated Website Team changed how we handle our site. It's like having a full tech team on standby 24/7.",
+                author: "Ben Ginati",
+                role: "CEO, Tax4US LLC",
+                result: "24/7 Website Support",
+                image: "/images/testimonials/client-testimonial-ben.jpg",
+                label: "TAX4US"
+            },
+            {
+                quote: "The project management automations cut our administrative overhead by 40%. Best investment we've made.",
+                author: "Aviad Hazout",
+                role: "CEO, Ardan Management & Engineering",
+                result: "Project Automation",
+                image: "/images/clients/client-aviad-hazout.jpg",
+                label: "ARDAN"
+            },
+            {
+                quote: "The systems Rensto built saved me hours of manual operations every single day. They understood my vision for Miss Party from day one and executed perfectly.",
+                author: "Michal Kacher Szender",
+                role: "CEO, Miss Party",
+                result: "Operations Automation",
+                image: "/images/testimonials/michal-kacher.jpg",
+                label: "MISS PARTY"
+            },
+            {
+                quote: "The Family Insurance Profiler Agent we built with Rensto is a game-changer. It automates complex client profiling and has transformed how I serve families.",
+                author: "Shelly Mizrahi",
+                role: "Insurance Agent",
+                result: "AI Profiler Agent",
+                image: "/images/testimonials/shelly-mizrahi.jpg",
+                label: "INSURANCE"
+            },
+            {
+                quote: "Rensto's service made my business smarter. The automations work 24/7 and free me to focus on growth.",
+                author: "David Szender",
+                role: "Business Owner",
+                result: "Business Intelligence",
+                image: "/images/clients/client-david-szender.jpg",
+                label: "WONDERCARE"
+            }
+        ];
 
     // FAQ for objection handling
     const faqs = [
         {
             q: "How is this different from hiring a developer?",
-            a: "We're not just developers—we're automation strategists. We analyze your operations, identify the highest-impact opportunities, and build systems that pay for themselves within months."
+            a: "We're not just technical specialists—we're automation strategists. We analyze your operations, identify the highest-impact opportunities, and deploy systems that pay for themselves within months."
         },
         {
             q: "What if I'm not tech-savvy?",
@@ -191,7 +335,7 @@ export default function HomePage() {
         },
         {
             q: "Do I own the system?",
-            a: "Yes. For our built-for-you systems, you own the infrastructure. We build it on your accounts, and you keep the intellectual property forever."
+            a: "Yes. For our custom ecosystems, you own the infrastructure. We deploy it on your accounts, and you keep the intellectual property forever."
         },
         {
             q: "Can this replace my whole team?",
@@ -240,8 +384,14 @@ export default function HomePage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--rensto-bg-primary)' }}>
-            <Header />
+        <div
+            className="min-h-screen flex flex-col bg-[#0f0c29]"
+            style={{ background: 'radial-gradient(circle at top center, #1a1438 0%, #0f0c29 100%)' }}
+            suppressHydrationWarning
+        >
+            {mounted && <NoiseTexture opacity={0.03} />}
+            {mounted && <AnimatedGridBackground />}
+            {mounted && <Header />}
             <Schema type="BreadcrumbList" data={breadcrumbData} />
             <Schema type="FAQPage" data={faqData} />
             <main className="flex-grow">
@@ -282,20 +432,14 @@ export default function HomePage() {
                             </div>
 
                             <h1
-                                className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
-                                style={{ color: 'var(--rensto-text-primary)' }}
+                                className="hero-title text-4xl sm:text-5xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter uppercase italic text-white"
                             >
-                                Stop Working {' '}
-                                <span style={{
-                                    background: 'var(--rensto-gradient-secondary)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text'
-                                }}>
-                                    For Your Business
+                                Activate Your {' '}
+                                <span className="text-cyan-400">
+                                    Autonomous Ecosystem
                                 </span>
-                                <span className="block text-3xl sm:text-4xl md:text-5xl mt-2" style={{ color: 'var(--rensto-text-secondary)' }}>
-                                    Make It Work For You.
+                                <span className="block text-3xl sm:text-4xl md:text-5xl mt-2 text-slate-400">
+                                    The 4 Pillars of Scale.
                                 </span>
                             </h1>
 
@@ -303,7 +447,7 @@ export default function HomePage() {
                                 className="hero-description text-xl md:text-2xl mb-6 max-w-3xl mx-auto"
                                 style={{ color: 'var(--rensto-text-secondary)' }}
                             >
-                                We build AI-powered automation systems that handle your sales, support, and operations 24/7.
+                                We deploy AI-powered automation systems that handle your sales, support, and operations 24/7.
                             </p>
 
                             {/* Key Benefits - Scannable */}
@@ -318,27 +462,28 @@ export default function HomePage() {
                                 </div>
                                 <div className="flex items-center gap-2 text-sm md:text-base" style={{ color: 'var(--rensto-text-muted)' }}>
                                     <Check className="w-4 h-4 text-green-400" />
-                                    <span>Cheaper than a part-time junior</span>
+                                    <span>More reliable than a dedicated full-time hire</span>
                                 </div>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                                <Button
-                                    size="xl"
-                                    variant="renstoSecondary"
-                                    onClick={() => document.getElementById('qualify')?.scrollIntoView({ behavior: 'smooth' })}
-                                    className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
-                                >
-                                    Qualify for an Audit
-                                    <ArrowRight className="w-5 h-5" />
-                                </Button>
-                                <Link href="/whatsapp">
+                                <Link href="#pillars">
+                                    <Button
+                                        size="xl"
+                                        variant="renstoSecondary"
+                                        className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
+                                    >
+                                        Explore The 4 Pillars
+                                        <ArrowRight className="w-5 h-5 ml-2" />
+                                    </Button>
+                                </Link>
+                                <Link href="/offers#ecosystem">
                                     <Button
                                         size="xl"
                                         variant="renstoNeon"
                                         className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
                                     >
-                                        See WhatsApp AI Demo
+                                        Claim The Ecosystem Bundle
                                     </Button>
                                 </Link>
                             </div>
@@ -358,33 +503,91 @@ export default function HomePage() {
                                     <span className="opacity-30">•</span>
                                     <span>Healthcare</span>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 opacity-80 items-center justify-items-center max-w-3xl mx-auto">
-                                    {/* Real Client Logos - Normalized Heights */}
-                                    <div className="h-10 relative w-full max-w-[140px]">
-                                        <Image
-                                            src="/images/logos/logo-tax4us.png"
-                                            alt="Tax4US - AI Automation Client"
-                                            fill
-                                            className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
-                                        />
-                                    </div>
-                                    <div className="h-10 relative w-full max-w-[140px]">
-                                        <Image
-                                            src="/images/logos/logo-ardan.png"
-                                            alt="ARDAN - Project Management Client"
-                                            fill
-                                            className="object-contain opacity-70 hover:opacity-100 transition-opacity"
-                                            style={{ mixBlendMode: 'screen' }}
-                                        />
-                                    </div>
-                                    <div className="h-10 relative w-full max-w-[140px]">
-                                        <Image
-                                            src="/images/logos/logo-wondercare.png"
-                                            alt="WonderCare - Healthcare Automation"
-                                            fill
-                                            className="object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
-                                        />
-                                    </div>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-80 items-center justify-items-center max-w-4xl mx-auto">
+                                    {/* Real Client Logos - Loaded from database or fallback */}
+                                    {initialLogos && initialLogos.length > 0 ? (
+                                        (() => {
+                                            const getLogoProps = (name: string) => {
+                                                const lower = name.toLowerCase();
+
+                                                // Default style for white/monochrome conversion on dark theme
+                                                const whiteFilterStyle = { filter: 'brightness(0) invert(1)' };
+
+                                                // Ardan (Special handling for scaling due to heavy padding in square asset)
+                                                if (lower.includes('ardan')) return {
+                                                    className: "object-contain opacity-100 hover:opacity-100 transition-opacity scale-[4.5]",
+                                                    style: whiteFilterStyle,
+                                                    unoptimized: true
+                                                };
+                                                // Shelly (Square-ish, needs minor boost)
+                                                if (lower.includes('shelly')) return {
+                                                    className: "object-contain opacity-100 hover:opacity-100 transition-opacity scale-[1.5]",
+                                                    style: whiteFilterStyle,
+                                                    unoptimized: true
+                                                };
+                                                // Tax4US, Wonder.Care, and others
+                                                return {
+                                                    className: "object-contain opacity-100 hover:opacity-100 transition-opacity",
+                                                    style: whiteFilterStyle,
+                                                    unoptimized: true
+                                                };
+                                            };
+                                            return initialLogos.map((client) => {
+                                                const props = getLogoProps(client.name);
+                                                return (
+                                                    <div key={client.id} className="h-12 relative w-full max-w-[140px]">
+                                                        <Image
+                                                            src={client.logoUrl}
+                                                            alt={client.name}
+                                                            fill
+                                                            className={props.className}
+                                                            style={props.style}
+                                                            unoptimized={props.unoptimized}
+                                                        />
+                                                    </div>
+                                                );
+                                            });
+                                        })()
+                                    ) : (
+                                        <>
+                                            {/* Static Fallback Logos - Guaranteed to look good */}
+                                            <div className="h-8 relative w-full max-w-[120px]">
+                                                <Image
+                                                    src="/images/logos/logo-tax4us.png"
+                                                    alt="Tax4US"
+                                                    fill
+                                                    className="object-contain opacity-80 hover:opacity-100 transition-opacity"
+                                                />
+                                            </div>
+                                            <div className="h-8 relative w-full max-w-[120px]">
+                                                <Image
+                                                    src="/images/logos/logo-ardan-transparent.png"
+                                                    alt="ARDAN"
+                                                    fill
+                                                    style={{ filter: 'brightness(0) invert(1)' }}
+                                                    className="object-contain opacity-80 hover:opacity-100 transition-opacity"
+                                                />
+                                            </div>
+                                            <div className="h-8 relative w-full max-w-[120px]">
+                                                <Image
+                                                    src="/images/logos/logo-shelly-mizrahi.png"
+                                                    alt="Shelly Mizrahi"
+                                                    fill
+                                                    style={{ filter: 'brightness(0) invert(1)' }}
+                                                    className="object-contain opacity-80 hover:opacity-100 transition-opacity"
+                                                />
+                                            </div>
+                                            <div className="h-8 relative w-full max-w-[120px]">
+                                                <Image
+                                                    src="/images/logos/logo-wondercare.png"
+                                                    alt="Wonder.Care"
+                                                    fill
+                                                    style={{ filter: 'brightness(0) invert(1)' }}
+                                                    className="object-contain opacity-80 hover:opacity-100 transition-opacity"
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -399,7 +602,7 @@ export default function HomePage() {
                 {/* Technical Authority & Monitoring Section */}
                 <section className="py-24 px-4 border-t border-white/5 relative overflow-hidden">
                     {/* Abstract Grid Background */}
-                    <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ background: 'url(/images/grid.svg) repeat' }} />
+
 
                     <div className="container mx-auto">
                         <div className="flex flex-col lg:flex-row items-center gap-16">
@@ -410,11 +613,11 @@ export default function HomePage() {
                                 </div>
                                 <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
                                     Enterprise Grade <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Automation Backend</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Automation Infrastructure</span>
                                 </h2>
                                 <p className="text-xl text-slate-400 mb-8 max-w-xl">
-                                    While others offer &quot;simple bots&quot;, we architect complex multi-stage workflows in n8n.
-                                    Every system we build includes a **Daily Health Check**—our own code monitoring your business every 60 seconds.
+                                    While others offer &quot;simple task-bots&quot;, we deploy comprehensive multi-stage Engines.
+                                    Every system we activate includes a **Daily Health Check**—our own code monitoring your business every 60 seconds.
                                 </p>
 
                                 <div className="space-y-6">
@@ -462,11 +665,11 @@ export default function HomePage() {
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <Bot className="w-8 h-8 text-cyan-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">AI Branching</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Smart Routing</span>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <Workflow className="w-8 h-8 text-purple-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Process Logic</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Business Logic</span>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <CheckCircle className="w-8 h-8 text-green-400" />
@@ -488,17 +691,53 @@ export default function HomePage() {
                 </section>
 
                 {/* Qualification Engine - The Core Funnel */}
+                <section id="pillars" className="py-32 px-4 relative overflow-hidden">
+                    <div className="container mx-auto max-w-7xl">
+                        <div className="grid lg:grid-cols-2 gap-24 items-center">
+                            <div className="space-y-12">
+                                <div className="space-y-6">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-sm font-black uppercase tracking-widest">
+                                        <HelpCircle className="w-4 h-4" />
+                                        The Ecosystem Architecture
+                                    </div>
+                                    <h2 className="text-5xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-tight">
+                                        The <span className="text-cyan-400 text-glow">4 Pillars</span> of Autonomous Success
+                                    </h2>
+                                    <p className="text-xl text-slate-400 max-w-xl font-medium leading-relaxed">
+                                        Most businesses fail at automation because they deploy scattered task-bots. We architect an integrated Ecosystem where your leads, operations, and knowledge are perfectly synchronized.
+                                    </p>
+                                </div>
+                                <div className="flex flex-col sm:flex-row gap-6">
+                                    <Link href="#qualify">
+                                        <Button
+                                            size="xl"
+                                            variant="renstoSecondary"
+                                            className="font-black italic uppercase tracking-widest"
+                                        >
+                                            Start My Analysis
+                                            <ArrowRight className="w-5 h-5 ml-2" />
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="relative">
+                                <PillarsVisualization />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section id="qualify" className="py-24 px-4 bg-gradient-to-b from-transparent to-[#0a061e]/30">
                     <div className="container mx-auto">
                         <div className="text-center mb-12">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-4 text-sm font-bold">
-                                <HelpCircle className="w-4 h-4" />
-                                New to AI? Start Here
+                                <Search className="w-4 h-4" />
+                                Initial Diagnostic Phase
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
+                            <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
                                 See if your business can <span className="text-cyan-400">run itself.</span>
                             </h2>
-                            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">
                                 You don&apos;t need to be a tech expert. We take care of everything. Let&apos;s see how much time we can save you.
                             </p>
                         </div>
@@ -669,20 +908,95 @@ export default function HomePage() {
                                                 {service.slots}
                                             </div>
 
-                                            <Link href={service.href}>
-                                                <Button
-                                                    size="xl"
-                                                    variant={service.gradient === 'primary' ? 'renstoPrimary' : 'renstoSecondary'}
-                                                    className="w-full font-bold transition-all duration-200 h-14"
-                                                >
-                                                    {service.cta}
-                                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                                </Button>
-                                            </Link>
+                                            <Button
+                                                size="xl"
+                                                variant={service.gradient === 'primary' ? 'renstoPrimary' : 'renstoSecondary'}
+                                                className="w-full font-bold transition-all duration-200 h-14"
+                                                onClick={() => {
+                                                    const slug = service.id === 'lead-gen' ? 'lead-machine' : service.id;
+                                                    handleCheckout(slug, 'service-purchase');
+                                                }}
+                                                disabled={!!loading}
+                                            >
+                                                {loading === (service.id === 'lead-gen' ? 'lead-machine' : service.id) ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+                                                ) : (
+                                                    <div className="flex items-center justify-center">
+                                                        {service.cta}
+                                                        <ArrowRight className="w-5 h-5 ml-2" />
+                                                    </div>
+                                                )}
+                                            </Button>
                                         </div>
                                     </div>
                                 );
                             })}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Full Ecosystem Bundle Section */}
+                <section id="ecosystem" className="py-24 px-4 bg-black relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.1),transparent_70%)]" />
+                    <div className="container mx-auto relative z-10">
+                        <div className="max-w-6xl mx-auto rounded-[3.5rem] p-12 md:p-20 bg-white/[0.02] border border-white/5 backdrop-blur-3xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8">
+                                <span className="bg-cyan-500 text-black font-black uppercase text-xs tracking-widest px-6 py-2 rounded-full">
+                                    Limited Capacity
+                                </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                                <div className="space-y-10">
+                                    <div className="space-y-4">
+                                        <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
+                                            <Zap className="w-4 h-4" />
+                                            The Ultimate Package
+                                        </div>
+                                        <h2 className="text-6xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
+                                            The <span className="text-cyan-400">Total</span> <br />Ecosystem
+                                        </h2>
+                                    </div>
+                                    <p className="text-2xl text-slate-400 font-medium leading-relaxed">
+                                        {ecosystemBundle.description}
+                                    </p>
+                                    <div className="flex items-baseline gap-4 py-8 border-y border-white/5">
+                                        <span className="text-7xl font-black text-white">{formatCurrency(ecosystemBundle.price)}</span>
+                                        <span className="text-slate-500 font-black uppercase text-sm tracking-[0.2em] line-through decoration-cyan-500/50">
+                                            Value: $12,500+
+                                        </span>
+                                    </div>
+                                    <Button
+                                        size="xl"
+                                        onClick={() => handleCheckout(ecosystemBundle.id, 'service-purchase')}
+                                        disabled={!!loading}
+                                        className="w-full h-24 text-2xl font-black bg-cyan-400 text-black hover:bg-cyan-300 rounded-3xl transition-all duration-300 shadow-[0_0_50px_rgba(34,211,238,0.2)] hover:shadow-[0_0_70px_rgba(34,211,238,0.3)]"
+                                    >
+                                        {loading === ecosystemBundle.id ? (
+                                            <Loader2 className="w-8 h-8 animate-spin mx-auto" />
+                                        ) : (
+                                            <div className="flex items-center gap-4">
+                                                {ecosystemBundle.cta}
+                                                <ArrowRight className="w-8 h-8" />
+                                            </div>
+                                        )}
+                                    </Button>
+                                </div>
+
+                                <div className="bg-white/[0.03] p-10 rounded-[2.5rem] border border-white/10 space-y-8">
+                                    <h3 className="text-xl font-black text-white uppercase italic tracking-widest">Included Components</h3>
+                                    <ul className="space-y-6">
+                                        {ecosystemBundle.features.map((feature, i) => (
+                                            <li key={i} className="flex items-center gap-5">
+                                                <div className="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center shrink-0">
+                                                    <Check className="w-4 h-4 text-cyan-400" />
+                                                </div>
+                                                <span className="text-lg text-slate-200 font-bold tracking-tight">{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -797,6 +1111,11 @@ export default function HomePage() {
                                                 )}
                                             </div>
                                             <div>
+                                                {testimonial.label && (
+                                                    <div className="text-cyan-400 font-black text-[10px] tracking-widest mb-1 opacity-50 uppercase">
+                                                        {testimonial.label}
+                                                    </div>
+                                                )}
                                                 <div className="font-bold text-lg" style={{ color: 'var(--rensto-text-primary)' }}>{testimonial.author}</div>
                                                 <div className="text-sm" style={{ color: 'var(--rensto-text-secondary)' }}>{testimonial.role}</div>
                                             </div>
@@ -864,6 +1183,70 @@ export default function HomePage() {
 
                 {/* Lead Magnet Section */}
                 <LeadMagnetSection />
+
+                {/* Care Plans Section */}
+                <section id="pricing" className="py-24 px-4 border-t border-white/5 bg-[#0f0c29]">
+                    <div className="container mx-auto">
+                        <div className="text-center mb-16 space-y-6">
+                            <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
+                                <Workflow className="w-4 h-4" />
+                                Growth & Maintenance
+                            </div>
+                            <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
+                                Ongoing <span className="text-cyan-400">Scale Plans</span>
+                            </h2>
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">
+                                Dedicated engineering bandwidth to maintain and evolve your automation engine.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                            {carePlans.map((plan, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="h-full"
+                                >
+                                    <div className={`p-8 rounded-[2.5rem] border h-full group transition-all duration-500 flex flex-col ${plan.popular ? 'bg-cyan-500/5 border-cyan-500/30 hover:bg-cyan-500/10' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.05]'}`}>
+                                        <div className="mb-10">
+                                            <h3 className="text-3xl font-black text-white uppercase italic tracking-tight mb-2">{plan.name}</h3>
+                                            <p className="text-slate-500 font-black uppercase text-[10px] tracking-widest mb-8">{plan.description}</p>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-5xl font-black text-white">{formatCurrency(plan.price)}</span>
+                                                <span className="text-slate-500 font-black uppercase text-[10px] tracking-widest">/{plan.period}</span>
+                                            </div>
+                                        </div>
+
+                                        <ul className="space-y-5 mb-12 flex-grow">
+                                            {plan.features.map((feature, i) => (
+                                                <li key={i} className="flex items-center gap-4">
+                                                    <Check className="w-5 h-5 text-cyan-400 shrink-0" />
+                                                    <span className="text-sm text-slate-300 font-bold tracking-wide">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+
+                                        <Button
+                                            size="xl"
+                                            onClick={() => handleCheckout(plan.id, 'subscription')}
+                                            disabled={!!loading}
+                                            className={`w-full h-20 text-xl font-black rounded-2xl transition-all ${plan.popular ? 'bg-cyan-400 text-black hover:bg-cyan-300' : 'bg-white/5 text-white hover:bg-white/10'}`}
+                                        >
+                                            {loading === plan.id ? (
+                                                <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                                            ) : (
+                                                plan.cta
+                                            )}
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* FAQ Section */}
                 <section className="py-20 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
@@ -972,6 +1355,50 @@ export default function HomePage() {
                 {/* ... lines 767 to 825 ... */}
             </main>
             <Footer />
+
+            {/* Email Capture Modal */}
+            {showEmailModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-[#0a061e] border border-white/10 rounded-[3rem] p-12 max-w-lg w-full shadow-2xl space-y-8"
+                    >
+                        <div className="space-y-4">
+                            <h3 className="text-4xl font-black text-white uppercase italic tracking-tighter">Secure Your Spot</h3>
+                            <p className="text-slate-400 font-medium">
+                                Enter your email to proceed to secure payment. We&apos;ll use this to deliver your {showEmailModal === 'automation-audit' ? 'Audit Report' : 'Sprint Blueprint'}.
+                            </p>
+                        </div>
+
+                        <input
+                            type="email"
+                            placeholder="you@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-lg text-white font-bold focus:border-cyan-500 outline-none transition-all placeholder:text-white/20"
+                            autoFocus
+                        />
+
+                        <div className="flex gap-4">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setShowEmailModal(null)}
+                                className="flex-1 h-16 rounded-2xl text-slate-400 font-black uppercase text-xs tracking-widest"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => handleCheckout(showEmailModal, 'service-purchase')}
+                                disabled={!email || !!loading}
+                                className="flex-[2] h-16 rounded-2xl bg-cyan-500 text-black font-black uppercase text-xs tracking-widest hover:bg-cyan-400 disabled:opacity-50"
+                            >
+                                {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Continue to Payment'}
+                            </Button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 }
