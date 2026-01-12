@@ -32,7 +32,8 @@ import {
     Zap,
     Target,
     Shield,
-    Clock
+    Clock,
+    Sparkles
 } from 'lucide-react';
 import { Schema } from '@/components/seo/Schema';
 import { LeadMagnetSection } from '@/components/LeadMagnetSection';
@@ -137,7 +138,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
             features: [
                 '24/7 Inbound/Outbound Calls',
                 'Automated Appointment Booking',
-                'Live CRM Data Integration',
+                'Live CRM Connection',
                 'Multi-Language Support',
                 'Meeting Lead Qualification'
             ],
@@ -327,7 +328,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         },
         {
             q: "How quickly can I see results?",
-            a: "Industry packages deploy in 1-2 weeks. Custom solutions take 2-4 weeks. Most clients see measurable impact within the first month."
+            a: "Industry packages are ready in 1-2 weeks. Custom solutions take 2-4 weeks. Most clients see measurable impact within the first month."
         },
         {
             q: "What's the catch with the qualification process?",
@@ -335,15 +336,15 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         },
         {
             q: "Do I own the system?",
-            a: "Yes. For our custom ecosystems, you own the infrastructure. We deploy it on your accounts, and you keep the intellectual property forever."
+            a: "Yes. For our custom ecosystems, you own the infrastructure. We set it up on your accounts, and you keep the intellectual property forever."
         },
         {
             q: "Can this replace my whole team?",
             a: "It's designed to replace the boring, repetitive work. It frees your team to focus on high-value tasks like strategy and closing deals."
         },
         {
-            q: "What tools do you integrate with?",
-            a: "We work with almost everything: Monday.com, Salesforce, HubSpot, WhatsApp, G-Suite, Slack, and custom databases."
+            q: "What tools do you connect with?",
+            a: "We connect with almost everything: Monday.com, Salesforce, HubSpot, WhatsApp, G-Suite, Slack, and custom databases."
         },
         {
             q: "Is my data secure?",
@@ -447,7 +448,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                 className="hero-description text-xl md:text-2xl mb-6 max-w-3xl mx-auto"
                                 style={{ color: 'var(--rensto-text-secondary)' }}
                             >
-                                We deploy AI-powered automation systems that handle your sales, support, and operations 24/7.
+                                We activate AI-powered automation systems that handle your sales, support, and operations 24/7.
                             </p>
 
                             {/* Key Benefits - Scannable */}
@@ -467,14 +468,28 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                                <Link href="/free-leads">
+                                    <Button
+                                        size="xl"
+                                        className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto px-10"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
+                                            color: '#ffffff',
+                                            boxShadow: '0 0 30px rgba(254, 61, 81, 0.4)'
+                                        }}
+                                    >
+                                        <Sparkles className="w-5 h-5 mr-3 animate-pulse text-yellow-300" />
+                                        Get 10 Free Leads
+                                        <ArrowRight className="w-5 h-5 ml-2" />
+                                    </Button>
+                                </Link>
                                 <Link href="#pillars">
                                     <Button
                                         size="xl"
                                         variant="renstoSecondary"
                                         className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
                                     >
-                                        Explore The 4 Pillars
-                                        <ArrowRight className="w-5 h-5 ml-2" />
+                                        The 4 Pillars
                                     </Button>
                                 </Link>
                                 <Link href="/offers#ecosystem">
@@ -483,7 +498,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                         variant="renstoNeon"
                                         className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
                                     >
-                                        Claim The Ecosystem Bundle
+                                        The Bundle
                                     </Button>
                                 </Link>
                             </div>
@@ -616,7 +631,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Automation Infrastructure</span>
                                 </h2>
                                 <p className="text-xl text-slate-400 mb-8 max-w-xl">
-                                    While others offer &quot;simple task-bots&quot;, we deploy comprehensive multi-stage Engines.
+                                    While others use &quot;simple task-bots&quot;, we build comprehensive multi-stage Engines.
                                     Every system we activate includes a **Daily Health Check**—our own code monitoring your business every 60 seconds.
                                 </p>
 
@@ -704,7 +719,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                         The <span className="text-cyan-400 text-glow">4 Pillars</span> of Autonomous Success
                                     </h2>
                                     <p className="text-xl text-slate-400 max-w-xl font-medium leading-relaxed">
-                                        Most businesses fail at automation because they deploy scattered task-bots. We architect an integrated Ecosystem where your leads, operations, and knowledge are perfectly synchronized.
+                                        Most businesses fail at automation because they use scattered task-bots. We architect an integrated Ecosystem where your leads, operations, and knowledge are perfectly synchronized.
                                     </p>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-6">

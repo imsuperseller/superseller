@@ -23,7 +23,7 @@ import {
 
 const CONTACT_PHONE = "12144362102"; // Rensto WhatsApp number
 
-const companyDesc = "Transform your business with AI-powered automation agents. Build, deploy, and manage intelligent workflows that scale your operations.";
+const companyDesc = "Transform your business with AI-powered automation agents. Create, activate, and manage intelligent automations that scale your operations.";
 const navTitle = "Navigation";
 const clientTitle = "Client Access";
 const legalTitle = "Legal";
@@ -34,7 +34,7 @@ const links = {
   home: "Home",
   marketplace: "Marketplace",
   custom: "Custom Solutions",
-  offers: "Offers/Pricing",
+  offers: "Offers",
   niches: "Industry Hub",
   login: "Client Dashboard",
   control: "Admin Control",
@@ -60,7 +60,7 @@ export function Footer() {
       { name: links.home, href: '/' },
       { name: links.marketplace, href: '/marketplace' },
       { name: links.custom, href: '/custom' },
-      { name: links.offers, href: '/#pricing' },
+      { name: links.offers, href: '/offers' },
       { name: links.niches, href: '/niches' },
     ],
     business: [

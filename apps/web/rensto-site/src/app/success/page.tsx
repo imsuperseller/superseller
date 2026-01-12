@@ -57,6 +57,19 @@ const PRODUCT_SCHEMAS: Record<string, FormField[]> = {
     { id: 'clarityProjectId', label: 'Microsoft Clarity Project ID (Optional)', type: 'text', required: false, placeholder: 'abcde123' },
     { id: 'reportFrequency', label: 'Report Frequency', type: 'select', required: true, options: ['Monthly', 'Bi-Weekly', 'Quarterly'] },
   ],
+  'the-lead-machine': [
+    { id: 'targetNiche', label: 'Target Niche / Industry', type: 'text', required: true, placeholder: 'e.g. Real Estate Agents in tel Aviv' },
+    { id: 'targets', label: 'Target Job Titles', type: 'text', required: true, placeholder: 'e.g. Founder, CEO, Sales Manager' },
+    { id: 'keywords', label: 'Keywords (Comma separated)', type: 'text', required: false, placeholder: 'e.g. tech, luxury, commercial' },
+    { id: 'deliveryEmail', label: 'Lead Delivery Email', type: 'email', required: true, placeholder: 'leads@yourcompany.com' },
+  ],
+  'outreach': [
+    { id: 'senderEmail', label: 'Outreach Email Address (Microsoft 365)', type: 'email', required: true, placeholder: 'e.g. outreach@yourdomain.com' },
+    { id: 'senderName', label: 'Sender Display Name', type: 'text', required: true, placeholder: 'e.g. John from Rensto' },
+    { id: 'smsSenderId', label: 'SMS Sender ID / Telnyx Number (Optional)', type: 'text', required: false, placeholder: 'e.g. +1234567890' },
+    { id: 'targetNiche', label: 'Primary Outreach Niche', type: 'text', required: true, placeholder: 'e.g. Dental Clinics in Tel Aviv' },
+    { id: 'crmSync', label: 'CRM for Lead Sync', type: 'select', required: true, options: ['ServiceTitan', 'GoHighLevel', 'HubSpot', 'Manual/CSV'] },
+  ],
   'full-ecosystem': [
     { id: 'primaryFocus', label: 'Primary Automation Focus', type: 'select', required: true, options: ['Lead Gen', 'Customer Support', 'Internal Ops', 'Content Creation', 'All of the above'] },
     { id: 'mainPlatform', label: 'Main Communication Platform', type: 'select', required: true, options: ['WhatsApp', 'Telegram', 'Instagram', 'Omnichannel'] },

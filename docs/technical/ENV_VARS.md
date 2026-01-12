@@ -69,12 +69,13 @@
 ## Removed/Legacy
 
 The following were removed (per comment in `env.ts`):
+- `INSTANTLY_API_KEY` (Replaced by Microsoft Outlook)
+- `VAPI_API_KEY` (Replaced by Telnyx)
+- `TIDYCAL_TOKEN` (Replaced by AI Agent)
 - `ESIGNATURES_API_KEY`
 - `ASSEMBLYAI_API_KEY`
 - `ANDYNOCODE_API_KEY`
-- `APIFY_TOKEN`
-- `INSTANTLY_API_KEY`
-- `TIDYCAL_TOKEN`
+- `APIFY_TOKEN` (Use `APIFY_API_KEY` instead)
 
 ---
 

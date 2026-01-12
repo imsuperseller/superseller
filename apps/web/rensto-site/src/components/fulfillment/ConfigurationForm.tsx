@@ -74,9 +74,9 @@ export function ConfigurationForm({
             setSuccessId(data.instanceId);
             if (onComplete) onComplete(data.instanceId);
 
-            // Optional: Redirect to dashboard after short delay
+            // Redirect to the dynamic client dashboard
             setTimeout(() => {
-                router.push('/app/dashboard');
+                router.push(`/dashboard/${clientId}`);
             }, 3000);
 
         } catch (err: any) {

@@ -39,7 +39,7 @@
 | Sources | Google Maps only |
 | Icebreakers | Yes (AI-generated) |
 | Email verified | Yes |
-| Delivery | CSV download or Instantly |
+| Delivery | CSV download or Outlook Sync |
 | **Price** | **$0** |
 
 **Purpose**: Prove quality, build trust
@@ -59,7 +59,7 @@
 - Google Maps OR LinkedIn source
 - Email verification
 - AI icebreakers
-- Delivery to Instantly or CSV
+- Delivery to Outlook Sync or CSV
 
 ---
 
@@ -116,7 +116,7 @@
 
 **Lead Count**: 25
 
-**Instantly Sequence**:
+**Outreach Sequence**:
 ```
 Day 0: Initial outreach
 Day 3: Follow-up #1 (if no reply)
@@ -139,7 +139,7 @@ Would you be open to a quick chat?
 
 ## To-Do List
 
-1. [ ] Fix Instantly API key (might need new one from app.instantly.ai)
+1. [x] Verify Outlook/Office 365 OAuth connectivity
 2. [ ] Run test campaign with 25 leads
 3. [ ] Create landing page for Free Trial
 4. [ ] Set up Stripe for Pay-Per-Lead purchases

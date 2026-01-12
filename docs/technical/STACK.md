@@ -23,7 +23,7 @@
 ## Infrastructure
 - **Web Hosting**: Vercel
 - **n8n / Databases**: Self-hosted on Racknerd VPS (172.245.56.50)
-- **Comms**: Resend (Email), Stripe (Payments), Telnyx (Voice/SMS), WAHA (WhatsApp)
+- **Comms**: Resend (Transactional Email), Microsoft Outlook (Outreach Email), Stripe (Payments), Telnyx (Voice/SMS), WAHA (WhatsApp)
 
 ---
 

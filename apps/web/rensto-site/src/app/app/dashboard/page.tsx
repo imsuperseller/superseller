@@ -76,7 +76,7 @@ export default function ClientDashboardPage() {
       const logsQuery = query(
         collection(db, 'usage_logs'),
         where('clientId', '==', uid),
-        orderBy('timestamp', 'desc'),
+        orderBy('startedAt', 'desc'),
         limit(50)
       );
       const logsSnap = await getDocs(logsQuery);
@@ -99,7 +99,7 @@ export default function ClientDashboardPage() {
 
     // Filter last 7 days
     const recentLogs = logs.filter(log => {
-      const date = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
+      const date = log.startedAt?.toDate ? log.startedAt.toDate() : new Date(log.startedAt);
       return date >= sevenDaysAgo;
     });
 
@@ -111,10 +111,9 @@ export default function ClientDashboardPage() {
     const spendCents = recentLogs.reduce((acc, log) => acc + (log.cost || 0), 0);
     const spend = spendCents / 100; // Convert to dollars
 
-    // 3. Success Rate (Mock logic: if metadata.status exists. Default 100%)
-    // Assuming usage_logs might have status. If not, we assume success.
-    // In future, verify status field.
-    const successRate = 100;
+    // 3. Success Rate
+    const successfulRuns = recentLogs.filter(log => log.status === 'completed' || !log.status).length;
+    const successRate = runs7d > 0 ? Math.round((successfulRuns / runs7d) * 100) : 100;
 
     // 4. Volume Chart (7 days)
     const daysMap = new Map<string, number>();
@@ -126,7 +125,7 @@ export default function ClientDashboardPage() {
     }
 
     recentLogs.forEach(log => {
-      const date = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
+      const date = log.startedAt?.toDate ? log.startedAt.toDate() : new Date(log.startedAt);
       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
       if (daysMap.has(dayName)) {
         daysMap.set(dayName, (daysMap.get(dayName) || 0) + 1);
@@ -221,7 +220,7 @@ export default function ClientDashboardPage() {
               <div className="flex items-center gap-2 text-gray-400">
                 <Activity className="animate-spin h-4 w-4" /> Loading agents...
               </div>
-            ) : (
+            ) : services.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {services.map(service => (
                   <div key={service.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-3">
@@ -246,6 +245,22 @@ export default function ClientDashboardPage() {
                     )}
                   </div>
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-white/5 rounded-xl">
+                <Zap className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                <h3 className="text-lg font-bold text-white mb-2">No Active Agents</h3>
+                <p className="text-gray-400 mb-6 max-w-sm mx-auto">
+                  You haven't requested any AI agents yet. Start by exploring our marketplace or request a custom solution.
+                </p>
+                <div className="flex justify-center gap-3">
+                  <Button variant="renstoSecondary" onClick={() => window.location.href = '/marketplace'}>
+                    Browse Marketplace
+                  </Button>
+                  <Button variant="renstoPrimary" onClick={() => window.location.href = '/contact?type=custom'}>
+                    Request Custom Agent
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
@@ -422,7 +437,7 @@ export default function ClientDashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-white">{run.agentId || 'Unknown Agent'}</p>
-                      <p className="text-xs text-gray-400">{formatTime(run.timestamp)}</p>
+                      <p className="text-xs text-gray-400">{formatTime(run.startedAt)}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">

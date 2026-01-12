@@ -82,8 +82,12 @@ export const COLLECTIONS = {
     LEADS: 'leads',
     BUSINESS_NICHES: 'business_niches',
     RESPONSE_TIME_METRICS: 'response_time_metrics',
-    LAUNCH_TASKS: 'launch_tasks'
+    LAUNCH_TASKS: 'launch_tasks',
+    OUTREACH_CAMPAIGNS: 'outreach_campaigns',
+    VOICE_CALL_LOGS: 'voice_call_logs',
+    CONTENT_ITEMS: 'content_items'
 } as const;
 
 // Export interfaces from definitions file
 export * from '@/types/firestore';
+export * from '@/types/entitlements';

@@ -20,7 +20,7 @@ import {
 import { Button } from '@/components/ui/button-enhanced';
 import { SERVICE_DISPLAY_NAMES, SERVICE_DESCRIPTIONS } from '@/types/entitlements';
 
-interface ContentItem {
+export interface ContentItem {
     id: string;
     title: string;
     type: 'blog' | 'social' | 'email' | 'video';
@@ -30,14 +30,14 @@ interface ContentItem {
     platform?: string;
 }
 
-interface ContentStats {
+export interface ContentStats {
     total: number;
     published: number;
     scheduled: number;
     drafts: number;
 }
 
-interface ContentTabProps {
+export interface ContentTabProps {
     content: ContentItem[];
     isLocked: boolean;
     onUpgradeClick: () => void;
@@ -240,7 +240,11 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                     <div className="p-12 text-center">
                         <FileText className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                         <p className="text-gray-400 mb-2">No content yet</p>
-                        <p className="text-sm text-gray-500">Generate your first blog post or social content</p>
+                        <p className="text-sm text-gray-500 mb-6">Generate your first blog post or social content</p>
+                        <Button variant="renstoSecondary" size="sm">
+                            <Sparkles className="w-4 h-4 mr-1" />
+                            Generate Content
+                        </Button>
                     </div>
                 )}
             </div>

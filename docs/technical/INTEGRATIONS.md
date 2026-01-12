@@ -13,7 +13,8 @@
 | **OpenAI** | LLM (GPT-4o). | API Key in env. |
 | **Telnyx** | Voice/SMS. | API Key in env. |
 | **WAHA** | WhatsApp. | Self-hosted on VPS. |
-| **Resend** | Email. | API Key in env. |
+| **Resend** | Transactional Email. | API Key in env. |
+| **Microsoft Outlook** | Outreach Email. | OAuth via n8n. |
 | **Apify** | Web scraping (LinkedIn, Google Maps). | API Key. |
 | **ElevenLabs** | Voice synthesis. | API Key. |
 
@@ -32,6 +33,7 @@
 
 ## Legacy / Archived Services (For Reference)
 
+- **Instantly.ai**: Replaced by Microsoft Outlook (rejected due to cost).
 - **Airtable**: Replaced by Firestore for core data.
 - **Boost.space**: Replaced by Firestore for infrastructure metadata.
 - **Typeform**: Replaced by native Lead Qualification workflows.

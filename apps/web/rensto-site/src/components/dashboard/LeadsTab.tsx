@@ -23,12 +23,13 @@ import { Button } from '@/components/ui/button-enhanced';
 
 export interface Lead {
     id: string;
-    name: string;
+    name?: string;
+    company?: string;
     email?: string;
     phone?: string;
     website?: string;
     source: string;
-    status: 'new' | 'contacted' | 'responded' | 'converted' | 'lost';
+    status: 'new' | 'contacted' | 'qualified' | 'quoted' | 'converted' | 'lost';
     createdAt: string;
     notes?: string;
 }
@@ -75,7 +76,8 @@ export default function LeadsTab({
     };
 
     const filteredLeads = leads.filter(lead => {
-        const matchesSearch = lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        const leadName = lead.name || 'Anonymous';
+        const matchesSearch = leadName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             lead.email?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
         return matchesSearch && matchesStatus;
@@ -85,7 +87,8 @@ export default function LeadsTab({
         switch (status) {
             case 'new': return '#1eaef7';
             case 'contacted': return '#f7931e';
-            case 'responded': return '#5ffbfd';
+            case 'qualified': return '#5ffbfd';
+            case 'quoted': return '#a855f7'; // Purple for quote sent
             case 'converted': return '#22c55e';
             case 'lost': return '#ef4444';
             default: return '#6b7280';
@@ -95,7 +98,7 @@ export default function LeadsTab({
     const statusCounts = {
         new: leads.filter(l => l.status === 'new').length,
         contacted: leads.filter(l => l.status === 'contacted').length,
-        responded: leads.filter(l => l.status === 'responded').length,
+        qualified: leads.filter(l => l.status === 'qualified' || (l as any).status === 'responded').length,
         converted: leads.filter(l => l.status === 'converted').length,
     };
 
@@ -257,7 +260,7 @@ export default function LeadsTab({
                     />
                 </div>
                 <div className="flex gap-2">
-                    {['all', 'new', 'contacted', 'responded', 'converted'].map(status => (
+                    {['all', 'new', 'contacted', 'qualified', 'converted'].map(status => (
                         <button
                             key={status}
                             onClick={() => setStatusFilter(status)}
@@ -285,10 +288,10 @@ export default function LeadsTab({
                                     className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
                                     style={{ backgroundColor: getStatusColor(lead.status) + '30' }}
                                 >
-                                    {lead.name.charAt(0).toUpperCase()}
+                                    {(lead.name || 'A').charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                    <p className="font-medium text-white">{lead.name}</p>
+                                    <p className="font-medium text-white">{lead.name || 'Anonymous Lead'}</p>
                                     <div className="flex items-center gap-3 text-sm text-gray-400">
                                         {lead.email && (
                                             <span className="flex items-center gap-1">
@@ -350,25 +353,27 @@ export default function LeadsTab({
             </div>
 
             {/* Export Button (locked for free trial) */}
-            {leads.length > 0 && (
-                <div className="flex justify-end">
-                    {isFreeTrialUser ? (
-                        <Button
-                            variant="ghost"
-                            className="text-gray-500"
-                            disabled
-                        >
-                            <Lock className="w-4 h-4 mr-2" />
-                            Export (Upgrade to unlock)
-                        </Button>
-                    ) : (
-                        <Button variant="renstoSecondary">
-                            <Download className="w-4 h-4 mr-2" />
-                            Export CSV
-                        </Button>
-                    )}
-                </div>
-            )}
+            {
+                leads.length > 0 && (
+                    <div className="flex justify-end">
+                        {isFreeTrialUser ? (
+                            <Button
+                                variant="ghost"
+                                className="text-gray-500"
+                                disabled
+                            >
+                                <Lock className="w-4 h-4 mr-2" />
+                                Export (Upgrade to unlock)
+                            </Button>
+                        ) : (
+                            <Button variant="renstoSecondary">
+                                <Download className="w-4 h-4 mr-2" />
+                                Export CSV
+                            </Button>
+                        )}
+                    </div>
+                )
+            }
         </div>
     );
 }

@@ -29,6 +29,9 @@ import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
 import { UserEntitlements, getVisibleTabs, DashboardTabConfig } from '@/types/entitlements';
 import LeadsTab, { Lead } from '@/components/dashboard/LeadsTab';
+import OutreachTab, { Campaign } from '@/components/dashboard/OutreachTab';
+import VoiceTab, { CallLog, VoiceAgentConfig } from '@/components/dashboard/VoiceTab';
+import ContentTab, { ContentItem } from '@/components/dashboard/ContentTab';
 import { BundleUpsell } from '@/components/dashboard/UpsellComponents';
 import { ImpersonationBanner, useImpersonation } from '@/components/dashboard/ImpersonationBanner';
 
@@ -69,17 +72,41 @@ interface ClientDashboardClientProps {
     project: ProjectData;
     entitlements?: UserEntitlements;
     leads?: Lead[];
+    outreachData?: { campaigns: Campaign[] };
+    voiceData?: { callLogs: CallLog[], config?: VoiceAgentConfig };
+    contentItems?: ContentItem[];
+    usageData?: {
+        tokenUsage: { used: number; limit: number; resetDate: string };
+        volume: { totalRuns: number; successRate: number; trend: string };
+        billing: { estimatedCost: number; currency: string; nextInvoiceDate: string };
+    };
+    purchasedProducts?: Array<{
+        id: string;
+        productId: string;
+        name: string;
+        purchaseDate: string;
+        status: string;
+        lastUsed: string;
+    }>;
 }
 
-export default function ClientDashboardClient({ project, entitlements, leads = [] }: ClientDashboardClientProps) {
-    // Get visible tabs based on entitlements
-    const defaultEntitlements: UserEntitlements = {
+export default function ClientDashboardClient({
+    project,
+    entitlements,
+    leads = [],
+    outreachData = { campaigns: [] },
+    voiceData = { callLogs: [] },
+    contentItems = [],
+    usageData,
+    purchasedProducts = []
+}: ClientDashboardClientProps) {
+    // Determine visible tabs based on real entitlements
+    const userEntitlements: UserEntitlements = entitlements || {
         freeLeadsTrial: false,
         pillars: [],
         marketplaceProducts: [],
         customSolution: project ? { projectId: project.id || '', status: project.status as any, packageName: project.packageName } : null
     };
-    const userEntitlements = entitlements || defaultEntitlements;
     const visibleTabs = getVisibleTabs(userEntitlements);
 
     const [activeTab, setActiveTab] = useState<string>('overview');
@@ -113,6 +140,10 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
     };
 
     const completedDeliverables = project.deliverables.filter(d => d.status === 'completed').length;
+
+    const handleUpgradeClick = (service: string) => {
+        window.location.href = `/pricing?upgrade=${service}`;
+    };
 
     return (
         <div
@@ -324,7 +355,7 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
                                         className="w-10 h-10 rounded-lg flex items-center justify-center"
                                         style={{ backgroundColor: 'rgba(95, 251, 253, 0.2)' }}
                                     >
-                                        <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                        <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--rensto-cyan)' }} />
                                     </div>
                                     <span style={{ color: 'var(--rensto-text-muted)' }} className="text-sm">
                                         Completed
@@ -404,24 +435,40 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
 
                 {/* Leads Tab */}
                 {activeTab === 'leads' && (
-                    <div className="space-y-6">
-                        <LeadsTab
-                            leads={leads}
-                            isFreeTrialUser={userEntitlements.freeLeadsTrial && !userEntitlements.pillars.includes('leads')}
-                            freeLeadsRemaining={userEntitlements.freeLeadsRemaining}
-                            onUpgradeClick={() => window.location.href = '/pricing?upgrade=leads'}
-                        />
+                    <LeadsTab
+                        leads={leads}
+                        isFreeTrialUser={userEntitlements.freeLeadsTrial && !userEntitlements.pillars.includes('leads')}
+                        freeLeadsRemaining={userEntitlements.freeLeadsRemaining}
+                        onUpgradeClick={() => handleUpgradeClick('leads')}
+                    />
+                )}
 
-                        {/* Bundle Upsell */}
-                        {userEntitlements.pillars.length < 4 && (
-                            <div className="mt-8">
-                                <BundleUpsell
-                                    ownedServices={userEntitlements.pillars}
-                                    onUpgrade={() => window.location.href = '/pricing?upgrade=bundle'}
-                                />
-                            </div>
-                        )}
-                    </div>
+                {/* Outreach Tab */}
+                {activeTab === 'outreach' && (
+                    <OutreachTab
+                        campaigns={outreachData.campaigns}
+                        isLocked={!userEntitlements.pillars.includes('outreach')}
+                        onUpgradeClick={() => handleUpgradeClick('outreach')}
+                    />
+                )}
+
+                {/* Voice AI Tab */}
+                {activeTab === 'voice' && (
+                    <VoiceTab
+                        callLogs={voiceData.callLogs}
+                        config={voiceData.config}
+                        isLocked={!userEntitlements.pillars.includes('voice')}
+                        onUpgradeClick={() => handleUpgradeClick('voice')}
+                    />
+                )}
+
+                {/* Content Tab */}
+                {activeTab === 'content' && (
+                    <ContentTab
+                        content={contentItems}
+                        isLocked={!userEntitlements.pillars.includes('content')}
+                        onUpgradeClick={() => handleUpgradeClick('content')}
+                    />
                 )}
 
                 {/* Agent / Chat Hub Tab */}
@@ -451,67 +498,87 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
                     </div>
                 )}
 
+                {/* Bundle Upsell */}
+                {activeTab !== 'overview' && userEntitlements.pillars.length < 4 && (
+                    <div className="mt-8">
+                        <BundleUpsell
+                            ownedServices={userEntitlements.pillars}
+                            onUpgrade={() => handleUpgradeClick('bundle')}
+                        />
+                    </div>
+                )}
+
                 {/* Deliverables Tab */}
                 {activeTab === 'deliverables' && (
                     <div
                         className="rounded-xl overflow-hidden"
                         style={{ backgroundColor: 'var(--rensto-bg-card)' }}
                     >
-                        {project.deliverables.map((deliverable, i) => (
-                            <div
-                                key={deliverable.id}
-                                className="flex items-center justify-between p-5 border-b last:border-b-0"
-                                style={{ borderColor: 'var(--rensto-bg-secondary)' }}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div
-                                        className="w-8 h-8 rounded-full flex items-center justify-center"
+                        {project.deliverables.length > 0 ? (
+                            project.deliverables.map((deliverable, i) => (
+                                <div
+                                    key={deliverable.id}
+                                    className="flex items-center justify-between p-5 border-b last:border-b-0"
+                                    style={{ borderColor: 'var(--rensto-bg-secondary)' }}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className="w-8 h-8 rounded-full flex items-center justify-center"
+                                            style={{
+                                                backgroundColor: deliverable.status === 'completed'
+                                                    ? 'rgba(95, 251, 253, 0.2)'
+                                                    : 'var(--rensto-bg-secondary)'
+                                            }}
+                                        >
+                                            {deliverable.status === 'completed' ? (
+                                                <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--rensto-cyan)' }} />
+                                            ) : (
+                                                <span
+                                                    className="text-sm font-bold"
+                                                    style={{ color: 'var(--rensto-text-muted)' }}
+                                                >
+                                                    {i + 1}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p
+                                                className="font-medium"
+                                                style={{ color: 'var(--rensto-text-primary)' }}
+                                            >
+                                                {deliverable.name}
+                                            </p>
+                                            {deliverable.dueDate && (
+                                                <p
+                                                    className="text-sm flex items-center gap-1"
+                                                    style={{ color: 'var(--rensto-text-muted)' }}
+                                                >
+                                                    <Clock className="w-3 h-3" />
+                                                    Due: {deliverable.dueDate}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <span
+                                        className="px-3 py-1 rounded-full text-xs font-medium capitalize"
                                         style={{
-                                            backgroundColor: deliverable.status === 'completed'
-                                                ? 'rgba(95, 251, 253, 0.2)'
-                                                : 'var(--rensto-bg-secondary)'
+                                            backgroundColor: `${getStatusColor(deliverable.status)}20`,
+                                            color: getStatusColor(deliverable.status)
                                         }}
                                     >
-                                        {deliverable.status === 'completed' ? (
-                                            <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--rensto-cyan)' }} />
-                                        ) : (
-                                            <span
-                                                className="text-sm font-bold"
-                                                style={{ color: 'var(--rensto-text-muted)' }}
-                                            >
-                                                {i + 1}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <p
-                                            className="font-medium"
-                                            style={{ color: 'var(--rensto-text-primary)' }}
-                                        >
-                                            {deliverable.name}
-                                        </p>
-                                        {deliverable.dueDate && (
-                                            <p
-                                                className="text-sm flex items-center gap-1"
-                                                style={{ color: 'var(--rensto-text-muted)' }}
-                                            >
-                                                <Clock className="w-3 h-3" />
-                                                Due: {deliverable.dueDate}
-                                            </p>
-                                        )}
-                                    </div>
+                                        {deliverable.status.replace('_', ' ')}
+                                    </span>
                                 </div>
-                                <span
-                                    className="px-3 py-1 rounded-full text-xs font-medium capitalize"
-                                    style={{
-                                        backgroundColor: `${getStatusColor(deliverable.status)}20`,
-                                        color: getStatusColor(deliverable.status)
-                                    }}
-                                >
-                                    {deliverable.status.replace('_', ' ')}
-                                </span>
+                            ))
+                        ) : (
+                            <div className="p-12 text-center">
+                                <Briefcase className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                                <p className="text-gray-400">No deliverables yet</p>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Your project roadmap will appear here once the discovery phase is complete.
+                                </p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
 
@@ -570,8 +637,58 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
                                 </div>
                             ))
                         ) : (
-                            <div className="p-8 text-center text-gray-500">
-                                No invoices found.
+                            <div className="p-12 text-center text-gray-500">
+                                <FileText className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                                <p>No invoices found.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* My Products Tab */}
+                {activeTab === 'products' && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {purchasedProducts.length > 0 ? (
+                            purchasedProducts.map((product) => (
+                                <div
+                                    key={product.id}
+                                    className="rounded-xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all group"
+                                    style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                                >
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                            <Package className="w-6 h-6 text-cyan-400" />
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="text-[10px] uppercase font-bold text-cyan-500 bg-cyan-500/10 px-2 py-1 rounded">
+                                                {product.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-400 mb-4">
+                                        Purchased on: {product.purchaseDate}
+                                    </p>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs text-gray-500">
+                                            Last used: {product.lastUsed}
+                                        </span>
+                                        <Button
+                                            variant="renstoSecondary"
+                                            size="sm"
+                                            onClick={() => window.location.href = `/marketplace/${product.productId}`}
+                                        >
+                                            Launch <ChevronRight className="w-4 h-4 ml-1" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full p-12 text-center" style={{ backgroundColor: 'var(--rensto-bg-card)' }}>
+                                <Package className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                                <p className="text-gray-400">You haven't purchased any marketplace products yet.</p>
                             </div>
                         )}
                     </div>
@@ -579,62 +696,93 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
 
                 {/* Usage Tab */}
                 {activeTab === 'usage' && (
-                    <div
-                        className="rounded-xl p-6"
-                        style={{ backgroundColor: 'var(--rensto-bg-card)' }}
-                    >
-                        <h2
-                            className="text-lg font-bold mb-6"
-                            style={{ color: 'var(--rensto-text-primary)' }}
-                        >
-                            LLM Token Usage
-                        </h2>
+                    <div className="space-y-6">
+                        {/* Summary Cards */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <div className="rounded-xl p-6 border border-white/5 bg-[#1a1438]/40">
+                                <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                    <Zap className="w-4 h-4 text-cyan-400" />
+                                    <span className="text-sm">Total Runs</span>
+                                </div>
+                                <div className="flex items-end gap-2">
+                                    <span className="text-3xl font-bold text-white">{usageData?.volume.totalRuns || 0}</span>
+                                    <span className="text-xs text-green-400 font-medium mb-1">{usageData?.volume.trend}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-2">Operations across all pillars</p>
+                            </div>
 
-                        <div className="mb-6">
-                            <div className="flex justify-between mb-2">
-                                <span style={{ color: 'var(--rensto-text-secondary)' }}>
-                                    {project.llmUsage.tokensUsed.toLocaleString()} / {project.llmUsage.tokensLimit.toLocaleString()} tokens
-                                </span>
-                                <span
-                                    className="font-bold"
-                                    style={{ color: 'var(--rensto-cyan)' }}
-                                >
-                                    {Math.round((project.llmUsage.tokensUsed / project.llmUsage.tokensLimit) * 100)}%
-                                </span>
+                            <div className="rounded-xl p-6 border border-white/5 bg-[#1a1438]/40">
+                                <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                                    <span className="text-sm">Success Rate</span>
+                                </div>
+                                <div className="text-3xl font-bold text-white">{usageData?.volume.successRate || 0}%</div>
+                                <div className="w-full h-1.5 bg-white/5 rounded-full mt-3 overflow-hidden">
+                                    <div
+                                        className="h-full bg-green-500 rounded-full"
+                                        style={{ width: `${usageData?.volume.successRate || 0}%` }}
+                                    />
+                                </div>
                             </div>
-                            <div
-                                className="h-4 rounded-full overflow-hidden"
-                                style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
-                            >
-                                <div
-                                    className="h-full rounded-full"
-                                    style={{
-                                        width: `${(project.llmUsage.tokensUsed / project.llmUsage.tokensLimit) * 100}%`,
-                                        background: 'var(--rensto-gradient-secondary)'
-                                    }}
-                                />
+
+                            <div className="rounded-xl p-6 border border-white/5 bg-[#1a1438]/40">
+                                <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                    <CreditCard className="w-4 h-4 text-purple-400" />
+                                    <span className="text-sm">Estimated Cost</span>
+                                </div>
+                                <div className="text-3xl font-bold text-white">
+                                    {usageData?.billing.currency === 'USD' ? '$' : ''}{usageData?.billing.estimatedCost || 0}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-2">Next invoice: {usageData?.billing.nextInvoiceDate}</p>
                             </div>
-                            <p
-                                className="text-sm mt-2"
-                                style={{ color: 'var(--rensto-text-muted)' }}
-                            >
-                                Resets on: {project.llmUsage.lastReset}
-                            </p>
                         </div>
 
+                        {/* Token Usage Block */}
                         <div
-                            className="p-4 rounded-lg"
-                            style={{
-                                backgroundColor: 'rgba(95, 251, 253, 0.1)',
-                                border: '1px solid var(--rensto-cyan)'
-                            }}
+                            className="rounded-xl p-6"
+                            style={{ backgroundColor: 'var(--rensto-bg-card)' }}
                         >
-                            <p
-                                className="text-sm"
-                                style={{ color: 'var(--rensto-cyan)' }}
-                            >
-                                💡 Need more tokens? Contact us to upgrade your plan.
-                            </p>
+                            <h3 className="text-lg font-bold text-white mb-6">LLM Token Usage</h3>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <p className="text-sm text-gray-400">Monthly Allowance</p>
+                                        <p className="text-xl font-bold text-white">
+                                            {(usageData?.tokenUsage.used || 0).toLocaleString()} / {(usageData?.tokenUsage.limit || 0).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="text-2xl font-bold text-cyan-400">
+                                            {usageData ? Math.round((usageData.tokenUsage.used / usageData.tokenUsage.limit) * 100) : 0}%
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="h-4 rounded-full overflow-hidden bg-white/5">
+                                    <div
+                                        className="h-full rounded-full transition-all duration-1000"
+                                        style={{
+                                            width: `${usageData ? (usageData.tokenUsage.used / usageData.tokenUsage.limit) * 100 : 0}%`,
+                                            background: 'var(--rensto-gradient-secondary)'
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="flex justify-between items-center text-xs text-gray-500">
+                                    <span>Usage resets on {usageData?.tokenUsage.resetDate}</span>
+                                    <span className="flex items-center gap-1">
+                                        <AlertCircle className="w-3 h-3" />
+                                        Automatic top-up enabled
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                                <p className="text-sm text-cyan-400">
+                                    💡 <strong>Pro Tip:</strong> Your average token efficiency increased by 14% this month by switching to quantized models.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -642,3 +790,5 @@ export default function ClientDashboardClient({ project, entitlements, leads = [
         </div>
     );
 }
+
+

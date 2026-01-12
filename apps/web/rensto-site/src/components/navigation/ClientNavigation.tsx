@@ -62,12 +62,6 @@ const clientNavigation = [
     description: 'Usage and payments'
   },
   {
-    name: 'Team',
-    href: '/app/team',
-    icon: Users,
-    description: 'Manage team members'
-  },
-  {
     name: 'Settings',
     href: '/app/settings',
     icon: Settings,

@@ -23,7 +23,7 @@ const translations = {
     guaranteeText: "Measurable ROI or We Keep Working Until You See It.",
     qualifyTag: "Strategic Analysis",
     qualifyTitle: <>See if your business is ready for <span className="text-cyan-400">Scale.</span></>,
-    qualifyText: "Before deploying an Ecosystem, we analyze your current business bottlenecks.",
+    qualifyText: "Before setting up an Ecosystem, we analyze your current business bottlenecks.",
     expert: "Institutional Standard",
     fixed: "Fixed-Fee",
     careTitle: <>Ongoing <span className="text-cyan-400">Scale Partnerships</span></>,
@@ -112,7 +112,7 @@ const translations = {
         price: 997,
         period: 'month',
         description: 'Our most popular plan for active scaling',
-        features: ['Build 1-2 new automations/mo', 'Optimize flows & A/B test', 'Quarterly strategy call (1h)', 'CRM integration maintenance', '15 hours/mo included'],
+        features: ['Create 1-2 new automations/mo', 'Optimize flows & A/B test', 'Quarterly strategy call (1h)', 'CRM integration maintenance', '15 hours/mo included'],
         cta: 'Get Growth Care',
         popular: true
       },
@@ -121,7 +121,7 @@ const translations = {
         price: 2497,
         period: 'month',
         description: 'A dedicated automation engineer for your team',
-        features: ['Dedicated engineer (same person)', 'Build custom features on request', 'Weekly sync calls', 'Full analytics dashboard', 'Priority response (<4 hrs)'],
+        features: ['Dedicated engineer (same person)', 'Add custom features on request', 'Weekly sync calls', 'Full analytics dashboard', 'Priority response (<4 hrs)'],
         cta: 'Get Scale Care',
         popular: false
       }
@@ -299,6 +299,7 @@ export function OffersPageContent() {
                       {Icon && <Icon className={`w-12 h-12 ${isAudit ? 'text-cyan-400' : isEcosystem ? 'text-[#fe3d51]' : 'text-white'}`} />}
                       <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">{product.name}</h3>
                     </div>
+                    {/* VIDEO PLACEHOLDER: Ideally, each product card could have a "Watch Demo" button here. */}
 
                     <div className="flex items-baseline gap-2 mb-6">
                       <span className="text-5xl font-black text-white">{formatCurrency(product.price)}</span>

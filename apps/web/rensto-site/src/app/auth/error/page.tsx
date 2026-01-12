@@ -2,108 +2,120 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Suspense } from 'react';
-import { AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Suspense, useRef, useEffect } from 'react';
+import { AlertTriangle, ArrowLeft, RefreshCw, Mail, Loader2 } from 'lucide-react';
+import { gsap } from 'gsap';
+import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import { NoiseTexture } from '@/components/ui/premium';
+import { Badge } from '@/components/ui/badge-enhanced';
 
 function AuthErrorContent() {
     const searchParams = useSearchParams();
     const reason = searchParams.get('reason');
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        gsap.fromTo(cardRef.current,
+            { opacity: 0, scale: 0.95, y: 30 },
+            { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: 'expo.out' }
+        );
+    }, []);
 
     const errorMessages: Record<string, { title: string; message: string }> = {
         missing_token: {
-            title: 'Missing Link',
-            message: 'The authentication link is incomplete. Please click the full link from your email.'
+            title: 'Incomplete Handshake',
+            message: 'The authentication sequence is missing critical data. Please click the full link from your terminal access email.'
         },
         invalid_token: {
-            title: 'Invalid Link',
-            message: 'This authentication link is not valid. It may have already been used or was incorrectly copied.'
+            title: 'Unauthorized Access',
+            message: 'This authentication token is no longer valid. It may have already been consumed or was malformed during transmission.'
         },
         expired_token: {
-            title: 'Link Expired',
-            message: 'This authentication link has expired. Links are valid for 24 hours. Please request a new one.'
+            title: 'Token Expired',
+            message: 'Your operational access link has timed out. For security, links are only valid for 24 hours. Please request a new initialization.'
         },
         verification_failed: {
-            title: 'Verification Failed',
-            message: 'We couldn\'t verify your authentication. Please try again or contact support.'
+            title: 'System Failure',
+            message: 'We encountered an error during the authentication handshake. Please attempt to re-establish connection.'
         }
     };
 
     const error = errorMessages[reason || ''] || {
         title: 'Authentication Error',
-        message: 'Something went wrong during authentication. Please try again.'
+        message: 'A critical error occurred during the authentication process. System access denied.'
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--rensto-bg-primary)' }}>
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style={{ background: 'var(--rensto-bg-primary)' }}>
+            <AnimatedGridBackground className="opacity-30" />
+            <NoiseTexture opacity={0.03} />
+
             <div
-                className="max-w-md w-full rounded-2xl p-8 text-center"
+                ref={cardRef}
+                className="max-w-md w-full rounded-[3rem] p-12 text-center relative z-10 backdrop-blur-3xl shadow-2xl border"
                 style={{
-                    background: 'var(--rensto-bg-card)',
-                    border: '1px solid rgba(254, 61, 81, 0.3)'
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    borderColor: 'rgba(254, 61, 81, 0.15)'
                 }}
             >
-                <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-                    style={{ background: 'rgba(254, 61, 81, 0.2)' }}
-                >
-                    <AlertTriangle className="w-8 h-8" style={{ color: 'var(--rensto-primary)' }} />
+                {/* Intense Error Glow */}
+                <div className="absolute -top-32 -left-32 w-80 h-80 bg-rensto-red/20 blur-[120px] rounded-full" />
+
+                <div className="mb-8">
+                    <Badge className="bg-rensto-red/10 text-rensto-red border-rensto-red/20 px-4 py-1.5 uppercase tracking-[0.3em] text-[10px] font-black">
+                        System Alert
+                    </Badge>
                 </div>
 
-                <h1
-                    className="text-2xl font-bold mb-4"
-                    style={{ color: 'var(--rensto-text-primary)' }}
+                <div
+                    className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-10 relative group"
                 >
+                    <div className="absolute inset-0 bg-rensto-red/20 blur-2xl rounded-full group-hover:bg-rensto-red/30 transition-all duration-500" />
+                    <div className="relative w-full h-full rounded-full border border-rensto-red/20 flex items-center justify-center bg-rensto-red/10">
+                        <AlertTriangle className="w-10 h-10 text-rensto-red" />
+                    </div>
+                </div>
+
+                <h1 className="text-3xl font-black text-white mb-6 uppercase tracking-tight">
                     {error.title}
                 </h1>
 
-                <p
-                    className="mb-8"
-                    style={{ color: 'var(--rensto-text-secondary)' }}
-                >
+                <p className="mb-12 text-slate-400 font-medium leading-relaxed">
                     {error.message}
                 </p>
 
                 <div className="space-y-4">
                     {reason === 'expired_token' && (
                         <Link
-                            href="/contact"
-                            className="flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl font-medium transition-all"
-                            style={{
-                                background: 'var(--rensto-gradient-primary)',
-                                color: '#ffffff'
-                            }}
+                            href="/login"
+                            className="flex items-center justify-center gap-3 w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all bg-gradient-to-r from-rensto-red to-rensto-orange text-white shadow-xl shadow-rensto-red/20 hover:scale-[1.02] active:scale-[0.98]"
                         >
-                            <RefreshCw className="w-5 h-5" />
-                            Request New Link
+                            <RefreshCw className="w-4 h-4" />
+                            Request New Access
                         </Link>
                     )}
 
                     <Link
                         href="/"
-                        className="flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl font-medium transition-all border"
-                        style={{
-                            borderColor: 'rgba(254, 61, 81, 0.3)',
-                            color: 'var(--rensto-text-primary)'
-                        }}
+                        className="flex items-center justify-center gap-3 w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all border border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
                     >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Home
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to operational control
                     </Link>
                 </div>
 
-                <p
-                    className="mt-8 text-sm"
-                    style={{ color: 'var(--rensto-text-muted)' }}
-                >
-                    Need help? Contact{' '}
+                <div className="mt-12 pt-8 border-t border-white/5 space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
+                        Need Technical Assistance?
+                    </p>
                     <a
                         href="mailto:support@rensto.com"
-                        className="underline"
-                        style={{ color: 'var(--rensto-cyan)' }}
+                        className="flex items-center justify-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-mono text-xs"
                     >
+                        <Mail className="w-3 h-3" />
                         support@rensto.com
                     </a>
-                </p>
+                </div>
             </div>
         </div>
     );
@@ -112,8 +124,8 @@ function AuthErrorContent() {
 export default function AuthErrorPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--rensto-bg-primary)' }}>
-                <div className="text-white">Loading...</div>
+            <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+                <Loader2 className="w-8 h-8 text-rensto-red animate-spin" />
             </div>
         }>
             <AuthErrorContent />

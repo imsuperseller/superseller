@@ -106,20 +106,27 @@ export interface Template {
     price: number;
     installPrice?: number;
     customPrice?: number;
-    features: string[];
+    features: Array<{ title: string; desc: string; image?: string; icon?: string }>; // Updated to support rich graphics
     installation?: boolean;
     popular?: boolean;
     version?: string;
     fileSize?: number;
-    content?: string;
-    readinessStatus?: 'Draft' | 'Active' | 'Internal' | 'Beta' | 'Coming Soon';
-    tags?: string[];
+    readinessStatus?: string; // 'Active', 'Draft', 'Internal'
+    setupTime?: string;
+    targetMarket?: string;
+    demoVideo?: string;
+    previewImages?: string[];
     downloads?: number;
     image?: string;
     video?: string;
     rating?: number;
     tools?: string[];
+    content?: string;
+    tags?: string[];
     outcomeHeadline?: string;
+
+    // Deployment Roadmap (Dynamic)
+    deploymentSteps?: Array<{ title: string; desc: string; icon?: string }>;
 
     // Hebrew Translations (Dynamic)
     name_he?: string;
@@ -157,7 +164,6 @@ export interface Template {
 
     // Rich Content (Dynamic / Marketing)
     complexity?: 'Beginner' | 'Intermediate' | 'Advanced';
-    setupTime?: string;
     businessImpact?: string;
     businessImpact_he?: string;
     roiExample?: string;

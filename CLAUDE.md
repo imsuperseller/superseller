@@ -1,7 +1,7 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
 
-**Last Updated**: January 4, 2026 (Bible Consolidation Complete)
-**Status**: ✅ Codebase Consolidated (26→18 folders), ✅ Phase 2 Complete (18/18 folders audited), ✅ Phase 2.5 Production Audit Complete, ✅ 7 Stripe Payment Links Live, ✅ 6 MCP Servers Active (n8n, Stripe, TidyCal, Supabase, Shadcn, Context7), ✅ Design System Complete (Brand colors, Outfit font, dark theme, logo, standardized headers)
+**Last Updated**: January 11, 2026 (Outreach Pillar Corrected: Outlook/Telnyx)
+**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live, ✅ 6 MCP Servers Active.
 **Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
 
 > [!IMPORTANT]
@@ -163,9 +163,9 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 | Archived | 18 | Legacy | Old workflows (inactive) |
 
 **Key Active Workflows**:
-1. **INT-LEAD-001: Lead Machine Orchestrator v2** - Primary lead generation system
+1. **INT-LEAD-001: Lead Machine Orchestrator v3 (Outlook)** - Primary lead generation system (Outlook + Telnyx)
 2. **INT-TECH-005: n8n-Airtable-Notion Integration v1** - Data sync (needs automation)
-3. **TEST-001: BMAD Airtable Test Workflow** - Testing framework
+3. **MqMYMeA9U9PEX1cH: Voice AI Orchestrator** - Telnyx Voice + ElevenLabs TTS
 
 ### **Customer n8n Instances**
 
@@ -320,7 +320,8 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 **Lead Sources**:
 - LinkedIn scraping (Apify)
 - Google Maps leads (Apify)
-- Facebook group scraping
+- Apollo.io / Ampleleads (Lead sourcing)
+- **Outreach**: Microsoft Outlook (Email), Telnyx (SMS)
 - Custom lead enrichment (OpenAI, Clay)
 
 **Critical Gap**: ❌ **2 SUBSCRIPTION TYPES MISSING**
@@ -630,7 +631,7 @@ User clicks button → JavaScript initiates Stripe checkout → Stripe processes
 | Platform | Affiliate Link | Status |
 |----------|---------------|--------|
 | **Apify** | https://tinyurl.com/Rensto | ✅ Active |
-| **Instantly.ai** | https://tinyurl.com/rensto-instantly | ✅ Active |
+| **Outlook (O365)** | Direct Integration | ✅ Active (Outreach) |
 | **Airtable** | https://tinyurl.com/4xujacz6 | ✅ Active |
 | **Make.com** | https://tinyurl.com/bdemt8ht | ✅ Active |
 | **Hyperise** | https://share.hyperise.io?fp_ref=myperise20off | ✅ Active |

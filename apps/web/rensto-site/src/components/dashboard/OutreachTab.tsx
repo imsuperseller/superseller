@@ -20,14 +20,14 @@ import {
 import { Button } from '@/components/ui/button-enhanced';
 import { SERVICE_DISPLAY_NAMES, SERVICE_DESCRIPTIONS } from '@/types/entitlements';
 
-interface CampaignStats {
+export interface CampaignStats {
     sent: number;
     delivered: number;
     opened: number;
     replied: number;
 }
 
-interface Campaign {
+export interface Campaign {
     id: string;
     name: string;
     type: 'email' | 'sms' | 'both';
@@ -36,7 +36,7 @@ interface Campaign {
     lastActivity: string;
 }
 
-interface OutreachTabProps {
+export interface OutreachTabProps {
     campaigns: Campaign[];
     isLocked: boolean;
     onUpgradeClick: () => void;
@@ -200,7 +200,11 @@ export default function OutreachTab({ campaigns, isLocked, onUpgradeClick }: Out
                     <div className="p-12 text-center">
                         <Send className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                         <p className="text-gray-400 mb-2">No campaigns yet</p>
-                        <p className="text-sm text-gray-500">Create your first outreach campaign to start engaging leads</p>
+                        <p className="text-sm text-gray-500 mb-6">Create your first outreach campaign to start engaging leads</p>
+                        <Button variant="renstoSecondary" size="sm" className="mx-auto">
+                            <Plus className="w-4 h-4 mr-1" />
+                            Create Campaign
+                        </Button>
                     </div>
                 )}
             </div>

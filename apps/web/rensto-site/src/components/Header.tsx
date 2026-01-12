@@ -18,18 +18,18 @@ export function Header() {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'The Pillars', href: '/#pillars' },
-    { name: 'The Bundle', href: '/#ecosystem' },
+    { name: 'The Bundle', href: '/offers#ecosystem' },
     { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Pricing', href: '/#pricing' },
+    { name: 'Offers', href: '/offers' },
     { name: 'Contact', href: '/contact' },
   ];
 
   return (
     <header
-      className="sticky top-0 z-50 backdrop-blur-md border-b transition-all"
+      className="sticky top-0 z-50 backdrop-blur-2xl border-b transition-all duration-300"
       style={{
-        background: 'rgba(17, 13, 40, 0.98)',
-        borderColor: 'rgba(254, 61, 81, 0.3)'
+        background: 'rgba(10, 10, 10, 0.65)',
+        borderColor: 'rgba(255, 255, 255, 0.05)'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

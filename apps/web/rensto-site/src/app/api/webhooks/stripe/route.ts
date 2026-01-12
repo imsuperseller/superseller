@@ -120,8 +120,10 @@ export async function POST(req: Request) {
                 const customerEmail = session.customer_details?.email;
                 if (customerEmail) {
                     const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
+                    const userDocId = customerEmail.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                    const userRef = db.collection(COLLECTIONS.USERS).doc(userDocId);
 
-                    // Check if client already exists
+                    // Check if client already exists in custom solutions
                     const existingClient = await clientsRef.where('email', '==', customerEmail.toLowerCase()).limit(1).get();
 
                     const clientData = {
@@ -137,28 +139,41 @@ export async function POST(req: Request) {
                     };
 
                     if (existingClient.empty) {
-                        // Create new client record
-                        const newClient = await clientsRef.add({
-                            ...clientData,
-                            createdAt: Timestamp.now(),
-                        });
-
-                        await auditAgent.log({
-                            service: 'firebase',
-                            action: 'client_provisioned',
-                            status: 'success',
-                            details: { clientId: newClient.id, email: customerEmail }
-                        });
+                        await clientsRef.add({ ...clientData, createdAt: Timestamp.now() });
                     } else {
-                        // Update existing client record
                         await existingClient.docs[0].ref.update(clientData);
+                    }
 
-                        await auditAgent.log({
-                            service: 'firebase',
-                            action: 'client_updated_post_purchase',
-                            status: 'success',
-                            details: { clientId: existingClient.docs[0].id, email: customerEmail }
-                        });
+                    // [NEW] Entitlement Sync: If this is the Lead Machine, grant pillar access
+                    if (metadata.productId === 'the-lead-machine') {
+                        const userSnap = await userRef.get();
+                        if (userSnap.exists) {
+                            const userData = userSnap.data()!;
+                            const currentPillars = userData.entitlements?.pillars || [];
+                            if (!currentPillars.includes('leads')) {
+                                await userRef.update({
+                                    'entitlements.pillars': Array.from(new Set([...currentPillars, 'leads', 'outreach'])),
+                                    'entitlements.freeLeadsTrial': false,
+                                    updatedAt: Timestamp.now()
+                                });
+                            }
+                        } else {
+                            // Create user with lead entitlement if they don't exist
+                            await userRef.set({
+                                email: customerEmail.toLowerCase(),
+                                name: session.customer_details?.name || null,
+                                createdAt: Timestamp.now(),
+                                dashboardToken: require('uuid').v4().slice(0, 8),
+                                stripeCustomerId: session.customer,
+                                entitlements: {
+                                    freeLeadsTrial: false,
+                                    freeLeadsRemaining: 0,
+                                    pillars: ['leads', 'outreach'],
+                                    marketplaceProducts: [],
+                                    customSolution: null
+                                }
+                            });
+                        }
                     }
 
                     // Send welcome email for service purchases

@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button-enhanced';
 import { SERVICE_DISPLAY_NAMES, SERVICE_DESCRIPTIONS } from '@/types/entitlements';
 
-interface CallLog {
+export interface CallLog {
     id: string;
     caller: string;
     callerPhone: string;
@@ -30,7 +30,7 @@ interface CallLog {
     summary?: string;
 }
 
-interface VoiceAgentConfig {
+export interface VoiceAgentConfig {
     name: string;
     voiceId: string;
     greeting: string;
@@ -41,7 +41,7 @@ interface VoiceAgentConfig {
     transferNumber?: string;
 }
 
-interface VoiceTabProps {
+export interface VoiceTabProps {
     callLogs: CallLog[];
     config?: VoiceAgentConfig;
     isLocked: boolean;
@@ -205,7 +205,11 @@ export default function VoiceTab({ callLogs, config, isLocked, onUpgradeClick }:
                         <div className="p-12 text-center">
                             <Phone className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                             <p className="text-gray-400 mb-2">No calls yet</p>
-                            <p className="text-sm text-gray-500">Your AI agent is ready to take calls 24/7</p>
+                            <p className="text-sm text-gray-500 mb-6">Your AI agent is ready to take calls 24/7</p>
+                            <Button variant="renstoSecondary" size="sm" onClick={() => setActiveView('config')}>
+                                <Settings className="w-4 h-4 mr-2" />
+                                Configure Agent
+                            </Button>
                         </div>
                     )}
                 </div>
