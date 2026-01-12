@@ -18,33 +18,37 @@ export async function POST(req: Request) {
         const updateData: Partial<SecretaryConfig> = {
             agentName: config.agentName,
             greeting: config.greeting,
+            tone: config.tone,
+            businessContext: config.businessContext,
+            calendarLink: config.calendarLink,
+            availability: config.availability,
             transferNumber: config.transferNumber,
             n8nWebhookId: config.n8nWebhookId,
-            // Preserve existing fields if not provided or add defaults
             updatedAt: new Date().toISOString()
         };
+
+        const cleanUpdateData = JSON.parse(JSON.stringify(updateData));
 
         if (!snapshot.empty) {
             // Update existing
             const docId = snapshot.docs[0].id;
-            await db.collection('secretary_configs').doc(docId).update(updateData);
+            await db.collection('secretary_configs').doc(docId).update(cleanUpdateData);
         } else {
             // Create new
-            const newDoc: SecretaryConfig = {
-                id: 'secretary', // This might need to be unique if singleton per client
+            const newDoc = {
                 clientId,
                 voiceId: 'eleven_monica', // Default
                 whatsappEnabled: false,
                 calendarEnabled: false,
-                ...updateData
-            } as SecretaryConfig;
-
+                ...cleanUpdateData
+            };
+            // ID usually excluded from the spread if using .add(), but we want a clean doc
             await db.collection('secretary_configs').add(newDoc);
         }
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error updating secretary config:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
     }
 }

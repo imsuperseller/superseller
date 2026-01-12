@@ -294,12 +294,18 @@ export interface SecretaryConfig {
     agentName: string;
     voiceId: string; // e.g. "eleven_monica"
     greeting: string;
+    tone?: string;
+    businessContext?: string;
     phoneNumber?: string; // Provisioned number
     transferNumber?: string;
     n8nWebhookId?: string; // Links specific n8n webhook to this client
     whatsappEnabled: boolean;
     calendarEnabled: boolean;
     calendarLink?: string; // "https://tidycal.com/..."
+    availability?: {
+        enabled: boolean;
+        hours: string;
+    };
     updatedAt: any;
 }
 

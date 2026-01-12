@@ -45,6 +45,7 @@ export function getFirestoreAdmin(): Firestore {
 
     getFirebaseAdmin();
     firestoreDb = getFirestore();
+    firestoreDb.settings({ ignoreUndefinedProperties: true });
     return firestoreDb;
 }
 
