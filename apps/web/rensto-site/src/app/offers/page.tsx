@@ -39,38 +39,66 @@ const translations = {
         name: 'Strategic Audit',
         price: 497,
         description: 'A deep strategic review of your current operations. We identify $25,000+ in annual efficiency leaks and map your path to scale.',
-        features: ['Operational Bottleneck Audit', 'Business Architecture Review', 'High-Impact Automation Roadmap', 'Direct ROI Projections', 'Fixed-Price Implementation Plan'],
-        cta: 'Activate My Audit',
+        features: [
+          'Full Operations Analysis',
+          'Revenue Leak Identification',
+          'Automation Roadmap',
+          'Tech Stack Review',
+          'ROI Projection Model'
+        ],
+        cta: 'Start Transformation',
+        benefit: 'Stop guessing where you lose money.',
         popular: false,
-        icon: Search,
-        workflowId: null
+        icon: Target,
+        workflowId: 'call-audio-analysis'
       },
       {
         name: 'The Lead Machine',
         price: 997,
-        description: 'Autonomous outbound engine that sources leads, enriches data, and sends custom outreach at scale while you sleep.',
-        features: ['Automated Lead Sourcing', 'AI Data Enrichment', 'Multi-Channel Outreach', 'Smart CRM Synchronization', 'Daily Performance Reports'],
+        description: 'A 24/7 outbound engine that sources leads, enriches data, and sends custom outreach at scale while you sleep.',
+        features: [
+          'Automated Lead Sourcing',
+          'AI Data Enrichment',
+          'Multi-Channel Outreach',
+          'Smart CRM Sync',
+          'Daily Performance Reports'
+        ],
         cta: 'Activate Lead Machine',
+        benefit: 'Fill your pipeline automatically.',
         popular: true,
         icon: Target,
         workflowId: 'call-audio-analysis'
       },
       {
-        name: 'Voice AI Agent',
+        name: 'Autonomous Secretary',
         price: 497,
         description: '24/7 autonomous receptionist and sales representative that manages calendars, answers messages, and handles bookings.',
-        features: ['24/7 Voice & WhatsApp Response', 'Autonomous Appointment Booking', 'Live CRM Data Integration', 'Multi-Language Support', 'Lead Qualification Logic'],
-        cta: 'Partner With My AI Agent',
+        features: [
+          '24/7 Call Handling',
+          'WhatsApp Response Agent',
+          'Calendar Management',
+          'Multi-Language Support',
+          'Buying Intent Qualification'
+        ],
+        cta: 'Activate Secretary',
+        benefit: 'Never miss a client opportunity.',
         popular: false,
-        icon: MessageSquare,
-        workflowId: 'calendar-agent'
+        icon: Workflow,
+        workflowId: 'youtuber-cloner'
       },
       {
         name: 'Knowledge Engine',
         price: 1497,
-        description: 'Private AI trained on your company data. A member of your team with the "perfect memory" of your best practices.',
-        features: ['Live Data Source Sync', 'Private AI Knowledge Base', 'Internal Workflow Logic', 'Context-Aware Assistance', 'Enterprise-Grade Security'],
+        description: 'Connect AI to your company data. A private intelligence system with the "perfect memory" of your organization.',
+        features: [
+          'Live Data Sync',
+          'Private Knowledge Base',
+          'Internal Workflow Logic',
+          'Context-Aware Assistance',
+          'Enterprise Security'
+        ],
         cta: 'Activate Knowledge Engine',
+        benefit: 'Instant answers for your team.',
         popular: false,
         icon: Workflow,
         workflowId: 'youtuber-cloner'

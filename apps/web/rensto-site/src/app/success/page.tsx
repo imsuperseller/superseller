@@ -54,7 +54,7 @@ const PRODUCT_SCHEMAS: Record<string, FormField[]> = {
     { id: 'websiteUrl', label: 'Website URL for Analysis', type: 'url', required: true, placeholder: 'https://yourstore.com' },
     { id: 'primaryConversion', label: 'Primary Conversion Event', type: 'text', required: true, placeholder: 'e.g. Purchase, Add to Cart, Form Submit' },
     { id: 'ga4PropertyId', label: 'GA4 Property ID', type: 'text', required: true, placeholder: '123456789' },
-    { id: 'clarityProjectId', label: 'Microsoft Clarity Project ID (Optional)', type: 'text', required: false, placeholder: 'abcde123' },
+    { id: 'analyticsId', label: 'Session Recording Project ID (Optional)', type: 'text', required: false, placeholder: 'e.g., Hotjar, Clarity, or PostHog ID' },
     { id: 'reportFrequency', label: 'Report Frequency', type: 'select', required: true, options: ['Monthly', 'Bi-Weekly', 'Quarterly'] },
   ],
   'the-lead-machine': [

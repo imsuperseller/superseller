@@ -16,6 +16,7 @@ import {
   HelpCircle,
   Signal,
   ChevronRight,
+  LogOut,
 } from 'lucide-react';
 
 const clientNavigation = [

@@ -64,7 +64,8 @@ export function Footer() {
       { name: links.niches, href: '/niches' },
     ],
     business: [
-      { name: links.login, href: '/login', icon: Workflow },
+      { name: 'Client Login', href: '/login', icon: Workflow },
+      { name: 'Get Started', href: '/custom', icon: Zap },
     ],
     legal: [
       { name: links.privacy, href: '/legal/privacy' },
@@ -178,9 +179,9 @@ export function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="flex items-center text-slate-300 hover:text-white transition-colors font-sans"
+                    className="flex items-center text-slate-300 hover:text-white transition-colors font-sans group"
                   >
-                    <item.icon className="h-4 w-4 mr-2" />
+                    <item.icon className="h-4 w-4 mr-2 text-rensto-cyan group-hover:text-white transition-colors" />
                     {item.name}
                   </Link>
                 </li>
@@ -188,9 +189,9 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent('open-rensto-support'))}
-                  className="flex items-center text-slate-300 hover:text-white transition-colors text-sm font-sans"
+                  className="flex items-center text-slate-300 hover:text-white transition-colors text-sm font-sans group"
                 >
-                  <Bot className="h-4 w-4 mr-2" />
+                  <Bot className="h-4 w-4 mr-2 text-rensto-cyan group-hover:text-white transition-colors" />
                   {aiSupport}
                 </button>
               </li>

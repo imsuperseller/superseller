@@ -21,7 +21,7 @@ const translations = {
     briefText: "Submit your requirements and we'll get back to you with a roadmap.",
     voiceTitle: "Instant Voice Support",
     voiceSubtitle: "Available 24/7",
-    voiceText: "Want to experience our tech right now? Call our Voice AI Agent. He can answer questions, explain our process, and even book your strategic audit.",
+    voiceText: "Want to experience our tech right now? Call our Voice AI Agent. It can answer questions, explain our process, and even book your strategic audit.",
     voiceCta: "Call +1 (469) 929-9314",
     connectElsewhere: "Connect Elsewhere",
     faqTitle: <>Pre-Consultation <span className="text-cyan-400">FAQ</span></>,
@@ -74,7 +74,7 @@ const translations = {
       },
       {
         question: 'Can you integrate with my existing systems?',
-        answer: 'Absolutely! n8n supports 400+ integrations. We can connect to your CRM, email, databases, APIs, and more.'
+        answer: 'Absolutely! Our system supports 400+ integrations. We can connect to your CRM, email, databases, custom software, and more.'
       },
       {
         question: 'Do you provide training for my team?',

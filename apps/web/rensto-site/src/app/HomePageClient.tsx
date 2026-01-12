@@ -255,12 +255,12 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         return links[productName as keyof typeof links];
     }
 
-    // Social proof stats - Concrete Numbers
+    // Social proof stats - System Capabilities (Truthful & Impressive)
     const stats = [
-        { value: 'Systems', label: 'Architected', icon: Zap },
-        { value: 'Hours', label: 'Reclaimed Daily', icon: Clock },
-        { value: 'Savings', label: 'Operational Impact', icon: TrendingUp },
-        { value: '24/7', label: 'Support Coverage', icon: Shield }
+        { value: 'Zero', label: 'Sick Days Taken', icon: Shield },
+        { value: '24/7', label: 'Operational Uptime', icon: Clock },
+        { value: '100%', label: 'Process Adherence', icon: CheckCircle },
+        { value: '∞', label: 'Scalability', icon: Zap }
     ];
 
     // Testimonials with real clients - merge database results if available
@@ -669,26 +669,26 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                             <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                                             <div className="w-3 h-3 rounded-full bg-green-500/50" />
                                         </div>
-                                        <div className="text-[10px] font-mono text-slate-500">CORE_SERVICE_FULFILLMENT.json</div>
+                                        <div className="text-[10px] font-mono text-slate-500">Automated_Sales_Pipeline</div>
                                     </div>
 
                                     {/* Visual Representation of n8n Nodes */}
                                     <div className="grid grid-cols-2 gap-4 opacity-80 group-hover:opacity-100 transition-opacity">
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <Zap className="w-8 h-8 text-yellow-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Trigger</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">New Lead</span>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <Bot className="w-8 h-8 text-cyan-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Smart Routing</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">AI Qualification</span>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <Workflow className="w-8 h-8 text-purple-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Business Logic</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">CRM Update</span>
                                         </div>
                                         <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
                                             <CheckCircle className="w-8 h-8 text-green-400" />
-                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Success</span>
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">Meeting Booked</span>
                                         </div>
                                     </div>
 
@@ -761,15 +761,25 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                 </section>
 
                 {/* Stats Section - Capabilities */}
-                <section className="py-12 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>
-                    <div className="container mx-auto">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <section className="py-24 px-4 relative overflow-hidden">
+                    {/* Background Glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl max-h-[400px] bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+                    <div className="container mx-auto relative z-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {stats.map((stat, i) => (
-                                <div key={i} className="text-center group hover:-translate-y-1 transition-transform duration-300">
+                                <div
+                                    key={i}
+                                    className="group relative p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+
+                                    <stat.icon className="w-8 h-8 text-cyan-400 mb-6 relative z-10" />
+
                                     <div
-                                        className="text-4xl md:text-5xl font-bold mb-2 group-hover:scale-105 transition-transform"
+                                        className="text-4xl md:text-5xl font-black mb-2 relative z-10"
                                         style={{
-                                            background: 'var(--rensto-gradient-secondary)',
+                                            background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
                                             WebkitBackgroundClip: 'text',
                                             WebkitTextFillColor: 'transparent',
                                             backgroundClip: 'text'
@@ -777,8 +787,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                     >
                                         {stat.value}
                                     </div>
-                                    <div className="flex items-center justify-center gap-2" style={{ color: 'var(--rensto-text-secondary)' }}>
-                                        <stat.icon className="w-4 h-4 opacity-50" />
+                                    <div className="text-sm font-bold uppercase tracking-widest text-cyan-500/80 relative z-10">
                                         {stat.label}
                                     </div>
                                 </div>

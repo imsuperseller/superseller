@@ -17,9 +17,19 @@ import {
     Lock,
     ArrowRight,
     Code,
-    Loader2
+    Loader2,
+    PlusCircle,
+    TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 export interface Lead {
     id: string;
@@ -51,6 +61,30 @@ export default function LeadsTab({
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [deliveryMode, setDeliveryMode] = useState<'email' | 'crm'>('email');
     const [loadingExpert, setLoadingExpert] = useState(false);
+    const [loadingPack, setLoadingPack] = useState<string | null>(null);
+
+    const handleBuyPack = async (packId: string) => {
+        setLoadingPack(packId);
+        try {
+            const res = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    flowType: 'lead-pack',
+                    productId: packId,
+                    tier: 'standard'
+                })
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error('Lead pack checkout error:', error);
+        } finally {
+            setLoadingPack(null);
+        }
+    };
 
     const handleExpertSetup = async () => {
         setLoadingExpert(true);
@@ -104,31 +138,74 @@ export default function LeadsTab({
 
     return (
         <div className="space-y-6">
-            {/* Free Trial Banner */}
-            {isFreeTrialUser && (
-                <div className="rounded-xl p-6 border border-rensto-red/30 relative overflow-hidden bg-gradient-to-br from-rensto-red/10 to-rensto-orange/10">
-                    <div className="absolute top-0 right-0 p-4 opacity-20">
-                        <Sparkles className="w-20 h-20 text-rensto-red" />
+            {/* Credit Status / Top Up Banner */}
+            <div className={`rounded-xl p-6 border relative overflow-hidden ${isFreeTrialUser
+                ? 'border-rensto-red/30 bg-gradient-to-br from-rensto-red/10 to-rensto-orange/10'
+                : 'border-rensto-cyan/30 bg-gradient-to-br from-rensto-cyan/10 to-rensto-blue/10'
+                }`}>
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <TrendingUp className={`w-20 h-20 ${isFreeTrialUser ? 'text-rensto-red' : 'text-rensto-cyan'}`} />
+                </div>
+                <div className="flex items-center justify-between relative z-10">
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-2">
+                            {isFreeTrialUser ? 'Free Trial' : 'Active Credits'}: {freeLeadsRemaining} leads remaining
+                        </h3>
+                        <p className="text-gray-400">
+                            {isFreeTrialUser
+                                ? 'Unlock unlimited leads + automated outreach with the Leads Pillar'
+                                : 'Leads are automatically verified and enriched before delivery.'}
+                        </p>
                     </div>
-                    <div className="flex items-center justify-between relative z-10">
-                        <div>
-                            <h3 className="text-xl font-bold text-white mb-2">
-                                Free Trial: {freeLeadsRemaining} leads remaining
-                            </h3>
-                            <p className="text-gray-400">
-                                Unlock unlimited leads + automated outreach with the Leads Pillar
-                            </p>
-                        </div>
-                        <Button
-                            onClick={onUpgradeClick}
-                            className="bg-gradient-to-r from-rensto-red to-rensto-orange hover:brightness-110 text-white font-bold px-6 border-0"
-                        >
-                            Upgrade Now
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
+                    <div className="flex items-center gap-3">
+                        {isFreeTrialUser ? (
+                            <Button
+                                onClick={onUpgradeClick}
+                                className="bg-gradient-to-r from-rensto-red to-rensto-orange hover:brightness-110 text-white font-bold px-6 border-0"
+                            >
+                                Upgrade Now
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        ) : (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        className="bg-rensto-cyan hover:bg-rensto-cyan/90 text-black font-bold px-6 border-0"
+                                    >
+                                        <PlusCircle className="w-4 h-4 mr-2" />
+                                        Buy More Leads
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="bg-rensto-bg-secondary border-white/10 w-56">
+                                    <DropdownMenuLabel className="text-gray-400">Select Pack Size</DropdownMenuLabel>
+                                    <DropdownMenuSeparator className="bg-white/5" />
+                                    <DropdownMenuItem
+                                        onClick={() => handleBuyPack('lead-pack-starter')}
+                                        className="flex justify-between items-center py-3 cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                                    >
+                                        <span className="text-white font-medium">Starter (50)</span>
+                                        <span className="text-rensto-cyan font-bold">$149</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => handleBuyPack('lead-pack-growth')}
+                                        className="flex justify-between items-center py-3 cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                                    >
+                                        <span className="text-white font-medium">Growth (100)</span>
+                                        <span className="text-rensto-cyan font-bold">$249</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => handleBuyPack('lead-pack-scale')}
+                                        className="flex justify-between items-center py-3 cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                                    >
+                                        <span className="text-white font-medium">Scale (500)</span>
+                                        <span className="text-rensto-cyan font-bold">$999</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Lead Delivery Preferences */}
             {!isFreeTrialUser && (

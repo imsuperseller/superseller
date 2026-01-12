@@ -106,7 +106,7 @@ export interface Template {
     price: number;
     installPrice?: number;
     customPrice?: number;
-    features: Array<{ title: string; desc: string; image?: string; icon?: string }>; // Updated to support rich graphics
+    features: string[] | Array<{ title: string; desc: string; image?: string; icon?: string }>; // Updated to support rich graphics
     installation?: boolean;
     popular?: boolean;
     version?: string;
@@ -285,6 +285,21 @@ export interface Testimonial {
     order: number;
     isActive: boolean;
     createdAt: any;
+    updatedAt: any;
+}
+
+export interface SecretaryConfig {
+    id: string; // "secretary" (singleton)
+    clientId: string;
+    agentName: string;
+    voiceId: string; // e.g. "eleven_monica"
+    greeting: string;
+    phoneNumber?: string; // Provisioned number
+    transferNumber?: string;
+    n8nWebhookId?: string; // Links specific n8n webhook to this client
+    whatsappEnabled: boolean;
+    calendarEnabled: boolean;
+    calendarLink?: string; // "https://tidycal.com/..."
     updatedAt: any;
 }
 

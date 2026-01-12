@@ -52,11 +52,7 @@ const nextConfig = {
         destination: '/subscriptions',
         permanent: true,
       },
-      {
-        source: '/dashboard/:clientId*',
-        destination: '/app/dashboard',
-        permanent: false, // Use temporary redirect during migration
-      },
+
       {
         source: '/control/:path*',
         destination: '/admin/:path*',

@@ -408,6 +408,41 @@ export async function POST(req: Request) {
                 });
             }
 
+            // 7. Lead Pack Purchases
+            if (metadata.flowType === 'lead-pack') {
+                const customerEmail = session.customer_details?.email?.toLowerCase();
+                const leadsCount = parseInt(metadata.leadsCount || '0', 10);
+
+                if (customerEmail && leadsCount > 0) {
+                    const userDocId = customerEmail.replace(/[^a-z0-9]/g, '_');
+                    const userRef = db.collection(COLLECTIONS.USERS).doc(userDocId);
+                    const userSnap = await userRef.get();
+
+                    if (userSnap.exists) {
+                        const userData = userSnap.data()!;
+                        const currentLeads = userData.entitlements?.freeLeadsRemaining || 0;
+                        const currentPillars = userData.entitlements?.pillars || [];
+
+                        // Grant access to leads and outreach if missing
+                        const newPillars = Array.from(new Set([...currentPillars, 'leads', 'outreach']));
+
+                        await userRef.update({
+                            'entitlements.freeLeadsRemaining': currentLeads + leadsCount,
+                            'entitlements.freeLeadsTrial': false,
+                            'entitlements.pillars': newPillars,
+                            updatedAt: Timestamp.now()
+                        });
+
+                        await auditAgent.log({
+                            service: 'stripe',
+                            action: 'lead_pack_provisioned',
+                            status: 'success',
+                            details: { email: customerEmail, leadsAdded: leadsCount, totalLeads: currentLeads + leadsCount }
+                        });
+                    }
+                }
+            }
+
             // 6. Forward to n8n for QuickBooks and other integrations
             if (n8nWebhookUrl) {
                 await fetch(n8nWebhookUrl, {

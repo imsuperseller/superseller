@@ -6,7 +6,10 @@
       "name": "Webhook - Lead Request",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "parameters": {
         "httpMethod": "POST",
         "path": "lead-enrichment",
@@ -34,7 +37,10 @@
       "name": "Validate & Initialize",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [460, 300],
+      "position": [
+        460,
+        300
+      ],
       "parameters": {
         "jsCode": "// Validate and prepare incoming data\nconst requiredFields = ['searchQuery', 'email', 'firstName', 'lastName', 'businessInfo', 'tier'];\nconst missingFields = [];\n\nfor (const field of requiredFields) {\n  if (!$input.first().json[field]) {\n    missingFields.push(field);\n  }\n}\n\nif (missingFields.length > 0) {\n  throw new Error(`Missing required fields: ${missingFields.join(', ')}`);\n}\n\n// Set tier limits\nconst tierLimits = {\n  'basic': { leads: 10, enrichment: 'basic', voiceMessages: false },\n  'professional': { leads: 100, enrichment: 'advanced', voiceMessages: true },\n  'enterprise': { leads: 500, enrichment: 'premium', voiceMessages: true }\n};\n\nconst userTier = $input.first().json.tier || 'basic';\nconst limits = tierLimits[userTier];\n\n// Generate unique identifiers\nconst runId = `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\nconst timestamp = new Date().toISOString();\n\nreturn {\n  ...($input.first().json),\n  runId,\n  limits,\n  timestamp,\n  status: 'initializing'\n};"
       }
@@ -44,7 +50,10 @@
       "name": "Log Search Request",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2,
-      "position": [680, 300],
+      "position": [
+        680,
+        300
+      ],
       "parameters": {
         "operation": "create",
         "base": {
@@ -79,7 +88,10 @@
       "name": "Search LinkedIn Profiles",
       "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
       "typeVersion": 1,
-      "position": [900, 200],
+      "position": [
+        900,
+        200
+      ],
       "parameters": {
         "query": "={{ $json.searchQuery }} site:linkedin.com/in/",
         "options": {
@@ -98,7 +110,10 @@
       "name": "Search Contact Info",
       "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
       "typeVersion": 1,
-      "position": [900, 400],
+      "position": [
+        900,
+        400
+      ],
       "parameters": {
         "query": "={{ $json.searchQuery }} email contact",
         "options": {
@@ -117,7 +132,10 @@
       "name": "Parse Search Results",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1120, 300],
+      "position": [
+        1120,
+        300
+      ],
       "parameters": {
         "jsCode": "// Combine and parse search results\nconst linkedInResults = $input.all()[0].json.organic_results || [];\nconst contactResults = $input.all()[1].json.organic_results || [];\nconst userData = $input.all()[2].json;\n\nconst leads = [];\nconst processedUrls = new Set();\n\n// Process LinkedIn results\nfor (let i = 0; i < Math.min(linkedInResults.length, userData.limits.leads); i++) {\n  const result = linkedInResults[i];\n  if (result.link && !processedUrls.has(result.link)) {\n    processedUrls.add(result.link);\n    \n    // Extract name from title\n    const nameMatch = result.title.match(/^([^-–]+)/);\n    const name = nameMatch ? nameMatch[1].trim() : 'Unknown';\n    \n    // Parse company from snippet\n    const companyMatch = result.snippet?.match(/at\\s+([^.]+)/i);\n    const company = companyMatch ? companyMatch[1].trim() : '';\n    \n    leads.push({\n      name,\n      title: result.title,\n      company,\n      linkedinUrl: result.link,\n      snippet: result.snippet || '',\n      source: 'linkedin_search',\n      runId: userData.runId,\n      needsEnrichment: true\n    });\n  }\n}\n\n// Add contact search data\ncontactResults.forEach(result => {\n  const emailMatch = result.snippet?.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})/g);\n  if (emailMatch && leads.length < userData.limits.leads) {\n    leads.push({\n      name: result.title.split('-')[0].trim(),\n      email: emailMatch[0],\n      websiteUrl: result.link,\n      snippet: result.snippet,\n      source: 'contact_search',\n      runId: userData.runId,\n      needsEnrichment: true\n    });\n  }\n});\n\nreturn leads.slice(0, userData.limits.leads);"
       }
@@ -127,7 +145,10 @@
       "name": "Process Each Lead",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
-      "position": [1340, 300],
+      "position": [
+        1340,
+        300
+      ],
       "parameters": {
         "batchSize": 1,
         "options": {}
@@ -138,10 +159,16 @@
       "name": "Scrape Profile/Company Data",
       "type": "@mendable/n8n-nodes-firecrawl.firecrawlScrape",
       "typeVersion": 1,
-      "position": [1560, 300],
+      "position": [
+        1560,
+        300
+      ],
       "parameters": {
         "url": "={{ $json.linkedinUrl || $json.websiteUrl }}",
-        "formats": ["markdown", "html"],
+        "formats": [
+          "markdown",
+          "html"
+        ],
         "onlyMainContent": true
       },
       "credentials": {
@@ -157,7 +184,10 @@
       "name": "AI Profile Analysis",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
-      "position": [1780, 300],
+      "position": [
+        1780,
+        300
+      ],
       "parameters": {
         "modelId": {
           "__rl": true,
@@ -192,7 +222,10 @@
       "name": "Generate Personalized Outreach",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
-      "position": [2000, 300],
+      "position": [
+        2000,
+        300
+      ],
       "parameters": {
         "modelId": {
           "__rl": true,
@@ -226,7 +259,10 @@
       "name": "Check Voice Tier",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
-      "position": [2220, 300],
+      "position": [
+        2220,
+        300
+      ],
       "parameters": {
         "rules": {
           "values": [
@@ -263,7 +299,10 @@
       "name": "Generate Voice Message",
       "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenlabs",
       "typeVersion": 1,
-      "position": [2440, 200],
+      "position": [
+        2440,
+        200
+      ],
       "parameters": {
         "operation": "textToSpeech",
         "text": "={{ $node['generate-outreach'].json.choices[0].message.content }}",
@@ -283,7 +322,10 @@
       "name": "Prepare Lead Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2440, 400],
+      "position": [
+        2440,
+        400
+      ],
       "parameters": {
         "jsCode": "// Prepare lead data for storage\nconst lead = $input.first().json;\nconst enrichmentData = JSON.parse($node['ai-analysis'].json.choices[0].message.content || '{}');\nconst outreachData = JSON.parse($node['generate-outreach'].json.choices[0].message.content || '{}');\n\nconst voiceUrl = $node['generate-voice']?.json?.audio_url || null;\n\nreturn {\n  runId: $node['webhook-trigger'].json.runId,\n  name: enrichmentData.fullName || lead.name,\n  email: lead.email || enrichmentData.email || '',\n  company: enrichmentData.companyName || lead.company,\n  title: enrichmentData.position || lead.title,\n  linkedinUrl: lead.linkedinUrl || '',\n  websiteUrl: lead.websiteUrl || enrichmentData.companyWebsite || '',\n  \n  // Enrichment data\n  industry: enrichmentData.industry || '',\n  companySize: enrichmentData.companySize || '',\n  keyInsights: JSON.stringify(enrichmentData.keyInsights || []),\n  painPoints: JSON.stringify(enrichmentData.painPoints || []),\n  \n  // Outreach content\n  emailSubject: outreachData.subjectLine || '',\n  emailBody: outreachData.primaryMessage || '',\n  followUpTemplates: JSON.stringify(outreachData.followUpTemplates || []),\n  talkingPoints: JSON.stringify(outreachData.talkingPoints || []),\n  \n  // Voice message\n  voiceMessageUrl: voiceUrl,\n  hasVoiceMessage: !!voiceUrl,\n  \n  // Metadata\n  enrichmentQuality: enrichmentData.confidence || 'medium',\n  createdAt: new Date().toISOString(),\n  status: 'enriched'\n};"
       }
@@ -293,7 +335,10 @@
       "name": "Store Enriched Lead",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2,
-      "position": [2660, 300],
+      "position": [
+        2660,
+        300
+      ],
       "parameters": {
         "operation": "create",
         "base": {
@@ -345,7 +390,10 @@
       "name": "Aggregate All Leads",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
-      "position": [2880, 300],
+      "position": [
+        2880,
+        300
+      ],
       "parameters": {
         "fieldsToAggregate": {
           "fieldToAggregate": [
@@ -360,7 +408,10 @@
       "name": "Create CSV Export",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [3100, 300],
+      "position": [
+        3100,
+        300
+      ],
       "parameters": {
         "jsCode": "// Create CSV from enriched leads\nconst leads = $input.first().json;\n\n// CSV Headers\nconst headers = [\n  'Name',\n  'Email',\n  'Company',\n  'Title',\n  'LinkedIn URL',\n  'Website',\n  'Industry',\n  'Company Size',\n  'Email Subject',\n  'Email Body',\n  'Voice Message URL',\n  'Key Insights',\n  'Pain Points',\n  'Talking Points'\n];\n\n// Create CSV content\nlet csvContent = headers.join(',') + '\\n';\n\nleads.forEach(lead => {\n  const row = [\n    lead.name || '',\n    lead.email || '',\n    lead.company || '',\n    lead.title || '',\n    lead.linkedinUrl || '',\n    lead.websiteUrl || '',\n    lead.industry || '',\n    lead.companySize || '',\n    `\"${(lead.emailSubject || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.emailBody || '').replace(/\"/g, '\"\"')}\"`,\n    lead.voiceMessageUrl || '',\n    `\"${(lead.keyInsights || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.painPoints || '').replace(/\"/g, '\"\"')}\"`,\n    `\"${(lead.talkingPoints || '').replace(/\"/g, '\"\"')}\"`\n  ];\n  csvContent += row.join(',') + '\\n';\n});\n\n// Convert to base64\nconst base64 = Buffer.from(csvContent).toString('base64');\n\nreturn {\n  csvContent,\n  base64,\n  fileName: `enriched_leads_${$node['webhook-trigger'].json.runId}.csv`,\n  leadCount: leads.length,\n  runId: $node['webhook-trigger'].json.runId,\n  userEmail: $node['webhook-trigger'].json.email,\n  userName: $node['webhook-trigger'].json.firstName\n};"
       }
@@ -370,7 +421,10 @@
       "name": "Convert CSV to Binary",
       "type": "n8n-nodes-base.moveBinaryData",
       "typeVersion": 1,
-      "position": [3320, 300],
+      "position": [
+        3320,
+        300
+      ],
       "parameters": {
         "options": {}
       }
@@ -380,7 +434,10 @@
       "name": "Send Results Email",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [3540, 300],
+      "position": [
+        3540,
+        300
+      ],
       "parameters": {
         "operation": "send",
         "subject": "=Your {{ $json.leadCount }} Enriched Leads Are Ready! 🚀",
@@ -406,7 +463,10 @@
       "name": "Notify Slack",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [3540, 500],
+      "position": [
+        3540,
+        500
+      ],
       "parameters": {
         "operation": "postMessage",
         "channel": "#lead-enrichment",
@@ -425,7 +485,10 @@
       "name": "Prepare Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [3760, 300],
+      "position": [
+        3760,
+        300
+      ],
       "parameters": {
         "jsCode": "// Prepare final response\nconst result = {\n  success: true,\n  runId: $json.runId,\n  message: `Successfully enriched ${$json.leadCount} leads`,\n  summary: {\n    totalLeads: $json.leadCount,\n    withEmail: $node['aggregate-leads'].json.filter(l => l.email).length,\n    withVoiceMessage: $node['aggregate-leads'].json.filter(l => l.hasVoiceMessage).length,\n    tier: $node['webhook-trigger'].json.tier\n  },\n  deliveryEmail: $json.userEmail,\n  timestamp: new Date().toISOString()\n};\n\nreturn result;"
       }
@@ -435,7 +498,10 @@
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [3980, 300],
+      "position": [
+        3980,
+        300
+      ],
       "parameters": {
         "options": {}
       }

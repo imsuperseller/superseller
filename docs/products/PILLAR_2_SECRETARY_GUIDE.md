@@ -1,32 +1,46 @@
-# 🎙️ Pillar 2: Autonomous Secretary - Deep Dive
+# Pillar 2: Autonomous Secretary - Architecture & Setup
 
-The **Autonomous Secretary** is Rensto's inbound operations engine. It is designed to act as a 24/7 front-desk, handling voice calls, WhatsApp queries, and calendar scheduling without human intervention.
+## Overview
+The **Autonomous Secretary** (formerly Voice AI) is a multi-tenant system designed to handle inbound communication (Voice, WhatsApp) and administrative tasks (Calendar) for Rensto clients.
 
-## 🛠️ The Production Component Stack
+## Architecture
 
-### 1. Inbound Voice Agent (The "Front Desk")
-- **Active Workflow**: `TELNYX-VOICE-AI-002: Premium Rensto Voice Agent` ([MqMYMeA9U9PEX1cH](https://n8n.rensto.com/workflow/MqMYMeA9U9PEX1cH))
-- **Tech**: Telnyx Voice API + OpenAI GPT-4o + ElevenLabs TTS.
-- **Function**: Answers inbound calls, handles context-aware conversations, and can transfer to a human if needed.
-- **Primary Data**: `VOICE_CALL_LOGS` collection in Firestore.
+### 1. Data Model (`secretary_configs` Collection)
+Each client has a singleton configuration document in `secretary_configs`.
+- **Key Fields**:
+  - `clientId` (string): Links to the client.
+  - `agentName` (string): The persona name (e.g., "Sarah").
+  - `greeting` (string): First message/voice response.
+  - `voiceId` (string): ElevenLabs or Telnyx voice ID.
+  - `transferNumber` (string): Fallback number for human escalation.
+  - `whatsappEnabled` (boolean).
 
-### 2. WhatsApp Multi-Agent Router
-- **Active Workflow**: `INT-WHATSAPP-ROUTER-OPTIMIZED: Multi-Customer AI Agent` ([1LWTwUuN6P6uq2Ha](https://n8n.rensto.com/workflow/1LWTwUuN6P6uq2Ha))
-- **Tech**: WAHA Pro + Google Gemini Flash.
-- **Function**: Routes messages from WhatsApp to specific customer contexts. It uses a "Human-in-Loop" fallback if the AI is unsure.
-- **Agent Integration**: Connects directly to the **Knowledge Engine (Pillar 3)** for answering technical questions.
+### 2. Frontend (Dashboard)
+- **SecretaryTab**: Main interface for logs and configuration.
+- **API (`/api/secretary/config`)**: Endpoint for updating the configuration.
 
-### 3. AI Calendar Assistant
-- **Active Workflow**: `AI Calendar Assistant` ([5Fl9WUjYTpodcloJ](https://n8n.rensto.com/workflow/5Fl9WUjYTpodcloJ))
-- **Tech**: Custom n8n scheduling logic.
-- **Function**: Replaced TidyCal/Calendly. It manages the actual "booking" event, checking availability and sending confirmation links via WhatsApp/SMS.
+### 3. Backend (n8n Workflows)
+The n8n system acts as the "Brain". It must be **dynamic**, fetching configuration from Firestore at runtime.
 
----
+#### The "Universal Router" Workflow
+1.  **Trigger**: Webhook from WAHA (WhatsApp) or Telnyx (Voice).
+2.  **Identify Client**: 
+    - **Voice**: Inbound Call `To` Number -> Lookup `secretary_configs` where `phoneNumber == To`.
+    - **WhatsApp**: Webhook ID -> Lookup `secretary_configs` where `n8nWebhookId == ID`.
+3.  **Fetch Config**: Get `agentName`, `systemPrompt`, `tools` from Firestore.
+4.  **Execute Agent**: Pass these parameters to the LangChain/AI node.
 
-## 📅 Status as of Jan 11, 2026
-- **Readiness**: ✅ Production Ready.
-- **Gaps**: Missing a unified "Secretary Dashboard Config" in the web UI (currently being refactored in `VoiceTab.tsx`).
-- **Legacy Tools**: Vapi (Replaced by Telnyx), TidyCal (Replaced by Custom AI).
+## Setup Instructions for New Clients
 
-> [!TIP]
-> This pillar is the primary "Lead Nurturer". While the Lead Machine (Pillar 1) finds the leads, the Secretary (Pillar 2) qualifies them and puts them on the calendar.
+1.  **Provision Number**: Buy a number (Telnyx/Twilio).
+2.  **Create Config**:
+    - Go to Admin Dashboard (or Client Dashboard).
+    - Set `phoneNumber` to the new number.
+    - Set `agentName` and `greeting`.
+3.  **Configure n8n**:
+    - Ensure the "Universal Router" is listening.
+    - If using WhatsApp, register the session in WAHA and update the `secretary_configs` with the `wahaSessionId`.
+
+## Troubleshooting
+- **Agent says wrong name**: Check `secretary_configs` for that client.
+- **Calls failing**: Ensure `phoneNumber` in Firestore matches the Telnyx DID exactly (E.164 format).

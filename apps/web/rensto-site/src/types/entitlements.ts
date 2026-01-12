@@ -3,21 +3,23 @@
  * Defines what features/tabs each user has access to in the dashboard
  */
 
-export type ServiceType = 'leads' | 'outreach' | 'voice' | 'content';
+export type ServiceType = 'leads' | 'outreach' | 'voice' | 'content' | 'knowledge';
 
 // Customer-facing names (outcome-focused, not jargon)
 export const SERVICE_DISPLAY_NAMES: Record<ServiceType, string> = {
     leads: 'Get More Leads',
     outreach: 'Automated Outreach',
-    voice: 'AI Phone Agent',
+    voice: 'Autonomous Secretary',
     content: 'Content Engine',
+    knowledge: 'Knowledge & Assets',
 };
 
 export const SERVICE_DESCRIPTIONS: Record<ServiceType, string> = {
     leads: 'Find qualified prospects in your niche automatically',
     outreach: 'Follow up via email & SMS without lifting a finger',
-    voice: 'Never miss a call – AI answers 24/7',
+    voice: 'Handles your Voice, WhatsApp, and Calendar 24/7',
     content: 'Blog posts & social content on autopilot',
+    knowledge: 'Private intelligence system with your data',
 };
 
 export interface CustomSolutionEntitlement {
@@ -91,15 +93,15 @@ export function getVisibleTabs(entitlements: UserEntitlements): DashboardTabConf
         upsellMessage: hasOutreach ? undefined : 'Add Outreach pillar to automate follow-ups',
     });
 
-    // Voice AI tab
+    // Voice AI (now Secretary) tab
     const hasVoice = entitlements.pillars.includes('voice');
     tabs.push({
         id: 'voice',
-        label: 'Voice AI',
-        icon: 'Phone',
+        label: 'Secretary',
+        icon: 'Bot',
         visible: hasVoice || entitlements.pillars.length > 0, // show locked if has any pillar
         locked: !hasVoice,
-        upsellMessage: hasVoice ? undefined : 'Add Voice AI pillar for automated calls',
+        upsellMessage: hasVoice ? undefined : 'Add Autonomous Secretary for voice & message automation',
     });
 
     // Content tab
@@ -111,6 +113,17 @@ export function getVisibleTabs(entitlements: UserEntitlements): DashboardTabConf
         visible: hasContent || entitlements.pillars.length > 0,
         locked: !hasContent,
         upsellMessage: hasContent ? undefined : 'Add Content pillar for blog & social automation',
+    });
+
+    // Knowledge & Assets tab
+    const hasKnowledge = entitlements.pillars.includes('knowledge');
+    tabs.push({
+        id: 'knowledge',
+        label: 'Knowledge',
+        icon: 'Brain',
+        visible: hasKnowledge || entitlements.pillars.length > 0,
+        locked: !hasKnowledge,
+        upsellMessage: hasKnowledge ? undefined : 'Add Knowledge Engine to build your RAG brain',
     });
 
     // Agent Hub - visible if any pillar or custom solution

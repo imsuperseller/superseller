@@ -78,6 +78,28 @@ const SERVICES = {
     }
 } as const;
 
+// Lead Pack Maps
+const LEAD_PACKS = {
+    'lead-pack-starter': {
+        name: 'Lead Machine: Starter Pack (50 leads)',
+        description: '50 verified leads with AI icebreakers.',
+        unitAmount: 14900,
+        leads: 50
+    },
+    'lead-pack-growth': {
+        name: 'Lead Machine: Growth Pack (100 leads)',
+        description: '100 verified leads with AI icebreakers.',
+        unitAmount: 24900,
+        leads: 100
+    },
+    'lead-pack-scale': {
+        name: 'Lead Machine: Scale Pack (500 leads)',
+        description: '500 verified leads with AI icebreakers.',
+        unitAmount: 99900,
+        leads: 500
+    }
+} as const;
+
 export async function POST(req: Request) {
     let body: any = {};
     try {
@@ -353,6 +375,34 @@ export async function POST(req: Request) {
             Object.assign(metadata, {
                 pillarId,
                 pillarName: pillar.name
+            });
+        }
+
+        // 6. Lead-Pack Purchase
+        else if (flowType === 'lead-pack') {
+            mode = 'payment';
+            const packKey = productId as keyof typeof LEAD_PACKS;
+            const pack = LEAD_PACKS[packKey];
+
+            if (!pack) {
+                return NextResponse.json({ error: 'Lead pack not found' }, { status: 404 });
+            }
+
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: pack.name,
+                        description: pack.description,
+                    },
+                    unit_amount: pack.unitAmount,
+                },
+                quantity: 1,
+            });
+
+            Object.assign(metadata, {
+                packId: productId,
+                leadsCount: pack.leads.toString()
             });
         }
 

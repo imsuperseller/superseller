@@ -30,8 +30,9 @@ import { Progress } from '@/components/ui/progress';
 import { UserEntitlements, getVisibleTabs, DashboardTabConfig } from '@/types/entitlements';
 import LeadsTab, { Lead } from '@/components/dashboard/LeadsTab';
 import OutreachTab, { Campaign } from '@/components/dashboard/OutreachTab';
-import VoiceTab, { CallLog, VoiceAgentConfig } from '@/components/dashboard/VoiceTab';
+import SecretaryTab, { CallLog, SecretaryConfig, WhatsAppThread, Booking } from '@/components/dashboard/SecretaryTab';
 import ContentTab, { ContentItem } from '@/components/dashboard/ContentTab';
+import KnowledgeTab, { IndexedDocument, KnowledgeStats } from '@/components/dashboard/KnowledgeTab';
 import { BundleUpsell } from '@/components/dashboard/UpsellComponents';
 import { ImpersonationBanner, useImpersonation } from '@/components/dashboard/ImpersonationBanner';
 
@@ -73,8 +74,17 @@ interface ClientDashboardClientProps {
     entitlements?: UserEntitlements;
     leads?: Lead[];
     outreachData?: { campaigns: Campaign[] };
-    voiceData?: { callLogs: CallLog[], config?: VoiceAgentConfig };
+    voiceData?: {
+        callLogs: CallLog[],
+        whatsappThreads?: WhatsAppThread[],
+        bookings?: Booking[],
+        config?: SecretaryConfig
+    };
     contentItems?: ContentItem[];
+    knowledgeData?: {
+        documents: IndexedDocument[];
+        stats?: KnowledgeStats;
+    };
     usageData?: {
         tokenUsage: { used: number; limit: number; resetDate: string };
         volume: { totalRuns: number; successRate: number; trend: string };
@@ -97,6 +107,7 @@ export default function ClientDashboardClient({
     outreachData = { campaigns: [] },
     voiceData = { callLogs: [] },
     contentItems = [],
+    knowledgeData,
     usageData,
     purchasedProducts = []
 }: ClientDashboardClientProps) {
@@ -452,13 +463,16 @@ export default function ClientDashboardClient({
                     />
                 )}
 
-                {/* Voice AI Tab */}
+                {/* Autonomous Secretary Tab */}
                 {activeTab === 'voice' && (
-                    <VoiceTab
+                    <SecretaryTab
                         callLogs={voiceData.callLogs}
+                        whatsappThreads={voiceData.whatsappThreads}
+                        bookings={voiceData.bookings}
                         config={voiceData.config}
                         isLocked={!userEntitlements.pillars.includes('voice')}
                         onUpgradeClick={() => handleUpgradeClick('voice')}
+                        clientId={project.id || ''}
                     />
                 )}
 
@@ -468,6 +482,16 @@ export default function ClientDashboardClient({
                         content={contentItems}
                         isLocked={!userEntitlements.pillars.includes('content')}
                         onUpgradeClick={() => handleUpgradeClick('content')}
+                    />
+                )}
+
+                {/* Knowledge Tab */}
+                {activeTab === 'knowledge' && (
+                    <KnowledgeTab
+                        documents={knowledgeData?.documents || []}
+                        stats={knowledgeData?.stats}
+                        isLocked={!userEntitlements.pillars.includes('knowledge')}
+                        onUpgradeClick={() => handleUpgradeClick('knowledge')}
                     />
                 )}
 

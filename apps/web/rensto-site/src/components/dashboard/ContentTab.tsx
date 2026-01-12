@@ -162,11 +162,28 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                         </button>
                     ))}
                 </div>
-                <Button variant="renstoSecondary" size="sm">
-                    <Sparkles className="w-4 h-4 mr-1" />
-                    Generate Content
-                </Button>
             </div>
+            <Button
+                variant="renstoSecondary"
+                size="sm"
+                onClick={() => {
+                    // In a real app, open a modal to select topic/type
+                    // For MVP, we'll trigger a default "Blog Post" about "Industry Trends"
+                    fetch('/api/content/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            clientId: 'current-user', // Should be passed in or handled by session
+                            type: 'blog',
+                            topic: 'Top trends in my industry for 2026'
+                        })
+                    }).then(() => alert('Content generation started! Check back in a few minutes.'));
+                }}
+            >
+                <Sparkles className="w-4 h-4 mr-1" />
+                Generate Content
+            </Button>
+
 
             {/* Content List */}
             <div
@@ -248,6 +265,6 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

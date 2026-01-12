@@ -251,28 +251,35 @@ const MOCK_TEMPLATES = [
     },
     {
         id: 'vCxY2DXUZ8vUb30f',
-        name: 'Monthly CRO Insights Bot',
-        outcomeHeadline: 'Automate Your Growth Strategy with Continuous UX Audits',
-        description: 'Turn your GA4 and Clarity data into a prioritized growth roadmap. This system autonomously identifies revenue leaks, rage clicks, and conversion bottlenecks, delivering actionable CRO recommendations directly to your team via Slack.',
-        category: 'Knowledge Engine',
+        name: "Monthly Growth Insights Bot",
+        outcomeHeadline: "Automate Your Growth Strategy with Continuous User Experience Audits",
+        description: "Turn your website data into a prioritized growth roadmap. This system autonomously identifies revenue leaks, user frustration signals, and conversion bottlenecks, delivering actionable growth recommendations directly to your team via Slack.",
+        category: "Knowledge & Research",
         price: 247,
         guarantee: 'Satisfaction Guaranteed',
+        rating: 4.8,
+        downloads: 112,
         creator: {
             name: 'Shaf Studio',
             bio: 'Data-driven optimization specialists focused on user behavior.',
             expertise: ['UX Analysis', 'Google Analytics 4', 'Conversion Optimization']
         },
-        features: [
-            { title: 'Drop-off Analysis', desc: 'Detection of funnel leaks and navigation bottlenecks across the journey.' },
-            { title: 'Heatmap Integration', desc: 'Correlating click density with user conversion intent scores.' },
-            { title: 'Slack Reporting', desc: 'Beautifully formatted monthly summaries sent directly to team channels.' },
-            { title: 'Action Item Prioritization', desc: 'Ranking fixes by estimated ROI and development effort.' }
+        features: ["Drop-off Analysis", "Behavioral Heatmaps", "Monthly Report"],
+        tools: ['google', 'n8n', 'openai'],
+        tags: ['marketplace'],
+        readinessStatus: 'Active',
+        deploymentSteps: [
+            { title: "Connect Data", desc: "Link your Google Analytics and session recording tools", icon: "Link" },
+            { title: "Define Goals", desc: "Set your KPI targets for the audit", icon: "Target" },
+            { title: "Receive Insights", desc: "Get your first growth report in Slack", icon: "Zap" }
         ],
+        businessImpact: "Agencies charge $2k/mo for this. You get it for $247.",
+        roiExample: "Identifying one checkout error saved a client $12k/mo.",
+        complexity: "Beginner",
         oneTimeCost: 1297,
-        maintenanceCost: 127,
-        maintenanceExplanation: "Covers GA4/Clarity data warehouse storage, automated monthly insight generation, and secure Slack communication maintenance.",
+        maintenanceCost: 0,
+        maintenanceExplanation: "Covers data warehouse storage, automated monthly insight generation, and secure Slack communication maintenance.",
         video: "/videos/cro-insights.mp4",
-        roiExample: "Identified $4,200/mo in potential recovered revenue from cart-abandonment UX leaks.",
         configurationSchema: [
             { id: 'ga4_id', label: 'GA4 Measurement ID', type: 'text', required: true, placeholder: 'G-XXXXXXXXXX' },
             { id: 'domain', label: 'Website Domain', type: 'url', required: true }
