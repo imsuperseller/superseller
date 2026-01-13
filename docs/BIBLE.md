@@ -37,13 +37,9 @@ Rensto operates on the belief that businesses shouldn't reinvent the wheel. We r
 ### 💼 Business (7)
 | Document | Path | Purpose |
 | :--- | :--- | :--- |
-| **Business Model** | [MODEL.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/MODEL.md) | Pricing, fulfillment, Core 7. |
-| **Products & Services** | [PRODUCTS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/PRODUCTS.md) | What we sell + config schemas. |
-| **Customer Journey** | [CUSTOMER_JOURNEY.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/CUSTOMER_JOURNEY.md) | Funnel stages. |
-| **Sales & Marketing** | [SALES_MARKETING.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/SALES_MARKETING.md) | Acquisition. |
-| **Support & Success** | [SUPPORT.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/SUPPORT.md) | Post-sale help. |
-| **Financials** | [FINANCIALS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/FINANCIALS.md) | Revenue & costs. |
-| **Active Clients** | [CLIENTS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/CLIENTS.md) | UAD, Miss Party, Tax4Us, Ardan. |
+| **Business Model** | [MODEL.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/products/PILLARS_OVERVIEW.md) | Pricing, fulfillment, pillars. |
+| **Products & Services** | [PRODUCTS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/products/PRODUCTIZATION_GUIDE.md) | What we sell + config schemas. |
+| **Active Clients** | [CLIENTS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/reference/CLIENTS.md) | UAD, Miss Party, Tax4Us, Ardan. |
 
 ### 🛠️ Technical (6)
 | Document | Path | Purpose |
@@ -71,17 +67,7 @@ Rensto operates on the belief that businesses shouldn't reinvent the wheel. We r
 ### 🔐 Security (1)
 | Document | Path | Purpose |
 | :--- | :--- | :--- |
-| **Security Policies** | [POLICIES.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/security/POLICIES.md) | Access, keys, incidents. |
-
-### ⚖️ Legal (1)
-| Document | Path | Purpose |
-| :--- | :--- | :--- |
-| **Legal & Compliance** | [COMPLIANCE.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/legal/COMPLIANCE.md) | Terms, privacy, contracts. |
-
-### 👥 Team (1)
-| Document | Path | Purpose |
-| :--- | :--- | :--- |
-| **Org Structure** | [ORG_STRUCTURE.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/team/ORG_STRUCTURE.md) | Roles & onboarding. |
+| **Security Policies** | [POLICIES.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/SYSTEMS_INVENTORY.md) | Access, keys, inventory. |
 
 ### 📖 Reference (1)
 | Document | Path | Purpose |

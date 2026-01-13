@@ -57,7 +57,7 @@ export interface ProjectData {
     clientName: string;
     packageName: string;
     startDate: string;
-    status: 'discovery' | 'build' | 'review' | 'launch' | 'maintenance' | 'paid' | 'onboarding';
+    status: 'discovery' | 'build' | 'review' | 'launch' | 'maintenance' | 'paid' | 'onboarding' | 'configuring' | 'provisioning';
     progress: number;
     deliverables: Deliverable[];
     invoices: Invoice[];
@@ -89,6 +89,7 @@ interface ClientDashboardClientProps {
         tokenUsage: { used: number; limit: number; resetDate: string };
         volume: { totalRuns: number; successRate: number; trend: string };
         billing: { estimatedCost: number; currency: string; nextInvoiceDate: string };
+        metrics?: { totalLeads: number; totalMessages: number; totalBookings: number };
     };
     purchasedProducts?: Array<{
         id: string;
@@ -98,6 +99,7 @@ interface ClientDashboardClientProps {
         status: string;
         lastUsed: string;
     }>;
+    clientId: string;
 }
 
 export default function ClientDashboardClient({
@@ -129,7 +131,12 @@ export default function ClientDashboardClient({
         switch (status) {
             case 'completed':
             case 'paid':
+            case 'launch':
                 return 'var(--rensto-cyan)';
+            case 'configuring':
+            case 'provisioning':
+            case 'build':
+                return 'var(--rensto-blue)';
             case 'in_progress':
             case 'pending':
                 return 'var(--rensto-orange)';
@@ -193,15 +200,28 @@ export default function ClientDashboardClient({
                             {project.clientName}
                         </h1>
                     </div>
-                    <div
-                        className="px-4 py-2 rounded-full text-sm font-medium"
-                        style={{
-                            backgroundColor: 'rgba(95, 251, 253, 0.1)',
-                            color: 'var(--rensto-cyan)',
-                            border: '1px solid var(--rensto-cyan)'
-                        }}
-                    >
-                        {project.packageName}
+                    <div className="flex items-center gap-4">
+                        {project.status === 'configuring' && (
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                                ANALYZING REQUIREMENTS...
+                            </div>
+                        )}
+                        {project.status === 'provisioning' && (
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                                <Zap className="h-3 w-3 animate-pulse" />
+                                SPINNING UP INSTANCE...
+                            </div>
+                        )}
+                        <div
+                            className="px-4 py-2 rounded-full text-sm font-medium"
+                            style={{
+                                backgroundColor: 'rgba(95, 251, 253, 0.1)',
+                                color: getStatusColor(project.status)
+                            }}
+                        >
+                            {project.status.replace('_', ' ').toUpperCase()}
+                        </div>
                     </div>
                 </div>
             </header>
@@ -402,6 +422,98 @@ export default function ClientDashboardClient({
                                     {Math.round((project.llmUsage.tokensUsed / project.llmUsage.tokensLimit) * 100)}%
                                 </p>
                             </div>
+
+                            <div
+                                className="rounded-xl p-5"
+                                style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                        style={{ backgroundColor: 'rgba(95, 251, 253, 0.2)' }}
+                                    >
+                                        <Users className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                    </div>
+                                    <span style={{ color: 'var(--rensto-text-muted)' }} className="text-sm">
+                                        Leads
+                                    </span>
+                                </div>
+                                <p
+                                    className="text-xl font-bold"
+                                    style={{ color: 'var(--rensto-text-primary)' }}
+                                >
+                                    {usageData?.metrics?.totalLeads || 0}
+                                </p>
+                            </div>
+
+                            <div
+                                className="rounded-xl p-5"
+                                style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                        style={{ backgroundColor: 'rgba(95, 251, 253, 0.2)' }}
+                                    >
+                                        <MessageSquare className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                    </div>
+                                    <span style={{ color: 'var(--rensto-text-muted)' }} className="text-sm">
+                                        Conversations
+                                    </span>
+                                </div>
+                                <p
+                                    className="text-xl font-bold"
+                                    style={{ color: 'var(--rensto-text-primary)' }}
+                                >
+                                    {usageData?.metrics?.totalMessages || 0}
+                                </p>
+                            </div>
+
+                            <div
+                                className="rounded-xl p-5"
+                                style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                        style={{ backgroundColor: 'rgba(95, 251, 253, 0.2)' }}
+                                    >
+                                        <Calendar className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                    </div>
+                                    <span style={{ color: 'var(--rensto-text-muted)' }} className="text-sm">
+                                        Bookings
+                                    </span>
+                                </div>
+                                <p
+                                    className="text-xl font-bold"
+                                    style={{ color: 'var(--rensto-text-primary)' }}
+                                >
+                                    {usageData?.metrics?.totalBookings || 0}
+                                </p>
+                            </div>
+
+                            <div
+                                className="rounded-xl p-5"
+                                style={{ backgroundColor: 'var(--rensto-bg-card)' }}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                        style={{ backgroundColor: 'rgba(95, 251, 253, 0.2)' }}
+                                    >
+                                        <TrendingUp className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
+                                    </div>
+                                    <span style={{ color: 'var(--rensto-text-muted)' }} className="text-sm">
+                                        System Health
+                                    </span>
+                                </div>
+                                <p
+                                    className="text-xl font-bold"
+                                    style={{ color: 'var(--rensto-text-primary)' }}
+                                >
+                                    {usageData?.volume.successRate || 100}%
+                                </p>
+                            </div>
                         </div>
 
                         {/* Quick Actions */}
@@ -448,9 +560,9 @@ export default function ClientDashboardClient({
                 {activeTab === 'leads' && (
                     <LeadsTab
                         leads={leads}
-                        isFreeTrialUser={userEntitlements.freeLeadsTrial && !userEntitlements.pillars.includes('leads')}
+                        isFreeTrialUser={userEntitlements.freeLeadsTrial && !userEntitlements.pillars.includes('lead-machine')}
                         freeLeadsRemaining={userEntitlements.freeLeadsRemaining}
-                        onUpgradeClick={() => handleUpgradeClick('leads')}
+                        onUpgradeClick={() => handleUpgradeClick('lead-machine')}
                     />
                 )}
 
@@ -458,8 +570,8 @@ export default function ClientDashboardClient({
                 {activeTab === 'outreach' && (
                     <OutreachTab
                         campaigns={outreachData.campaigns}
-                        isLocked={!userEntitlements.pillars.includes('outreach')}
-                        onUpgradeClick={() => handleUpgradeClick('outreach')}
+                        isLocked={!userEntitlements.pillars.includes('autonomous-secretary')}
+                        onUpgradeClick={() => handleUpgradeClick('autonomous-secretary')}
                     />
                 )}
 
@@ -470,8 +582,8 @@ export default function ClientDashboardClient({
                         whatsappThreads={voiceData.whatsappThreads}
                         bookings={voiceData.bookings}
                         config={voiceData.config}
-                        isLocked={!userEntitlements.pillars.includes('voice')}
-                        onUpgradeClick={() => handleUpgradeClick('voice')}
+                        isLocked={!userEntitlements.pillars.includes('autonomous-secretary')}
+                        onUpgradeClick={() => handleUpgradeClick('autonomous-secretary')}
                         clientId={project.id || ''}
                     />
                 )}
@@ -480,8 +592,8 @@ export default function ClientDashboardClient({
                 {activeTab === 'content' && (
                     <ContentTab
                         content={contentItems}
-                        isLocked={!userEntitlements.pillars.includes('content')}
-                        onUpgradeClick={() => handleUpgradeClick('content')}
+                        isLocked={!userEntitlements.pillars.includes('content-engine')}
+                        onUpgradeClick={() => handleUpgradeClick('content-engine')}
                     />
                 )}
 
@@ -490,8 +602,9 @@ export default function ClientDashboardClient({
                     <KnowledgeTab
                         documents={knowledgeData?.documents || []}
                         stats={knowledgeData?.stats}
-                        isLocked={!userEntitlements.pillars.includes('knowledge')}
-                        onUpgradeClick={() => handleUpgradeClick('knowledge')}
+                        isLocked={!userEntitlements.pillars.includes('knowledge-engine')}
+                        clientId={project.id || ''}
+                        onUpgradeClick={() => handleUpgradeClick('knowledge-engine')}
                     />
                 )}
 

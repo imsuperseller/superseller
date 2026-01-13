@@ -140,7 +140,7 @@ export function Header() {
                   color: '#ffffff',
                   boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)'
                 }}>
-                  <span>Get Started</span>
+                  <span>Activate Engine</span>
                 </Button>
               </Link>
             </div>

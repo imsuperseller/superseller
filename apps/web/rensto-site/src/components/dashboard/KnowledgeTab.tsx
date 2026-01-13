@@ -14,10 +14,12 @@ import {
     ArrowRight,
     Database,
     Sparkles,
-    RefreshCw
+    RefreshCw,
+    X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 import { SERVICE_DISPLAY_NAMES, SERVICE_DESCRIPTIONS } from '@/types/entitlements';
+import { toast } from 'sonner';
 
 export interface IndexedDocument {
     id: string;
@@ -39,6 +41,7 @@ export interface KnowledgeTabProps {
     documents: IndexedDocument[];
     stats?: KnowledgeStats;
     isLocked: boolean;
+    clientId: string;
     onUpgradeClick: () => void;
 }
 
@@ -48,10 +51,74 @@ export default function KnowledgeTab({
     documents,
     stats,
     isLocked,
+    clientId,
     onUpgradeClick
 }: KnowledgeTabProps) {
     const [activeView, setActiveView] = useState<ViewType>('documents');
     const [queryText, setQueryText] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
+    const [isIndexingUrl, setIsIndexingUrl] = useState(false);
+    const [showUrlInput, setShowUrlInput] = useState(false);
+    const [urlToIndex, setUrlToIndex] = useState('');
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('clientId', clientId);
+
+        try {
+            const res = await fetch('/api/knowledge/index', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                toast.success('File uploaded and indexing started!');
+            } else {
+                toast.error(data.error || 'Failed to upload file');
+            }
+        } catch (err) {
+            toast.error('Network error during upload');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const handleUrlIndex = async () => {
+        if (!urlToIndex) return;
+
+        setIsIndexingUrl(true);
+        try {
+            const res = await fetch('/api/knowledge/index', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: urlToIndex,
+                    clientId: clientId
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                toast.success('URL submitted for indexing!');
+                setShowUrlInput(false);
+                setUrlToIndex('');
+            } else {
+                toast.error(data.error || 'Failed to index URL');
+            }
+        } catch (err) {
+            toast.error('Network error during indexing');
+        } finally {
+            setIsIndexingUrl(false);
+        }
+    };
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -164,11 +231,67 @@ export default function KnowledgeTab({
                         </button>
                     ))}
                 </div>
-                <Button variant="renstoSecondary" size="sm">
-                    <Upload className="w-4 h-4 mr-1" />
-                    Upload Document
-                </Button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowUrlInput(!showUrlInput)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white/5 text-gray-400 border border-transparent hover:bg-white/10"
+                    >
+                        <Globe className="w-4 h-4" />
+                        Index URL
+                    </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept=".pdf,.txt,.doc,.docx"
+                        onChange={handleFileUpload}
+                    />
+                    <Button
+                        variant="renstoSecondary"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                    >
+                        <Upload className={`w-4 h-4 mr-1 ${isUploading ? 'animate-bounce' : ''}`} />
+                        {isUploading ? 'Uploading...' : 'Upload PDF'}
+                    </Button>
+                </div>
             </div>
+
+            {/* URL Input Bar */}
+            {showUrlInput && (
+                <div
+                    className="rounded-xl p-4 flex items-center gap-3 animate-in slide-in-from-top-2"
+                    style={{ backgroundColor: 'var(--rensto-bg-card)', border: '1px solid rgba(59, 130, 246, 0.2)' }}
+                >
+                    <Globe className="w-5 h-5 text-blue-400" />
+                    <input
+                        type="url"
+                        value={urlToIndex}
+                        onChange={(e) => setUrlToIndex(e.target.value)}
+                        placeholder="https://example.com/documentation"
+                        className="flex-1 bg-transparent border-none focus:outline-none text-white text-sm"
+                        autoFocus
+                    />
+                    <div className="flex gap-2">
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setShowUrlInput(false)}
+                        >
+                            <X className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-500 text-white"
+                            onClick={handleUrlIndex}
+                            disabled={isIndexingUrl}
+                        >
+                            {isIndexingUrl ? 'Indexing...' : 'Index'}
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             {/* Content Area */}
             <div
@@ -218,9 +341,14 @@ export default function KnowledgeTab({
                                 <Brain className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                                 <p className="text-gray-400 mb-2">No documents indexed yet</p>
                                 <p className="text-sm text-gray-500 mb-6">Upload PDFs or index web pages to build your knowledge base.</p>
-                                <Button variant="renstoSecondary" size="sm">
+                                <Button
+                                    variant="renstoSecondary"
+                                    size="sm"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isUploading}
+                                >
                                     <Upload className="w-4 h-4 mr-1" />
-                                    Upload First Document
+                                    {isUploading ? 'Uploading...' : 'Upload First Document'}
                                 </Button>
                             </div>
                         )}

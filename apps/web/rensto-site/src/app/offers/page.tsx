@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge-enhanced';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
 import { NoiseTexture, GlowContainer } from '@/components/ui/premium';
+import { PRODUCT_REGISTRY, CARE_PLANS } from '@/lib/registry/ProductRegistry';
 
 const translations = {
   en: {
@@ -34,126 +35,8 @@ const translations = {
     ctaText: "Let's discuss your targets and find the perfect automation infrastructure for your business.",
     scheduleCall: "Schedule Strategic Call",
     learnProcess: "Learn Our Methodology",
-    products: [
-      {
-        name: 'Strategic Audit',
-        price: 497,
-        description: 'A deep strategic review of your current operations. We identify $25,000+ in annual efficiency leaks and map your path to scale.',
-        features: [
-          'Full Operations Analysis',
-          'Revenue Leak Identification',
-          'Automation Roadmap',
-          'Tech Stack Review',
-          'ROI Projection Model'
-        ],
-        cta: 'Start Transformation',
-        benefit: 'Stop guessing where you lose money.',
-        popular: false,
-        icon: Target,
-        workflowId: 'call-audio-analysis'
-      },
-      {
-        name: 'The Lead Machine',
-        price: 997,
-        description: 'A 24/7 outbound engine that sources leads, enriches data, and sends custom outreach at scale while you sleep.',
-        features: [
-          'Automated Lead Sourcing',
-          'AI Data Enrichment',
-          'Multi-Channel Outreach',
-          'Smart CRM Sync',
-          'Daily Performance Reports'
-        ],
-        cta: 'Activate Lead Machine',
-        benefit: 'Fill your pipeline automatically.',
-        popular: true,
-        icon: Target,
-        workflowId: 'call-audio-analysis'
-      },
-      {
-        name: 'Autonomous Secretary',
-        price: 497,
-        description: '24/7 autonomous receptionist and sales representative that manages calendars, answers messages, and handles bookings.',
-        features: [
-          '24/7 Call Handling',
-          'WhatsApp Response Agent',
-          'Calendar Management',
-          'Multi-Language Support',
-          'Buying Intent Qualification'
-        ],
-        cta: 'Activate Secretary',
-        benefit: 'Never miss a client opportunity.',
-        popular: false,
-        icon: Workflow,
-        workflowId: 'youtuber-cloner'
-      },
-      {
-        name: 'Knowledge Engine',
-        price: 1497,
-        description: 'Connect AI to your company data. A private intelligence system with the "perfect memory" of your organization.',
-        features: [
-          'Live Data Sync',
-          'Private Knowledge Base',
-          'Internal Workflow Logic',
-          'Context-Aware Assistance',
-          'Enterprise Security'
-        ],
-        cta: 'Activate Knowledge Engine',
-        benefit: 'Instant answers for your team.',
-        popular: false,
-        icon: Workflow,
-        workflowId: 'youtuber-cloner'
-      },
-      {
-        name: 'The Content Engine',
-        price: 1497,
-        description: 'AI-powered content pipeline that handles research, ideation, and generation of high-authority content across all channels.',
-        features: ['Content Research & Ideation', 'Automated Video/Image Generation', 'Multi-Channel Distribution', 'Authority Building Logic', 'Weekly Growth Reports'],
-        cta: 'Activate The Engine',
-        popular: false,
-        icon: Users,
-        workflowId: 'celebrity-selfie-generator'
-      },
-      {
-        id: 'full-ecosystem',
-        name: 'Full Ecosystem',
-        price: 5497,
-        description: 'All four pillars plus premium support, custom integrations, and a dedicated expert for end‑to‑end automation.',
-        features: ['Lead Machine Engine', 'Voice AI Agent System', 'Knowledge Engine (RAG)', 'The Content Engine', 'Strategic Roadmap', 'Dedicated Automation Partner', '24/7 Priority Support'],
-        cta: 'Activate Full Ecosystem',
-        popular: true,
-        icon: Zap,
-        workflowId: null
-      }
-    ],
-    carePlans: [
-      {
-        name: 'Starter Care',
-        price: 497,
-        period: 'month',
-        description: 'Perfect for small teams needing monitoring',
-        features: ['Monitor automations & Fix breaks', '1 monthly check-in (15 min)', 'Update FAQs & Responses', 'Basic performance report', '5 hours/mo included'],
-        cta: 'Start Care Plan',
-        popular: false
-      },
-      {
-        name: 'Growth Care',
-        price: 997,
-        period: 'month',
-        description: 'Our most popular plan for active scaling',
-        features: ['Create 1-2 new automations/mo', 'Optimize flows & A/B test', 'Quarterly strategy call (1h)', 'CRM integration maintenance', '15 hours/mo included'],
-        cta: 'Get Growth Care',
-        popular: true
-      },
-      {
-        name: 'Scale Care',
-        price: 2497,
-        period: 'month',
-        description: 'A dedicated automation engineer for your team',
-        features: ['Dedicated engineer (same person)', 'Add custom features on request', 'Weekly sync calls', 'Full analytics dashboard', 'Priority response (<4 hrs)'],
-        cta: 'Get Scale Care',
-        popular: false
-      }
-    ]
+    products: Object.values(PRODUCT_REGISTRY),
+    carePlans: CARE_PLANS
   }
 };
 
@@ -351,10 +234,8 @@ export function OffersPageContent() {
                   <Button
                     size="xl"
                     onClick={() => {
-                      if (isAudit) {
-                        handleCheckout('automation-audit', 'service-purchase');
-                      } else if (isEcosystem) {
-                        handleCheckout('full-ecosystem', 'service-purchase');
+                      if (product.flowType === 'pillar-purchase' || product.id === 'automation-audit' || product.id === 'full-ecosystem') {
+                        handleCheckout(product.id, product.flowType);
                       } else {
                         document.getElementById('qualify')?.scrollIntoView({ behavior: 'smooth' });
                       }
@@ -574,17 +455,13 @@ export default function OffersPage() {
 }
 
 function getStripeLink(productName: string): string | undefined {
-  const links = {
-    'Strategic Audit': env.NEXT_PUBLIC_STRIPE_LINK_AUDIT,
-    'The Lead Machine': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
-    'The Content Engine': env.NEXT_PUBLIC_STRIPE_LINK_CONTENT_STARTER,
-    'Voice AI Agent': env.NEXT_PUBLIC_STRIPE_LINK_LEAD_INTAKE,
-    'Knowledge Engine': env.NEXT_PUBLIC_STRIPE_LINK_SPRINT,
-    'Full Ecosystem': env.NEXT_PUBLIC_STRIPE_LINK_FULL_ECOSYSTEM,
-    'Starter Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_STARTER,
-    'Growth Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_GROWTH,
-    'Scale Care': env.NEXT_PUBLIC_STRIPE_LINK_RETAINER_SCALE,
-  };
+  // Try to find in PRODUCT_REGISTRY first
+  const product = Object.values(PRODUCT_REGISTRY).find(p => p.name === productName);
+  if (product?.stripeLink) return product.stripeLink;
 
-  return links[productName as keyof typeof links];
+  // Then try CARE_PLANS
+  const plan = CARE_PLANS.find(p => p.name === productName);
+  if (plan?.stripeLink) return plan.stripeLink;
+
+  return undefined;
 }

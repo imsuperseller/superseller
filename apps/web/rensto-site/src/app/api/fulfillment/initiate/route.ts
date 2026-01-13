@@ -26,13 +26,13 @@ export async function POST(request: Request) {
         const db = getFirestoreAdmin();
         const instancesRef = db.collection(COLLECTIONS.SERVICE_INSTANCES);
 
-        // 1. Create the Service Instance record
+        // 1. Create/Update the Service Instance record
         const newInstance: Omit<ServiceInstance, 'id'> = {
             clientId,
             clientEmail: clientEmail || '',
             productId,
-            productName: productName || 'Rensto Service',
-            status: 'pending_setup',
+            productName: productName || productId,
+            status: 'configuring',
             configuration,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
@@ -42,17 +42,29 @@ export async function POST(request: Request) {
         const docRef = await instancesRef.add(newInstance);
         const instanceId = docRef.id;
 
-        // 2. Trigger N8N Fulfillment Orchestrator
+        // 2. Identify n8n Entry Point based on Product ID
+        const configWebhooks: Record<string, string> = {
+            'lead-machine': process.env.N8N_LEAD_MACHINE_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
+            'autonomous-secretary': process.env.N8N_SECRETARY_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
+            'knowledge-engine': process.env.N8N_KNOWLEDGE_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
+            'content-engine': process.env.N8N_CONTENT_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
+        };
+
+        const targetWebhook = configWebhooks[productId] || N8N_FULFILLMENT_WEBHOOK;
+
+        // 3. Trigger N8N Fulfillment Orchestrator
         try {
-            await fetch(N8N_FULFILLMENT_WEBHOOK, {
+            await fetch(targetWebhook, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    type: 'service_initiation',
+                    type: 'service_configuration_submitted',
                     instanceId,
                     clientId,
                     clientEmail,
+                    productId,
                     productName,
+                    config: configuration,
                     timestamp: new Date().toISOString()
                 })
             });

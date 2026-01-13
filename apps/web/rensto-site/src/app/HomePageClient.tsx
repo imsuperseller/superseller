@@ -104,24 +104,24 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         }
     };
 
-    // Four core pillars - ROI focused
+    // Four core pillars - Persona Aligned
     const serviceTypes = [
         {
             id: 'lead-gen',
             name: 'The Lead Machine',
-            tagline: 'Outbound & Prospecting',
-            description: 'A 24/7 outbound engine that sources leads, enriches data, and sends custom outreach at scale while you sleep.',
-            vsHuman: 'Replaces 3-5 manual SDRs with zero management overhead.',
+            tagline: 'The Profit Siphon',
+            description: 'An autonomous outbound engine that stops the revenue leak. Sources, enriches, and closes leads while you sleep.',
+            vsHuman: 'Architect ROI: Replaces 3-5 manual SDRs with zero management overhead.',
             icon: Target,
             features: [
-                'Automated Lead Sourcing',
-                'AI Data Enrichment',
-                'Multi-Channel Outreach',
-                'Smart CRM Synchronization',
-                'Daily Performance Reports'
+                'Automated Profit Sourcing',
+                'AI Data Mining',
+                'Multi-Channel Capture',
+                'Logic-First CRM Sync',
+                'Daily Revenue Reports'
             ],
             pricing: 'From $997/mo',
-            qualifier: 'Scale your sales overnight',
+            qualifier: 'Scale your profit overnight',
             cta: 'Activate My Engine',
             href: '/offers',
             gradient: 'primary',
@@ -131,19 +131,19 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         {
             id: 'voice-ai-agent',
             name: 'Voice AI Agent',
-            tagline: 'Autonomous Receptionist',
-            description: 'A 24/7 AI sales rep and receptionist that handles calls, books meetings, and syncs perfectly with your CRM.',
-            vsHuman: 'Available 24/7. Never forgets a follow-up. 1/10th the cost of a human.',
+            tagline: 'The Autonomous Closer',
+            description: 'A 24/7 digital expert and closer that handles logic-based calls and books high-value commitments.',
+            vsHuman: 'Specialist Edge: 24/7 availability. Zero latency. 1/10th the cost of a human.',
             icon: Mic,
             features: [
-                '24/7 Inbound/Outbound Calls',
-                'Automated Appointment Booking',
-                'Live CRM Connection',
-                'Multi-Language Support',
-                'Meeting Lead Qualification'
+                '24/7 Inbound/Outbound Logic',
+                'Automated ROI Commitment',
+                'Digital Gateway Connection',
+                'Vision-Aware Support',
+                'Expert Lead Filtering'
             ],
             pricing: 'From $497/mo',
-            qualifier: 'Never miss a call again',
+            qualifier: 'Never miss a connection',
             cta: 'Partner With My Agent',
             href: '/whatsapp',
             gradient: 'accent',
@@ -153,21 +153,21 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         {
             id: 'rag-systems',
             name: 'Knowledge Engine',
-            tagline: 'Custom Knowledge RAG',
-            description: 'Connect AI to your company data. A private intelligence system with the "perfect memory" of your organization.',
-            vsHuman: 'The employee who knows every project and best practice instantly.',
+            tagline: 'Digital Wisdom RAG',
+            description: 'The Digital Brain of your company. Connect AI to your private data for a collective intelligence with perfect memory.',
+            vsHuman: 'Futurist Vision: The employee who knows every project and best practice instantly.',
             icon: Shield,
             features: [
-                'Live Data Source Sync',
-                'Private AI Knowledge Base',
-                'Internal Workflow Logic',
-                'Context-Aware Assistance',
-                'Enterprise-Grade Security'
+                'Live Digital Brain Sync',
+                'Private Wisdom Base',
+                'Internal Logic Pathways',
+                'Vision-Aware Context',
+                'Enterprise-Grade Logic'
             ],
             pricing: 'From $1,497/mo',
-            qualifier: 'For established teams',
-            cta: 'Secure My Data',
-            href: '/contact',
+            qualifier: 'For visionary teams',
+            cta: 'Secure My Wisdom',
+            href: '/offers#knowledge-engine',
             gradient: 'secondary',
             popular: false,
             slots: 'Advanced Systems'
@@ -175,20 +175,20 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         {
             id: 'content-engine',
             name: 'The Content Engine',
-            tagline: 'Idea to Content Pipeline',
-            description: 'Autonomous systems that handle research, ideation, and generation of high-authority content at scale.',
-            vsHuman: 'A full content agency engine that never runs out of ideas.',
+            tagline: 'The Authority Pipeline',
+            description: 'Autonomous systems that transform ideas into high-authority viral content at scale. Your digital megaphone.',
+            vsHuman: 'A full content agency engine that never runs out of visionary ideas.',
             icon: Users,
             features: [
-                'Content Research & Ideation',
-                'Automated Video/Image Gen',
-                'Multi-Channel Distribution',
-                'Authority Building Logic',
-                'Weekly Growth Reports'
+                'Visionary Research & Ideation',
+                'Automated Viral Preview',
+                'Multi-Channel Megaphone',
+                'Authority Multiplier Logic',
+                'Growth Evolution Reports'
             ],
             pricing: 'From $1,497/mo',
-            qualifier: 'Dominate your market',
-            cta: 'Start Creating',
+            qualifier: 'Dominate the transition',
+            cta: 'Start Evolving',
             href: '/offers',
             gradient: 'primary',
             popular: false,
@@ -435,12 +435,9 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                             <h1
                                 className="hero-title text-4xl sm:text-5xl md:text-8xl font-black mb-6 leading-[0.9] tracking-tighter uppercase italic text-white"
                             >
-                                Activate Your {' '}
-                                <span className="text-cyan-400">
-                                    Autonomous Ecosystem
-                                </span>
+                                Stop the <span className="text-cyan-400">Manual Work Tax.</span>
                                 <span className="block text-3xl sm:text-4xl md:text-5xl mt-2 text-slate-400">
-                                    The 4 Pillars of Scale.
+                                    Deploy Your Profit Engines.
                                 </span>
                             </h1>
 
@@ -448,7 +445,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                 className="hero-description text-xl md:text-2xl mb-6 max-w-3xl mx-auto"
                                 style={{ color: 'var(--rensto-text-secondary)' }}
                             >
-                                We activate AI-powered automation systems that handle your sales, support, and operations 24/7.
+                                We architect autonomous ecosystems that stop the theft of your time and scale your business 24/7.
                             </p>
 
                             {/* Key Benefits - Scannable */}

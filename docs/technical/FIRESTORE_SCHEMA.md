@@ -8,11 +8,13 @@
 
 | Collection | Purpose |
 | :--- | :--- |
-| `templates` | Marketplace workflow templates (**enhanced with visibility rules**) |
+| `users` | **[PRIMARY]** Unified identity, entitlements, and service status |
+| `templates` | Marketplace workflow templates (with visibility rules) |
 | `purchases` | Download tokens and purchase records |
 | `payments` | All Stripe payment events |
-| `clients` | General client records (with landing page display flags) |
 | `service_instances` | Active service deployments |
+| `clients` | **[DEPRECATED]** Legacy client records (Public/Legacy only) |
+| `customSolutionsClients` | **[DEPRECATED]** Legacy managed clients |
 
 ### `clients` Schema (Key Fields)
 ```typescript

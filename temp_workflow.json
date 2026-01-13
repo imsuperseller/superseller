@@ -1,0 +1,122 @@
+={
+    "updatedAt": "2026-01-13T04:26:43.621Z",
+    "createdAt": "2026-01-12T07:17:24.938Z",
+    "id": "dEnD7sb1XNbyp189",
+    "name": "Rensto Internal Content Engine (PATCHED V6)",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "preserve-topic",
+                            "name": "topic",
+                            "value": "={{ $('Topic Rotation').first().json.topic }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "preserve-research",
+                            "name": "researchData",
+                            "value": "={{ $('Google search1').first().json.organic_results }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "includeOtherFields": true,
+                "options": {}
+            },
+            "id": "37f0ec84-7738-4a57-97d3-c637d948ff23",
+            "name": "Preserve Context for Agent",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -13104,
+                7584
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "check-parse-error",
+                            "leftValue": "={{ $json.error === undefined }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "true",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                -12384,
+                7584
+            ],
+            "id": "495ba300-8df9-43b3-9dbb-e03b80640c99",
+            "name": "Parse Successful?"
+        },
+        {
+            "parameters": {
+                "authentication": "oAuth2",
+                "select": "channel",
+                "channelId": {
+                    "__rl": true,
+                    "value": "C09F6TB6Q7L",
+                    "mode": "list"
+                },
+                "operation": "sendAndWait",
+                "message": "=\ud83c\udfaf *RENSTO TOPIC SELECTION*\\n\\n*Selected Topic:*\\n{{ $json.topic }}\\n\\nReview this topic for the next blog post?",
+                "approvalOptions": {
+                    "values": {
+                        "approveLabel": "\u2705 Approve Topic"
+                    }
+                },
+                "options": {}
+            },
+            "id": "c577fc26-c19a-424b-9272-b829639e3fe5",
+            "name": "Topic Approval Request",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.3,
+            "position": [
+                -11152,
+                3552
+            ],
+            "webhookId": "b0c65151-fa76-4ab6-91c1-6ff66a136fff",
+            "credentials": {
+                "slackOAuth2Api": {
+                    "id": "SzzmIuZvYlH8PQ30",
+                    "name": "rensto"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Topic Approval Request": {
+            "main": [
+                [
+                    {
+                        "node": "Topic Approved?1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

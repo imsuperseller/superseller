@@ -32,7 +32,7 @@ function serializeData(data: any): any {
     return serialized;
 }
 
-const MOCK_TEMPLATES_EN: Template[] = [
+const MOCK_TEMPLATES_EN: (Template & { videoScripts: any[] })[] = [
     {
         id: '4OYGXXMYeJFfAo6X',
         name: "Celebrity Selfie Video Generator",
@@ -47,7 +47,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['whatsapp', 'n8n', 'higgsfield'],
         video: "/videos/celebrity-selfie-generator.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'architect',
+                hook: "Stop begging for attention. Start stealing it. I just built a system that turns your customers into movie stars.",
+                energy: "High/Aggressive",
+                visualDirecting: "Dynamic Crop: Pan from eyes to full avatar (0.8s)."
+            }
+        ]
     },
     {
         id: '8GC371u1uBQ8WLmu',
@@ -63,7 +71,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['meta', 'openai', 'n8n'],
         video: "/videos/meta-ad-analyzer.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'specialist',
+                hook: "Amateurs guess. Pros scrape. While your competitors are busy 'testing' new ad hooks, I’m reverse-engineering what’s already printing money.",
+                energy: "Calm/Systems",
+                visualDirecting: "B-Roll Bridge: Overlay screen recordings of meta ad library scraping."
+            }
+        ]
     },
     {
         id: '5pMi01SwffYB6KeX',
@@ -78,7 +94,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['youtube', 'telegram', 'perplexity'],
         video: "/videos/youtube-clone.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'futurist',
+                hook: "I realized I couldn't be in 100 places at once. So I built an AI that could. Transform any YouTube channel into your private intelligence engine.",
+                energy: "Story-Driven",
+                visualDirecting: "Glow: Use Rensto Purple gradient blur behind the avatar."
+            }
+        ]
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
@@ -94,7 +118,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'architect',
+                hook: "Your sales team is blind. Based on 'vibes.' This AI scans every call and categorizes the revenue before the phone is even hung up.",
+                energy: "High/Aggressive",
+                visualDirecting: "Text Pop: Bold captions syncing with keywords like 'REVENUE' in red."
+            }
+        ]
     },
     {
         id: '5Fl9WUjYTpodcloJ',
@@ -109,7 +141,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['google', 'slack', 'n8n'],
         video: "/videos/calendar-assistant.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'specialist',
+                hook: "The most expensive thing in your business is friction. Reclaim your time with an Autonomous Booking Rep.",
+                energy: "Calm/Systems",
+                visualDirecting: "Static Shot: Focus on high hand movement settings for realism."
+            }
+        ]
     },
     {
         id: 'stj8DmATqe66D9j4',
@@ -124,7 +164,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['n8n', 'openai', 'midjourney'],
         video: "/videos/floor-plan-tour.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'futurist',
+                hook: "Buyers don't buy blueprints; they buy visions. Transform 2D floor plans into photorealistic cinematic tours.",
+                energy: "Story-Driven",
+                visualDirecting: "Slow Pan: Match the architectural style with the background lighting."
+            }
+        ]
     },
     {
         id: 'vCxY2DXUZ8vUb30f',
@@ -139,7 +187,15 @@ const MOCK_TEMPLATES_EN: Template[] = [
         tools: ['google', 'n8n', 'openai'],
         video: "/videos/cro-insights.mp4",
         tags: ['marketplace'],
-        readinessStatus: 'Active'
+        readinessStatus: 'Active',
+        videoScripts: [
+            {
+                persona: 'specialist',
+                hook: "Your website is leaking money. This bot audits your user behavior 24/7 and drops a roadmap in your Slack.",
+                energy: "Calm/Systems",
+                visualDirecting: "Screen Trace: Show behavioral heatmaps as B-Roll."
+            }
+        ]
     }
 ];
 

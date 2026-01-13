@@ -18,28 +18,9 @@
 | Invoice/Receipt email | ✅ Done | Stripe webhook (service-purchase) |
 | Fulfillment started | ✅ Done | `/api/fulfillment/initiate` |
 | Fulfillment complete | ✅ Done | `/api/fulfillment/finalize` |
-| Support ticket | ⚠️ Ready | Import added, needs email lookup |
-| Subscription renewal | ✅ Ready | Template created |
-| Re-engagement | ✅ Ready | Template created, needs n8n workflow |
-
----
-
-## 🔴 High Priority (P1)
-
-### Email Templates (9 hours)
-| Gap | Status | Notes |
-| :--- | :--- | :--- |
-| 8 email templates missing | ❌ Open | Resend SDK installed, templates not created |
-| Welcome email | ❌ Open | Trigger: Stripe checkout.session.completed |
-| Download delivery email | ❌ Open | Trigger: marketplace-template purchase |
-| Fulfillment emails (start/complete) | ❌ Open | Trigger: /api/fulfillment/* |
-
-### Retention Automation (8 hours)
-| Gap | Status | Notes |
-| :--- | :--- | :--- |
-| No lifecycle workflows | ❌ Open | Need n8n workflow |
-| No re-engagement campaigns | ❌ Open | Depends on email templates |
-| No churn risk tracking | ❌ Open | Depends on usage_logs |
+| Support ticket | ✅ Done | `lib/email.ts` |
+| Subscription renewal | ✅ Done | `lib/email.ts` |
+| Re-engagement | ✅ Done | `lib/email.ts` |
 
 ---
 

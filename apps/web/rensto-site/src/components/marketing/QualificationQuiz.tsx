@@ -44,8 +44,8 @@ const translations = {
     en: {
         steps: [
             {
-                title: 'Which industry are you in?',
-                subtitle: 'Our AI is optimized for specific business architectures.',
+                title: 'Business Architecture',
+                subtitle: 'Which logic structure are we optimizing?',
                 options: {
                     legal: 'Law Firm',
                     healthcare: 'Healthcare',
@@ -58,8 +58,8 @@ const translations = {
                 }
             },
             {
-                title: 'What is your biggest bottleneck?',
-                subtitle: 'Identify the leak in your operational efficiency.',
+                title: 'The Revenue Leak',
+                subtitle: 'Identify the primary bottleneck in your operational efficiency.',
                 options: {
                     manual_intake: 'Manual Lead Intake',
                     workflow_bottlenecks: 'Broken Workflows',
@@ -68,8 +68,8 @@ const translations = {
                 }
             },
             {
-                title: 'Manual work hours lost per week?',
-                subtitle: 'Estimated time spent on tasks that could be automated.',
+                title: 'The Inefficiency Audit',
+                subtitle: 'Logical hours lost per week to manual execution.',
                 options: {
                     h5: 'Under 10 hours',
                     h10: '10-20 hours',
@@ -81,9 +81,9 @@ const translations = {
         step: 'Step',
         of: 'of',
         back: 'Back',
-        calculating: 'Analyzing Your Potential',
-        comparing: 'Comparing your ops against our database of 500+ automations...',
-        complete: 'Analysis Complete',
+        calculating: 'Analyzing Logical Leverage',
+        comparing: 'Benchmarking your ops against 500+ production-ready engines...',
+        complete: 'Diagnostic Complete',
         youAre: 'You are',
         automatable: 'Automatable',
         savingsLabel: 'Estimated Annual Savings',
@@ -91,7 +91,7 @@ const translations = {
         planLabel: 'Recommended Plan',
         planSub: 'Optimized for your bottleneck',
         emailPlaceholder: 'Enter email to get your detailed report',
-        cta: 'Get Your Personal Automation Roadmap',
+        cta: 'Generate My Personal ROI Roadmap',
         startOver: 'Start over'
     },
     he: {

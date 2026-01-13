@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server';
 export async function GET() {
     const services = [
         { name: 'n8n', url: 'https://n8n.rensto.com/api/v1/healthz' },
-        { name: 'WAHA', url: 'http://172.245.56.50:3000/api/health' },
+        { name: 'WAHA', url: `${process.env.WAHA_BASE_URL}/api/health` },
         { name: 'Marketplace', url: 'https://market.rensto.com' },
         { name: 'API Gateway', url: 'https://gateway.rensto.com' },
         { name: 'SaaS API', url: 'https://api.rensto.com' },
-        { name: 'LightRAG', url: 'http://172.245.56.50:8020/query', method: 'OPTIONS' },
+        { name: 'LightRAG', url: `${process.env.LIGHTRAG_BASE_URL}/query`, method: 'OPTIONS' },
     ];
 
     const results = await Promise.all(services.map(async (service) => {

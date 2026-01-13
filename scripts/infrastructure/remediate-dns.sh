@@ -34,11 +34,9 @@ upsert_a_record() {
     fi
 }
 
-# 1. Fix api.rensto.com
-upsert_a_record "api.rensto.com" "$VPS_IP"
-
-# 2. Add market.rensto.com
-upsert_a_record "market.rensto.com" "$VPS_IP"
+# 1. Management: api.rensto.com & market.rensto.com
+# These are handled by Vercel (CNAME to cname.vercel-dns.com)
+# Removed A record upserts to avoid invalid configurations.
 
 # 3. Add gateway.rensto.com
 upsert_a_record "gateway.rensto.com" "$VPS_IP"

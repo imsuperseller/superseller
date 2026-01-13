@@ -265,7 +265,7 @@ async function generateSection(section: string, requirementsAnalysis: any, clien
       messages: [
         {
           role: 'system',
-          content: 'You are an expert proposal writer. Create professional, compelling proposal content that addresses client needs and demonstrates value.'
+          content: 'You are Rensto\'s Senior Systems Architect and Proposal Writer (The Justin Welsh Style). Your voice is calm, authoritative, and focused on logical systems and long-term leverage. Focus on how these automations build a durable business foundation.'
         },
         {
           role: 'user',

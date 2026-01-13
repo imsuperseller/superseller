@@ -84,8 +84,54 @@ const mockBillingData = {
   },
 };
 
+import { useEffect } from 'react';
+import { Skeleton } from '@/components/ui/skeleton-enhanced';
+
 export default function BillingPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('current');
+  const [billingData, setBillingData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBilling();
+  }, []);
+
+  const fetchBilling = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/billing/status');
+      const data = await response.json();
+      if (data.success) {
+        setBillingData(data.billing);
+      }
+    } catch (error) {
+      console.error('Failed to fetch billing:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-20 w-full" />
+        <div className="grid grid-cols-4 gap-6">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  const data = billingData || {
+    currentPeriod: { start: 'N/A', end: 'N/A', total: 0, usage: 0, limit: 100 },
+    invoices: [],
+    usageBreakdown: [],
+    paymentMethod: { type: 'N/A', last4: '****', expiry: 'N/A', name: 'N/A' }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -138,9 +184,9 @@ export default function BillingPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-600">Current Period</p>
-                <p className="text-2xl font-bold text-slate-900">${mockBillingData.currentPeriod.total}</p>
+                <p className="text-2xl font-bold text-slate-900">${data.currentPeriod.total}</p>
                 <p className="text-xs text-slate-500">
-                  {mockBillingData.currentPeriod.start} - {mockBillingData.currentPeriod.end}
+                  {data.currentPeriod.start} - {data.currentPeriod.end}
                 </p>
               </div>
             </div>
@@ -155,8 +201,8 @@ export default function BillingPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-600">Usage</p>
-                <p className="text-2xl font-bold text-slate-900">{mockBillingData.currentPeriod.usage}%</p>
-                <p className="text-xs text-slate-500">of {mockBillingData.currentPeriod.limit}% limit</p>
+                <p className="text-2xl font-bold text-slate-900">{data.currentPeriod.usage}%</p>
+                <p className="text-xs text-slate-500">of {data.currentPeriod.limit}% limit</p>
               </div>
             </div>
           </CardContent>
@@ -171,7 +217,7 @@ export default function BillingPage() {
               <div>
                 <p className="text-sm font-medium text-slate-600">Next Invoice</p>
                 <p className="text-2xl font-bold text-slate-900">Jan 31</p>
-                <p className="text-xs text-slate-500">Estimated: ${mockBillingData.currentPeriod.total}</p>
+                <p className="text-xs text-slate-500">Estimated: ${data.currentPeriod.total}</p>
               </div>
             </div>
           </CardContent>
@@ -185,8 +231,8 @@ export default function BillingPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-600">Payment Method</p>
-                <p className="text-2xl font-bold text-slate-900">{mockBillingData.paymentMethod.type}</p>
-                <p className="text-xs text-slate-500">•••• {mockBillingData.paymentMethod.last4}</p>
+                <p className="text-2xl font-bold text-slate-900">{data.paymentMethod.type}</p>
+                <p className="text-xs text-slate-500">•••• {data.paymentMethod.last4}</p>
               </div>
             </div>
           </CardContent>
@@ -203,7 +249,7 @@ export default function BillingPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockBillingData.usageBreakdown.map((item, index) => (
+            {data.usageBreakdown.map((item: any, index: number) => (
               <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="w-3 h-3 rounded-full bg-orange-500"></div>
@@ -248,7 +294,7 @@ export default function BillingPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockBillingData.invoices.map((invoice) => (
+              {data.invoices.map((invoice: any) => (
                 <TableRow key={invoice.id}>
                   <TableCell className="font-medium">{invoice.id}</TableCell>
                   <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
@@ -288,10 +334,10 @@ export default function BillingPage() {
               </div>
               <div>
                 <p className="font-medium text-slate-900">
-                  {mockBillingData.paymentMethod.type} •••• {mockBillingData.paymentMethod.last4}
+                  {data.paymentMethod.type} •••• {data.paymentMethod.last4}
                 </p>
                 <p className="text-sm text-slate-600">
-                  Expires {mockBillingData.paymentMethod.expiry} • {mockBillingData.paymentMethod.name}
+                  Expires {data.paymentMethod.expiry} • {data.paymentMethod.name}
                 </p>
               </div>
             </div>

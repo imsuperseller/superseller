@@ -45,19 +45,25 @@ export function getFirestoreAdmin(): Firestore {
 
     getFirebaseAdmin();
     firestoreDb = getFirestore();
-    firestoreDb.settings({ ignoreUndefinedProperties: true });
+    try {
+        firestoreDb.settings({ ignoreUndefinedProperties: true });
+    } catch (e) {
+        // Ignore if already initialized
+        console.warn('Firestore settings already initialized');
+    }
     return firestoreDb;
 }
 
 // Collection names
 export const COLLECTIONS = {
-    // Existing collections
+    // [DEPRECATED] Legacy collections - Use USERS for primary client data
     CUSTOM_SOLUTIONS_CLIENTS: 'customSolutionsClients',
+    CLIENTS: 'clients',
+
     MAGIC_LINK_TOKENS: 'magicLinkTokens',
     TEMPLATES: 'templates',
     DOWNLOADS: 'downloads',
     AUDITS: 'audits',
-    CLIENTS: 'clients',
     ANALYTICS: 'analytics',
     SCORECARDS: 'scorecards',
     CONSULTATIONS: 'consultations',
@@ -86,7 +92,7 @@ export const COLLECTIONS = {
     LAUNCH_TASKS: 'launch_tasks',
     OUTREACH_CAMPAIGNS: 'outreach_campaigns',
     VOICE_CALL_LOGS: 'voice_call_logs',
-    CONTENT_ITEMS: 'content_items'
+    CONTENT_ITEMS: 'content_posts'
 } as const;
 
 // Export interfaces from definitions file

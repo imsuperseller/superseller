@@ -16,28 +16,43 @@ const DEFAULT_DELIVERABLES: Deliverable[] = [
 
 const generateInvoiceId = () => Math.random().toString(36).substring(7);
 
-async function getUsageData(clientId: string): Promise<{ tokensUsed: number, lastReset: string }> {
+async function getUsageData(clientId: string): Promise<{ tokensUsed: number, totalRuns: number, successRate: number, lastReset: string, metrics?: any }> {
     const db = getFirestoreAdmin();
     try {
+        const userSnap = await db.collection(COLLECTIONS.USERS).doc(clientId).get();
+        const userData = userSnap.data() || {};
+        const metrics = userData.metrics || { totalLeads: 0, totalMessages: 0, totalBookings: 0 };
+
         const usageSnap = await db.collection(COLLECTIONS.USAGE_LOGS)
             .where('clientId', '==', clientId)
             .get();
 
         let totalTokens = 0;
+        let totalRuns = usageSnap.size;
+        let successCount = 0;
+
         usageSnap.docs.forEach(doc => {
             const data = doc.data();
             if (data.tokens?.total) {
                 totalTokens += data.tokens.total;
             }
+            if (data.status === 'success' || data.status === 'completed') {
+                successCount++;
+            }
         });
+
+        const successRate = totalRuns > 0 ? (successCount / totalRuns) * 100 : 100;
 
         return {
             tokensUsed: totalTokens,
-            lastReset: new Date().toLocaleDateString(), // TODO: Real monthly reset logic
+            totalRuns: totalRuns,
+            successRate: Number(successRate.toFixed(1)),
+            lastReset: userData.metrics?.lastResetAt?.toDate ? userData.metrics.lastResetAt.toDate().toLocaleDateString() : new Date().toLocaleDateString(),
+            metrics
         };
     } catch (err) {
         console.error('Error fetching usage data:', err);
-        return { tokensUsed: 0, lastReset: new Date().toLocaleDateString() };
+        return { tokensUsed: 0, totalRuns: 0, successRate: 100, lastReset: new Date().toLocaleDateString() };
     }
 }
 
@@ -53,28 +68,6 @@ async function getClientData(clientId: string): Promise<{ project: ProjectData, 
     const userSnap = await userRef.get();
 
     if (!customSnap.exists && !userSnap.exists) {
-        // Fallback for dev/test user
-        if (clientId === 'shai-personal') {
-            return {
-                project: {
-                    id: clientId,
-                    clientName: 'Shai Friedman',
-                    packageName: 'Custom Solution',
-                    startDate: new Date().toLocaleDateString(),
-                    status: 'build',
-                    progress: 45,
-                    deliverables: DEFAULT_DELIVERABLES,
-                    invoices: [],
-                    llmUsage: { tokensUsed: 1250, tokensLimit: 500000, lastReset: new Date().toLocaleDateString() }
-                },
-                entitlements: {
-                    freeLeadsTrial: true,
-                    pillars: ['voice', 'leads'],
-                    marketplaceProducts: [],
-                    customSolution: { projectId: clientId, status: 'build', packageName: 'Custom Solution' }
-                }
-            };
-        }
         return null;
     }
 
@@ -257,12 +250,16 @@ async function getKnowledgeData(clientId: string) {
 
         const documents = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // Mock stats for now
+        const totalChunks = documents.reduce((acc, doc: any) => acc + (doc.chunksCount || 0), 0);
+        const lastUpdated = documents.length > 0
+            ? ((documents[0] as any).indexedAt?.toDate?.()?.toISOString() || (documents[0] as any).indexedAt)
+            : new Date().toISOString();
+
         const stats = {
             totalDocuments: documents.length,
-            totalChunks: documents.length * 15, // rough estimate
-            lastUpdated: (documents[0] as any)?.indexedAt || new Date().toISOString(),
-            storageUsed: `${(documents.length * 0.5).toFixed(1)} MB`
+            totalChunks,
+            lastUpdated,
+            storageUsed: `${(documents.length * 0.2).toFixed(1)} MB` // Estimated storage
         };
 
         return { documents, stats };
@@ -308,7 +305,7 @@ export default async function ClientDashboardPage({ params, searchParams }: { pa
     const session = await verifySession();
     const token = resolvedSearchParams.token;
 
-    let isAuthorized = session.isValid || clientId === 'test-verification-client' || clientId === 'shai-personal';
+    let isAuthorized = session.isValid;
 
     // 2. Token-based bypass for Free Trial users
     if (!isAuthorized && token) {
@@ -330,25 +327,18 @@ export default async function ClientDashboardPage({ params, searchParams }: { pa
     }
 
     // 2. Fetch Data
-    const [clientResult, leads, outreachData, voiceData, contentItems, knowledgeData] = await Promise.all([
+    const [clientResult, leads, outreachData, voiceData, contentItems, knowledgeData, usage] = await Promise.all([
         getClientData(clientId),
         getLeadsData(clientId),
         getOutreachData(clientId),
         getSecretaryData(clientId),
         getContentData(clientId),
-        getKnowledgeData(clientId)
+        getKnowledgeData(clientId),
+        getUsageData(clientId)
     ]);
 
     if (!clientResult) {
         notFound();
-    }
-
-    // 3. Render Client Component
-    // Inject mock marketplace products for demo/test purposes if using the test client
-    if (clientId === 'test-verification-client') {
-        if (!clientResult.entitlements.marketplaceProducts?.includes('celebrity-video')) {
-            clientResult.entitlements.marketplaceProducts = [...(clientResult.entitlements.marketplaceProducts || []), 'celebrity-video', 'ad-analyzer'];
-        }
     }
 
     const purchasedProducts = await getPurchasedProducts(clientId, clientResult.entitlements.marketplaceProducts);
@@ -362,25 +352,26 @@ export default async function ClientDashboardPage({ params, searchParams }: { pa
             voiceData={voiceData as any}
             contentItems={contentItems as any}
             knowledgeData={knowledgeData as any}
+            clientId={clientId}
             usageData={{
                 tokenUsage: {
-                    used: clientResult.project.llmUsage.tokensUsed,
+                    used: usage.tokensUsed,
                     limit: clientResult.project.llmUsage.tokensLimit,
-                    resetDate: clientResult.project.llmUsage.lastReset
+                    resetDate: usage.lastReset
                 },
                 volume: {
-                    totalRuns: 124, // TODO: Real metrics
-                    successRate: 98.4,
-                    trend: '+12%'
+                    totalRuns: usage.totalRuns,
+                    successRate: usage.successRate,
+                    trend: '+0%' // Resetting trend for now
                 },
                 billing: {
-                    estimatedCost: 42.50, // TODO: Real billing
+                    estimatedCost: (usage.tokensUsed / 1000) * 0.03,
                     currency: 'USD',
-                    nextInvoiceDate: 'Feb 1, 2026'
-                }
+                    nextInvoiceDate: 'Next Billing Cycle'
+                },
+                metrics: usage.metrics
             }}
             purchasedProducts={purchasedProducts}
         />
     );
 }
-

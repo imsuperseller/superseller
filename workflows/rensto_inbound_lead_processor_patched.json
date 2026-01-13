@@ -1,0 +1,188 @@
+{
+    "name": "Rensto Inbound Lead Processor (Patched)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "inbound-lead",
+                "options": {}
+            },
+            "name": "ManyChat Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "number": [
+                        {
+                            "value1": "={{ $json.body.arr_millions }}",
+                            "operation": "largerEqual",
+                            "value2": 10
+                        },
+                        {
+                            "value1": "={{ $json.body.arr_millions }}",
+                            "operation": "largerEqual",
+                            "value2": 2
+                        }
+                    ]
+                }
+            },
+            "name": "Qualify by ARR",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://firestore.googleapis.com/v1/projects/rensto-3f9f6/databases/(default)/documents/leads?documentId={{ $json.body.user_id }}",
+                "method": "PATCH",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "jsonBody": "={{ { fields: { name: { stringValue: $json.body.full_name }, email: { stringValue: $json.body.email }, arr: { integerValue: $json.body.arr_millions }, status: { stringValue: 'new' }, tier: { stringValue: 'whale' } } } }}"
+            },
+            "name": "Save Whale Lead",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                700,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://firestore.googleapis.com/v1/projects/rensto-3f9f6/databases/(default)/documents/leads?documentId={{ $json.body.user_id }}",
+                "method": "PATCH",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "jsonBody": "={{ { fields: { name: { stringValue: $json.body.full_name }, email: { stringValue: $json.body.email }, arr: { integerValue: $json.body.arr_millions }, status: { stringValue: 'new' }, tier: { stringValue: 'high_ticket' } } } }}"
+            },
+            "name": "Save High-Ticket Lead",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                700,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://firestore.googleapis.com/v1/projects/rensto-3f9f6/databases/(default)/documents/leads?documentId={{ $json.body.user_id }}",
+                "method": "PATCH",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "jsonBody": "={{ { fields: { name: { stringValue: $json.body.full_name }, email: { stringValue: $json.body.email }, arr: { integerValue: $json.body.arr_millions }, status: { stringValue: 'nurture' }, tier: { stringValue: 'marketplace' } } } }}"
+            },
+            "name": "Save Marketplace Lead",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                700,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "C09BZAFD5U7",
+                "text": "={{ '🚨 WHALE ALERT: ' + $json.body.full_name + ' ($' + $json.body.arr_millions + 'M ARR) just contacted us via Social!' }}",
+                "otherOptions": {}
+            },
+            "name": "Alert Shai (Whale)",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                900,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "channel": "C09BZAFD5U7",
+                "text": "={{ '✨ New High-Ticket Prospect: ' + $json.body.full_name + ' ($' + $json.body.arr_millions + 'M ARR).' }}",
+                "otherOptions": {}
+            },
+            "name": "Alert Shai (Opportunity)",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "ManyChat Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Qualify by ARR",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Qualify by ARR": {
+            "main": [
+                [
+                    {
+                        "node": "Save Whale Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Save High-Ticket Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Save Marketplace Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Save Whale Lead": {
+            "main": [
+                [
+                    {
+                        "node": "Alert Shai (Whale)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Save High-Ticket Lead": {
+            "main": [
+                [
+                    {
+                        "node": "Alert Shai (Opportunity)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "saveDataErrorExecution": "all",
+        "saveExecutionProgress": true,
+        "saveManualExecutions": true
+    }
+}

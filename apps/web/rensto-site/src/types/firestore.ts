@@ -199,6 +199,12 @@ export interface Template {
         photo?: string;
         expertise: string[];
     };
+    videoScripts?: Array<{
+        persona: 'architect' | 'specialist' | 'futurist';
+        hook: string;
+        energy: string;
+        visualDirecting?: string;
+    }>;
 }
 
 export interface DownloadEvent {
@@ -228,7 +234,7 @@ export interface ServiceInstance {
     clientEmail: string;
     productId: string; // Template ID
     productName: string;
-    status: 'pending_setup' | 'provisioning' | 'active' | 'suspended' | 'cancelled';
+    status: 'pending_setup' | 'configuring' | 'provisioning' | 'active' | 'suspended' | 'cancelled';
 
     // The user's answers to the configuration schema
     configuration: Record<string, any>;
@@ -324,7 +330,7 @@ export interface User {
     revenueRange?: '$200k-500k' | '$500k-1m' | '$1m-5m' | '$5m-10m';
 
     // Account Status
-    status: 'active' | 'suspended' | 'cancelled';
+    status: 'active' | 'configuring' | 'suspended' | 'cancelled';
     emailVerified: boolean;
 
     // Service Access
@@ -334,6 +340,14 @@ export interface User {
         subscriptions: boolean;     // Lead generation
         custom_solutions: boolean;
         care_plan: 'none' | 'starter' | 'growth' | 'scale';
+    };
+
+    entitlements?: {
+        freeLeadsTrial: boolean;
+        freeLeadsRemaining: number;
+        pillars: string[];
+        marketplaceProducts: string[];
+        customSolution: string | null;
     };
 
     // Billing
@@ -770,4 +784,15 @@ export interface ResponseTimeMetrics {
 
     createdAt: any;
     updatedAt: any;
+}
+export interface IndexedDocument {
+    id: string;
+    clientId: string;
+    name: string;
+    type: 'pdf' | 'url' | 'text';
+    status: 'indexed' | 'processing' | 'failed';
+    indexedAt: any;
+    size?: string;
+    url?: string;
+    metadata?: Record<string, any>;
 }

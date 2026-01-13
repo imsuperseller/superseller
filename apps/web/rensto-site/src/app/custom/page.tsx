@@ -42,12 +42,12 @@ export default function CustomPage() {
                             Custom Solutions
                         </Badge>
                         <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter text-white uppercase italic mb-8">
-                            Let&apos;s Build Your<br />
-                            <span className="text-cyan-400">Automation System</span>
+                            Architect Your<br />
+                            <span className="text-cyan-400">Infinite Engine</span>
                         </h1>
                         <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 font-medium">
-                            Tell us about your business and we&apos;ll design a custom automation solution
-                            that saves you hours every week.
+                            Stop building tools. Start architecting high-leverage systems that
+                            decouple your time from your revenue.
                         </p>
                     </motion.div>
                 </section>
@@ -69,14 +69,14 @@ export default function CustomPage() {
                             className="text-center mb-16"
                         >
                             <h2 className="text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
-                                What&apos;s Included
+                                The Architecture
                             </h2>
                         </motion.div>
                         <div className="grid md:grid-cols-3 gap-8">
                             {[
-                                { title: 'Discovery Call', desc: '30-min strategy session to understand your needs' },
-                                { title: 'Custom Blueprint', desc: 'Detailed automation plan with ROI projections' },
-                                { title: 'Implementation', desc: 'We build and deploy your custom solution' },
+                                { title: 'The Audit', desc: 'A 30-min diagnostic session to identify your biggest revenue leaks and leverage points.' },
+                                { title: 'The Blueprint', desc: 'A logical ROI-first architecture designed to replace human overhead with silent engines.' },
+                                { title: 'Deployment', desc: 'We stress-test and activate your engine, ensuring it produces results from day one.' },
                             ].map((item, i) => (
                                 <motion.div
                                     key={i}
@@ -109,7 +109,7 @@ export default function CustomPage() {
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <Link href="/contact">
                                 <Button size="xl" variant="renstoPrimary">
-                                    Schedule a Call
+                                    Schedule an Audit
                                     <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
                             </Link>

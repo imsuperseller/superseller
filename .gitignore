@@ -375,3 +375,4 @@ data/*.db-*
 .cursor/mcp.json
 claude_desktop_config.json
 scripts/node_modules/
+apps/web/rensto-site/service-account.json

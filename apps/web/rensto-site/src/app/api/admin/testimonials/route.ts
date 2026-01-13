@@ -4,11 +4,9 @@ export const dynamic = 'force-dynamic';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/app/api/auth/magic-link/verify/route';
 
-const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
-
 async function checkAuth() {
     const session = await verifySession();
-    if (!session.isValid || !session.email || !ADMIN_EMAILS.includes(session.email)) {
+    if (!session.isValid || session.role !== 'admin') {
         return null;
     }
     return session;

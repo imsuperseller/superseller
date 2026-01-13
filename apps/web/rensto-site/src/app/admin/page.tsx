@@ -10,31 +10,44 @@ export const metadata = {
 async function getDashboardStats() {
   const db = getFirestoreAdmin();
 
-  // Parallel fetch for verify performance
-  const [clientsSnapshot, downloadsSnapshot, templatesSnapshot] = await Promise.all([
+  // Parallel fetch for dual-identity model
+  const [csClientsSnap, usersSnap, downloadsSnap, templatesSnap] = await Promise.all([
     db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get(),
+    db.collection(COLLECTIONS.USERS).get(),
     db.collection(COLLECTIONS.DOWNLOADS).get(),
     db.collection(COLLECTIONS.TEMPLATES).get()
   ]);
 
-  const clients = clientsSnapshot.docs.map(doc => doc.data());
-  const templates = templatesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+  const csClients = csClientsSnap.docs.map(doc => ({ ...doc.data(), source: 'cs' }));
+  const users = usersSnap.docs.map(doc => ({ ...doc.data(), source: 'users' }));
 
-  // Calculate Revenue (Total Amount Paid)
-  const totalRevenue = clients.reduce((sum, client) => sum + (client.amountPaid || 0), 0);
+  // UNIFIED CLIENT POOL (The "Bone" fix)
+  // Ensure we don't double count if a user exists in both, though email is our primary key
+  const emailMap = new Map();
+  [...csClients, ...users].forEach((client: any) => {
+    const email = client.email?.toLowerCase();
+    if (email && !emailMap.has(email)) {
+      emailMap.set(email, client);
+    }
+  });
+  const allClients = Array.from(emailMap.values());
 
-  // Calculate Active Projects (Contract Signed)
-  const activeProjects = clients.filter((c: any) => c.contractStatus === 'signed').length;
-  const completedProjects = clients.filter((c: any) => c.status === 'completed').length;
+  const templates = templatesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
 
-  // Calculate Clients
-  const totalClients = clients.length;
-  const newClients = clients.filter((c: any) => {
-    // New if created in last 30 days
+  // Calculate Revenue (Unified)
+  const totalRevenue = allClients.reduce((sum, client) => sum + (client.amountPaid || 0), 0);
+
+  // Calculate Active Projects
+  const activeProjects = allClients.filter((c: any) => c.contractStatus === 'signed' || c.status === 'active').length;
+  const completedProjects = allClients.filter((c: any) => c.status === 'completed').length;
+
+  // Calculate New Clients (Merged)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const newClientsCount = allClients.filter((c: any) => {
     if (!c.createdAt) return false;
-    const created = c.createdAt.toDate ? c.createdAt.toDate() : new Date(c.createdAt._seconds * 1000);
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const created = c.createdAt.toDate ? c.createdAt.toDate() : new Date((c.createdAt._seconds || 0) * 1000);
     return created > thirtyDaysAgo;
   }).length;
 
@@ -48,15 +61,15 @@ async function getDashboardStats() {
       projects: {
         active: activeProjects,
         completed: completedProjects,
-        pending: totalClients - activeProjects - completedProjects
+        pending: allClients.length - activeProjects - completedProjects
       },
       clients: {
-        total: totalClients,
-        new: newClients,
+        total: allClients.length,
+        new: newClientsCount,
         active: activeProjects
       },
       invoices: {
-        pending: clients.filter((c: any) => c.amountPaid === 0).length,
+        pending: allClients.filter((c: any) => !c.amountPaid || c.amountPaid === 0).length,
         overdue: 0,
         total: totalRevenue
       }

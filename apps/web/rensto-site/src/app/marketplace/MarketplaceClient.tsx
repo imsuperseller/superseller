@@ -36,43 +36,43 @@ import { CustomizationModal, MOCK_FLOOR_PLAN_SCHEMA } from '@/components/marketp
 
 const translations = {
     en: {
-        badge: "Automation Marketplace",
-        title: <>Production-Ready <span className="text-[#fe3d51]">Engines</span> for Growing Businesses</>,
-        subtitle: <>Skip the development phase. Browse our library of tested, production-ready systems activated for speed and reliability.</>,
-        searchPlaceholder: "What outcome do you want to automate today?",
+        badge: "The Engine Marketplace",
+        title: <>Production-Ready <span className="text-[#fe3d51]">Systems</span> That Print Time</>,
+        subtitle: <>Amateurs build tools. Pros deploy Engines. Browse our library of production-ready systems architected for maximum ROI and quiet scale.</>,
+        searchPlaceholder: "Which Profit Engine do you want to activate?",
         categories: [
             'All',
-            'Lead & Sales',
-            'Comms & Email',
-            'Knowledge & Research',
-            'Creative Content',
+            'Profit & Sales',
+            'High-Speed Comms',
+            'Knowledge RAG',
+            'Viral Content',
             'Operations',
-            'Sync & Data'
+            'Data Infrastructure'
         ],
-        noResultsTitle: "No workflows found",
-        noResultsDesc: "Try adjusting your filters or search query.",
-        customTitle: <>Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> infrastructure?</>,
-        customDesc: "If our ready-made tools don't fit exactly how you work, we can deploy a custom ecosystem tailored specifically to your daily business operations.",
-        bookDiscovery: "Schedule Strategic Call",
-        askQuestion: "Talk to a Partner",
+        noResultsTitle: "No logic-gates found",
+        noResultsDesc: "Adjust your filters or reach out for a custom architect call.",
+        customTitle: <>Need a <span className="text-cyan-400 font-sans italic lowercase">custom</span> digital эксперт mirror?</>,
+        customDesc: "If our ready-made engines don't fit your logic, we can craft a bespoke ecosystem that evolves with your business.",
+        bookDiscovery: "Activate Custom Drive",
+        askQuestion: "Talk to a Growth Partner",
         downloads: "activations",
         customize: "Config",
-        popular: "Popular",
+        popular: "Top Winner",
         tags: ['Real Estate', 'SaaS', 'E-commerce', 'Agency'],
         trustBanner: [
-            { icon: Check, label: "Tested & Documented" },
-            { icon: ShieldCheck, label: "Success Guaranteed" },
-            { icon: Bot, label: "Live Expert Support" }
+            { icon: Check, label: "ROI Verified" },
+            { icon: ShieldCheck, label: "Systems Documented" },
+            { icon: Bot, label: "Expert Support Hub" }
         ],
-        resultsLabel: "Showing",
-        templatesLabel: "systems",
-        filterByTool: "Filter by tool",
-        clearAll: "Clear All [x]",
-        explore: "Explore",
-        notSureTitle: "Not sure where to start?",
-        notSureDesc: "Our automation partners can help you audit your current processes and recommend the right infrastructure for your specific business goals.",
-        takeQuiz: "2-Minute ROI Quiz",
-        bookConsult: "Book Free Strategic Audit"
+        resultsLabel: "Analyzing",
+        templatesLabel: "active systems",
+        filterByTool: "Sort by Tech Logic",
+        clearAll: "Reset Logic [x]",
+        explore: "Activate",
+        notSureTitle: "Struggling with the Manual Work Tax?",
+        notSureDesc: "Our automation architects can audit your current leaks and recommend the right infrastructure to stop the theft of your time.",
+        takeQuiz: "2-Minute Profit Audit",
+        bookConsult: "Book Free Logic Strategy"
     }
 };
 

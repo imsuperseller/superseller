@@ -52,18 +52,15 @@ const GradientText = ({ children, className = "" }: { children: React.ReactNode,
 
 
 
+import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
+
+const secretaryProduct = PRODUCT_REGISTRY['autonomous-secretary'];
+
 // Pricing Configuration
 const BASE_PLAN = {
-    price: 249,
+    price: secretaryProduct.price,
     setup: 499,
-    features: [
-        '1 WhatsApp Number (Session)',
-        'Text Inbound & Outbound',
-        'n8n Brain Connection (1 Pipeline)',
-        'Business Hours Auto-reply',
-        'Anti-Ban Safety (Rate Limiting)',
-        'Basic Transaction Logging'
-    ]
+    features: secretaryProduct.features
 };
 
 const ADDONS = [
@@ -337,7 +334,7 @@ export default function WhatsAppPage() {
                                 <div className="relative flex-1 flex flex-col">
                                     <div className="text-xs text-orange-500 font-bold uppercase tracking-wider mb-2">The Foundation</div>
                                     <h3 className="text-xl font-bold mb-2 text-white">Base Platform</h3>
-                                    <div className="text-3xl font-bold text-white mb-4">$249<span className="text-lg text-gray-500 font-normal">/mo</span></div>
+                                    <div className="text-3xl font-bold text-white mb-4">${BASE_PLAN.price}<span className="text-lg text-gray-500 font-normal">/mo</span></div>
                                     <ul className="space-y-3 text-gray-300 mb-6 flex-1">
                                         {BASE_PLAN.features.map((feature, i) => (
                                             <li key={i} className="flex items-center gap-2">

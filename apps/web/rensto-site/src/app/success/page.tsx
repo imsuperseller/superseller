@@ -18,69 +18,42 @@ import { FormField } from '@/types/firestore';
 // Product-specific configuration schemas
 // Each product has its own set of questions the user must answer for implementation
 const PRODUCT_SCHEMAS: Record<string, FormField[]> = {
-  '4OYGXXMYeJFfAo6X': [ // Celebrity Selfie Video Generator
-    { id: 'whatsappNumber', label: 'WhatsApp Number (with country code)', type: 'text', required: true, placeholder: '972501234567' },
-    { id: 'preferredStyle', label: 'Preferred Movie Style', type: 'select', required: true, options: ['Action/Adventure', 'Sci-Fi', 'Comedy', 'Drama', 'Horror'] },
-    { id: 'brandColors', label: 'Brand Colors (Optional)', type: 'text', required: false, placeholder: '#FF5733, #2ECC71' },
+  'lead-machine': [
+    { id: 'targetNiche', label: 'Target Niche / Industry', type: 'text', required: true, placeholder: 'e.g. Real Estate Agents in Tel Aviv' },
+    { id: 'jobTitles', label: 'Target Job Titles', type: 'text', required: true, placeholder: 'e.g. Founder, CEO, Sales Manager' },
+    { id: 'keywords', label: 'Keywords (Comma separated)', type: 'text', required: false, placeholder: 'e.g. high-tech, commercial, luxury' },
+    { id: 'outreachTone', label: 'Outreach Tone & Voice', type: 'select', required: true, options: ['Professional & Formal', 'Friendly & Casual', 'Aggressive & Direct', 'Creative & Witty'] },
+    { id: 'discoveryUrl', label: 'Your Website/LinkedIn (to train the AI)', type: 'url', required: true, placeholder: 'https://linkedin.com/in/you' },
   ],
-  '8GC371u1uBQ8WLmu': [ // Meta Ad Library Analyzer
-    { id: 'adAccountId', label: 'Meta Ad Account ID', type: 'text', required: true, placeholder: 'act_123456789' },
-    { id: 'targetIndustry', label: 'Target Industry for Competitor Analysis', type: 'select', required: true, options: ['E-commerce', 'Real Estate', 'Finance', 'SaaS', 'Local Services', 'Other'] },
-    { id: 'reportEmail', label: 'Email for Weekly Reports', type: 'email', required: true, placeholder: 'reports@yourcompany.com' },
+  'autonomous-secretary': [
+    { id: 'whatsappNumber', label: 'WhatsApp Number for your Agent (with country code)', type: 'text', required: true, placeholder: '972501234567' },
+    { id: 'calendarLink', label: 'Your Calendar API / Booking Link', type: 'url', required: true, placeholder: 'https://calendly.com/you' },
+    { id: 'agentGreeting', label: 'Agent Opening Greeting', type: 'textarea', required: true, placeholder: 'e.g. Hi, this is Sarah from Acme Corp. How can I help you?' },
+    { id: 'agentPersona', label: 'Agent Personality', type: 'select', required: true, options: ['Helpful Assistant', 'Sales Closer', 'Executive Secretary', 'Tech Support Expert'] },
+    { id: 'transferNumber', label: 'Mobile Number for Human Escalation', type: 'text', required: true, placeholder: '972509876543' },
   ],
-  '5pMi01SwffYB6KeX': [ // YouTube AI Clone
-    { id: 'youtubeUrl', label: 'YouTube Channel or Video URL', type: 'url', required: true, placeholder: 'https://youtube.com/@channel' },
-    { id: 'customInstructions', label: 'Custom Instructions (Mimic style, specific knowledge, etc.)', type: 'textarea', required: false, placeholder: 'e.g. Focus on technical advice provided in the Dev Series playlists.' },
-    { id: 'deploymentChannel', label: 'Primary Deployment Channel', type: 'select', required: true, options: ['WhatsApp', 'Telegram', 'Web Widget'] },
+  'content-engine': [
+    { id: 'contentPillars', label: 'Core Content Pillars (Topics)', type: 'textarea', required: true, placeholder: 'e.g. AI Trends, SaaS Growth, Modern Web Design' },
+    { id: 'targetPlatforms', label: 'Primary Social Channels', type: 'select', required: true, options: ['LinkedIn & X', 'Instagram & TikTok', 'Full Omnichannel'] },
+    { id: 'videoStyle', label: 'AI Video / Image Style', type: 'select', required: true, options: ['Minimalist & Sleek', 'Vibrant & Viral', 'Cinematic & Moody', 'Educational & Clean'] },
+    { id: 'publicationFrequency', label: 'Posts Per Week', type: 'select', required: true, options: ['2 Posts', '5 Posts', '7 Posts (Daily)'] },
   ],
-  '5Fl9WUjYTpodcloJ': [ // AI Calendar Assistant
-    { id: 'calendarPlatform', label: 'Primary Calendar Platform', type: 'select', required: true, options: ['Google Calendar', 'Outlook/Office 365', 'iCloud'] },
-    { id: 'bookingLogic', label: 'Standard Booking Length', type: 'select', required: true, options: ['15 mins', '30 mins', '60 mins', 'Custom'] },
-    { id: 'timeZone', label: 'Primary Time Zone', type: 'text', required: true, placeholder: 'e.g. America/New_York' },
-    { id: 'meetingLink', label: 'Meeting Link (Zoom/Google Meet)', type: 'url', required: true, placeholder: 'https://zoom.us/j/...' },
-  ],
-  'U6EZ2iLQ4zCGg31H': [ // Call Audio Lead Analyzer
-    { id: 'telnyxApiKey', label: 'Telnyx API Key', type: 'text', required: true, placeholder: 'KEY_...' },
-    { id: 'workizApiKey', label: 'Workiz API Key (Optional)', type: 'text', required: false, placeholder: 'For CRM sync' },
-    { id: 'notificationEmail', label: 'Notification Email', type: 'email', required: true, placeholder: 'leads@company.com' },
-  ],
-  'stj8DmATqe66D9j4': [ // Floor Plan to Property Tour
-    { id: 'outputStyle', label: 'Interior Design Style', type: 'select', required: true, options: ['Modern Pan-Asian', 'Scandinavian Minimalist', 'High-End Industrial', 'Mid-Century Modern', 'Traditional Luxury'] },
-    { id: 'focusRoom', label: 'Priority Room for Walkthrough', type: 'select', required: true, options: ['Living Room', 'Kitchen', 'Master Bedroom', 'Patio/Outdoor', 'All Rooms'] },
-    { id: 'deliveryEmail', label: 'Delivery Email for Final Video', type: 'email', required: true, placeholder: 'video@realestate.com' },
-    { id: 'brandLogo', label: 'Brand Logo URL (Optional)', type: 'url', required: false, placeholder: 'https://yoursite.com/logo.png' },
-  ],
-  'vCxY2DXUZ8vUb30f': [ // Monthly CRO Insights Bot
-    { id: 'websiteUrl', label: 'Website URL for Analysis', type: 'url', required: true, placeholder: 'https://yourstore.com' },
-    { id: 'primaryConversion', label: 'Primary Conversion Event', type: 'text', required: true, placeholder: 'e.g. Purchase, Add to Cart, Form Submit' },
-    { id: 'ga4PropertyId', label: 'GA4 Property ID', type: 'text', required: true, placeholder: '123456789' },
-    { id: 'analyticsId', label: 'Session Recording Project ID (Optional)', type: 'text', required: false, placeholder: 'e.g., Hotjar, Clarity, or PostHog ID' },
-    { id: 'reportFrequency', label: 'Report Frequency', type: 'select', required: true, options: ['Monthly', 'Bi-Weekly', 'Quarterly'] },
-  ],
-  'the-lead-machine': [
-    { id: 'targetNiche', label: 'Target Niche / Industry', type: 'text', required: true, placeholder: 'e.g. Real Estate Agents in tel Aviv' },
-    { id: 'targets', label: 'Target Job Titles', type: 'text', required: true, placeholder: 'e.g. Founder, CEO, Sales Manager' },
-    { id: 'keywords', label: 'Keywords (Comma separated)', type: 'text', required: false, placeholder: 'e.g. tech, luxury, commercial' },
-    { id: 'deliveryEmail', label: 'Lead Delivery Email', type: 'email', required: true, placeholder: 'leads@yourcompany.com' },
-  ],
-  'outreach': [
-    { id: 'senderEmail', label: 'Outreach Email Address (Microsoft 365)', type: 'email', required: true, placeholder: 'e.g. outreach@yourdomain.com' },
-    { id: 'senderName', label: 'Sender Display Name', type: 'text', required: true, placeholder: 'e.g. John from Rensto' },
-    { id: 'smsSenderId', label: 'SMS Sender ID / Telnyx Number (Optional)', type: 'text', required: false, placeholder: 'e.g. +1234567890' },
-    { id: 'targetNiche', label: 'Primary Outreach Niche', type: 'text', required: true, placeholder: 'e.g. Dental Clinics in Tel Aviv' },
-    { id: 'crmSync', label: 'CRM for Lead Sync', type: 'select', required: true, options: ['ServiceTitan', 'GoHighLevel', 'HubSpot', 'Manual/CSV'] },
+  'knowledge-engine': [
+    { id: 'dataSources', label: 'Primary Knowledge Sources (URLs/Doc Links)', type: 'textarea', required: true, placeholder: 'Paste URLs or links to your company bibles, FAQs, or manuals.' },
+    { id: 'brainFocus', label: 'What is the "Brain" specialized in?', type: 'select', required: true, options: ['Internal Ops & SOPs', 'Technical Support', 'Sales & Pricing Intelligence', 'Legal & Compliance'] },
+    { id: 'dataRefresh', label: 'Data Sync Frequency', type: 'select', required: true, options: ['Real-time', 'Daily', 'Weekly'] },
+    { id: 'outputChannel', label: 'Where should the AI live?', type: 'select', required: true, options: ['Internal Slack/Teams', 'Customer Web Widget', 'WhatsApp Portal', 'API Only'] },
   ],
   'full-ecosystem': [
     { id: 'primaryFocus', label: 'Primary Automation Focus', type: 'select', required: true, options: ['Lead Gen', 'Customer Support', 'Internal Ops', 'Content Creation', 'All of the above'] },
     { id: 'mainPlatform', label: 'Main Communication Platform', type: 'select', required: true, options: ['WhatsApp', 'Telegram', 'Instagram', 'Omnichannel'] },
-    { id: 'urgentNeeds', label: 'Any Urgent Bottlenecks?', type: 'textarea', required: false, placeholder: 'Tell us what needs fixing first...' },
     { id: 'onboardingCall', label: 'Preferred Onboarding Call Time (Israel Time)', type: 'text', required: true, placeholder: 'e.g. Tomorrow 10:00 AM' },
   ],
   'default': [ // Fallback for any product
     { id: 'businessName', label: 'Business Name', type: 'text', required: true, placeholder: 'Acme Corp' },
     { id: 'website', label: 'Website URL', type: 'url', required: true, placeholder: 'https://example.com' },
     { id: 'industry', label: 'Industry', type: 'select', required: true, options: ['Real Estate', 'E-commerce', 'Agency', 'SaaS', 'Other'] },
-    { id: 'goals', label: 'Primary Goal', type: 'textarea', required: true, placeholder: 'Describe what you want to achieve with this agent...', helperText: 'Be specific about the outcomes you expect.' }
+    { id: 'goals', label: 'Primary Goal', type: 'textarea', required: true, placeholder: 'Describe what you want to achieve with this agent...' }
   ]
 };
 
@@ -171,6 +144,30 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+
+              <div className="bg-[#110d28]/40 rounded-2xl border border-white/5 p-6 space-y-4">
+                <p className="text-sm text-slate-400 font-medium">Broadcast your mission:</p>
+                <div className="flex gap-4">
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just launched my new AI ${productId || 'Automation'} with @RenstoAI! The future of work is here. 🚀 #AIAgency #Automation`)}`}
+                    target="_blank"
+                    className="flex-1"
+                  >
+                    <Button variant="outline" className="w-full border-white/10 hover:bg-white/5 h-12 text-xs font-bold gap-2">
+                      Share on X
+                    </Button>
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rensto.com')}`}
+                    target="_blank"
+                    className="flex-1"
+                  >
+                    <Button variant="outline" className="w-full border-white/10 hover:bg-white/5 h-12 text-xs font-bold gap-2">
+                      Post to LinkedIn
+                    </Button>
+                  </a>
                 </div>
               </div>
 

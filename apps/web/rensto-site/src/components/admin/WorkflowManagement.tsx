@@ -5,17 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-e
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
-import { Play, Square, History, Plus, Layers, Zap } from 'lucide-react';
+import { Play, Square, History, Plus, Layers, Zap, AlertCircle } from 'lucide-react';
 
 interface Workflow {
   id: string;
   name: string;
-  status: 'running' | 'stopped' | 'error';
-  lastExecution: string;
-  executionTime: number;
-  successRate: number;
-  errors: number;
+  status: 'running' | 'stopped' | 'success' | 'failed' | 'error';
+  lastExecution?: string;
+  lastExecutionId?: string;
+  executionTime?: number;
+  successRate?: number;
+  errors?: number;
   tags?: string[];
+  errorReason?: string;
 }
 
 import { Template } from '@/types/firestore';
@@ -25,53 +27,61 @@ interface WorkflowManagementProps {
 }
 
 export default function WorkflowManagement({ templates = [] }: WorkflowManagementProps) {
-  // Map templates to Workflow interface, mocking status/stats for now
-  const initialWorkflows: Workflow[] = templates.length > 0 ? templates.map(t => ({
-    id: t.id || 'unknown',
-    name: t.name,
-    status: 'running', // Mock status
-    lastExecution: new Date().toISOString(),
-    executionTime: Math.floor(Math.random() * 100) + 20,
-    successRate: Math.floor(Math.random() * 20) + 80,
-    errors: 0,
-    tags: t.tags || []
-  })) : [
-    // Fallback if no templates
-    {
-      id: 'ben-social-media-agent',
-      name: 'Ben Social Media Agent',
-      status: 'running',
-      lastExecution: '2025-08-18T17:30:00Z',
-      executionTime: 45,
-      successRate: 95,
-      errors: 0,
-      tags: ['internal']
-    }
-  ];
-
-  const [workflows, setWorkflows] = useState<Workflow[]>(initialWorkflows);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [loadingStatus, setLoadingStatus] = useState(false);
 
   useEffect(() => {
-    if (templates.length > 0) {
-      setWorkflows(templates.map(t => ({
-        id: t.id || 'unknown',
-        name: t.name,
-        status: 'running',
-        lastExecution: new Date().toISOString(),
-        executionTime: Math.floor(Math.random() * 100) + 20,
-        successRate: Math.floor(Math.random() * 20) + 80,
-        errors: 0,
-        tags: t.tags || []
-      })));
-    }
+    fetchRealStatus();
   }, [templates]);
+
+  const fetchRealStatus = async () => {
+    try {
+      setLoadingStatus(true);
+      const response = await fetch('/api/admin/workflows/status');
+      const data = await response.json();
+
+      if (data.success) {
+        const statusMap = data.workflowStatusMap;
+        const mappedWorkflows: Workflow[] = templates.map(t => {
+          const remoteStatus = statusMap[t.id || ''] || statusMap[t.n8nWorkflowId || ''];
+
+          return {
+            id: t.id || 'unknown',
+            name: t.name,
+            status: remoteStatus ? (remoteStatus.status === 'success' ? 'success' : 'failed') : 'stopped',
+            lastExecution: remoteStatus?.startedAt,
+            lastExecutionId: remoteStatus?.lastExecutionId,
+            executionTime: remoteStatus?.stoppedAt ? (new Date(remoteStatus.stoppedAt).getTime() - new Date(remoteStatus.startedAt).getTime()) : 0,
+            successRate: remoteStatus?.status === 'success' ? 100 : 0, // Simplified for now
+            errors: remoteStatus?.status === 'success' ? 0 : 1,
+            tags: t.tags || [],
+            errorReason: remoteStatus?.error
+          };
+        });
+        setWorkflows(mappedWorkflows);
+      }
+    } catch (error) {
+      console.error('Failed to fetch real workflow status:', error);
+    } finally {
+      setLoadingStatus(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'running': return 'bg-green-500/10 text-green-400 border-green-500/20';
-      case 'stopped': return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+      case 'success': return 'bg-green-500/10 text-green-400 border-green-500/20';
+      case 'failed': return 'bg-red-500/10 text-red-400 border-red-500/20';
       case 'error': return 'bg-red-500/10 text-red-400 border-red-500/20';
+      case 'stopped': return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
       default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+    }
+  };
+
+  const openDebug = (workflowId: string, executionId?: string) => {
+    if (executionId) {
+      window.open(`https://n8n.rensto.com/workflow/${workflowId}/executions/${executionId}`, '_blank');
+    } else {
+      window.open(`https://n8n.rensto.com/workflow/${workflowId}`, '_blank');
     }
   };
 
@@ -152,7 +162,7 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                   <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Last Sync</p>
-                  <p className="text-xs font-bold text-white truncate">{new Date(workflow.lastExecution).toLocaleTimeString()}</p>
+                  <p className="text-xs font-bold text-white truncate">{workflow.lastExecution ? new Date(workflow.lastExecution).toLocaleTimeString() : 'Never'}</p>
                 </div>
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                   <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Latentcy</p>
@@ -175,13 +185,21 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/5 flex gap-3">
-              {workflow.status === 'running' ? (
+              {workflow.errorReason ? (
                 <button
-                  onClick={() => stopWorkflow(workflow.id)}
+                  onClick={() => openDebug(workflow.id, workflow.lastExecutionId)}
                   className="flex-1 flex items-center justify-center space-x-2 py-3 px-4 bg-[#fe3d51]/10 border border-[#fe3d51]/20 rounded-xl text-[#fe3d51] hover:bg-[#fe3d51]/20 transition-all text-xs font-black uppercase tracking-widest"
                 >
+                  <AlertCircle className="w-3 h-3" />
+                  <span>Deep Debug</span>
+                </button>
+              ) : workflow.status === 'running' ? (
+                <button
+                  onClick={() => stopWorkflow(workflow.id)}
+                  className="flex-1 flex items-center justify-center space-x-2 py-3 px-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/20 transition-all text-xs font-black uppercase tracking-widest"
+                >
                   <Square className="w-3 h-3 fill-current" />
-                  <span>Kill</span>
+                  <span>Stop</span>
                 </button>
               ) : (
                 <button
@@ -193,10 +211,11 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
                 </button>
               )}
               <button
-                onClick={() => viewExecutionHistory(workflow.id)}
+                onClick={() => openDebug(workflow.id, workflow.lastExecutionId)}
                 className="flex items-center justify-center p-3 bg-white/5 border border-white/10 rounded-xl text-slate-400 hover:text-white hover:border-white/20 transition-all"
+                title="Open in n8n"
               >
-                <History className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
               </button>
             </div>
           </div>

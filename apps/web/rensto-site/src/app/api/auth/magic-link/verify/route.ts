@@ -98,7 +98,10 @@ export async function GET(request: NextRequest) {
 export async function verifySession(): Promise<{
     isValid: boolean;
     email?: string;
-    clientId?: string
+    clientId?: string;
+    role?: 'admin' | 'client';
+    entitlements?: any;
+    businessName?: string;
 }> {
     try {
         const cookieStore = await cookies();
@@ -118,12 +121,31 @@ export async function verifySession(): Promise<{
             return { isValid: false };
         }
 
+        const db = getFirestoreAdmin();
+        const email = sessionData.email;
+        const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',');
+
+        // 1. Check for User record (Standard Identity)
+        const userRef = db.collection(COLLECTIONS.USERS).doc(email.replace(/[^a-z0-9]/g, '_'));
+        const userSnap = await userRef.get();
+        let userData = userSnap.exists ? userSnap.data() : null;
+
+        // 2. Check for Custom Solutions Client (Legacy/High-End Identity)
+        const csRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
+        const csSnap = await csRef.where('email', '==', email.toLowerCase()).limit(1).get();
+        let csData = !csSnap.empty ? csSnap.docs[0].data() : null;
+
         return {
             isValid: true,
             email: sessionData.email,
-            clientId: sessionData.clientId
+            clientId: sessionData.clientId,
+            role: ADMIN_EMAILS.includes(email) ? 'admin' : 'client',
+            // Unified Entitlements
+            entitlements: userData?.entitlements || csData?.entitlements || { pillars: [] },
+            businessName: userData?.businessName || csData?.name || ''
         };
-    } catch {
+    } catch (error) {
+        console.error('verifySession error:', error);
         return { isValid: false };
     }
 }

@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase-client';
-import { doc, getDoc } from 'firebase/firestore';
-
-/**
- * GET /api/admin/impersonate?userId=xxx
- * Returns a dashboard URL that admin can use to view as client
- * 
- * Security: Only allowed for admin users (hardcoded allowlist for now)
- */
-
-const ADMIN_EMAILS = [
-    'shai@rensto.com',
-    'admin@rensto.com',
-];
+import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const userId = searchParams.get('userId');
-        const adminEmail = searchParams.get('adminEmail'); // In production, get from session
+
+        // 1. Verify Admin Session (Real Security)
+        const session = await verifySession();
+        if (!session.isValid || session.role !== 'admin') {
+            return NextResponse.json(
+                { error: 'Unauthorized - admin access required' },
+                { status: 403 }
+            );
+        }
 
         if (!userId) {
             return NextResponse.json(
@@ -27,26 +23,21 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Verify admin (in production, use proper session/auth)
-        if (!adminEmail || !ADMIN_EMAILS.includes(adminEmail.toLowerCase())) {
-            return NextResponse.json(
-                { error: 'Unauthorized - admin access required' },
-                { status: 403 }
-            );
-        }
+        const db = getFirestoreAdmin();
 
-        // Get client's dashboard token
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
+        // 2. Get client's dashboard token using unified collections
+        const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
+        const userSnap = await userRef.get();
 
-        if (!userSnap.exists()) {
+        let userData = userSnap.exists ? userSnap.data() : null;
+
+        if (!userData) {
             return NextResponse.json(
                 { error: 'User not found' },
                 { status: 404 }
             );
         }
 
-        const userData = userSnap.data();
         const dashboardToken = userData.dashboardToken;
 
         if (!dashboardToken) {

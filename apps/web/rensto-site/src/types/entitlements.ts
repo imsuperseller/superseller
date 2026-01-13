@@ -3,23 +3,21 @@
  * Defines what features/tabs each user has access to in the dashboard
  */
 
-export type ServiceType = 'leads' | 'outreach' | 'voice' | 'content' | 'knowledge';
+export type ServiceType = 'lead-machine' | 'autonomous-secretary' | 'knowledge-engine' | 'content-engine';
 
 // Customer-facing names (outcome-focused, not jargon)
 export const SERVICE_DISPLAY_NAMES: Record<ServiceType, string> = {
-    leads: 'Get More Leads',
-    outreach: 'Automated Outreach',
-    voice: 'Autonomous Secretary',
-    content: 'Content Engine',
-    knowledge: 'Knowledge & Assets',
+    'lead-machine': 'The Lead Machine',
+    'autonomous-secretary': 'Autonomous Secretary',
+    'knowledge-engine': 'Knowledge Engine',
+    'content-engine': 'The Content Engine',
 };
 
 export const SERVICE_DESCRIPTIONS: Record<ServiceType, string> = {
-    leads: 'Find qualified prospects in your niche automatically',
-    outreach: 'Follow up via email & SMS without lifting a finger',
-    voice: 'Handles your Voice, WhatsApp, and Calendar 24/7',
-    content: 'Blog posts & social content on autopilot',
-    knowledge: 'Private intelligence system with your data',
+    'lead-machine': 'Find qualified prospects in your niche automatically',
+    'autonomous-secretary': 'Handles your Voice, WhatsApp, and Calendar 24/7',
+    'knowledge-engine': 'Private intelligence system with your data',
+    'content-engine': 'Blog posts & social content on autopilot',
 };
 
 export interface CustomSolutionEntitlement {
@@ -71,41 +69,30 @@ export function getVisibleTabs(entitlements: UserEntitlements): DashboardTabConf
         },
     ];
 
-    // Leads tab - visible if free trial or leads pillar
-    const hasLeads = entitlements.freeLeadsTrial || entitlements.pillars.includes('leads');
+    // Lead Machine tab
+    const hasLeads = entitlements.pillars.includes('lead-machine');
     tabs.push({
         id: 'leads',
         label: 'Leads',
         icon: 'Users',
-        visible: hasLeads,
-        locked: !hasLeads,
-        upsellMessage: hasLeads ? undefined : 'Get 10 free leads to unlock this tab',
+        visible: hasLeads || entitlements.freeLeadsTrial,
+        locked: !hasLeads && !entitlements.freeLeadsTrial,
+        upsellMessage: hasLeads ? undefined : 'Activate The Lead Machine to unlock this tab',
     });
 
-    // Outreach tab
-    const hasOutreach = entitlements.pillars.includes('outreach');
-    tabs.push({
-        id: 'outreach',
-        label: 'Outreach',
-        icon: 'Send',
-        visible: hasOutreach || entitlements.pillars.includes('leads'), // show locked if has leads
-        locked: !hasOutreach,
-        upsellMessage: hasOutreach ? undefined : 'Add Outreach pillar to automate follow-ups',
-    });
-
-    // Voice AI (now Secretary) tab
-    const hasVoice = entitlements.pillars.includes('voice');
+    // Secretary (Voice/WhatsApp) tab
+    const hasSecretary = entitlements.pillars.includes('autonomous-secretary');
     tabs.push({
         id: 'voice',
         label: 'Secretary',
         icon: 'Bot',
-        visible: hasVoice || entitlements.pillars.length > 0, // show locked if has any pillar
-        locked: !hasVoice,
-        upsellMessage: hasVoice ? undefined : 'Add Autonomous Secretary for voice & message automation',
+        visible: hasSecretary || entitlements.pillars.length > 0,
+        locked: !hasSecretary,
+        upsellMessage: hasSecretary ? undefined : 'Add Autonomous Secretary for voice & message automation',
     });
 
     // Content tab
-    const hasContent = entitlements.pillars.includes('content');
+    const hasContent = entitlements.pillars.includes('content-engine');
     tabs.push({
         id: 'content',
         label: 'Content',
@@ -116,7 +103,7 @@ export function getVisibleTabs(entitlements: UserEntitlements): DashboardTabConf
     });
 
     // Knowledge & Assets tab
-    const hasKnowledge = entitlements.pillars.includes('knowledge');
+    const hasKnowledge = entitlements.pillars.includes('knowledge-engine');
     tabs.push({
         id: 'knowledge',
         label: 'Knowledge',

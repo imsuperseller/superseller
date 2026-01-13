@@ -4,11 +4,9 @@ export const dynamic = 'force-dynamic';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/app/api/auth/magic-link/verify/route';
 
-const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
-
 async function checkAuth() {
     const session = await verifySession();
-    if (!session.isValid || !session.email || !ADMIN_EMAILS.includes(session.email)) {
+    if (!session.isValid || session.role !== 'admin') {
         return null;
     }
     return session;
@@ -20,8 +18,8 @@ export async function GET(req: NextRequest) {
 
     try {
         const db = getFirestoreAdmin();
-        const clientsSnap = await db.collection(COLLECTIONS.CLIENTS).orderBy('name').get();
-        const clients = clientsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const usersSnap = await db.collection(COLLECTIONS.USERS).orderBy('email').get();
+        const clients = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return NextResponse.json({ clients });
     } catch (error) {
         console.error('Error fetching clients:', error);
@@ -38,7 +36,7 @@ export async function POST(req: NextRequest) {
         const { id, ...saveData } = data;
         const db = getFirestoreAdmin();
 
-        const docRef = await db.collection(COLLECTIONS.CLIENTS).add({
+        const docRef = await db.collection(COLLECTIONS.USERS).add({
             ...saveData,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -59,7 +57,7 @@ export async function PATCH(req: NextRequest) {
         const { id, ...updateData } = data;
         const db = getFirestoreAdmin();
 
-        await db.collection(COLLECTIONS.CLIENTS).doc(id).update({
+        await db.collection(COLLECTIONS.USERS).doc(id).update({
             ...updateData,
             updatedAt: new Date()
         });
@@ -80,7 +78,7 @@ export async function DELETE(req: NextRequest) {
         if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
         const db = getFirestoreAdmin();
-        await db.collection(COLLECTIONS.CLIENTS).doc(id).delete();
+        await db.collection(COLLECTIONS.USERS).doc(id).delete();
         return NextResponse.json({ success: true });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
