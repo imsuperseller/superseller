@@ -11,6 +11,12 @@ export function middleware(request: NextRequest) {
 
     // Logic for Admin Subdomain
     if (isAdminDomain) {
+        // Exclude login from being rewritten to /admin/login if it doesn't exist
+        // We want admin.rensto.com/login to just be /login (the global login)
+        if (path === '/login') {
+            return NextResponse.next();
+        }
+
         // If we are already on an internal /admin path, let it pass (or rewrite to keep URL clean? usually rewrite)
         // Actually, if the user hits `admin.rensto.com/dashboard`, we want to serve `src/app/admin/dashboard`
         // So we rewrite `/*` -> `/admin/*`
