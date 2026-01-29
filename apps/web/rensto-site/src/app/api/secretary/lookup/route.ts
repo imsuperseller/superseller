@@ -5,22 +5,21 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const webhookId = searchParams.get('webhookId');
     const phone = searchParams.get('phone');
+    const sessionId = searchParams.get('sessionId');
 
-    if (!webhookId && !phone) {
-        return NextResponse.json({ error: 'Missing webhookId or phone parameter' }, { status: 400 });
+    if (!webhookId && !phone && !sessionId) {
+        return NextResponse.json({ error: 'Missing webhookId, phone, or sessionId parameter' }, { status: 400 });
     }
 
     const db = getFirestoreAdmin();
     let query;
 
     if (webhookId) {
-        // Assuming we store webhookId in the config, OR we have a mapping.
-        // For V1 of this productization, we might just query by field if it exists,
-        // or we search for a client that has this webhookId locally mapped?
-        // Ideally, the 'secretary_config' has 'n8nWebhookId'.
         query = db.collection('secretary_configs').where('n8nWebhookId', '==', webhookId);
     } else if (phone) {
         query = db.collection('secretary_configs').where('phoneNumber', '==', phone);
+    } else if (sessionId) {
+        query = db.collection('secretary_configs').where('whatsappSessionId', '==', sessionId);
     }
 
     try {

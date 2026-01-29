@@ -261,7 +261,7 @@ export function NichesPageContent() {
                                         {t.customAudit} <Zap className="ml-3 w-6 h-6 fill-current" />
                                     </Button>
                                 </Link>
-                                <Link href="/marketplace" className="w-full sm:w-auto">
+                                <Link href="/niches" className="w-full sm:w-auto">
                                     <Button size="xl" variant="ghost" className="w-full h-20 px-10 text-xl font-black rounded-2xl border border-white/10 hover:bg-white/5 transition-all text-white">
                                         {t.browseWorkflows}
                                     </Button>

@@ -24,7 +24,17 @@ let app;
 
 if (getApps().length === 0) {
     if (serviceAccountVal) {
-        const serviceAccount = JSON.parse(serviceAccountVal);
+        let serviceAccount;
+        if (serviceAccountVal.trim().startsWith('{')) {
+            serviceAccount = JSON.parse(serviceAccountVal);
+        } else {
+            // Assume it is a path
+            const saPath = path.isAbsolute(serviceAccountVal)
+                ? serviceAccountVal
+                : path.resolve(process.cwd(), serviceAccountVal);
+            serviceAccount = JSON.parse(fs.readFileSync(saPath, 'utf8'));
+        }
+
         if (serviceAccount.private_key) {
             serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
         }
@@ -44,6 +54,42 @@ const db = getFirestore(app);
 
 const TEMPLATES = [
     {
+        id: 'jOIC8dQVz_zQUnmQc7Gv8',
+        name: "Billy Mays Prompt Generator",
+        name_he: "מחולל פרומפטים בסגנון בילי מייס",
+        outcomeHeadline: "Skyrocket Your Video Conversion with High-Energy MIRACLE Ad Copy",
+        outcomeHeadline_he: "הזניקו את ההמרות שלכם עם סקריפטים ויראליים בסגנון ׳ניסים במטבח׳",
+        description: "Stop writing boring ads. This high-energy Engine uses AI to transform your technical blueprints into Billy Mays style 'miracle gadget' infomercial scripts, specifically optimized for KIE Video Agent delivery.",
+        description_he: "הפסיקו לכתוב מודעות משעממות. מנוע מבוסס AI ההופך תהליכים טכניים לתסריטי 'מכשירי פלא' בסגנון בילי מייס, מותאמים במיוחד לשימוש ב-KIE Video Agent.",
+        category: "Creative Content",
+        department: "content_engine",
+        price: 297,
+        installPrice: 797,
+        customPrice: 1497,
+        rating: 5.0,
+        downloads: 124,
+        popular: false,
+        features: ["Dynamic Script Writing", "Hook Generation", "Vibe Matching"],
+        features_he: ["כתיבת תסריט דינמית", "יצירת הוקים", "התאמת סגנון"],
+        tools: ['openai', 'logic_orchestrator'],
+        tags: ['internal'],
+        readinessStatus: 'Internal',
+        owner: 'rensto',
+        showInMarketplace: false,
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'Connect OpenAI', desc: 'Add your OpenAI API key to the Generate node.' },
+            { title: 'Sync Firestore', desc: 'Ensure your "templates" collection is accessible.' },
+            { title: 'Test Generation', desc: 'Run a manual trigger to see your first Billy Mays script.' }
+        ],
+        deliveryChecklist: [
+            'Logic Blueprint (JSON)',
+            'System Prompt Template',
+            'Implementation Guide PDF'
+        ]
+    },
+    {
         id: '4OYGXXMYeJFfAo6X',
         name: "Celebrity Selfie Video Generator",
         name_he: "מחולל סרטוני סלפי מפורסמים",
@@ -61,13 +107,20 @@ const TEMPLATES = [
         popular: true,
         features: ["AI Face Swap", "Multi-Scene Stitching", "WhatsApp Delivery"],
         features_he: ["החלפת פנים AI", "חיבור סצנות", "שליחה לוואטסאפ"],
-        tools: ['whatsapp', 'n8n', 'higgsfield'],
+        tools: ['whatsapp', 'kie-ai', 'pi-api', 'imgbb', 'ffmpeg'],
         video: "/videos/celebrity-selfie-generator.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:content'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
         showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'ImgBB API Key', desc: 'Secure a free API key from imgbb.com and add it to the "Upload to ImgBB" node.' },
+            { title: 'AI Model Credits', desc: 'Ensure you have credits in Kie.ai and PiAPI (for Kling video generation).' },
+            { title: 'Core Components', desc: 'Install "better-ffmpeg" and "WAHA" community nodes in your instance.' },
+            { title: 'Video Processing', desc: 'Confirm FFmpeg is installed on your server for seamless scene merging.' }
+        ],
         kpis: [
             { label: 'Brand Retention', value: '85%+', icon: 'Shield' },
             { label: 'Processing Time', value: '< 2 min', icon: 'Clock' },
@@ -101,7 +154,7 @@ const TEMPLATES = [
         name_he: "מנתח ספריית המודעות של מטא",
         outcomeHeadline: "Scale Your Ads with Proven, Competitor-Tested Creative Patterns",
         outcomeHeadline_he: "שדרגו את הפרסום שלכם עם דפוסי קריאייטיב מוכחים שנבדקו אצל המתחרים",
-        description: "Eliminate guesswork from your creative strategy. This engine scrapes active high-performance ads from the Meta Ad Library and uses AI vision to reverse-engineer their winning hooks, scripts, and visual patterns for your own brand.",
+        description: "Eliminate guesswork from your creative strategy. This Engine scrapes active high-performance ads from the Meta Ad Library and uses AI vision to reverse-engineer their winning hooks, scripts, and visual patterns for your own brand.",
         description_he: "הסירו את חוסר הוודאות מאסטרטגיית הקריאייטיב שלכם. מנוע זה סורק מודעות בעלות ביצועים גבוהים מספריית המודעות של מטא ומשתמש בבינה מלאכותית ויזואלית כדי לפצח את הוקים, התסריטים והדפוסים הוויזואליים המנצחים עבור המותג שלכם.",
         category: "Lead & Sales",
         department: "lead_machine",
@@ -113,13 +166,19 @@ const TEMPLATES = [
         popular: true,
         features: ["Ad Scraping", "AI Video Analysis", "Template Generation"],
         features_he: ["שאיבת מודעות", "ניתוח וידאו AI", "יצירת תבניות"],
-        tools: ['meta', 'openai', 'n8n'],
+        tools: ['apify', 'google_gemini', 'anthropic'],
         video: "/videos/meta-ad-analyzer.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:lead-gen'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
         showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'Apify API Key', desc: 'Secure an API key from Apify to run the Facebook Ads Library Scraper.' },
+            { title: 'Google Gemini API', desc: 'Configure Google AI (Gemini) credentials for deep video analysis.' },
+            { title: 'Anthropic API', desc: 'Add Claude 3.5 Sonnet to power high-fidelity prompt generation.' }
+        ],
         kpis: [
             { label: 'Creative Efficiency', value: '+40%', icon: 'Zap' },
             { label: 'Analysis Speed', value: 'Instant', icon: 'Clock' }
@@ -135,7 +194,7 @@ const TEMPLATES = [
         name_he: "משכפל יוטיוברים ב-AI",
         outcomeHeadline: "Convert Thousands of Hours of Video Into Your Private Intelligence Engine",
         outcomeHeadline_he: "הפכו אלפי שעות וידאו למנוע אינטליגנציה פרטי",
-        description: "Transform any YouTube channel into a searchable, conversational persona. This system extracts full transcript data and synthesizes a custom LLM persona that mirrors an expert's knowledge base and communication style, accessible via Telegram.",
+        description: "Transform any YouTube channel into a searchable, conversational persona. This Engine extracts full transcript data and synthesizes a custom LLM persona that mirrors an expert's knowledge base and communication style, accessible via Telegram.",
         description_he: "הפכו כל ערוץ יוטיוב לפרסונה חיפושית ושיחתית. המערכת מחלצת נתוני תמלול מלאים ומסנתזת פרסונת LLM מותאמת אישית שמשקפת את בסיס הידע וסגנון התקשורת של המומחה, נגישה דרך טלגרם.",
         category: "Knowledge & Research",
         department: "knowledge_engine",
@@ -146,22 +205,29 @@ const TEMPLATES = [
         downloads: 64,
         features: ["Transcript Extraction", "Persona Synthesis", "Telegram Integration"],
         features_he: ["חילוץ תמלול", "סינתזת אישיות", "אינטגרציה לטלגרם"],
-        tools: ['youtube', 'telegram', 'perplexity'],
+        tools: ['youtube', 'telegram', 'perplexity', 'apify', 'openrouter'],
         video: "/videos/youtube-clone.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:knowledge'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
-        showInAdminDashboard: true
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'Apify API', desc: 'Create a "Header Auth" credential with name "Authorization" and value "Bearer [Your-Apify-Token]".' },
+            { title: 'OpenRouter API', desc: 'Secure an API key from openrouter.ai to power the synthesis models.' },
+            { title: 'Perplexity API', desc: 'Add Perplexity key to the Search Knowledge node.' },
+            { title: 'Telegram BotFather', desc: 'Create a Telegram bot and paste the token in credentials.' }
+        ]
     },
     {
         id: 'U6EZ2iLQ4zCGg31H',
-        name: "Call Audio Lead Analyzer",
+        name: "Voice AI Lead Analyzer",
         name_he: "מנתח שיחות לידים",
         outcomeHeadline: "Recover Lost Revenue Hidden in Your Voice Recordings",
         outcomeHeadline_he: "החזירו הכנסות אבודות החבויות בהקלטות השיחות שלכם",
-        description: "Stop letting sales opportunities slip through the cracks. Our Telnyx-powered engine automatically transcribes call recordings, scores lead intent using sentiment analysis, and syncs qualified opportunities directly to your CRM with intelligent categorization.",
-        description_he: "הפסיקו לתת להזדמנויות מכירה לחמוק מבין האצבעות. מנוע מבוסס Telnyx שלנו מתמלל אוטומטית הקלטות שיחות, מדרג כוונת ליד באמצעות ניתוח סנטימנט ומסנכרן הזדמנויות כשירות ישירות ל-CRM שלכם.",
+        description: "Stop letting sales opportunities slip through the cracks. This Engine transcribes call recordings, scores lead intent using sentiment analysis, and syncs qualified opportunities directly to your CRM with intelligent categorization.",
+        description_he: "הפסיקו לתת להזדמנויות מכירה לחמוק מבין האצבעות. מנוע מתמלל אוטומטית הקלטות שיחות, מדרג כוונת ליד באמצעות ניתוח סנטימנט ומסנכרן הזדמנויות כשירות ישירות ל-CRM שלכם.",
         category: "Lead & Sales",
         department: "lead_machine",
         price: 497,
@@ -174,11 +240,16 @@ const TEMPLATES = [
         features_he: ["תמלול אודיו", "ניתוח סנטימנט", "סנכרון Workiz"],
         tools: ['telnyx', 'workiz', 'openai'],
         video: "/videos/call-audio-analyzer.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:voice-ai'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
-        showInAdminDashboard: true
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'Telnyx API', desc: 'Configure Telnyx V3 credentials for audio polling.' },
+            { title: 'Workiz API', desc: 'Add Workiz Token and Secret to the Config node.' }
+        ]
     },
     {
         id: '5Fl9WUjYTpodcloJ',
@@ -186,8 +257,8 @@ const TEMPLATES = [
         name_he: "עוזר לוח שנה AI",
         outcomeHeadline: "Eliminate Scheduling Friction with an Autonomous Booking Agent",
         outcomeHeadline_he: "בטלו את החיכוך בתזמון פגישות עם סוכן הזמנות אוטונומי",
-        description: "Delegate your entire calendar management to an agent that actually understands your business. Handles complex multi-timezone booking, natural language rescheduling requests, and human-in-the-loop approval workflows via Telegram or Slack.",
-        description_he: "האצילו את כל ניהול היומן שלכם לסוכן שבאמת מבין את העסק שלכם. מטפל בהזמנות מורכבות במספר אזורי זמן, בקשות תזמון בשפה טבעית ותהליכי אישור אנושיים דרך טלגרם או סלאק.",
+        description: "Delegate your entire calendar management to an agent that actually understands your business. Handles complex multi-timezone booking, natural language rescheduling requests, and human-in-the-loop approval workflows via WhatsApp.",
+        description_he: "האצילו את כל ניהול היומן שלכם לסוכן שבאמת מבין את העסק שלכם. מטפל בהזמנות מורכבות במספר אזורי זמן, בקשות תזמון בשפה טבעית ותהליכי אישור אנושיים דרך WhatsApp.",
         category: "Operations",
         department: "autonomous_secretary",
         price: 147,
@@ -195,15 +266,21 @@ const TEMPLATES = [
         customPrice: 1497,
         rating: 4.6,
         downloads: 312,
-        features: ["Conflict Resolution", "Natural Language", "Smart Rescheduling"],
-        features_he: ["פתרון התנגשויות", "שפה טבעית", "תזמון חכם מחדש"],
-        tools: ['tidycal', 'slack', 'google'],
+        features: ["Conflict Resolution", "Natural Language", "WhatsApp Approvals"],
+        features_he: ["פתרון התנגשויות", "שפה טבעית", "אישורי WhatsApp"],
+        tools: ['tidycal', 'openai', 'waha'],
         video: "/videos/calendar-assistant.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:workflow-bot'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
-        showInAdminDashboard: true
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'TidyCal API', desc: 'Secure an API token from your TidyCal account settings.' },
+            { title: 'OpenAI API', desc: 'Add your OpenAI key to the Chat Model node (ensure GPT-4o access).' },
+            { title: 'WhatsApp (WAHA)', desc: 'Configure your WAHA service URL and authentications for messaging.' }
+        ]
     },
     {
         id: 'stj8DmATqe66D9j4',
@@ -222,13 +299,18 @@ const TEMPLATES = [
         downloads: 45,
         features: ["2D to 3D Conversion", "Photorealistic Rendering", "Video Walkthrough"],
         features_he: ["המרה מ-2D ל-3D", "רינדור פוטוריאליסטי", "סיור וידאו"],
-        tools: ['n8n', 'openai', 'midjourney'],
+        tools: ['kie_ai', 'logic_orchestrator'],
         video: "/videos/floor-plan-tour.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:content'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
-        showInAdminDashboard: true
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'Kie.ai API', desc: 'Add your Kie.ai credentials for photorealistic architectural rendering.' },
+            { title: 'Video Merge Service', desc: 'Set the VIDEO_MERGE_URL environment variable for cinematic stitching.' }
+        ]
     },
     {
         id: 'vCxY2DXUZ8vUb30f',
@@ -247,25 +329,45 @@ const TEMPLATES = [
         downloads: 112,
         features: ["Drop-off Analysis", "Heatmap Integration", "Monthly Report"],
         features_he: ["ניתוח נטישה", "אינטגרציה למפות חום", "דו\"ח חודשי"],
-        tools: ['google', 'n8n', 'openai'],
+        tools: ['google', 'logic_orchestrator', 'openai', 'clarity', 'slack'],
         video: "/videos/cro-insights.mp4",
-        tags: ['marketplace'],
+        tags: ['marketplace', 'pillar:knowledge'],
         readinessStatus: 'Active',
         owner: 'rensto',
         showInMarketplace: true,
-        showInAdminDashboard: true
+        showInAdminDashboard: true,
+        deploymentSteps: [
+            { title: 'Core Automation Host', desc: 'Initialize your professional-grade Logic Orchestrator here: https://tinyurl.com/ym3awuke' },
+            { title: 'GA4 Access', desc: 'Enable Google Analytics 4 API and add your Property ID to the Dashboard.' },
+            { title: 'Microsoft Clarity API', desc: 'Secure a Clarity API token and add it to the Clarity HTTP Request node.' },
+            { title: 'Slack Notification', desc: 'Connect your Slack workspace and choose a channel for insights delivery.' },
+            { title: 'OpenAI API', desc: 'Ensure GPT-4o access for automated behavior analysis.' }
+        ]
     }
 ];
 
 async function seed() {
-    console.log("Starting full marketplace seed...");
+    console.log("Starting full marketplace seed with content...");
     const batch = db.batch();
+    const templateDir = path.resolve(process.cwd(), 'n8n/templates');
 
     for (const template of TEMPLATES) {
         const ref = db.collection('templates').doc(template.id);
 
+        let content = null;
+        try {
+            const jsonPath = path.join(templateDir, `${template.id}.json`);
+            if (fs.existsSync(jsonPath)) {
+                content = fs.readFileSync(jsonPath, 'utf8'); // Keep as string
+                console.log(`📦 Loaded content for: ${template.name} (${template.id})`);
+            }
+        } catch (err) {
+            console.error(`❌ Failed to read content for ${template.id}:`, err);
+        }
+
         batch.set(ref, {
             ...template,
+            content,
             updatedAt: Timestamp.now(),
             createdAt: Timestamp.now()
         }, { merge: true });

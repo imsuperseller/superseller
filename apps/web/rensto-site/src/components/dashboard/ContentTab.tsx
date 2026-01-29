@@ -24,7 +24,7 @@ export interface ContentItem {
     id: string;
     title: string;
     type: 'blog' | 'social' | 'email' | 'video';
-    status: 'draft' | 'scheduled' | 'published' | 'failed';
+    status: 'draft' | 'needs_approval' | 'scheduled' | 'published' | 'failed';
     scheduledDate?: string;
     publishedUrl?: string;
     platform?: string;
@@ -62,6 +62,7 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
         switch (status) {
             case 'published': return '#22c55e';
             case 'scheduled': return '#1eaef7';
+            case 'needs_approval': return '#fe3d51'; // V3.1 Cyan/Pink contrast
             case 'draft': return '#f7931e';
             case 'failed': return '#ef4444';
             default: return '#6b7280';
@@ -94,10 +95,10 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                     </div>
                     <Lock className="w-16 h-16 mx-auto mb-4 text-gray-500" />
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        {SERVICE_DISPLAY_NAMES.content}
+                        {SERVICE_DISPLAY_NAMES['content-engine']}
                     </h2>
                     <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                        {SERVICE_DESCRIPTIONS.content}
+                        {SERVICE_DESCRIPTIONS['content-engine']}
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 mb-6">
                         {['Blog Posts', 'Social Media', 'Email Newsletters', 'Video Scripts'].map(feature => (
@@ -234,8 +235,18 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                                             color: getStatusColor(item.status)
                                         }}
                                     >
-                                        {item.status}
+                                        {item.status.replace('_', ' ')}
                                     </span>
+                                    {item.status === 'needs_approval' && (
+                                        <div className="flex items-center gap-2">
+                                            <Button variant="renstoPrimary" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest px-4">
+                                                Approve
+                                            </Button>
+                                            <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest text-gray-500 border border-white/5">
+                                                Preview
+                                            </Button>
+                                        </div>
+                                    )}
                                     {item.publishedUrl && (
                                         <a
                                             href={item.publishedUrl}

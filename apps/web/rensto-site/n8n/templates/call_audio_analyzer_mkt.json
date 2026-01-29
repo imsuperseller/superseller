@@ -1,0 +1,117 @@
+{
+    "name": "MKT-CALL-ANALYZER-001: Autonomous Voice Lead Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "values": {
+                    "string": [
+                        {
+                            "name": "businessName",
+                            "value": "Your Business Name"
+                        },
+                        {
+                            "name": "workizApiToken",
+                            "value": "PASTE_TOKEN_HERE"
+                        },
+                        {
+                            "name": "workizApiSecret",
+                            "value": "PASTE_SECRET_HERE"
+                        },
+                        {
+                            "name": "notificationEmail",
+                            "value": "admin@yourbusiness.com"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "config-node",
+            "name": "CONFIG: Setup Business Info",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 2,
+            "position": [
+                200,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "incoming-call-recording",
+                "options": {}
+            },
+            "id": "webhook-node",
+            "name": "Telnyx Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                0,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.workiz.com/api/v1/lead/create/",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Workiz-Api-Token",
+                            "value": "={{ $('CONFIG: Setup Business Info').first().json.workizApiToken }}"
+                        },
+                        {
+                            "name": "Workiz-Api-Secret",
+                            "value": "={{ $('CONFIG: Setup Business Info').first().json.workizApiSecret }}"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "first_name",
+                            "value": "={{ $json.customerName || 'Unknown' }}"
+                        },
+                        {
+                            "name": "job_source",
+                            "value": "Voice AI Agent"
+                        }
+                    ]
+                }
+            },
+            "id": "workiz-node",
+            "name": "Create Workiz Lead",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1200,
+                500
+            ]
+        }
+    ],
+    "connections": {
+        "Telnyx Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "CONFIG: Setup Business Info",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "CONFIG: Setup Business Info": {
+            "main": [
+                [
+                    {
+                        "node": "Create Workiz Lead",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

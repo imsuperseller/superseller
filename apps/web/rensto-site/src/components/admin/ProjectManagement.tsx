@@ -25,39 +25,31 @@ interface Project {
     progress: number;
     dueDate: string;
     pillar: string;
+    outlookEventId?: string;
 }
 
 export default function ProjectManagement() {
-    const [projects, setProjects] = useState<Project[]>([
-        {
-            id: '1',
-            name: 'Lead Machine Implementation',
-            clientName: 'Acme Corp',
-            status: 'in_progress',
-            progress: 65,
-            dueDate: '2026-01-15',
-            pillar: 'Lead Machine'
-        },
-        {
-            id: '2',
-            name: 'Voice AI Receptionist',
-            clientName: 'Global Logistics',
-            status: 'planning',
-            progress: 15,
-            dueDate: '2026-01-20',
-            pillar: 'Voice AI'
-        },
-        {
-            id: '3',
-            name: 'Knowledge Engine - Tech Docs',
-            clientName: 'SaaS Solutions',
-            status: 'blocked',
-            progress: 40,
-            dueDate: '2026-01-12',
-            pillar: 'Knowledge Engine'
-        }
-    ]);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/admin/projects');
+                const data = await response.json();
+                if (data.success) {
+                    setProjects(data.projects);
+                }
+            } catch (error) {
+                console.error('Failed to fetch projects:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProjects();
+    }, []);
 
     const getStatusColor = (status: Project['status']) => {
         switch (status) {
@@ -135,7 +127,12 @@ export default function ProjectManagement() {
                                                 <FolderOpen className="w-5 h-5 text-cyan-400" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-black text-white uppercase tracking-tight">{project.name}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm font-black text-white uppercase tracking-tight">{project.name}</p>
+                                                    {project.outlookEventId && (
+                                                        <Calendar className="w-3 h-3 text-cyan-500" />
+                                                    )}
+                                                </div>
                                                 <p className="text-[10px] text-slate-500 font-medium">{project.pillar}</p>
                                             </div>
                                         </div>
@@ -167,7 +164,12 @@ export default function ProjectManagement() {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6 text-sm text-slate-400 font-mono">
-                                        {project.dueDate}
+                                        <div className="flex flex-col">
+                                            <span>{project.dueDate}</span>
+                                            {project.outlookEventId && (
+                                                <span className="text-[8px] text-cyan-500/50 uppercase font-black tracking-tighter">Synced</span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-8 py-6 text-right">
                                         <button className="p-2 text-slate-600 hover:text-white transition-colors">

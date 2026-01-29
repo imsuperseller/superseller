@@ -42,6 +42,7 @@ import { NoiseTexture, PillarsVisualization } from '@/components/ui/premium';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
 import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
 import { ComparisonTable } from '@/components/marketing/ComparisonTable';
 import { Client, Testimonial } from '@/types/firestore';
@@ -50,6 +51,8 @@ const { motion } = framer;
 import { env } from '@/lib/env';
 import { formatCurrency } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge-enhanced';
+import { Terminal as TerminalIcon } from 'lucide-react';
 
 interface HomePageProps {
     initialLogos?: Client[];
@@ -104,108 +107,15 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         }
     };
 
-    // Four core pillars - Persona Aligned
-    const serviceTypes = [
-        {
-            id: 'lead-gen',
-            name: 'The Lead Machine',
-            tagline: 'The Profit Siphon',
-            description: 'An autonomous outbound engine that stops the revenue leak. Sources, enriches, and closes leads while you sleep.',
-            vsHuman: 'Architect ROI: Replaces 3-5 manual SDRs with zero management overhead.',
-            icon: Target,
-            features: [
-                'Automated Profit Sourcing',
-                'AI Data Mining',
-                'Multi-Channel Capture',
-                'Logic-First CRM Sync',
-                'Daily Revenue Reports'
-            ],
-            pricing: 'From $997/mo',
-            qualifier: 'Scale your profit overnight',
-            cta: 'Activate My Engine',
-            href: '/offers',
-            gradient: 'primary',
-            popular: true,
-            slots: '3 slots left'
-        },
-        {
-            id: 'voice-ai-agent',
-            name: 'Voice AI Agent',
-            tagline: 'The Autonomous Closer',
-            description: 'A 24/7 digital expert and closer that handles logic-based calls and books high-value commitments.',
-            vsHuman: 'Specialist Edge: 24/7 availability. Zero latency. 1/10th the cost of a human.',
-            icon: Mic,
-            features: [
-                '24/7 Inbound/Outbound Logic',
-                'Automated ROI Commitment',
-                'Digital Gateway Connection',
-                'Vision-Aware Support',
-                'Expert Lead Filtering'
-            ],
-            pricing: 'From $497/mo',
-            qualifier: 'Never miss a connection',
-            cta: 'Partner With My Agent',
-            href: '/whatsapp',
-            gradient: 'accent',
-            popular: false,
-            slots: '⭐ Top Rated'
-        },
-        {
-            id: 'rag-systems',
-            name: 'Knowledge Engine',
-            tagline: 'Digital Wisdom RAG',
-            description: 'The Digital Brain of your company. Connect AI to your private data for a collective intelligence with perfect memory.',
-            vsHuman: 'Futurist Vision: The employee who knows every project and best practice instantly.',
-            icon: Shield,
-            features: [
-                'Live Digital Brain Sync',
-                'Private Wisdom Base',
-                'Internal Logic Pathways',
-                'Vision-Aware Context',
-                'Enterprise-Grade Logic'
-            ],
-            pricing: 'From $1,497/mo',
-            qualifier: 'For visionary teams',
-            cta: 'Secure My Wisdom',
-            href: '/offers#knowledge-engine',
-            gradient: 'secondary',
-            popular: false,
-            slots: 'Advanced Systems'
-        },
-        {
-            id: 'content-engine',
-            name: 'The Content Engine',
-            tagline: 'The Authority Pipeline',
-            description: 'Autonomous systems that transform ideas into high-authority viral content at scale. Your digital megaphone.',
-            vsHuman: 'A full content agency engine that never runs out of visionary ideas.',
-            icon: Users,
-            features: [
-                'Visionary Research & Ideation',
-                'Automated Viral Preview',
-                'Multi-Channel Megaphone',
-                'Authority Multiplier Logic',
-                'Growth Evolution Reports'
-            ],
-            pricing: 'From $1,497/mo',
-            qualifier: 'Dominate the transition',
-            cta: 'Start Evolving',
-            href: '/offers',
-            gradient: 'primary',
-            popular: false,
-            slots: 'Scaling Fast'
-        }
-    ];
+    // Unified Products from Registry
+    const theTeam = [
+        PRODUCT_REGISTRY['lead-machine'],
+        PRODUCT_REGISTRY['autonomous-secretary'],
+        PRODUCT_REGISTRY['knowledge-engine'],
+        PRODUCT_REGISTRY['content-engine']
+    ].filter(p => p.status !== 'hidden');
 
-    const ecosystemBundle = {
-        id: 'full-ecosystem',
-        name: 'Full Ecosystem',
-        price: 5497,
-        description: 'All four pillars plus premium support, custom integrations, and a dedicated engineer for end‑to‑end automation.',
-        features: ['Lead Machine Engine', 'Voice AI Agent System', 'Knowledge Engine (RAG)', 'The Content Engine', 'Strategic Roadmap', 'Dedicated Automation Partner', '24/7 Priority Support'],
-        cta: 'Claim The Ecosystem Bundle',
-        popular: true,
-        icon: Zap
-    };
+    const applets = Object.values(PRODUCT_REGISTRY).filter(p => p.flowType === 'applet' && p.status !== 'hidden');
 
     const carePlans = [
         {
@@ -465,37 +375,28 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                                <Link href="/free-leads">
+                                <Link href="#team">
                                     <Button
                                         size="xl"
                                         className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto px-10"
                                         style={{
-                                            background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
+                                            background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
                                             color: '#ffffff',
-                                            boxShadow: '0 0 30px rgba(254, 61, 81, 0.4)'
+                                            boxShadow: '0 0 30px rgba(6, 182, 212, 0.4)'
                                         }}
                                     >
-                                        <Sparkles className="w-5 h-5 mr-3 animate-pulse text-yellow-300" />
-                                        Get 10 Free Leads
+                                        <Users className="w-5 h-5 mr-3" />
+                                        Hire The Team
                                         <ArrowRight className="w-5 h-5 ml-2" />
                                     </Button>
                                 </Link>
-                                <Link href="#pillars">
+                                <Link href="#applets">
                                     <Button
                                         size="xl"
                                         variant="renstoSecondary"
-                                        className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
+                                        className="font-black italic uppercase tracking-widest w-full sm:w-auto"
                                     >
-                                        The 4 Pillars
-                                    </Button>
-                                </Link>
-                                <Link href="/offers#ecosystem">
-                                    <Button
-                                        size="xl"
-                                        variant="renstoNeon"
-                                        className="font-bold transition-all hover:-translate-y-1 w-full sm:w-auto"
-                                    >
-                                        The Bundle
+                                        Browse Applets
                                     </Button>
                                 </Link>
                             </div>
@@ -702,39 +603,89 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                     </div>
                 </section>
 
-                {/* Qualification Engine - The Core Funnel */}
-                <section id="pillars" className="py-32 px-4 relative overflow-hidden">
-                    <div className="container mx-auto max-w-7xl">
-                        <div className="grid lg:grid-cols-2 gap-24 items-center">
-                            <div className="space-y-12">
-                                <div className="space-y-6">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-sm font-black uppercase tracking-widest">
-                                        <HelpCircle className="w-4 h-4" />
-                                        The Ecosystem Architecture
+                {/* The Autonomous Team Section */}
+                <section id="team" className="py-32 px-4 relative overflow-hidden">
+                    <div className="container mx-auto">
+                        <div className="text-center mb-24 space-y-6">
+                            <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
+                                Personnel v2.6
+                            </Badge>
+                            <h2 className="text-5xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-[0.8] mb-6">
+                                HIRE THE <span className="text-cyan-400">UNSTOPPABLE</span> TEAM.
+                            </h2>
+                            <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
+                                Don&apos;t build tools. Hire autonomous agents that work 24/7 without a manual work tax.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {theTeam.map((agent) => (
+                                <Link key={agent.id} href={`/products/${agent.id}`} className="group relative block p-px rounded-[2.5rem] bg-gradient-to-b from-white/10 to-transparent hover:from-cyan-500/40 transition-all duration-500 overflow-hidden">
+                                    <div className="relative z-10 bg-[#0d0d0d] p-10 rounded-[2.4rem] h-full flex flex-col space-y-8">
+                                        <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                                            {agent.icon && <agent.icon className="w-8 h-8" />}
+                                        </div>
+                                        <div className="space-y-4">
+                                            <h3 className="text-3xl font-black text-white uppercase tracking-tighter italic">{agent.name}</h3>
+                                            <p className="text-sm text-slate-500 font-medium leading-relaxed line-clamp-3 italic">
+                                                {agent.headline}
+                                            </p>
+                                        </div>
+                                        <div className="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+                                            <span className="text-[10px] font-black uppercase text-slate-600 tracking-widest">Starting at ${agent.price}</span>
+                                            <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-2 transition-transform" />
+                                        </div>
                                     </div>
-                                    <h2 className="text-5xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-tight">
-                                        The <span className="text-cyan-400 text-glow">4 Pillars</span> of Autonomous Success
-                                    </h2>
-                                    <p className="text-xl text-slate-400 max-w-xl font-medium leading-relaxed">
-                                        Most businesses fail at automation because they use scattered task-bots. We architect an integrated Ecosystem where your leads, operations, and knowledge are perfectly synchronized.
-                                    </p>
-                                </div>
-                                <div className="flex flex-col sm:flex-row gap-6">
-                                    <Link href="#qualify">
-                                        <Button
-                                            size="xl"
-                                            variant="renstoSecondary"
-                                            className="font-black italic uppercase tracking-widest"
-                                        >
-                                            Start My Analysis
-                                            <ArrowRight className="w-5 h-5 ml-2" />
-                                        </Button>
-                                    </Link>
-                                </div>
+                                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                                        <Package className="w-32 h-32" />
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* The Applet Grid Section */}
+                <section id="applets" className="py-32 px-4 bg-white/[0.01] border-y border-white/5 relative">
+                    <div className="container mx-auto">
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                            <div className="space-y-4 max-w-xl">
+                                <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none italic">
+                                    UTILITY <span className="text-cyan-400">APPLETS.</span>
+                                </h2>
+                                <p className="text-lg text-slate-500 font-medium italic">
+                                    Small-scale engines for specific tactical missions. Buy credits, activate the logic, get the result.
+                                </p>
                             </div>
-                            <div className="relative">
-                                <PillarsVisualization />
-                            </div>
+                            <Badge className="bg-[#fe3d51]/10 text-[#fe3d51] border-[#fe3d51]/20 px-6 py-3 rounded-full uppercase tracking-widest text-[10px] font-black">
+                                Instant Activation Enabled
+                            </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {applets.map((applet) => (
+                                <Link key={applet.id} href={`/products/${applet.id}`} className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all group flex items-start gap-6">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-cyan-500/10 group-hover:border-cyan-400 transition-all">
+                                        {applet.icon && <applet.icon className="w-5 h-5 text-cyan-400" />}
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3">
+                                            <h4 className="text-xl font-black text-white italic tracking-tighter uppercase">{applet.name}</h4>
+                                            {applet.usageCredits && (
+                                                <span className="text-[8px] font-black px-2 py-0.5 bg-cyan-500/10 text-cyan-400 rounded-md uppercase tracking-widest border border-cyan-500/20">
+                                                    {applet.usageCredits} Runs
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-slate-500 font-medium leading-relaxed italic line-clamp-2">
+                                            {applet.headline}
+                                        </p>
+                                        <div className="pt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#fe3d51] opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Activate Engine <ArrowRight className="w-3 h-3" />
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -826,196 +777,68 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                     </div>
                 </section>
 
-                {/* Service Type Cards */}
-                <section className="py-20 px-4" style={{ background: 'var(--rensto-bg-primary)' }}>
+                {/* The Business Model Section */}
+                <section id="model" className="py-24 px-4 border-t border-white/5 bg-[#0a061e]/20">
                     <div className="container mx-auto">
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl font-bold mb-4" style={{ color: 'var(--rensto-text-primary)' }}>
-                                Choose Your Path to Automation
-                            </h2>
-                            <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--rensto-text-secondary)' }}>
-                                Select the model that fits your growth stage.
-                            </p>
-                        </div>
+                        <div className="grid lg:grid-cols-2 gap-16 items-center">
+                            <div className="space-y-8">
+                                <h2 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">
+                                    THE <span className="text-cyan-400">PROFIT</span> MODELS.
+                                </h2>
+                                <p className="text-xl text-slate-400 font-medium leading-relaxed">
+                                    We don&apos;t just sell software. We deploy high-performance assets. Choose the engagement that matches your velocity.
+                                </p>
 
-                        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
-                            {serviceTypes.map((service) => {
-                                const IconComponent = service.icon;
-                                return (
-                                    <div
-                                        key={service.id}
-                                        className="relative rounded-2xl border-2 p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col"
-                                        style={{
-                                            background: 'var(--rensto-bg-card)',
-                                            borderColor: service.popular ? 'var(--rensto-cyan)' : 'rgba(254, 61, 81, 0.2)',
-                                            boxShadow: selectedService === service.id
-                                                ? 'var(--rensto-glow-secondary)'
-                                                : service.popular
-                                                    ? '0 0 30px rgba(95, 251, 253, 0.15)'
-                                                    : 'none'
-                                        }}
-                                        onMouseEnter={() => setSelectedService(service.id)}
-                                        onMouseLeave={() => setSelectedService(null)}
-                                    >
-                                        {service.popular && (
-                                            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                                <span
-                                                    className="px-4 py-1 rounded-full text-sm font-bold flex items-center gap-2 text-white whitespace-nowrap"
-                                                    style={{ background: 'var(--rensto-gradient-secondary)' }}
-                                                >
-                                                    <Star className="w-4 h-4" />
-                                                    Most Popular
-                                                </span>
+                                <div className="space-y-4">
+                                    <div className="p-6 rounded-2xl bg-white/5 border border-white/10 group hover:border-cyan-500/30 transition-all">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                                <Zap className="w-5 h-5 text-cyan-400" />
                                             </div>
-                                        )}
-
-                                        <div className="mb-6">
-                                            <div
-                                                className="w-14 h-14 mb-4 rounded-xl flex items-center justify-center shrink-0"
-                                                style={{
-                                                    background: service.gradient === 'primary'
-                                                        ? 'var(--rensto-gradient-primary)'
-                                                        : service.gradient === 'accent'
-                                                            ? 'var(--rensto-gradient-neon)'
-                                                            : 'var(--rensto-gradient-secondary)'
-                                                }}
-                                            >
-                                                <IconComponent className="w-7 h-7 text-white" />
-                                            </div>
-                                            <h3 className="text-2xl font-bold mb-1 min-h-[4rem] flex items-center" style={{ color: 'var(--rensto-text-primary)' }}>
-                                                {service.name}
-                                            </h3>
-                                            <p className="service-tagline text-sm font-medium mb-3" style={{ color: 'var(--rensto-cyan)' }}>
-                                                {service.tagline}
-                                            </p>
-                                            <p className="text-sm min-h-[4.5rem]" style={{ color: 'var(--rensto-text-secondary)' }}>
-                                                {service.description}
-                                            </p>
-                                            <div className="h-10 mb-4 bg-red-500/5 border border-red-500/10 rounded-lg flex items-center px-3 gap-2">
-                                                <User className="w-3 h-3 text-red-400 opacity-50" />
-                                                <span className="text-[10px] text-red-200/60 font-medium leading-none italic">
-                                                    {(service as any).vsHuman}
-                                                </span>
-                                            </div>
+                                            <h4 className="text-xl font-black text-white uppercase italic">Credit Buy (One-Time)</h4>
                                         </div>
-
-                                        <div className="mb-6 border-y border-white/5 py-4">
-                                            <div className="text-3xl font-bold mb-1" style={{ color: 'var(--rensto-text-primary)' }}>
-                                                {service.pricing}
-                                            </div>
-                                            <p className="text-xs" style={{ color: 'var(--rensto-text-muted)' }}>
-                                                {service.qualifier}
-                                            </p>
-                                        </div>
-
-                                        <div className="space-y-3 mb-8 flex-grow flex flex-col">
-                                            <div className="flex-grow">
-                                                {service.features.map((feature, index) => (
-                                                    <div key={index} className="flex items-start gap-3 mb-3 last:mb-0">
-                                                        <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--rensto-cyan)' }} />
-                                                        <span className="text-xs leading-snug" style={{ color: 'var(--rensto-text-secondary)' }}>{feature}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-auto">
-                                            {/* Scarcity indicator */}
-                                            <div
-                                                className="text-[10px] font-bold uppercase tracking-widest mb-4 flex items-center gap-2"
-                                                style={{ color: 'var(--rensto-primary)' }}
-                                            >
-                                                <Zap className="w-3 h-3" />
-                                                {service.slots}
-                                            </div>
-
-                                            <Button
-                                                size="xl"
-                                                variant={service.gradient === 'primary' ? 'renstoPrimary' : 'renstoSecondary'}
-                                                className="w-full font-bold transition-all duration-200 h-14"
-                                                onClick={() => {
-                                                    const slug = service.id === 'lead-gen' ? 'lead-machine' : service.id;
-                                                    handleCheckout(slug, 'service-purchase');
-                                                }}
-                                                disabled={!!loading}
-                                            >
-                                                {loading === (service.id === 'lead-gen' ? 'lead-machine' : service.id) ? (
-                                                    <Loader2 className="w-5 h-5 animate-spin mx-auto" />
-                                                ) : (
-                                                    <div className="flex items-center justify-center">
-                                                        {service.cta}
-                                                        <ArrowRight className="w-5 h-5 ml-2" />
-                                                    </div>
-                                                )}
-                                            </Button>
-                                        </div>
+                                        <p className="text-sm text-slate-500 font-medium italic">
+                                            Purchase a specific amount of &quot;Runs&quot; or &quot;Leads&quot;. Perfect for testing the engine or low-volume surgical operations.
+                                        </p>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
 
-                {/* Full Ecosystem Bundle Section */}
-                <section id="ecosystem" className="py-24 px-4 bg-black relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.1),transparent_70%)]" />
-                    <div className="container mx-auto relative z-10">
-                        <div className="max-w-6xl mx-auto rounded-[3.5rem] p-12 md:p-20 bg-white/[0.02] border border-white/5 backdrop-blur-3xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8">
-                                <span className="bg-cyan-500 text-black font-black uppercase text-xs tracking-widest px-6 py-2 rounded-full">
-                                    Limited Capacity
-                                </span>
+                                    <div className="p-6 rounded-2xl bg-white/5 border border-white/10 group hover:border-[#fe3d51]/30 transition-all">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <div className="w-10 h-10 rounded-lg bg-[#fe3d51]/10 flex items-center justify-center">
+                                                <Users className="w-5 h-5 text-[#fe3d51]" />
+                                            </div>
+                                            <h4 className="text-xl font-black text-white uppercase italic">Monthly Hire (Scale)</h4>
+                                        </div>
+                                        <p className="text-sm text-slate-500 font-medium italic">
+                                            Hire the agent full-time. Unlimited autonomous runs, active monitoring, and priority evolution. The ultimate time-leverage.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                                <div className="space-y-10">
-                                    <div className="space-y-4">
-                                        <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
-                                            <Zap className="w-4 h-4" />
-                                            The Ultimate Package
-                                        </div>
-                                        <h2 className="text-6xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
-                                            The <span className="text-cyan-400">Total</span> <br />Ecosystem
-                                        </h2>
-                                    </div>
-                                    <p className="text-2xl text-slate-400 font-medium leading-relaxed">
-                                        {ecosystemBundle.description}
-                                    </p>
-                                    <div className="flex items-baseline gap-4 py-8 border-y border-white/5">
-                                        <span className="text-7xl font-black text-white">{formatCurrency(ecosystemBundle.price)}</span>
-                                        <span className="text-slate-500 font-black uppercase text-sm tracking-[0.2em] line-through decoration-cyan-500/50">
-                                            Value: $12,500+
-                                        </span>
-                                    </div>
-                                    <Button
-                                        size="xl"
-                                        onClick={() => handleCheckout(ecosystemBundle.id, 'service-purchase')}
-                                        disabled={!!loading}
-                                        className="w-full h-24 text-2xl font-black bg-cyan-400 text-black hover:bg-cyan-300 rounded-3xl transition-all duration-300 shadow-[0_0_50px_rgba(34,211,238,0.2)] hover:shadow-[0_0_70px_rgba(34,211,238,0.3)]"
-                                    >
-                                        {loading === ecosystemBundle.id ? (
-                                            <Loader2 className="w-8 h-8 animate-spin mx-auto" />
-                                        ) : (
-                                            <div className="flex items-center gap-4">
-                                                {ecosystemBundle.cta}
-                                                <ArrowRight className="w-8 h-8" />
-                                            </div>
-                                        )}
-                                    </Button>
+                            <div className="relative p-12 rounded-[3.5rem] bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-white/10 backdrop-blur-3xl">
+                                <div className="absolute top-0 right-0 p-8">
+                                    <Badge className="bg-cyan-500 text-black font-black uppercase text-[10px] tracking-widest px-4 py-1.5 rounded-full">
+                                        strategic tier
+                                    </Badge>
                                 </div>
-
-                                <div className="bg-white/[0.03] p-10 rounded-[2.5rem] border border-white/10 space-y-8">
-                                    <h3 className="text-xl font-black text-white uppercase italic tracking-widest">Included Components</h3>
-                                    <ul className="space-y-6">
-                                        {ecosystemBundle.features.map((feature, i) => (
-                                            <li key={i} className="flex items-center gap-5">
-                                                <div className="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center shrink-0">
-                                                    <Check className="w-4 h-4 text-cyan-400" />
-                                                </div>
-                                                <span className="text-lg text-slate-200 font-bold tracking-tight">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                <div className="space-y-8">
+                                    <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase leading-[0.9]">
+                                        Full Strategic <br /><span className="text-cyan-400">Ecosystem.</span>
+                                    </h3>
+                                    <p className="text-lg text-slate-200 font-medium italic leading-relaxed">
+                                        For businesses doing $1M+ ARR. We architect the entire infrastructure, connect all agents, and provide a dedicated automation partner.
+                                    </p>
+                                    <div className="py-8 border-y border-white/5">
+                                        <span className="text-6xl font-black text-white">${PRODUCT_REGISTRY['full-ecosystem'].price}</span>
+                                        <span className="ml-4 text-slate-500 font-black uppercase text-xs tracking-[0.2em]">Full Deployment</span>
+                                    </div>
+                                    <Link href={`/products/full-ecosystem`} className="block">
+                                        <Button size="xl" className="w-full h-20 rounded-[2rem] bg-white text-black font-black text-xs uppercase tracking-[0.2em] gap-3">
+                                            Activate Total Scale
+                                            <ArrowRight className="w-5 h-5" />
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -23,16 +23,19 @@ import {
     Send,
     Phone,
     Lock,
-    Briefcase
+    Briefcase,
+    Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
-import { UserEntitlements, getVisibleTabs, DashboardTabConfig } from '@/types/entitlements';
+import { UserEntitlements, getVisibleTabs, DashboardTabConfig, SolutionInstance } from '@/types/entitlements';
 import LeadsTab, { Lead } from '@/components/dashboard/LeadsTab';
 import OutreachTab, { Campaign } from '@/components/dashboard/OutreachTab';
 import SecretaryTab, { CallLog, SecretaryConfig, WhatsAppThread, Booking } from '@/components/dashboard/SecretaryTab';
 import ContentTab, { ContentItem } from '@/components/dashboard/ContentTab';
 import KnowledgeTab, { IndexedDocument, KnowledgeStats } from '@/components/dashboard/KnowledgeTab';
+import SolutionsTab from '@/components/dashboard/SolutionsTab';
+import EarningsTab from '@/components/dashboard/EarningsTab';
 import { BundleUpsell } from '@/components/dashboard/UpsellComponents';
 import { ImpersonationBanner, useImpersonation } from '@/components/dashboard/ImpersonationBanner';
 
@@ -117,6 +120,7 @@ export default function ClientDashboardClient({
     const userEntitlements: UserEntitlements = entitlements || {
         freeLeadsTrial: false,
         pillars: [],
+        engines: [],
         marketplaceProducts: [],
         customSolution: project ? { projectId: project.id || '', status: project.status as any, packageName: project.packageName } : null
     };
@@ -250,7 +254,7 @@ export default function ClientDashboardClient({
                             >
                                 {tab.locked && <Lock className="w-3 h-3" />}
                                 <TabIcon className="w-4 h-4" />
-                                {tab.label}
+                                {tab.id === 'knowledge' ? 'Digital Vault' : tab.label}
                             </button>
                         );
                     })}
@@ -314,8 +318,8 @@ export default function ClientDashboardClient({
                                     <p className="text-gray-400 text-sm">Targeted upgrades to maximize your automation ROI.</p>
                                     <div className="bg-black/20 rounded-xl p-4 border border-white/5 hover:border-[#fe3d51]/30 transition-colors">
                                         <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm font-medium text-white">Customer Support AI</span>
-                                            <span className="text-xs text-[#5ffbfd] font-bold">+85% Efficiency</span>
+                                            <span className="text-sm font-medium text-white">Sarah (Comm Efficiency)</span>
+                                            <span className="text-xs text-[#5ffbfd] font-bold">+85% Capacity</span>
                                         </div>
                                         <Progress value={85} className="h-1.5" />
                                     </div>
@@ -351,6 +355,69 @@ export default function ClientDashboardClient({
                                 </div>
                             </div>
                         </div>
+
+                        {/* AI Worker Infrastructure (V3.1) */}
+                        {entitlements?.engines?.some(e => e.infrastructure && e.infrastructure.length > 0) && (
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h2
+                                        className="text-lg font-bold"
+                                        style={{ color: 'var(--rensto-text-primary)' }}
+                                    >
+                                        Agent Infrastructure Health
+                                    </h2>
+                                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-black uppercase text-cyan-400">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                        Real-time Link Active
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {entitlements.engines.flatMap(engine => (
+                                        engine.infrastructure?.map((infra, idx) => (
+                                            <div key={`${engine.id}-${idx}`} className="rounded-xl p-5 border border-white/5 bg-black/20 hover:bg-black/40 transition-all group">
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${infra.status === 'online' ? 'bg-green-500/10 group-hover:bg-green-500/20' :
+                                                            infra.status === 'warning' ? 'bg-orange-500/10 group-hover:bg-orange-500/20' : 'bg-red-500/10 group-hover:bg-red-500/20'
+                                                            }`}>
+                                                            {infra.provider === 'gologin' ? <Globe className={`w-5 h-5 ${infra.status === 'online' ? 'text-green-400' : 'text-red-400'}`} /> :
+                                                                infra.provider === 'telnyx' ? <Phone className={`w-5 h-5 ${infra.status === 'online' ? 'text-green-400' : 'text-red-400'}`} /> :
+                                                                    <Zap className={`w-5 h-5 ${infra.status === 'online' ? 'text-green-400' : 'text-red-400'}`} />}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-bold text-white leading-none mb-1">{infra.label || infra.provider.toUpperCase()}</p>
+                                                            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">{infra.provider}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col items-end">
+                                                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${infra.status === 'online' ? 'bg-green-500/20 text-green-400' :
+                                                            infra.status === 'warning' ? 'bg-orange-500/20 text-orange-400' : 'bg-red-500/20 text-red-400'
+                                                            }`}>
+                                                            {infra.status}
+                                                        </span>
+                                                        {infra.lastHeartbeat && (
+                                                            <span className="text-[9px] text-gray-600 mt-1 font-mono">
+                                                                {infra.lastHeartbeat}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                {infra.metrics && infra.metrics.length > 0 && (
+                                                    <div className="space-y-1.5 mt-4 pt-4 border-t border-white/5">
+                                                        {infra.metrics.map((m, i) => (
+                                                            <div key={i} className="flex justify-between text-[11px] items-center">
+                                                                <span className="text-gray-500">{m.label}</span>
+                                                                <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded leading-none">{m.value}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Recent Activity / Stats Grid */}
                         <div className="grid md:grid-cols-3 gap-4">
@@ -528,29 +595,28 @@ export default function ClientDashboardClient({
                                 Quick Actions
                             </h2>
                             <div className="grid md:grid-cols-2 gap-3">
-                                <a
-                                    href="/contact?type=support"
-                                    target="_blank"
-                                    className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80"
+                                <button
+                                    onClick={() => window.location.href = '/contact?type=support'}
+                                    className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80 text-left w-full"
                                     style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
                                 >
                                     <div className="flex items-center gap-3">
                                         <Calendar className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
-                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Schedule Support Call</span>
+                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Schedule Family Strategy Call</span>
                                     </div>
                                     <ExternalLink className="w-4 h-4" style={{ color: 'var(--rensto-text-muted)' }} />
-                                </a>
-                                <a
-                                    href="mailto:support@rensto.com"
-                                    className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80"
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = 'mailto:support@rensto.com'}
+                                    className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-80 text-left w-full"
                                     style={{ backgroundColor: 'var(--rensto-bg-secondary)' }}
                                 >
                                     <div className="flex items-center gap-3">
                                         <MessageSquare className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
-                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Contact Support</span>
+                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Submit Issue to n8n Resolver</span>
                                     </div>
                                     <ExternalLink className="w-4 h-4" style={{ color: 'var(--rensto-text-muted)' }} />
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -597,6 +663,14 @@ export default function ClientDashboardClient({
                     />
                 )}
 
+                {/* Engines Tab */}
+                {activeTab === 'engines' && (
+                    <SolutionsTab
+                        engines={userEntitlements.engines}
+                        onAddMore={() => window.location.href = '/solutions'}
+                    />
+                )}
+
                 {/* Knowledge Tab */}
                 {activeTab === 'knowledge' && (
                     <KnowledgeTab
@@ -605,6 +679,17 @@ export default function ClientDashboardClient({
                         isLocked={!userEntitlements.pillars.includes('knowledge-engine')}
                         clientId={project.id || ''}
                         onUpgradeClick={() => handleUpgradeClick('knowledge-engine')}
+                    />
+                )}
+
+                {/* Earnings Tab (V3.1) */}
+                {activeTab === 'earnings' && entitlements?.partnerPayout && (
+                    <EarningsTab
+                        config={entitlements.partnerPayout}
+                        payouts={[
+                            { id: 'pay_1', amount: 840, date: '2026-01-21', status: 'pending', description: 'UAD FB Profit Share (Jan W3)' },
+                            { id: 'pay_2', amount: 1200, date: '2026-01-14', status: 'paid', description: 'UAD FB Profit Share (Jan W2)' }
+                        ]}
                     />
                 )}
 

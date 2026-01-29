@@ -166,6 +166,78 @@ const MOCK_TEMPLATES_EN: (Partial<Template> & { id: string })[] = [
                 visualDirecting: "Screen Trace: Show behavioral heatmaps as B-Roll."
             }
         ]
+    },
+    {
+        id: 'fb-marketplace-autoposter',
+        name: "Facebook Marketplace Autoposter",
+        outcomeHeadline: "Scale Your Real Estate or Auto Business with Autonomous Marketplace Fulfillment",
+        description: "The universal engine for high-volume Facebook Marketplace sellers. Automatically posts, manages browser fingerprints via GoLogin, and ensures 24/7 visibility with randomized intervals to protect your accounts.",
+        category: "Lead & Sales",
+        price: 497,
+        rating: 5.0,
+        downloads: 842,
+        popular: true,
+        features: ["Anti-Detection Browser Sync", "Randomized Post Intervals", "Image Metadata Scrubbing", "Auto-Renewal Engine"],
+        tools: ['meta', 'gologin', 'n8n'],
+        tags: ['marketplace', 'managed-solution'],
+        readinessStatus: 'Active',
+        technicalRequirements: [
+            { id: 'fb_email', label: 'Facebook Email', type: 'email', required: true, secret: true },
+            { id: 'fb_password', label: 'Facebook Password', type: 'password', required: true, secret: true },
+            { id: 'gologin_profile_id', label: 'GoLogin Profile ID', type: 'text', required: true },
+            { id: 'gologin_api_key', label: 'GoLogin API Key', type: 'password', required: true, secret: true }
+        ],
+        pricing: {
+            builder: { price: 497, currency: 'USD' },
+            bundle: { price: 297, currency: 'USD', interval: 'month' }
+        }
+    },
+    {
+        id: 'uad-fb-autoposter',
+        name: "UAD Facebook Autoposter",
+        outcomeHeadline: "Scale Your Garage Door Business with Autonomous Marketplace Fulfillment",
+        description: "Specialized for UAD Garage Doors. This engine automatically generates high-converting Facebook Marketplace listings, manages images with photorealistic text overlays, and routes calls to your Telnyx AI Assistant which syncs appointments directly to Workiz CRM.",
+        category: "Lead & Sales",
+        price: 497,
+        rating: 5.0,
+        downloads: 12,
+        features: ["Marketplace Scraping", "Telnyx + Workiz Sync", "Flux Image Overlays"],
+        tools: ['meta', 'telnyx', 'workiz', 'kie.ai'],
+        tags: ['partner', 'marketplace'],
+        readinessStatus: 'Active',
+        partner: "David Szender",
+        technicalRequirements: [
+            { id: 'fb_email', label: 'Facebook Email', type: 'email', required: true, secret: true },
+            { id: 'fb_password', label: 'Facebook Password', type: 'password', required: true, secret: true },
+            { id: 'workiz_api_key', label: 'Workiz API Key', type: 'password', required: true, secret: true }
+        ],
+        pricing: {
+            builder: { price: 997, currency: 'USD' },
+            bundle: { price: 497, currency: 'USD', interval: 'month' }
+        }
+    },
+    {
+        id: 'missparty-fb-autoposter',
+        name: "Miss Party Assistant",
+        outcomeHeadline: "Elevate Your Party Rental Business with AI-Powered Reservations",
+        description: "Specialized for Miss Party White Bounce House Rentals. Manages 24/7 customer inquiries, calculates delivery costs ($1/mile from Missy Dr), and provides Sarah—your friendly AI hostess—to handle all rental logistics via voice.",
+        category: "Operations",
+        price: 0,
+        rating: 5.0,
+        downloads: 8,
+        features: ["SARAH AI Voice Agent", "Delivery Calculator", "WhatsApp Confirmation"],
+        tools: ['telnyx', 'whatsapp', 'n8n'],
+        tags: ['partner', 'marketplace'],
+        readinessStatus: 'Active',
+        partner: "Michal Friedman",
+        technicalRequirements: [
+            { id: 'whatsapp_number', label: 'WhatsApp Number', type: 'text', required: true },
+            { id: 'delivery_base_address', label: 'Base Address', type: 'text', required: true, placeholder: 'Missy Dr, Dallas, TX' }
+        ],
+        pricing: {
+            builder: { price: 0, currency: 'USD' },
+            bundle: { price: 197, currency: 'USD', interval: 'month' }
+        }
     }
 ];
 

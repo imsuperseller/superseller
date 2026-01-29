@@ -7,6 +7,19 @@ export const metadata = {
   title: 'Rensto Admin Dashboard',
 };
 
+// Helper to sanitize Firestore data for Next.js Client Components (serialization fix)
+function serializeData(data: any): any {
+  if (data === null || data === undefined) return data;
+  if (typeof data.toDate === 'function') return data.toDate().toISOString();
+  if (Array.isArray(data)) return data.map(serializeData);
+  if (typeof data === 'object') {
+    const res: any = {};
+    for (const key in data) res[key] = serializeData(data[key]);
+    return res;
+  }
+  return data;
+}
+
 async function getDashboardStats() {
   const db = getFirestoreAdmin();
 
@@ -128,8 +141,8 @@ export default async function AdminDashboardPage() {
     <AdminDashboardClient
       session={{ user: { name: session.email.split('@')[0], email: session.email } }}
       stats={stats}
-      recentActivity={recentActivity}
-      templates={templates}
+      recentActivity={serializeData(recentActivity)}
+      templates={serializeData(templates)}
     />
   );
 }

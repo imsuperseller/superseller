@@ -110,8 +110,8 @@ export interface Template {
     installation?: boolean;
     popular?: boolean;
     version?: string;
-    fileSize?: number;
-    readinessStatus?: string; // 'Active', 'Draft', 'Internal'
+    readinessStatus: 'Active' | 'Draft' | 'Internal';
+    partner?: string; // e.g., "David Szender"
     setupTime?: string;
     targetMarket?: string;
     demoVideo?: string;
@@ -136,6 +136,11 @@ export interface Template {
     workflowId?: string;
     createdAt?: any;
     updatedAt?: any;
+    technicalRequirements?: FormField[]; // Unified Model
+    pricing?: {
+        builder: { price: number; currency: string; stripePriceId?: string };
+        bundle: { price: number; currency: string; interval: 'month'; stripePriceId?: string };
+    };
 
     // Ownership & Department
     owner?: 'rensto' | 'client';
@@ -216,7 +221,7 @@ export interface DownloadEvent {
     status: string;
 }
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'url' | 'select' | 'textarea' | 'boolean';
+export type FormFieldType = 'text' | 'number' | 'email' | 'url' | 'select' | 'textarea' | 'boolean' | 'password';
 
 export interface FormField {
     id: string;
@@ -226,6 +231,7 @@ export interface FormField {
     placeholder?: string;
     options?: string[]; // For 'select' type
     helperText?: string;
+    secret?: boolean; // If true, value should be encrypted before storage
 }
 
 export interface ServiceInstance {
@@ -322,6 +328,7 @@ export interface User {
     email: string;
     name?: string;
     phone?: string;
+    dashboardToken?: string;
 
     // Business Profile (SMB-specific)
     businessName?: string;
@@ -330,8 +337,15 @@ export interface User {
     revenueRange?: '$200k-500k' | '$500k-1m' | '$1m-5m' | '$5m-10m';
 
     // Account Status
-    status: 'active' | 'configuring' | 'suspended' | 'cancelled';
+    status: 'active' | 'configuring' | 'suspended' | 'cancelled' | 'lead' | 'prospect' | 'qualified';
     emailVerified: boolean;
+
+    // Infrastructure
+    n8nInstance?: {
+        url: string;        // e.g. "https://tax4usllc.app.n8n.cloud"
+        apiKey?: string;     // Unique API Key for this cluster
+        mcpToken?: string;   // For MCP server integration
+    };
 
     // Service Access
     activeServices: {
@@ -785,6 +799,92 @@ export interface ResponseTimeMetrics {
     createdAt: any;
     updatedAt: any;
 }
+// Solutions Model (Jan 2026 Restructuring)
+export interface Solution {
+    id: string;
+    name: string;
+    description: string;
+    outcomeHeadline: string;
+    category: 'Leads' | 'Creative' | 'Operations' | 'Strategy';
+    type: string; // e.g., 'marketplace-autoposter', 'voice-ai'
+    status: 'active' | 'beta' | 'coming_soon';
+
+    // Pricing Model
+    pricing: {
+        builder: {
+            price: number; // In USD (display only, stripe handled separately)
+            currency: string;
+            stripePriceId?: string;
+        };
+        bundle: {
+            price: number; // Monthly price in USD
+            currency: string;
+            interval: 'month';
+            stripePriceId?: string;
+        };
+        maintenance?: {
+            price: number;
+            interval: 'month';
+            stripePriceId?: string;
+        };
+    };
+
+    // Design & Marketing
+    features: string[];
+    tools: string[];
+    video?: string;
+    image?: string;
+    tags: string[];
+    rating: number;
+    downloads: number;
+    partner?: string; // e.g., "David Szender"
+
+    // Technical Blueprint
+    technicalRequirements: FormField[]; // Fields for intake
+    workflowTemplateId?: string; // n8n template
+
+    createdAt: any;
+    updatedAt: any;
+}
+
+export interface SolutionInstance {
+    id: string;
+    solutionId: string;
+    clientId: string;
+    clientEmail: string;
+
+    model: 'builder' | 'bundle';
+    status: 'pending_setup' | 'provisioning' | 'active' | 'error' | 'maintenance';
+
+    // Technical Config (secrets stored in separate restricted collection)
+    configuration: Record<string, any>;
+
+    // Real-time pulse and deployment tracking
+    technicalPulse?: {
+        responseTime?: string;
+        stabilityScore: number;
+        lastUpdateAt: any;
+    };
+    deploymentLog?: Array<{
+        step: string;
+        message: string;
+        timestamp: any;
+    }>;
+
+    // Operational Links
+    n8nWorkflowId?: string;
+    stripeSubscriptionId?: string;
+
+    // Monitoring
+    lastRunAt?: any;
+    lastStatus?: 'success' | 'error';
+    errorCount: number;
+
+    provisionedAt?: any;
+    createdAt: any;
+    updatedAt: any;
+}
+
 export interface IndexedDocument {
     id: string;
     clientId: string;

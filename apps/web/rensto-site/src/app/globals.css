@@ -409,6 +409,8 @@
     /* Use Rensto brand colors directly - matching Webflow brand system */
     background-color: var(--rensto-bg-primary) !important;
     color: var(--rensto-text-primary) !important;
+    scrollbar-width: thin;
+    scrollbar-color: #22d3ee #050505;
   }
 }
 
@@ -469,4 +471,43 @@
   100% {
     top: 110%;
   }
+}
+
+/* Product Client Animations */
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee2 {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee2 {
+  animation: marquee2 25s linear infinite;
 }

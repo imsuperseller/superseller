@@ -2,6 +2,8 @@
 
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getAuth, type Auth } from 'firebase/auth';
+import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
 const clientFirebaseConfig = {
     apiKey: "AIzaSyC0nEzAZZmVExL_65CwiRwGngRgF4BoK94",
@@ -14,13 +16,17 @@ const clientFirebaseConfig = {
 
 let app: FirebaseApp;
 let db: Firestore;
+let auth: Auth;
+let storage: FirebaseStorage;
 
 if (getApps().length === 0) {
     app = initializeApp(clientFirebaseConfig);
-    db = getFirestore(app);
 } else {
     app = getApps()[0];
-    db = getFirestore(app);
 }
 
-export { app, db };
+db = getFirestore(app);
+auth = getAuth(app);
+storage = getStorage(app);
+
+export { app, db, auth, storage };

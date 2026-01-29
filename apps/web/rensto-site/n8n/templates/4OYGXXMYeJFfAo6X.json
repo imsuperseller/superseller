@@ -1,0 +1,3303 @@
+{
+    "updatedAt": "2026-01-04T06:04:49.003Z",
+    "createdAt": "2025-12-28T07:13:07.793Z",
+    "id": "4OYGXXMYeJFfAo6X",
+    "name": "🎬 Celebrity Selfie Movie Sets Generator",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "content": "## 🎬 Celebrity Selfie Movie Sets Generator\n\n**✅ HIGGSFIELD KLING OMNI EDITION**\n\n**How to use:**\n1. Upload your photo directly\n2. Choose generation mode (AI, Custom, Presets)\n3. Submit and wait ~5-10 min per scene\n4. Get ONE merged video URL!\n\n**Models:**\n- Kie.ai Nano Banana Pro (images)\n- Higgsfield Kling Omni (first-last frame videos)\n\n**Photo Hosting:** ImgBB (free)\n\n**Auto-Merge:**\n- FFmpeg on VPS\n- All scenes merged automatically\n- Single download link!",
+                "height": 704
+            },
+            "id": "3af4fb2b-4c6d-4d42-afa2-8c5f1bdac502",
+            "name": "Instructions",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                27360,
+                16224
+            ]
+        },
+        {
+            "parameters": {
+                "formTitle": "🎬 Celebrity Selfie Movie Sets Generator",
+                "formDescription": "Create your personalized journey through movie/TV history! Upload your photo and customize your experience.",
+                "formFields": {
+                    "values": [
+                        {
+                            "fieldName": "Your Photo",
+                            "fieldLabel": "Your Photo",
+                            "fieldType": "file",
+                            "multipleFiles": false,
+                            "acceptFileTypes": ".jpg,.jpeg,.png,.webp",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldName": "Your Name",
+                            "fieldLabel": "Your Name",
+                            "placeholder": "John"
+                        },
+                        {
+                            "fieldName": "Your WhatsApp Number",
+                            "fieldLabel": "Your WhatsApp Number",
+                            "placeholder": "972501234567",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldName": "Generation Mode",
+                            "fieldLabel": "Generation Mode",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "🧠 AI Generate (describe what you want)"
+                                    },
+                                    {
+                                        "option": "✏️ Custom (specify each scene)"
+                                    },
+                                    {
+                                        "option": "🎯 Presets (popular movie collections)"
+                                    }
+                                ]
+                            },
+                            "requiredField": true
+                        },
+                        {
+                            "fieldName": "Number of Scenes",
+                            "fieldLabel": "Number of Scenes",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "2 scenes (~15 sec video)"
+                                    },
+                                    {
+                                        "option": "3 scenes (~20 sec video)"
+                                    },
+                                    {
+                                        "option": "4 scenes (~25 sec video)"
+                                    },
+                                    {
+                                        "option": "5 scenes (~30 sec video)"
+                                    },
+                                    {
+                                        "option": "6 scenes (~40 sec video)"
+                                    },
+                                    {
+                                        "option": "8 scenes (~50 sec video)"
+                                    }
+                                ]
+                            },
+                            "requiredField": true
+                        },
+                        {
+                            "fieldName": "🧠 AI Mode: Describe Your Dream Scenes",
+                            "fieldLabel": "🧠 AI Mode: Describe Your Dream Scenes",
+                            "fieldType": "textarea",
+                            "placeholder": "Examples:\n- 5 scenes with 80s action heroes\n- Marvel superheroes from the MCU"
+                        },
+                        {
+                            "fieldName": "✏️ Custom Mode: Scene Details (one per line)",
+                            "fieldLabel": "✏️ Custom Mode: Scene Details (one per line)",
+                            "fieldType": "textarea",
+                            "placeholder": "Format: Celebrity | Movie/Show | Era | Location | Costume | Gesture"
+                        },
+                        {
+                            "fieldName": "🎯 Preset Collection",
+                            "fieldLabel": "🎯 Preset Collection",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "80s Action Legends (Arnold, Stallone, Willis)"
+                                    },
+                                    {
+                                        "option": "90s Blockbusters (Titanic, Matrix, MIB)"
+                                    },
+                                    {
+                                        "option": "Marvel Cinematic Universe Heroes"
+                                    },
+                                    {
+                                        "option": "Star Wars Saga Characters"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "fieldName": "Video Aspect Ratio",
+                            "fieldLabel": "Video Aspect Ratio",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "9:16 (TikTok/Reels - Vertical)"
+                                    },
+                                    {
+                                        "option": "16:9 (YouTube - Horizontal)"
+                                    },
+                                    {
+                                        "option": "1:1 (Instagram - Square)"
+                                    }
+                                ]
+                            },
+                            "requiredField": true
+                        },
+                        {
+                            "fieldName": "Visual Style",
+                            "fieldLabel": "Visual Style",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "Ultra-realistic (default)"
+                                    },
+                                    {
+                                        "option": "Cinematic film look"
+                                    },
+                                    {
+                                        "option": "Vintage retro style"
+                                    },
+                                    {
+                                        "option": "Modern Instagram aesthetic"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "options": {
+                    "appendAttribution": false,
+                    "respondWithOptions": {
+                        "values": {
+                            "formSubmittedText": "🎬 Your celebrity selfie video is being generated with SEAMLESS transitions! Processing time: ~5-10 min per scene. We'll send it to your WhatsApp when ready!"
+                        }
+                    }
+                }
+            },
+            "id": "8f695494-c783-45a1-b274-97af3db8546d",
+            "name": "Upload Your Photo",
+            "type": "n8n-nodes-base.formTrigger",
+            "typeVersion": 2.4,
+            "position": [
+                26800,
+                17256
+            ],
+            "webhookId": "210fa7f0-d119-4a58-8715-a93ab38c28a5"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.imgbb.com/1/upload",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "contentType": "multipart-form-data",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "parameterType": "formBinaryData",
+                            "name": "image",
+                            "inputDataFieldName": "={{ Object.keys($binary)[0] }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                27024,
+                17208
+            ],
+            "id": "922f9e86-dc80-46f7-81c9-ad9db47926ee",
+            "name": "Upload to ImgBB",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "// Handle both real uploads (via ImgBB) and test data paths\nconst inputData = $json;\n\n// Check if we're coming from ImgBB (real upload) or Test Data (test path)\nlet prevData = {};\nlet imageUrl = '';\n\n// If coming from ImgBB, inputData will have data.image.url\nif (inputData.data?.image?.url || inputData.data?.url) {\n  // Real path: ImgBB response\n  imageUrl = inputData.data?.image?.url || inputData.data?.url || '';\n  \n  // Try to get form data from Upload Your Photo node\n  try {\n    prevData = $('Upload Your Photo').first().json || {};\n  } catch (e) {\n    prevData = {};\n  }\n} else if (inputData.user_photo_url) {\n  // Test path: already has user_photo_url from Test Data (Edit Fields)\n  imageUrl = inputData.user_photo_url;\n  prevData = inputData;\n} else {\n  // Fallback: use whatever data we have\n  prevData = inputData;\n  imageUrl = inputData.user_photo_url || '';\n}\n\nreturn {\n  json: {\n    ...prevData,\n    user_photo_url: imageUrl,\n    imgbb_success: !!imageUrl\n  }\n};"
+            },
+            "id": "b5970459-4d5d-4c29-811d-f4e307815481",
+            "name": "Process Uploaded Photo",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                27248,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "user_photo_url",
+                            "name": "user_photo_url",
+                            "type": "string",
+                            "value": "={{ $json.user_photo_url }}"
+                        },
+                        {
+                            "id": "user_name",
+                            "name": "user_name",
+                            "type": "string",
+                            "value": "={{ $json['Your Name'] || 'Friend' }}"
+                        },
+                        {
+                            "id": "user_phone",
+                            "name": "user_phone",
+                            "type": "string",
+                            "value": "={{ $json['Your WhatsApp Number'] || '' }}"
+                        },
+                        {
+                            "id": "generation_mode",
+                            "name": "generation_mode",
+                            "type": "string",
+                            "value": "={{ $json['Generation Mode'] }}"
+                        },
+                        {
+                            "id": "num_scenes",
+                            "name": "num_scenes",
+                            "type": "number",
+                            "value": "={{ parseInt($json['Number of Scenes']) || 5 }}"
+                        },
+                        {
+                            "id": "ai_prompt",
+                            "name": "ai_prompt",
+                            "type": "string",
+                            "value": "={{ $json['🧠 AI Mode: Describe Your Dream Scenes'] || '' }}"
+                        },
+                        {
+                            "id": "custom_scenes",
+                            "name": "custom_scenes",
+                            "type": "string",
+                            "value": "={{ $json['✏️ Custom Mode: Scene Details (one per line)'] || '' }}"
+                        },
+                        {
+                            "id": "preset_collection",
+                            "name": "preset_collection",
+                            "type": "string",
+                            "value": "={{ $json['🎯 Preset Collection'] || '' }}"
+                        },
+                        {
+                            "id": "aspect_ratio",
+                            "name": "aspect_ratio",
+                            "type": "string",
+                            "value": "={{ $json['Video Aspect Ratio'].split(' ')[0] }}"
+                        },
+                        {
+                            "id": "visual_style",
+                            "name": "visual_style",
+                            "type": "string",
+                            "value": "={{ $json['Visual Style'] || 'Ultra-realistic (default)' }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "db3d062f-c82e-4c6f-a128-4d515fe37f7e",
+            "name": "Set Configuration",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                27472,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const config = $('Set Configuration').first().json;\nconst mode = config.generation_mode || '';\nconst numScenes = config.num_scenes || 5;\nconst customScenes = config.custom_scenes || '';\nconst presetCollection = config.preset_collection || '';\nconst aiPrompt = config.ai_prompt || '';\n\nconst presets = {\n  '80s Action Legends': [\n    { celebrity: 'Arnold Schwarzenegger as the T-800', movie: 'Terminator 2', costume: 'black leather biker jacket, battle damage showing chrome', location: 'the industrial steel mill with molten sparks', gesture: 'thumbs-up', era: '1991 sci-fi action' },\n    { celebrity: 'Sylvester Stallone as Rocky Balboa', movie: 'Rocky IV', costume: 'boxing shorts and gloves, sweaty', location: 'the boxing ring in Moscow', gesture: 'fist pump', era: '1985 sports drama' },\n    { celebrity: 'Bruce Willis as John McClane', movie: 'Die Hard', costume: 'dirty white tank top, barefoot', location: 'the Nakatomi Plaza lobby with shattered glass', gesture: 'smirking', era: '1988 action thriller' },\n    { celebrity: 'Harrison Ford as Indiana Jones', movie: 'Raiders of the Lost Ark', costume: 'iconic fedora hat, leather jacket, whip', location: 'ancient temple with golden idol', gesture: 'tipping hat', era: '1981 adventure' }\n  ],\n  '90s Blockbusters': [\n    { celebrity: 'Leonardo DiCaprio as Jack Dawson', movie: 'Titanic', costume: 'suspenders, white shirt', location: 'the bow of the Titanic ship', gesture: 'arms spread wide', era: '1997 romance drama' },\n    { celebrity: 'Keanu Reeves as Neo', movie: 'The Matrix', costume: 'long black trench coat, sunglasses', location: 'the lobby with marble columns', gesture: 'come here hand motion', era: '1999 cyberpunk' },\n    { celebrity: 'Tom Hanks as Forrest Gump', movie: 'Forrest Gump', costume: 'checkered shirt, khaki pants', location: 'park bench with box of chocolates', gesture: 'friendly wave', era: '1994 drama' },\n    { celebrity: 'Will Smith as Agent J', movie: 'Men in Black', costume: 'black suit, sunglasses, neuralyzer', location: 'MIB headquarters with alien screens', gesture: 'pointing neuralyzer', era: '1997 sci-fi comedy' }\n  ],\n  'Marvel Cinematic Universe Heroes': [\n    { celebrity: 'Robert Downey Jr. as Tony Stark/Iron Man', movie: 'The Avengers', costume: 'Iron Man Mark VII armor, faceplate up', location: 'Stark Tower with New York skyline', gesture: 'peace sign', era: '2012 superhero' },\n    { celebrity: 'Chris Evans as Steve Rogers/Captain America', movie: 'Avengers: Endgame', costume: 'classic Cap suit with shield', location: 'Avengers compound', gesture: 'salute', era: '2019 superhero' },\n    { celebrity: 'Scarlett Johansson as Natasha Romanoff/Black Widow', movie: 'Black Widow', costume: 'white tactical suit', location: 'Red Room training facility', gesture: 'confident stance', era: '2021 action' },\n    { celebrity: 'Chris Hemsworth as Thor', movie: 'Thor: Ragnarok', costume: 'gladiator armor, short hair', location: 'Sakaar arena with neon lights', gesture: 'hammer raised', era: '2017 sci-fi comedy' }\n  ],\n  'Star Wars Saga Characters': [\n    { celebrity: 'Harrison Ford as Han Solo', movie: 'Star Wars: A New Hope', costume: 'white shirt, black vest, blaster holster', location: 'Millennium Falcon cockpit', gesture: 'cocky grin', era: '1977 space opera' },\n    { celebrity: 'Carrie Fisher as Princess Leia', movie: 'Star Wars: A New Hope', costume: 'iconic white gown, hair buns', location: 'Death Star detention block', gesture: 'crossed arms', era: '1977 space opera' },\n    { celebrity: 'Mark Hamill as Luke Skywalker', movie: 'Return of the Jedi', costume: 'black Jedi robes', location: 'Endor forest with Ewoks', gesture: 'lightsaber pose', era: '1983 space opera' },\n    { celebrity: 'Daisy Ridley as Rey', movie: 'The Force Awakens', costume: 'desert scavenger outfit, staff', location: 'Jakku desert with fallen Star Destroyer', gesture: 'determined look', era: '2015 space opera' }\n  ]\n};\n\nfunction parseCustomScenes(customText) {\n  if (!customText || !customText.trim()) return [];\n  const lines = customText.split('\\n').filter(line => line.trim() && line.includes('|'));\n  return lines.map((line, index) => {\n    const parts = line.split('|').map(p => p.trim());\n    return {\n      scene_id: index + 1,\n      celebrity: parts[0] || 'Celebrity',\n      movie: parts[1] || 'Movie',\n      era: parts[2] || 'Unknown era',\n      location: parts[3] || 'iconic movie set',\n      costume: parts[4] || 'their iconic costume',\n      gesture: parts[5] || 'friendly pose'\n    };\n  });\n}\n\n// Parse AI prompt - improved to handle various formats\nfunction parseAiPrompt(aiPrompt, numScenes) {\n  if (!aiPrompt || !aiPrompt.trim()) return null;\n  \n  const prompt = aiPrompt.trim();\n  const scenes = [];\n  \n  // Pattern 1: \"1st scene selfie with X, 2nd scene selfie with Y\"\n  const selfieWithPattern = /(?:(?:\\d+(?:st|nd|rd|th)?\\s+)?scene\\s+)?(?:selfie\\s+)?with\\s+([^,]+)/gi;\n  let selfieMatches = [...prompt.matchAll(selfieWithPattern)];\n  \n  if (selfieMatches.length >= 2) {\n    for (const match of selfieMatches) {\n      const celebrity = match[1].trim();\n      if (celebrity && celebrity.length > 2) {\n        scenes.push(createSceneFromCelebrity(celebrity, scenes.length + 1));\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  // Pattern 2: Numbered list \"1. X 2. Y 3. Z\"\n  const numberedPattern = /(?:(?:Scene\\s*)?(\\d+)[.:\\)]\\s*)([^\\d][^.]*?)(?=(?:(?:Scene\\s*)?\\d+[.:\\)])|$)/gi;\n  let matches = [...prompt.matchAll(numberedPattern)];\n  \n  if (matches.length >= 2) {\n    for (const match of matches) {\n      const sceneText = match[2].trim();\n      if (sceneText) {\n        const scene = parseSceneDescription(sceneText, scenes.length + 1);\n        scenes.push(scene);\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  // Pattern 3: Comma-separated list \"X, Y, Z\"\n  const parts = prompt.split(/,/).map(p => p.trim()).filter(p => p.length > 2);\n  if (parts.length >= 2) {\n    for (const part of parts) {\n      // Remove ordinal prefixes like \"1st\", \"2nd\", \"scene\", \"selfie with\"\n      let cleanPart = part\n        .replace(/^\\d+(?:st|nd|rd|th)?\\s*/i, '')\n        .replace(/^scene\\s*/i, '')\n        .replace(/^selfie\\s+with\\s*/i, '')\n        .trim();\n      \n      if (cleanPart && cleanPart.length > 2) {\n        scenes.push(createSceneFromCelebrity(cleanPart, scenes.length + 1));\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  return null;\n}\n\n// Create a scene object from just a celebrity name\nfunction createSceneFromCelebrity(celebrityName, sceneId) {\n  // Clean up the celebrity name\n  const name = celebrityName\n    .replace(/^(?:with|and|,)\\s*/i, '')\n    .replace(/\\s+(?:at|in|from)\\s+.*/i, '') // Remove location info\n    .trim();\n  \n  // Determine context based on celebrity\n  let movie = 'iconic performance';\n  let era = 'their prime';\n  let location = 'concert stage';\n  let costume = 'their signature outfit';\n  let gesture = 'friendly pose';\n  \n  const nameLower = name.toLowerCase();\n  \n  // Opera/Classical\n  if (nameLower.includes('pavarotti') || nameLower.includes('bocelli') || nameLower.includes('domingo')) {\n    movie = 'legendary opera performance';\n    location = 'grand opera house with ornate decorations';\n    costume = 'elegant tuxedo';\n    gesture = 'operatic gesture';\n    era = 'peak of career';\n  }\n  // Action stars\n  else if (nameLower.includes('stallone') || nameLower.includes('sylvester')) {\n    movie = 'Rocky';\n    location = 'boxing gym with punching bags';\n    costume = 'boxing robe and gloves';\n    gesture = 'fist raised';\n    era = '1980s action star';\n  }\n  else if (nameLower.includes('schwarzenegger') || nameLower.includes('arnold')) {\n    movie = 'Terminator';\n    location = 'futuristic set with metal structures';\n    costume = 'leather jacket and sunglasses';\n    gesture = 'thumbs up';\n    era = '1980s action star';\n  }\n  // Political figures\n  else if (nameLower.includes('rabin') || nameLower.includes('itzhak')) {\n    movie = 'historic peace ceremony';\n    location = 'White House lawn';\n    costume = 'formal suit and tie';\n    gesture = 'handshake pose';\n    era = '1990s';\n  }\n  // Default for other celebrities\n  else {\n    movie = 'their most famous moment';\n    location = 'red carpet event';\n    costume = 'elegant formal attire';\n    gesture = 'warm smile';\n  }\n  \n  return {\n    scene_id: sceneId,\n    celebrity: name,\n    movie: movie,\n    era: era,\n    location: location,\n    costume: costume,\n    gesture: gesture\n  };\n}\n\nfunction parseSceneDescription(text, sceneId) {\n  const lowerText = text.toLowerCase();\n  \n  // Extract celebrity name\n  let celebrity = text;\n  const celebPatterns = [\n    /^([^,]+?)(?:\\s+(?:celebrating|giving|scoring|at|in|wearing|standing))/i,\n    /^([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*)/\n  ];\n  for (const pattern of celebPatterns) {\n    const match = text.match(pattern);\n    if (match) {\n      celebrity = match[1].trim();\n      break;\n    }\n  }\n  \n  return createSceneFromCelebrity(celebrity, sceneId);\n}\n\nlet scenes = [];\n\nif (mode.includes('Custom')) {\n  scenes = parseCustomScenes(customScenes);\n} else if (mode.includes('Presets')) {\n  for (const [key, value] of Object.entries(presets)) {\n    if (presetCollection.includes(key) || key.includes(presetCollection.split('(')[0].trim())) {\n      scenes = value.map((s, i) => ({ ...s, scene_id: i + 1 }));\n      break;\n    }\n  }\n  if (scenes.length === 0) {\n    scenes = presets['80s Action Legends'].map((s, i) => ({ ...s, scene_id: i + 1 }));\n  }\n} else {\n  // AI Mode - Parse the prompt\n  const parsedScenes = parseAiPrompt(aiPrompt, numScenes);\n  \n  if (parsedScenes && parsedScenes.length > 0) {\n    scenes = parsedScenes;\n  } else {\n    // Fallback to keyword matching for presets\n    const prompt = aiPrompt.toLowerCase();\n    if (prompt.includes('80s') || prompt.includes('action')) {\n      scenes = presets['80s Action Legends'];\n    } else if (prompt.includes('marvel') || prompt.includes('superhero')) {\n      scenes = presets['Marvel Cinematic Universe Heroes'];\n    } else if (prompt.includes('star wars') || prompt.includes('jedi')) {\n      scenes = presets['Star Wars Saga Characters'];\n    } else {\n      scenes = presets['90s Blockbusters'];\n    }\n    scenes = scenes.map((s, i) => ({ ...s, scene_id: i + 1 }));\n  }\n}\n\nscenes = scenes.slice(0, numScenes).map((s, i) => ({ ...s, scene_id: i + 1 }));\n\nreturn scenes.map(scene => ({ json: scene }));"
+            },
+            "id": "d6665531-36a9-4fdc-b6f0-58b57db56ddc",
+            "name": "Movie Scenes Data",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                27696,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "1af8c59f-cb45-4a95-9c09-5b47aaf93646",
+            "name": "Loop Over Scenes",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                27920,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "const scene = $input.item.json;\nconst config = $('Set Configuration').first().json;\nconst userPhotoUrl = config.user_photo_url || '';\nconst aspectRatio = config.aspect_ratio || '9:16';\nconst visualStyle = config.visual_style || 'Ultra-realistic (default)';\n\nconst styleModifiers = {\n  'Ultra-realistic (default)': 'High-resolution photorealistic style, natural lighting, shallow depth of field.',\n  'Cinematic film look': 'Cinematic film grain, dramatic lighting, anamorphic lens flare, 35mm film aesthetic.',\n  'Vintage retro style': 'VHS aesthetic, warm color grading, nostalgic vintage photography style.',\n  'Modern Instagram aesthetic': 'Instagram filter look, vibrant colors, perfect exposure, clean and polished.'\n};\n\nconst styleText = styleModifiers[visualStyle] || styleModifiers['Ultra-realistic (default)'];\n\nconst masterPrompt = `Ultra-realistic selfie from front-phone-camera perspective. The person taking the selfie looks exactly like the reference image provided. Standing next to ${scene.celebrity}, who appears with the exact age and look from '${scene.movie}'. ${scene.celebrity} wearing ${scene.costume}. Background shows the authentic film set from '${scene.movie}', specifically ${scene.location}. Both look relaxed posing between takes, with ${scene.celebrity} giving a casual ${scene.gesture}. ${styleText} No phone visible.`;\n\nreturn {\n  json: {\n    ...scene,\n    user_photo_url: userPhotoUrl,\n    image_prompt: masterPrompt,\n    aspect_ratio: aspectRatio,\n    visual_style: visualStyle\n  }\n};"
+            },
+            "id": "bf42c05f-9923-4fd9-b282-243aa3d01cdb",
+            "name": "Generate Image Prompt",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                28144,
+                16560
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ model: 'nano-banana-pro', input: { prompt: $json.image_prompt, image_input: [$json.user_photo_url], aspect_ratio: $json.aspect_ratio || '9:16', resolution: '2K', output_format: 'png' } }) }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                28368,
+                16560
+            ],
+            "id": "bbcab663-5b74-48ed-b8e7-518011c628bc",
+            "name": "Create Image Task (Kie)",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kRI7Q7bdV9tEVPNp",
+                    "name": "Kie.ai"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "url": "=https://api.kie.ai/api/v1/jobs/recordInfo?taskId={{ $json.data.taskId }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                28592,
+                16560
+            ],
+            "id": "8df8c7ce-ca7a-42d3-be7e-957df690242a",
+            "name": "Poll Image Status",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kRI7Q7bdV9tEVPNp",
+                    "name": "Kie.ai"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "const imageData = $input.item.json;\nconst MAX_RETRIES = 120;\nconst retryCount = imageData.retryCount || 0;\n\nif (retryCount >= MAX_RETRIES) {\n  return { json: { skipImage: true, imageReady: false, reason: 'Timeout' } };\n}\n\nconst state = imageData.data?.state;\n\nif (state === 'success') {\n  let resultUrls = [];\n  try {\n    if (imageData.data.resultJson) {\n      const parsed = JSON.parse(imageData.data.resultJson);\n      resultUrls = parsed.resultUrls || [];\n    }\n  } catch (e) {}\n  \n  return { \n    json: { \n      ...imageData, \n      imageReady: true, \n      image_url: resultUrls[0] || null \n    } \n  };\n} else if (state === 'fail') {\n  return { json: { skipImage: true, imageReady: false, reason: 'Failed' } };\n}\n\nreturn { json: { ...imageData, imageReady: false, continuePolling: true, retryCount: retryCount + 1 } };"
+            },
+            "id": "d9985bac-ea67-4b4e-aa23-71657f02c5e0",
+            "name": "Check Image Status",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                28816,
+                16440
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "ready",
+                            "leftValue": "={{ $json.imageReady }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "looseTypeValidation": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                29040,
+                16440
+            ],
+            "id": "b3fa9682-7d50-435c-beb3-5e2e59fed42d",
+            "name": "Image Ready?"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                29264,
+                16584
+            ],
+            "id": "03d497f9-1781-4a2e-97e2-9408dfb5af63",
+            "name": "Wait Image",
+            "webhookId": "celebrity-selfie-wait-image"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "img_url",
+                            "name": "image_url",
+                            "type": "string",
+                            "value": "={{ $json.image_url }}"
+                        },
+                        {
+                            "id": "scene_id",
+                            "name": "scene_id",
+                            "type": "number",
+                            "value": "={{ $('Generate Image Prompt').item.json.scene_id }}"
+                        },
+                        {
+                            "id": "movie",
+                            "name": "movie",
+                            "type": "string",
+                            "value": "={{ $('Generate Image Prompt').item.json.movie }}"
+                        },
+                        {
+                            "id": "aspect",
+                            "name": "aspect_ratio",
+                            "type": "string",
+                            "value": "={{ $('Generate Image Prompt').item.json.aspect_ratio }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "4974297d-70fc-49e6-9409-fe7779940904",
+            "name": "Store Image Result",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                29264,
+                16368
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "873229a4-c954-49a7-8539-06b09742aba0",
+            "name": "Back to Image Loop",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                29488,
+                16368
+            ]
+        },
+        {
+            "parameters": {
+                "aggregate": "aggregateAllItemData",
+                "options": {}
+            },
+            "id": "ef348678-22fc-48e4-95e0-a5dd1f4bf228",
+            "name": "Aggregate All Images",
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                28144,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Build first-last frame pairs for Kling video transitions\n// CORRECT APPROACH: Each frame must be a SELFIE WITH A CELEBRITY\n// NOT: user photo → celebrity scene (that creates zoom effects, not walking)\n\nconst all = $input.first().json.data || [];\nall.sort((a, b) => Number(a.scene_id) - Number(b.scene_id));\n\nconst config = $('Set Configuration').first().json;\nconst sceneImages = all.map(x => x.image_url).filter(Boolean);\n\n// Function to UPSCALE image to minimum size using wsrv.nl proxy\nfunction upscaleImage(url, minSize = 720) {\n  if (!url) return url;\n  const encodedUrl = encodeURIComponent(url);\n  return `https://wsrv.nl/?url=${encodedUrl}&w=${minSize}&h=${minSize}&fit=outside&output=png`;\n}\n\n// CORRECT: Create pairs from CELEBRITY SELFIES ONLY\n// Video 1: Selfie with Celeb1 → Selfie with Celeb2\n// Video 2: Selfie with Celeb2 → Selfie with Celeb3\n// etc.\n// This creates the \"walking through movie sets\" effect\n\nif (sceneImages.length < 2) {\n  throw new Error('Need at least 2 celebrity selfie scenes to create transitions');\n}\n\nconst clips = [];\nfor (let i = 0; i < sceneImages.length - 1; i++) {\n  clips.push({\n    clip_index: i,\n    first_frame_url: upscaleImage(sceneImages[i], 720),\n    last_frame_url: upscaleImage(sceneImages[i + 1], 720),\n    aspect_ratio: config.aspect_ratio || '9:16',\n    scene_from: i + 1,\n    scene_to: i + 2\n  });\n}\n\n// Optionally add a loop back to first scene for seamless looping\n// clips.push({\n//   clip_index: sceneImages.length - 1,\n//   first_frame_url: upscaleImage(sceneImages[sceneImages.length - 1], 720),\n//   last_frame_url: upscaleImage(sceneImages[0], 720),\n//   aspect_ratio: config.aspect_ratio || '9:16',\n//   scene_from: sceneImages.length,\n//   scene_to: 1\n// });\n\nreturn clips.map(c => ({ json: c }));"
+            },
+            "id": "6b468b88-88b8-4b27-bf71-c720037f0868",
+            "name": "Build First-Last Frame Pairs",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                28368,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "58dae981-2296-405d-9066-d06f94db6799",
+            "name": "Loop Over Clips",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                28592,
+                17112
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.piapi.ai/api/v1/task",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"kling\",\n  \"task_type\": \"video_generation\",\n  \"input\": {\n    \"prompt\": \"The person holding the phone walks forward naturally with gentle body motion, camera following from selfie POV perspective, background environment smoothly transitions and morphs, subject stays centered in frame while moving through the scene, cinematic fluid camera movement\",\n    \"negative_prompt\": \"static, frozen, zoom effect, slideshow, presentation, abrupt cuts, morphing face, distorted features\",\n    \"image_url\": \"{{ $json.first_frame_url }}\",\n    \"tail_image_url\": \"{{ $json.last_frame_url }}\",\n    \"duration\": 5,\n    \"cfg_scale\": 0.5,\n    \"mode\": \"std\"\n  }\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                28816,
+                17184
+            ],
+            "id": "a0099e8c-5535-4ca9-af06-965474aa2549",
+            "name": "Create Video Task (PiAPI)",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "W5AtZENeSz5N9K6p",
+                    "name": "piapi.ai"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "url": "=https://api.piapi.ai/api/v1/task/{{ $json.task_id || $json.data?.task_id || $('Create Video Task (PiAPI)').item.json.data?.task_id || $('Create Video Task (PiAPI)').item.json.task_id }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {
+                    "timeout": 60000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                29040,
+                17184
+            ],
+            "id": "4e994a01-42bd-4501-9aa0-50f2bd6f4308",
+            "name": "Poll Video Status (PiAPI)",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "W5AtZENeSz5N9K6p",
+                    "name": "piapi.ai"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Check PiAPI Kling video status\n// States: 'pending', 'processing', 'completed', 'failed'\nconst videoData = $input.item.json;\nconst MAX_RETRIES = 120;\nconst retryCount = videoData.retryCount || 0;\n\n// PiAPI response structure: data.status, data.error, data.output\nconst taskData = videoData.data || videoData;\n\n// IMPORTANT: Preserve task_id at root level for polling loop\nconst task_id = videoData.task_id || taskData.task_id || videoData.data?.task_id;\n\n// Check for REAL errors (code !== 0 or non-empty message)\nconst errorObj = taskData.error || videoData.error;\nif (errorObj && (errorObj.code !== 0 || (errorObj.message && errorObj.message.length > 0))) {\n  const errorMsg = errorObj.message || errorObj.raw_message || JSON.stringify(errorObj);\n  \n  // Check for credit errors\n  if (errorMsg.includes('credit') || errorMsg.includes('balance') || errorMsg.includes('insufficient')) {\n    return { json: { task_id, skipVideo: true, videoReady: false, reason: 'Insufficient PiAPI credits', hasError: true } };\n  }\n  \n  return { json: { task_id, skipVideo: true, videoReady: false, reason: errorMsg, hasError: true } };\n}\n\nif (retryCount >= MAX_RETRIES) {\n  return { json: { task_id, skipVideo: true, videoReady: false, reason: 'Timeout after 120 retries' } };\n}\n\nconst status = taskData.status;\n\nif (status === 'completed') {\n  // PiAPI returns video URL in data.output.works[0].resource.resource or similar\n  let videoUrl = null;\n  if (taskData.output?.works && taskData.output.works.length > 0) {\n    videoUrl = taskData.output.works[0].resource?.resource || taskData.output.works[0].url;\n  }\n  videoUrl = videoUrl || taskData.output?.video_url || taskData.output?.video || taskData.output?.result?.video_url;\n  \n  return { \n    json: { \n      task_id,\n      videoReady: true, \n      video_url: videoUrl \n    } \n  };\n} else if (status === 'failed') {\n  return { json: { task_id, skipVideo: true, videoReady: false, reason: taskData.error?.message || 'Task failed' } };\n}\n\n// Still processing (pending, processing)\nreturn { \n  json: { \n    task_id,\n    videoReady: false, \n    continuePolling: true, \n    retryCount: retryCount + 1,\n    retryDelay: 5\n  } \n};"
+            },
+            "id": "ccdb1505-4d19-4d1b-a3af-4201d5a6fedd",
+            "name": "Check Video Status",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                29264,
+                17064
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "ready",
+                            "leftValue": "={{ $json.videoReady }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "looseTypeValidation": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                29488,
+                17064
+            ],
+            "id": "03ee9b39-68b6-4410-876c-2771135c6d2e",
+            "name": "Video Ready?"
+        },
+        {
+            "parameters": {
+                "amount": "={{ $json.retryDelay || 5 }}"
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                29712,
+                17208
+            ],
+            "id": "e5570f65-e556-426d-a0ae-5eaa5e963905",
+            "name": "Wait Video",
+            "webhookId": "celebrity-selfie-wait-video"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "clip_index",
+                            "name": "clip_index",
+                            "type": "number",
+                            "value": "={{ $('Loop Over Clips').item.json.clip_index }}"
+                        },
+                        {
+                            "id": "video_url",
+                            "name": "video_url",
+                            "type": "string",
+                            "value": "={{ $json.video_url }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                29712,
+                16992
+            ],
+            "id": "f305087f-1556-4f1b-9aaf-ad6a8dbf292e",
+            "name": "Store Video Result"
+        },
+        {
+            "parameters": {},
+            "id": "c2b1faf1-324a-4c7d-b841-4923be305b0b",
+            "name": "Back to Video Loop",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                29936,
+                17256
+            ]
+        },
+        {
+            "parameters": {
+                "aggregate": "aggregateAllItemData",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                28816,
+                16800
+            ],
+            "id": "d375e13b-79bf-420c-80f3-6841b1588951",
+            "name": "Aggregate All Videos"
+        },
+        {
+            "parameters": {
+                "jsCode": "const all = $input.first().json.data || [];\nall.sort((a, b) => Number(a.clip_index) - Number(b.clip_index));\nreturn [{ json: { video_urls: all.map(x => x.video_url).filter(Boolean) } }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                29040,
+                16800
+            ],
+            "id": "8f54f0b6-9c38-44b9-8436-b4ae509614bc",
+            "name": "Prepare URLs for Stitch"
+        },
+        {
+            "parameters": {
+                "jsCode": "const videoUrls = $input.first().json.video_urls || [];\nreturn videoUrls.map((url, index) => ({\n  json: {\n    video_url: url,\n    video_index: index + 1,\n    total_videos: videoUrls.length\n  }\n}));"
+            },
+            "id": "c68d0d22-2ed2-4e80-97b5-ca4f4e573fc0",
+            "name": "Prepare Videos for Stitch",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                29264,
+                16800
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.video_url }}",
+                "options": {
+                    "response": {
+                        "response": {
+                            "responseFormat": "file"
+                        }
+                    }
+                }
+            },
+            "id": "82c9b82e-dcd5-4759-a876-ca4992361424",
+            "name": "Download Video Binary",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                29488,
+                16800
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Write video binary to disk - workaround for readWriteFile bug\nconst fs = require('fs');\nconst path = require('path');\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const videoIndex = item.json.video_index;\n  const executionId = $execution.id;\n  const fileName = `/tmp/movie_set_clip_${videoIndex}_${executionId}.mp4`;\n  \n  // Get binary data\n  const binaryData = item.binary?.data;\n  if (!binaryData) {\n    throw new Error(`No binary data found for item ${i}`);\n  }\n  \n  // Get the actual buffer from n8n's binary helper\n  const buffer = await this.helpers.getBinaryDataBuffer(i, 'data');\n  \n  // Write to file\n  fs.writeFileSync(fileName, buffer);\n  \n  console.log(`Wrote ${buffer.length} bytes to ${fileName}`);\n  \n  results.push({\n    json: {\n      ...item.json,\n      file_path: fileName,\n      file_size: buffer.length\n    }\n  });\n}\n\nreturn results;"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                29712,
+                16800
+            ],
+            "id": "14239925-97d1-4411-af66-b546fa2427ba",
+            "name": "Write to Disk"
+        },
+        {
+            "parameters": {
+                "jsCode": "const items = $input.all();\nconst paths = items.map(i => i.json.file_path).filter(Boolean);\nconst failedCount = items.filter(i => !i.json.file_path).length;\n\n// Log failures for observability\nif (failedCount > 0) {\n  console.log(`⚠️ ${failedCount} video(s) failed to generate`);\n}\n\nif (!paths.length || paths.length === 0) {\n  throw new Error('All video clips failed to generate. Check PiAPI credits or API status.');\n}\n\n// Handle single video - skip FFmpeg stitch\nif (paths.length === 1) {\n  return [{\n    json: {\n      skip_stitch: true,\n      single_video_path: paths[0],\n      stitch_inputs: paths[0],\n      stitched_output_path: paths[0],\n      had_failures: failedCount > 0,\n      clips_generated: 1,\n      clips_failed: failedCount\n    }\n  }];\n}\n\n// Multiple videos - proceed with stitch\nreturn [{\n  json: {\n    skip_stitch: false,\n    stitch_inputs: paths.join('\\n'),\n    stitched_output_path: `/tmp/stitched_${$execution.id}.mp4`,\n    had_failures: failedCount > 0,\n    clips_generated: paths.length,\n    clips_failed: failedCount\n  }\n}];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                29936,
+                16800
+            ],
+            "id": "8585d8d1-2337-49ae-957a-1eb8ff34b25f",
+            "name": "Build Stitch Inputs"
+        },
+        {
+            "parameters": {
+                "resource": "mux",
+                "ffmpegPath": "",
+                "ffprobePath": "",
+                "operation": "stitch",
+                "stitchInputsText": "={{$json.stitch_inputs}}",
+                "stitchOutputPath": "={{$json.stitched_output_path}}"
+            },
+            "type": "n8n-nodes-better-ffmpeg.betterFfmpeg",
+            "typeVersion": 3,
+            "position": [
+                30384,
+                16728
+            ],
+            "id": "42d16cdb-9f75-4fac-8c67-47925688e7c3",
+            "name": "FFmpeg Stitch"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Read the video and return as binary for WhatsApp\nconst fs = require('fs');\nconst config = $('Set Configuration').first().json;\nconst timestamp = Date.now();\n\nconst stitchResult = $input.first().json;\n\n// Check if we're in skip_stitch mode (single video)\nlet skipStitch = stitchResult.skip_stitch || false;\nlet outputPath;\nlet videoUrl = null;\n\nif (skipStitch) {\n  // Single video mode - get the video URL from aggregate\n  try {\n    const aggregatedData = $('Aggregate All Videos').first().json;\n    if (aggregatedData && aggregatedData.data && aggregatedData.data.length > 0) {\n      videoUrl = aggregatedData.data[0].video_url;\n      console.log('Got video URL from Aggregate:', videoUrl);\n    }\n  } catch (e) {\n    console.log('Could not get video URL from aggregate:', e.message);\n  }\n  \n  outputPath = stitchResult.single_video_path;\n  console.log('Single video mode - path:', outputPath);\n  \n  // If we have a video URL, use URL mode (more reliable for WAHA)\n  if (videoUrl) {\n    return [{\n      json: {\n        session_id: `session_${timestamp}`,\n        status: 'Your Celebrity Selfie Video is Ready!',\n        file_path: outputPath,\n        video_url: videoUrl,\n        file_size_mb: 0,\n        user_name: config.user_name || 'User',\n        skip_stitch: true,\n        use_url_mode: true,\n        created_at: new Date().toISOString()\n      }\n    }];\n  }\n  \n  // Fallback: try to get binary from Download Video Binary\n  try {\n    const downloadedVideo = $('Download Video Binary').first();\n    if (downloadedVideo && downloadedVideo.binary && downloadedVideo.binary.data) {\n      return [{\n        json: {\n          session_id: `session_${timestamp}`,\n          status: 'Your Celebrity Selfie Video is Ready!',\n          file_path: outputPath,\n          file_size_mb: downloadedVideo.binary.data.fileSize ? \n            parseFloat((downloadedVideo.binary.data.fileSize / (1024 * 1024)).toFixed(2)) : 0,\n          user_name: config.user_name || 'User',\n          skip_stitch: true,\n          use_url_mode: false,\n          created_at: new Date().toISOString()\n        },\n        binary: downloadedVideo.binary\n      }];\n    }\n  } catch (e) {\n    console.log('Could not get binary from Download Video Binary:', e.message);\n  }\n} else {\n  // Normal stitch mode - FFmpeg output\n  outputPath = stitchResult.outputPath;\n  \n  if (!stitchResult.success || !outputPath) {\n    return [{\n      json: {\n        session_id: `session_${timestamp}`,\n        status: 'FFmpeg stitch failed',\n        error: stitchResult.stderr || 'Unknown error',\n        created_at: new Date().toISOString()\n      }\n    }];\n  }\n}\n\n// Check if file exists\nif (!fs.existsSync(outputPath)) {\n  return [{\n    json: {\n      session_id: `session_${timestamp}`,\n      status: 'Video file not found',\n      error: `File not found: ${outputPath}`,\n      created_at: new Date().toISOString()\n    }\n  }];\n}\n\n// Read the file and get stats\nconst stats = fs.statSync(outputPath);\nconst fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);\nconst buffer = fs.readFileSync(outputPath);\n\n// Create binary data using n8n's helper\nconst binaryData = await this.helpers.prepareBinaryData(buffer, 'celebrity_selfie_movie.mp4', 'video/mp4');\n\nreturn [{\n  json: {\n    session_id: `session_${timestamp}`,\n    status: skipStitch ? 'Your Celebrity Selfie Video is Ready!' : 'Your Celebrity Selfie Movie is Ready!',\n    file_path: outputPath,\n    file_size_mb: parseFloat(fileSizeMB),\n    user_name: config.user_name || 'User',\n    skip_stitch: skipStitch,\n    use_url_mode: false,\n    created_at: new Date().toISOString()\n  },\n  binary: {\n    data: binaryData\n  }\n}];"
+            },
+            "id": "def8778b-a116-4b2e-acdb-538924685aec",
+            "name": "Prepare Final Output",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                30608,
+                16800
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "status",
+                            "name": "status",
+                            "type": "string",
+                            "value": "={{ $json.status }}"
+                        },
+                        {
+                            "id": "session",
+                            "name": "session_id",
+                            "type": "string",
+                            "value": "={{ $json.session_id }}"
+                        },
+                        {
+                            "id": "created",
+                            "name": "created_at",
+                            "type": "string",
+                            "value": "={{ $json.created_at }}"
+                        },
+                        {
+                            "id": "file_path",
+                            "name": "file_path",
+                            "type": "string",
+                            "value": "={{ $json.file_path }}"
+                        },
+                        {
+                            "id": "file_size_mb",
+                            "name": "file_size_mb",
+                            "type": "number",
+                            "value": "={{ $json.file_size_mb }}"
+                        },
+                        {
+                            "id": "video_url",
+                            "name": "video_url",
+                            "type": "string",
+                            "value": "={{ $json.video_url }}"
+                        },
+                        {
+                            "id": "use_url_mode",
+                            "name": "use_url_mode",
+                            "type": "boolean",
+                            "value": "={{ $json.use_url_mode }}"
+                        }
+                    ]
+                },
+                "includeOtherFields": true,
+                "options": {}
+            },
+            "id": "6f0ec06e-73a0-4ce9-bacc-e2ec3e7806b5",
+            "name": "Final Output",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                30832,
+                16800
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "Chatting",
+                "operation": "Send Video",
+                "session": "=default",
+                "chatId": "={{ $('Set Configuration').first().json.user_phone || '' }}",
+                "file": {
+                    "__rl": true,
+                    "mode": "binary",
+                    "value": "data"
+                },
+                "caption": "={{ $json.status }} 🎬",
+                "requestOptions": {}
+            },
+            "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+            "typeVersion": 202502,
+            "position": [
+                31280,
+                16896
+            ],
+            "id": "b9152af2-f52c-4686-88e1-8bbd9669e1b0",
+            "name": "Send a video",
+            "credentials": {
+                "wahaApi": {
+                    "id": "px3TLR7BGl3MVW7Y",
+                    "name": "WAHA account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "skip_check",
+                            "leftValue": "={{ $json.skip_stitch }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "looseTypeValidation": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                30160,
+                16800
+            ],
+            "id": "skip-stitch-check",
+            "name": "Skip Stitch?"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                26800,
+                16680
+            ],
+            "id": "af321e30-4cef-4c24-934d-47120375e58c",
+            "name": "When clicking ‘Execute workflow’"
+        },
+        {
+            "parameters": {
+                "path": "46448d68-a4ba-4081-ae4e-eb12e7e76ef9",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                26800,
+                16872
+            ],
+            "id": "db145102-d103-4f25-85dc-ce366401efbf",
+            "name": "Webhook",
+            "webhookId": "46448d68-a4ba-4081-ae4e-eb12e7e76ef9"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+            "typeVersion": 1.4,
+            "position": [
+                26800,
+                17064
+            ],
+            "id": "ffdc8e74-3cf6-4e6c-95da-59d8d310572b",
+            "name": "When chat message received",
+            "webhookId": "bd6d290b-9201-4711-90f1-62b77326cf3c"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "test_name",
+                            "name": "Your Name",
+                            "type": "string",
+                            "value": "Test User"
+                        },
+                        {
+                            "id": "test_phone",
+                            "name": "Your WhatsApp Number",
+                            "type": "string",
+                            "value": "14695885133"
+                        },
+                        {
+                            "id": "test_mode",
+                            "name": "Generation Mode",
+                            "type": "string",
+                            "value": "🎯 Presets (popular movie collections)"
+                        },
+                        {
+                            "id": "test_scenes",
+                            "name": "Number of Scenes",
+                            "type": "string",
+                            "value": "3 scenes (~25 sec video)"
+                        },
+                        {
+                            "id": "test_preset",
+                            "name": "🎯 Preset Collection",
+                            "type": "string",
+                            "value": "80s Action Legends (Arnold, Stallone, Willis)"
+                        },
+                        {
+                            "id": "test_aspect",
+                            "name": "Video Aspect Ratio",
+                            "type": "string",
+                            "value": "9:16 (TikTok/Reels - Vertical)"
+                        },
+                        {
+                            "id": "test_style",
+                            "name": "Visual Style",
+                            "type": "string",
+                            "value": "Ultra-realistic (default)"
+                        },
+                        {
+                            "id": "test_photo_url",
+                            "name": "user_photo_url",
+                            "type": "string",
+                            "value": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
+                        },
+                        {
+                            "id": "imgbb_success",
+                            "name": "imgbb_success",
+                            "type": "boolean",
+                            "value": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                27024,
+                17016
+            ],
+            "id": "test-data-stabilizer",
+            "name": "Test Data (Edit Fields)"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "version": 2,
+                        "leftValue": "",
+                        "caseSensitive": true,
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "url_mode_check",
+                            "leftValue": "={{ $json.use_url_mode }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "looseTypeValidation": true,
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                31056,
+                16800
+            ],
+            "id": "url-mode-check",
+            "name": "Use URL Mode?"
+        },
+        {
+            "parameters": {
+                "resource": "Chatting",
+                "operation": "Send Video",
+                "session": "=default",
+                "chatId": "={{ $('Set Configuration').first().json.user_phone || '' }}",
+                "file": {
+                    "__rl": true,
+                    "mode": "url",
+                    "value": "={{ $json.video_url }}"
+                },
+                "caption": "={{ $json.status }} 🎬",
+                "requestOptions": {}
+            },
+            "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+            "typeVersion": 202502,
+            "position": [
+                31280,
+                16704
+            ],
+            "id": "send-video-url",
+            "name": "Send Video (URL)",
+            "credentials": {
+                "wahaApi": {
+                    "id": "px3TLR7BGl3MVW7Y",
+                    "name": "WAHA account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Upload Your Photo": {
+            "main": [
+                [
+                    {
+                        "node": "Test Data (Edit Fields)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Upload to ImgBB": {
+            "main": [
+                [
+                    {
+                        "node": "Process Uploaded Photo",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Process Uploaded Photo": {
+            "main": [
+                [
+                    {
+                        "node": "Set Configuration",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set Configuration": {
+            "main": [
+                [
+                    {
+                        "node": "Movie Scenes Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Movie Scenes Data": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Scenes",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Scenes": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate All Images",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Generate Image Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Image Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Create Image Task (Kie)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Image Task (Kie)": {
+            "main": [
+                [
+                    {
+                        "node": "Poll Image Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll Image Status": {
+            "main": [
+                [
+                    {
+                        "node": "Check Image Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check Image Status": {
+            "main": [
+                [
+                    {
+                        "node": "Image Ready?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Image Ready?": {
+            "main": [
+                [
+                    {
+                        "node": "Store Image Result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Wait Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait Image": {
+            "main": [
+                [
+                    {
+                        "node": "Poll Image Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Image Result": {
+            "main": [
+                [
+                    {
+                        "node": "Back to Image Loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Back to Image Loop": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Scenes",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate All Images": {
+            "main": [
+                [
+                    {
+                        "node": "Build First-Last Frame Pairs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build First-Last Frame Pairs": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Clips",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Clips": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate All Videos",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Create Video Task (PiAPI)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Video Task (PiAPI)": {
+            "main": [
+                [
+                    {
+                        "node": "Poll Video Status (PiAPI)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll Video Status (PiAPI)": {
+            "main": [
+                [
+                    {
+                        "node": "Check Video Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check Video Status": {
+            "main": [
+                [
+                    {
+                        "node": "Video Ready?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Video Ready?": {
+            "main": [
+                [
+                    {
+                        "node": "Store Video Result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Wait Video",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait Video": {
+            "main": [
+                [
+                    {
+                        "node": "Poll Video Status (PiAPI)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Video Result": {
+            "main": [
+                [
+                    {
+                        "node": "Back to Video Loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Back to Video Loop": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Clips",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate All Videos": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare URLs for Stitch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare URLs for Stitch": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Videos for Stitch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Videos for Stitch": {
+            "main": [
+                [
+                    {
+                        "node": "Download Video Binary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download Video Binary": {
+            "main": [
+                [
+                    {
+                        "node": "Write to Disk",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Write to Disk": {
+            "main": [
+                [
+                    {
+                        "node": "Build Stitch Inputs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Stitch Inputs": {
+            "main": [
+                [
+                    {
+                        "node": "Skip Stitch?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "FFmpeg Stitch": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Final Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Final Output": {
+            "main": [
+                [
+                    {
+                        "node": "Final Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Final Output": {
+            "main": [
+                [
+                    {
+                        "node": "Use URL Mode?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Skip Stitch?": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Final Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "FFmpeg Stitch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When clicking ‘Execute workflow’": {
+            "main": [
+                [
+                    {
+                        "node": "Test Data (Edit Fields)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When clicking 'Execute workflow'": {
+            "main": [
+                [
+                    {
+                        "node": "Test Data (Edit Fields)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Test Data (Edit Fields)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When chat message received": {
+            "main": [
+                [
+                    {
+                        "node": "Test Data (Edit Fields)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Test Data (Edit Fields)": {
+            "main": [
+                [
+                    {
+                        "node": "Process Uploaded Photo",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Use URL Mode?": {
+            "main": [
+                [
+                    {
+                        "node": "Send Video (URL)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Send a video",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": false,
+        "timeSavedMode": "fixed"
+    },
+    "staticData": null,
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "5a6946f1-b00e-488e-b665-9981ac64b607",
+    "activeVersionId": "5a6946f1-b00e-488e-b665-9981ac64b607",
+    "versionCounter": 501,
+    "triggerCount": 3,
+    "shared": [
+        {
+            "updatedAt": "2025-12-28T07:13:07.798Z",
+            "createdAt": "2025-12-28T07:13:07.798Z",
+            "role": "workflow:owner",
+            "workflowId": "4OYGXXMYeJFfAo6X",
+            "projectId": "6L20DLwgKEB5r0rn",
+            "project": {
+                "updatedAt": "2025-11-12T01:28:20.899Z",
+                "createdAt": "2025-11-12T01:28:20.899Z",
+                "id": "6L20DLwgKEB5r0rn",
+                "name": "Unnamed Project",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                "projectRelations": [
+                    {
+                        "updatedAt": "2025-11-12T01:28:20.899Z",
+                        "createdAt": "2025-11-12T01:28:20.899Z",
+                        "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                        "projectId": "6L20DLwgKEB5r0rn",
+                        "user": {
+                            "updatedAt": "2026-01-14T06:00:01.000Z",
+                            "createdAt": "2025-11-12T01:28:20.421Z",
+                            "id": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                            "email": "service@rensto.com",
+                            "firstName": "Service",
+                            "lastName": "Rensto",
+                            "personalizationAnswers": {
+                                "version": "v4",
+                                "personalization_survey_submitted_at": "2025-11-12T02:46:44.970Z",
+                                "personalization_survey_n8n_version": "1.119.1",
+                                "companyIndustryExtended": [
+                                    "marketing-industry"
+                                ],
+                                "companySize": "<20",
+                                "companyType": "other",
+                                "role": "business-owner",
+                                "reportedSource": "google"
+                            },
+                            "settings": {
+                                "userActivated": true,
+                                "easyAIWorkflowOnboarded": true
+                            },
+                            "disabled": false,
+                            "mfaEnabled": false,
+                            "lastActiveAt": "2026-01-14",
+                            "isPending": false
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "tags": [
+        {
+            "updatedAt": "2026-01-05T20:20:24.437Z",
+            "createdAt": "2026-01-05T20:20:24.437Z",
+            "id": "7ePVE60BVpVQQf4b",
+            "name": "pillar:content"
+        },
+        {
+            "updatedAt": "2026-01-05T20:20:23.935Z",
+            "createdAt": "2026-01-05T20:20:23.935Z",
+            "id": "RttwGHMnbTZwqP1m",
+            "name": "ui:marketplace"
+        }
+    ],
+    "activeVersion": {
+        "updatedAt": "2026-01-04T06:04:49.005Z",
+        "createdAt": "2026-01-04T06:04:49.005Z",
+        "versionId": "5a6946f1-b00e-488e-b665-9981ac64b607",
+        "workflowId": "4OYGXXMYeJFfAo6X",
+        "nodes": [
+            {
+                "parameters": {
+                    "content": "## 🎬 Celebrity Selfie Movie Sets Generator\n\n**✅ HIGGSFIELD KLING OMNI EDITION**\n\n**How to use:**\n1. Upload your photo directly\n2. Choose generation mode (AI, Custom, Presets)\n3. Submit and wait ~5-10 min per scene\n4. Get ONE merged video URL!\n\n**Models:**\n- Kie.ai Nano Banana Pro (images)\n- Higgsfield Kling Omni (first-last frame videos)\n\n**Photo Hosting:** ImgBB (free)\n\n**Auto-Merge:**\n- FFmpeg on VPS\n- All scenes merged automatically\n- Single download link!",
+                    "height": 704
+                },
+                "id": "3af4fb2b-4c6d-4d42-afa2-8c5f1bdac502",
+                "name": "Instructions",
+                "type": "n8n-nodes-base.stickyNote",
+                "typeVersion": 1,
+                "position": [
+                    27360,
+                    16224
+                ]
+            },
+            {
+                "parameters": {
+                    "formTitle": "🎬 Celebrity Selfie Movie Sets Generator",
+                    "formDescription": "Create your personalized journey through movie/TV history! Upload your photo and customize your experience.",
+                    "formFields": {
+                        "values": [
+                            {
+                                "fieldName": "Your Photo",
+                                "fieldLabel": "Your Photo",
+                                "fieldType": "file",
+                                "multipleFiles": false,
+                                "acceptFileTypes": ".jpg,.jpeg,.png,.webp",
+                                "requiredField": true
+                            },
+                            {
+                                "fieldName": "Your Name",
+                                "fieldLabel": "Your Name",
+                                "placeholder": "John"
+                            },
+                            {
+                                "fieldName": "Your WhatsApp Number",
+                                "fieldLabel": "Your WhatsApp Number",
+                                "placeholder": "972501234567",
+                                "requiredField": true
+                            },
+                            {
+                                "fieldName": "Generation Mode",
+                                "fieldLabel": "Generation Mode",
+                                "fieldType": "dropdown",
+                                "fieldOptions": {
+                                    "values": [
+                                        {
+                                            "option": "🧠 AI Generate (describe what you want)"
+                                        },
+                                        {
+                                            "option": "✏️ Custom (specify each scene)"
+                                        },
+                                        {
+                                            "option": "🎯 Presets (popular movie collections)"
+                                        }
+                                    ]
+                                },
+                                "requiredField": true
+                            },
+                            {
+                                "fieldName": "Number of Scenes",
+                                "fieldLabel": "Number of Scenes",
+                                "fieldType": "dropdown",
+                                "fieldOptions": {
+                                    "values": [
+                                        {
+                                            "option": "2 scenes (~15 sec video)"
+                                        },
+                                        {
+                                            "option": "3 scenes (~20 sec video)"
+                                        },
+                                        {
+                                            "option": "4 scenes (~25 sec video)"
+                                        },
+                                        {
+                                            "option": "5 scenes (~30 sec video)"
+                                        },
+                                        {
+                                            "option": "6 scenes (~40 sec video)"
+                                        },
+                                        {
+                                            "option": "8 scenes (~50 sec video)"
+                                        }
+                                    ]
+                                },
+                                "requiredField": true
+                            },
+                            {
+                                "fieldName": "🧠 AI Mode: Describe Your Dream Scenes",
+                                "fieldLabel": "🧠 AI Mode: Describe Your Dream Scenes",
+                                "fieldType": "textarea",
+                                "placeholder": "Examples:\n- 5 scenes with 80s action heroes\n- Marvel superheroes from the MCU"
+                            },
+                            {
+                                "fieldName": "✏️ Custom Mode: Scene Details (one per line)",
+                                "fieldLabel": "✏️ Custom Mode: Scene Details (one per line)",
+                                "fieldType": "textarea",
+                                "placeholder": "Format: Celebrity | Movie/Show | Era | Location | Costume | Gesture"
+                            },
+                            {
+                                "fieldName": "🎯 Preset Collection",
+                                "fieldLabel": "🎯 Preset Collection",
+                                "fieldType": "dropdown",
+                                "fieldOptions": {
+                                    "values": [
+                                        {
+                                            "option": "80s Action Legends (Arnold, Stallone, Willis)"
+                                        },
+                                        {
+                                            "option": "90s Blockbusters (Titanic, Matrix, MIB)"
+                                        },
+                                        {
+                                            "option": "Marvel Cinematic Universe Heroes"
+                                        },
+                                        {
+                                            "option": "Star Wars Saga Characters"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "fieldName": "Video Aspect Ratio",
+                                "fieldLabel": "Video Aspect Ratio",
+                                "fieldType": "dropdown",
+                                "fieldOptions": {
+                                    "values": [
+                                        {
+                                            "option": "9:16 (TikTok/Reels - Vertical)"
+                                        },
+                                        {
+                                            "option": "16:9 (YouTube - Horizontal)"
+                                        },
+                                        {
+                                            "option": "1:1 (Instagram - Square)"
+                                        }
+                                    ]
+                                },
+                                "requiredField": true
+                            },
+                            {
+                                "fieldName": "Visual Style",
+                                "fieldLabel": "Visual Style",
+                                "fieldType": "dropdown",
+                                "fieldOptions": {
+                                    "values": [
+                                        {
+                                            "option": "Ultra-realistic (default)"
+                                        },
+                                        {
+                                            "option": "Cinematic film look"
+                                        },
+                                        {
+                                            "option": "Vintage retro style"
+                                        },
+                                        {
+                                            "option": "Modern Instagram aesthetic"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "options": {
+                        "appendAttribution": false,
+                        "respondWithOptions": {
+                            "values": {
+                                "formSubmittedText": "🎬 Your celebrity selfie video is being generated with SEAMLESS transitions! Processing time: ~5-10 min per scene. We'll send it to your WhatsApp when ready!"
+                            }
+                        }
+                    }
+                },
+                "id": "8f695494-c783-45a1-b274-97af3db8546d",
+                "name": "Upload Your Photo",
+                "type": "n8n-nodes-base.formTrigger",
+                "typeVersion": 2.4,
+                "position": [
+                    26800,
+                    17256
+                ],
+                "webhookId": "210fa7f0-d119-4a58-8715-a93ab38c28a5"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.imgbb.com/1/upload",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendBody": true,
+                    "contentType": "multipart-form-data",
+                    "bodyParameters": {
+                        "parameters": [
+                            {
+                                "parameterType": "formBinaryData",
+                                "name": "image",
+                                "inputDataFieldName": "={{ Object.keys($binary)[0] }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    27024,
+                    17208
+                ],
+                "id": "922f9e86-dc80-46f7-81c9-ad9db47926ee",
+                "name": "Upload to ImgBB",
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "// Handle both real uploads (via ImgBB) and test data paths\nconst inputData = $json;\n\n// Check if we're coming from ImgBB (real upload) or Test Data (test path)\nlet prevData = {};\nlet imageUrl = '';\n\n// If coming from ImgBB, inputData will have data.image.url\nif (inputData.data?.image?.url || inputData.data?.url) {\n  // Real path: ImgBB response\n  imageUrl = inputData.data?.image?.url || inputData.data?.url || '';\n  \n  // Try to get form data from Upload Your Photo node\n  try {\n    prevData = $('Upload Your Photo').first().json || {};\n  } catch (e) {\n    prevData = {};\n  }\n} else if (inputData.user_photo_url) {\n  // Test path: already has user_photo_url from Test Data (Edit Fields)\n  imageUrl = inputData.user_photo_url;\n  prevData = inputData;\n} else {\n  // Fallback: use whatever data we have\n  prevData = inputData;\n  imageUrl = inputData.user_photo_url || '';\n}\n\nreturn {\n  json: {\n    ...prevData,\n    user_photo_url: imageUrl,\n    imgbb_success: !!imageUrl\n  }\n};"
+                },
+                "id": "b5970459-4d5d-4c29-811d-f4e307815481",
+                "name": "Process Uploaded Photo",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    27248,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "user_photo_url",
+                                "name": "user_photo_url",
+                                "type": "string",
+                                "value": "={{ $json.user_photo_url }}"
+                            },
+                            {
+                                "id": "user_name",
+                                "name": "user_name",
+                                "type": "string",
+                                "value": "={{ $json['Your Name'] || 'Friend' }}"
+                            },
+                            {
+                                "id": "user_phone",
+                                "name": "user_phone",
+                                "type": "string",
+                                "value": "={{ $json['Your WhatsApp Number'] || '' }}"
+                            },
+                            {
+                                "id": "generation_mode",
+                                "name": "generation_mode",
+                                "type": "string",
+                                "value": "={{ $json['Generation Mode'] }}"
+                            },
+                            {
+                                "id": "num_scenes",
+                                "name": "num_scenes",
+                                "type": "number",
+                                "value": "={{ parseInt($json['Number of Scenes']) || 5 }}"
+                            },
+                            {
+                                "id": "ai_prompt",
+                                "name": "ai_prompt",
+                                "type": "string",
+                                "value": "={{ $json['🧠 AI Mode: Describe Your Dream Scenes'] || '' }}"
+                            },
+                            {
+                                "id": "custom_scenes",
+                                "name": "custom_scenes",
+                                "type": "string",
+                                "value": "={{ $json['✏️ Custom Mode: Scene Details (one per line)'] || '' }}"
+                            },
+                            {
+                                "id": "preset_collection",
+                                "name": "preset_collection",
+                                "type": "string",
+                                "value": "={{ $json['🎯 Preset Collection'] || '' }}"
+                            },
+                            {
+                                "id": "aspect_ratio",
+                                "name": "aspect_ratio",
+                                "type": "string",
+                                "value": "={{ $json['Video Aspect Ratio'].split(' ')[0] }}"
+                            },
+                            {
+                                "id": "visual_style",
+                                "name": "visual_style",
+                                "type": "string",
+                                "value": "={{ $json['Visual Style'] || 'Ultra-realistic (default)' }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "db3d062f-c82e-4c6f-a128-4d515fe37f7e",
+                "name": "Set Configuration",
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    27472,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "jsCode": "const config = $('Set Configuration').first().json;\nconst mode = config.generation_mode || '';\nconst numScenes = config.num_scenes || 5;\nconst customScenes = config.custom_scenes || '';\nconst presetCollection = config.preset_collection || '';\nconst aiPrompt = config.ai_prompt || '';\n\nconst presets = {\n  '80s Action Legends': [\n    { celebrity: 'Arnold Schwarzenegger as the T-800', movie: 'Terminator 2', costume: 'black leather biker jacket, battle damage showing chrome', location: 'the industrial steel mill with molten sparks', gesture: 'thumbs-up', era: '1991 sci-fi action' },\n    { celebrity: 'Sylvester Stallone as Rocky Balboa', movie: 'Rocky IV', costume: 'boxing shorts and gloves, sweaty', location: 'the boxing ring in Moscow', gesture: 'fist pump', era: '1985 sports drama' },\n    { celebrity: 'Bruce Willis as John McClane', movie: 'Die Hard', costume: 'dirty white tank top, barefoot', location: 'the Nakatomi Plaza lobby with shattered glass', gesture: 'smirking', era: '1988 action thriller' },\n    { celebrity: 'Harrison Ford as Indiana Jones', movie: 'Raiders of the Lost Ark', costume: 'iconic fedora hat, leather jacket, whip', location: 'ancient temple with golden idol', gesture: 'tipping hat', era: '1981 adventure' }\n  ],\n  '90s Blockbusters': [\n    { celebrity: 'Leonardo DiCaprio as Jack Dawson', movie: 'Titanic', costume: 'suspenders, white shirt', location: 'the bow of the Titanic ship', gesture: 'arms spread wide', era: '1997 romance drama' },\n    { celebrity: 'Keanu Reeves as Neo', movie: 'The Matrix', costume: 'long black trench coat, sunglasses', location: 'the lobby with marble columns', gesture: 'come here hand motion', era: '1999 cyberpunk' },\n    { celebrity: 'Tom Hanks as Forrest Gump', movie: 'Forrest Gump', costume: 'checkered shirt, khaki pants', location: 'park bench with box of chocolates', gesture: 'friendly wave', era: '1994 drama' },\n    { celebrity: 'Will Smith as Agent J', movie: 'Men in Black', costume: 'black suit, sunglasses, neuralyzer', location: 'MIB headquarters with alien screens', gesture: 'pointing neuralyzer', era: '1997 sci-fi comedy' }\n  ],\n  'Marvel Cinematic Universe Heroes': [\n    { celebrity: 'Robert Downey Jr. as Tony Stark/Iron Man', movie: 'The Avengers', costume: 'Iron Man Mark VII armor, faceplate up', location: 'Stark Tower with New York skyline', gesture: 'peace sign', era: '2012 superhero' },\n    { celebrity: 'Chris Evans as Steve Rogers/Captain America', movie: 'Avengers: Endgame', costume: 'classic Cap suit with shield', location: 'Avengers compound', gesture: 'salute', era: '2019 superhero' },\n    { celebrity: 'Scarlett Johansson as Natasha Romanoff/Black Widow', movie: 'Black Widow', costume: 'white tactical suit', location: 'Red Room training facility', gesture: 'confident stance', era: '2021 action' },\n    { celebrity: 'Chris Hemsworth as Thor', movie: 'Thor: Ragnarok', costume: 'gladiator armor, short hair', location: 'Sakaar arena with neon lights', gesture: 'hammer raised', era: '2017 sci-fi comedy' }\n  ],\n  'Star Wars Saga Characters': [\n    { celebrity: 'Harrison Ford as Han Solo', movie: 'Star Wars: A New Hope', costume: 'white shirt, black vest, blaster holster', location: 'Millennium Falcon cockpit', gesture: 'cocky grin', era: '1977 space opera' },\n    { celebrity: 'Carrie Fisher as Princess Leia', movie: 'Star Wars: A New Hope', costume: 'iconic white gown, hair buns', location: 'Death Star detention block', gesture: 'crossed arms', era: '1977 space opera' },\n    { celebrity: 'Mark Hamill as Luke Skywalker', movie: 'Return of the Jedi', costume: 'black Jedi robes', location: 'Endor forest with Ewoks', gesture: 'lightsaber pose', era: '1983 space opera' },\n    { celebrity: 'Daisy Ridley as Rey', movie: 'The Force Awakens', costume: 'desert scavenger outfit, staff', location: 'Jakku desert with fallen Star Destroyer', gesture: 'determined look', era: '2015 space opera' }\n  ]\n};\n\nfunction parseCustomScenes(customText) {\n  if (!customText || !customText.trim()) return [];\n  const lines = customText.split('\\n').filter(line => line.trim() && line.includes('|'));\n  return lines.map((line, index) => {\n    const parts = line.split('|').map(p => p.trim());\n    return {\n      scene_id: index + 1,\n      celebrity: parts[0] || 'Celebrity',\n      movie: parts[1] || 'Movie',\n      era: parts[2] || 'Unknown era',\n      location: parts[3] || 'iconic movie set',\n      costume: parts[4] || 'their iconic costume',\n      gesture: parts[5] || 'friendly pose'\n    };\n  });\n}\n\n// Parse AI prompt - improved to handle various formats\nfunction parseAiPrompt(aiPrompt, numScenes) {\n  if (!aiPrompt || !aiPrompt.trim()) return null;\n  \n  const prompt = aiPrompt.trim();\n  const scenes = [];\n  \n  // Pattern 1: \"1st scene selfie with X, 2nd scene selfie with Y\"\n  const selfieWithPattern = /(?:(?:\\d+(?:st|nd|rd|th)?\\s+)?scene\\s+)?(?:selfie\\s+)?with\\s+([^,]+)/gi;\n  let selfieMatches = [...prompt.matchAll(selfieWithPattern)];\n  \n  if (selfieMatches.length >= 2) {\n    for (const match of selfieMatches) {\n      const celebrity = match[1].trim();\n      if (celebrity && celebrity.length > 2) {\n        scenes.push(createSceneFromCelebrity(celebrity, scenes.length + 1));\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  // Pattern 2: Numbered list \"1. X 2. Y 3. Z\"\n  const numberedPattern = /(?:(?:Scene\\s*)?(\\d+)[.:\\)]\\s*)([^\\d][^.]*?)(?=(?:(?:Scene\\s*)?\\d+[.:\\)])|$)/gi;\n  let matches = [...prompt.matchAll(numberedPattern)];\n  \n  if (matches.length >= 2) {\n    for (const match of matches) {\n      const sceneText = match[2].trim();\n      if (sceneText) {\n        const scene = parseSceneDescription(sceneText, scenes.length + 1);\n        scenes.push(scene);\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  // Pattern 3: Comma-separated list \"X, Y, Z\"\n  const parts = prompt.split(/,/).map(p => p.trim()).filter(p => p.length > 2);\n  if (parts.length >= 2) {\n    for (const part of parts) {\n      // Remove ordinal prefixes like \"1st\", \"2nd\", \"scene\", \"selfie with\"\n      let cleanPart = part\n        .replace(/^\\d+(?:st|nd|rd|th)?\\s*/i, '')\n        .replace(/^scene\\s*/i, '')\n        .replace(/^selfie\\s+with\\s*/i, '')\n        .trim();\n      \n      if (cleanPart && cleanPart.length > 2) {\n        scenes.push(createSceneFromCelebrity(cleanPart, scenes.length + 1));\n      }\n    }\n    if (scenes.length >= 2) return scenes.slice(0, numScenes);\n  }\n  \n  return null;\n}\n\n// Create a scene object from just a celebrity name\nfunction createSceneFromCelebrity(celebrityName, sceneId) {\n  // Clean up the celebrity name\n  const name = celebrityName\n    .replace(/^(?:with|and|,)\\s*/i, '')\n    .replace(/\\s+(?:at|in|from)\\s+.*/i, '') // Remove location info\n    .trim();\n  \n  // Determine context based on celebrity\n  let movie = 'iconic performance';\n  let era = 'their prime';\n  let location = 'concert stage';\n  let costume = 'their signature outfit';\n  let gesture = 'friendly pose';\n  \n  const nameLower = name.toLowerCase();\n  \n  // Opera/Classical\n  if (nameLower.includes('pavarotti') || nameLower.includes('bocelli') || nameLower.includes('domingo')) {\n    movie = 'legendary opera performance';\n    location = 'grand opera house with ornate decorations';\n    costume = 'elegant tuxedo';\n    gesture = 'operatic gesture';\n    era = 'peak of career';\n  }\n  // Action stars\n  else if (nameLower.includes('stallone') || nameLower.includes('sylvester')) {\n    movie = 'Rocky';\n    location = 'boxing gym with punching bags';\n    costume = 'boxing robe and gloves';\n    gesture = 'fist raised';\n    era = '1980s action star';\n  }\n  else if (nameLower.includes('schwarzenegger') || nameLower.includes('arnold')) {\n    movie = 'Terminator';\n    location = 'futuristic set with metal structures';\n    costume = 'leather jacket and sunglasses';\n    gesture = 'thumbs up';\n    era = '1980s action star';\n  }\n  // Political figures\n  else if (nameLower.includes('rabin') || nameLower.includes('itzhak')) {\n    movie = 'historic peace ceremony';\n    location = 'White House lawn';\n    costume = 'formal suit and tie';\n    gesture = 'handshake pose';\n    era = '1990s';\n  }\n  // Default for other celebrities\n  else {\n    movie = 'their most famous moment';\n    location = 'red carpet event';\n    costume = 'elegant formal attire';\n    gesture = 'warm smile';\n  }\n  \n  return {\n    scene_id: sceneId,\n    celebrity: name,\n    movie: movie,\n    era: era,\n    location: location,\n    costume: costume,\n    gesture: gesture\n  };\n}\n\nfunction parseSceneDescription(text, sceneId) {\n  const lowerText = text.toLowerCase();\n  \n  // Extract celebrity name\n  let celebrity = text;\n  const celebPatterns = [\n    /^([^,]+?)(?:\\s+(?:celebrating|giving|scoring|at|in|wearing|standing))/i,\n    /^([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*)/\n  ];\n  for (const pattern of celebPatterns) {\n    const match = text.match(pattern);\n    if (match) {\n      celebrity = match[1].trim();\n      break;\n    }\n  }\n  \n  return createSceneFromCelebrity(celebrity, sceneId);\n}\n\nlet scenes = [];\n\nif (mode.includes('Custom')) {\n  scenes = parseCustomScenes(customScenes);\n} else if (mode.includes('Presets')) {\n  for (const [key, value] of Object.entries(presets)) {\n    if (presetCollection.includes(key) || key.includes(presetCollection.split('(')[0].trim())) {\n      scenes = value.map((s, i) => ({ ...s, scene_id: i + 1 }));\n      break;\n    }\n  }\n  if (scenes.length === 0) {\n    scenes = presets['80s Action Legends'].map((s, i) => ({ ...s, scene_id: i + 1 }));\n  }\n} else {\n  // AI Mode - Parse the prompt\n  const parsedScenes = parseAiPrompt(aiPrompt, numScenes);\n  \n  if (parsedScenes && parsedScenes.length > 0) {\n    scenes = parsedScenes;\n  } else {\n    // Fallback to keyword matching for presets\n    const prompt = aiPrompt.toLowerCase();\n    if (prompt.includes('80s') || prompt.includes('action')) {\n      scenes = presets['80s Action Legends'];\n    } else if (prompt.includes('marvel') || prompt.includes('superhero')) {\n      scenes = presets['Marvel Cinematic Universe Heroes'];\n    } else if (prompt.includes('star wars') || prompt.includes('jedi')) {\n      scenes = presets['Star Wars Saga Characters'];\n    } else {\n      scenes = presets['90s Blockbusters'];\n    }\n    scenes = scenes.map((s, i) => ({ ...s, scene_id: i + 1 }));\n  }\n}\n\nscenes = scenes.slice(0, numScenes).map((s, i) => ({ ...s, scene_id: i + 1 }));\n\nreturn scenes.map(scene => ({ json: scene }));"
+                },
+                "id": "d6665531-36a9-4fdc-b6f0-58b57db56ddc",
+                "name": "Movie Scenes Data",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    27696,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "id": "1af8c59f-cb45-4a95-9c09-5b47aaf93646",
+                "name": "Loop Over Scenes",
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    27920,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "const scene = $input.item.json;\nconst config = $('Set Configuration').first().json;\nconst userPhotoUrl = config.user_photo_url || '';\nconst aspectRatio = config.aspect_ratio || '9:16';\nconst visualStyle = config.visual_style || 'Ultra-realistic (default)';\n\nconst styleModifiers = {\n  'Ultra-realistic (default)': 'High-resolution photorealistic style, natural lighting, shallow depth of field.',\n  'Cinematic film look': 'Cinematic film grain, dramatic lighting, anamorphic lens flare, 35mm film aesthetic.',\n  'Vintage retro style': 'VHS aesthetic, warm color grading, nostalgic vintage photography style.',\n  'Modern Instagram aesthetic': 'Instagram filter look, vibrant colors, perfect exposure, clean and polished.'\n};\n\nconst styleText = styleModifiers[visualStyle] || styleModifiers['Ultra-realistic (default)'];\n\nconst masterPrompt = `Ultra-realistic selfie from front-phone-camera perspective. The person taking the selfie looks exactly like the reference image provided. Standing next to ${scene.celebrity}, who appears with the exact age and look from '${scene.movie}'. ${scene.celebrity} wearing ${scene.costume}. Background shows the authentic film set from '${scene.movie}', specifically ${scene.location}. Both look relaxed posing between takes, with ${scene.celebrity} giving a casual ${scene.gesture}. ${styleText} No phone visible.`;\n\nreturn {\n  json: {\n    ...scene,\n    user_photo_url: userPhotoUrl,\n    image_prompt: masterPrompt,\n    aspect_ratio: aspectRatio,\n    visual_style: visualStyle\n  }\n};"
+                },
+                "id": "bf42c05f-9923-4fd9-b282-243aa3d01cdb",
+                "name": "Generate Image Prompt",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    28144,
+                    16560
+                ]
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={{ JSON.stringify({ model: 'nano-banana-pro', input: { prompt: $json.image_prompt, image_input: [$json.user_photo_url], aspect_ratio: $json.aspect_ratio || '9:16', resolution: '2K', output_format: 'png' } }) }}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    28368,
+                    16560
+                ],
+                "id": "bbcab663-5b74-48ed-b8e7-518011c628bc",
+                "name": "Create Image Task (Kie)",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "kRI7Q7bdV9tEVPNp",
+                        "name": "Kie.ai"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "url": "=https://api.kie.ai/api/v1/jobs/recordInfo?taskId={{ $json.data.taskId }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    28592,
+                    16560
+                ],
+                "id": "8df8c7ce-ca7a-42d3-be7e-957df690242a",
+                "name": "Poll Image Status",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "kRI7Q7bdV9tEVPNp",
+                        "name": "Kie.ai"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "const imageData = $input.item.json;\nconst MAX_RETRIES = 120;\nconst retryCount = imageData.retryCount || 0;\n\nif (retryCount >= MAX_RETRIES) {\n  return { json: { skipImage: true, imageReady: false, reason: 'Timeout' } };\n}\n\nconst state = imageData.data?.state;\n\nif (state === 'success') {\n  let resultUrls = [];\n  try {\n    if (imageData.data.resultJson) {\n      const parsed = JSON.parse(imageData.data.resultJson);\n      resultUrls = parsed.resultUrls || [];\n    }\n  } catch (e) {}\n  \n  return { \n    json: { \n      ...imageData, \n      imageReady: true, \n      image_url: resultUrls[0] || null \n    } \n  };\n} else if (state === 'fail') {\n  return { json: { skipImage: true, imageReady: false, reason: 'Failed' } };\n}\n\nreturn { json: { ...imageData, imageReady: false, continuePolling: true, retryCount: retryCount + 1 } };"
+                },
+                "id": "d9985bac-ea67-4b4e-aa23-71657f02c5e0",
+                "name": "Check Image Status",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    28816,
+                    16440
+                ]
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "version": 2,
+                            "leftValue": "",
+                            "caseSensitive": true,
+                            "typeValidation": "loose"
+                        },
+                        "conditions": [
+                            {
+                                "id": "ready",
+                                "leftValue": "={{ $json.imageReady }}",
+                                "rightValue": true,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "equals"
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "looseTypeValidation": true,
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    29040,
+                    16440
+                ],
+                "id": "b3fa9682-7d50-435c-beb3-5e2e59fed42d",
+                "name": "Image Ready?"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.wait",
+                "typeVersion": 1.1,
+                "position": [
+                    29264,
+                    16584
+                ],
+                "id": "03d497f9-1781-4a2e-97e2-9408dfb5af63",
+                "name": "Wait Image",
+                "webhookId": "celebrity-selfie-wait-image"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "img_url",
+                                "name": "image_url",
+                                "type": "string",
+                                "value": "={{ $json.image_url }}"
+                            },
+                            {
+                                "id": "scene_id",
+                                "name": "scene_id",
+                                "type": "number",
+                                "value": "={{ $('Generate Image Prompt').item.json.scene_id }}"
+                            },
+                            {
+                                "id": "movie",
+                                "name": "movie",
+                                "type": "string",
+                                "value": "={{ $('Generate Image Prompt').item.json.movie }}"
+                            },
+                            {
+                                "id": "aspect",
+                                "name": "aspect_ratio",
+                                "type": "string",
+                                "value": "={{ $('Generate Image Prompt').item.json.aspect_ratio }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "4974297d-70fc-49e6-9409-fe7779940904",
+                "name": "Store Image Result",
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    29264,
+                    16368
+                ]
+            },
+            {
+                "parameters": {},
+                "id": "873229a4-c954-49a7-8539-06b09742aba0",
+                "name": "Back to Image Loop",
+                "type": "n8n-nodes-base.noOp",
+                "typeVersion": 1,
+                "position": [
+                    29488,
+                    16368
+                ]
+            },
+            {
+                "parameters": {
+                    "aggregate": "aggregateAllItemData",
+                    "options": {}
+                },
+                "id": "ef348678-22fc-48e4-95e0-a5dd1f4bf228",
+                "name": "Aggregate All Images",
+                "type": "n8n-nodes-base.aggregate",
+                "typeVersion": 1,
+                "position": [
+                    28144,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Build first-last frame pairs for Kling video transitions\n// CORRECT APPROACH: Each frame must be a SELFIE WITH A CELEBRITY\n// NOT: user photo → celebrity scene (that creates zoom effects, not walking)\n\nconst all = $input.first().json.data || [];\nall.sort((a, b) => Number(a.scene_id) - Number(b.scene_id));\n\nconst config = $('Set Configuration').first().json;\nconst sceneImages = all.map(x => x.image_url).filter(Boolean);\n\n// Function to UPSCALE image to minimum size using wsrv.nl proxy\nfunction upscaleImage(url, minSize = 720) {\n  if (!url) return url;\n  const encodedUrl = encodeURIComponent(url);\n  return `https://wsrv.nl/?url=${encodedUrl}&w=${minSize}&h=${minSize}&fit=outside&output=png`;\n}\n\n// CORRECT: Create pairs from CELEBRITY SELFIES ONLY\n// Video 1: Selfie with Celeb1 → Selfie with Celeb2\n// Video 2: Selfie with Celeb2 → Selfie with Celeb3\n// etc.\n// This creates the \"walking through movie sets\" effect\n\nif (sceneImages.length < 2) {\n  throw new Error('Need at least 2 celebrity selfie scenes to create transitions');\n}\n\nconst clips = [];\nfor (let i = 0; i < sceneImages.length - 1; i++) {\n  clips.push({\n    clip_index: i,\n    first_frame_url: upscaleImage(sceneImages[i], 720),\n    last_frame_url: upscaleImage(sceneImages[i + 1], 720),\n    aspect_ratio: config.aspect_ratio || '9:16',\n    scene_from: i + 1,\n    scene_to: i + 2\n  });\n}\n\n// Optionally add a loop back to first scene for seamless looping\n// clips.push({\n//   clip_index: sceneImages.length - 1,\n//   first_frame_url: upscaleImage(sceneImages[sceneImages.length - 1], 720),\n//   last_frame_url: upscaleImage(sceneImages[0], 720),\n//   aspect_ratio: config.aspect_ratio || '9:16',\n//   scene_from: sceneImages.length,\n//   scene_to: 1\n// });\n\nreturn clips.map(c => ({ json: c }));"
+                },
+                "id": "6b468b88-88b8-4b27-bf71-c720037f0868",
+                "name": "Build First-Last Frame Pairs",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    28368,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "id": "58dae981-2296-405d-9066-d06f94db6799",
+                "name": "Loop Over Clips",
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    28592,
+                    17112
+                ]
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.piapi.ai/api/v1/task",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={\n  \"model\": \"kling\",\n  \"task_type\": \"video_generation\",\n  \"input\": {\n    \"prompt\": \"The person holding the phone walks forward naturally with gentle body motion, camera following from selfie POV perspective, background environment smoothly transitions and morphs, subject stays centered in frame while moving through the scene, cinematic fluid camera movement\",\n    \"negative_prompt\": \"static, frozen, zoom effect, slideshow, presentation, abrupt cuts, morphing face, distorted features\",\n    \"image_url\": \"{{ $json.first_frame_url }}\",\n    \"tail_image_url\": \"{{ $json.last_frame_url }}\",\n    \"duration\": 5,\n    \"cfg_scale\": 0.5,\n    \"mode\": \"std\"\n  }\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    28816,
+                    17184
+                ],
+                "id": "a0099e8c-5535-4ca9-af06-965474aa2549",
+                "name": "Create Video Task (PiAPI)",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "W5AtZENeSz5N9K6p",
+                        "name": "piapi.ai"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "url": "=https://api.piapi.ai/api/v1/task/{{ $json.task_id || $json.data?.task_id || $('Create Video Task (PiAPI)').item.json.data?.task_id || $('Create Video Task (PiAPI)').item.json.task_id }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "options": {
+                        "timeout": 60000
+                    }
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    29040,
+                    17184
+                ],
+                "id": "4e994a01-42bd-4501-9aa0-50f2bd6f4308",
+                "name": "Poll Video Status (PiAPI)",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "W5AtZENeSz5N9K6p",
+                        "name": "piapi.ai"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Check PiAPI Kling video status\n// States: 'pending', 'processing', 'completed', 'failed'\nconst videoData = $input.item.json;\nconst MAX_RETRIES = 120;\nconst retryCount = videoData.retryCount || 0;\n\n// PiAPI response structure: data.status, data.error, data.output\nconst taskData = videoData.data || videoData;\n\n// IMPORTANT: Preserve task_id at root level for polling loop\nconst task_id = videoData.task_id || taskData.task_id || videoData.data?.task_id;\n\n// Check for REAL errors (code !== 0 or non-empty message)\nconst errorObj = taskData.error || videoData.error;\nif (errorObj && (errorObj.code !== 0 || (errorObj.message && errorObj.message.length > 0))) {\n  const errorMsg = errorObj.message || errorObj.raw_message || JSON.stringify(errorObj);\n  \n  // Check for credit errors\n  if (errorMsg.includes('credit') || errorMsg.includes('balance') || errorMsg.includes('insufficient')) {\n    return { json: { task_id, skipVideo: true, videoReady: false, reason: 'Insufficient PiAPI credits', hasError: true } };\n  }\n  \n  return { json: { task_id, skipVideo: true, videoReady: false, reason: errorMsg, hasError: true } };\n}\n\nif (retryCount >= MAX_RETRIES) {\n  return { json: { task_id, skipVideo: true, videoReady: false, reason: 'Timeout after 120 retries' } };\n}\n\nconst status = taskData.status;\n\nif (status === 'completed') {\n  // PiAPI returns video URL in data.output.works[0].resource.resource or similar\n  let videoUrl = null;\n  if (taskData.output?.works && taskData.output.works.length > 0) {\n    videoUrl = taskData.output.works[0].resource?.resource || taskData.output.works[0].url;\n  }\n  videoUrl = videoUrl || taskData.output?.video_url || taskData.output?.video || taskData.output?.result?.video_url;\n  \n  return { \n    json: { \n      task_id,\n      videoReady: true, \n      video_url: videoUrl \n    } \n  };\n} else if (status === 'failed') {\n  return { json: { task_id, skipVideo: true, videoReady: false, reason: taskData.error?.message || 'Task failed' } };\n}\n\n// Still processing (pending, processing)\nreturn { \n  json: { \n    task_id,\n    videoReady: false, \n    continuePolling: true, \n    retryCount: retryCount + 1,\n    retryDelay: 5\n  } \n};"
+                },
+                "id": "ccdb1505-4d19-4d1b-a3af-4201d5a6fedd",
+                "name": "Check Video Status",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    29264,
+                    17064
+                ]
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "version": 2,
+                            "leftValue": "",
+                            "caseSensitive": true,
+                            "typeValidation": "loose"
+                        },
+                        "conditions": [
+                            {
+                                "id": "ready",
+                                "leftValue": "={{ $json.videoReady }}",
+                                "rightValue": true,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "equals"
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "looseTypeValidation": true,
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    29488,
+                    17064
+                ],
+                "id": "03ee9b39-68b6-4410-876c-2771135c6d2e",
+                "name": "Video Ready?"
+            },
+            {
+                "parameters": {
+                    "amount": "={{ $json.retryDelay || 5 }}"
+                },
+                "type": "n8n-nodes-base.wait",
+                "typeVersion": 1.1,
+                "position": [
+                    29712,
+                    17208
+                ],
+                "id": "e5570f65-e556-426d-a0ae-5eaa5e963905",
+                "name": "Wait Video",
+                "webhookId": "celebrity-selfie-wait-video"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "clip_index",
+                                "name": "clip_index",
+                                "type": "number",
+                                "value": "={{ $('Loop Over Clips').item.json.clip_index }}"
+                            },
+                            {
+                                "id": "video_url",
+                                "name": "video_url",
+                                "type": "string",
+                                "value": "={{ $json.video_url }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    29712,
+                    16992
+                ],
+                "id": "f305087f-1556-4f1b-9aaf-ad6a8dbf292e",
+                "name": "Store Video Result"
+            },
+            {
+                "parameters": {},
+                "id": "c2b1faf1-324a-4c7d-b841-4923be305b0b",
+                "name": "Back to Video Loop",
+                "type": "n8n-nodes-base.noOp",
+                "typeVersion": 1,
+                "position": [
+                    29936,
+                    17256
+                ]
+            },
+            {
+                "parameters": {
+                    "aggregate": "aggregateAllItemData",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.aggregate",
+                "typeVersion": 1,
+                "position": [
+                    28816,
+                    16800
+                ],
+                "id": "d375e13b-79bf-420c-80f3-6841b1588951",
+                "name": "Aggregate All Videos"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const all = $input.first().json.data || [];\nall.sort((a, b) => Number(a.clip_index) - Number(b.clip_index));\nreturn [{ json: { video_urls: all.map(x => x.video_url).filter(Boolean) } }];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    29040,
+                    16800
+                ],
+                "id": "8f54f0b6-9c38-44b9-8436-b4ae509614bc",
+                "name": "Prepare URLs for Stitch"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const videoUrls = $input.first().json.video_urls || [];\nreturn videoUrls.map((url, index) => ({\n  json: {\n    video_url: url,\n    video_index: index + 1,\n    total_videos: videoUrls.length\n  }\n}));"
+                },
+                "id": "c68d0d22-2ed2-4e80-97b5-ca4f4e573fc0",
+                "name": "Prepare Videos for Stitch",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    29264,
+                    16800
+                ]
+            },
+            {
+                "parameters": {
+                    "url": "={{ $json.video_url }}",
+                    "options": {
+                        "response": {
+                            "response": {
+                                "responseFormat": "file"
+                            }
+                        }
+                    }
+                },
+                "id": "82c9b82e-dcd5-4759-a876-ca4992361424",
+                "name": "Download Video Binary",
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    29488,
+                    16800
+                ]
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Write video binary to disk - workaround for readWriteFile bug\nconst fs = require('fs');\nconst path = require('path');\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const videoIndex = item.json.video_index;\n  const executionId = $execution.id;\n  const fileName = `/tmp/movie_set_clip_${videoIndex}_${executionId}.mp4`;\n  \n  // Get binary data\n  const binaryData = item.binary?.data;\n  if (!binaryData) {\n    throw new Error(`No binary data found for item ${i}`);\n  }\n  \n  // Get the actual buffer from n8n's binary helper\n  const buffer = await this.helpers.getBinaryDataBuffer(i, 'data');\n  \n  // Write to file\n  fs.writeFileSync(fileName, buffer);\n  \n  console.log(`Wrote ${buffer.length} bytes to ${fileName}`);\n  \n  results.push({\n    json: {\n      ...item.json,\n      file_path: fileName,\n      file_size: buffer.length\n    }\n  });\n}\n\nreturn results;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    29712,
+                    16800
+                ],
+                "id": "14239925-97d1-4411-af66-b546fa2427ba",
+                "name": "Write to Disk"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const items = $input.all();\nconst paths = items.map(i => i.json.file_path).filter(Boolean);\nconst failedCount = items.filter(i => !i.json.file_path).length;\n\n// Log failures for observability\nif (failedCount > 0) {\n  console.log(`⚠️ ${failedCount} video(s) failed to generate`);\n}\n\nif (!paths.length || paths.length === 0) {\n  throw new Error('All video clips failed to generate. Check PiAPI credits or API status.');\n}\n\n// Handle single video - skip FFmpeg stitch\nif (paths.length === 1) {\n  return [{\n    json: {\n      skip_stitch: true,\n      single_video_path: paths[0],\n      stitch_inputs: paths[0],\n      stitched_output_path: paths[0],\n      had_failures: failedCount > 0,\n      clips_generated: 1,\n      clips_failed: failedCount\n    }\n  }];\n}\n\n// Multiple videos - proceed with stitch\nreturn [{\n  json: {\n    skip_stitch: false,\n    stitch_inputs: paths.join('\\n'),\n    stitched_output_path: `/tmp/stitched_${$execution.id}.mp4`,\n    had_failures: failedCount > 0,\n    clips_generated: paths.length,\n    clips_failed: failedCount\n  }\n}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    29936,
+                    16800
+                ],
+                "id": "8585d8d1-2337-49ae-957a-1eb8ff34b25f",
+                "name": "Build Stitch Inputs"
+            },
+            {
+                "parameters": {
+                    "resource": "mux",
+                    "ffmpegPath": "",
+                    "ffprobePath": "",
+                    "operation": "stitch",
+                    "stitchInputsText": "={{$json.stitch_inputs}}",
+                    "stitchOutputPath": "={{$json.stitched_output_path}}"
+                },
+                "type": "n8n-nodes-better-ffmpeg.betterFfmpeg",
+                "typeVersion": 3,
+                "position": [
+                    30384,
+                    16728
+                ],
+                "id": "42d16cdb-9f75-4fac-8c67-47925688e7c3",
+                "name": "FFmpeg Stitch"
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Read the video and return as binary for WhatsApp\nconst fs = require('fs');\nconst config = $('Set Configuration').first().json;\nconst timestamp = Date.now();\n\nconst stitchResult = $input.first().json;\n\n// Check if we're in skip_stitch mode (single video)\nlet skipStitch = stitchResult.skip_stitch || false;\nlet outputPath;\nlet videoUrl = null;\n\nif (skipStitch) {\n  // Single video mode - get the video URL from aggregate\n  try {\n    const aggregatedData = $('Aggregate All Videos').first().json;\n    if (aggregatedData && aggregatedData.data && aggregatedData.data.length > 0) {\n      videoUrl = aggregatedData.data[0].video_url;\n      console.log('Got video URL from Aggregate:', videoUrl);\n    }\n  } catch (e) {\n    console.log('Could not get video URL from aggregate:', e.message);\n  }\n  \n  outputPath = stitchResult.single_video_path;\n  console.log('Single video mode - path:', outputPath);\n  \n  // If we have a video URL, use URL mode (more reliable for WAHA)\n  if (videoUrl) {\n    return [{\n      json: {\n        session_id: `session_${timestamp}`,\n        status: 'Your Celebrity Selfie Video is Ready!',\n        file_path: outputPath,\n        video_url: videoUrl,\n        file_size_mb: 0,\n        user_name: config.user_name || 'User',\n        skip_stitch: true,\n        use_url_mode: true,\n        created_at: new Date().toISOString()\n      }\n    }];\n  }\n  \n  // Fallback: try to get binary from Download Video Binary\n  try {\n    const downloadedVideo = $('Download Video Binary').first();\n    if (downloadedVideo && downloadedVideo.binary && downloadedVideo.binary.data) {\n      return [{\n        json: {\n          session_id: `session_${timestamp}`,\n          status: 'Your Celebrity Selfie Video is Ready!',\n          file_path: outputPath,\n          file_size_mb: downloadedVideo.binary.data.fileSize ? \n            parseFloat((downloadedVideo.binary.data.fileSize / (1024 * 1024)).toFixed(2)) : 0,\n          user_name: config.user_name || 'User',\n          skip_stitch: true,\n          use_url_mode: false,\n          created_at: new Date().toISOString()\n        },\n        binary: downloadedVideo.binary\n      }];\n    }\n  } catch (e) {\n    console.log('Could not get binary from Download Video Binary:', e.message);\n  }\n} else {\n  // Normal stitch mode - FFmpeg output\n  outputPath = stitchResult.outputPath;\n  \n  if (!stitchResult.success || !outputPath) {\n    return [{\n      json: {\n        session_id: `session_${timestamp}`,\n        status: 'FFmpeg stitch failed',\n        error: stitchResult.stderr || 'Unknown error',\n        created_at: new Date().toISOString()\n      }\n    }];\n  }\n}\n\n// Check if file exists\nif (!fs.existsSync(outputPath)) {\n  return [{\n    json: {\n      session_id: `session_${timestamp}`,\n      status: 'Video file not found',\n      error: `File not found: ${outputPath}`,\n      created_at: new Date().toISOString()\n    }\n  }];\n}\n\n// Read the file and get stats\nconst stats = fs.statSync(outputPath);\nconst fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);\nconst buffer = fs.readFileSync(outputPath);\n\n// Create binary data using n8n's helper\nconst binaryData = await this.helpers.prepareBinaryData(buffer, 'celebrity_selfie_movie.mp4', 'video/mp4');\n\nreturn [{\n  json: {\n    session_id: `session_${timestamp}`,\n    status: skipStitch ? 'Your Celebrity Selfie Video is Ready!' : 'Your Celebrity Selfie Movie is Ready!',\n    file_path: outputPath,\n    file_size_mb: parseFloat(fileSizeMB),\n    user_name: config.user_name || 'User',\n    skip_stitch: skipStitch,\n    use_url_mode: false,\n    created_at: new Date().toISOString()\n  },\n  binary: {\n    data: binaryData\n  }\n}];"
+                },
+                "id": "def8778b-a116-4b2e-acdb-538924685aec",
+                "name": "Prepare Final Output",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    30608,
+                    16800
+                ]
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "status",
+                                "name": "status",
+                                "type": "string",
+                                "value": "={{ $json.status }}"
+                            },
+                            {
+                                "id": "session",
+                                "name": "session_id",
+                                "type": "string",
+                                "value": "={{ $json.session_id }}"
+                            },
+                            {
+                                "id": "created",
+                                "name": "created_at",
+                                "type": "string",
+                                "value": "={{ $json.created_at }}"
+                            },
+                            {
+                                "id": "file_path",
+                                "name": "file_path",
+                                "type": "string",
+                                "value": "={{ $json.file_path }}"
+                            },
+                            {
+                                "id": "file_size_mb",
+                                "name": "file_size_mb",
+                                "type": "number",
+                                "value": "={{ $json.file_size_mb }}"
+                            },
+                            {
+                                "id": "video_url",
+                                "name": "video_url",
+                                "type": "string",
+                                "value": "={{ $json.video_url }}"
+                            },
+                            {
+                                "id": "use_url_mode",
+                                "name": "use_url_mode",
+                                "type": "boolean",
+                                "value": "={{ $json.use_url_mode }}"
+                            }
+                        ]
+                    },
+                    "includeOtherFields": true,
+                    "options": {}
+                },
+                "id": "6f0ec06e-73a0-4ce9-bacc-e2ec3e7806b5",
+                "name": "Final Output",
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    30832,
+                    16800
+                ]
+            },
+            {
+                "parameters": {
+                    "resource": "Chatting",
+                    "operation": "Send Video",
+                    "session": "=default",
+                    "chatId": "={{ $('Set Configuration').first().json.user_phone || '' }}",
+                    "file": {
+                        "__rl": true,
+                        "mode": "binary",
+                        "value": "data"
+                    },
+                    "caption": "={{ $json.status }} 🎬",
+                    "requestOptions": {}
+                },
+                "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+                "typeVersion": 202502,
+                "position": [
+                    31280,
+                    16896
+                ],
+                "id": "b9152af2-f52c-4686-88e1-8bbd9669e1b0",
+                "name": "Send a video",
+                "credentials": {
+                    "wahaApi": {
+                        "id": "px3TLR7BGl3MVW7Y",
+                        "name": "WAHA account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "version": 2,
+                            "leftValue": "",
+                            "caseSensitive": true,
+                            "typeValidation": "loose"
+                        },
+                        "conditions": [
+                            {
+                                "id": "skip_check",
+                                "leftValue": "={{ $json.skip_stitch }}",
+                                "rightValue": true,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "equals"
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "looseTypeValidation": true,
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    30160,
+                    16800
+                ],
+                "id": "skip-stitch-check",
+                "name": "Skip Stitch?"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    26800,
+                    16680
+                ],
+                "id": "af321e30-4cef-4c24-934d-47120375e58c",
+                "name": "When clicking ‘Execute workflow’"
+            },
+            {
+                "parameters": {
+                    "path": "46448d68-a4ba-4081-ae4e-eb12e7e76ef9",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.webhook",
+                "typeVersion": 2.1,
+                "position": [
+                    26800,
+                    16872
+                ],
+                "id": "db145102-d103-4f25-85dc-ce366401efbf",
+                "name": "Webhook",
+                "webhookId": "46448d68-a4ba-4081-ae4e-eb12e7e76ef9"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+                "typeVersion": 1.4,
+                "position": [
+                    26800,
+                    17064
+                ],
+                "id": "ffdc8e74-3cf6-4e6c-95da-59d8d310572b",
+                "name": "When chat message received",
+                "webhookId": "bd6d290b-9201-4711-90f1-62b77326cf3c"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "test_name",
+                                "name": "Your Name",
+                                "type": "string",
+                                "value": "Test User"
+                            },
+                            {
+                                "id": "test_phone",
+                                "name": "Your WhatsApp Number",
+                                "type": "string",
+                                "value": "14695885133"
+                            },
+                            {
+                                "id": "test_mode",
+                                "name": "Generation Mode",
+                                "type": "string",
+                                "value": "🎯 Presets (popular movie collections)"
+                            },
+                            {
+                                "id": "test_scenes",
+                                "name": "Number of Scenes",
+                                "type": "string",
+                                "value": "3 scenes (~25 sec video)"
+                            },
+                            {
+                                "id": "test_preset",
+                                "name": "🎯 Preset Collection",
+                                "type": "string",
+                                "value": "80s Action Legends (Arnold, Stallone, Willis)"
+                            },
+                            {
+                                "id": "test_aspect",
+                                "name": "Video Aspect Ratio",
+                                "type": "string",
+                                "value": "9:16 (TikTok/Reels - Vertical)"
+                            },
+                            {
+                                "id": "test_style",
+                                "name": "Visual Style",
+                                "type": "string",
+                                "value": "Ultra-realistic (default)"
+                            },
+                            {
+                                "id": "test_photo_url",
+                                "name": "user_photo_url",
+                                "type": "string",
+                                "value": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
+                            },
+                            {
+                                "id": "imgbb_success",
+                                "name": "imgbb_success",
+                                "type": "boolean",
+                                "value": true
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    27024,
+                    17016
+                ],
+                "id": "test-data-stabilizer",
+                "name": "Test Data (Edit Fields)"
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "version": 2,
+                            "leftValue": "",
+                            "caseSensitive": true,
+                            "typeValidation": "loose"
+                        },
+                        "conditions": [
+                            {
+                                "id": "url_mode_check",
+                                "leftValue": "={{ $json.use_url_mode }}",
+                                "rightValue": true,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "equals"
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "looseTypeValidation": true,
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    31056,
+                    16800
+                ],
+                "id": "url-mode-check",
+                "name": "Use URL Mode?"
+            },
+            {
+                "parameters": {
+                    "resource": "Chatting",
+                    "operation": "Send Video",
+                    "session": "=default",
+                    "chatId": "={{ $('Set Configuration').first().json.user_phone || '' }}",
+                    "file": {
+                        "__rl": true,
+                        "mode": "url",
+                        "value": "={{ $json.video_url }}"
+                    },
+                    "caption": "={{ $json.status }} 🎬",
+                    "requestOptions": {}
+                },
+                "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+                "typeVersion": 202502,
+                "position": [
+                    31280,
+                    16704
+                ],
+                "id": "send-video-url",
+                "name": "Send Video (URL)",
+                "credentials": {
+                    "wahaApi": {
+                        "id": "px3TLR7BGl3MVW7Y",
+                        "name": "WAHA account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "Upload Your Photo": {
+                "main": [
+                    [
+                        {
+                            "node": "Test Data (Edit Fields)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Upload to ImgBB": {
+                "main": [
+                    [
+                        {
+                            "node": "Process Uploaded Photo",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process Uploaded Photo": {
+                "main": [
+                    [
+                        {
+                            "node": "Set Configuration",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Set Configuration": {
+                "main": [
+                    [
+                        {
+                            "node": "Movie Scenes Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Movie Scenes Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Scenes",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Scenes": {
+                "main": [
+                    [
+                        {
+                            "node": "Aggregate All Images",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Generate Image Prompt",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Generate Image Prompt": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Image Task (Kie)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Image Task (Kie)": {
+                "main": [
+                    [
+                        {
+                            "node": "Poll Image Status",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Poll Image Status": {
+                "main": [
+                    [
+                        {
+                            "node": "Check Image Status",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Check Image Status": {
+                "main": [
+                    [
+                        {
+                            "node": "Image Ready?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Image Ready?": {
+                "main": [
+                    [
+                        {
+                            "node": "Store Image Result",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Wait Image",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Wait Image": {
+                "main": [
+                    [
+                        {
+                            "node": "Poll Image Status",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Store Image Result": {
+                "main": [
+                    [
+                        {
+                            "node": "Back to Image Loop",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Back to Image Loop": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Scenes",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Aggregate All Images": {
+                "main": [
+                    [
+                        {
+                            "node": "Build First-Last Frame Pairs",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Build First-Last Frame Pairs": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Clips",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Clips": {
+                "main": [
+                    [
+                        {
+                            "node": "Aggregate All Videos",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Create Video Task (PiAPI)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Video Task (PiAPI)": {
+                "main": [
+                    [
+                        {
+                            "node": "Poll Video Status (PiAPI)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Poll Video Status (PiAPI)": {
+                "main": [
+                    [
+                        {
+                            "node": "Check Video Status",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Check Video Status": {
+                "main": [
+                    [
+                        {
+                            "node": "Video Ready?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Video Ready?": {
+                "main": [
+                    [
+                        {
+                            "node": "Store Video Result",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Wait Video",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Wait Video": {
+                "main": [
+                    [
+                        {
+                            "node": "Poll Video Status (PiAPI)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Store Video Result": {
+                "main": [
+                    [
+                        {
+                            "node": "Back to Video Loop",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Back to Video Loop": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Clips",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Aggregate All Videos": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare URLs for Stitch",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare URLs for Stitch": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Videos for Stitch",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Videos for Stitch": {
+                "main": [
+                    [
+                        {
+                            "node": "Download Video Binary",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Download Video Binary": {
+                "main": [
+                    [
+                        {
+                            "node": "Write to Disk",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Write to Disk": {
+                "main": [
+                    [
+                        {
+                            "node": "Build Stitch Inputs",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Build Stitch Inputs": {
+                "main": [
+                    [
+                        {
+                            "node": "Skip Stitch?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "FFmpeg Stitch": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Final Output",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Final Output": {
+                "main": [
+                    [
+                        {
+                            "node": "Final Output",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Final Output": {
+                "main": [
+                    [
+                        {
+                            "node": "Use URL Mode?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Skip Stitch?": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Final Output",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "FFmpeg Stitch",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "When clicking ‘Execute workflow’": {
+                "main": [
+                    [
+                        {
+                            "node": "Test Data (Edit Fields)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "When clicking 'Execute workflow'": {
+                "main": [
+                    [
+                        {
+                            "node": "Test Data (Edit Fields)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Webhook": {
+                "main": [
+                    [
+                        {
+                            "node": "Test Data (Edit Fields)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "When chat message received": {
+                "main": [
+                    [
+                        {
+                            "node": "Test Data (Edit Fields)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Test Data (Edit Fields)": {
+                "main": [
+                    [
+                        {
+                            "node": "Process Uploaded Photo",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Use URL Mode?": {
+                "main": [
+                    [
+                        {
+                            "node": "Send Video (URL)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Send a video",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "Service Rensto",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2026-01-04T06:04:49.143Z",
+                "id": 1179,
+                "workflowId": "4OYGXXMYeJFfAo6X",
+                "versionId": "5a6946f1-b00e-488e-b665-9981ac64b607",
+                "event": "activated",
+                "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7"
+            }
+        ]
+    }
+}

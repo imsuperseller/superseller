@@ -124,23 +124,38 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                 </p>
               </div>
 
-              <div className="bg-[#110d28]/60 rounded-2xl border border-white/5 p-6 text-left space-y-4">
+              <div className="bg-[#110d28]/60 rounded-2xl border border-white/5 p-6 text-left space-y-4 overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-2 opacity-20">
+                  <span className="text-[10px] font-mono text-cyan-400 animate-pulse">TERMINAL ACTIVE</span>
+                </div>
+
                 <div className="flex justify-between items-center pb-4 border-b border-white/5">
                   <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">Transaction ID</span>
                   <span className="text-xs font-mono text-cyan-400/80 max-w-[150px] truncate">{sessionId}</span>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">Next Steps</h3>
-                  <div className="grid gap-3">
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                    Launch Protocol
+                  </h3>
+                  <div className="grid gap-3 font-mono text-[11px]">
                     {[
-                      'System provisioning (ETA: 2 mins)',
-                      'Credentials sent to your email',
-                      'Dashboard sync initializing'
+                      { text: 'Targeting dedicated cloud cluster...', status: 'DONE' },
+                      { text: 'Provisioning neural nodes...', status: 'PENDING' },
+                      { text: 'Injecting custom logic manifests...', status: 'WAIT' }
                     ].map((step, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500/50" />
-                        <span className="text-sm text-slate-400">{step}</span>
+                      <div key={i} className="flex justify-between items-center group">
+                        <div className="flex items-center gap-3">
+                          <span className="text-cyan-500/50">[{i + 1}]</span>
+                          <span className="text-slate-400 group-hover:text-cyan-400/80 transition-colors">{step.text}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-black ${step.status === 'DONE' ? 'bg-green-500/20 text-green-400' :
+                            step.status === 'PENDING' ? 'bg-cyan-500/20 text-cyan-400 animate-pulse' :
+                              'bg-white/5 text-slate-600'
+                          }`}>
+                          {step.status}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -172,9 +187,9 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                <Link href="/marketplace" className="w-full">
+                <Link href="/niches" className="w-full">
                   <Button className="w-full bg-[#fe3d51] hover:bg-[#ff4d61] text-white h-14 font-bold rounded-xl shadow-[0_0_20px_rgba(254,61,81,0.2)]">
-                    Go to Marketplace
+                    Go to Niches Catalog
                   </Button>
                 </Link>
                 <Link href="/" className="w-full">

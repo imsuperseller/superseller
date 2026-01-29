@@ -9,7 +9,9 @@ import {
     ExternalLink,
     Rocket,
     Clock,
-    ShieldCheck
+    ShieldCheck,
+    Zap,
+    Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
@@ -29,6 +31,7 @@ interface LaunchTask {
     description: string;
     status: 'pending' | 'completed' | 'blocked';
     order: number;
+    outlookEventId?: string;
 }
 
 export default function LaunchControlCenter() {
@@ -114,6 +117,25 @@ export default function LaunchControlCenter() {
 
     return (
         <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {[
+                    { label: 'Active Missions', value: '12', icon: Rocket, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+                    { label: 'Provisioning', value: '3', icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+                    { label: 'System Load', value: '42%', icon: Activity, color: 'text-green-400', bg: 'bg-green-500/10' },
+                    { label: 'Vault Safety', value: 'Secure', icon: ShieldCheck, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+                ].map((stat, i) => (
+                    <div key={i} className="p-6 rounded-3xl border border-white/5 bg-white/[0.02] flex items-center space-x-4">
+                        <div className={`w-10 h-10 ${stat.bg} rounded-xl flex items-center justify-center`}>
+                            <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{stat.label}</p>
+                            <p className="text-xl font-black text-white">{stat.value}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h2 className="text-3xl font-black uppercase tracking-tighter text-white">Launch Control Center</h2>
@@ -215,18 +237,26 @@ export default function LaunchControlCenter() {
                                         <button
                                             onClick={() => toggleTask(task.id, task.status)}
                                             className={`mt-1 w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${task.status === 'completed'
-                                                    ? 'bg-green-500/20 border-green-500/50 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
-                                                    : 'border-white/10 text-transparent hover:border-white/30'
+                                                ? 'bg-green-500/20 border-green-500/50 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                                                : 'border-white/10 text-transparent hover:border-white/30'
                                                 }`}>
                                             <ShieldCheck className="w-4 h-4" />
                                         </button>
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between mb-1">
                                                 <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">{task.category}</span>
-                                                {task.status === 'completed' && <span className="text-[9px] font-black uppercase tracking-widest text-green-500 flex items-center">
-                                                    <Clock className="w-3 h-3 mr-1" />
-                                                    Verified
-                                                </span>}
+                                                <div className="flex items-center space-x-3">
+                                                    {task.outlookEventId && (
+                                                        <span className="text-[9px] font-black uppercase tracking-widest text-cyan-500 flex items-center">
+                                                            <Calendar className="w-3 h-3 mr-1" />
+                                                            Synced
+                                                        </span>
+                                                    )}
+                                                    {task.status === 'completed' && <span className="text-[9px] font-black uppercase tracking-widest text-green-500 flex items-center">
+                                                        <Clock className="w-3 h-3 mr-1" />
+                                                        Verified
+                                                    </span>}
+                                                </div>
                                             </div>
                                             <h4 className={`text-sm font-black uppercase tracking-tight mb-1 transition-colors ${task.status === 'completed' ? 'text-slate-500 line-through decoration-cyan-500/50' : 'text-white group-hover:text-cyan-400'}`}>
                                                 {task.title}

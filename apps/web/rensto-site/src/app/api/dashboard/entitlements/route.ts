@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase-client';
-import { doc, getDoc } from 'firebase/firestore';
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { UserEntitlements, getDefaultFreeTrialEntitlements } from '@/types/entitlements';
 
 /**
@@ -19,18 +18,19 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Look up user by dashboard token
-        // In production, you'd query by token index or use a separate tokens collection
-        const userRef = doc(db, 'users', token);
-        const userSnap = await getDoc(userRef);
+        // Look up user by secure dashboard token
+        const dbAdmin = getFirestoreAdmin();
+        const usersRef = dbAdmin.collection(COLLECTIONS.USERS);
+        const querySnap = await usersRef.where('dashboardToken', '==', token).limit(1).get();
 
-        if (!userSnap.exists()) {
+        if (querySnap.empty) {
             return NextResponse.json(
                 { error: 'Invalid token or user not found' },
                 { status: 404 }
             );
         }
 
+        const userSnap = querySnap.docs[0];
         const userData = userSnap.data();
 
         // Return entitlements (with defaults if not set)

@@ -9,6 +9,11 @@ export function StickyMobileCTA() {
     const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
     const [isAtBottom, setIsAtBottom] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Don't show on administrative routes
     const isDashboardRoute = pathname?.startsWith('/ortal-dashboard');
@@ -43,7 +48,7 @@ export function StickyMobileCTA() {
 
     const isHebrew = pathname?.startsWith('/he');
 
-    if (isHiddenRoute || (!isVisible && !isAtBottom)) return null;
+    if (!mounted || isHiddenRoute || (!isVisible && !isAtBottom)) return null;
 
     return (
         <div

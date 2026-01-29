@@ -1,7 +1,7 @@
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
-import registry from '../../../../../../configs/service-registry.json';
+import registry from '../../configs/service-registry.json';
 import { User, ServiceInstance, Subscription } from '@/types/firestore';
 import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
 
@@ -26,6 +26,7 @@ export class ProvisioningService {
                 status: 'active',
                 emailVerified: true,
                 stripeCustomerId: stripeCustomerId || undefined,
+                dashboardToken: uuidv4(),
                 activeServices: {
                     marketplace: false,
                     whatsapp: false,
@@ -99,7 +100,9 @@ export class ProvisioningService {
             // Trigger Email (handled by caller or via internal service)
             // Provision Core 7 Activation if applicable
             if (registry.products.core7.ids.includes(templateId)) {
-                await db.collection(COLLECTIONS.SERVICE_INSTANCES).add({
+                const engineId = uuidv4();
+                await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(engineId).set({
+                    id: engineId,
                     clientId: userId,
                     clientEmail: params.email,
                     productId: templateId,
@@ -108,6 +111,24 @@ export class ProvisioningService {
                     type: 'marketplace_implementation',
                     stripeSessionId: params.stripeSessionId,
                     createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now()
+                });
+
+                // Update user engines entitlement
+                const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
+                const engineInstance = {
+                    id: engineId,
+                    solutionId: templateId,
+                    name: (params.productName || 'Solution Engine').replace('Rensto ', ''),
+                    status: 'pending_setup',
+                    type: 'Builder',
+                    activatedAt: new Date().toISOString()
+                };
+
+                const userSnap = await userRef.get();
+                const currentEngines = (userSnap.data() as any)?.entitlements?.engines || [];
+                await userRef.update({
+                    'entitlements.engines': [...currentEngines, engineInstance],
                     updatedAt: Timestamp.now()
                 });
             }
@@ -132,7 +153,9 @@ export class ProvisioningService {
             });
 
             // Instance Provisioning
-            await db.collection(COLLECTIONS.WHATSAPP_INSTANCES).add({
+            const engineId = uuidv4();
+            await db.collection(COLLECTIONS.WHATSAPP_INSTANCES).doc(engineId).set({
+                id: engineId,
                 userId,
                 userEmail: params.email,
                 businessName: `${customerName}'s Business`,
@@ -140,6 +163,24 @@ export class ProvisioningService {
                 status: 'pending_setup',
                 subscriptionId: subDoc.id,
                 createdAt: Timestamp.now(),
+                updatedAt: Timestamp.now()
+            });
+
+            // Update user engines entitlement
+            const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
+            const engineInstance = {
+                id: engineId,
+                solutionId: params.productId,
+                name: (params.productName || 'WhatsApp AI Agent').replace('Rensto ', ''),
+                status: 'pending_setup',
+                type: 'Bundle',
+                activatedAt: new Date().toISOString()
+            };
+
+            const userSnap = await userRef.get();
+            const currentEngines = (userSnap.data() as any)?.entitlements?.engines || [];
+            await userRef.update({
+                'entitlements.engines': [...currentEngines, engineInstance],
                 updatedAt: Timestamp.now()
             });
 
@@ -178,8 +219,12 @@ export class ProvisioningService {
             // 4. Trigger n8n Fulfillment Hook if defined
             if (product.n8nWebhookId && process.env.N8N_OPTIMIZER_WEBHOOK) {
                 try {
-                    // Send to n8n for orchestration
-                    await fetch(process.env.N8N_OPTIMIZER_WEBHOOK, {
+                    // Send to n8n for orchestration (Routing to client cluster if defined)
+                    const targetWebhook = userData.n8nInstance?.url
+                        ? `${userData.n8nInstance.url.replace(/\/$/, '')}/webhook/${product.n8nWebhookId}`
+                        : process.env.N8N_OPTIMIZER_WEBHOOK;
+
+                    await fetch(targetWebhook, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

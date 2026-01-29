@@ -24,6 +24,7 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   const isAppRoute = pathname?.startsWith('/app');
   const isPortalRoute = pathname?.startsWith('/portal');
   const isCustomerPortalRoute = pathname?.startsWith('/ortal') || pathname?.startsWith('/portal-') || pathname?.startsWith('/portal/');
+  const isProductRoute = pathname?.startsWith('/products/');
 
   // Main service pages and custom landing pages have their own headers
   const isServicePage =
@@ -52,7 +53,7 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   const isCustomLanding = pathname?.startsWith('/offer') || pathname?.startsWith('/onboarding');
 
   // Skip global layout for dashboard, admin, app, portal, customer portal, service pages, and custom landing pages
-  if (isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isCustomerPortalRoute || isServicePage || isCustomLanding) {
+  if (isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isCustomerPortalRoute || isServicePage || isCustomLanding || isProductRoute) {
     return <>{children}</>;
   }
 

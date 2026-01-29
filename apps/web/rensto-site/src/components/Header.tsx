@@ -17,10 +17,9 @@ export function Header() {
 
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'The Pillars', href: '/#pillars' },
-    { name: 'The Bundle', href: '/offers#ecosystem' },
-    { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Offers', href: '/offers' },
+    { name: 'Personnel', href: '/#team' },
+    { name: 'Applets', href: '/#applets' },
+    { name: 'Process', href: '/process' },
     { name: 'Contact', href: '/contact' },
   ];
 

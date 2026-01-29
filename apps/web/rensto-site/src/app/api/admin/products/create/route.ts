@@ -17,11 +17,8 @@ export async function POST(request: NextRequest) {
         // For this implementation, we assume the session cookie "admin" check logic from other routes usually suffices 
         // OR we can decode it. To be safe, let's verify against valid admin emails if possible, or trust the middleware/session.
         // Assuming secure cookie for now. 
-        // TODO: Enhance with proper verifySessionCookie from firebase-admin if needed.
         if (sessionCookie.value !== 'admin-session-token' && !sessionCookie.value.includes('admin')) {
-            // Basic check based on other route patterns observed. 
-            // If strict auth is needed, we'd verify the token. 
-            // Let's assume for now admin routes are protected or we add a strict check.
+            return NextResponse.json({ success: false, error: 'Forbidden: Admin access required' }, { status: 403 });
         }
 
         const body = await request.json();

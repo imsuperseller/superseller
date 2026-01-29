@@ -26,24 +26,59 @@ export interface CustomSolutionEntitlement {
     packageName: string;
 }
 
+export interface InfrastructureHealth {
+    provider: 'gologin' | 'telnyx' | 'racknerd' | 'n8n_cloud' | 'cloudflare' | 'docker';
+    status: 'online' | 'offline' | 'warning';
+    lastHeartbeat?: string;
+    label?: string; // e.g. "Main FB Profile" or "Voice API"
+    metrics?: {
+        label: string;
+        value: string;
+    }[];
+}
+
+export interface SolutionInstance {
+    id: string; // instance ID
+    solutionId: string; // Template ID
+    name: string;
+    status: 'pending_setup' | 'configuring' | 'provisioning' | 'active' | 'suspended' | 'cancelled';
+    type: 'Builder' | 'Bundle';
+    activatedAt?: string;
+    infrastructure?: InfrastructureHealth[];
+}
+
+export interface PartnerPayoutConfig {
+    enabled: boolean;
+    percentage: number; // e.g. 50
+    payoutModel: 'profit_split' | 'fixed_per_lead' | 'revenue_share';
+    bankDetails?: string; // Encrypted or masked
+}
+
 export interface UserEntitlements {
     // Free trial access
     freeLeadsTrial: boolean;
     freeLeadsRemaining?: number; // defaults to 10
 
-    // Purchased pillars (monthly subscriptions)
+    // Purchased pillars (Legacy monthly subscriptions)
     pillars: ServiceType[];
 
-    // Marketplace products (one-time purchases)
+    // Active Engines (The new Solutions model)
+    engines: SolutionInstance[];
+
+    // Marketplace products (Legacy one-time purchases)
     marketplaceProducts: string[]; // product/template IDs
 
-    // Custom solution project
+    // Partner Payout Config (V3.1)
+    partnerPayout?: PartnerPayoutConfig;
+
+    // Custom solution project (Legacy)
     customSolution: CustomSolutionEntitlement | null;
 }
 
 export interface UserProfile {
     email: string;
     name?: string;
+    businessName?: string;
     createdAt: string;
     dashboardToken: string; // UUID for magic-link access
     entitlements: UserEntitlements;
@@ -121,29 +156,30 @@ export function getVisibleTabs(entitlements: UserEntitlements): DashboardTabConf
         visible: entitlements.pillars.length > 0 || entitlements.customSolution !== null,
     });
 
-    // Marketplace Products - visible if purchased anything
-    if (entitlements.marketplaceProducts.length > 0) {
+    // Active Engines / Solutions - the new primary tab
+    if (entitlements.engines && entitlements.engines.length > 0) {
         tabs.push({
-            id: 'products',
-            label: 'My Products',
-            icon: 'Package',
+            id: 'engines',
+            label: 'My Engines',
+            icon: 'Zap',
             visible: true,
         });
     }
 
-    // Custom Solution Project - visible if has custom solution
-    if (entitlements.customSolution) {
+    // Earnings / Profit Share tab (V3.1)
+    if (entitlements.partnerPayout && entitlements.partnerPayout.enabled) {
         tabs.push({
-            id: 'project',
-            label: 'Project',
-            icon: 'Briefcase',
+            id: 'earnings',
+            label: 'Earnings',
+            icon: 'DollarSign',
             visible: true,
         });
     }
 
     // Invoices & Usage - always visible if paying customer
-    const isPayingCustomer = entitlements.pillars.length > 0 ||
-        entitlements.marketplaceProducts.length > 0 ||
+    const isPayingCustomer = (entitlements.pillars && entitlements.pillars.length > 0) ||
+        (entitlements.marketplaceProducts && entitlements.marketplaceProducts.length > 0) ||
+        (entitlements.engines && entitlements.engines.length > 0) ||
         entitlements.customSolution !== null;
     if (isPayingCustomer) {
         tabs.push({
@@ -169,6 +205,7 @@ export function getDefaultFreeTrialEntitlements(): UserEntitlements {
         freeLeadsTrial: true,
         freeLeadsRemaining: 10,
         pillars: [],
+        engines: [],
         marketplaceProducts: [],
         customSolution: null,
     };

@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
+import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
 import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 
@@ -42,15 +43,14 @@ export async function POST(request: Request) {
         const docRef = await instancesRef.add(newInstance);
         const instanceId = docRef.id;
 
-        // 2. Identify n8n Entry Point based on Product ID
-        const configWebhooks: Record<string, string> = {
-            'lead-machine': process.env.N8N_LEAD_MACHINE_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
-            'autonomous-secretary': process.env.N8N_SECRETARY_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
-            'knowledge-engine': process.env.N8N_KNOWLEDGE_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
-            'content-engine': process.env.N8N_CONTENT_INIT_WEBHOOK || N8N_FULFILLMENT_WEBHOOK,
-        };
+        // 2. Identify n8n Entry Point based on Product ID (Unified Registry)
+        const product = PRODUCT_REGISTRY[productId];
+        let targetWebhook = product?.n8nWebhookId || process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
 
-        const targetWebhook = configWebhooks[productId] || N8N_FULFILLMENT_WEBHOOK;
+        // Construct full URL if it's just a slug
+        if (targetWebhook && !targetWebhook.startsWith('http')) {
+            targetWebhook = `https://n8n.rensto.com/webhook/${targetWebhook}`;
+        }
 
         // 3. Trigger N8N Fulfillment Orchestrator
         try {

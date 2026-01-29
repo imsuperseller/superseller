@@ -223,24 +223,51 @@ export default function ClientDashboardPage() {
             ) : services.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {services.map(service => (
-                  <div key={service.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-3">
+                  <div key={service.id} className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col gap-4 group hover:border-cyan-500/30 transition-all duration-500">
                     <div className="flex justify-between items-start">
-                      <div className="font-bold text-lg">{service.productName}</div>
+                      <div className="space-y-1">
+                        <div className="font-black text-xl text-white uppercase tracking-tighter">{service.productName}</div>
+                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest font-mono">NODEID: {service.id.slice(0, 8)}</div>
+                      </div>
                       {service.status === 'active' ? (
-                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Active</Badge>
+                        <Badge className="bg-green-500/10 text-green-400 border-green-500/20 px-3 py-1 uppercase text-[9px] font-black tracking-widest">Active</Badge>
                       ) : (
-                        <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 animate-pulse">Provisioning</Badge>
+                        <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-3 py-1 uppercase text-[9px] font-black tracking-widest animate-pulse">Provisioning</Badge>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500 font-mono">ID: {service.id.slice(0, 8)}...</div>
 
-                    {service.status === 'active' && service.n8nWorkflowId ? (
-                      <Button size="sm" className="w-full mt-2 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20">
-                        Open Control Panel <ExternalLink className="ml-2 w-3 h-3" />
-                      </Button>
+                    {service.status === 'provisioning' ? (
+                      <div className="space-y-4 py-2">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[9px] font-black text-cyan-400 uppercase tracking-widest">Robot Swarm Status</span>
+                          <span className="text-[10px] font-bold text-slate-500 uppercase">Step 3/5</span>
+                        </div>
+                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-cyan-500 w-[60%] animate-pulse" />
+                        </div>
+                        <div className="p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/10 space-y-2">
+                          <div className="flex items-center gap-2 text-[9px] font-bold text-white uppercase">
+                            <Loader2 className="w-3 h-3 animate-spin text-cyan-400" />
+                            Configuring Knowledge Engine...
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium">Terry is indexing your business secrets into the neural vault.</p>
+                        </div>
+                      </div>
                     ) : (
-                      <div className="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                        <Loader2 className="w-3 h-3 animate-spin" /> Architecture building...
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Stability</p>
+                            <p className="text-sm font-black text-green-400">99.9%</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Response</p>
+                            <p className="text-sm font-black text-cyan-400">1.2m</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="renstoSecondary" className="w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                          Open Control Panel <ExternalLink className="ml-2 w-3 h-3" />
+                        </Button>
                       </div>
                     )}
                   </div>

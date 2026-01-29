@@ -1,0 +1,1425 @@
+{
+    "updatedAt": "2025-12-29T23:10:02.309Z",
+    "createdAt": "2025-10-31T23:38:55.779Z",
+    "id": "5Fl9WUjYTpodcloJ",
+    "name": "Calendar Agent",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.prompt }}",
+                "hasOutputParser": true,
+                "options": {
+                    "systemMessage": "You are a calendar management assistant with access to the user's TidyCal calendar (connected to Apple Calendar).\n\nYour capabilities:\n- View upcoming events and availability\n- Check for conflicts\n- Create new calendar events\n- Update or reschedule existing events\n- Cancel events\n- Find free time slots\n\nTidyCal API Guidelines:\n- GET /bookings - List all bookings\n- GET /bookings/{id} - Get specific booking\n- POST /bookings - Create new booking\n- PATCH /bookings/{id} - Update booking\n- DELETE /bookings/{id} - Cancel booking\n\nImportant Rules:\n1. Always confirm event details before creating/modifying events\n2. Request approval for: creating events, canceling events, major rescheduling\n3. For simple queries (viewing schedule, checking availability), no approval needed\n4. Use clear, natural language in your responses\n5. When checking availability, always specify timezone\n6. Format dates/times in user-friendly format\n\nOutput Requirements:\n- action_taken: What action you performed or plan to perform\n- needs_approval: true if user confirmation required before executing\n- approval_details: What specifically needs approval (commands to run)\n- events_found: Array of relevant events (include id, title, start_time, end_time)\n- message: User-friendly summary\n- success: Whether the operation succeeded"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 2.2,
+            "position": [
+                -368,
+                880
+            ],
+            "id": "f188c8db-00b4-4b65-b0c7-e12f26af1c7d",
+            "name": "AI Agent1"
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "value": "gpt-4o",
+                    "mode": "list",
+                    "cachedResultName": "gpt-4o"
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1.2,
+            "position": [
+                -736,
+                1104
+            ],
+            "id": "9966879c-f037-406b-9df6-083b631af022",
+            "name": "OpenAI Chat Model1",
+            "credentials": {
+                "openAiApi": {
+                    "id": "0sXFXYfqiDEKuDcN",
+                    "name": "service@rensto.com"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $json.chatid }}"
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.3,
+            "position": [
+                -608,
+                1104
+            ],
+            "id": "b7a6c7bd-f9ac-4dcb-9c62-8ad3e6ae5b8a",
+            "name": "Simple Memory1"
+        },
+        {
+            "parameters": {
+                "schemaType": "manual",
+                "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"action_taken\": {\n      \"type\": \"string\",\n      \"description\": \"Description of the action performed or to be performed\"\n    },\n    \"needs_approval\": {\n      \"type\": \"boolean\",\n      \"description\": \"Whether user approval is required before executing the action\"\n    },\n    \"approval_details\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Specific details about what needs approval (API calls to make, event details). Null if no approval needed.\"\n    },\n    \"events_found\": {\n      \"type\": \"array\",\n      \"description\": \"List of relevant calendar events found\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\",\n            \"description\": \"Event ID\"\n          },\n          \"title\": {\n            \"type\": \"string\",\n            \"description\": \"Event title\"\n          },\n          \"start_time\": {\n            \"type\": \"string\",\n            \"description\": \"Event start time in ISO format\"\n          },\n          \"end_time\": {\n            \"type\": \"string\",\n            \"description\": \"Event end time in ISO format\"\n          },\n          \"duration\": {\n            \"type\": \"number\",\n            \"description\": \"Duration in minutes\"\n          }\n        }\n      }\n    },\n    \"message\": {\n      \"type\": \"string\",\n      \"description\": \"User-friendly message summarizing the result or action\"\n    },\n    \"success\": {\n      \"type\": \"boolean\",\n      \"description\": \"Whether the operation was successful\"\n    }\n  },\n  \"required\": [\"action_taken\", \"needs_approval\", \"message\", \"success\"]\n}"
+            },
+            "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+            "typeVersion": 1.3,
+            "position": [
+                160,
+                1104
+            ],
+            "id": "18b515a5-5195-462e-9608-1ad837c3e6db",
+            "name": "Structured Output Parser1"
+        },
+        {
+            "parameters": {
+                "mode": "raw",
+                "jsonOutput": "{\n  \"assignments\": {\n    \"assignments\": [\n      {\n        \"name\": \"prompt\",\n        \"value\": \"={{ $json.body.text }}\",\n        \"type\": \"string\"\n      },\n      {\n        \"name\": \"chatid\",\n        \"value\": \"={{ $json.body.chatId }}\",\n        \"type\": \"string\"\n      }\n    ]\n  }\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -960,
+                880
+            ],
+            "id": "95edc64a-947c-4ec6-afb4-efb7c20fec84",
+            "name": "Edit Fields2"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "8cd865f5-9264-468c-9894-f0c0b7886720",
+                            "leftValue": "={{ $json.output.needs_approval }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "true",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                368,
+                832
+            ],
+            "id": "0a332d0e-b842-43ad-95f8-63616249e63f",
+            "name": "If"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "d8c7741d-5f4e-400a-b768-4410e6845be0",
+                            "name": "prompt",
+                            "value": "={{ $json.data.approved }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "d114d695-0f2c-4ee8-b85a-beb82830ba12",
+                            "name": "chatted",
+                            "value": "={{ $('Edit Fields2').item.json.chatid }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                816,
+                832
+            ],
+            "id": "1acb0408-0952-41e8-86f7-52462c906161",
+            "name": "Edit Fields3"
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $json.output.success }}",
+                                        "rightValue": "",
+                                        "operator": {
+                                            "type": "boolean",
+                                            "operation": "true",
+                                            "singleValue": true
+                                        },
+                                        "id": "69028229-87b0-48dd-be70-42607ed212e3"
+                                    }
+                                ],
+                                "combinator": "and"
+                            }
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "91061f82-935e-434e-ba2b-4568e97692e8",
+                                        "leftValue": "={{ $json.output.success }}",
+                                        "rightValue": "",
+                                        "operator": {
+                                            "type": "boolean",
+                                            "operation": "false",
+                                            "singleValue": true
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            }
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.3,
+            "position": [
+                592,
+                1024
+            ],
+            "id": "c16c2759-9a3a-4f73-a912-edb535f00fd9",
+            "name": "Switch1"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://your-waha-service.com/api/sendText",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"jsonBody\": \"=📅 Calendar Action Requires Approval\\n\\nAction: {{ $json.output.action_taken }}\\n\\nDetails: {{ $json.output.approval_details }}\\n\\nMessage: {{ $json.output.message }}\\n\\n{{ $json.output.events_found && $json.output.events_found.length > 0 ? 'Events Affected:\\n' + $json.output.events_found.map(e => '• ' + e.title + ' (' + e.start_time + ')').join('\\n') + '\\n\\n' : '' }}Reply with:\\n✅ 'approved' to proceed\\n❌ 'denied' to cancel\"\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                592,
+                800
+            ],
+            "id": "8b6343d1-7b99-4e42-bcbe-f2af4b4cdd02",
+            "name": "Send a text message2",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "V3yoK02N3hOAR93E",
+                    "name": "waha"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://your-waha-service.com/api/sendText",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"jsonBody\": \"=✅ Calendar Action Completed\\n\\nAction: {{ $json.output.action_taken }}\\n\\nMessage: {{ $json.output.message }}\\n\\n{{ $json.output.events_found && $json.output.events_found.length > 0 ? 'Events:\\n' + $json.output.events_found.map(e => '• ' + e.title + ' - ' + (new Date(e.start_time)).toLocaleString('en-US', {dateStyle: 'short', timeStyle: 'short'})).join('\\n') : '' }}\"\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                816,
+                1024
+            ],
+            "id": "f01e18df-8b10-48e1-b43a-2b461d7a44eb",
+            "name": "Send a text message4",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "V3yoK02N3hOAR93E",
+                    "name": "waha"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://your-waha-service.com/api/sendText",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "=❌ Calendar Action Failed\n\nAction: {{ $json.output.action_taken }}\n\nMessage: {{ $json.output.message }}\n\nPlease try again or rephrase your request.",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                816,
+                1216
+            ],
+            "id": "8ef6aa36-b1ae-456d-807e-13042310c4ff",
+            "name": "Send a text message5",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "V3yoK02N3hOAR93E",
+                    "name": "waha"
+                }
+            },
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "toolDescription": "TidyCal Calendar - View Events and Availability\n\nUse this tool to retrieve calendar information. Make GET requests to:\n\n1. List all bookings: /bookings\n   - Optional query params: ?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD\n   - Returns array of all calendar events in date range\n\n2. Get specific booking: /bookings/{booking_id}\n   - Replace {booking_id} with the actual event ID\n   - Returns detailed information about one event\n\n3. Check availability: /availability\n   - Optional params: ?date=YYYY-MM-DD&duration=30\n   - Returns free time slots\n\nWhen to use:\n- User asks to see their schedule\n- Check what meetings are upcoming\n- Find specific event details\n- Check for conflicts or availability\n- \"What's on my calendar today/this week?\"\n\nBase URL: https://tidycal.com/api\nAlways include the full path after the base URL.",
+                "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpBearerAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.2,
+            "position": [
+                -480,
+                1104
+            ],
+            "id": "d829c6c3-b191-485d-a2bc-2d0ae82e2673",
+            "name": "HTTP Request5",
+            "credentials": {
+                "httpBearerAuth": {
+                    "id": "iVmrQRk9XK9YZBBl",
+                    "name": "Tidycal"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "toolDescription": "TidyCal Calendar - Create New Events\n\nUse this tool to create NEW calendar events. Make POST requests to: /bookings\n\nRequired fields in request body (JSON):\n{\n  \"title\": \"Meeting title\",\n  \"start_time\": \"2025-11-01T14:00:00Z\",\n  \"end_time\": \"2025-11-01T15:00:00Z\",\n  \"duration\": 60\n}\n\nOptional fields:\n- \"description\": \"Event description\"\n- \"location\": \"Meeting location or link\"\n- \"attendees\": [\"email@example.com\"]\n\nWhen to use:\n- User asks to create/schedule/add a new meeting or event\n- \"Schedule a meeting with...\"\n- \"Add an event for...\"\n- \"Book time for...\"\n\nIMPORTANT: Always confirm event details with user before creating (needs_approval: true)\n\nDate format: ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)\nDuration: in minutes\n\nBase URL: https://tidycal.com/api/bookings",
+                "method": "POST",
+                "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpBearerAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.2,
+            "position": [
+                -352,
+                1104
+            ],
+            "id": "d58a0676-7667-4556-bf0d-f90554ca7735",
+            "name": "HTTP Request6",
+            "credentials": {
+                "httpBearerAuth": {
+                    "id": "iVmrQRk9XK9YZBBl",
+                    "name": "Tidycal"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "toolDescription": "TidyCal Calendar - Update Existing Events\n\nUse this tool to modify/reschedule existing calendar events. Make PATCH requests to: /bookings/{booking_id}\n\nReplace {booking_id} with the actual event ID (get this from a GET request first).\n\nFields you can update in request body (JSON):\n{\n  \"title\": \"Updated title\",\n  \"start_time\": \"2025-11-01T15:00:00Z\",\n  \"end_time\": \"2025-11-01T16:00:00Z\",\n  \"duration\": 60,\n  \"description\": \"Updated description\",\n  \"location\": \"New location\"\n}\n\nOnly include fields you want to change - you don't need to send all fields.\n\nWhen to use:\n- User asks to reschedule/move/change an event\n- \"Move my 2pm meeting to 3pm\"\n- \"Change the title of...\"\n- \"Update the meeting with John\"\n\nProcess:\n1. First GET the event to find its ID\n2. Then PATCH with updated fields\n\nIMPORTANT: Always confirm changes with user before updating (needs_approval: true)\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                "method": "PATCH",
+                "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpBearerAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.2,
+            "position": [
+                -224,
+                1104
+            ],
+            "id": "1de95131-c951-4898-9cf9-dceade2fb822",
+            "name": "HTTP Request7",
+            "credentials": {
+                "httpBearerAuth": {
+                    "id": "iVmrQRk9XK9YZBBl",
+                    "name": "Tidycal"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "toolDescription": "TidyCal Calendar - Cancel/Delete Events\n\nUse this tool to cancel or remove calendar events. Make DELETE requests to: /bookings/{booking_id}\n\nReplace {booking_id} with the actual event ID (get this from a GET request first).\n\nNo request body needed - just send DELETE to the endpoint.\n\nWhen to use:\n- User asks to cancel/delete/remove an event\n- \"Cancel my meeting with...\"\n- \"Delete my 3pm appointment\"\n- \"Remove the event on Friday\"\n\nProcess:\n1. First GET the event to confirm which one to delete\n2. Then DELETE using the event ID\n\nIMPORTANT: Always confirm with user before deleting (needs_approval: true)\n\nResponse: 204 No Content on success\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                "method": "DELETE",
+                "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpBearerAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.2,
+            "position": [
+                -96,
+                1104
+            ],
+            "id": "bcd052fb-f6bc-450f-adbe-679c571675e7",
+            "name": "HTTP Request8",
+            "credentials": {
+                "httpBearerAuth": {
+                    "id": "iVmrQRk9XK9YZBBl",
+                    "name": "Tidycal"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "toolDescription": "TidyCal Calendar - Replace Entire Event\n\nUse this tool to completely replace an event with new data. Make PUT requests to: /bookings/{booking_id}\n\nPUT replaces the ENTIRE event resource - unlike PATCH which updates specific fields.\n\nRequired: ALL event fields in request body:\n{\n  \"title\": \"New title\",\n  \"start_time\": \"2025-11-01T14:00:00Z\",\n  \"end_time\": \"2025-11-01T15:00:00Z\",\n  \"duration\": 60,\n  \"description\": \"Description\",\n  \"location\": \"Location\"\n}\n\nWhen to use:\n- Rarely needed - PATCH is usually better for updates\n- Only use if you need to completely replace all event data\n\nNote: PATCH is preferred for most update operations.\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                "method": "PUT",
+                "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpBearerAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.2,
+            "position": [
+                32,
+                1104
+            ],
+            "id": "fae5ca04-f218-4abc-b585-f21cede0bc50",
+            "name": "HTTP Request9",
+            "credentials": {
+                "httpBearerAuth": {
+                    "id": "iVmrQRk9XK9YZBBl",
+                    "name": "Tidycal"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "path": "84e1a5f3-2d5a-49e2-a8da-017fb929b50e",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                -1184,
+                880
+            ],
+            "id": "3c2b6816-117b-458d-a394-81471e45ab58",
+            "name": "Webhook1",
+            "webhookId": "84e1a5f3-2d5a-49e2-a8da-017fb929b50e"
+        }
+    ],
+    "connections": {
+        "AI Agent1": {
+            "main": [
+                [
+                    {
+                        "node": "If",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model1": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Simple Memory1": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Structured Output Parser1": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Fields2": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If": {
+            "main": [
+                [
+                    {
+                        "node": "Send a text message2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Switch1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Fields3": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Switch1": {
+            "main": [
+                [
+                    {
+                        "node": "Send a text message4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Send a text message5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a text message2": {
+            "main": [
+                [
+                    {
+                        "node": "Edit Fields3",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request5": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request6": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request7": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request8": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request9": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Webhook1": {
+            "main": [
+                [
+                    {
+                        "node": "Edit Fields2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "timeSavedMode": "fixed",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": true
+    },
+    "staticData": {
+        "node:Schedule Trigger": {
+            "recurrenceRules": []
+        }
+    },
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "514c12cc-7002-4735-94d3-8fe242a84b9e",
+    "activeVersionId": "153c0967-00fc-4589-b3d6-f73cc4c23269",
+    "versionCounter": 84,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2025-11-12T02:41:15.000Z",
+            "createdAt": "2025-11-12T02:41:15.000Z",
+            "role": "workflow:owner",
+            "workflowId": "5Fl9WUjYTpodcloJ",
+            "projectId": "6L20DLwgKEB5r0rn",
+            "project": {
+                "updatedAt": "2025-11-12T01:28:20.899Z",
+                "createdAt": "2025-11-12T01:28:20.899Z",
+                "id": "6L20DLwgKEB5r0rn",
+                "name": "Unnamed Project",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                "projectRelations": [
+                    {
+                        "updatedAt": "2025-11-12T01:28:20.899Z",
+                        "createdAt": "2025-11-12T01:28:20.899Z",
+                        "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                        "projectId": "6L20DLwgKEB5r0rn",
+                        "user": {
+                            "updatedAt": "2026-01-14T06:00:01.000Z",
+                            "createdAt": "2025-11-12T01:28:20.421Z",
+                            "id": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                            "email": "service@rensto.com",
+                            "firstName": "Service",
+                            "lastName": "Rensto",
+                            "personalizationAnswers": {
+                                "version": "v4",
+                                "personalization_survey_submitted_at": "2025-11-12T02:46:44.970Z",
+                                "personalization_survey_n8n_version": "1.119.1",
+                                "companyIndustryExtended": [
+                                    "marketing-industry"
+                                ],
+                                "companySize": "<20",
+                                "companyType": "other",
+                                "role": "business-owner",
+                                "reportedSource": "google"
+                            },
+                            "settings": {
+                                "userActivated": true,
+                                "easyAIWorkflowOnboarded": true
+                            },
+                            "disabled": false,
+                            "mfaEnabled": false,
+                            "lastActiveAt": "2026-01-14",
+                            "isPending": false
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "tags": [
+        {
+            "updatedAt": "2025-12-11T06:15:13.005Z",
+            "createdAt": "2025-12-11T06:15:13.005Z",
+            "id": "1z5Gs9ICbXBtJsR4",
+            "name": "production"
+        },
+        {
+            "updatedAt": "2025-12-11T06:15:13.345Z",
+            "createdAt": "2025-12-11T06:15:13.345Z",
+            "id": "EkifGymVbkeEbKtB",
+            "name": "infra"
+        },
+        {
+            "updatedAt": "2026-01-05T20:20:24.231Z",
+            "createdAt": "2026-01-05T20:20:24.231Z",
+            "id": "MmzBl5KXQTKQLlwW",
+            "name": "pillar:voice-ai"
+        },
+        {
+            "updatedAt": "2025-12-11T06:15:12.903Z",
+            "createdAt": "2025-12-11T06:15:12.903Z",
+            "id": "QMVaVmnF4nsM5lbE",
+            "name": "internal"
+        },
+        {
+            "updatedAt": "2026-01-05T20:20:23.935Z",
+            "createdAt": "2026-01-05T20:20:23.935Z",
+            "id": "RttwGHMnbTZwqP1m",
+            "name": "ui:marketplace"
+        }
+    ],
+    "activeVersion": {
+        "updatedAt": "2025-12-16T02:15:39.817Z",
+        "createdAt": "2025-12-16T02:15:39.817Z",
+        "versionId": "153c0967-00fc-4589-b3d6-f73cc4c23269",
+        "workflowId": "5Fl9WUjYTpodcloJ",
+        "nodes": [
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.prompt }}",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "You are a calendar management assistant with access to the user's TidyCal calendar (connected to Apple Calendar).\n\nYour capabilities:\n- View upcoming events and availability\n- Check for conflicts\n- Create new calendar events\n- Update or reschedule existing events\n- Cancel events\n- Find free time slots\n\nTidyCal API Guidelines:\n- GET /bookings - List all bookings\n- GET /bookings/{id} - Get specific booking\n- POST /bookings - Create new booking\n- PATCH /bookings/{id} - Update booking\n- DELETE /bookings/{id} - Cancel booking\n\nImportant Rules:\n1. Always confirm event details before creating/modifying events\n2. Request approval for: creating events, canceling events, major rescheduling\n3. For simple queries (viewing schedule, checking availability), no approval needed\n4. Use clear, natural language in your responses\n5. When checking availability, always specify timezone\n6. Format dates/times in user-friendly format\n\nOutput Requirements:\n- action_taken: What action you performed or plan to perform\n- needs_approval: true if user confirmation required before executing\n- approval_details: What specifically needs approval (commands to run)\n- events_found: Array of relevant events (include id, title, start_time, end_time)\n- message: User-friendly summary\n- success: Whether the operation succeeded"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 2.2,
+                "position": [
+                    -360,
+                    872
+                ],
+                "id": "f188c8db-00b4-4b65-b0c7-e12f26af1c7d",
+                "name": "AI Agent1"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "gpt-4o",
+                        "mode": "list",
+                        "cachedResultName": "gpt-4o"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.2,
+                "position": [
+                    -736,
+                    1096
+                ],
+                "id": "9966879c-f037-406b-9df6-083b631af022",
+                "name": "OpenAI Chat Model1",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "0sXFXYfqiDEKuDcN",
+                        "name": "service@rensto.com"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "sessionIdType": "customKey",
+                    "sessionKey": "={{ $json.chatid }}"
+                },
+                "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+                "typeVersion": 1.3,
+                "position": [
+                    -608,
+                    1096
+                ],
+                "id": "b7a6c7bd-f9ac-4dcb-9c62-8ad3e6ae5b8a",
+                "name": "Simple Memory1"
+            },
+            {
+                "parameters": {
+                    "schemaType": "manual",
+                    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"action_taken\": {\n      \"type\": \"string\",\n      \"description\": \"Description of the action performed or to be performed\"\n    },\n    \"needs_approval\": {\n      \"type\": \"boolean\",\n      \"description\": \"Whether user approval is required before executing the action\"\n    },\n    \"approval_details\": {\n      \"type\": [\"string\", \"null\"],\n      \"description\": \"Specific details about what needs approval (API calls to make, event details). Null if no approval needed.\"\n    },\n    \"events_found\": {\n      \"type\": \"array\",\n      \"description\": \"List of relevant calendar events found\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\",\n            \"description\": \"Event ID\"\n          },\n          \"title\": {\n            \"type\": \"string\",\n            \"description\": \"Event title\"\n          },\n          \"start_time\": {\n            \"type\": \"string\",\n            \"description\": \"Event start time in ISO format\"\n          },\n          \"end_time\": {\n            \"type\": \"string\",\n            \"description\": \"Event end time in ISO format\"\n          },\n          \"duration\": {\n            \"type\": \"number\",\n            \"description\": \"Duration in minutes\"\n          }\n        }\n      }\n    },\n    \"message\": {\n      \"type\": \"string\",\n      \"description\": \"User-friendly message summarizing the result or action\"\n    },\n    \"success\": {\n      \"type\": \"boolean\",\n      \"description\": \"Whether the operation was successful\"\n    }\n  },\n  \"required\": [\"action_taken\", \"needs_approval\", \"message\", \"success\"]\n}"
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    160,
+                    1096
+                ],
+                "id": "18b515a5-5195-462e-9608-1ad837c3e6db",
+                "name": "Structured Output Parser1"
+            },
+            {
+                "parameters": {
+                    "mode": "raw",
+                    "jsonOutput": "{\n  \"assignments\": {\n    \"assignments\": [\n      {\n        \"name\": \"prompt\",\n        \"value\": \"={{ $json.body.text }}\",\n        \"type\": \"string\"\n      },\n      {\n        \"name\": \"chatid\",\n        \"value\": \"={{ $json.body.chatId }}\",\n        \"type\": \"string\"\n      }\n    ]\n  }\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    -960,
+                    872
+                ],
+                "id": "95edc64a-947c-4ec6-afb4-efb7c20fec84",
+                "name": "Edit Fields2"
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "strict",
+                            "version": 2
+                        },
+                        "conditions": [
+                            {
+                                "id": "8cd865f5-9264-468c-9894-f0c0b7886720",
+                                "leftValue": "={{ $json.output.needs_approval }}",
+                                "rightValue": "",
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "true",
+                                    "singleValue": true
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    368,
+                    824
+                ],
+                "id": "0a332d0e-b842-43ad-95f8-63616249e63f",
+                "name": "If"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "d8c7741d-5f4e-400a-b768-4410e6845be0",
+                                "name": "prompt",
+                                "value": "={{ $json.data.approved }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "d114d695-0f2c-4ee8-b85a-beb82830ba12",
+                                "name": "chatted",
+                                "value": "={{ $('Edit Fields2').item.json.chatid }}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    816,
+                    824
+                ],
+                "id": "1acb0408-0952-41e8-86f7-52462c906161",
+                "name": "Edit Fields3"
+            },
+            {
+                "parameters": {
+                    "rules": {
+                        "values": [
+                            {
+                                "conditions": {
+                                    "options": {
+                                        "caseSensitive": true,
+                                        "leftValue": "",
+                                        "typeValidation": "strict",
+                                        "version": 2
+                                    },
+                                    "conditions": [
+                                        {
+                                            "leftValue": "={{ $json.output.success }}",
+                                            "rightValue": "",
+                                            "operator": {
+                                                "type": "boolean",
+                                                "operation": "true",
+                                                "singleValue": true
+                                            },
+                                            "id": "69028229-87b0-48dd-be70-42607ed212e3"
+                                        }
+                                    ],
+                                    "combinator": "and"
+                                }
+                            },
+                            {
+                                "conditions": {
+                                    "options": {
+                                        "caseSensitive": true,
+                                        "leftValue": "",
+                                        "typeValidation": "strict",
+                                        "version": 2
+                                    },
+                                    "conditions": [
+                                        {
+                                            "id": "91061f82-935e-434e-ba2b-4568e97692e8",
+                                            "leftValue": "={{ $json.output.success }}",
+                                            "rightValue": "",
+                                            "operator": {
+                                                "type": "boolean",
+                                                "operation": "false",
+                                                "singleValue": true
+                                            }
+                                        }
+                                    ],
+                                    "combinator": "and"
+                                }
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.switch",
+                "typeVersion": 3.3,
+                "position": [
+                    592,
+                    1016
+                ],
+                "id": "c16c2759-9a3a-4f73-a912-edb535f00fd9",
+                "name": "Switch1"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://your-waha-service.com/api/sendText",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={\n  \"jsonBody\": \"=📅 Calendar Action Requires Approval\\n\\nAction: {{ $json.output.action_taken }}\\n\\nDetails: {{ $json.output.approval_details }}\\n\\nMessage: {{ $json.output.message }}\\n\\n{{ $json.output.events_found && $json.output.events_found.length > 0 ? 'Events Affected:\\n' + $json.output.events_found.map(e => '• ' + e.title + ' (' + e.start_time + ')').join('\\n') + '\\n\\n' : '' }}Reply with:\\n✅ 'approved' to proceed\\n❌ 'denied' to cancel\"\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    592,
+                    800
+                ],
+                "id": "8b6343d1-7b99-4e42-bcbe-f2af4b4cdd02",
+                "name": "Send a text message2",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "V3yoK02N3hOAR93E",
+                        "name": "waha"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://your-waha-service.com/api/sendText",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={\n  \"jsonBody\": \"=✅ Calendar Action Completed\\n\\nAction: {{ $json.output.action_taken }}\\n\\nMessage: {{ $json.output.message }}\\n\\n{{ $json.output.events_found && $json.output.events_found.length > 0 ? 'Events:\\n' + $json.output.events_found.map(e => '• ' + e.title + ' - ' + (new Date(e.start_time)).toLocaleString('en-US', {dateStyle: 'short', timeStyle: 'short'})).join('\\n') : '' }}\"\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    816,
+                    1016
+                ],
+                "id": "f01e18df-8b10-48e1-b43a-2b461d7a44eb",
+                "name": "Send a text message4",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "V3yoK02N3hOAR93E",
+                        "name": "waha"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://your-waha-service.com/api/sendText",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "=❌ Calendar Action Failed\n\nAction: {{ $json.output.action_taken }}\n\nMessage: {{ $json.output.message }}\n\nPlease try again or rephrase your request.",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.2,
+                "position": [
+                    816,
+                    1208
+                ],
+                "id": "8ef6aa36-b1ae-456d-807e-13042310c4ff",
+                "name": "Send a text message5",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "V3yoK02N3hOAR93E",
+                        "name": "waha"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "toolDescription": "TidyCal Calendar - View Events and Availability\n\nUse this tool to retrieve calendar information. Make GET requests to:\n\n1. List all bookings: /bookings\n   - Optional query params: ?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD\n   - Returns array of all calendar events in date range\n\n2. Get specific booking: /bookings/{booking_id}\n   - Replace {booking_id} with the actual event ID\n   - Returns detailed information about one event\n\n3. Check availability: /availability\n   - Optional params: ?date=YYYY-MM-DD&duration=30\n   - Returns free time slots\n\nWhen to use:\n- User asks to see their schedule\n- Check what meetings are upcoming\n- Find specific event details\n- Check for conflicts or availability\n- \"What's on my calendar today/this week?\"\n\nBase URL: https://tidycal.com/api\nAlways include the full path after the base URL.",
+                    "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequestTool",
+                "typeVersion": 4.2,
+                "position": [
+                    -480,
+                    1096
+                ],
+                "id": "d829c6c3-b191-485d-a2bc-2d0ae82e2673",
+                "name": "HTTP Request5",
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "iVmrQRk9XK9YZBBl",
+                        "name": "Tidycal"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "toolDescription": "TidyCal Calendar - Create New Events\n\nUse this tool to create NEW calendar events. Make POST requests to: /bookings\n\nRequired fields in request body (JSON):\n{\n  \"title\": \"Meeting title\",\n  \"start_time\": \"2025-11-01T14:00:00Z\",\n  \"end_time\": \"2025-11-01T15:00:00Z\",\n  \"duration\": 60\n}\n\nOptional fields:\n- \"description\": \"Event description\"\n- \"location\": \"Meeting location or link\"\n- \"attendees\": [\"email@example.com\"]\n\nWhen to use:\n- User asks to create/schedule/add a new meeting or event\n- \"Schedule a meeting with...\"\n- \"Add an event for...\"\n- \"Book time for...\"\n\nIMPORTANT: Always confirm event details with user before creating (needs_approval: true)\n\nDate format: ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)\nDuration: in minutes\n\nBase URL: https://tidycal.com/api/bookings",
+                    "method": "POST",
+                    "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequestTool",
+                "typeVersion": 4.2,
+                "position": [
+                    -352,
+                    1096
+                ],
+                "id": "d58a0676-7667-4556-bf0d-f90554ca7735",
+                "name": "HTTP Request6",
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "iVmrQRk9XK9YZBBl",
+                        "name": "Tidycal"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "toolDescription": "TidyCal Calendar - Update Existing Events\n\nUse this tool to modify/reschedule existing calendar events. Make PATCH requests to: /bookings/{booking_id}\n\nReplace {booking_id} with the actual event ID (get this from a GET request first).\n\nFields you can update in request body (JSON):\n{\n  \"title\": \"Updated title\",\n  \"start_time\": \"2025-11-01T15:00:00Z\",\n  \"end_time\": \"2025-11-01T16:00:00Z\",\n  \"duration\": 60,\n  \"description\": \"Updated description\",\n  \"location\": \"New location\"\n}\n\nOnly include fields you want to change - you don't need to send all fields.\n\nWhen to use:\n- User asks to reschedule/move/change an event\n- \"Move my 2pm meeting to 3pm\"\n- \"Change the title of...\"\n- \"Update the meeting with John\"\n\nProcess:\n1. First GET the event to find its ID\n2. Then PATCH with updated fields\n\nIMPORTANT: Always confirm changes with user before updating (needs_approval: true)\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                    "method": "PATCH",
+                    "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequestTool",
+                "typeVersion": 4.2,
+                "position": [
+                    -224,
+                    1096
+                ],
+                "id": "1de95131-c951-4898-9cf9-dceade2fb822",
+                "name": "HTTP Request7",
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "iVmrQRk9XK9YZBBl",
+                        "name": "Tidycal"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "toolDescription": "TidyCal Calendar - Cancel/Delete Events\n\nUse this tool to cancel or remove calendar events. Make DELETE requests to: /bookings/{booking_id}\n\nReplace {booking_id} with the actual event ID (get this from a GET request first).\n\nNo request body needed - just send DELETE to the endpoint.\n\nWhen to use:\n- User asks to cancel/delete/remove an event\n- \"Cancel my meeting with...\"\n- \"Delete my 3pm appointment\"\n- \"Remove the event on Friday\"\n\nProcess:\n1. First GET the event to confirm which one to delete\n2. Then DELETE using the event ID\n\nIMPORTANT: Always confirm with user before deleting (needs_approval: true)\n\nResponse: 204 No Content on success\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                    "method": "DELETE",
+                    "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequestTool",
+                "typeVersion": 4.2,
+                "position": [
+                    -96,
+                    1096
+                ],
+                "id": "bcd052fb-f6bc-450f-adbe-679c571675e7",
+                "name": "HTTP Request8",
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "iVmrQRk9XK9YZBBl",
+                        "name": "Tidycal"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "toolDescription": "TidyCal Calendar - Replace Entire Event\n\nUse this tool to completely replace an event with new data. Make PUT requests to: /bookings/{booking_id}\n\nPUT replaces the ENTIRE event resource - unlike PATCH which updates specific fields.\n\nRequired: ALL event fields in request body:\n{\n  \"title\": \"New title\",\n  \"start_time\": \"2025-11-01T14:00:00Z\",\n  \"end_time\": \"2025-11-01T15:00:00Z\",\n  \"duration\": 60,\n  \"description\": \"Description\",\n  \"location\": \"Location\"\n}\n\nWhen to use:\n- Rarely needed - PATCH is usually better for updates\n- Only use if you need to completely replace all event data\n\nNote: PATCH is preferred for most update operations.\n\nBase URL: https://tidycal.com/api/bookings/{booking_id}",
+                    "method": "PUT",
+                    "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequestTool",
+                "typeVersion": 4.2,
+                "position": [
+                    32,
+                    1096
+                ],
+                "id": "fae5ca04-f218-4abc-b585-f21cede0bc50",
+                "name": "HTTP Request9",
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "iVmrQRk9XK9YZBBl",
+                        "name": "Tidycal"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "path": "84e1a5f3-2d5a-49e2-a8da-017fb929b50e",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.webhook",
+                "typeVersion": 2.1,
+                "position": [
+                    -1184,
+                    872
+                ],
+                "id": "3c2b6816-117b-458d-a394-81471e45ab58",
+                "name": "Webhook1",
+                "webhookId": "84e1a5f3-2d5a-49e2-a8da-017fb929b50e"
+            }
+        ],
+        "connections": {
+            "AI Agent1": {
+                "main": [
+                    [
+                        {
+                            "node": "If",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model1": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Simple Memory1": {
+                "ai_memory": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_memory",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser1": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Edit Fields2": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "If": {
+                "main": [
+                    [
+                        {
+                            "node": "Send a text message2",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Switch1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Edit Fields3": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Switch1": {
+                "main": [
+                    [
+                        {
+                            "node": "Send a text message4",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Send a text message5",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Send a text message2": {
+                "main": [
+                    [
+                        {
+                            "node": "Edit Fields3",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "HTTP Request5": {
+                "ai_tool": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_tool",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "HTTP Request6": {
+                "ai_tool": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_tool",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "HTTP Request7": {
+                "ai_tool": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_tool",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "HTTP Request8": {
+                "ai_tool": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_tool",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "HTTP Request9": {
+                "ai_tool": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_tool",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Webhook1": {
+                "main": [
+                    [
+                        {
+                            "node": "Edit Fields2",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "system migration",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2025-11-01T03:52:40.000Z",
+                "id": 33,
+                "workflowId": "5Fl9WUjYTpodcloJ",
+                "versionId": "153c0967-00fc-4589-b3d6-f73cc4c23269",
+                "event": "activated",
+                "userId": null
+            },
+            {
+                "createdAt": "2025-12-26T01:19:26.991Z",
+                "id": 753,
+                "workflowId": "5Fl9WUjYTpodcloJ",
+                "versionId": "153c0967-00fc-4589-b3d6-f73cc4c23269",
+                "event": "activated",
+                "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7"
+            },
+            {
+                "createdAt": "2025-12-26T02:56:48.660Z",
+                "id": 757,
+                "workflowId": "5Fl9WUjYTpodcloJ",
+                "versionId": "153c0967-00fc-4589-b3d6-f73cc4c23269",
+                "event": "activated",
+                "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7"
+            }
+        ]
+    }
+}

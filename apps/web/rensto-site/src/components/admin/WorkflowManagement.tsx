@@ -18,6 +18,8 @@ interface Workflow {
   errors?: number;
   tags?: string[];
   errorReason?: string;
+  version?: string;
+  needsUpdate?: boolean;
 }
 
 import { Template } from '@/types/firestore';
@@ -55,7 +57,9 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
             successRate: remoteStatus?.status === 'success' ? 100 : 0, // Simplified for now
             errors: remoteStatus?.status === 'success' ? 0 : 1,
             tags: t.tags || [],
-            errorReason: remoteStatus?.error
+            errorReason: remoteStatus?.error,
+            version: t.tags?.includes('marketplace') ? 'v2.1.0' : 'v1.0.0',
+            needsUpdate: t.tags?.includes('marketplace') && Math.random() > 0.5 // Mock update for marketplace items
           };
         });
         setWorkflows(mappedWorkflows);
@@ -154,8 +158,18 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
                       {tag}
                     </span>
                   ))}
+                  {workflow.version && (
+                    <span className="px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest text-cyan-400">
+                      {workflow.version}
+                    </span>
+                  )}
                 </div>
               </div>
+              {workflow.needsUpdate && (
+                <div className="flex items-center gap-1 text-[8px] font-black text-orange-400 uppercase animate-pulse">
+                  <Zap className="w-2 h-2" /> Update Available
+                </div>
+              )}
             </div>
 
             <div className="flex-1 space-y-6">
@@ -208,6 +222,15 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
                 >
                   <Play className="w-3 h-3 fill-current" />
                   <span>Ignite</span>
+                </button>
+              )}
+              {workflow.needsUpdate && (
+                <button
+                  onClick={() => console.log('Updating workflow...', workflow.id)}
+                  className="flex-1 flex items-center justify-center space-x-2 py-3 px-4 bg-orange-500/10 border border-orange-500/20 rounded-xl text-orange-400 hover:bg-orange-500/20 transition-all text-xs font-black uppercase tracking-widest"
+                >
+                  <Zap className="w-3 h-3" />
+                  <span>Update Engine</span>
                 </button>
               )}
               <button

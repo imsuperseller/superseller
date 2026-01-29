@@ -1,22 +1,46 @@
 // Shared Firebase configuration for server-side usage
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
-// Firebase Admin SDK for server-side operations
-// Note: For client-side, use the config from DashboardContent.tsx
+import { getStorage } from 'firebase-admin/storage';
+import fs from 'fs';
+import path from 'path';
 
 let firebaseApp: App | null = null;
 let firestoreDb: Firestore | null = null;
+
+export function getStorageAdmin() {
+    getFirebaseAdmin();
+    return getStorage();
+}
 
 export function getFirebaseAdmin(): App {
     if (firebaseApp) return firebaseApp;
 
     if (getApps().length === 0) {
         // Check for service account credentials
-        const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+        let serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
         if (serviceAccountKey) {
             try {
-                const serviceAccount = JSON.parse(serviceAccountKey);
+                let serviceAccount: any;
+
+                // If it looks like a path (starts with . or /), try reading the file
+                if (serviceAccountKey.startsWith('./') || serviceAccountKey.startsWith('../') || serviceAccountKey.startsWith('/')) {
+                    const absolutePath = path.isAbsolute(serviceAccountKey)
+                        ? serviceAccountKey
+                        : path.join(process.cwd(), serviceAccountKey);
+
+                    if (fs.existsSync(absolutePath)) {
+                        const fileContent = fs.readFileSync(absolutePath, 'utf8');
+                        serviceAccount = JSON.parse(fileContent);
+                    } else {
+                        console.error(`Firebase service account file not found at: ${absolutePath}`);
+                        serviceAccount = JSON.parse(serviceAccountKey); // Fallback to parse it as JSON
+                    }
+                } else {
+                    serviceAccount = JSON.parse(serviceAccountKey);
+                }
+
                 if (serviceAccount.private_key) {
                     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
                 }
@@ -92,7 +116,9 @@ export const COLLECTIONS = {
     LAUNCH_TASKS: 'launch_tasks',
     OUTREACH_CAMPAIGNS: 'outreach_campaigns',
     VOICE_CALL_LOGS: 'voice_call_logs',
-    CONTENT_ITEMS: 'content_posts'
+    CONTENT_ITEMS: 'content_posts',
+    SECRETARY_CONFIGS: 'secretary_configs',
+    MARKETPLACE_TEMPLATES: 'templates' // Alias for clarity in video workflow
 } as const;
 
 // Export interfaces from definitions file

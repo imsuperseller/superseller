@@ -6,53 +6,59 @@ import CustomerManagement from './CustomerManagement';
 import WorkflowManagement from './WorkflowManagement';
 import WorkflowTemplatesManagement from './WorkflowTemplatesManagement';
 import SystemMonitoring from './SystemMonitoring';
-import QuickBooksDashboard from './QuickBooksDashboard';
+// import QuickBooksDashboard from './QuickBooksDashboard';
+import N8nMaintenanceControl from './N8nMaintenanceControl';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('ai-agents');
+  const [activeTab, setActiveTab] = useState('n8n-control'); // Default to our new control center for now
 
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Rensto Admin Dashboard</h1>
-        <p className="text-muted-foreground">
-          Comprehensive management system for AI agents, customers, workflows, and system monitoring
+        <h1 className="text-4xl font-bold tracking-tight uppercase font-black italic italic">Rensto Admin Dashboard</h1>
+        <p className="text-muted-foreground font-medium">
+          Unified command systems for autonomous agents and infrastructure.
         </p>
       </div>
-      
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="ai-agents">AI Agents</TabsTrigger>
-          <TabsTrigger value="customers">Customers</TabsTrigger>
-          <TabsTrigger value="workflows">Workflows</TabsTrigger>
-          <TabsTrigger value="workflow-templates">Templates</TabsTrigger>
-          <TabsTrigger value="system">System</TabsTrigger>
-          <TabsTrigger value="quickbooks">QuickBooks</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-6 h-12 bg-white/5 border border-white/5 p-1 rounded-2xl">
+          <TabsTrigger value="ai-agents" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">AI Agents</TabsTrigger>
+          <TabsTrigger value="customers" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Customers</TabsTrigger>
+          <TabsTrigger value="workflows" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Workflows</TabsTrigger>
+          <TabsTrigger value="templates" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Templates</TabsTrigger>
+          <TabsTrigger value="n8n-control" className="rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">N8N Mission</TabsTrigger>
+          <TabsTrigger value="system" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">System</TabsTrigger>
+          {/* <TabsTrigger value="quickbooks" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">QuickBooks</TabsTrigger> */}
         </TabsList>
-        
+
         <TabsContent value="ai-agents" className="space-y-6">
           <AIAgentManagement />
         </TabsContent>
-        
+
         <TabsContent value="customers" className="space-y-6">
           <CustomerManagement />
         </TabsContent>
-        
+
         <TabsContent value="workflows" className="space-y-6">
           <WorkflowManagement />
         </TabsContent>
 
-        <TabsContent value="workflow-templates" className="space-y-6">
+        <TabsContent value="templates" className="space-y-6">
           <WorkflowTemplatesManagement />
+        </TabsContent>
+
+        <TabsContent value="n8n-control" className="space-y-6">
+          <N8nMaintenanceControl />
         </TabsContent>
 
         <TabsContent value="system" className="space-y-6">
           <SystemMonitoring />
         </TabsContent>
-        
-        <TabsContent value="quickbooks" className="space-y-6">
+
+        {/* <TabsContent value="quickbooks" className="space-y-6">
           <QuickBooksDashboard />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   );

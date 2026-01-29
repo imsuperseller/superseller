@@ -58,10 +58,9 @@ export function Footer() {
   const navigation = {
     main: [
       { name: links.home, href: '/' },
-      { name: links.marketplace, href: '/marketplace' },
-      { name: links.custom, href: '/custom' },
-      { name: links.offers, href: '/offers' },
-      { name: links.niches, href: '/niches' },
+      { name: 'The Personnel', href: '/#team' },
+      { name: 'Tactical Applets', href: '/#applets' },
+      { name: 'Strategic Hub', href: '/niches' },
     ],
     business: [
       { name: 'Client Login', href: '/login', icon: Workflow },

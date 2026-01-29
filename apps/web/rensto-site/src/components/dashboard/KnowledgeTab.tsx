@@ -154,17 +154,17 @@ export default function KnowledgeTab({
                     </div>
                     <Lock className="w-16 h-16 mx-auto mb-4 text-gray-500" />
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        {SERVICE_DISPLAY_NAMES.knowledge}
+                        {SERVICE_DISPLAY_NAMES['knowledge-engine']}
                     </h2>
                     <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                        {SERVICE_DESCRIPTIONS.knowledge}
+                        {SERVICE_DESCRIPTIONS['knowledge-engine']}
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 mb-6">
                         {[
-                            'PDF Intelligence',
-                            'URL Indexing',
-                            'LightRAG Graph',
-                            'Instant Queries'
+                            'Neural PDF Intelligence',
+                            'URL Ecosystem Indexing',
+                            'CSV Lead Ingestion',
+                            'Live Knowledge Graph'
                         ].map(feature => (
                             <div key={feature} className="flex items-center gap-2 text-sm text-gray-400">
                                 <CheckCircle2 className="w-4 h-4 text-blue-500" />
@@ -215,8 +215,8 @@ export default function KnowledgeTab({
             >
                 <div className="flex gap-2">
                     {[
-                        { id: 'documents', label: 'Manage Documents', icon: FileText },
-                        { id: 'query', label: 'Test Query', icon: Search },
+                        { id: 'documents', label: 'Vault Inventory', icon: FileText },
+                        { id: 'query', label: 'Neural Search', icon: Search },
                     ].map(view => (
                         <button
                             key={view.id}
@@ -243,7 +243,7 @@ export default function KnowledgeTab({
                         type="file"
                         ref={fileInputRef}
                         className="hidden"
-                        accept=".pdf,.txt,.doc,.docx"
+                        accept=".pdf,.txt,.doc,.docx,.csv"
                         onChange={handleFileUpload}
                     />
                     <Button
@@ -253,7 +253,7 @@ export default function KnowledgeTab({
                         disabled={isUploading}
                     >
                         <Upload className={`w-4 h-4 mr-1 ${isUploading ? 'animate-bounce' : ''}`} />
-                        {isUploading ? 'Uploading...' : 'Upload PDF'}
+                        {isUploading ? 'Securing...' : 'Drop to Vault'}
                     </Button>
                 </div>
             </div>

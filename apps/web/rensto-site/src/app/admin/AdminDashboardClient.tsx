@@ -23,16 +23,29 @@ import {
     ChevronDown,
     Zap,
     LayoutDashboard,
-    Rocket
+    Rocket,
+    Globe,
+    ChevronRight,
+    Star,
+    MoreVertical,
+    CheckCircle2,
+    Activity
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
 import NewProductWizard from '@/components/admin/NewProductWizard';
 import SupportQueue from '@/components/admin/SupportQueue';
+import ClientCRM from '@/components/admin/ClientIntelligence';
 import ClientManagement from '@/components/admin/ClientManagement';
 import LaunchControlCenter from '@/components/admin/LaunchControlCenter';
 import ProjectManagement from '@/components/admin/ProjectManagement';
-import { Skeleton } from '@/components/ui/skeleton';
+import VaultManagement from '@/components/admin/VaultManagement';
+import TreasuryManagement from '@/components/admin/TreasuryManagement';
+import TerryAssistant from '@/components/admin/TerryAssistant';
+import EcosystemMap from '@/components/admin/EcosystemMap';
+import { Skeleton } from '@/components/ui/skeleton-enhanced';
+import { Button } from '@/components/ui/button-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
 import { Template } from '@/types/firestore';
 import { SupportCase } from '@/types/support';
 import { NoiseTexture } from '@/components/ui/premium/NoiseTexture';
@@ -87,12 +100,60 @@ export default function AdminDashboardClient({
 
     const [supportCases, setSupportCases] = useState<SupportCase[]>([]);
     const [fetchingSupport, setFetchingSupport] = useState(false);
+    const [liveStats, setLiveStats] = useState<DashboardStats | null>(null);
+    const [recommendations, setRecommendations] = useState<any[]>([]);
 
     useEffect(() => {
         if (activeTab === 'support') {
             fetchSupportCases();
         }
+        fetchDashboardData();
     }, [activeTab]);
+
+    const fetchDashboardData = async () => {
+        try {
+            // 1. Fetch Financials for Stats
+            const finRes = await fetch('/api/admin/financials');
+            const finData = await finRes.json();
+
+            // 2. Fetch Clients for Stats
+            const clientRes = await fetch('/api/admin/clients');
+            const clientData = await clientRes.json();
+
+            // 3. Fetch Intelligence Feed
+            const intelRes = await fetch('/api/admin/intelligence');
+            const intelData = await intelRes.json();
+
+            if (finData.success && clientData.clients) {
+                const revenueMetric = finData.metrics.find((m: any) => m.label.includes('Gross'));
+
+                setLiveStats({
+                    revenue: {
+                        current: revenueMetric?.value || 0,
+                        previous: revenueMetric?.value * 0.9 || 0,
+                        change: revenueMetric?.change || '0%'
+                    },
+                    projects: {
+                        active: clientData.clients.filter((c: any) => c.status === 'active').length,
+                        completed: 12, // Mocked 
+                        pending: clientData.clients.filter((c: any) => c.status === 'onboarding').length
+                    },
+                    clients: {
+                        total: clientData.clients.length,
+                        new: clientData.clients.filter((c: any) => c.status === 'lead').length,
+                        active: clientData.clients.filter((c: any) => c.status === 'active').length
+                    },
+                    invoices: { pending: 3, overdue: 1, total: 4 }
+                });
+            }
+
+            if (intelData.success) {
+                setRecommendations(intelData.recommendations);
+            }
+        } catch (error) {
+            console.error('Failed to sync dashboard intelligence', error);
+        }
+    };
 
     const fetchSupportCases = async () => {
         try {
@@ -255,9 +316,13 @@ export default function AdminDashboardClient({
                         <ul className="space-y-1">
                             {[
                                 { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-                                { id: 'clients', label: 'Clients', icon: Users },
+                                { id: 'ecosystem', label: 'Ecosystem Map', icon: Activity },
+                                { id: 'crm', label: 'Client CRM', icon: Users },
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
+                                { id: 'landing', label: 'Landing Content', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
+                                { id: 'vault', label: 'Vault & Infra', icon: ShieldCheck },
+                                { id: 'treasury', label: 'Treasury', icon: DollarSign },
                                 { id: 'analytics', label: 'Analytics', icon: BarChart3 },
                                 { id: 'workflows', label: 'Workflows', icon: Settings },
                                 { id: 'agents', label: 'AI Agents', icon: Bot },
@@ -298,36 +363,43 @@ export default function AdminDashboardClient({
                                 </div>
 
                                 {/* Stats Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    {[
-                                        { label: 'Monthly Revenue', value: `$${stats.revenue.current.toLocaleString()}`, change: stats.revenue.change, icon: DollarSign, color: 'text-green-400', bg: 'bg-green-500/10' },
-                                        { label: 'Active Projects', value: stats.projects.active, sub: `${stats.projects.completed} completed`, icon: FolderOpen, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-                                        { label: 'Total Clients', value: stats.clients.total, sub: `${stats.clients.new} new this month`, icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-                                        { label: 'Pending Invoices', value: stats.invoices.pending, sub: `${stats.invoices.overdue} overdue`, icon: Clock, color: 'text-red-400', bg: 'bg-[#fe3d51]/10' },
-                                    ].map((stat, i) => (
-                                        <div key={i} className="group relative p-8 rounded-[2rem] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent blur-3xl rounded-full" />
-                                            <div className="relative z-10 space-y-4">
-                                                <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center mb-6`}>
-                                                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                                {(() => {
+                                    const displayStats = liveStats || stats;
+                                    const statsList = [
+                                        { label: 'Monthly Revenue', value: `$${displayStats.revenue.current.toLocaleString()}`, change: displayStats.revenue.change, icon: DollarSign, color: 'text-green-400', bg: 'bg-green-500/10' },
+                                        { label: 'Active Projects', value: displayStats.projects.active, sub: `${displayStats.projects.completed} completed`, icon: FolderOpen, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+                                        { label: 'Total Clients', value: displayStats.clients.total, sub: `${displayStats.clients.new} new this month`, icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+                                        { label: 'Pending Invoices', value: displayStats.invoices.pending, sub: `${displayStats.invoices.overdue} overdue`, icon: Clock, color: 'text-red-400', bg: 'bg-[#fe3d51]/10' },
+                                    ];
+
+                                    return (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                            {statsList.map((stat, i) => (
+                                                <div key={i} className="group relative p-8 rounded-[2rem] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden">
+                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent blur-3xl rounded-full" />
+                                                    <div className="relative z-10 space-y-4">
+                                                        <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center mb-6`}>
+                                                            <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">{stat.label}</p>
+                                                            <h3 className="text-3xl font-black text-white tracking-tighter">{stat.value}</h3>
+                                                        </div>
+                                                        {stat.change && (
+                                                            <p className="text-xs text-green-400 font-bold flex items-center">
+                                                                <TrendingUp className="w-3 h-3 mr-1" />
+                                                                {stat.change}
+                                                            </p>
+                                                        )}
+                                                        {stat.sub && (
+                                                            <p className="text-xs text-slate-500 font-medium">{stat.sub}</p>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">{stat.label}</p>
-                                                    <h3 className="text-3xl font-black text-white tracking-tighter">{stat.value}</h3>
-                                                </div>
-                                                {stat.change && (
-                                                    <p className="text-xs text-green-400 font-bold flex items-center">
-                                                        <TrendingUp className="w-3 h-3 mr-1" />
-                                                        {stat.change}
-                                                    </p>
-                                                )}
-                                                {stat.sub && (
-                                                    <p className="text-xs text-slate-500 font-medium">{stat.sub}</p>
-                                                )}
-                                            </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
+                                    );
+                                })()}
 
                                 {/* Quick Actions */}
                                 <div className="space-y-6">
@@ -364,7 +436,27 @@ export default function AdminDashboardClient({
                                         </div>
                                         <div className="rounded-[2.5rem] border border-white/5 bg-white/[0.01] overflow-hidden">
                                             <div className="divide-y divide-white/5">
-                                                {recentActivity.map(activity => (
+                                                {recommendations.length > 0 ? recommendations.map(rec => (
+                                                    <div
+                                                        key={rec.id}
+                                                        className="flex items-center space-x-4 p-6 hover:bg-white/[0.02] transition-colors group"
+                                                    >
+                                                        <div
+                                                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${rec.priority === 'high' ? 'bg-red-500/10' : 'bg-cyan-500/10'}`}
+                                                        >
+                                                            {rec.type === 'optimization' ? <Zap className={`w-6 h-6 ${rec.priority === 'high' ? 'text-red-500' : 'text-cyan-400'}`} /> : <Bot className="w-6 h-6 text-purple-400" />}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="text-sm font-black uppercase tracking-tight text-white/90">
+                                                                {rec.title}
+                                                            </p>
+                                                            <p className="text-xs text-slate-500 mt-1 font-medium">{rec.message}</p>
+                                                        </div>
+                                                        <Button size="sm" variant="ghost" className="opacity-0 group-hover:opacity-100 rounded-xl border border-white/10 text-[9px] font-black uppercase tracking-widest px-4">
+                                                            {rec.action}
+                                                        </Button>
+                                                    </div>
+                                                )) : recentActivity.slice(0, 3).map(activity => (
                                                     <div
                                                         key={activity.id}
                                                         className="flex items-center space-x-4 p-5 hover:bg-white/[0.02] transition-colors group"
@@ -387,13 +479,8 @@ export default function AdminDashboardClient({
                                                             </p>
                                                             <div className="flex items-center space-x-3 mt-1">
                                                                 <span className="text-[10px] text-slate-500 font-medium">{activity.time}</span>
-                                                                <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-                                                                <span className="text-[10px] text-slate-600 font-mono uppercase tracking-widest">{activity.type}</span>
                                                             </div>
                                                         </div>
-                                                        <button className="opacity-0 group-hover:opacity-100 p-2 text-slate-600 hover:text-white transition-all">
-                                                            <ChevronDown className="w-4 h-4 rotate-270" />
-                                                        </button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -437,7 +524,29 @@ export default function AdminDashboardClient({
                                 </div>
                             </div>
                         )}
-                        {activeTab === 'clients' && (
+                        {activeTab === 'ecosystem' && (
+                            <div className="space-y-8">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div>
+                                        <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+                                            Ecosystem Intelligence
+                                        </h2>
+                                        <p className="text-slate-400 font-medium">Real-time hierarchy of Rensto autonomous agents and product pillars.</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="px-5 py-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                            Active Cluster
+                                        </div>
+                                    </div>
+                                </div>
+                                <EcosystemMap />
+                            </div>
+                        )}
+                        {activeTab === 'crm' && (
+                            <ClientCRM />
+                        )}
+                        {activeTab === 'landing' && (
                             <ClientManagement />
                         )}
                         {activeTab === 'projects' && (
@@ -497,9 +606,22 @@ export default function AdminDashboardClient({
                         {activeTab === 'launch' && (
                             <LaunchControlCenter />
                         )}
+                        {activeTab === 'vault' && (
+                            <VaultManagement />
+                        )}
+                        {activeTab === 'treasury' && (
+                            <TreasuryManagement />
+                        )}
                     </div>
                 </main>
             </div>
+
+            {/* Terry Assistant Global */}
+            <TerryAssistant
+                userId={session.user.email}
+                userName={session.user.name}
+                currentTab={activeTab}
+            />
         </div>
     );
 }
