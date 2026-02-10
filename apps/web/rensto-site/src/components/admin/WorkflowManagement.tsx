@@ -25,16 +25,16 @@ interface Workflow {
 import { Template } from '@/types/firestore';
 
 interface WorkflowManagementProps {
-  templates?: Template[];
+  products?: any[];
 }
 
-export default function WorkflowManagement({ templates = [] }: WorkflowManagementProps) {
+export default function WorkflowManagement({ products = [] }: WorkflowManagementProps) {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loadingStatus, setLoadingStatus] = useState(false);
 
   useEffect(() => {
     fetchRealStatus();
-  }, [templates]);
+  }, [products]);
 
   const fetchRealStatus = async () => {
     try {
@@ -44,22 +44,28 @@ export default function WorkflowManagement({ templates = [] }: WorkflowManagemen
 
       if (data.success) {
         const statusMap = data.workflowStatusMap;
-        const mappedWorkflows: Workflow[] = templates.map(t => {
-          const remoteStatus = statusMap[t.id || ''] || statusMap[t.n8nWorkflowId || ''];
+        const mappedWorkflows: Workflow[] = products.map(p => {
+          // Map AITable fields
+          const id = p.id || p['Product ID'];
+          const n8nId = p['n8n Webhook'] || p.n8nWorkflowId;
+          const name = p['Product Name'] || p.name || 'Unnamed Workflow';
+          const category = p['Category'] || 'General';
+
+          const remoteStatus = statusMap[id] || (n8nId ? statusMap[n8nId] : undefined);
 
           return {
-            id: t.id || 'unknown',
-            name: t.name,
+            id: id,
+            name: name,
             status: remoteStatus ? (remoteStatus.status === 'success' ? 'success' : 'failed') : 'stopped',
             lastExecution: remoteStatus?.startedAt,
             lastExecutionId: remoteStatus?.lastExecutionId,
             executionTime: remoteStatus?.stoppedAt ? (new Date(remoteStatus.stoppedAt).getTime() - new Date(remoteStatus.startedAt).getTime()) : 0,
-            successRate: remoteStatus?.status === 'success' ? 100 : 0, // Simplified for now
+            successRate: remoteStatus?.status === 'success' ? 100 : 0,
             errors: remoteStatus?.status === 'success' ? 0 : 1,
-            tags: t.tags || [],
+            tags: [category, p['Flow Type'] || 'standard'],
             errorReason: remoteStatus?.error,
-            version: t.tags?.includes('marketplace') ? 'v2.1.0' : 'v1.0.0',
-            needsUpdate: t.tags?.includes('marketplace') && Math.random() > 0.5 // Mock update for marketplace items
+            version: 'v2.1.0', // Standardized for AITable products
+            needsUpdate: false // Logic can be re-added if specific field exists
           };
         });
         setWorkflows(mappedWorkflows);

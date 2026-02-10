@@ -341,30 +341,32 @@ async function getKnowledgeData(clientId: string) {
     }
 }
 
+import { AITableService } from '@/lib/services/AITableService';
+
 async function getPurchasedProducts(clientId: string, productIds: string[] = []) {
     if (!productIds.length) return [];
 
-    // In a real app, query PURCHASES collection. 
-    // For now, resolving product ID to metadata using TEMPLATES collection or hardcoded lookup
-    // mocking the "instance" data (purchase date, etc)
-    const db = getFirestoreAdmin();
-    const products = [];
+    try {
+        const allProducts = await AITableService.getProducts();
 
-    for (const pid of productIds) {
-        const doc = await db.collection(COLLECTIONS.TEMPLATES).doc(pid).get();
-        if (doc.exists) {
-            const data = doc.data();
-            products.push({
+        return productIds.map(pid => {
+            // Match against Product ID or Record ID
+            const product = allProducts.find((p: any) => (p['Product ID'] === pid) || (p.id === pid));
+            if (!product) return null;
+
+            return {
                 id: `inst_${pid}`,
                 productId: pid,
-                name: data?.name || 'Unknown Product',
-                purchaseDate: new Date().toISOString().split('T')[0], // Fallback
-                status: 'active',
+                name: product['Product Name'] || product.name || 'Unknown Product',
+                status: 'active', // In real app, check 'purchases' collection
+                purchaseDate: new Date().toISOString().split('T')[0],
                 lastUsed: 'Recently'
-            });
-        }
+            };
+        }).filter((p): p is { id: string; productId: string; name: string; status: string; purchaseDate: string; lastUsed: string; } => p !== null);
+    } catch (e) {
+        console.error('[Dashboard] Error fetching product metadata:', e);
+        return [];
     }
-    return products;
 }
 
 export default async function ClientDashboardPage({ params, searchParams }: { params: Promise<{ clientId: string }>, searchParams: Promise<{ token?: string }> }) {

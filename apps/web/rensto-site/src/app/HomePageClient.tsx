@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button-enhanced';
 import {
     Mic,
     Users,
-    Package,
+    Package as PackageIcon,
     ArrowRight,
     CheckCircle,
     Check,
@@ -30,21 +30,29 @@ import {
     Bot,
     Workflow,
     Zap,
-    Target,
+    Target as TargetIcon,
     Shield,
     Clock,
-    Sparkles
+    Sparkles,
+    Phone as PhoneIcon,
+    HelpCircle as HelpCircleIcon,
+    Search,
+    Settings,
+    ShieldCheck,
+    Activity as ActivityIcon,
+    Cpu as CpuIcon,
+    LayoutGrid as LayoutGridIcon,
+    Crosshair as CrosshairIcon
 } from 'lucide-react';
 import { Schema } from '@/components/seo/Schema';
 import { LeadMagnetSection } from '@/components/LeadMagnetSection';
-import { HelpCircle, Search, Settings, ShieldCheck } from 'lucide-react';
 import { NoiseTexture, PillarsVisualization } from '@/components/ui/premium';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
 import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
 import { ComparisonTable } from '@/components/marketing/ComparisonTable';
+import { PricingTokens } from '@/components/marketing/PricingTokens';
 import { Client, Testimonial } from '@/types/firestore';
 import * as framer from 'framer-motion';
 const { motion } = framer;
@@ -57,9 +65,28 @@ import { Terminal as TerminalIcon } from 'lucide-react';
 interface HomePageProps {
     initialLogos?: Client[];
     initialTestimonials?: Testimonial[];
+    initialProducts?: any[];
+    initialStats?: Array<{ value: string; label: string; icon: string }>;
 }
 
-export default function HomePage({ initialLogos, initialTestimonials }: HomePageProps) {
+const ICON_MAP: Record<string, React.ElementType> = {
+    Crosshair: CrosshairIcon,
+    Zap,
+    Shield,
+    Users,
+    Phone: PhoneIcon,
+    HelpCircle: HelpCircleIcon,
+    LayoutGrid: LayoutGridIcon,
+    Workflow,
+    Activity: ActivityIcon,
+    Cpu: CpuIcon,
+    Package: PackageIcon,
+    Target: TargetIcon,
+    Clock: Clock,
+    CheckCircle: CheckCircle
+};
+
+export default function HomePage({ initialLogos, initialTestimonials, initialProducts = [], initialStats }: HomePageProps) {
     const [selectedService, setSelectedService] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
 
@@ -107,15 +134,35 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
         }
     };
 
+    // Map AITable products to Registry format
+    const dynamicRegistry: Record<string, any> = {};
+    initialProducts.forEach(p => {
+        const id = p['Product ID'] || p.id;
+        dynamicRegistry[id] = {
+            id,
+            name: p['Product Name'] || p.name,
+            headline: p['Headline'] || p.headline || '',
+            price: parseInt(p['Price'] || p.price) || 0,
+            status: p['Status'] || p.status || 'active',
+            stripePriceId: p['Stripe ID'] || p.stripePriceId,
+            n8nWorkflowId: p['n8n Webhook'] || p.n8nWorkflowId,
+            flowType: p['Flow Type'] || p.flowType || 'managed-engine',
+            usageCredits: p['Usage Credits'] || p.usageCredits,
+            icon: ICON_MAP[p['Icon'] || p.icon] || Zap
+        };
+    });
+
+    const activeRegistry = dynamicRegistry;
+
     // Unified Products from Registry
     const theTeam = [
-        PRODUCT_REGISTRY['lead-machine'],
-        PRODUCT_REGISTRY['autonomous-secretary'],
-        PRODUCT_REGISTRY['knowledge-engine'],
-        PRODUCT_REGISTRY['content-engine']
-    ].filter(p => p.status !== 'hidden');
+        activeRegistry['lead-machine'],
+        activeRegistry['autonomous-secretary'],
+        activeRegistry['knowledge-engine'],
+        activeRegistry['content-engine']
+    ].filter(p => p && p.status !== 'hidden');
 
-    const applets = Object.values(PRODUCT_REGISTRY).filter(p => p.flowType === 'applet' && p.status !== 'hidden');
+    const applets = Object.values(activeRegistry).filter((p: any) => p.flowType === 'applet' && p.status !== 'hidden');
 
     const carePlans = [
         {
@@ -166,12 +213,17 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
     }
 
     // Social proof stats - System Capabilities (Truthful & Impressive)
-    const stats = [
-        { value: 'Zero', label: 'Sick Days Taken', icon: Shield },
-        { value: '24/7', label: 'Operational Uptime', icon: Clock },
-        { value: '100%', label: 'Process Adherence', icon: CheckCircle },
-        { value: '∞', label: 'Scalability', icon: Zap }
-    ];
+    const stats = initialStats
+        ? initialStats.map(s => ({
+            ...s,
+            icon: ICON_MAP[s.icon] || Shield
+        }))
+        : [
+            { value: 'Zero', label: 'Sick Days Taken', icon: Shield },
+            { value: '24/7', label: 'Operational Uptime', icon: Clock },
+            { value: '100%', label: 'Process Adherence', icon: CheckCircle },
+            { value: '∞', label: 'Scalability', icon: Zap }
+        ];
 
     // Testimonials with real clients - merge database results if available
     const testimonials = initialTestimonials && initialTestimonials.length > 0
@@ -401,6 +453,64 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                 </Link>
                             </div>
 
+                            {/* Dashboard Mockup - Premium addition */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 40 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5, duration: 0.8 }}
+                                className="mt-16 relative mx-auto max-w-4xl hidden md:block"
+                            >
+                                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-20 animate-pulse"></div>
+                                <div className="relative rounded-xl bg-[#0d0d0d]/90 border border-white/10 backdrop-blur-xl overflow-hidden shadow-2xl">
+                                    {/* Mockup Header */}
+                                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5">
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex gap-1.5">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                                                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+                                                <div className="w-2.5 h-2.5 rounded-full bg-green-500/80"></div>
+                                            </div>
+                                            <span className="ml-3 text-[10px] font-mono text-slate-400">rensto_command_center.exe</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                                <span className="text-[9px] font-bold text-green-400 uppercase tracking-wider">System Online</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Mockup Body */}
+                                    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {/* Stat Cards */}
+                                        <div className="space-y-4">
+                                            <div className="p-4 rounded-lg bg-white/5 border border-white/5">
+                                                <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Total Leads</div>
+                                                <div className="text-2xl font-mono text-white">1,248</div>
+                                                <div className="text-[10px] text-green-400 flex items-center gap-1">
+                                                    <TrendingUp className="w-3 h-3" /> +12% this week
+                                                </div>
+                                            </div>
+                                            <div className="p-4 rounded-lg bg-white/5 border border-white/5">
+                                                <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Active Agents</div>
+                                                <div className="text-2xl font-mono text-white">4</div>
+                                                <div className="text-[10px] text-cyan-400">All systems nominal</div>
+                                            </div>
+                                        </div>
+                                        {/* Console/Activity Feed */}
+                                        <div className="md:col-span-2 p-4 rounded-lg bg-black/40 border border-white/5 font-mono text-xs overflow-hidden h-[140px] relative">
+                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none z-10"></div>
+                                            <div className="space-y-2">
+                                                <div className="flex gap-2 text-slate-400"><span className="text-cyan-500">[14:20:01]</span> <span className="text-yellow-400">WARN</span> Lead #8294 sentiment analysis ambiguous</div>
+                                                <div className="flex gap-2 text-slate-400"><span className="text-cyan-500">[14:20:05]</span> <span className="text-green-400">INFO</span> Successfully booked meeting for Lead #8291</div>
+                                                <div className="flex gap-2 text-slate-400"><span className="text-cyan-500">[14:20:12]</span> <span className="text-blue-400">EXEC</span> Launching "Reactivation" Campaign</div>
+                                                <div className="flex gap-2 text-slate-400"><span className="text-cyan-500">[14:20:15]</span> <span className="text-green-400">SUCCESS</span> 42 emails dispatched via SendGrid</div>
+                                                <div className="flex gap-2 text-slate-400"><span className="text-cyan-500">[14:20:22]</span> <span className="text-blue-400">EXEC</span> AITable Synchronization...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+
                             {/* Trust Indicators */}
                             <div
                                 className="mt-12 pt-8 border-t"
@@ -622,8 +732,19 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                             {theTeam.map((agent) => (
                                 <Link key={agent.id} href={`/products/${agent.id}`} className="group relative block p-px rounded-[2.5rem] bg-gradient-to-b from-white/10 to-transparent hover:from-cyan-500/40 transition-all duration-500 overflow-hidden">
                                     <div className="relative z-10 bg-[#0d0d0d] p-10 rounded-[2.4rem] h-full flex flex-col space-y-8">
-                                        <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all">
-                                            {agent.icon && <agent.icon className="w-8 h-8" />}
+                                        <div className="flex justify-between items-start">
+                                            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                                                {agent.icon && <agent.icon className="w-8 h-8" />}
+                                            </div>
+                                            {agent.status === 'active' && (
+                                                <div className="bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-full flex items-center gap-2">
+                                                    <span className="relative flex h-2 w-2">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest leading-none">Live</span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="space-y-4">
                                             <h3 className="text-3xl font-black text-white uppercase tracking-tighter italic">{agent.name}</h3>
@@ -637,7 +758,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                         </div>
                                     </div>
                                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
-                                        <Package className="w-32 h-32" />
+                                        <PackageIcon className="w-32 h-32" />
                                     </div>
                                 </Link>
                             ))}
@@ -675,6 +796,17 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                                 <span className="text-[8px] font-black px-2 py-0.5 bg-cyan-500/10 text-cyan-400 rounded-md uppercase tracking-widest border border-cyan-500/20">
                                                     {applet.usageCredits} Runs
                                                 </span>
+                                            )}
+
+                                            {/* Live System Badge */}
+                                            {applet.status === 'active' && (
+                                                <div className="ml-auto bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+                                                    <span className="relative flex h-1.5 w-1.5">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                                                    </span>
+                                                    <span className="text-[8px] font-bold text-green-400 uppercase tracking-widest leading-none">Live</span>
+                                                </div>
                                             )}
                                         </div>
                                         <p className="text-xs text-slate-500 font-medium leading-relaxed italic line-clamp-2">
@@ -729,12 +861,12 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                         style={{
                                             background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
                                             WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
                                             backgroundClip: 'text'
                                         }}
                                     >
                                         {stat.value}
                                     </div>
+
                                     <div className="text-sm font-bold uppercase tracking-widest text-cyan-500/80 relative z-10">
                                         {stat.label}
                                     </div>
@@ -830,7 +962,7 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                                         For businesses doing $1M+ ARR. We architect the entire infrastructure, connect all agents, and provide a dedicated automation partner.
                                     </p>
                                     <div className="py-8 border-y border-white/5">
-                                        <span className="text-6xl font-black text-white">${PRODUCT_REGISTRY['full-ecosystem'].price}</span>
+                                        <span className="text-6xl font-black text-white">${activeRegistry['full-ecosystem']?.price || 5497}</span>
                                         <span className="ml-4 text-slate-500 font-black uppercase text-xs tracking-[0.2em]">Full Deployment</span>
                                     </div>
                                     <Link href={`/products/full-ecosystem`} className="block">
@@ -1028,69 +1160,8 @@ export default function HomePage({ initialLogos, initialTestimonials }: HomePage
                 {/* Lead Magnet Section */}
                 <LeadMagnetSection />
 
-                {/* Care Plans Section */}
-                <section id="pricing" className="py-24 px-4 border-t border-white/5 bg-[#0f0c29]">
-                    <div className="container mx-auto">
-                        <div className="text-center mb-16 space-y-6">
-                            <div className="inline-flex items-center gap-3 text-cyan-400 font-black text-[11px] uppercase tracking-[0.3em]">
-                                <Workflow className="w-4 h-4" />
-                                Growth & Maintenance
-                            </div>
-                            <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
-                                Ongoing <span className="text-cyan-400">Scale Plans</span>
-                            </h2>
-                            <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">
-                                Dedicated engineering bandwidth to maintain and evolve your automation engine.
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                            {carePlans.map((plan, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: index * 0.1 }}
-                                    className="h-full"
-                                >
-                                    <div className={`p-8 rounded-[2.5rem] border h-full group transition-all duration-500 flex flex-col ${plan.popular ? 'bg-cyan-500/5 border-cyan-500/30 hover:bg-cyan-500/10' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.05]'}`}>
-                                        <div className="mb-10">
-                                            <h3 className="text-3xl font-black text-white uppercase italic tracking-tight mb-2">{plan.name}</h3>
-                                            <p className="text-slate-500 font-black uppercase text-[10px] tracking-widest mb-8">{plan.description}</p>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-5xl font-black text-white">{formatCurrency(plan.price)}</span>
-                                                <span className="text-slate-500 font-black uppercase text-[10px] tracking-widest">/{plan.period}</span>
-                                            </div>
-                                        </div>
-
-                                        <ul className="space-y-5 mb-12 flex-grow">
-                                            {plan.features.map((feature, i) => (
-                                                <li key={i} className="flex items-center gap-4">
-                                                    <Check className="w-5 h-5 text-cyan-400 shrink-0" />
-                                                    <span className="text-sm text-slate-300 font-bold tracking-wide">{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-
-                                        <Button
-                                            size="xl"
-                                            onClick={() => handleCheckout(plan.id, 'subscription')}
-                                            disabled={!!loading}
-                                            className={`w-full h-20 text-xl font-black rounded-2xl transition-all ${plan.popular ? 'bg-cyan-400 text-black hover:bg-cyan-300' : 'bg-white/5 text-white hover:bg-white/10'}`}
-                                        >
-                                            {loading === plan.id ? (
-                                                <Loader2 className="w-6 h-6 animate-spin mx-auto" />
-                                            ) : (
-                                                plan.cta
-                                            )}
-                                        </Button>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                {/* Token Pricing Section */}
+                <PricingTokens />
 
                 {/* FAQ Section */}
                 <section className="py-20 px-4" style={{ background: 'var(--rensto-bg-secondary)' }}>

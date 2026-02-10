@@ -15,7 +15,6 @@ import {
     Search,
     Info
 } from 'lucide-react';
-import { PRODUCT_REGISTRY, PillarId, ProductDefinition } from '@/lib/registry/ProductRegistry';
 
 interface Node {
     id: string;
@@ -27,11 +26,15 @@ interface Node {
     data?: any;
 }
 
-export default function EcosystemMap() {
+interface EcosystemMapProps {
+    products: any[];
+}
+
+export default function EcosystemMap({ products: initialAITableProducts }: EcosystemMapProps) {
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
-    // Build the hierarchy from ProductRegistry
+    // Build the hierarchy from AITable Products
     const pillars: Node[] = [
         { id: 'lead-machine', type: 'pillar', label: 'Lead Extraction', status: 'active', icon: Search },
         { id: 'autonomous-secretary', type: 'pillar', label: 'Communication', status: 'active', icon: Users },
@@ -39,15 +42,18 @@ export default function EcosystemMap() {
         { id: 'content-engine', type: 'pillar', label: 'Media Force', status: 'active', icon: Workflow },
     ];
 
-    const products: Node[] = Object.values(PRODUCT_REGISTRY).map(p => ({
-        id: p.id,
-        type: 'product' as const,
-        label: p.name,
-        status: (p.status === 'active' ? 'active' : 'beta') as 'active' | 'beta' | 'error' | 'idle',
-        icon: Box,
-        parentId: p.pillarId,
-        data: p
-    })).filter(p => p.parentId); // Only show those assigned to a pillar
+    const products: Node[] = initialAITableProducts.map(p => {
+        const status = p.Status === 'active' || p.status === 'active' ? 'active' : 'beta';
+        return {
+            id: p['Product ID'] || p.id,
+            type: 'product' as const,
+            label: p['Product Name'] || p.name,
+            status: status as 'active' | 'beta' | 'error' | 'idle',
+            icon: Box,
+            parentId: p['pillarId'] || p.pillarId,
+            data: p
+        };
+    }).filter(p => p.parentId); // Only show those assigned to a pillar
 
     // Mock Agents for visualization (In real life these come from Firestore/n8n)
     const agents: Node[] = [
@@ -58,7 +64,6 @@ export default function EcosystemMap() {
 
     const renderNode = (node: Node, x: number, y: number) => {
         const isSelected = selectedNode?.id === node.id;
-        const isHovered = hoveredNode === node.id;
 
         return (
             <motion.div
@@ -109,7 +114,6 @@ export default function EcosystemMap() {
 
             {/* The SVG Plane for connections */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-                {/* We will draw lines between nodes here */}
             </svg>
 
             <div className="relative w-full h-full flex items-center justify-between px-12 overflow-x-auto scrollbar-hide">
@@ -188,7 +192,7 @@ export default function EcosystemMap() {
                                         </div>
                                     </div>
                                     <p className="text-xs text-slate-400 leading-relaxed italic">
-                                        "{selectedNode.data.headline}"
+                                        "{selectedNode.data.headline || 'System Operational'}"
                                     </p>
                                 </div>
                             )}

@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProductDefinition } from '@/lib/registry/ProductRegistry';
 import { FormField } from '@/types/firestore';
 import {
     ArrowLeft,
@@ -27,7 +26,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes } from 'firebase/storage';
 
 interface OnboardingClientProps {
-    product: ProductDefinition;
+    product: any;
 }
 
 // --- Encryption Helpers (WebCrypto) ---
@@ -139,7 +138,7 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
             const secrets: Record<string, string> = {};
             const publicFields: Record<string, string> = {};
 
-            schema.forEach(field => {
+            schema.forEach((field: any) => {
                 if (field.secret) {
                     secrets[field.id] = formData[field.id] || '';
                 } else {
@@ -269,7 +268,7 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
                         <div className="lg:col-span-2 space-y-8">
                             <form onSubmit={handleSubmit} className="space-y-10">
                                 <div className="space-y-8">
-                                    {schema.map((field) => (
+                                    {schema.map((field: any) => (
                                         <div key={field.id} className="space-y-3">
                                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
                                                 {field.label} {field.required && <span className="text-[#fe3d51]">*</span>}
@@ -283,7 +282,7 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
                                                     className="w-full bg-white/5 border border-white/5 h-16 rounded-2xl text-white font-medium focus:border-cyan-500/50 outline-none transition-all text-lg px-6 appearance-none"
                                                 >
                                                     <option value="" disabled>{field.placeholder || `Select ${field.label.toLowerCase()}...`}</option>
-                                                    {field.options?.map(opt => (
+                                                    {field.options?.map((opt: string) => (
                                                         <option key={opt} value={opt} className="bg-slate-900">{opt}</option>
                                                     ))}
                                                 </select>

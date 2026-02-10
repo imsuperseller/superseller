@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
+import { AITableService } from '@/lib/services/AITableService';
 import HomePageClient from './HomePageClient';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { Client, Testimonial } from '@/types/firestore';
 
 export const metadata: Metadata = {
     title: 'Rensto | Build your Autonomous Business Engine',
@@ -11,65 +10,61 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 async function getLandingData() {
-    const db = getFirestoreAdmin();
-
     try {
-        // Fetch active clients for logos (Industry Leaders)
-        // Query only by status to avoid index requirements for multiple where clauses
-        const clientsSnap = await db.collection(COLLECTIONS.CLIENTS)
-            .where('status', '==', 'active')
-            .get();
+        const [logos, testimonials, products] = await Promise.all([
+            AITableService.getClients(),
+            AITableService.getTestimonials(),
+            AITableService.getProducts()
+        ]);
 
-        const logos = clientsSnap.docs
-            .map(doc => {
-                const data = doc.data();
-                // Strictly select only needed fields to avoid serialization issues
-                return {
-                    id: doc.id,
-                    name: data.name || '',
-                    logoUrl: data.logoUrl || '',
-                    showLogoOnLanding: data.showLogoOnLanding || false,
-                    // Additional safe fields if needed, but avoiding spread of unknown Timestamps
-                } as Client;
-            })
-            .filter(client => client.showLogoOnLanding);
+        const formattedLogos = logos
+            .filter((c: any) => c.Status === 'active')
+            .map((c: any) => ({
+                id: c.id,
+                name: c.name || '',
+                logoUrl: c.logoUrl || '',
+                showLogoOnLanding: true,
+            }));
 
-        // Fetch testimonials
-        // Query only by isActive to avoid index requirements for order/language combinations
-        const testimonialsSnap = await db.collection(COLLECTIONS.TESTIMONIALS)
-            .where('isActive', '==', true)
-            .get();
+        const formattedTestimonials = testimonials
+            .filter((t: any) => t.Status === 'Active')
+            .map((t: any) => ({
+                id: t.id,
+                author: t.Author || '',
+                role: t.Role || '',
+                quote: t.Quote || '',
+                result: t.Result || '',
+                imageUrl: t.ImageUrl || '',
+                label: t.Label || '',
+                order: parseInt(t.Order) || 0,
+            }))
+            .sort((a, b) => a.order - b.order);
 
-        const testimonials = testimonialsSnap.docs
-            .map(doc => {
-                const data = doc.data();
-                // Strictly select only needed fields
-                return {
-                    id: doc.id,
-                    author: data.author || '',
-                    role: data.role || '',
-                    quote: data.quote || '',
-                    result: data.result || '',
-                    imageUrl: data.imageUrl || data.image || '', // Handle both field names
-                    label: data.label || '',
-                    order: data.order || 0,
-                    isActive: data.isActive || false,
-                    language: data.language || 'en',
-                } as Testimonial;
-            })
-            .filter(t => t.language === 'en')
-            .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-        return { logos, testimonials };
+        return {
+            logos: formattedLogos,
+            testimonials: formattedTestimonials,
+            products: products.filter((p: any) => p.Status !== 'hidden'),
+            stats: [
+                { value: 'Zero', label: 'Sick Days Taken', icon: 'Shield' }, // Placeholder icon name, handled in client
+                { value: '24/7', label: 'Operational Uptime', icon: 'Clock' },
+                { value: `${formattedLogos.length}+`, label: 'Active Partners', icon: 'CheckCircle' },
+                { value: '∞', label: 'Scalability', icon: 'Zap' }
+            ]
+        };
     } catch (error) {
-        console.error('Error fetching landing data:', error);
-        // Fallback to empty arrays during build if Firestore fails
-        return { logos: [], testimonials: [] };
+        console.error('Error fetching landing data from AITable:', error);
+        return { logos: [], testimonials: [], products: [] };
     }
 }
 
 export default async function Page() {
-    const { logos, testimonials } = await getLandingData();
+    const { logos, testimonials, products } = await getLandingData();
 
-    return <HomePageClient initialLogos={logos} initialTestimonials={testimonials} />;
+    return (
+        <HomePageClient
+            initialLogos={logos as any}
+            initialTestimonials={testimonials as any}
+            initialProducts={products}
+        />
+    );
 }

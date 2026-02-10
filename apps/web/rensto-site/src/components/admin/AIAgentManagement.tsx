@@ -19,18 +19,18 @@ interface AgentStatus {
 }
 
 interface AIAgentManagementProps {
-  templates?: Template[];
+  products?: any[];
 }
 
-export default function AIAgentManagement({ templates = [] }: AIAgentManagementProps) {
-  const initialAgents: AgentStatus[] = templates.length > 0 ? templates.map(t => ({
-    id: t.id || 'unknown',
-    name: t.name || 'Unnamed Agent',
-    status: 'active',
-    performance: Math.floor(Math.random() * 20) + 80,
+export default function AIAgentManagement({ products = [] }: AIAgentManagementProps) {
+  const initialAgents: AgentStatus[] = products.length > 0 ? products.map(p => ({
+    id: p.id || p['Product ID'] || 'unknown',
+    name: p['Product Name'] || p.name || 'Unnamed Agent',
+    status: (p['Status'] === 'active' || p.status === 'active') ? 'active' : 'inactive',
+    performance: Math.floor(Math.random() * 20) + 80, // Mock for now
     lastExecution: new Date().toISOString(),
     errors: 0,
-    isRenstoCore: (t.name?.toLowerCase()?.includes('rensto') || t.category === 'AI Agents') ?? false
+    isRenstoCore: (p['Product Name']?.toLowerCase()?.includes('rensto') || p['Category'] === 'AI Agents') ?? false
   })) : [
     {
       id: 'rensto-master-controller',
@@ -41,32 +41,24 @@ export default function AIAgentManagement({ templates = [] }: AIAgentManagementP
       errors: 0,
       isRenstoCore: true
     },
-    {
-      id: 'rensto-audit-agent',
-      name: 'Service Audit Agent',
-      status: 'active',
-      performance: 98,
-      lastExecution: new Date().toISOString(),
-      errors: 0,
-      isRenstoCore: true
-    }
+    // ... default mocked items can stay or be removed if products are expected 
   ];
 
   const [agents, setAgents] = useState<AgentStatus[]>(initialAgents);
 
   useEffect(() => {
-    if (templates.length > 0) {
-      setAgents(templates.map(t => ({
-        id: t.id || 'unknown',
-        name: t.name || 'Unnamed Agent',
-        status: 'active',
+    if (products.length > 0) {
+      setAgents(products.map(p => ({
+        id: p.id || p['Product ID'] || 'unknown',
+        name: p['Product Name'] || p.name || 'Unnamed Agent',
+        status: (p['Status'] === 'active' || p.status === 'active') ? 'active' : 'inactive',
         performance: Math.floor(Math.random() * 20) + 80,
         lastExecution: new Date().toISOString(),
         errors: 0,
-        isRenstoCore: (t.name?.toLowerCase()?.includes('rensto') || t.category === 'AI Agents') ?? false
+        isRenstoCore: (p['Product Name']?.toLowerCase()?.includes('rensto') || p['Category'] === 'AI Agents') ?? false
       })));
     }
-  }, [templates]);
+  }, [products]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

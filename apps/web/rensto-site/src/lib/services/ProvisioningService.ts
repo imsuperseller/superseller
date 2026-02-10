@@ -3,7 +3,7 @@ import { Timestamp } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import registry from '../../configs/service-registry.json';
 import { User, ServiceInstance, Subscription } from '@/types/firestore';
-import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
+import { AITableService } from './AITableService';
 
 export class ProvisioningService {
     /**
@@ -187,10 +187,16 @@ export class ProvisioningService {
             return { userId, subscriptionId: subDoc.id };
         }
 
-        // 3. Registry-Driven Purchase (Pillars & Services)
-        const product = PRODUCT_REGISTRY[params.productId];
+        // 3. Dynamic Registry-Driven Purchase (Pillars & Services)
+        const products = await AITableService.getProducts();
+        const product = products.find(p => (p['Product ID'] || p.id) === params.productId);
 
         if (product) {
+            const pFlowType = product['flowType'] || product.flowType;
+            const pName = product['Product Name'] || product.name;
+            const pWebhook = product['n8n Webhook'] || product.n8nWebhookId;
+            const pPillarId = product['pillarId'] || product.pillarId || params.metadata.pillarId;
+
             const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
             const userSnap = await userRef.get();
             const userData = userSnap.data() as User;
@@ -198,30 +204,31 @@ export class ProvisioningService {
             const updates: any = { updatedAt: Timestamp.now() };
 
             // Apply Feature Flags/Entitlements
-            if (product.entitlements.featureFlags) {
+            // Note: Complex entitlements are temporarily derived from Registry if still missing in AITable
+            const entitlements = product.entitlements || {};
+            if (entitlements.featureFlags) {
                 const currentFlags = userData.entitlements?.pillars || [];
-                const newFlags = Array.from(new Set([...currentFlags, ...product.entitlements.featureFlags]));
+                const newFlags = Array.from(new Set([...currentFlags, ...entitlements.featureFlags]));
                 updates['entitlements.pillars'] = newFlags;
             }
 
             // Pillar-Specific Activation
-            const pillarId = product.pillarId || params.metadata.pillarId;
-            if (pillarId) {
+            if (pPillarId) {
                 // Keep camelCase/snakeCase consistency with types/firestore.ts
-                const serviceKey = pillarId === 'lead-machine' ? 'leads' :
-                    pillarId === 'autonomous-secretary' ? 'whatsapp' :
-                        pillarId.replace(/-/g, '_');
+                const serviceKey = pPillarId === 'lead-machine' ? 'leads' :
+                    pPillarId === 'autonomous-secretary' ? 'whatsapp' :
+                        pPillarId.replace(/-/g, '_');
                 updates[`activeServices.${serviceKey}`] = true;
             }
 
             await userRef.update(updates);
 
             // 4. Trigger n8n Fulfillment Hook if defined
-            if (product.n8nWebhookId && process.env.N8N_OPTIMIZER_WEBHOOK) {
+            if (pWebhook && process.env.N8N_OPTIMIZER_WEBHOOK) {
                 try {
                     // Send to n8n for orchestration (Routing to client cluster if defined)
                     const targetWebhook = userData.n8nInstance?.url
-                        ? `${userData.n8nInstance.url.replace(/\/$/, '')}/webhook/${product.n8nWebhookId}`
+                        ? `${userData.n8nInstance.url.replace(/\/$/, '')}/webhook/${pWebhook}`
                         : process.env.N8N_OPTIMIZER_WEBHOOK;
 
                     await fetch(targetWebhook, {
@@ -229,9 +236,9 @@ export class ProvisioningService {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             type: 'provisioning_trigger',
-                            productId: product.id,
-                            pillarId: pillarId || '',
-                            webhookId: product.n8nWebhookId,
+                            productId: params.productId,
+                            pillarId: pPillarId || '',
+                            webhookId: pWebhook,
                             userId,
                             email: params.email,
                             stripeSessionId: params.stripeSessionId

@@ -4,9 +4,9 @@ export const dynamic = 'force-dynamic';
 
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
-import { PRODUCT_REGISTRY } from '@/lib/registry/ProductRegistry';
 import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
+import { AITableService } from '@/lib/services/AITableService';
 
 // In production, this would be an env var
 const N8N_FULFILLMENT_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
@@ -43,9 +43,11 @@ export async function POST(request: Request) {
         const docRef = await instancesRef.add(newInstance);
         const instanceId = docRef.id;
 
-        // 2. Identify n8n Entry Point based on Product ID (Unified Registry)
-        const product = PRODUCT_REGISTRY[productId];
-        let targetWebhook = product?.n8nWebhookId || process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
+        // 2. Identify n8n Entry Point based on Product ID (AITable Master Core)
+        const products = await AITableService.getProducts();
+        const aitProduct = products.find((p: any) => (p['Product ID'] || p.id) === productId);
+
+        let targetWebhook = aitProduct?.['n8n Webhook'] || aitProduct?.n8nWorkflowId || process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
 
         // Construct full URL if it's just a slug
         if (targetWebhook && !targetWebhook.startsWith('http')) {

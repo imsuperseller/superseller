@@ -91,7 +91,7 @@ export function BundleUpsell({
     bundlePrice = 797,
     onUpgrade
 }: BundleUpsellProps) {
-    const allServices: ServiceType[] = ['leads', 'outreach', 'voice', 'content'];
+    const allServices: ServiceType[] = ['lead-machine', 'autonomous-secretary', 'knowledge-engine', 'content-engine'];
     const missingServices = allServices.filter(s => !ownedServices.includes(s));
 
     if (missingServices.length === 0) {
@@ -136,8 +136,8 @@ export function BundleUpsell({
                         <div
                             key={service}
                             className={`flex items-center gap-2 p-2 rounded-lg ${ownedServices.includes(service)
-                                    ? 'bg-green-500/10 text-green-400'
-                                    : 'bg-white/5 text-gray-400'
+                                ? 'bg-green-500/10 text-green-400'
+                                : 'bg-white/5 text-gray-400'
                                 }`}
                         >
                             <Check className={`w-4 h-4 ${ownedServices.includes(service) ? 'text-green-500' : 'text-gray-600'}`} />

@@ -3,7 +3,6 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { ProductDefinition } from '@/lib/registry/ProductRegistry';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
@@ -48,7 +47,7 @@ import { Badge } from '@/components/ui/badge-enhanced';
 import Link from 'next/link';
 
 interface ProductPresentationProps {
-    product: ProductDefinition;
+    product: any;
 }
 
 export default function ProductPresentation({ product }: ProductPresentationProps) {
@@ -94,7 +93,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                         </div>
 
                         <div className="flex flex-wrap gap-4">
-                            {product.features.map((feature, i) => (
+                            {product.features.map((feature: string, i: number) => (
                                 <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-full">
                                     <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">{feature}</span>
@@ -169,7 +168,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                 {/* Metric Ribbon */}
                 {product.metrics && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-16 border-y border-white/5 mb-24 bg-white/[0.01]">
-                        {product.metrics.map((metric, i) => (
+                        {product.metrics.map((metric: any, i: number) => (
                             <div key={i} className="text-center space-y-2">
                                 <p className="text-5xl font-black text-white tracking-tighter">{metric.value}</p>
                                 <div className="space-y-1">
@@ -198,7 +197,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {product.comparisons.map((item, i) => (
+                                    {product.comparisons.map((item: any, i: number) => (
                                         <tr key={i} className="group hover:bg-white/[0.01] transition-colors border-b border-white/5 last:border-0">
                                             <td className="p-8 font-black uppercase text-[10px] tracking-widest text-slate-400">{item.feature}</td>
                                             <td className="p-8 font-medium text-slate-500/80">
@@ -241,7 +240,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                             { title: 'Enrichment', icon: 'Activity', desc: 'AI verifies emails and phone numbers.' },
                             { title: 'Analysis', icon: 'Cpu', desc: 'Neural scoring of lead quality.' },
                             { title: 'Outreach', icon: 'Zap', desc: 'Automated 1-to-1 personalization.' }
-                        ]).map((step, i) => {
+                        ]).map((step: any, i: number) => {
                             const IconComponent = ICON_MAP[step.icon] || ZapIcon;
                             return (
                                 <div key={i} className="relative z-10 p-8 bg-[#0d0d0d] border border-white/5 rounded-3xl space-y-6 hover:border-cyan-500/30 transition-all group min-h-[220px] flex flex-col justify-between">
@@ -297,7 +296,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                             <p className="text-slate-500 uppercase text-[10px] font-black tracking-[0.3em]">Objection Handling</p>
                         </div>
                         <div className="space-y-4">
-                            {product.faqs.map((faq, i) => (
+                            {product.faqs.map((faq: any, i: number) => (
                                 <div key={i} className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-all">
                                     <button
                                         onClick={() => setActiveFaq(activeFaq === i ? null : i)}

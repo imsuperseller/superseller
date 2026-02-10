@@ -75,14 +75,14 @@ interface AdminDashboardClientProps {
     session: { user: SessionUser };
     stats: DashboardStats;
     recentActivity: ActivityItem[];
-    templates?: Template[];
+    products?: any[];
 }
 
 export default function AdminDashboardClient({
     session,
     stats,
     recentActivity,
-    templates = []
+    products = []
 }: AdminDashboardClientProps) {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('overview');
@@ -540,7 +540,7 @@ export default function AdminDashboardClient({
                                         </div>
                                     </div>
                                 </div>
-                                <EcosystemMap />
+                                <EcosystemMap products={products} />
                             </div>
                         )}
                         {activeTab === 'crm' && (
@@ -553,10 +553,10 @@ export default function AdminDashboardClient({
                             <ProjectManagement />
                         )}
                         {activeTab === 'workflows' && (
-                            <WorkflowManagement templates={templates} />
+                            <WorkflowManagement products={products} />
                         )}
                         {activeTab === 'agents' && (
-                            <AIAgentManagement templates={templates} />
+                            <AIAgentManagement products={products} />
                         )}
                         {activeTab === 'factory' && (
                             <div className="space-y-8">

@@ -24,6 +24,16 @@ const envSchema = z.object({
   N8N_LEAD_INTAKE_URL: z.string().url().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  AITABLE_API_TOKEN: z.string().optional(),
+  AITABLE_SPACE_ID: z.string().optional(),
+  AITABLE_LEADS_DATASHEET_ID: z.string().optional(),
+  AITABLE_CLIENTS_DATASHEET_ID: z.string().optional(),
+  AITABLE_RENSTO_MASTER_REGISTRY_ID: z.string().optional(),
+  AITABLE_KNOWLEDGE_DATASHEET_ID: z.string().optional(),
+  AITABLE_TESTIMONIALS_DATASHEET_ID: z.string().optional(),
+  AITABLE_PAYMENTS_DATASHEET_ID: z.string().optional(),
+  AITABLE_SOLUTIONS_DATASHEET_ID: z.string().optional(),
+  AITABLE_CAMPAIGNS_DATASHEET_ID: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

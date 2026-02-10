@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { verifySession } from '@/app/api/auth/magic-link/verify/route';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import { AITableService } from '@/lib/services/AITableService';
 import AdminDashboardClient from './AdminDashboardClient';
 
 export const metadata = {
@@ -24,11 +25,10 @@ async function getDashboardStats() {
   const db = getFirestoreAdmin();
 
   // Parallel fetch for dual-identity model
-  const [csClientsSnap, usersSnap, downloadsSnap, templatesSnap] = await Promise.all([
+  const [csClientsSnap, usersSnap, downloadsSnap] = await Promise.all([
     db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get(),
     db.collection(COLLECTIONS.USERS).get(),
-    db.collection(COLLECTIONS.DOWNLOADS).get(),
-    db.collection(COLLECTIONS.TEMPLATES).get()
+    db.collection(COLLECTIONS.DOWNLOADS).get()
   ]);
 
   const csClients = csClientsSnap.docs.map(doc => ({ ...doc.data(), source: 'cs' }));
@@ -44,8 +44,6 @@ async function getDashboardStats() {
     }
   });
   const allClients = Array.from(emailMap.values());
-
-  const templates = templatesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
 
   // Calculate Revenue (Unified)
   const totalRevenue = allClients.reduce((sum, client) => sum + (client.amountPaid || 0), 0);
@@ -87,7 +85,7 @@ async function getDashboardStats() {
         total: totalRevenue
       }
     },
-    templates
+    products: await AITableService.getProducts()
   };
 }
 
@@ -134,7 +132,7 @@ export default async function AdminDashboardPage() {
     redirect(`/dashboard/${session.clientId}`);
   }
 
-  const { stats, templates } = await getDashboardStats();
+  const { stats, products } = await getDashboardStats();
   const recentActivity = await getRecentActivity();
 
   return (
@@ -142,7 +140,7 @@ export default async function AdminDashboardPage() {
       session={{ user: { name: session.email.split('@')[0], email: session.email } }}
       stats={stats}
       recentActivity={serializeData(recentActivity)}
-      templates={serializeData(templates)}
+      products={serializeData(products)}
     />
   );
 }

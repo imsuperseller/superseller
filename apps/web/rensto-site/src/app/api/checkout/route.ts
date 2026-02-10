@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
-import { ALL_PRODUCTS } from '@/lib/registry/ProductRegistry';
+import { AITableService } from '@/lib/services/AITableService';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
@@ -24,17 +24,23 @@ export async function POST(req: Request) {
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
         let mode: Stripe.Checkout.Session.Mode = 'payment';
 
-        // UNIFIED REGISTRY LOOKUP
-        const product = ALL_PRODUCTS[productId];
+        // DYNAMIC REGISTRY LOOKUP
+        const products = await AITableService.getProducts();
+        const product = products.find(p => (p['Product ID'] || p.id) === productId);
 
         if (product) {
-            if (product.flowType === 'pillar-purchase' || product.flowType === 'managed-plan') {
+            const pFlowType = product['flowType'] || product.flowType;
+            const pName = product['Product Name'] || product.name;
+            const pStripeId = product['Stripe ID'] || product.stripePriceId;
+            const pPrice = parseInt(product['Price'] || product.price);
+
+            if (pFlowType === 'pillar-purchase' || pFlowType === 'managed-plan' || pFlowType === 'token-plan' || pFlowType === 'care-plan') {
                 mode = 'subscription';
             }
 
-            if (product.stripeLink && product.stripeLink.startsWith('price_')) {
+            if (pStripeId && pStripeId.startsWith('price_')) {
                 lineItems.push({
-                    price: product.stripeLink,
+                    price: pStripeId,
                     quantity: 1,
                 });
             } else {
@@ -42,10 +48,10 @@ export async function POST(req: Request) {
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: product.name,
-                            description: product.description,
+                            name: pName,
+                            description: product.description || '',
                         },
-                        unit_amount: product.price * 100,
+                        unit_amount: pPrice * 100,
                         ...(mode === 'subscription' ? { recurring: { interval: 'month' } } : {}),
                     },
                     quantity: 1,
@@ -53,10 +59,10 @@ export async function POST(req: Request) {
             }
 
             Object.assign(metadata, {
-                productId: product.id,
-                pillarId: product.pillarId || '',
-                productName: product.name,
-                flowType: product.flowType,
+                productId: productId,
+                pillarId: product['pillarId'] || product.pillarId || '',
+                productName: pName,
+                flowType: pFlowType,
             });
         }
         // 2. Special Case: Marketplace Implementation (Legacy support)
