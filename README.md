@@ -13,10 +13,10 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 ### **Key Features:**
 - **Multi-AI Support**: Gemini, Claude, OpenAI integration
 - **Web Scraping**: Facebook, LinkedIn, websites, real estate
-- **Email Automation**: BMAD email processing with persona identification
+- **Email Automation**: AI-powered email processing with persona identification
 - **Customer Portals**: White-label portals with payment processing
 - **API System**: RESTful API with webhook support
-- **n8n Integration**: Existing workflow integration
+- **Antigravity + n8n**: Antigravity (primary automation), n8n (backup)
 - **MCP Compatibility**: Model Context Protocol integration
 
 ### **Documentation Status:**
@@ -26,21 +26,16 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 - **Files Created**: 3 new documentation files
 - **Total Impact**: ~60 markdown files processed
 
-## 📚 **KEY DOCUMENTATION**
+## 📚 **KEY DOCUMENTATION (current)**
 
-### **Unified Lead Machine:**
-- [`docs/UNIFIED_LEAD_MACHINE_README.md`](docs/UNIFIED_LEAD_MACHINE_README.md) - Complete unified lead machine overview
-- [`docs/LEAD_MACHINE_ARCHITECTURE.md`](docs/LEAD_MACHINE_ARCHITECTURE.md) - Technical architecture documentation
-- [`docs/LEAD_MACHINE_DEPLOYMENT_GUIDE.md`](docs/LEAD_MACHINE_DEPLOYMENT_GUIDE.md) - Production deployment instructions
-
-### **MCP Servers:**
-- [`docs/MCP_SINGLE_SOURCE_OF_TRUTH.md`](docs/MCP_SINGLE_SOURCE_OF_TRUTH.md) - MCP server configuration and status
-- [`docs/MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md`](docs/MAKE_COM_MCP_SINGLE_SOURCE_OF_TRUTH.md) - Make.com MCP server documentation
-
-### **Customer Systems:**
-- [`Customers/local-il/README.md`](Customers/local-il/README.md) - Local-IL customer system
-- [`Customers/shelly-mizrahi/README.md`](Customers/shelly-mizrahi/README.md) - Shelly Mizrahi customer system
-- [`Customers/ben-ginati/README.md`](Customers/ben-ginati/README.md) - Ben Ginati customer system
+- **[CLAUDE.md](CLAUDE.md)** – Single source of truth: architecture, product, stack, active systems.
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** – Folder map (active vs legacy paths).
+- **[REPO_MAP.md](REPO_MAP.md)** – What you're seeing: where everything lives in plain language.
+- **[CODEBASE_AUDIT.md](CODEBASE_AUDIT.md)** – Cleanup checklist, audit order, what's done vs open.
+- **[CLEANUP_DETERMINED.md](CLEANUP_DETERMINED.md)** – Items determined as not in place, outdated, consolidatable, or redundant.
+- **.cursor/AGENT_CONTEXT.md** – Business context, success target ($20k/mo by 2027), priorities.
+- **.cursor/MCP_CONFIGURATION_STATUS.md** – MCP server status (not docs/).
+- **infra/README.md** – Infrastructure layout, MCP servers, n8n scripts, workflow JSONs.
 
 ## 🏗️ **TECHNICAL ARCHITECTURE**
 
@@ -55,7 +50,7 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 └─────────────────────────────────────────────────────────────┘
 │                    INTEGRATION LAYER                        │
 ├─────────────────────────────────────────────────────────────┤
-│  Payment (Stripe)  │  Invoicing (QB) │  Automation (n8n)  │
+│  Payment (Stripe)  │  Invoicing (QB) │  Antigravity / n8n │
 │  - Processing      │  - Auto Invoice │  - Workflows       │
 │  - Subscriptions   │  - Customer Mgmt│  - Follow-ups      │
 │  - Webhooks        │  - Reporting    │  - Notifications   │
@@ -98,12 +93,11 @@ cd rensto
 # Install dependencies
 npm install
 
-# Start MCP servers
-docker-compose up -d
-
-# Start the unified lead machine
-cd lead-machine-unified
-npm start
+# Start the main site (Next.js on Vercel = rensto.com)
+cd apps/web/rensto-site
+npm install
+npm run dev
+# Or: npm run dev:3001  (port 3001 to avoid conflicts)
 ```
 
 ### **Configuration:**
@@ -115,19 +109,18 @@ npm start
 ## 📊 **CURRENT STATUS (Jan 2026)**
 
 ### **✅ COMPLETED**
-- **Core Platform**: Moved to Next.js 16 + React 19 architecture.
-- **Database**: Firestore as Primary Source of Truth for service instances and customers.
-- **Fulfillment**: Integrated with n8n via secure webhooks and Admin Fulfillment Queue.
-- **Documentation**: Consolidated `CLAUDE.md` and sanitized codebase from legacy residue.
-- **Payments**: Stripe webhooks consolidated and Firestore-integrated.
+- **Core Platform**: Next.js 16 + React 19 architecture.
+- **Fulfillment**: Admin Fulfillment Queue, Antigravity/n8n webhooks.
+- **Documentation**: Consolidated `CLAUDE.md`, ARCHITECTURE.md, REPO_MAP.md. Consistency updates (Feb 2026).
+- **Payments**: Stripe webhooks integrated.
 
 ### **🔄 IN PROGRESS**
+- **Database**: Migration from Firestore to PostgreSQL + Redis.
 - **Admin fulfillment queue**: Finalizing UI and activation logic.
-- **Product Schemas**: Completing specialized configuration forms for all services.
-- **Testing**: Unified system testing with Firestore and real-time triggers.
+- **Product Schemas**: Specialized configuration forms for all services.
 
 ### **📋 PENDING / RETIRED**
-- **Legacy Sync**: Boost.space and Airtable syncs are currently DEPRACTED/RETIRED in favor of direct Firestore usage.
+- **Legacy Sync**: Firestore, Airtable, Boost.space — retired. Migration to Postgres in progress.
 - **White-Label Portals**: Customer portal development (Phase 2).
 - **Payment Integration**: QuickBooks integration (n8n-based).
 
@@ -165,11 +158,8 @@ npm start
 
 ## 🔧 **DEVELOPMENT**
 
-### **Core Files**
-- **`/lead-machine-unified/src/core/LeadGenerationEngine.js`**: Core lead generation logic
-- **`/lead-machine-unified/src/api/LeadMachineAPI.js`**: RESTful API system
-- **`/lead-machine-unified/src/server.js`**: Production server
-- **`/lead-machine-unified/package.json`**: Dependencies and configuration
+### **Core app (main site)**
+- **`apps/web/rensto-site/`** – Next.js app (rensto.com). Live API: **`src/app/api/`**; live admin: **`src/app/admin/`**; pages and components in **`src/app/`**, **`src/components/`**, **`src/lib/`**.
 
 ### **API Endpoints**
 - **20+ RESTful endpoints** for lead generation and management
@@ -221,7 +211,7 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 
 ---
 
-**Last Updated:** January 10, 2025  
+**Last Updated:** February 2026  
 **Status:** ✅ **FULLY IMPLEMENTED AND DOCUMENTED**  
 **Documentation Cleanup:** ✅ **COMPLETED** (60+ files processed)  
 **Production Ready:** ✅ **YES**

@@ -1,40 +1,48 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+// [MIGRATION] Phase 4: Firestore kept as backup
+import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
+import prisma from '@/lib/prisma';
+import * as dbAdmin from '@/lib/db/admin';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
+import type { Prisma } from '@prisma/client';
 
 export async function POST(req: Request) {
     try {
         const { message, sessionId, userId, context } = await req.json();
-        const db = getFirestoreAdmin();
         const actualSessionId = sessionId || `terry_${uuidv4()}`;
 
-        // 1. Store user message in history
-        const chatRef = db.collection('admin_conversations').doc(actualSessionId);
-        const sessionSnap = await chatRef.get();
+        // [MIGRATION] Phase 4: Read conversation history from Postgres first
+        let history: any[] = [];
 
-        let history = [];
-        if (sessionSnap.exists) {
-            history = sessionSnap.data()?.messages || [];
+        try {
+            const conversation = await dbAdmin.getOrCreateConversation(actualSessionId);
+            history = (conversation.messages as any[]) || [];
+        } catch (pgError) {
+            // Fallback: Firestore
+            console.info('[Migration] admin/terry/chat POST: Postgres miss, falling back to Firestore');
+            const db = getFirestoreAdmin();
+            const chatRef = db.collection('admin_conversations').doc(actualSessionId);
+            const sessionSnap = await chatRef.get();
+            if (sessionSnap.exists) {
+                history = sessionSnap.data()?.messages || [];
+            }
         }
 
         const userMsg = {
             id: uuidv4(),
             role: 'user',
             content: message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
         history.push(userMsg);
 
-        // 2. Prepare context for Terry (Supervisor Agent)
-        // In a real scenario, we would call OpenAI or n8n here
-        // For now, we simulate Terry's intelligence and routing
-
-        let responseContent = "";
+        // Simple routing logic
+        let responseContent = '';
         let actions: any[] = [];
 
-        // Simple routing logic (Simulation of the "Brain")
         if (message.toLowerCase().includes('revenue') || message.toLowerCase().includes('money')) {
             responseContent = "I'm pulling the live Treasury data for you. Revenue is currently on track, but I noticed RackNerd expenses increased by 15% this month. Would you like me to audit the inactive server instances?";
             actions = [{ label: 'Audit Servers', action: 'audit_servers' }];
@@ -50,20 +58,27 @@ export async function POST(req: Request) {
             role: 'assistant',
             content: responseContent,
             actions,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
         history.push(assistantMsg);
+        const trimmedHistory = history.slice(-50);
 
-        // 3. Update Firestore with new history
-        await chatRef.set({
-            userId,
-            lastMessageAt: Timestamp.now(),
-            messages: history.slice(-50), // Keep last 50 messages
-            context: context || {}
-        }, { merge: true });
+        // [MIGRATION] Phase 4: Write to Postgres (primary)
+        await dbAdmin.updateConversation(actualSessionId, trimmedHistory as Prisma.InputJsonValue[]);
 
-        // 4. (Optional) Trigger n8n Supervisor for actual automation tasks
+        // Backup: Firestore
+        await firestoreBackupWrite('admin/terry/chat POST', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection('admin_conversations').doc(actualSessionId).set({
+                userId,
+                lastMessageAt: Timestamp.now(),
+                messages: trimmedHistory,
+                context: context || {},
+            }, { merge: true });
+        });
+
+        // Trigger n8n Supervisor if configured
         if (process.env.N8N_SUPERVISOR_WEBHOOK) {
             fetch(process.env.N8N_SUPERVISOR_WEBHOOK, {
                 method: 'POST',
@@ -73,15 +88,15 @@ export async function POST(req: Request) {
                     sessionId: actualSessionId,
                     userId,
                     message,
-                    context
-                })
+                    context,
+                }),
             }).catch(e => console.error('n8n Terry trigger failed:', e));
         }
 
         return NextResponse.json({
             success: true,
             message: assistantMsg,
-            sessionId: actualSessionId
+            sessionId: actualSessionId,
         });
 
     } catch (error: any) {
@@ -97,13 +112,24 @@ export async function GET(req: Request) {
     if (!sessionId) return NextResponse.json({ success: false, error: 'Missing sessionId' });
 
     try {
+        // [MIGRATION] Phase 4: Read from Postgres first
+        try {
+            const conversation = await prisma.adminConversation.findUnique({
+                where: { id: sessionId },
+            });
+            if (conversation) {
+                return NextResponse.json({ success: true, messages: conversation.messages || [] });
+            }
+        } catch (pgError) {
+            console.info('[Migration] admin/terry/chat GET: Postgres miss');
+        }
+
+        // Fallback: Firestore
         const db = getFirestoreAdmin();
         const chatSnap = await db.collection('admin_conversations').doc(sessionId).get();
-
         if (!chatSnap.exists) {
             return NextResponse.json({ success: true, messages: [] });
         }
-
         return NextResponse.json({ success: true, messages: chatSnap.data()?.messages || [] });
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

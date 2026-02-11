@@ -1,5 +1,8 @@
 # 🔥 Firestore Client Update: Iolite Ventures
 
+> [!WARNING]
+> **DEPRECATED**: Firestore is retired. Primary database is PostgreSQL + Redis. See CLAUDE.md.
+
 **Date**: December 11, 2025  
 **Action**: Add David Varnai / Iolite Ventures as Active Client  
 **Status**: ✅ Ready to sync

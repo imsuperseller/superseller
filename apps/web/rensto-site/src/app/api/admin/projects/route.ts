@@ -1,69 +1,91 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        const db = getFirestoreAdmin();
+        // [MIGRATION] Phase 4: Read from Postgres first
+        let allProjects: any[] = [];
 
-        // Fetch Service Instances (Marketplace Implementation)
-        const serviceInstancesSnap = await db.collection(COLLECTIONS.SERVICE_INSTANCES).get();
-        const serviceInstances = serviceInstancesSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            type: 'Builder'
-        }));
+        try {
+            const [serviceInstances, whatsappInstances] = await Promise.all([
+                prisma.serviceInstance.findMany({ orderBy: { createdAt: 'desc' } }),
+                prisma.whatsAppInstance.findMany({ orderBy: { createdAt: 'desc' } }),
+            ]);
 
-        // Fetch WhatsApp Instances (Bundles)
-        const whatsappInstancesSnap = await db.collection(COLLECTIONS.WHATSAPP_INSTANCES).get();
-        const whatsappInstances = whatsappInstancesSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            type: 'Bundle'
-        }));
+            allProjects = [
+                ...serviceInstances.map(s => ({
+                    id: s.id,
+                    name: s.productName || 'Unnamed Engine',
+                    clientName: s.clientEmail || 'Unknown Client',
+                    status: mapStatus(s.status),
+                    progress: calculateProgress(s.status),
+                    dueDate: s.createdAt ? s.createdAt.toISOString().split('T')[0] : 'No Date',
+                    pillar: 'Marketplace',
+                })),
+                ...whatsappInstances.map(w => ({
+                    id: w.id,
+                    name: w.bundle === 'full_ai_sales_rep' ? 'Sales AI Rep' : 'WhatsApp Agent',
+                    clientName: w.userEmail || 'Unknown Client',
+                    status: mapStatus(w.status),
+                    progress: calculateProgress(w.status),
+                    dueDate: w.createdAt ? w.createdAt.toISOString().split('T')[0] : 'No Date',
+                    pillar: 'WhatsApp',
+                })),
+            ];
 
-        // Fetch Legacy Custom Solutions
-        const legacySnap = await db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get();
-        const legacyProjects = legacySnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            type: 'Custom'
-        }));
+            if (allProjects.length > 0) {
+                return NextResponse.json({ success: true, projects: allProjects });
+            }
+            throw new Error('No projects in Postgres');
+        } catch (pgError) {
+            // Fallback: Firestore
+            console.info('[Migration] admin/projects: Postgres fail, falling back to Firestore');
+            const db = getFirestoreAdmin();
 
-        // Transform into a unified Project interface for the UI
-        const allProjects = [
-            ...serviceInstances.map((s: any) => ({
-                id: s.id,
-                name: s.productName || 'Unnamed Engine',
-                clientName: s.clientEmail || 'Unknown Client',
-                status: mapStatus(s.status),
-                progress: calculateProgress(s.status),
-                dueDate: formatDate(s.createdAt),
-                pillar: 'Marketplace',
-                outlookEventId: s.outlookEventId
-            })),
-            ...whatsappInstances.map((w: any) => ({
-                id: w.id,
-                name: w.bundle === 'full_ai_sales_rep' ? 'Sales AI Rep' : 'WhatsApp Agent',
-                clientName: w.userEmail || 'Unknown Client',
-                status: mapStatus(w.status),
-                progress: calculateProgress(w.status),
-                dueDate: formatDate(w.createdAt),
-                pillar: 'WhatsApp',
-                outlookEventId: w.outlookEventId
-            })),
-            ...legacyProjects.map((l: any) => ({
-                id: l.id,
-                name: 'Custom Implementation',
-                clientName: l.name || l.email,
-                status: mapStatus(l.status),
-                progress: calculateProgress(l.status),
-                dueDate: formatDate(l.createdAt),
-                pillar: l.type,
-                outlookEventId: l.outlookEventId
-            }))
-        ];
+            const [serviceInstancesSnap, whatsappInstancesSnap, legacySnap] = await Promise.all([
+                db.collection(COLLECTIONS.SERVICE_INSTANCES).get(),
+                db.collection(COLLECTIONS.WHATSAPP_INSTANCES).get(),
+                db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get(),
+            ]);
 
-        return NextResponse.json({ success: true, projects: allProjects });
+            const serviceInstances = serviceInstancesSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Builder' }));
+            const whatsappInstances = whatsappInstancesSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Bundle' }));
+            const legacyProjects = legacySnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Custom' }));
+
+            allProjects = [
+                ...serviceInstances.map((s: any) => ({
+                    id: s.id,
+                    name: s.productName || 'Unnamed Engine',
+                    clientName: s.clientEmail || 'Unknown Client',
+                    status: mapStatus(s.status),
+                    progress: calculateProgress(s.status),
+                    dueDate: formatDate(s.createdAt),
+                    pillar: 'Marketplace',
+                })),
+                ...whatsappInstances.map((w: any) => ({
+                    id: w.id,
+                    name: w.bundle === 'full_ai_sales_rep' ? 'Sales AI Rep' : 'WhatsApp Agent',
+                    clientName: w.userEmail || 'Unknown Client',
+                    status: mapStatus(w.status),
+                    progress: calculateProgress(w.status),
+                    dueDate: formatDate(w.createdAt),
+                    pillar: 'WhatsApp',
+                })),
+                ...legacyProjects.map((l: any) => ({
+                    id: l.id,
+                    name: 'Custom Implementation',
+                    clientName: l.name || l.email,
+                    status: mapStatus(l.status),
+                    progress: calculateProgress(l.status),
+                    dueDate: formatDate(l.createdAt),
+                    pillar: l.type,
+                })),
+            ];
+
+            return NextResponse.json({ success: true, projects: allProjects });
+        }
     } catch (error: any) {
         console.error('Failed to fetch admin projects:', error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

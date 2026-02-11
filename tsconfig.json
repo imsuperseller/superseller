@@ -12,8 +12,8 @@
   },
   "include": [
     "apps/**/*.ts",
-    "apps/**/*.tsx",
-    "packages/**/*.ts"
+    "apps/**/*.tsx"
+    // "packages/**/*.ts" — uncomment when adding a monorepo packages/ layer
   ],
   "exclude": [
     "node_modules",

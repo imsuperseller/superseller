@@ -1,12 +1,19 @@
-# 🎯 RENSTO MASTER DOCUMENTATION - Single Source of Truth
+# 🎯 RENSTO MASTER DOCUMENTATION - Full Technical Context
 
-**Last Updated**: January 11, 2026 (Outreach Pillar Corrected: Outlook/Telnyx)
-**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live, ✅ 6 MCP Servers Active.
-**Purpose**: The ONE place for all Rensto business, technical, and operational knowledge
+**Last Updated**: February 2026
+**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live.
+**Purpose**: The ONE place for all Rensto Business, Technical, and Operational knowledge.
+
+> [!WARNING]
+> **DEPRECATION NOTICE**: 
+> - The folder `apps/web/admin-dashboard` was deleted from the repo. Admin lives in `apps/web/rensto-site/src/app/admin`.
+> - **Firestore and Airtable.com are retired.** Primary database: **PostgreSQL + Redis**. **Aitable.ai** remains in use (dashboards, syncs). Migration of app data to Postgres in progress.
+> - **n8n is backup/reference only.** Primary automation: **Antigravity** on RackNerd.
+> - **Webflow is retired.** All pages served by Next.js (rensto-site) on Vercel.
+> - **BMAD is retired.** Use **B.L.A.S.T.** for all work.
 
 > [!IMPORTANT]
-> **📖 Rensto Bible**: For the canonical, consolidated documentation, see **[`docs/BIBLE.md`](file:///Users/shaifriedman/New%20Rensto/rensto/docs/BIBLE.md)** and its sub-documents:
-> - [Business Model](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/MODEL.md) | [Technical Stack](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/STACK.md) | [Design System](file:///Users/shaifriedman/New%20Rensto/rensto/docs/design/SYSTEM.md) | [Jargon Dictionary](file:///Users/shaifriedman/New%20Rensto/rensto/docs/reference/JARGON.md)
+> **📖 Canonical docs**: Read **brain.md** first — Mission Control. This file (CLAUDE.md) provides full technical context. See also **ARCHITECTURE.md** (folder map), **REPO_MAP.md** (what you're seeing in plain language), **CODEBASE_AUDIT.md** (cleanup checklist, audit order), **CLEANUP_DETERMINED.md**, **MASTERY_STATUS.md** (what’s been gone through vs what’s left, and in which order to continue) (items 100% determined as not in place / outdated / consolidatable / redundant). For business context and priorities: **`.cursor/AGENT_CONTEXT.md`**.
 
 ---
 
@@ -17,11 +24,11 @@
 2. [Current Architecture](#current-architecture)
 3. [Data Storage Strategy](#data-storage-strategy)
 4. [Active Systems](#active-systems)
-5. [Service Offerings](#service-offerings)
+5. [Productization Strategy ("The Methods")](#5-service-offerings)
 6. [Customer Journey](#customer-journey)
 7. [Financial Tracking](#financial-tracking)
 8. [Affiliate Program](#affiliate-program)
-9. [BMAD Methodology](#bmad-methodology)
+9. [B.L.A.S.T. Methodology](#9-blast-methodology)
 10. [Implementation Status](#implementation-status)
 11. [Critical Gaps](#critical-gaps)
 12. [Mobile & Testing](#mobile--testing)
@@ -67,39 +74,48 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 ## 2. CURRENT ARCHITECTURE
 
 ### **Data Flow Philosophy**
-**"Firebase/Firestore Primary, n8n Operational, Boost.space Archive"**
+**"PostgreSQL + Redis Primary, Antigravity Operational, n8n Backup"**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│        PRIMARY: Firebase/Firestore (Real-time DB)           │
+│        PRIMARY: PostgreSQL + Redis                          │
 │  Service instances, customer metadata, payments, leads      │
 │  Used by: rensto-site (Next.js)                             │
 └─────────────────────────────────────────────────────────────┘
                           ↓ Fulfillment
 ┌─────────────────────────────────────────────────────────────┐
-│      OPERATIONAL: n8n (RackNerd VPS)                        │
-│  Workflow orchestration, specialized fulfillment prompts    │
+│      OPERATIONAL: Antigravity (RackNerd)                     │
+│  Primary automation engine. Runs most workflows.           │
+└─────────────────────────────────────────────────────────────┘
+                          ↓ (backup only)
+┌─────────────────────────────────────────────────────────────┐
+│      BACKUP/REFERENCE: n8n (RackNerd VPS)                  │
+│  Use only for tasks Antigravity cannot do.                  │
 │  URL: https://n8n.rensto.com (172.245.56.50:5678)           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### **Data Storage Decision Matrix**
 
-**Store in Firestore** (PRIMARY):
+**Store in PostgreSQL** (PRIMARY):
 - Service instances and configuration
 - Customer profiles and purchase history
 - Lead data for active projects
 - Admin fulfillment queue data
 
-**Store in n8n** (OPERATIONAL):
-- Workflow execution state
-- Immediate webhook processing
-- Multi-step automation logic
+**Use Redis** (CACHE/QUEUE):
+- Sessions, rate limits, job queues
+- Ephemeral data requiring speed
 
-**Archive in Boost.space/Airtable** (LEGACY/REFERENCE):
-- Historical infrastructure metadata
-- Backup of legacy product catalogs
-- Reference data not yet migrated to Firestore
+**Use Antigravity** (OPERATIONAL):
+- Most workflow automation on RackNerd
+- Webhook processing, fulfillment
+
+**Use n8n** (BACKUP/REFERENCE ONLY):
+- Only when Antigravity cannot perform the task
+- Workflows kept as reference
+
+**Retired**: Firestore, Airtable.com (migration in progress). **Aitable.ai**: In use for dashboards, syncs.
 
 **Sync to Notion** (DOCUMENTATION):
 - Strategic planning docs
@@ -269,9 +285,11 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ## 5. SERVICE OFFERINGS
 
-### **1. Marketplace** (Pre-Built Templates)
+### **1. Marketplace** (Credit-Based SaaS Apps)
 
-**URL**: https://rensto.com/marketplace (via Webflow CMS)
+**URL**: https://rensto.com/marketplace
+
+**Direction**: Credit-based self-serve SaaS apps, yearly subscription per app. Each app serves different audience types. All apps in Rensto design style.
 
 **Products** (13 Categories):
 
@@ -290,7 +308,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ### **2. Ready Solutions** (Industry Packages)
 
-**URL**: https://rensto.com/ready-solutions (Webflow CMS)
+**URL**: https://rensto.com/ready-solutions
 
 **Tiers**:
 | Tier | Price | Includes | Status |
@@ -301,13 +319,13 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 **Industry-Specific Solutions**:
 - Amazon Seller, Dentist, HVAC, Roofer, Locksmith, Real Estate, Lawyer, etc.
-- Each has dedicated landing page on Webflow
+- Each has dedicated landing page on rensto-site
 
 **Status**: ✅ **STRIPE CHECKOUT LIVE** (Oct 7, 2025), ✅ Forms migrated to code (/custom)
 
 ### **3. Subscriptions** (Lead Generation Services)
 
-**URL**: https://rensto.com/subscriptions (Webflow CMS)
+**URL**: https://rensto.com/subscriptions
 
 **Active Subscription Types**:
 
@@ -328,7 +346,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 ### **4. Custom Solutions** (Bespoke Projects)
 
-**URL**: https://rensto.com/custom (Webflow)
+**URL**: https://rensto.com/custom
 
 **Price Range**: $3,500-$8,000+
 
@@ -656,44 +674,27 @@ User clicks button → JavaScript initiates Stripe checkout → Stripe processes
 
 ---
 
-## 9. BMAD METHODOLOGY
+## 9. B.L.A.S.T. METHODOLOGY
 
-### **What is BMAD?**
+### **What is B.L.A.S.T.?**
 
-**Build, Measure, Analyze, Deploy** - Rensto's systematic approach to all features and infrastructure changes.
+**Blueprint, Link, Architect, Stylize, Trigger** - Rensto's mandatory protocol for all work.
 
-### **The Four Phases**
+### **The Five Phases**
 
-1. **BUILD**: Brainstorming, PRD creation, requirements definition
-2. **MEASURE**: Define KPIs, success metrics, measurement strategy
-3. **ANALYZE**: Data analysis, performance patterns, optimization opportunities
-4. **DEPLOY**: Production deployment, activation, monitoring
+1. **B**lueprint: Define the vision/mission in `implementation_plan.md`
+2. **L**ink: Establish data connectivity (MCP, APIs, Postgres/Redis, environment)
+3. **A**rchitect: Build the A.N.T. structure
+4. **S**tylize: Refine UI/UX (Linear Aesthetic, Stitch Assets)
+5. **T**rigger: Deploy to Vercel/Production
 
-### **Implementation Status**
+### **A.N.T. Execution Engine**
 
-**✅ FULLY OPERATIONAL**:
-- Used across 100+ projects
-- Active n8n workflow: TEST-001 (BMAD Airtable Test)
-- 41 scripts in `/scripts/bmad/` directory
-- Documented in `.cursor/rules.md` as mandatory for all infrastructure changes
+- **A**rchitecture: Global constraints and technical SOPs
+- **N**avigation: Advanced reasoning and routing
+- **T**ools: Atomic scripts and MCP identifiers
 
-**Documentation**:
-- `/docs/BMAD_PROCESS_SPECIFIC.md` - Framework overview
-- `/docs/business/BMAD_IMPLEMENTATION_PLAN.md` - Business transformation
-- 50+ BMAD phase documents for various features
-
-**Projects Completed with BMAD**:
-- Voice AI (4 phases documented, not deployed)
-- eSignatures (4 phases documented, not deployed)
-- ReactBits (4 phases documented, not deployed)
-- Airtable cleanup (executed successfully)
-- Business model transformation (completed)
-
-### **Ryan Deiss CVJ Integration**
-
-BMAD incorporates Ryan Deiss' Customer Value Journey framework:
-- **Aware → Engage → Subscribe → Convert → Excite → Ascend → Advocate → Promote**
-- Applied to website architecture and conversion optimization
+**Note**: BMAD is retired. Use B.L.A.S.T. for all infrastructure changes and new work. See `.cursorrules` for full B.L.A.S.T. Process.
 
 ---
 
@@ -960,62 +961,42 @@ All 5 core payment flows are operational and integrated with Firestore:
 
 ### **Applications** (`/apps/`)
 
-**Rensto SaaS API** (`apps/api/` - 107M):
-- **Stack**: Express.js + TypeScript + MongoDB + Stripe
-- **Purpose**: Backend API for multi-tenant management, lead generation, subscriptions
-- **Features**: JWT auth, rate limiting, Stripe integration, tenant isolation
-- **Status**: ⚠️ Deployment configuration needed
-- **Endpoints**: Tenant management, lead generation, subscription management
-- **Documentation**: `apps/api/README.md`
+**Archived/Deleted Apps** (no longer in repo):
+- `apps/api` — Express + MongoDB backend (deleted)
+- `apps/gateway-worker` — Cloudflare Workers gateway (deleted)
+- `apps/marketplace` — Separate marketplace app (deleted; marketplace now in rensto-site)
 
-**Gateway Worker** (`apps/gateway-worker/` - 340K):
-- **Platform**: Cloudflare Workers + KV
-- **Purpose**: API gateway, multi-tenant routing, rate limiting, idempotency
-- **Handlers**: Custom webhooks, Admin dashboard MCP (consolidated Oct 5, 2025)
-- **Integrations**: n8n, Stripe, Airtable, Webflow, QuickBooks, OpenRouter, Make.com
-- **Status**: ⚠️ KV namespaces need configuration
-- **Security**: HMAC signature validation, per-tenant rate limits, Typeform signature verification
-- **Documentation**: `apps/gateway-worker/README.md`
-- **Deployment**: Cloudflare Workers (gateway.rensto.com - pending config)
-
-**Marketplace App** (`apps/marketplace/` - 489M):
-- **Stack**: Next.js 14+ with TypeScript
-- **Purpose**: Marketplace frontend for template browsing and purchasing
-- **Status**: ✅ Active, see `apps/marketplace/README.md`
-
-**Admin Dashboard** (`apps/web/admin-dashboard/`):
-- **URL**: https://admin.rensto.com
-- **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Shadcn UI
-- **Purpose**: Internal operations dashboard
-- **Features**: Customer mgmt, workflow monitoring, revenue tracking, analytics
-- **Status**: ⚠️ Outdated (last updated Aug 2024, needs redesign for 4 service types)
-- **Hosting**: Vercel
-- **Documentation**: `apps/web/README.md`
-
-**Rensto Main Site** (`apps/web/rensto-site/` - 1.8G):
+**Rensto Main Site** (`apps/web/rensto-site/`):
 - **URL**: https://rensto.com
 - **Stack**: Next.js 14+ (App Router) + TypeScript + Tailwind + Shadcn UI
-- **Purpose**: Public-facing marketing site
+- **Purpose**: Public-facing marketing site, marketplace, admin dashboard
 - **Pages**: Homepage, About, 4 service types, niche pages, legal pages
+- **Admin**: `src/app/admin` (admin.rensto.com)
 - **Design System**: ✅ Complete (November 14, 2025) - Brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd), Outfit font, dark theme (#110d28), logo on all service pages
 - **Status**: ✅ Active with Stripe checkout (19 pages operational)
 - **Hosting**: Vercel
 - **Documentation**: `apps/web/README.md`
 
-### **Workflow Automation**
+### **Automation**
 
-**n8n** (Workflow Engine):
+**Antigravity** (Primary):
+- Runs on RackNerd. Primary automation engine. Handles most workflows.
+
+**n8n** (Backup/Reference Only):
 - **URL**: http://n8n.rensto.com (or http://172.245.56.50:5678)
-- **Version**: Community Edition v1.122.5
-- **VPS**: RackNerd
-- **API**: REST API with Bearer token
-- **Workflows**: 56 active (was 68, cleaned up)
+- Use only when Antigravity cannot perform the task. Workflows kept as reference.
 
-**Airtable** (Database):
-- **API**: REST API with PAT
-- **Bases**: 11 (Operations, Business, Clients, Financial, etc.)
-- **Records**: 867 total
-- **MCP Server**: Configured
+### **Database**
+
+**PostgreSQL + Redis** (Primary — target):
+- PostgreSQL: app/customer data. Migration from Firestore in progress.
+- Redis: cache, sessions, queues. See `.env.example` for placeholders.
+
+**Firestore** (Retired): Migration to Postgres in progress.
+
+**Airtable.com** (Retired).
+
+**Aitable.ai** (In Use): Dashboards, syncs. See `tools/` for sync scripts.
 
 **Notion** (Documentation):
 - **API**: REST API with integration token

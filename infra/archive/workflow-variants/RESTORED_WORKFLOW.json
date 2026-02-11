@@ -1,0 +1,1327 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "path": "v1/marketplace/jobs/:product",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Marketplace_API_GET",
+      "position": [
+        -608,
+        96
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "id": "ba7a6856-6116-416a-9ccf-e49e9e0ea197",
+      "webhookId": "685abbf8-1571-451f-9853-12898b1a495c"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v1/marketplace/update/:product",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Marketplace_API_POST",
+      "position": [
+        -608,
+        480
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "id": "67d6fc42-0374-4522-92f2-c7d8e0e3e70e",
+      "webhookId": "c35e10e1-ec44-4be5-b5fd-90a11264aea6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Capture Product (from Timer .product or Webhook .params.product)\nconst product = .product || .params?.product || \"uad\";\n// 2. Capture Mode (from Timer .mode or Webhook .body.mode)\nconst mode = .mode || .body?.mode || \"generate\";\n\nreturn [{ json: { product, mode } }];"
+      },
+      "name": "Main_Router",
+      "position": [
+        -160,
+        288
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "40d5020e-42fc-4140-97f2-9f388260d080"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "projectId": "rensto",
+        "collection": "marketplace_configs",
+        "documentId": "={{ $json.product }}",
+        "operation": "get"
+      },
+      "name": "Upsert_to_Firestore",
+      "position": [
+        64,
+        288
+      ],
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "id": "fad0e4b1-bfdd-45cf-8fd4-c82179fe789e",
+      "credentials": {
+        "googleApi": {
+          "id": "HbI3P6PUIe8ATqzp",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ [generate, api-get, api-update].indexOf(.json.mode) }}"
+      },
+      "name": "Mode_Switch",
+      "position": [
+        288,
+        256
+      ],
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "id": "c1e58762-430f-49a6-b6b3-8491d2bbb273"
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node[\"Upsert_to_Firestore\"].json;\\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\\nconst phoneNumber = pick(config.phoneNumbers);\\nconst city = pick(config.cities);\\nconst collection = pick(config.collections || ['Classic']);\\nconst total = Math.round((config.basePrice || 2500) * 1.1 * (0.95 + Math.random() * 0.1));\\nreturn [{ json: { phoneNumber, city, collection, config, ListingPrice: total, uniqueHash: `mp-${config.slug}-${Date.now()}` } }];"
+      },
+      "name": "Pick_Random_Config",
+      "position": [
+        512,
+        96
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "4d098473-76ac-4b8d-b249-36f0d1c3db4d"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ 'Create a Facebook Marketplace listing for ' + $json.config.productName + '.\\\\n\\\\nDETAILS: ' + JSON.stringify($json) + '\\\\n\\\\nGenerate catching title and description. Include ' + $json.phoneNumber + ' prominently. Return JSON { \"title\": \"...\", \"description\": \"...\" }' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Anthropic",
+      "position": [
+        736,
+        96
+      ],
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "id": "ba4b3ae3-e3ca-4dad-af16-a5b8d11274ad",
+      "credentials": {
+        "anthropicApi": {
+          "id": "Mi6bprya2ly47Vry",
+          "name": "szender"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $node[\"Pick_Random_Config\"].json.config.prompts[0], \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+        "options": {}
+      },
+      "id": "kie-image-1",
+      "name": "kie_image_1",
+      "position": [
+        1088,
+        96
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "={{ $node[\"Upsert_to_Firestore\"].json.dataTableId }}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "Status",
+              "keyValue": "Ready"
+            }
+          ]
+        }
+      },
+      "name": "API_Get_Pending_Row",
+      "position": [
+        512,
+        288
+      ],
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "id": "fc784392-4f12-45d1-8fbc-80cc2ea52c64"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "={{ $node[\"Upsert_to_Firestore\"].json.dataTableId }}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "Image_URL",
+              "keyValue": "={{ $node[\"Marketplace_API_POST\"].json.body.imageUrl }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "schema": [
+            {
+              "displayName": "Status",
+              "id": "Status",
+              "type": "string"
+            }
+          ],
+          "value": {
+            "Status": "={{ $node[\"Marketplace_API_POST\"].json.body.status }}"
+          }
+        },
+        "options": {}
+      },
+      "name": "API_Update_Row",
+      "position": [
+        512,
+        480
+      ],
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "id": "49e286de-ed46-4adc-98a3-93366ed1553b"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 20
+            }
+          ]
+        }
+      },
+      "id": "8ef8ae24-4947-458e-80c1-e8b06e2a678d",
+      "name": "Every_20_Minutes1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -608,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt1, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+        "options": {}
+      },
+      "id": "da4f2c29-092b-44d9-9d3b-ee075b2dba74",
+      "name": "Kie_Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const taskId = $json.data?.taskId;\nif (!taskId) throw new Error('Kie.ai Error: ' + ($json.msg || 'No taskId'));\nconst prev = $('Generate Config1').first().json;\nreturn [{ json: { ...prev, taskId1: taskId, pollUrl1: 'https://api.kie.ai/api/v1/jobs/recordInfo?taskId=' + taskId } }];"
+      },
+      "id": "0ab87795-6636-4b5a-b80a-9542eeca0824",
+      "name": "Store_Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 45
+      },
+      "id": "312b61e2-18ed-4945-95f1-b45e5f831d59",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        0
+      ],
+      "webhookId": "a8e38f45-b7e2-4ccb-a654-1a61574a1b86"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pollUrl1 }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b51da029-6af7-4974-aec9-a0b01cc712a1",
+      "name": "Poll",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2432,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $(\"Store_Task\").first().json;\nlet url1 = '';\ntry { if ($json.data?.state === 'success') url1 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) { console.log('Extract 1 parse error:', e.message); }\nif (!url1) { console.log('Image 1 failed, continuing...'); }\nreturn [{ json: { ...prev, Image_URL: url1 || '' } }];"
+      },
+      "id": "ab2869dd-af93-45f7-9c32-dd1e4bfb1b67",
+      "name": "Extract",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2656,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt2, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+        "options": {}
+      },
+      "id": "3751e266-0cca-417c-a572-bec16da87174",
+      "name": "Kie_Image_4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const taskId = $json.data?.taskId;\nif (!taskId) throw new Error('Kie.ai Error Image 2');\nconst prev = $(\"Extract\").first().json;\nreturn [{ json: { ...prev, taskId2: taskId, pollUrl2: 'https://api.kie.ai/api/v1/jobs/recordInfo?taskId=' + taskId } }];"
+      },
+      "id": "e71ac23c-97df-4a5f-89bb-6a01dd142d9e",
+      "name": "Store_Task_4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3104,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 45
+      },
+      "id": "6c79840d-9799-4603-aaf2-a6ab75c6107f",
+      "name": "Wait_4",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3328,
+        0
+      ],
+      "webhookId": "d425c909-d9ea-472c-817f-b64287df1cf8"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pollUrl2 }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "948e999f-272b-49eb-a02b-c63c1ad6aa04",
+      "name": "Poll_4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3552,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $(\"Store_Task_4\").first().json;\nlet url2 = '';\ntry { if ($json.data?.state === 'success') url2 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) { console.log('Extract 2 parse error:', e.message); }\nif (!url2) { console.log('Image 2 failed, continuing...'); }\nreturn [{ json: { ...prev, Image_URL2: url2 || '' } }];"
+      },
+      "id": "49a801f2-55b9-4350-98a5-60f4b18176ff",
+      "name": "Extract_4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3776,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt3, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+        "options": {}
+      },
+      "id": "fcefc6c6-9a0b-46fc-9d13-5af074549136",
+      "name": "Kie_Image_5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4000,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const taskId = $json.data?.taskId;\nif (!taskId) throw new Error('Kie.ai Error Image 3');\nconst prev = $(\"Extract_4\").first().json;\nreturn [{ json: { ...prev, taskId3: taskId, pollUrl3: 'https://api.kie.ai/api/v1/jobs/recordInfo?taskId=' + taskId } }];"
+      },
+      "id": "53e86e3f-ec6f-4922-8ee7-b4f5f95cc98d",
+      "name": "Store_Task_5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 45
+      },
+      "id": "1cf7aadf-23cd-42fe-9b1f-00429a632a2e",
+      "name": "Wait_5",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4448,
+        0
+      ],
+      "webhookId": "dc0a4367-cd67-4ed3-9990-b95b9adc5c17"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pollUrl3 }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c82d648f-de85-4223-9333-b462b5ea798f",
+      "name": "Poll_5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $(\"Store_Task_5\").first().json;\nlet url3 = '';\ntry { if ($json.data?.state === 'success') url3 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) { console.log('Extract 3 parse error:', e.message); }\nif (!url3) { console.log('Image 3 failed, continuing...'); }\nreturn [{ json: { ...prev, Image_URL3: url3 || '', Status: 'Available' } }];"
+      },
+      "id": "b0346825-eab1-4d98-81b6-119a3ac8fe1f",
+      "name": "Extract_5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4896,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// DFW Time Check - America/Chicago timezone\nconst now = new Date();\nconst dfwTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }));\nconst hour = dfwTime.getHours();\n// Operating hours: 7am to 11pm (7 to 22)\nconst isWithinHours = hour >= 7 && hour < 23;\n\n// Generate BOTH products every execution\nreturn [\n  { json: { isWithinHours, currentHour: hour, product: 'uad' } },\n  { json: { isWithinHours, currentHour: hour, product: 'missparty' } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        288
+      ],
+      "id": "47c6b590-8335-400c-af04-339d0ea9b59e",
+      "name": "Time_Check"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "61091d47-17ef-4261-8a82-ad9fc2c4ca84",
+              "leftValue": "={{ $json.isWithinHours }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        96
+      ],
+      "id": "c4c3ff2b-f427-4e13-a61d-bf20f31aca82",
+      "name": "Within_Operating_Hours"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $node[\"Upsert_to_Firestore\"].json.flowType === 'IMAGE' ? 0 : 1 }}",
+        "looseTypeValidation": true
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1536,
+        96
+      ],
+      "id": "a4225364-6a59-45dc-956a-b431f27b159b",
+      "name": "Route_to_Product"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "={{ $node[\"Upsert_to_Firestore\"].json.tableId }}",
+          "mode": "id",
+          "cachedResultName": "missPartyTable",
+          "cachedResultUrl": "/projects/6L20DLwgKEB5r0rn/datatables/lOkdHmJ3IHnz4cPR"
+        }
+      },
+      "id": "10f13b11-a09a-4dc7-ae4b-01de9c638196",
+      "name": "Get_Existing_Listings",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const existingItems = $input.all();\nconst existingConfigs = new Set();\nexistingItems.forEach(item => {\n  if (item.json.uniqueHash) existingConfigs.add(item.json.uniqueHash);\n});\n\nconst phoneNumber = \"+1-469-283-9855\";\nconst cities = [\"Dallas\", \"Fort Worth\", \"Arlington\", \"Plano\", \"Garland\", \"Irving\", \"McKinney\", \"Frisco\", \"Mesquite\", \"Grand Prairie\", \"Carrollton\", \"Richardson\", \"Lewisville\", \"Allen\", \"Flower Mound\"];\nconst scenarios = [\n  { setting: \"indoors\", kids: \"few\", balls: true, desc: \"Toddlers playing with colorful balls inside white bounce house in living room\" },\n  { setting: \"indoors\", kids: \"many\", balls: true, desc: \"Birthday party with kids jumping in white bouncy castle, colorful balls flying\" },\n  { setting: \"outdoors\", kids: \"few\", balls: false, desc: \"Two kids jumping in white bounce house in sunny backyard\" },\n  { setting: \"outdoors\", kids: \"many\", balls: true, desc: \"Backyard birthday party, white inflatable bouncer full of happy kids and balls\" },\n  { setting: \"indoors\", kids: \"few\", balls: false, desc: \"Kids jumping in white bounce house in garage, joyful moment\" },\n  { setting: \"outdoors\", kids: \"many\", balls: false, desc: \"Group of children bouncing in white inflatable castle at outdoor party\" }\n];\n\nfunction pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }\n\nconst scenario = pick(scenarios);\nconst city = pick(cities);\nconst hash = `missparty-${scenario.setting}-${scenario.kids}-${city}-${Date.now()}`;\n\nconst c = {\n  PhoneNumber: phoneNumber,\n  Location: city + ', Texas',\n  Setting: scenario.setting,\n  KidsCount: scenario.kids,\n  HasBalls: scenario.balls,\n  ScenarioDesc: scenario.desc,\n  uniqueHash: hash,\n  Price: 75,\n  ListingPrice: 75,\n  ProductName: \"White Bounce House Rental\",\n  ProductType: \"Inflatable Bouncer\",\n  Includes: \"Bouncy House, Blower, Undermat, Colorful Balls\",\n  RentalPeriod: \"24 hours\",\n  Delivery: \"Free pickup available. Delivery: $1/minute of driving.\",\n  Video_URL: '/opt/fb-marketplace-bot/video.mp4'\n};\n\nconst phone = 'CALL ' + c.PhoneNumber;\nreturn [{ json: { \n  ...c,\n  prompt1: `White inflatable bounce house, ${scenario.desc}, realistic photo, happy children, professional photography, bright natural lighting, text overlay: ${phone}`,\n  prompt2: `White bouncy castle ${scenario.setting === 'indoors' ? 'in living room' : 'in backyard'}, ${scenario.kids === 'many' ? 'multiple excited' : 'two happy'} kids jumping, ${scenario.balls ? 'colorful plastic balls everywhere' : 'clean white aesthetic'}, lifestyle photography`,\n  prompt3: `White inflatable bouncer rental setup, ${scenario.setting === 'outdoors' ? 'outdoor party setting' : 'indoor celebration'}, ${scenario.kids === 'many' ? 'birthday party atmosphere with children' : 'small family gathering'}, professional product photo`\n}}];"
+      },
+      "id": "28635217-4b44-49fa-b8e1-41f196a5d574",
+      "name": "Generate_Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('Extract 7').first().json;\nlet title = d.ProductName + ' - ' + d.RentalPeriod + ' ' + d.ProductType;\nlet desc = d.ProductName + ' for rent! ' + d.RentalPeriod + ' rental includes: ' + d.Includes + '. ' + d.Delivery + ' Price: $' + d.ListingPrice + '. CALL ' + d.PhoneNumber + '!';\ntry { \n  const t = $json.message?.content?.[0]?.text || ''; \n  const m = t.match(/\\{[\\s\\S]*\\}/); \n  if (m) { \n    const p = JSON.parse(m[0]); \n    title = p.title || title; \n    desc = p.description || desc; \n  } \n} catch(e) {}\nreturn [{ json: { ...d, ListingTitle: title, ListingDescription: desc } }];"
+      },
+      "id": "560d61b4-b079-48ba-ae65-057c0586dc41",
+      "name": "Parse_Copy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lOkdHmJ3IHnz4cPR",
+          "mode": "list",
+          "cachedResultName": "missPartyTable",
+          "cachedResultUrl": "/projects/6L20DLwgKEB5r0rn/datatables/lOkdHmJ3IHnz4cPR"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "uniqueHash",
+              "keyValue": "={{ $json.uniqueHash }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "uniqueHash": "={{ $json.uniqueHash }}",
+            "Status": "Ready",
+            "Price": "={{ $json.Price }}",
+            "ListingPrice": "={{ $json.ListingPrice }}",
+            "PhoneNumber": "={{ $json.PhoneNumber }}",
+            "Location": "={{ $json.Location }}",
+            "Video_URL": "={{ $json.Video_URL }}",
+            "Image_URL": "={{ $json.Image_URL }}",
+            "Image_URL2": "={{ $json.Image_URL2 }}",
+            "Image_URL3": "={{ $json.Image_URL3 }}",
+            "ListingTitle": "={{ $json.ListingTitle }}",
+            "ListingDescription": "={{ $json.ListingDescription }}",
+            "ProductName": "={{ $json.ProductName }}",
+            "ProductType": "={{ $json.ProductType }}",
+            "RentalPeriod": "={{ $json.RentalPeriod }}",
+            "Includes": "={{ $json.Includes }}",
+            "Delivery": "={{ $json.Delivery }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "uniqueHash",
+              "displayName": "uniqueHash",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ProductName",
+              "displayName": "ProductName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ProductType",
+              "displayName": "ProductType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Price",
+              "displayName": "Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ListingPrice",
+              "displayName": "ListingPrice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PhoneNumber",
+              "displayName": "PhoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "RentalPeriod",
+              "displayName": "RentalPeriod",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Includes",
+              "displayName": "Includes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Delivery",
+              "displayName": "Delivery",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ListingTitle",
+              "displayName": "ListingTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ListingDescription",
+              "displayName": "ListingDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image_URL2",
+              "displayName": "Image_URL2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image_URL3",
+              "displayName": "Image_URL3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Video_URL",
+              "displayName": "Video_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "ebc1426d-bab8-4ea5-8f83-89efcb60e5dc",
+      "name": "Save_to_Data_Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2656,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"bytedance/v1-pro-fast-image-to-video\",\n  \"input\": {\n    \"prompt\": \"A cinematic video of a beautiful white inflatable bounce house in a sunny backyard, children joyfully bouncing inside, gentle camera movement showcasing the bouncer from different angles, colorful balloons and party decorations visible, warm afternoon sunlight, shallow depth of field, ultra-realistic, festive party atmosphere, high quality video --ar 16:9\",\n    \"image_url\": \"{{ $json.Image_URL }}\",\n    \"resolution\": \"720p\",\n    \"duration\": \"5\"\n  }\n}",
+        "options": {}
+      },
+      "id": "55ab6016-fde8-4180-80fb-4296996dcc25",
+      "name": "Kie_video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2208,
+        192
+      ]
+    }
+  ],
+  "connections": {
+    "Every_20_Minutes": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Main_Router",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Main_Router": {
+      "main": [
+        [
+          {
+            "node": "Upsert_to_Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketplace_API_GET": {
+      "main": [
+        [
+          {
+            "node": "Time_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketplace_API_POST": {
+      "main": [
+        [
+          {
+            "node": "Time_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mode_Switch": {
+      "main": [
+        [
+          {
+            "node": "Pick_Random_Config",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "API_Get_Pending_Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "API_Update_Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick_Random_Config": {
+      "main": [
+        [
+          {
+            "node": "Anthropic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert_to_Firestore": {
+      "main": [
+        [
+          {
+            "node": "Mode_Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "anthropic": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "kie_image_1",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "kie_image_1": {
+      "main": [
+        [
+          {
+            "node": "Within_Operating_Hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse_result": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "save_final",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "poll_1": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "parse_result",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "wait_1": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "poll_1",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Every_20_Minutes1": {
+      "main": [
+        [
+          {
+            "node": "Time_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kie_Image": {
+      "main": [
+        [
+          {
+            "node": "Store_Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store_Task": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Poll",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll": {
+      "main": [
+        [
+          {
+            "node": "Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract": {
+      "main": [
+        [
+          {
+            "node": "Kie_Image_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kie_Image_4": {
+      "main": [
+        [
+          {
+            "node": "Store_Task_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store_Task_4": {
+      "main": [
+        [
+          {
+            "node": "Wait_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait_4": {
+      "main": [
+        [
+          {
+            "node": "Poll_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll_4": {
+      "main": [
+        [
+          {
+            "node": "Extract_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_4": {
+      "main": [
+        [
+          {
+            "node": "Kie_Image_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kie_Image_5": {
+      "main": [
+        [
+          {
+            "node": "Store_Task_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store_Task_5": {
+      "main": [
+        [
+          {
+            "node": "Wait_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait_5": {
+      "main": [
+        [
+          {
+            "node": "Poll_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll_5": {
+      "main": [
+        [
+          {
+            "node": "Extract_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_5": {
+      "main": [
+        []
+      ]
+    },
+    "Time_Check": {
+      "main": [
+        [
+          {
+            "node": "Main_Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Within_Operating_Hours": {
+      "main": [
+        [
+          {
+            "node": "Route_to_Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route_to_Product": {
+      "main": [
+        [
+          {
+            "node": "Kie_Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get_Existing_Listings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate_Config": {
+      "main": [
+        [
+          {
+            "node": "Kie_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_Copy": {
+      "main": [
+        [
+          {
+            "node": "Save_to_Data_Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Existing_Listings": {
+      "main": [
+        [
+          {
+            "node": "Generate_Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kie_video": {
+      "main": [
+        [
+          {
+            "node": "Parse_Copy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic": {
+      "main": [
+        [
+          {
+            "node": "kie_image_1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  },
+  "id": "nFGTkjYPOIbFoR82",
+  "name": "FB Marketplace Listing Generator (RESTORED)",
+  "staticData": {
+    "node:Every 20 Minutes1": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

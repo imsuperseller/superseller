@@ -4,7 +4,7 @@
 
 **Current Size:** ~330M (260M node_modules, 70M source code)
 
-**Last Audit:** October 5, 2025
+**Last Audit:** February 2026 | **Workflow JSONs:** Loose workflow variants moved to `archive/workflow-variants/`. Canonical production workflow: **`unified_marketplace_master_production.json`** at infra root. Generated/exported JSONs: **`workflow-artifacts/`** (gitignored). **n8n scripts:** **`n8n-scripts/`** (canonical push/validate); one-off scripts in `n8n-scripts/archive/`.
 
 ---
 
@@ -19,6 +19,8 @@ infra/
 ├── saas-frontend/            60K - Lead enrichment SaaS prototype (Next.js)
 ├── systemd/                  12K - systemd service configurations
 ├── design-tools/             12K - Design automation workflows
+├── video-merge/              60K - FFmpeg video merge microservice (Express)
+├── waha/                     4K  - WhatsApp automation (Docker; devlikeapro/waha-plus)
 ├── execute-optimization-phase4-5.sh - Optimization script
 ├── .env.example              - Environment variable template
 ├── .n8n-auth.env             - n8n authentication config
@@ -33,13 +35,13 @@ infra/
 
 **Configuration**: Active servers configured in `~/.cursor/mcp.json`
 
-### **Active MCP Servers** (13 configured)
+### **Active MCP Servers** (12 configured; context7 removed)
 
 #### **Local Servers** (6 in infra/mcp-servers/)
 
 | Server | Size | Location | Purpose |
 |--------|------|----------|---------|
-| **webflow-mcp-server** | 48M | infra/mcp-servers/webflow-mcp-server/ | Webflow CMS & Designer API (42 tools) |
+| **webflow-mcp-server** | 48M | infra/mcp-servers/webflow-mcp-server/ | Webflow CMS (⚠️ Webflow retired; legacy only) |
 | **make-mcp-server** | 31M | infra/mcp-servers/make-mcp-server/ | Make.com workflow automation |
 | **typeform-mcp-server** | 22M | infra/mcp-servers/typeform-mcp-server/ | Typeform forms & responses |
 | **quickbooks-mcp-server** | 7.6M | infra/mcp-servers/quickbooks-mcp-server/ | QuickBooks financial data |
@@ -52,11 +54,11 @@ infra/
 | Server | Type | Purpose |
 |--------|------|---------|
 | **n8n-mcp** | Docker | n8n workflow automation (63 tools) |
-| **airtable-mcp** | NPX | Airtable database operations |
+| **airtable-mcp** | NPX | Airtable.com operations (⚠️ Airtable.com retired; Aitable.ai in use for dashboards) |
 | **notion** | NPX | Notion workspace management |
 | **stripe** | Docker | Stripe payment processing |
 | **supabase** | NPX | Supabase database operations |
-| **context7** | NPX | Context management for RAG |
+| ~~context7~~ | ~~NPX~~ | Removed |
 | **shadcn** | NPX | Shadcn UI component library |
 
 ### **Development/Prototype Servers** (Not in config)
@@ -224,6 +226,27 @@ sudo systemctl start n8n
 **Contents**:
 - `design-to-automation-workflow.json` - Workflow for design automation
 
+### **video-merge/** (60K)
+
+**Purpose**: FFmpeg-based video merge microservice (Express + fluent-ffmpeg)
+
+**Contents**:
+- `server.js` - Express API for merging videos
+- `docker-compose.yml`, `Dockerfile` - Container setup
+- Uses: n8n workflows, KIE/TourReel-style video pipelines
+
+**Status**: ⚠️ Verify if in active use
+
+### **waha/** (4K)
+
+**Purpose**: WhatsApp automation via WAHA (devlikeapro/waha-plus)
+
+**Contents**:
+- `docker-compose.yml` - NOWEB engine; uses n8n_n8n-network
+- Session persistence in `./sessions`; dashboard/swagger enabled
+
+**Usage**: `docker-compose -f infra/waha/docker-compose.yml up -d`
+
 ### **execute-optimization-phase4-5.sh** (12K)
 
 **Purpose**: Optimization script (Phase 4-5)
@@ -370,8 +393,8 @@ rclone sync infra/ remote:rensto-infra-backup/
 
 ---
 
-**Last Updated:** October 5, 2025
-**Next Audit:** January 2026 (quarterly)
+**Last Updated:** February 2026
+**Next Audit:** April 2026 (quarterly)
 **Maintained By:** Rensto Team
-**Active MCP Servers**: 13 (6 local, 7 NPX/Docker)
+**Active MCP Servers**: 12 (context7 removed; universal-aggregator + notebooklm in Cursor)
 **Size**: ~330M (260M node_modules, 70M source code)

@@ -1,0 +1,795 @@
+{
+  "updatedAt": "2026-01-21T05:35:07.435Z",
+  "createdAt": "2026-01-21T05:35:07.435Z",
+  "id": "U6LqmzNwiKTkd0gM",
+  "name": "Miss Party Facebook Marketplace Audio Lead Analysis",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2b9f3fbf-2b43-49b5-9e6d-367af0c436ab",
+        "responseMode": "lastNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "a14d7511-ab63-40f8-90d9-ed6438f44700",
+      "name": "Receive WAV Files1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        8544,
+        4080
+      ],
+      "webhookId": "2b9f3fbf-2b43-49b5-9e6d-367af0c436ab"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "minConfidenceScore",
+              "value": 0.7,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "priorityKeywords",
+              "value": "urgent,critical,important,emergency",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailRecipient",
+              "value": "service@rensto.com",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "eab57d23-0d68-4c7f-92cc-c8c92305b96d",
+      "name": "Workflow Configuration1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8768,
+        4176
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "id-3",
+              "leftValue": "={{ $json.audioFile.mimetype }}",
+              "rightValue": "audio/wav",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2538a2cf-afb1-453f-920a-4d1b5a910849",
+      "name": "Check File Type1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        8992,
+        4176
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this Telnyx conversation insight data and extract lead information.\n\nThe input contains conversation insights from Telnyx AI with a summary of the call.\n\nExtract the following from the conversation_insights result field:\n- Customer phone number (from the summary or metadata.from field)\n- Service address (look for address mentions in the summary)\n- Customer name\n- Appointment time\n- Garage door issues mentioned\n- Call outcome\n\nInput data:\n{{ JSON.stringify($json, null, 2) }}\n\n**IMPORTANT: You MUST respond with ONLY a valid JSON object matching the schema. No explanations, no markdown code blocks, just the raw JSON.**",
+        "hasOutputParser": true,
+        "options": {
+          "maxIterations": 10,
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "6acf55e0-d988-48b1-989d-faa1c987cf71",
+      "name": "Analyze and Categorize Audio1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        9440,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-5-20250929",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {}
+      },
+      "id": "592be193-bb4b-4509-9bb4-44211edca368",
+      "name": "Anthropic Claude1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        9424,
+        4688
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "Mi6bprya2ly47Vry",
+          "name": "szender"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"topic\": {\n      \"type\": \"string\",\n      \"description\": \"Main topic or reason for the call\"\n    },\n    \"customerPhoneNumber\": {\n      \"type\": \"string\",\n      \"description\": \"Customer phone number - CRITICAL field\"\n    },\n    \"customerAddress\": {\n      \"type\": \"string\", \n      \"description\": \"Full service address - CRITICAL field\"\n    },\n    \"customerName\": {\n      \"type\": \"string\",\n      \"description\": \"Customer full name\"\n    },\n    \"appointmentTime\": {\n      \"type\": \"string\",\n      \"description\": \"Scheduled or preferred appointment time\"\n    },\n    \"garageDoorIssues\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"description\": \"List of garage door problems mentioned\"\n    },\n    \"keyPoints\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"description\": \"Key discussion points\"\n    },\n    \"sentiment\": {\n      \"type\": \"string\",\n      \"description\": \"Customer sentiment: positive, neutral, frustrated, urgent\"\n    },\n    \"priority\": {\n      \"type\": \"string\",\n      \"description\": \"Priority: high, medium, low\"\n    },\n    \"category\": {\n      \"type\": \"string\",\n      \"description\": \"Service type: repair, installation, replacement, maintenance, emergency\"\n    },\n    \"actionItems\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"description\": \"Follow-up actions needed\"\n    },\n    \"participants\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"description\": \"Call participants\"\n    },\n    \"confidenceScore\": {\n      \"type\": \"number\",\n      \"description\": \"Data extraction confidence 0-1\"\n    },\n    \"bookingOutcome\": {\n      \"type\": \"string\",\n      \"description\": \"Call result: booked, callback_requested, declined, incomplete\"\n    },\n    \"callerPhoneNumber\": {\n      \"type\": \"string\",\n      \"description\": \"Phone number that called in (from Telnyx caller ID)\"\n    },\n    \"callDuration\": {\n      \"type\": \"string\",\n      \"description\": \"Length of the call if available\"\n    },\n    \"missingInfo\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"description\": \"List of critical info that was NOT collected\"\n    }\n  },\n  \"required\": [\"customerPhoneNumber\", \"customerAddress\", \"bookingOutcome\"]\n}"
+      },
+      "id": "002e4652-c115-4e5a-819b-433a97c8cced",
+      "name": "Structure Analysis Output1",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        9584,
+        4688
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": false,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.customerPhoneNumber && $json.customerPhoneNumber !== 'NOT PROVIDED' && $json.customerPhoneNumber.trim() !== '' }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $json.customerAddress && $json.customerAddress !== 'NOT PROVIDED' && $json.customerAddress.trim() !== '' }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e6e8d283-8df8-45ab-9c1c-d18c3f9b9561",
+      "name": "Filter by Priority1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        9984,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "output",
+        "options": {}
+      },
+      "id": "7c6cff52-9785-4100-8066-a583d2f0889c",
+      "name": "Sort and Aggregate Results1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        10192,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailSubject",
+              "value": "=New Lead: {{ $json.output[0].topic || 'Audio Transcription Analysis' }} - Facebook Marketplace",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailBody",
+              "value": "=<html>\n    .critical-info-title { font-weight: bold; color: #d32f2f; margin-bottom: 15px; font-size: 20px; text-align: center; }\n    .critical-field { background-color: white; padding: 12px; margin: 10px 0; border-radius: 4px; border-left: 4px solid #d32f2f; }\n    .critical-field-label { font-weight: bold; color: #1a3a5c; margin-bottom: 5px; }\n    .critical-field-value { font-size: 18px; color: #d32f2f; font-weight: bold; }\n    .missing-field { background-color: #ffebee; border-left: 4px solid #d32f2f; }\n    .lead-info { background-color: #f8f9fa; border-left: 4px solid #a0d468; padding: 15px; margin-bottom: 25px; border-radius: 4px; }\n    .lead-info-title { font-weight: bold; color: #1a3a5c; margin-bottom: 10px; font-size: 16px; }\n    .lead-info-item { margin: 5px 0; color: #555; }\n    .attachment-note { background-color: #e3f2fd; border: 2px solid #a0d468; padding: 12px; border-radius: 8px; margin-top: 10px; text-align: center; color: #1a3a5c; font-size: 14px; }\n    .section { margin-bottom: 25px; border-left: 4px solid #a0d468; padding-left: 20px; }\n    .section-title { font-weight: bold; color: #1a3a5c; margin-bottom: 12px; font-size: 18px; }\n    .priority-high { color: #d32f2f; font-weight: bold; background-color: #ffebee; padding: 4px 8px; border-radius: 4px; display: inline-block; }\n    .priority-medium { color: #f57c00; font-weight: bold; background-color: #fff3e0; padding: 4px 8px; border-radius: 4px; display: inline-block; }\n    .priority-low { color: #388e3c; font-weight: bold; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px; display: inline-block; }\n    ul { margin: 8px 0; padding-left: 25px; }\n    li { margin: 6px 0; color: #555; }\n    .footer { background-color: #1a3a5c; color: white; padding: 20px; text-align: center; font-size: 12px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <div class=\"logo-section\">\n        <img src=\"http://172.245.56.50/missparty-logo.svg\" alt=\"Miss Party Premium Rentals\" class=\"logo\" />\n        <div class=\"company-name\">Miss Party Premium Rentals</div>\n        <div class=\"tagline\">Miss Party Premium Rentals</div>\n      </div>\n      <div class=\"lead-badge\">NEW LEAD - Facebook Marketplace</div>\n    </div>\n    <div class=\"content\">\n      <div class=\"critical-info\">\n        <div class=\"critical-info-title\">\ud83d\udea8 CRITICAL CONTACT INFORMATION</div>\n        <div class=\"critical-field {{ ($json.output[0].customerPhoneNumber && $json.output[0].customerPhoneNumber !== 'NOT PROVIDED') ? '' : 'missing-field' }}\">\n          <div class=\"critical-field-label\">\ud83d\udcde Customer Phone Number:</div>\n          <div class=\"critical-field-value\">{{ $json.output[0].customerPhoneNumber || 'NOT PROVIDED - URGENT: Follow up required!' }}</div>\n        </div>\n        <div class=\"critical-field {{ ($json.output[0].customerAddress && $json.output[0].customerAddress !== 'NOT PROVIDED') ? '' : 'missing-field' }}\">\n          <div class=\"critical-field-label\">\ud83d\udccd Service Address:</div>\n          <div class=\"critical-field-value\">{{ $json.output[0].customerAddress || 'NOT PROVIDED - URGENT: Follow up required!' }}</div>\n        </div>\n        {{ $json.output[0].customerName ? '<div class=\"critical-field\"><div class=\"critical-field-label\">\ud83d\udc64 Customer Name:</div><div class=\"critical-field-value\">' + $json.output[0].customerName + '</div></div>' : '' }}\n        {{ $json.output[0].appointmentTime ? '<div class=\"critical-field\"><div class=\"critical-field-label\">\ud83d\udcc5 Preferred Appointment Time:</div><div class=\"critical-field-value\">' + $json.output[0].appointmentTime + '</div></div>' : '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "74d17bd3-2750-4d3a-8b7d-5a677fdcb94e",
+      "name": "Format Email Content1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        10368,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "=service@rensto.com",
+        "subject": "={{ $json.emailSubject }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "attachments": {
+            "attachments": [
+              {
+                "binaryPropertyName": "audioFile"
+              }
+            ]
+          },
+          "bodyContentType": "html"
+        }
+      },
+      "id": "68c7e784-1e5d-4413-8e42-83088c2fdc3e",
+      "name": "Send via Outlook1",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        10720,
+        4464
+      ],
+      "webhookId": "3ee06e27-c258-4161-b8b8-a09faa281e36",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "EA2Fl9QT5h2HZoo9",
+          "name": "rensto"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload Audio File for Transcription",
+        "formDescription": "Upload your WAV audio file to get AI-powered transcription and analysis",
+        "formFields": {
+          "values": [
+            {
+              "fieldName": "audioFile",
+              "fieldLabel": "Audio File",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".wav, .mp3, .m4a",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Upload and Analyze"
+        }
+      },
+      "id": "d66e714e-5607-4428-9dc0-b4bdc18e93f3",
+      "name": "Upload Audio Form1",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.4,
+      "position": [
+        8544,
+        4272
+      ],
+      "webhookId": "ef3e65b3-be0b-40b6-bd1e-fc294535964d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "topic",
+              "value": "={{ $json.output.topic }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "customerPhoneNumber",
+              "value": "={{ $json.output.customerPhoneNumber }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "customerAddress",
+              "value": "={{ $json.output.customerAddress }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "customerName",
+              "value": "={{ $json.output.customerName }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "appointmentTime",
+              "value": "={{ $json.output.appointmentTime }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "garageDoorIssues",
+              "value": "={{ $json.output.garageDoorIssues }}",
+              "type": "array"
+            },
+            {
+              "id": "id-7",
+              "name": "keyPoints",
+              "value": "={{ $json.output.keyPoints }}",
+              "type": "array"
+            },
+            {
+              "id": "id-8",
+              "name": "sentiment",
+              "value": "={{ $json.output.sentiment }}",
+              "type": "string"
+            },
+            {
+              "id": "id-9",
+              "name": "priority",
+              "value": "={{ $json.output.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "id-10",
+              "name": "category",
+              "value": "={{ $json.output.category }}",
+              "type": "string"
+            },
+            {
+              "id": "id-11",
+              "name": "actionItems",
+              "value": "={{ $json.output.actionItems }}",
+              "type": "array"
+            },
+            {
+              "id": "id-12",
+              "name": "participants",
+              "value": "={{ $json.output.participants }}",
+              "type": "array"
+            },
+            {
+              "id": "id-13",
+              "name": "confidenceScore",
+              "value": "={{ $json.output.confidenceScore }}",
+              "type": "number"
+            },
+            {
+              "id": "id-14",
+              "name": "audioFileName",
+              "value": "={{ $('Workflow Configuration1').first().json.audioFile.filename || 'recording.wav' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "54292ca0-1c2f-4822-9996-f13c84afb202",
+      "name": "Flatten Analysis Output1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9792,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get binary from Workflow Configuration node\nconst workflowConfig = $('Workflow Configuration1').first();\nconst audioFileBinary = workflowConfig.binary?.audioFile;\n\n// Copy binary to current item\nif (audioFileBinary) {\n  items.forEach(item => {\n    if (!item.binary) item.binary = {};\n    item.binary.audioFile = audioFileBinary;\n  });\n}\n\nreturn items;"
+      },
+      "id": "067be7c0-c890-440f-909a-486c03481f79",
+      "name": "Copy Binary for Attachment1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10560,
+        4464
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "99a07db6-3213-4297-a3fc-930c92459c83",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "3f5619c3-f176-46d6-9981-fab1c40a5fb5",
+      "name": "Receive Telnyx Call1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        9216,
+        4656
+      ],
+      "webhookId": "99a07db6-3213-4297-a3fc-930c92459c83"
+    },
+    {
+      "parameters": {
+        "resource": "voice",
+        "operation": "speechToText",
+        "file": {
+          "__rl": true,
+          "mode": "file",
+          "value": "data"
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "id": "5656e4f0-952a-4277-ab09-8c23d3ee33f1",
+      "name": "Transcribe with Telnyx1",
+      "type": "@telnyx/n8n-nodes-telnyx-ai.telnyxAi",
+      "typeVersion": 1,
+      "position": [
+        9216,
+        4176
+      ],
+      "credentials": {
+        "telnyxApi": {
+          "id": "41YZEWKS7NoLVpXx",
+          "name": "uadgaragedoors"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "c6fbae22-efa1-4cd6-8c1e-9aba4e401686",
+      "name": "Check for New Calls Every 15 Min1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        8768,
+        4368
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "conversations",
+        "filters": {
+          "metadata_assistant_id": {
+            "__rl": true,
+            "value": "assistant-f1708158-c84e-46b0-8a91-1310688473a9",
+            "mode": "list",
+            "cachedResultName": "assistant-f1708158-c84e-46b0-8a91-1310688473a9"
+          }
+        },
+        "requestOptions": {}
+      },
+      "id": "bd58f25d-6b5c-4465-ad26-ffb1613a5e15",
+      "name": "Get Many Conversations1",
+      "type": "@telnyx/n8n-nodes-telnyx-ai.telnyxAi",
+      "typeVersion": 1,
+      "position": [
+        8992,
+        4464
+      ],
+      "credentials": {
+        "telnyxApi": {
+          "id": "41YZEWKS7NoLVpXx",
+          "name": "uadgaragedoors"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "conversations",
+        "operation": "getConversationInsights",
+        "conversationId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "requestOptions": {}
+      },
+      "id": "7075b193-fbd7-49b8-8a92-0c34a6f0bcc3",
+      "name": "Get Insights for Conversation1",
+      "type": "@telnyx/n8n-nodes-telnyx-ai.telnyxAi",
+      "typeVersion": 1,
+      "position": [
+        9216,
+        4464
+      ],
+      "credentials": {
+        "telnyxApi": {
+          "id": "41YZEWKS7NoLVpXx",
+          "name": "uadgaragedoors"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "627b57aa-dc62-40d8-9789-a6356d26a33d",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "156bbb0d-7094-4aef-84b4-213680c002ea",
+      "name": "Manual Trigger for Telnyx1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        8768,
+        4560
+      ],
+      "webhookId": "627b57aa-dc62-40d8-9789-a6356d26a33d"
+    }
+  ],
+  "connections": {
+    "Receive WAV Files1": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration1": {
+      "main": [
+        [
+          {
+            "node": "Check File Type1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check File Type1": {
+      "main": [
+        [
+          {
+            "node": "Transcribe with Telnyx1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze and Categorize Audio1": {
+      "main": [
+        [
+          {
+            "node": "Flatten Analysis Output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Claude1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze and Categorize Audio1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structure Analysis Output1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analyze and Categorize Audio1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter by Priority1": {
+      "main": [
+        [
+          {
+            "node": "Sort and Aggregate Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort and Aggregate Results1": {
+      "main": [
+        [
+          {
+            "node": "Format Email Content1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email Content1": {
+      "main": [
+        [
+          {
+            "node": "Copy Binary for Attachment1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Audio Form1": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten Analysis Output1": {
+      "main": [
+        [
+          {
+            "node": "Filter by Priority1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy Binary for Attachment1": {
+      "main": [
+        [
+          {
+            "node": "Send via Outlook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Telnyx Call1": {
+      "main": [
+        [
+          {
+            "node": "Analyze and Categorize Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe with Telnyx1": {
+      "main": [
+        [
+          {
+            "node": "Analyze and Categorize Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for New Calls Every 15 Min1": {
+      "main": [
+        [
+          {
+            "node": "Get Many Conversations1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Many Conversations1": {
+      "main": [
+        [
+          {
+            "node": "Get Insights for Conversation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Insights for Conversation1": {
+      "main": [
+        [
+          {
+            "node": "Analyze and Categorize Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger for Telnyx1": {
+      "main": [
+        [
+          {
+            "node": "Get Many Conversations1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:Check for New Calls Every 15 Min": {
+      "recurrenceRules": []
+    },
+    "node:Check for New Calls Every 15 Min1": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "56462894-0db9-40f1-83be-6fd5a57222bc",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-21T05:35:07.435Z",
+      "createdAt": "2026-01-21T05:35:07.435Z",
+      "role": "workflow:owner",
+      "workflowId": "U6LqmzNwiKTkd0gM",
+      "projectId": "6L20DLwgKEB5r0rn"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-12-23T05:11:46.666Z",
+      "createdAt": "2025-12-23T05:11:46.666Z",
+      "id": "1Ao2peGnVNTxvYS1",
+      "name": "facebook marketplace"
+    },
+    {
+      "updatedAt": "2026-01-02T04:35:17.120Z",
+      "createdAt": "2026-01-01T16:25:24.747Z",
+      "id": "6RcBeksqisLWoC6m",
+      "name": "miss party"
+    }
+  ]
+}

@@ -1,0 +1,493 @@
+{
+    "name": "Unified Marketplace Master [PRODUCTION-VERIFIED]",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 20
+                        }
+                    ]
+                }
+            },
+            "name": "Every 20 Minutes",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "options": {},
+                "path": "v1/marketplace/jobs/:product",
+                "responseMode": "lastNode"
+            },
+            "name": "Marketplace API GET",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "options": {},
+                "path": "v1/marketplace/update/:product",
+                "responseMode": "lastNode"
+            },
+            "name": "Marketplace API POST",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const get = $node[\"Marketplace API GET\"];\nconst post = $node[\"Marketplace API POST\"];\nlet product = 'uad';\nlet mode = 'generate';\nif (get) { product = $json.params.product || 'uad'; mode = 'api-get'; }\nelse if (post) { product = $json.params.product || 'uad'; mode = 'api-update'; }\nreturn [{ json: { product, mode } }];"
+            },
+            "name": "Main Router",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                250,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "authentication": "serviceAccount",
+                "operation": "get",
+                "projectId": "rensto",
+                "collection": "marketplace_configs",
+                "query": "={{ $json.product }}"
+            },
+            "name": "Upsert to Firestore",
+            "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+            "typeVersion": 1.1,
+            "position": [
+                450,
+                200
+            ],
+            "credentials": {
+                "googleApi": {
+                    "id": "HbI3P6PUIe8ATqzp",
+                    "name": "Google Service Account account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "dataType": "string",
+                "mode": "expression",
+                "output": "={{ [\"generate\", \"api-get\", \"api-update\"].indexOf($node[\"Main Router\"].json.mode) }}"
+            },
+            "name": "Mode Switch",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.4,
+            "position": [
+                650,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const config = $node[\"Upsert to Firestore\"].json;\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\nconst phoneNumber = pick(config.phoneNumbers);\nconst city = pick(config.cities);\nconst collection = pick(config.collections || ['Classic']);\nconst total = Math.round((config.basePrice || 2500) * 1.1 * (0.95 + Math.random() * 0.1));\nreturn [{ json: { phoneNumber, city, collection, config, ListingPrice: total, uniqueHash: `mp-${config.slug}-${Date.now()}` } }];"
+            },
+            "name": "Pick Random Config",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                850,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-5-20250929"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ 'Create a Facebook Marketplace listing for ' + $json.config.productName + '.\\n\\nDETAILS: ' + JSON.stringify($json) + '\\n\\nGenerate catching title and description. Include ' + $json.phoneNumber + ' prominently. Return JSON { \"title\": \"...\", \"description\": \"...\" }' }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Anthropic",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                1050,
+                50
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "Mi6bprya2ly47Vry",
+                    "name": "szender"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $node[\"Pick Random Config\"].json.config.prompts[0], \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+                "options": {}
+            },
+            "name": "kie-image-1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1250,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "name": "wait-1",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1450,
+                50
+            ],
+            "webhookId": "wait-1-multi"
+        },
+        {
+            "parameters": {
+                "url": "={{ \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + $node[\"kie-image-1\"].json.data.taskId }}",
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "poll-1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1650,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const d = $node[\"Pick Random Config\"].json;\nlet title = ''; let desc = '';\ntry { const p = JSON.parse($node[\"Anthropic\"].json.message.content[0].text.match(/\\{[\\s\\S]*\\}/)[0]); title = p.title; desc = p.description; } catch(e) {}\nreturn [{ json: { ...d, ListingTitle: title, ListingDescription: desc, Image_URL: JSON.parse($node[\"poll-1\"].json.data.resultJson).resultUrls[0] } }];"
+            },
+            "name": "parse-result",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1850,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "={{ $node[\"Upsert to Firestore\"].json.dataTableId }}"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "schema": [
+                        {
+                            "displayName": "uniqueHash",
+                            "id": "uniqueHash",
+                            "type": "string"
+                        },
+                        {
+                            "displayName": "Status",
+                            "id": "Status",
+                            "type": "string"
+                        },
+                        {
+                            "displayName": "Image_URL",
+                            "id": "Image_URL",
+                            "type": "string"
+                        },
+                        {
+                            "displayName": "Price",
+                            "id": "Price",
+                            "type": "number"
+                        }
+                    ],
+                    "value": {
+                        "uniqueHash": "={{ $json.uniqueHash }}",
+                        "ListingTitle": "={{ $json.ListingTitle }}",
+                        "ListingDescription": "={{ $json.ListingDescription }}",
+                        "Image_URL": "={{ $json.Image_URL }}",
+                        "Price": "={{ $json.ListingPrice }}",
+                        "Location": "={{ $json.city }}",
+                        "PhoneNumber": "={{ $json.phoneNumber }}",
+                        "Status": "Ready"
+                    }
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "uniqueHash",
+                            "keyValue": "={{ $json.uniqueHash }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "save-final",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                2050,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "={{ $node[\"Upsert to Firestore\"].json.dataTableId }}"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Status",
+                            "keyValue": "Ready"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "API Get Pending Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                850,
+                302
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "={{ $node[\"Upsert to Firestore\"].json.dataTableId }}"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Image_URL",
+                            "keyValue": "={{ $node[\"Marketplace API POST\"].json.body.imageUrl }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "schema": [
+                        {
+                            "displayName": "Status",
+                            "id": "Status",
+                            "type": "string"
+                        }
+                    ],
+                    "value": {
+                        "Status": "={{ $node[\"Marketplace API POST\"].json.body.status }}"
+                    }
+                },
+                "options": {}
+            },
+            "name": "API Update Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                850,
+                400
+            ]
+        }
+    ],
+    "connections": {
+        "Every 20 Minutes": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API GET": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API POST": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Main Router": {
+            "main": [
+                [
+                    {
+                        "node": "Upsert to Firestore",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Upsert to Firestore": {
+            "main": [
+                [
+                    {
+                        "node": "Mode Switch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mode Switch": {
+            "main": [
+                [
+                    {
+                        "node": "Pick Random Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "API Get Pending Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "API Update Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Pick Random Config": {
+            "main": [
+                [
+                    {
+                        "node": "Anthropic",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Anthropic": {
+            "main": [
+                [
+                    {
+                        "node": "kie-image-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "kie-image-1": {
+            "main": [
+                [
+                    {
+                        "node": "wait-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "wait-1": {
+            "main": [
+                [
+                    {
+                        "node": "poll-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "poll-1": {
+            "main": [
+                [
+                    {
+                        "node": "parse-result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "parse-result": {
+            "main": [
+                [
+                    {
+                        "node": "save-final",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

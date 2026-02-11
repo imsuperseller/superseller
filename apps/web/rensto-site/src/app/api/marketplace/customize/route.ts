@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 /**
  * POST /api/marketplace/customize
- * 
  * Handles workflow customization requests from the CustomizationModal.
- * Stores the request in Firestore and triggers the n8n Workflow Generalizer
- * webhook for processing.
  */
 export async function POST(req: NextRequest) {
     try {
@@ -27,45 +27,53 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const db = getFirestoreAdmin();
+        const resolvedEmail = parameters.email || customerEmail || null;
 
-        // Create a customization request record
-        const customizationRequest = {
-            workflowId,
-            parameters,
-            customerEmail: parameters.email || customerEmail || null,
-            status: 'pending',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+        // [MIGRATION] Phase 3: Write to Postgres (primary)
+        const record = await prisma.customizationRequest.create({
+            data: {
+                templateId: workflowId,
+                customerEmail: resolvedEmail,
+                parameters: parameters,
+                status: 'pending',
+            },
+        });
 
-        // Store in Firestore
-        const docRef = await db.collection(COLLECTIONS.CUSTOMIZATION_REQUESTS).add(customizationRequest);
+        // Backup: Firestore
+        await firestoreBackupWrite('marketplace/customize', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.CUSTOMIZATION_REQUESTS).add({
+                workflowId,
+                parameters,
+                customerEmail: resolvedEmail,
+                status: 'pending',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        });
 
         // Trigger n8n Workflow Generalizer webhook (if configured)
         const N8N_WEBHOOK_URL = process.env.N8N_CUSTOMIZE_WEBHOOK_URL;
-
         if (N8N_WEBHOOK_URL) {
             try {
                 await fetch(N8N_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        requestId: docRef.id,
+                        requestId: record.id,
                         workflowId,
                         parameters,
-                        customerEmail: customizationRequest.customerEmail,
+                        customerEmail: resolvedEmail,
                     }),
                 });
             } catch (webhookError) {
                 console.error('Failed to trigger n8n webhook:', webhookError);
-                // Don't fail the request if webhook fails - the request is still stored
             }
         }
 
         return NextResponse.json({
             success: true,
-            requestId: docRef.id,
+            requestId: record.id,
             message: 'Customization request submitted successfully',
         });
 

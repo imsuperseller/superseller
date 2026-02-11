@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 1: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { getDefaultFreeTrialEntitlements, UserEntitlements } from '@/types/entitlements';
 import { sendSlackNotification, SlackTemplates } from '@/lib/slack';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 // Configuration
 const N8N_LEAD_MACHINE_WEBHOOK = 'https://n8n.rensto.com/webhook/universal-lead-machine-v3-optimized';
@@ -32,22 +35,19 @@ export async function POST(req: Request) {
             );
         }
 
-        const db = getFirestoreAdmin();
         const normalizedEmail = email.toLowerCase().trim();
         const userDocId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
 
-        // 1. Check existing user and their entitlements
-        const userRef = db.collection('users').doc(userDocId);
-        const userSnap = await userRef.get();
+        // [MIGRATION] Phase 1: Read from Postgres first
+        let pgUser = await prisma.user.findUnique({ where: { id: userDocId } });
 
         let entitlements: UserEntitlements;
         let dashboardToken: string;
         let isNewUser = false;
 
-        if (userSnap.exists) {
-            const userData = userSnap.data()!;
-            entitlements = userData.entitlements || getDefaultFreeTrialEntitlements();
-            dashboardToken = userData.dashboardToken || uuidv4().slice(0, 8);
+        if (pgUser) {
+            entitlements = (pgUser.entitlements as unknown as UserEntitlements) || getDefaultFreeTrialEntitlements();
+            dashboardToken = pgUser.dashboardToken || uuidv4().slice(0, 8);
 
             // GUARDRAIL 1: Check if free trial is exhausted
             if (!entitlements.freeLeadsTrial) {
@@ -74,69 +74,121 @@ export async function POST(req: Request) {
                 );
             }
 
-            // GUARDRAIL 3: Rate limiting - check last request time
-            const lastRequestQuery = await db.collection('lead_requests')
-                .where('userId', '==', userDocId)
-                .orderBy('createdAt', 'desc')
-                .limit(1)
-                .get();
+            // GUARDRAIL 3: Rate limiting - check last request time (Postgres)
+            const lastRequest = await prisma.leadRequest.findFirst({
+                where: { userId: userDocId },
+                orderBy: { createdAt: 'desc' },
+            });
 
-            if (!lastRequestQuery.empty) {
-                const lastRequest = lastRequestQuery.docs[0].data();
-                const lastRequestTime = lastRequest.createdAt?.toDate();
-                if (lastRequestTime) {
-                    const hoursSinceLastRequest = (Date.now() - lastRequestTime.getTime()) / (1000 * 60 * 60);
-                    if (hoursSinceLastRequest < RATE_LIMIT_HOURS) {
-                        const hoursRemaining = Math.ceil(RATE_LIMIT_HOURS - hoursSinceLastRequest);
-                        return NextResponse.json(
-                            {
-                                error: 'Rate limit exceeded',
-                                message: `You can request new leads in ${hoursRemaining} hour${hoursRemaining > 1 ? 's' : ''}. Your previous request is still processing.`
-                            },
-                            { status: 429 }
-                        );
-                    }
+            if (lastRequest) {
+                const hoursSinceLastRequest = (Date.now() - lastRequest.createdAt.getTime()) / (1000 * 60 * 60);
+                if (hoursSinceLastRequest < RATE_LIMIT_HOURS) {
+                    const hoursRemaining = Math.ceil(RATE_LIMIT_HOURS - hoursSinceLastRequest);
+                    return NextResponse.json(
+                        {
+                            error: 'Rate limit exceeded',
+                            message: `You can request new leads in ${hoursRemaining} hour${hoursRemaining > 1 ? 's' : ''}. Your previous request is still processing.`
+                        },
+                        { status: 429 }
+                    );
                 }
             }
 
-            // Update token if missing
-            if (!userData.dashboardToken) {
-                await userRef.update({ dashboardToken });
+            // Update dashboardToken if missing
+            if (!pgUser.dashboardToken) {
+                await prisma.user.update({
+                    where: { id: userDocId },
+                    data: { dashboardToken },
+                });
             }
 
         } else {
-            // New user - create with free trial entitlements
+            // New user — create with free trial entitlements
             isNewUser = true;
             dashboardToken = uuidv4().slice(0, 8);
             entitlements = getDefaultFreeTrialEntitlements();
 
-            await userRef.set({
-                email: normalizedEmail,
-                name: name || null,
-                createdAt: FieldValue.serverTimestamp(),
-                dashboardToken,
-                entitlements
+            // [MIGRATION] Phase 1: Create in Postgres (primary)
+            pgUser = await prisma.user.create({
+                data: {
+                    id: userDocId,
+                    email: normalizedEmail,
+                    name: name || null,
+                    dashboardToken,
+                    entitlements: entitlements as any,
+                    status: 'lead',
+                    emailVerified: false,
+                    preferences: { language: 'en', emailNotifications: true, smsNotifications: false },
+                    source: 'organic',
+                },
+            });
+
+            // Backup: Firestore
+            await firestoreBackupWrite('free-leads/request new-user', async () => {
+                const db = getFirestoreAdmin();
+                await db.collection('users').doc(userDocId).set({
+                    email: normalizedEmail,
+                    name: name || null,
+                    createdAt: FieldValue.serverTimestamp(),
+                    dashboardToken,
+                    entitlements
+                });
             });
         }
 
         // 2. Decrement freeLeadsRemaining counter
         const newRemaining = Math.max(0, (entitlements.freeLeadsRemaining ?? FREE_TRIAL_LIMIT) - FREE_TRIAL_LIMIT);
-        await userRef.update({
-            'entitlements.freeLeadsRemaining': newRemaining,
-            'entitlements.freeLeadsTrial': newRemaining > 0 // Disable trial when exhausted
+        const updatedEntitlements = {
+            ...entitlements,
+            freeLeadsRemaining: newRemaining,
+            freeLeadsTrial: newRemaining > 0,
+        };
+
+        // [MIGRATION] Phase 1: Update entitlements in Postgres (primary)
+        await prisma.user.update({
+            where: { id: userDocId },
+            data: { entitlements: updatedEntitlements as any },
         });
 
-        // 3. Save lead request to Firestore with metadata
-        const docRef = await db.collection('lead_requests').add({
-            email: normalizedEmail,
-            userId: userDocId,
-            niche,
-            source: source || 'web_free_trial',
-            limit: FREE_TRIAL_LIMIT,
-            status: 'pending',
-            createdAt: FieldValue.serverTimestamp(),
-            ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
-            userAgent: req.headers.get('user-agent') || 'unknown'
+        // Backup: Firestore
+        await firestoreBackupWrite('free-leads/request update-entitlements', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection('users').doc(userDocId).update({
+                'entitlements.freeLeadsRemaining': newRemaining,
+                'entitlements.freeLeadsTrial': newRemaining > 0
+            });
+        });
+
+        // 3. Save lead request to Postgres (primary)
+        const leadRequest = await prisma.leadRequest.create({
+            data: {
+                userId: userDocId,
+                data: {
+                    email: normalizedEmail,
+                    niche,
+                    source: source || 'web_free_trial',
+                    limit: FREE_TRIAL_LIMIT,
+                    ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+                    userAgent: req.headers.get('user-agent') || 'unknown',
+                },
+                status: 'pending',
+            },
+        });
+
+        // Backup: Firestore
+        await firestoreBackupWrite('free-leads/request lead_request', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection('lead_requests').add({
+                email: normalizedEmail,
+                userId: userDocId,
+                niche,
+                source: source || 'web_free_trial',
+                limit: FREE_TRIAL_LIMIT,
+                status: 'pending',
+                createdAt: FieldValue.serverTimestamp(),
+                ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+                userAgent: req.headers.get('user-agent') || 'unknown'
+            });
         });
 
         // 4. Trigger n8n Webhook with enforced limit
@@ -146,13 +198,13 @@ export async function POST(req: Request) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                requestId: docRef.id,
+                requestId: leadRequest.id,
                 userId: userDocId,
                 email: normalizedEmail,
                 niche,
-                limit: FREE_TRIAL_LIMIT, // ENFORCED limit
+                limit: FREE_TRIAL_LIMIT,
                 source: 'web_free_trial',
-                isFreeTrialUser: true // Flag for n8n to respect limit
+                isFreeTrialUser: true
             })
         }).catch(err => {
             console.error('[FreeLeads] n8n Trigger Error:', err);
@@ -166,7 +218,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             success: true,
-            id: docRef.id,
+            id: leadRequest.id,
             dashboardUrl,
             leadsRemaining: newRemaining,
             message: isNewUser
@@ -182,4 +234,3 @@ export async function POST(req: Request) {
         );
     }
 }
-

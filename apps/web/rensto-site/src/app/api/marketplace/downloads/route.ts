@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import * as dbPayments from '@/lib/db/payments';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 /**
  * API Endpoint: /api/marketplace/downloads
@@ -13,7 +17,6 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { templateId, email, secret } = body;
 
-        // Basic validation
         if (!templateId || !email) {
             return NextResponse.json(
                 { success: false, error: 'templateId and email are required' },
@@ -21,58 +24,75 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Optional: Verify against a shared secret if provided in ENV
-        // const N8N_SECRET = process.env.N8N_API_SECRET;
-        // if (N8N_SECRET && secret !== N8N_SECRET) {
-        //     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-        // }
+        // [MIGRATION] Phase 3: Verify template exists in Postgres first
+        let templateName = 'Workflow Blueprint';
 
-        const db = getFirestoreAdmin();
+        const pgTemplate = await prisma.template.findUnique({
+            where: { id: templateId },
+            select: { name: true },
+        });
 
-        // 1. Verify template exists
-        const templateRef = db.collection(COLLECTIONS.TEMPLATES).doc(templateId);
-        const templateDoc = await templateRef.get();
-
-        if (!templateDoc.exists) {
-            return NextResponse.json(
-                { success: false, error: 'Template not found' },
-                { status: 404 }
-            );
+        if (pgTemplate) {
+            templateName = pgTemplate.name;
+        } else {
+            // Fallback: Firestore
+            console.info('[Migration] marketplace/downloads: Template not in Postgres');
+            const db = getFirestoreAdmin();
+            const templateRef = db.collection(COLLECTIONS.TEMPLATES).doc(templateId);
+            const templateDoc = await templateRef.get();
+            if (!templateDoc.exists) {
+                return NextResponse.json(
+                    { success: false, error: 'Template not found' },
+                    { status: 404 }
+                );
+            }
+            templateName = templateDoc.data()?.name || templateName;
         }
 
-        const templateData = templateDoc.data();
-
-        // 2. Create the secure download token (Matches logic in Stripe webhook)
-        // Token structure: templateId:customerEmail:timestamp
+        // Create secure download token
         const tokenData = `${templateId}:${email}:${Date.now()}`;
         const downloadToken = Buffer.from(tokenData).toString('base64url');
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rensto.com';
         const downloadUrl = `${baseUrl}/api/marketplace/download/${downloadToken}`;
 
-        // 3. Record the link generation in Firestore
-        const purchaseRef = db.collection(COLLECTIONS.PURCHASES).add({
+        // [MIGRATION] Phase 3: Record in Postgres (primary)
+        const normalizedEmail = email.toLowerCase().trim();
+        const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
+
+        await dbPayments.createPurchase({
+            userId,
             templateId,
-            customerEmail: email,
+            customerEmail: normalizedEmail,
             downloadToken,
             downloadUrl,
-            source: 'n8n_fulfillment_api',
-            timestamp: Timestamp.now()
+        });
+
+        // Backup: Firestore
+        await firestoreBackupWrite('marketplace/downloads POST', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.PURCHASES).add({
+                templateId,
+                customerEmail: email,
+                downloadToken,
+                downloadUrl,
+                source: 'n8n_fulfillment_api',
+                timestamp: Timestamp.now(),
+            });
         });
 
         await auditAgent.log({
             service: 'marketplace',
             action: 'fulfillment_link_generated',
             status: 'success',
-            details: { templateId, email, downloadUrl }
+            details: { templateId, email, downloadUrl },
         });
 
-        // 4. Return the generated details
         return NextResponse.json({
             success: true,
-            templateName: templateData?.name || 'Workflow Blueprint',
+            templateName,
             downloadUrl,
-            expiresIn: '72 hours', // Logic for expiration can be added to the download route later if needed
-            token: downloadToken
+            expiresIn: '72 hours',
+            token: downloadToken,
         });
 
     } catch (error: any) {
@@ -81,7 +101,7 @@ export async function POST(request: NextRequest) {
             service: 'marketplace',
             action: 'fulfillment_api_failed',
             status: 'error',
-            errorMessage: error.message
+            errorMessage: error.message,
         });
         return NextResponse.json(
             { success: false, error: 'Internal fulfillment error' },

@@ -1,0 +1,249 @@
+{
+    "name": "Unified Marketplace Master [RESTORED COMPLEX]",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 20
+                        }
+                    ]
+                }
+            },
+            "id": "schedule-trigger",
+            "name": "Every 20 Minutes1",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                48499.73788377864,
+                -3648
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const now = new Date();\nconst dfwTime = new Date(now.toLocaleString(\"en-US\", { timeZone: \"America/Chicago\" }));\nconst hour = dfwTime.getHours();\nconst isWithinHours = true;\nreturn [\n  { json: { isWithinHours: isWithinHours, currentHour: hour, product: \"uad\" } },\n  { json: { isWithinHours: isWithinHours, currentHour: hour, product: \"missparty\" } }\n];"
+            },
+            "id": "time-check",
+            "name": "Time Check",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                48723.73788377864,
+                -3328
+            ]
+        },
+        {
+            "parameters": {
+                "authentication": "serviceAccount",
+                "operation": "get",
+                "projectId": "rensto",
+                "collection": "marketplace_configs",
+                "documentId": "={{ $json.product }}"
+            },
+            "id": "firestore-get",
+            "name": "Upsert to Firestore",
+            "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+            "typeVersion": 1.1,
+            "position": [
+                48850,
+                -3328
+            ],
+            "credentials": {
+                "googleApi": {
+                    "id": "HbI3P6PUIe8ATqzp",
+                    "name": "Google Service Account account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "combinator": "and",
+                    "conditions": [
+                        {
+                            "id": "61091d47-17ef-4261-8a82-ad9fc2c4ca84",
+                            "leftValue": "={{ $node[\"Time Check\"].json.isWithinHours }}",
+                            "operator": {
+                                "operation": "true",
+                                "singleValue": true,
+                                "type": "boolean"
+                            },
+                            "rightValue": ""
+                        }
+                    ]
+                }
+            },
+            "id": "operating-hours",
+            "name": "Within Operating Hours",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                48947.73788377864,
+                -3328
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "expression",
+                "numberOutputs": 2,
+                "output": "={{ $node[\"Time Check\"].json.product === 'uad' ? 0 : 1 }}"
+            },
+            "id": "route-product",
+            "name": "Route to Product",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.4,
+            "position": [
+                49171.73788377864,
+                -3328
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "6T8jI35R2tX1Mni9"
+                }
+            },
+            "id": "get-listings-uad",
+            "name": "Get Existing Listings1",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                49395.73788377864,
+                -3424
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lOkdHmJ3IHnz4cPR"
+                }
+            },
+            "id": "get-listings-party",
+            "name": "Get Existing Listings",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                49395.73788377864,
+                -3232
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const numbers = [\"+1-469-535-7538\", \"+1-972-954-2407\", \"+1-972-628-3587\", \"+1-469-625-0960\"];\nconst cities = [\"Dallas\", \"Fort Worth\", \"Arlington\", \"Plano\", \"Garland\", \"Irving\", \"McKinney\", \"Frisco\", \"Mesquite\", \"Grand Prairie\", \"Carrollton\", \"Richardson\", \"Lewisville\", \"Allen\", \"Flower Mound\"];\nconst collections = [\"Classic™ Steel\", \"Bridgeport™ Steel\", \"Coachman®\", \"Modern Steel™\", \"Canyon Ridge® Collection\"];\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\nconst total = 2500;\nconst hash = `uad-${Date.now()}`;\nreturn [{ json: { PhoneNumber: pick(numbers), Location: pick(cities) + ', Texas', Collection: pick(collections), Size: '8x7', ListingPrice: total, uniqueHash: hash, prompt1: 'Garage door prompt 1', prompt2: 'Garage door prompt 2', prompt3: 'Garage door prompt 3' } }];"
+            },
+            "name": "Generate Config1",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                49619.73788377864,
+                -3424
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const phoneNumber = \"+1-469-283-9855\";\nconst city = \"Dallas\";\nconst hash = `missparty-${Date.now()}`;\nreturn [{ json: { PhoneNumber: phoneNumber, Location: city, Price: 75, ListingPrice: 75, ProductName: \"White Bounce House Rental\", ProductType: \"Inflatable Bouncer\", uniqueHash: hash, prompt1: \"Bounce house prompt 1\", prompt2: \"Bounce house prompt 2\", prompt3: \"Bounce house prompt 3\" } }];"
+            },
+            "name": "Generate Config",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                49619.73788377864,
+                -3232
+            ]
+        }
+    ],
+    "connections": {
+        "Every 20 Minutes1": {
+            "main": [
+                [
+                    {
+                        "node": "Time Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Time Check": {
+            "main": [
+                [
+                    {
+                        "node": "Within Operating Hours",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Within Operating Hours": {
+            "main": [
+                [
+                    {
+                        "node": "Upsert to Firestore",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Upsert to Firestore": {
+            "main": [
+                [
+                    {
+                        "node": "Route to Product",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Route to Product": {
+            "main": [
+                [
+                    {
+                        "node": "Get Existing Listings1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Get Existing Listings",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Existing Listings1": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Config1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Existing Listings": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

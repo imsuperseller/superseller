@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { verifySession } from '@/lib/auth';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { AITableService } from '@/lib/services/AITableService';
 import AdminDashboardClient from './AdminDashboardClient';

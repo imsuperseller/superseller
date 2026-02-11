@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { verifySession } from '@/lib/auth';
+// [MIGRATION] Phase 1: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
     try {
@@ -23,13 +25,27 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const db = getFirestoreAdmin();
+        // [MIGRATION] Phase 1: Read from Postgres first
+        let userData: { email: string; name: string | null; dashboardToken: string | null } | null = null;
 
-        // 2. Get client's dashboard token using unified collections
-        const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
-        const userSnap = await userRef.get();
+        const pgUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { email: true, name: true, dashboardToken: true },
+        });
 
-        let userData = userSnap.exists ? userSnap.data() : null;
+        if (pgUser) {
+            userData = pgUser;
+        } else {
+            // Fallback: Firestore
+            console.info('[Migration] admin/impersonate: Postgres miss, falling back to Firestore');
+            const db = getFirestoreAdmin();
+            const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
+            const userSnap = await userRef.get();
+            if (userSnap.exists) {
+                const d = userSnap.data()!;
+                userData = { email: d.email, name: d.name || null, dashboardToken: d.dashboardToken || null };
+            }
+        }
 
         if (!userData) {
             return NextResponse.json(
@@ -38,9 +54,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const dashboardToken = userData.dashboardToken;
-
-        if (!dashboardToken) {
+        if (!userData.dashboardToken) {
             return NextResponse.json(
                 { error: 'User has no dashboard access configured' },
                 { status: 400 }
@@ -48,7 +62,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Return impersonation URL
-        const impersonationUrl = `/dashboard/${userId}?token=${dashboardToken}&impersonating=true`;
+        const impersonationUrl = `/dashboard/${userId}?token=${userData.dashboardToken}&impersonating=true`;
 
         return NextResponse.json({
             success: true,

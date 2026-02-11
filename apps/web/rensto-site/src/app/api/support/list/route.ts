@@ -1,44 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 5: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-
-/**
- * GET /api/support/list
- * 
- * Lists support cases from Firestore.
- * Supports filtering by customerId.
- */
+import prisma from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
         const customerId = searchParams.get('customerId');
 
-        const db = getFirestoreAdmin();
-        let query: any = db.collection(COLLECTIONS.SUPPORT_CASES);
+        // [MIGRATION] Phase 5: Read from Postgres first
+        try {
+            const where = customerId ? { customerId } : {};
+            const cases = await prisma.supportCase.findMany({
+                where,
+                orderBy: { createdAt: 'desc' },
+            });
 
-        if (customerId) {
-            query = query.where('customerId', '==', customerId);
+            return NextResponse.json({
+                success: true,
+                cases: cases.map(c => ({
+                    ...c,
+                    createdAt: c.createdAt.toISOString(),
+                    updatedAt: c.updatedAt.toISOString(),
+                })),
+            });
+        } catch (pgError) {
+            // Fallback: Firestore
+            console.info('[Migration] support/list: Postgres fail, falling back to Firestore');
+            const db = getFirestoreAdmin();
+            let query: any = db.collection(COLLECTIONS.SUPPORT_CASES);
+            if (customerId) query = query.where('customerId', '==', customerId);
+
+            const snapshot = await query.orderBy('createdAt', 'desc').get();
+            const cases = snapshot.docs.map((doc: any) => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+                    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+                };
+            });
+
+            return NextResponse.json({ success: true, cases });
         }
-
-        // Note: orderBy might require an index in Firestore if combined with a filter
-        const snapshot = await query.orderBy('createdAt', 'desc').get();
-
-        const cases = snapshot.docs.map((doc: any) => {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                ...data,
-                // Convert Firestore timestamps to ISO strings for JSON serializability
-                createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
-                updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
-            };
-        });
-
-        return NextResponse.json({
-            success: true,
-            cases,
-        });
-
     } catch (error: any) {
         console.error('Support case list error:', error);
         return NextResponse.json(

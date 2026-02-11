@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
+import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
-// Ensure this API route is always dynamic and not statically evaluated at build time
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-// Lazily initialize OpenAI at request time to avoid build-time env access
 function getOpenAI(): OpenAI {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -28,36 +29,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 1: Analyze requirements
     const requirementsAnalysis = analyzeRequirements(requirements);
-
-    // Step 2: Select appropriate template
     const template = selectTemplate(requirementsAnalysis, projectInfo);
-
-    // Step 3: Generate proposal sections
     const proposalSections = await generateProposalSections(requirementsAnalysis, clientInfo, projectInfo, template);
-
-    // Step 4: Calculate pricing
     const pricing = calculatePricing(requirementsAnalysis, projectInfo);
-
-    // Step 5: Assemble final proposal
     const finalProposal = assembleProposal(proposalSections, pricing, clientInfo);
 
-    // Step 6: Save proposal to Firestore
-    const savedProposal = await saveProposalToFirestore(finalProposal, clientInfo, projectInfo);
+    // [MIGRATION] Phase 5: Save to Postgres (primary)
+    let savedProposal: { success: boolean; recordId: string } = { success: false, recordId: '' };
+    try {
+      // userId is required; use email as the user identifier
+      const userId = clientInfo.email || clientInfo.company || 'unknown';
+      const pgProposal = await prisma.consultation.create({
+        data: {
+          userId,
+          clientId: userId,
+          type: 'proposal',
+          status: 'new',
+          metadata: {
+            proposalId: finalProposal.id,
+            title: finalProposal.title,
+            client: clientInfo.company,
+            contact: clientInfo.contact,
+            email: clientInfo.email,
+            project: projectInfo.name,
+            content: finalProposal,
+          },
+        },
+      });
+      savedProposal = { success: true, recordId: pgProposal.id };
+    } catch (pgError) {
+      console.error('[Proposals] Postgres save failed:', pgError);
+    }
+
+    // Backup: Firestore
+    await firestoreBackupWrite('proposals/generate', async () => {
+      const db = getFirestoreAdmin();
+      const docRef = await db.collection(COLLECTIONS.PROPOSALS).add({
+        proposalId: finalProposal.id,
+        title: finalProposal.title,
+        client: clientInfo.company,
+        contact: clientInfo.contact,
+        email: clientInfo.email,
+        project: projectInfo.name,
+        status: 'new',
+        content: finalProposal,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+      if (!savedProposal.success) {
+        savedProposal = { success: true, recordId: docRef.id };
+      }
+    });
 
     await auditAgent.log({
       service: 'firebase',
       action: 'proposal_generated',
       status: 'success',
-      details: { proposalId: finalProposal.id, client: clientInfo.company, firestoreId: savedProposal.recordId }
+      details: { proposalId: finalProposal.id, client: clientInfo.company, firestoreId: savedProposal.recordId },
     });
 
     return NextResponse.json({
       success: true,
       proposal: finalProposal,
-      pricing: pricing,
-      savedProposal: savedProposal
+      pricing,
+      savedProposal,
     });
 
   } catch (error: any) {
@@ -66,7 +102,7 @@ export async function POST(request: NextRequest) {
       service: 'openai',
       action: 'proposal_generation_failed',
       status: 'error',
-      errorMessage: error.message
+      errorMessage: error.message,
     });
     return NextResponse.json(
       { success: false, error: 'Failed to generate proposal' },
@@ -76,25 +112,21 @@ export async function POST(request: NextRequest) {
 }
 
 function analyzeRequirements(requirements: any) {
-  const analysis = {
+  return {
     totalRequirements: countTotalRequirements(requirements),
     byCategory: countRequirementsByCategory(requirements),
     byPriority: countRequirementsByPriority(requirements),
     byComplexity: countRequirementsByComplexity(requirements),
     gaps: identifyGaps(requirements),
     conflicts: identifyConflicts(requirements),
-    recommendations: generateRecommendations(requirements)
+    recommendations: generateRecommendations(requirements),
   };
-
-  return analysis;
 }
 
 function countTotalRequirements(requirements: any) {
   let total = 0;
   for (const category in requirements) {
-    if (Array.isArray(requirements[category])) {
-      total += requirements[category].length;
-    }
+    if (Array.isArray(requirements[category])) total += requirements[category].length;
   }
   return total;
 }
@@ -102,9 +134,7 @@ function countTotalRequirements(requirements: any) {
 function countRequirementsByCategory(requirements: any) {
   const counts: any = {};
   for (const category in requirements) {
-    if (Array.isArray(requirements[category])) {
-      counts[category] = requirements[category].length;
-    }
+    if (Array.isArray(requirements[category])) counts[category] = requirements[category].length;
   }
   return counts;
 }
@@ -135,35 +165,16 @@ function countRequirementsByComplexity(requirements: any) {
 
 function identifyGaps(requirements: any) {
   const gaps = [];
-
-  // Check for missing business objectives
-  if (!requirements.business_objectives || requirements.business_objectives.length === 0) {
-    gaps.push('Missing business objectives');
-  }
-
-  // Check for missing functional requirements
-  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) {
-    gaps.push('Missing functional requirements');
-  }
-
-  // Check for missing technical requirements
-  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) {
-    gaps.push('Missing technical requirements');
-  }
-
+  if (!requirements.business_objectives || requirements.business_objectives.length === 0) gaps.push('Missing business objectives');
+  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) gaps.push('Missing functional requirements');
+  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) gaps.push('Missing technical requirements');
   return gaps;
 }
 
 function identifyConflicts(requirements: any) {
   const conflicts = [];
-
-  // Check for conflicting priorities
   const highPriorityCount = countRequirementsByPriority(requirements).high;
-  if (highPriorityCount > 10) {
-    conflicts.push('Too many high priority requirements');
-  }
-
-  // Check for conflicting constraints
+  if (highPriorityCount > 10) conflicts.push('Too many high priority requirements');
   const constraints = requirements.constraints || [];
   for (let i = 0; i < constraints.length; i++) {
     for (let j = i + 1; j < constraints.length; j++) {
@@ -172,86 +183,39 @@ function identifyConflicts(requirements: any) {
       }
     }
   }
-
   return conflicts;
 }
 
 function areConflicting(req1: any, req2: any) {
-  // Simple conflict detection logic
-  const req1Lower = req1.description.toLowerCase();
-  const req2Lower = req2.description.toLowerCase();
-
-  if (req1Lower.includes('fast') && req2Lower.includes('slow')) {
-    return true;
-  }
-  if (req1Lower.includes('cheap') && req2Lower.includes('expensive')) {
-    return true;
-  }
-  if (req1Lower.includes('simple') && req2Lower.includes('complex')) {
-    return true;
-  }
-
+  const r1 = req1.description.toLowerCase(), r2 = req2.description.toLowerCase();
+  if (r1.includes('fast') && r2.includes('slow')) return true;
+  if (r1.includes('cheap') && r2.includes('expensive')) return true;
+  if (r1.includes('simple') && r2.includes('complex')) return true;
   return false;
 }
 
 function generateRecommendations(requirements: any) {
-  const recommendations = [];
-
-  // Recommend based on gaps
-  if (!requirements.business_objectives || requirements.business_objectives.length === 0) {
-    recommendations.push('Define clear business objectives');
-  }
-
-  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) {
-    recommendations.push('Specify functional requirements');
-  }
-
-  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) {
-    recommendations.push('Define technical requirements');
-  }
-
-  // Recommend based on complexity
-  const complexCount = countRequirementsByComplexity(requirements).complex;
-  if (complexCount > 5) {
-    recommendations.push('Consider breaking down complex requirements');
-  }
-
-  return recommendations;
+  const recs = [];
+  if (!requirements.business_objectives || requirements.business_objectives.length === 0) recs.push('Define clear business objectives');
+  if (!requirements.functional_requirements || requirements.functional_requirements.length === 0) recs.push('Specify functional requirements');
+  if (!requirements.technical_requirements || requirements.technical_requirements.length === 0) recs.push('Define technical requirements');
+  if (countRequirementsByComplexity(requirements).complex > 5) recs.push('Consider breaking down complex requirements');
+  return recs;
 }
 
-function selectTemplate(requirementsAnalysis: any, projectInfo: any) {
-  // Simple template selection logic
-  if (projectInfo.type === 'automation') {
-    return 'automationProposal';
-  } else if (projectInfo.type === 'integration') {
-    return 'integrationProposal';
-  } else if (projectInfo.type === 'development') {
-    return 'customDevelopment';
-  } else {
-    return 'consultingProposal';
-  }
+function selectTemplate(_requirementsAnalysis: any, projectInfo: any) {
+  if (projectInfo.type === 'automation') return 'automationProposal';
+  if (projectInfo.type === 'integration') return 'integrationProposal';
+  if (projectInfo.type === 'development') return 'customDevelopment';
+  return 'consultingProposal';
 }
 
-async function generateProposalSections(requirementsAnalysis: any, clientInfo: any, projectInfo: any, template: string) {
+async function generateProposalSections(requirementsAnalysis: any, clientInfo: any, projectInfo: any, _template: string) {
   const sections: any = {};
-
-  // Generate each section using AI
-  const sectionNames = [
-    'executive-summary',
-    'project-overview',
-    'requirements-analysis',
-    'solution-approach',
-    'implementation-plan',
-    'timeline',
-    'pricing',
-    'team',
-    'next-steps'
-  ];
-
+  const sectionNames = ['executive-summary', 'project-overview', 'requirements-analysis', 'solution-approach', 'implementation-plan', 'timeline', 'pricing', 'team', 'next-steps'];
   for (const section of sectionNames) {
     sections[section] = await generateSection(section, requirementsAnalysis, clientInfo, projectInfo);
   }
-
   return sections;
 }
 
@@ -259,25 +223,16 @@ async function generateSection(section: string, requirementsAnalysis: any, clien
   try {
     const prompt = getSectionPrompt(section, requirementsAnalysis, clientInfo, projectInfo);
     const openai = getOpenAI();
-
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        {
-          role: 'system',
-          content: 'You are Rensto\'s Senior Systems Architect and Proposal Writer (The Justin Welsh Style). Your voice is calm, authoritative, and focused on logical systems and long-term leverage. Focus on how these automations build a durable business foundation.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
+        { role: 'system', content: 'You are Rensto\'s Senior Systems Architect and Proposal Writer (The Justin Welsh Style). Your voice is calm, authoritative, and focused on logical systems and long-term leverage. Focus on how these automations build a durable business foundation.' },
+        { role: 'user', content: prompt },
       ],
       max_tokens: 1000,
-      temperature: 0.7
+      temperature: 0.7,
     });
-
     return response.choices[0].message.content;
-
   } catch (error) {
     console.error(`Failed to generate ${section} section:`, error);
     return `[Error generating ${section} section]`;
@@ -294,85 +249,37 @@ function getSectionPrompt(section: string, requirementsAnalysis: any, clientInfo
     'timeline': `Create a project timeline for ${projectInfo.name} with the estimated duration and key dates.`,
     'pricing': `Generate pricing for ${projectInfo.name} with the estimated complexity and timeline.`,
     'team': `Describe the project team for ${projectInfo.name} with the required expertise and experience.`,
-    'next-steps': `Create next steps for ${projectInfo.name} with the timeline and deliverables.`
+    'next-steps': `Create next steps for ${projectInfo.name} with the timeline and deliverables.`,
   };
-
   return prompts[section] || `Generate content for the ${section} section.`;
 }
 
-function calculatePricing(requirementsAnalysis: any, projectInfo: any) {
+function calculatePricing(_requirementsAnalysis: any, _projectInfo: any) {
   const pricing = {
     model: 'fixed-price',
     basePrice: 10000,
-    adjustments: {
-      complexity: 1.5,
-      timeline: 1.2,
-      teamSize: 1.3,
-      risk: 1.1
-    },
+    adjustments: { complexity: 1.5, timeline: 1.2, teamSize: 1.3, risk: 1.1 },
     finalPrice: 0,
-    breakdown: {
-      development: 0,
-      testing: 0,
-      deployment: 0,
-      support: 0
-    }
+    breakdown: { development: 0, testing: 0, deployment: 0, support: 0 },
   };
-
-  // Apply adjustments
   pricing.finalPrice = pricing.basePrice * pricing.adjustments.complexity * pricing.adjustments.timeline * pricing.adjustments.teamSize * pricing.adjustments.risk;
-
-  // Calculate breakdown
   pricing.breakdown.development = pricing.finalPrice * 0.6;
   pricing.breakdown.testing = pricing.finalPrice * 0.2;
   pricing.breakdown.deployment = pricing.finalPrice * 0.1;
   pricing.breakdown.support = pricing.finalPrice * 0.1;
-
   return pricing;
 }
 
 function assembleProposal(sections: any, pricing: any, clientInfo: any) {
-  const proposal = {
+  return {
     id: generateProposalId(),
     title: `Proposal for ${clientInfo.company}`,
     client: clientInfo,
-    sections: sections,
-    pricing: pricing,
+    sections,
+    pricing,
     createdAt: new Date().toISOString(),
-    status: 'draft'
+    status: 'draft',
   };
-
-  return proposal;
-}
-
-async function saveProposalToFirestore(proposal: any, clientInfo: any, projectInfo: any) {
-  try {
-    const db = getFirestoreAdmin();
-    const docRef = await db.collection(COLLECTIONS.PROPOSALS).add({
-      proposalId: proposal.id,
-      title: proposal.title,
-      client: clientInfo.company,
-      contact: clientInfo.contact,
-      email: clientInfo.email,
-      project: projectInfo.name,
-      status: 'new',
-      content: proposal,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
-    });
-
-    return {
-      success: true,
-      recordId: docRef.id
-    };
-
-  } catch (error: any) {
-    console.error('Failed to save proposal to Firestore:', error);
-    return {
-      success: false,
-      error: error.message
-    };
-  }
 }
 
 function generateProposalId() {
@@ -386,14 +293,8 @@ export async function GET() {
     message: 'Proposal Generation API',
     endpoints: {
       POST: '/api/proposals/generate - Generate AI-powered proposal',
-      GET: '/api/proposals/generate - Get API information'
+      GET: '/api/proposals/generate - Get API information',
     },
-    features: [
-      'AI-powered proposal generation',
-      'Automatic section creation',
-      'Dynamic pricing calculation',
-      'Template selection',
-      'Firestore storage'
-    ]
+    features: ['AI-powered proposal generation', 'Automatic section creation', 'Dynamic pricing calculation', 'Template selection', 'PostgreSQL + Firestore storage'],
   });
 }

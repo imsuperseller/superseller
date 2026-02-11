@@ -4,7 +4,18 @@
 
 ---
 
-## Published Legal Pages
+## Canonical Legal Pages (this folder)
+
+| Page | File | Purpose |
+| :--- | :--- | :--- |
+| Privacy Policy | `privacy-policy.html` | Data handling, standalone page. |
+| Terms of Service | `terms-of-service.html` | User agreement, standalone page. |
+| LinkedIn Verification | `linkedin-verification.html` | Domain/app verification for LinkedIn. |
+| Index | `index.html` | Links to the three canonical pages above. |
+
+Duplicate variants (content-only, -complete, -webflow, -simple) are in `archive/` for reference only.
+
+## Published URLs (app)
 
 | Page | URL | Purpose |
 | :--- | :--- | :--- |

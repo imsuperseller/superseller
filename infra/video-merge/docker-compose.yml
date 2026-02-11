@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  video-merge:
+    build: .
+    container_name: video-merge
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./static:/app/static
+      # - ./background_luxury.mp3:/app/background_luxury.mp3
+    restart: always

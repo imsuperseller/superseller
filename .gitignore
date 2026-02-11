@@ -7,6 +7,7 @@ yarn-error.log*
 # Environment variables
 .env
 .env.local
+.env.vercel-pull
 .env.development.local
 .env.test.local
 .env.production.local
@@ -109,6 +110,8 @@ Thumbs.db
 # Database
 *.db
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
 *.sqlite3
 
 # Backup files
@@ -135,6 +138,17 @@ rclone.conf
 # Local development
 .local/
 local/
+
+# Private/operational notes (contact status, etc.)
+people-status-2026-01-21/
+_chat 2.txt
+
+# Local/probe residue and config that may contain secrets
+local_bot_config.json
+manual_cookies.json
+probe_output.txt
+probe_results.txt
+image_b64.txt
 
 # Test files
 test-results/
@@ -234,6 +248,9 @@ infra/mcp-servers/*/package-lock.json
 # n8n data
 infra/n8n-data/
 infra/n8n-workflows/backup/
+
+# Generated workflow artifacts (exported/transformed n8n JSON)
+infra/workflow-artifacts/*.json
 
 # Docker volumes
 infra/postgres-data/
@@ -376,3 +393,9 @@ data/*.db-*
 claude_desktop_config.json
 scripts/node_modules/
 apps/web/rensto-site/service-account.json
+
+# Secrets / credentials
+infra/rensto-svc.json
+docs/vault/FINANCIAL_VAULT.md
+**/service-account*.json
+**/*-svc.json

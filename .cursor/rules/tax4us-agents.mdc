@@ -6,8 +6,7 @@ alwaysApply: false
 
 # Tax4Us Agent System Rules
 
-**Note**: These workflows are exported from Tax4Us Cloud (https://tax4usllc.app.n8n.cloud).
-Work on them locally, then re-import to customer instance.
+**Note**: These workflows are exported from Tax4Us Cloud (https://tax4usllc.app.n8n.cloud). Work on them locally, then re-import to customer instance. **context7** is deprecated in main MCP config (see MCP_CONFIGURATION_STATUS.md); Tax4Us instance may still use it.
 
 ## Agent 1: Blog Master (zQIkACTYDgaehp6S)
 - 21 nodes total

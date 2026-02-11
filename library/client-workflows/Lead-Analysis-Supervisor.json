@@ -1,0 +1,165 @@
+{
+    "name": "Lead-Analysis-Supervisor",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "lead-analysis-webhook",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "webhook",
+            "name": "Telnyx Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                200,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "claude-sonnet-4-5-20250929",
+                "prompt": "Analyze this Telnyx conversation and extract: customer name, phone, address, and intent."
+            },
+            "id": "ai-analyst",
+            "name": "AI Lead Analyst",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                400,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "typeValidation": "loose",
+                        "version": 3
+                    },
+                    "conditions": [
+                        {
+                            "id": "partner-check",
+                            "leftValue": "={{ $json.partner }}",
+                            "rightValue": "uad",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "partner-router",
+            "name": "Partner Router",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                600,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.workiz.com/api/v1/lead/create/",
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Workiz-Api-Token",
+                            "value": "={{ $node[\"Rensto Vault\"].json.workiz_token }}"
+                        },
+                        {
+                            "name": "Workiz-Api-Secret",
+                            "value": "={{ $node[\"Rensto Vault\"].json.workiz_secret }}"
+                        }
+                    ]
+                },
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "first_name",
+                            "value": "={{ $json.customerName }}"
+                        },
+                        {
+                            "name": "phone",
+                            "value": "={{ $json.phone }}"
+                        },
+                        {
+                            "name": "address",
+                            "value": "={{ $json.address }}"
+                        }
+                    ]
+                }
+            },
+            "id": "workiz-push",
+            "name": "Workiz Push (UAD)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                800,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "toRecipients": "service@rensto.com",
+                "subject": "=New Miss Party Lead: {{ $json.customerName }}",
+                "bodyContent": "=<html><body>New lead detected for Miss Party...</body></html>"
+            },
+            "id": "outlook-push",
+            "name": "Outlook Notif (Miss Party)",
+            "type": "n8n-nodes-base.microsoftOutlook",
+            "typeVersion": 2,
+            "position": [
+                800,
+                400
+            ]
+        }
+    ],
+    "connections": {
+        "webhook": {
+            "main": [
+                [
+                    {
+                        "node": "ai-analyst",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-analyst": {
+            "main": [
+                [
+                    {
+                        "node": "partner-router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "partner-router": {
+            "main": [
+                [
+                    {
+                        "node": "workiz-push",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "outlook-push",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

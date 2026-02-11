@@ -1,19 +1,23 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 4: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import * as dbDashboard from '@/lib/db/dashboard';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * SECURE DATA BRIDGE
- * Allows n8n to push real execution metrics into Firestore for the Client Dashboard.
+ * Allows n8n to push real execution metrics into Postgres (and Firestore backup)
+ * for the Client Dashboard.
  */
 export async function POST(request: Request) {
     try {
         const authHeader = request.headers.get('Authorization');
         const syncSecret = process.env.DASHBOARD_SYNC_SECRET;
 
-        // Basic Secret Auth
         if (!syncSecret || authHeader !== `Bearer ${syncSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -21,7 +25,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const {
             clientId,
-            type, // 'lead_generation' | 'message_sent' | 'appointment_booked'
+            type,
             count = 1,
             metadata = {}
         } = body;
@@ -30,40 +34,75 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing clientId or type' }, { status: 400 });
         }
 
-        const db = getFirestoreAdmin();
-        const batch = db.batch();
-
+        // [MIGRATION] Phase 4: Write to Postgres (primary)
         // 1. Log the individual event
-        const logRef = db.collection(COLLECTIONS.USAGE_LOGS).doc();
-        batch.set(logRef, {
+        await dbDashboard.createUsageLog({
             clientId,
-            type,
-            count,
-            metadata,
+            agentId: type,
+            serviceType: type,
             status: 'completed',
-            createdAt: FieldValue.serverTimestamp()
+            metadata: { count, ...metadata },
         });
 
-        // 2. Increment counters on the client's service record for fast dashboard access
-        const clientRef = db.collection(COLLECTIONS.USERS).doc(clientId);
-
-        const incrementField = type === 'lead_generation' ? 'metrics.totalLeads' :
-            type === 'message_sent' ? 'metrics.totalMessages' :
-                type === 'appointment_booked' ? 'metrics.totalBookings' : null;
+        // 2. Increment counters on the user record
+        const incrementField = type === 'lead_generation' ? 'totalLeads' :
+            type === 'message_sent' ? 'totalMessages' :
+                type === 'appointment_booked' ? 'totalBookings' : null;
 
         if (incrementField) {
-            batch.update(clientRef, {
-                [incrementField]: FieldValue.increment(count),
-                'metrics.lastActivityAt': FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp()
-            });
+            // Update user metrics (stored as JSON entitlements or separate fields)
+            try {
+                const user = await prisma.user.findUnique({
+                    where: { id: clientId },
+                    select: { metrics: true },
+                });
+
+                const currentMetrics = (user?.metrics as Record<string, any>) || {};
+                const updatedMetrics = {
+                    ...currentMetrics,
+                    [incrementField]: (currentMetrics[incrementField] || 0) + count,
+                    lastActivityAt: new Date().toISOString(),
+                };
+
+                await prisma.user.update({
+                    where: { id: clientId },
+                    data: { metrics: updatedMetrics },
+                });
+            } catch (pgErr) {
+                console.warn('[Migration] sync-usage: Failed to update PG user metrics', pgErr);
+            }
         }
 
-        await batch.commit();
+        // Backup: Firestore
+        await firestoreBackupWrite('dashboard/sync-usage', async () => {
+            const db = getFirestoreAdmin();
+            const batch = db.batch();
+
+            const logRef = db.collection(COLLECTIONS.USAGE_LOGS).doc();
+            batch.set(logRef, {
+                clientId,
+                type,
+                count,
+                metadata,
+                status: 'completed',
+                createdAt: FieldValue.serverTimestamp(),
+            });
+
+            if (incrementField) {
+                const clientRef = db.collection(COLLECTIONS.USERS).doc(clientId);
+                batch.update(clientRef, {
+                    [`metrics.${incrementField}`]: FieldValue.increment(count),
+                    'metrics.lastActivityAt': FieldValue.serverTimestamp(),
+                    updatedAt: FieldValue.serverTimestamp(),
+                });
+            }
+
+            await batch.commit();
+        });
 
         return NextResponse.json({
             success: true,
-            message: `Logged ${count} ${type} for client ${clientId}`
+            message: `Logged ${count} ${type} for client ${clientId}`,
         });
 
     } catch (error: any) {

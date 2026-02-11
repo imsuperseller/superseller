@@ -1,0 +1,141 @@
+{
+    "name": "RENSTO_V3_MASTER_DYNAMIC",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "marketplace/downloads",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                100,
+                300
+            ],
+            "webhookId": "marketplace-downloads-v3"
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "projectId": "rensto",
+                "collection": "marketplace_configs",
+                "documentId": "={{ $json.body.product }}",
+                "options": {}
+            },
+            "id": "firestore-get-config",
+            "name": "Get Config",
+            "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+            "typeVersion": 1,
+            "position": [
+                300,
+                300
+            ],
+            "credentials": {
+                "googleApi": {
+                    "id": "HbI3P6PUIe8ATqzp",
+                    "name": "Google Service Account account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.flowType }}",
+                            "value2": "IMAGE"
+                        }
+                    ]
+                }
+            },
+            "id": "switch-flow",
+            "name": "Switch Flow",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                500,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "={{ $json.tableId }}"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "uniqueHash",
+                            "keyValue": "={{ $json.uniqueHash || 'default-hash-' + $now }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "n8n-datatable",
+            "name": "Save to Data Table",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                750,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## \u2705 V3 Master Workflow (Corrected)\nThis workflow implements the **Zero-Edit Architecture**.\n\n1. Reads from `marketplace_configs` (Seeded).\n2. Dynamically routes based on `flowType`.\n3. Saves directly to **n8n Data Tables** (No Airtable needed).",
+                "height": 200,
+                "width": 500
+            },
+            "id": "note-v3",
+            "name": "Note",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                100,
+                100
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Get Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Config": {
+            "main": [
+                [
+                    {
+                        "node": "Switch Flow",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Switch Flow": {
+            "main": [
+                [
+                    {
+                        "node": "Save to Data Table",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

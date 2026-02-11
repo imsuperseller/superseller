@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+// [MIGRATION] Phase 2: Firestore kept as fallback for template lookup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { AITableService } from '@/lib/services/AITableService';
+import prisma from '@/lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
@@ -20,7 +22,6 @@ export async function POST(req: Request) {
             metadata = {}
         } = body;
 
-        const db = getFirestoreAdmin();
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
         let mode: Stripe.Checkout.Session.Mode = 'payment';
 
@@ -68,18 +69,35 @@ export async function POST(req: Request) {
         // 2. Special Case: Marketplace Implementation (Legacy support)
         else if (flowType === 'marketplace-template') {
             mode = 'payment';
-            const doc = await db.collection(COLLECTIONS.TEMPLATES).doc(productId).get();
-            if (!doc.exists) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-            const workflow = doc.data();
-            let unitAmount = (workflow?.price || 97) * 100;
-            if (tier === 'install') unitAmount = (workflow?.installPrice || 797) * 100;
-            if (tier === 'custom') unitAmount = (workflow?.customPrice || 1497) * 100;
+
+            // [MIGRATION] Phase 2: Read template from Postgres first, then Firestore
+            let workflow: any = null;
+
+            const pgTemplate = await prisma.template.findUnique({ where: { id: productId } });
+            if (pgTemplate) {
+                workflow = pgTemplate;
+            } else {
+                // Fallback: Firestore
+                console.info('[Migration] checkout: Template not in Postgres, falling back to Firestore');
+                const db = getFirestoreAdmin();
+                const doc = await db.collection(COLLECTIONS.TEMPLATES).doc(productId).get();
+                if (!doc.exists) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+                workflow = doc.data();
+            }
+
+            if (!workflow) {
+                return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+            }
+
+            let unitAmount = (workflow.price || 97) * 100;
+            if (tier === 'install') unitAmount = (workflow.installPrice || 797) * 100;
+            if (tier === 'custom') unitAmount = (workflow.customPrice || 1497) * 100;
 
             lineItems.push({
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: `${workflow?.name} (${tier?.toUpperCase()})`,
+                        name: `${workflow.name} (${tier?.toUpperCase()})`,
                         description: `Secure access to the Rensto ${tier} solution`,
                     },
                     unit_amount: Math.round(unitAmount),
@@ -89,7 +107,7 @@ export async function POST(req: Request) {
 
             Object.assign(metadata, {
                 workflowId: productId,
-                workflowName: workflow?.name,
+                workflowName: workflow.name,
                 tier: tier
             });
         }

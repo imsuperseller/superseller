@@ -1,8 +1,11 @@
 # 🔥 Firebase Firestore - Comprehensive Technical Summary
 
+> [!WARNING]
+> **DEPRECATED**: Firestore is retired. Primary database is PostgreSQL + Redis. Migration in progress. See CLAUDE.md and CODEBASE_CONSISTENCY_MASTER_PLAN.md.
+
 **Last Updated**: December 11, 2025  
 **Project**: rensto  
-**Status**: ✅ **FULLY OPERATIONAL**
+**Status**: 🔄 **LEGACY** (migration to Postgres in progress)
 
 ---
 

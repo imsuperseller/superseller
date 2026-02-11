@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { verifySession } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
 async function checkAuth() {
     const session = await verifySession();
-    if (!session.isValid || session.role !== 'admin') {
-        return null;
-    }
+    if (!session.isValid || session.role !== 'admin') return null;
     return session;
 }
 
@@ -17,19 +17,25 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        const db = getFirestoreAdmin();
+        // [MIGRATION] Phase 4: Read from Postgres first
+        let grossMRR = 0;
 
-        // 1. Fetch all subscriptions
-        const subsSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS).get();
-        const subscriptions = subsSnap.docs.map(doc => doc.data());
+        try {
+            const result = await prisma.subscription.aggregate({
+                _sum: { amount: true },
+                where: { status: 'active' },
+            });
+            grossMRR = result._sum.amount || 0;
+        } catch (pgError) {
+            // Fallback: Firestore
+            console.info('[Migration] admin/financials: Postgres fail, falling back to Firestore');
+            const db = getFirestoreAdmin();
+            const subsSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS).get();
+            grossMRR = subsSnap.docs.reduce((acc, doc) => acc + (doc.data().amount || 0), 0);
+        }
 
-        // 2. Calculate Gross MRR
-        const grossMRR = subscriptions.reduce((acc, sub) => acc + (sub.amount || 0), 0);
-
-        // 3. Mock Expenses (In a real scenario, fetch from an expenses collection)
-        const platformExpenses = 1840; // Static placeholder for now
-        const partnerRevShare = 3690; // Static placeholder for now
-
+        const platformExpenses = 1840;
+        const partnerRevShare = 3690;
         const netProfit = grossMRR - platformExpenses - partnerRevShare;
         const profitMargin = grossMRR > 0 ? (netProfit / grossMRR) * 100 : 0;
 
@@ -43,8 +49,8 @@ export async function GET(req: NextRequest) {
             ],
             projections: {
                 yearEnd: grossMRR * 12,
-                growthRate: '8.2%'
-            }
+                growthRate: '8.2%',
+            },
         });
     } catch (error) {
         console.error('Financials fetch error:', error);

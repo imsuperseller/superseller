@@ -1,0 +1,134 @@
+{
+    "name": "Niche-Smart-Router: UAD & MissParty v1",
+    "nodes": [
+        {
+            "parameters": {
+                "conditions": {
+                    "conditions": [
+                        {
+                            "id": "partner-check",
+                            "leftValue": "={{ $json.partner }}",
+                            "rightValue": "David Szender",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ]
+                }
+            },
+            "id": "router-node",
+            "name": "Partner Router",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                400,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "use-david-infra",
+                            "name": "gologin_profile",
+                            "value": "david-primary",
+                            "type": "string"
+                        },
+                        {
+                            "id": "use-david-telnyx",
+                            "name": "telnyx_id",
+                            "value": "uad-voice-bot",
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "id": "david-infra-config",
+            "name": "Load David's Infrastructure",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3,
+            "position": [
+                650,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.workiz.com/api/v1/lead/create/",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Workiz-Api-Token",
+                            "value": "={{ $node['Vault'].json.workiz_token }}"
+                        },
+                        {
+                            "name": "Workiz-Api-Secret",
+                            "value": "={{ $node['Vault'].json.workiz_secret }}"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "first_name",
+                            "value": "={{ $json.firstName }}"
+                        },
+                        {
+                            "name": "phone",
+                            "value": "={{ $json.phone }}"
+                        },
+                        {
+                            "name": "job_source",
+                            "value": "Rensto Facebook Autoposter"
+                        }
+                    ]
+                }
+            },
+            "id": "workiz-sync",
+            "name": "Workiz CRM Sync",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                900,
+                200
+            ]
+        }
+    ],
+    "connections": {
+        "Partner Router": {
+            "main": [
+                [
+                    {
+                        "node": "Load David's Infrastructure",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Load Standard Infrastructure",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Load David's Infrastructure": {
+            "main": [
+                [
+                    {
+                        "node": "Workiz CRM Sync",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "description": "Blueprint for routing solution fulfillment to David Szender's specialized infrastructure (Workiz + GoLogin)."
+}

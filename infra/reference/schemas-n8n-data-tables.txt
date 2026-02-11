@@ -1,0 +1,75 @@
+data_table_column|CREATE TABLE "data_table_column" ("id" varchar(36) PRIMARY KEY NOT NULL, "name" varchar(128) NOT NULL, "type" varchar(32) NOT NULL, "index" integer NOT NULL, "dataTableId" varchar(36) NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), CONSTRAINT "UQ_8082ec4890f892f0bc77473a123" UNIQUE ("dataTableId", "name"), CONSTRAINT "FK_930b6e8faaf88294cef23484160" FOREIGN KEY ("dataTableId") REFERENCES "data_table" ("id") ON DELETE CASCADE)
+data_table_user_leads-ddf18921|CREATE TABLE "data_table_user_leads-ddf18921" (
+  "id" TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-' || lower(hex(randomblob(2))) || '-' || lower(hex(randomblob(2))) || '-' || lower(hex(randomblob(6)))),
+  "FullName" TEXT,
+  "Email" TEXT,
+  "PhoneNumber" TEXT,
+  "Source" TEXT,
+  "Status" TEXT,
+  "Channel" TEXT,
+  "Intent" TEXT,
+  "Urgency" TEXT,
+  "Message" TEXT,
+  "Company" TEXT,
+  "Website" TEXT,
+  "EnrichmentDataJSON" TEXT,
+  "ReplyEmailSubject" TEXT,
+  "ReplyEmailBody" TEXT,
+  "ReplyWhatsApp" TEXT,
+  "BookingLink" TEXT,
+  "Consent" INTEGER,
+  "OptedOut" INTEGER,
+  "Owner" TEXT,
+  "Notes" TEXT,
+  "createdAt" TEXT DEFAULT (datetime('now')),
+  "updatedAt" TEXT DEFAULT (datetime('now'))
+, "task_id" TEXT, "video_status" TEXT, "video_url" TEXT, "value_prop" TEXT, "search_query" TEXT, "location" TEXT, "generate_videos" TEXT, "send_emails" TEXT, "sender_name" TEXT, "sender_company" TEXT, "email_sent" BOOLEAN, "Address" TEXT, "City" TEXT, "Rating" TEXT, "ReviewsCount" TEXT, "scraped_at" TEXT, "Bio" TEXT, "Followers" TEXT, "Following" TEXT, "ProfileLink" TEXT, "SocialSource" TEXT, "PostsCount" TEXT, "SocialUsername" TEXT, "email_status" TEXT, "email_valid" BOOLEAN, "email_reason" TEXT, "lead_score" DOUBLE, "score_breakdown" TEXT, "recommended_action" TEXT, "outreach_notes" TEXT, "outreach_started_at" DATETIME, "current_sequence_step" TEXT, "initial_email_sent_at" DATETIME, "follow_up_1_sent_at" DATETIME, "follow_up_2_sent_at" DATETIME, "sequence_completed_at" DATETIME, "sequence_type" TEXT, "key_objections" TEXT, "email_1_sent_at" DATETIME, "email_2_sent_at" DATETIME, "email_3_sent_at" DATETIME, "email_4_sent_at" DATETIME)
+data_table_user_qpAmRd1UUe1ozHJS|CREATE TABLE "data_table_user_qpAmRd1UUe1ozHJS" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "callerPhoneNumber" TEXT, "customerName" TEXT, "Intent" TEXT, "bookingOutcome" TEXT, "transcript" TEXT)
+data_table_user_bZ4cVsCAmEwKteF5|CREATE TABLE "data_table_user_bZ4cVsCAmEwKteF5" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "submissionDate" DATETIME, "status" TEXT, "isometricImageUrl" TEXT, "livingRoomVideoUrl" TEXT, "kitchenVideoUrl" TEXT, "bedroomVideoUrl" TEXT, "patioVideoUrl" TEXT, "finalTourUrl" TEXT, "email" TEXT, "style" TEXT, "address" TEXT, "errorMessage" TEXT)
+data_table_user_ibJRrs9WDwEIWHUo|CREATE TABLE "data_table_user_ibJRrs9WDwEIWHUo" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "Title" TEXT, "URL" TEXT, "Thumbnail" TEXT, "quickSummary" TEXT, "deepDiveSummary" TEXT, "views" DOUBLE, "channel" TEXT)
+data_table_user_Tyj2d0DODzGLb5pt|CREATE TABLE "data_table_user_Tyj2d0DODzGLb5pt" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "title" TEXT, "URL" TEXT, "summary" TEXT, "upvotesEngagement" DOUBLE, "date" DATETIME)
+data_table_user_LXgGgJRdNi4fMhe4|CREATE TABLE "data_table_user_LXgGgJRdNi4fMhe4" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "URL" TEXT, "tweetText" TEXT, "likeCount" DOUBLE)
+data_table_user_8rIYDnE6HCk1WYW2|CREATE TABLE "data_table_user_8rIYDnE6HCk1WYW2" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "Headline" TEXT, "Summary" TEXT)
+data_table_user_qNnncwJkRkWEF5Sv|CREATE TABLE "data_table_user_qNnncwJkRkWEF5Sv" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "ideaTitle" TEXT, "Description" TEXT, "Why" TEXT, "Hook" TEXT, "Storyline" TEXT)
+data_table_user_mhnA6lPb9O0n0Ohn|CREATE TABLE "data_table_user_mhnA6lPb9O0n0Ohn" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "email" TEXT, "lead_id" TEXT, "company_name" TEXT, "stage" TEXT, "status" TEXT, "message_id" TEXT, "sent_at" TEXT, "next_send_at" TEXT, "reply_detected" TEXT, "reply_detected_at" DATETIME, "icebreaker" TEXT, "reply_preview" TEXT, "video_url" TEXT, "video_task_id" TEXT)
+data_table_user_v4MGSVDQpKs6we0y|CREATE TABLE "data_table_user_v4MGSVDQpKs6we0y" ("id" integer PRIMARY KEY NOT NULL, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "task_id" TEXT, "lead_email" TEXT, "script" TEXT, "status" TEXT, "video_url" TEXT, "completed_at" DATETIME)
+data_table_user_khACGlbEFiH20WnD|CREATE TABLE "data_table_user_khACGlbEFiH20WnD" ("id" integer PRIMARY KEY NOT NULL, "category" text, "title" text, "description" text, "preconditions" text, "inputs" text, "outputs" text, "n8n_nodes_json" text, "tags" text, "complexity" text, "notes" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_zu6ocI6JpWII3wXi|CREATE TABLE "data_table_user_zu6ocI6JpWII3wXi" ("id" integer PRIMARY KEY NOT NULL, "page_id" text, "since_cursor" text, "updated_at" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_qaRbNX2o1oqr3tLl|CREATE TABLE "data_table_user_qaRbNX2o1oqr3tLl" ("id" integer PRIMARY KEY NOT NULL, "metric_name" text, "status" text, "replacement_metric" text, "last_ok_date" text, "error_message" text, "detected_on_post" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_4396CnzI8THmdCo4|CREATE TABLE "data_table_user_4396CnzI8THmdCo4" ("id" integer PRIMARY KEY NOT NULL, "page_id" text, "metric_name" text, "metric_value" text, "end_time" text, "period" text, "collected_at" text, "raw_data" text, "status" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_ERnawHHjZd327dtp|CREATE TABLE "data_table_user_ERnawHHjZd327dtp" ("id" integer PRIMARY KEY NOT NULL, "post_id" text, "metric_name" text, "metric_value" text, "end_time" text, "collected_at" text, "raw_data" text, "status" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_CvjVb1DPdTfgBmKY|CREATE TABLE "data_table_user_CvjVb1DPdTfgBmKY" ("id" integer PRIMARY KEY NOT NULL, "page_id" text, "last_processed_created_time" text, "updated_at" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_wAW5KFBAUEicmBWh|CREATE TABLE "data_table_user_wAW5KFBAUEicmBWh" ("id" integer PRIMARY KEY NOT NULL, "media_id" text, "post_id" text, "created_time" text, "media_type" text, "source_url" text, "storage_path" text, "sha256" text, "size_bytes" text, "mime_type" text, "width" text, "height" text, "downloaded_at" text, "download_status" text, "raw_attachment" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_JdE6na2Cajy2BLmb|CREATE TABLE "data_table_user_JdE6na2Cajy2BLmb" ("id" integer PRIMARY KEY NOT NULL, "media_id" text, "post_id" text, "created_time" text, "media_type" text, "missing_reason" text, "source_url_attempted" text, "logged_at" text, "raw_attachment" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_cNmVPgkXeA1BBu4w|CREATE TABLE "data_table_user_cNmVPgkXeA1BBu4w" ("id" integer PRIMARY KEY NOT NULL, "plan_id" text, "plan_generated_at" text, "lookback_days" text, "window_start" text, "window_end" text, "seven_day_plan" text, "thirty_day_plan" text, "repurposing_map" text, "raw_plan" text, "status" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_GFUw8pcQkgeJtZXd|CREATE TABLE "data_table_user_GFUw8pcQkgeJtZXd" ("id" integer PRIMARY KEY NOT NULL, "insight_id" text, "analysis_date" text, "lookback_days" text, "window_start" text, "window_end" text, "total_posts_analyzed" text, "hook_performance" text, "topic_performance" text, "cta_performance" text, "tone_performance" text, "top_performers" text, "status" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))
+data_table_user_lOkdHmJ3IHnz4cPR|CREATE TABLE data_table_user_lOkdHmJ3IHnz4cPR (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uniqueHash TEXT,
+    Status TEXT,
+    ProductName TEXT,
+    ProductType TEXT,
+    Price REAL,
+    ListingPrice REAL,
+    PhoneNumber TEXT,
+    Location TEXT,
+    RentalPeriod TEXT,
+    Includes TEXT,
+    Delivery TEXT,
+    ListingTitle TEXT,
+    ListingDescription TEXT,
+    Image_URL TEXT,
+    Image_URL2 TEXT,
+    Image_URL3 TEXT,
+    Video_URL TEXT,
+    Collection TEXT,
+    Size TEXT,
+    Design TEXT,
+    Color TEXT,
+    Construction TEXT,
+    createdAt datetime(3),
+    updatedAt datetime(3)
+)
+data_table_user_uZYgLcoyhD5duBlS|CREATE TABLE "data_table_user_uZYgLcoyhD5duBlS" ("id" integer PRIMARY KEY NOT NULL, "facebookUrl" text, "inputUrl" text, "topLevelUrl" text, "topLevelReelUrl" text, "text" text, "time" datetime(3), "playCountRounded" real, "video_id" real, "playable_duration_in_ms" real, "media_typename" text, "owner_typename" text, "owner_id" real, "page_id" real, "tracking_top_level_post_id" real, "tracking_content_owner_id_new" real, "tracking_story_location" real, "tracking_story_attachment_style" text, "tracking_story_location_code" real, "tracking_story_attachment_style_code" text, "tracking_ent_attachment_type" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "reelAnalysis" TEXT, "transcript" TEXT, "hook_type" TEXT, "hook_text" TEXT, "topic_taxonomy" TEXT, "cta_type" TEXT, "viral_potential" TEXT, "viral_reasoning" TEXT, "emotional_anchor" TEXT, "production_notes" TEXT, "brand_voice_tone" TEXT, "brand_voice_polarity" TEXT, "risk_flags" TEXT, "improvement_suggestions" TEXT, "last_insight_date" TEXT, "avg_daily_views" DOUBLE)
+data_table_user_HClNJNQdS1XP0I2D|CREATE TABLE "data_table_user_HClNJNQdS1XP0I2D" ("id" integer PRIMARY KEY NOT NULL, "facebookUrl" text, "commentUrl" text, "commentId" text, "feedbackId" text, "date" datetime(3), "text" text, "profileUrl" text, "profilePicture" text, "profileId" text, "profileName" text, "likesCount" real, "commentsCount" real, "threadingDepth" real, "facebookId" real, "inputUrl" text, "postTitle" text, "replyToCommentId" text, "comments_json" text, "pageAdLibrary_is_business_page_active" text, "pageAdLibrary_id" text, "pageAdLibrary_woodhenge_creator_info" text, "parentComment_id" text, "parentComment_author_typename" text, "parentComment_author_name" text, "parentComment_author_short_name" text, "parentComment_author_gender" text, "parentComment_author_id" text, "parentReply_id" text, "parentReply_author_typename" text, "parentReply_author_name" text, "parentReply_author_short_name" text, "parentReply_author_gender" text, "parentReply_author_id" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "post_id" TEXT, "sentiment" TEXT, "is_question" TEXT, "is_reply" TEXT, "language" TEXT, "word_count" TEXT)
+data_table_user_gND439mG44E8Ze5U|CREATE TABLE "data_table_user_gND439mG44E8Ze5U" ("id" integer PRIMARY KEY NOT NULL, "execution_id" text, "timestamp" text, "status" text, "ideal_customer" text, "sources_selected" text, "search_query" text, "location" text, "leads_scraped" text, "leads_with_email" text, "leads_valid_email" text, "leads_stored" text, "avg_lead_score" text, "priority_leads" text, "standard_leads" text, "nurture_leads" text, "disqualified_leads" text, "duration_seconds" text, "createdAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), "updatedAt" datetime(3) NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')))

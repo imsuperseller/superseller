@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
-import { SecretaryConfig } from '@/types/firestore';
+import * as dbDashboard from '@/lib/db/dashboard';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export async function POST(req: Request) {
     try {
@@ -11,11 +13,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const db = getFirestoreAdmin();
-        const configRef = db.collection('secretary_configs').where('clientId', '==', clientId).limit(1);
-        const snapshot = await configRef.get();
-
-        const updateData: Partial<SecretaryConfig> = {
+        // [MIGRATION] Phase 5: Upsert to Postgres (primary)
+        const configId = `sec_${clientId}`;
+        await dbDashboard.upsertSecretaryConfig(configId, {
+            id: configId,
+            clientId,
             agentName: config.agentName,
             greeting: config.greeting,
             tone: config.tone,
@@ -24,27 +26,39 @@ export async function POST(req: Request) {
             availability: config.availability,
             transferNumber: config.transferNumber,
             n8nWebhookId: config.n8nWebhookId,
-            updatedAt: new Date().toISOString()
-        };
+            voiceId: config.voiceId || 'eleven_monica',
+            whatsappEnabled: config.whatsappEnabled ?? false,
+            calendarEnabled: config.calendarEnabled ?? false,
+        });
 
-        const cleanUpdateData = JSON.parse(JSON.stringify(updateData));
+        // Backup: Firestore
+        await firestoreBackupWrite('secretary/config', async () => {
+            const db = getFirestoreAdmin();
+            const snapshot = await db.collection('secretary_configs').where('clientId', '==', clientId).limit(1).get();
+            const cleanData = JSON.parse(JSON.stringify({
+                agentName: config.agentName,
+                greeting: config.greeting,
+                tone: config.tone,
+                businessContext: config.businessContext,
+                calendarLink: config.calendarLink,
+                availability: config.availability,
+                transferNumber: config.transferNumber,
+                n8nWebhookId: config.n8nWebhookId,
+                updatedAt: new Date().toISOString(),
+            }));
 
-        if (!snapshot.empty) {
-            // Update existing
-            const docId = snapshot.docs[0].id;
-            await db.collection('secretary_configs').doc(docId).update(cleanUpdateData);
-        } else {
-            // Create new
-            const newDoc = {
-                clientId,
-                voiceId: 'eleven_monica', // Default
-                whatsappEnabled: false,
-                calendarEnabled: false,
-                ...cleanUpdateData
-            };
-            // ID usually excluded from the spread if using .add(), but we want a clean doc
-            await db.collection('secretary_configs').add(newDoc);
-        }
+            if (!snapshot.empty) {
+                await db.collection('secretary_configs').doc(snapshot.docs[0].id).update(cleanData);
+            } else {
+                await db.collection('secretary_configs').add({
+                    clientId,
+                    voiceId: 'eleven_monica',
+                    whatsappEnabled: false,
+                    calendarEnabled: false,
+                    ...cleanData,
+                });
+            }
+        });
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export async function POST(request: Request) {
     try {
@@ -14,46 +17,49 @@ export async function POST(request: Request) {
             );
         }
 
-        const db = getFirestoreAdmin();
-        const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(clientId);
-
-        // Verify client exists
-        let clientExists = false;
+        // [MIGRATION] Phase 5: Upsert to Postgres (primary)
         try {
-            const clientDoc = await clientRef.get();
-            clientExists = clientDoc.exists;
-        } catch (readError) {
-            console.warn('[Intake] DB Read Failed (Mock Mode)', readError);
-        }
-
-        if (!clientExists) {
+            await prisma.requirement.upsert({
+                where: { id: clientId },
+                update: {
+                    metadata: config,
+                    status: 'submitted',
+                },
+                create: {
+                    id: clientId,
+                    clientId,
+                    type: 'onboarding',
+                    metadata: config,
+                    status: 'submitted',
+                },
+            });
+        } catch (pgError) {
+            // If demo mode and Postgres fails, allow passthrough
             if (clientId === 'demo-wizard' || clientId === 'demo-wizard-2') {
                 console.log('[Mock DB] Saved demo config:', config);
                 return NextResponse.json({ success: true, mode: 'demo' });
             }
+            console.error('[Intake] Postgres save failed:', pgError);
         }
 
-        // Save configuration to Firestore
-        try {
+        // Backup: Firestore
+        await firestoreBackupWrite('custom-solutions/intake', async () => {
+            const db = getFirestoreAdmin();
+            const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(clientId);
+            const clientDoc = await clientRef.get();
+
             await clientRef.set({
                 onboardingConfig: config,
                 status: 'onboarding_submitted',
                 updatedAt: FieldValue.serverTimestamp(),
-                // Add initial fields if creating new
-                ...(clientExists ? {} : {
+                ...(clientDoc.exists ? {} : {
                     createdAt: FieldValue.serverTimestamp(),
-                    id: clientId
-                })
+                    id: clientId,
+                }),
             }, { merge: true });
+        });
 
-            console.log(`[Intake] Configuration saved for client ${clientId}`);
-        } catch (dbError) {
-            console.warn('[Intake] Firestore save failed (likely missing credentials). Proceeding in mock mode.');
-            console.error(dbError);
-            // In dev, we allow continuing even if DB fails
-        }
-
-        // Trigger n8n Webhook (Fire-and-forget pattern)
+        // Trigger n8n Webhook (fire-and-forget)
         const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
         if (n8nWebhookUrl) {
             fetch(n8nWebhookUrl, {
@@ -63,8 +69,8 @@ export async function POST(request: Request) {
                     clientId,
                     timestamp: new Date().toISOString(),
                     config,
-                    source: 'rensto_intake_wizard'
-                })
+                    source: 'rensto_intake_wizard',
+                }),
             })
                 .then(res => {
                     if (!res.ok) console.error(`[Intake] n8n webhook failed: ${res.status} ${res.statusText}`);

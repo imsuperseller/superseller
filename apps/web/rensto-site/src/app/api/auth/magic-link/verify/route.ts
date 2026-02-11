@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken, type CustomSolutionsClient } from '@/lib/firebase-admin';
-import { Timestamp, FieldValue } from 'firebase-admin/firestore';
-
-// Cookie name for auth session
-const AUTH_COOKIE_NAME = 'rensto_client_session';
-const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
+// [MIGRATION] Phase 1: Firestore kept as fallback
+import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
+import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
     try {
@@ -16,15 +15,51 @@ export async function GET(request: NextRequest) {
             return NextResponse.redirect(new URL('/auth/error?reason=missing_token', request.url));
         }
 
-        const db = getFirestoreAdmin();
-        const tokenRef = db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token);
-        const tokenDoc = await tokenRef.get();
+        // [MIGRATION] Phase 1: Read token from Postgres first
+        let tokenData: {
+            id: string;
+            email: string;
+            clientId: string;
+            used: boolean;
+            expiresAt: Date;
+            redirectTo?: string;
+            role?: string;
+        } | null = null;
+        let tokenSource: 'postgres' | 'firestore' = 'postgres';
 
-        if (!tokenDoc.exists) {
-            return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
+        const pgToken = await prisma.magicLinkToken.findUnique({ where: { id: token } });
+
+        if (pgToken) {
+            tokenData = {
+                id: pgToken.id,
+                email: pgToken.email,
+                clientId: pgToken.clientId,
+                used: pgToken.used,
+                expiresAt: pgToken.expiresAt,
+            };
+        } else {
+            // Fallback: Firestore
+            tokenSource = 'firestore';
+            const db = getFirestoreAdmin();
+            const tokenRef = db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token);
+            const tokenDoc = await tokenRef.get();
+
+            if (!tokenDoc.exists) {
+                return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
+            }
+
+            const fsData = tokenDoc.data() as MagicLinkToken & { redirectTo?: string; role?: string };
+            tokenData = {
+                id: token,
+                email: fsData.email,
+                clientId: fsData.clientId,
+                used: fsData.used,
+                expiresAt: new Date(fsData.expiresAt.toMillis()),
+                redirectTo: fsData.redirectTo,
+                role: fsData.role,
+            };
+            console.info('[Migration] Token read from Firestore fallback');
         }
-
-        const tokenData = tokenDoc.data() as MagicLinkToken & { redirectTo?: string; role?: string };
 
         // Check if token was already used
         if (tokenData.used) {
@@ -32,26 +67,40 @@ export async function GET(request: NextRequest) {
         }
 
         // Check expiration
-        if (tokenData.expiresAt.toMillis() < Date.now()) {
-            // Delete expired token
-            await tokenRef.delete();
+        if (tokenData.expiresAt.getTime() < Date.now()) {
+            // Delete expired token from both stores
+            await prisma.magicLinkToken.delete({ where: { id: token } }).catch(() => {});
+            await firestoreBackupWrite('magic-link/verify-delete-expired', async () => {
+                const db = getFirestoreAdmin();
+                await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).delete();
+            });
             return NextResponse.redirect(new URL('/auth/error?reason=expired_token', request.url));
         }
 
-        // Token is valid - mark as used
-        await tokenRef.update({ used: true });
+        // Token is valid — mark as used in Postgres (primary)
+        await prisma.magicLinkToken.update({ where: { id: token }, data: { used: true } });
 
-        // Update client's last login
+        // Mark as used in Firestore (backup)
+        await firestoreBackupWrite('magic-link/verify-mark-used', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).update({ used: true });
+        });
+
+        // Update client's last login in Postgres
         if (tokenData.clientId !== 'admin') {
-            try {
-                const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(tokenData.clientId);
-                await clientRef.update({
+            await prisma.user.update({
+                where: { id: tokenData.clientId },
+                data: { lastLoginAt: new Date() },
+            }).catch(() => {});
+
+            // Backup: Firestore
+            await firestoreBackupWrite('magic-link/verify-lastlogin', async () => {
+                const db = getFirestoreAdmin();
+                await db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(tokenData!.clientId).update({
                     lastLogin: Timestamp.now(),
                     updatedAt: Timestamp.now()
-                });
-            } catch (clientError) {
-                console.log('Client update skipped (may not exist yet):', clientError);
-            }
+                }).catch(() => {});
+            });
         }
 
         // Create session data
@@ -93,62 +142,3 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(new URL('/auth/error?reason=verification_failed', request.url));
     }
 }
-
-// Helper function to verify session (for use in middleware or server components)
-export async function verifySession(): Promise<{
-    isValid: boolean;
-    email?: string;
-    clientId?: string;
-    role?: 'admin' | 'client';
-    entitlements?: any;
-    businessName?: string;
-}> {
-    try {
-        const cookieStore = await cookies();
-        const sessionCookie = cookieStore.get(AUTH_COOKIE_NAME);
-
-        if (!sessionCookie?.value) {
-            return { isValid: false };
-        }
-
-        const sessionData = JSON.parse(
-            Buffer.from(sessionCookie.value, 'base64').toString('utf-8')
-        );
-
-        // Check if session is still valid (30 days)
-        const sessionAge = Date.now() - sessionData.authenticatedAt;
-        if (sessionAge > COOKIE_MAX_AGE * 1000) {
-            return { isValid: false };
-        }
-
-        const db = getFirestoreAdmin();
-        const email = sessionData.email;
-        const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',');
-
-        // 1. Check for User record (Standard Identity)
-        const userRef = db.collection(COLLECTIONS.USERS).doc(email.replace(/[^a-z0-9]/g, '_'));
-        const userSnap = await userRef.get();
-        let userData = userSnap.exists ? userSnap.data() : null;
-
-        // 2. Check for Custom Solutions Client (Legacy/High-End Identity)
-        const csRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
-        const csSnap = await csRef.where('email', '==', email.toLowerCase()).limit(1).get();
-        let csData = !csSnap.empty ? csSnap.docs[0].data() : null;
-
-        return {
-            isValid: true,
-            email: sessionData.email,
-            clientId: sessionData.clientId,
-            role: ADMIN_EMAILS.includes(email) ? 'admin' : 'client',
-            // Unified Entitlements
-            entitlements: userData?.entitlements || csData?.entitlements || { pillars: [] },
-            businessName: userData?.businessName || csData?.name || ''
-        };
-    } catch (error) {
-        console.error('verifySession error:', error);
-        return { isValid: false };
-    }
-}
-
-// Export for use in other files
-export { AUTH_COOKIE_NAME };

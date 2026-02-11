@@ -1,0 +1,4 @@
+BEGIN TRANSACTION;
+ALTER TABLE data_table_user_lOkdHmJ3IHnz4cPR DROP COLUMN ListingPrice;
+ALTER TABLE data_table_user_lOkdHmJ3IHnz4cPR RENAME COLUMN Price TO price;
+COMMIT;

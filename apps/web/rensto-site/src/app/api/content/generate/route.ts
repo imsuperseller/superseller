@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
+// [MIGRATION] Phase 5: Firestore kept as fallback for entitlement check
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
+import * as dbDashboard from '@/lib/db/dashboard';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export async function POST(req: Request) {
     try {
@@ -10,62 +14,79 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const db = getFirestoreAdmin();
+        // [MIGRATION] Phase 5: Check entitlements from Postgres first
+        let hasEntitlement = false;
 
-        // 1. Verify Entitlements
-        const userRef = db.collection(COLLECTIONS.USERS).doc(clientId);
-        const userSnap = await userRef.get();
-        const userData = userSnap.data();
+        const pgUser = await prisma.user.findUnique({
+            where: { id: clientId },
+            select: { entitlements: true },
+        });
 
-        const hasEntitlement = userData?.entitlements?.pillars?.includes('content');
+        if (pgUser) {
+            const ent = pgUser.entitlements as any;
+            hasEntitlement = ent?.pillars?.includes('content') ?? false;
+        } else {
+            // Fallback: Firestore
+            console.info('[Migration] content/generate: User not in Postgres, checking Firestore');
+            const db = getFirestoreAdmin();
+            const userSnap = await db.collection(COLLECTIONS.USERS).doc(clientId).get();
+            const userData = userSnap.data();
+            hasEntitlement = userData?.entitlements?.pillars?.includes('content') ?? false;
+        }
 
         if (!hasEntitlement) {
             return NextResponse.json({
                 error: 'Content entitlement required',
-                upgradeUrl: '/pricing'
+                upgradeUrl: '/pricing',
             }, { status: 403 });
         }
 
-        // 2. Create "Draft" Content Item in Firestore immediately for UI feedback
-        const contentRef = db.collection(COLLECTIONS.CONTENT_ITEMS).doc();
-        const contentItem = {
-            id: contentRef.id,
-            clientId,
+        // [MIGRATION] Phase 5: Create content item in Postgres (primary)
+        const contentItem = await dbDashboard.createContentPost({
+            userId: clientId,
             title: topic,
             type,
             status: 'draft',
             platform: platform || 'blog',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-        await contentRef.set(contentItem);
+        });
 
-        // 3. Trigger n8n Workflow (The Content Engine)
-        // Using the N8N webhook URL - ensure this is set in env vars or hardcoded for now
+        // Backup: Firestore
+        await firestoreBackupWrite('content/generate', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.CONTENT_ITEMS).doc(contentItem.id).set({
+                id: contentItem.id,
+                clientId,
+                title: topic,
+                type,
+                status: 'draft',
+                platform: platform || 'blog',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        });
+
+        // Trigger n8n Content Engine
         const N8N_WEBHOOK_URL = 'https://n8n.rensto.com/webhook/content-engine-trigger';
-
-        // Non-blocking fetch to n8n (fire and forget from client perspective logic, but we await to ensure trigger success)
         try {
             await fetch(N8N_WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contentId: contentRef.id,
+                    contentId: contentItem.id,
                     clientId,
                     type,
                     topic,
-                    platform
-                })
+                    platform,
+                }),
             });
         } catch (webhookErr) {
             console.error('Failed to trigger n8n webhook:', webhookErr);
-            // We still return success because the item was created in DB, n8n can pick it up via polling or retry
         }
 
         return NextResponse.json({
             success: true,
-            contentId: contentRef.id,
-            message: 'Content generation started'
+            contentId: contentItem.id,
+            message: 'Content generation started',
         });
 
     } catch (err: any) {

@@ -19,10 +19,24 @@ portal.rensto.com   → Vercel (customer portals - planned)
 ### **Critical Rules**:
 1. ✅ **rensto.com is on Vercel** - Next.js app (`apps/web/rensto-site/`)
 2. ✅ **API routes available at**: `rensto.com/api/*` AND `api.rensto.com/api/*` (both work)
-3. ✅ **ALWAYS** check CLAUDE.md before making architectural decisions
-4. ⚠️ **Webflow**: Site exists but DNS doesn't point to it (archived/inactive)
+3. ✅ **ALWAYS** read brain.md first (Mission Control), then CLAUDE.md before architectural decisions
+4. ⚠️ **Webflow**: Retired. All pages served by Next.js (rensto-site) on Vercel.
 
 ---
+
+## 🌊 THE MASTER PATTERN (B.L.A.S.T.)
+All work must follow the **B.L.A.S.T. Protocol** for deterministic automation:
+1. **B**lueprint: Define the Vision/Mission in brain.md / task_plan.md (or docs/templates/tourreel/BLUEPRINT.md for new apps).
+2. **L**ink: Establish data connectivity (MCP, APIs, Environment).
+3. **A**rchitect: Build the A.N.T. structure.
+4. **S**tylize: Refine UI/UX (Linear Aesthetic, Stitch Assets).
+5. **T**rigger: Deploy to Vercel/Production.
+
+## 🐜 EXECUTION ENGINE (A.N.T.)
+Tasks flow through the **A.N.T. Architecture**:
+- **A**rchitecture: Global constraints and technical SOPs.
+- **N**avigation: Advanced reasoning and routing across local/notebook context.
+- **T**ools: Atomic scripts and MCP identifiers.
 
 ## 📁 PROJECT STRUCTURE
 
@@ -31,19 +45,16 @@ portal.rensto.com   → Vercel (customer portals - planned)
   - Contains: Homepage, Marketplace, Subscriptions, Custom Solutions, About, all public pages
   - APIs: `/api/stripe/checkout`, `/api/marketplace/workflows`, etc.
   - Deployment: Auto-deploy on git push to main branch
-- **admin.rensto.com**: `/apps/web/admin-dashboard/` (Admin dashboard)
-- **api.rensto.com**: `/apps/web/rensto-site/` (API endpoints - redundant but works)
-- **portal.rensto.com**: `/live-systems/customer-portal/` (planned)
+- **admin.rensto.com**: `apps/web/rensto-site/src/app/admin` (Admin dashboard; admin-dashboard folder is legacy/archived)
+- **api.rensto.com**: `apps/web/rensto-site` (API at rensto.com/api/*)
+- **portal.rensto.com**: planned (customer portals)
 
-### **Webflow** (Archived/Inactive):
-- Site exists but DNS doesn't point to it
-- Site ID: `66c7e551a317e0e9c9f906d8`
-- Status: Archived (not serving traffic)
-- Note: Webflow scripts CDN still exists (`rensto-webflow-scripts.vercel.app`) but may not be needed
+### **Webflow**: Retired. All pages served by Next.js on Vercel.
 
-### **n8n Workflows**:
-- Hosted on RackNerd VPS: `172.245.56.50:5678`
-- 68 active workflows
+### **Automation** (Antigravity primary, n8n backup):
+- **Antigravity**: Primary automation engine on RackNerd.
+- **n8n**: Backup/reference only; use when Antigravity cannot do the task.
+- n8n hosted on RackNerd VPS: `172.245.56.50:5678`
 - Naming convention: `{TYPE}-{FUNCTION}-{VERSION}` (e.g., `STRIPE-MARKETPLACE-001`)
 
 ---
@@ -73,7 +84,7 @@ Stripe Webhook → rensto.com/api/stripe/webhook → n8n STRIPE-* workflows
 - `STRIPE-READY-001`: Ready Solutions packages
 - `STRIPE-SUBSCRIPTION-001`: Monthly subscriptions
 - `STRIPE-CUSTOM-001`: Custom solutions projects
-- `DEV-FIN-006`: Revenue sync to Airtable
+- `DEV-FIN-006`: Revenue sync (legacy; migrating to Postgres)
 
 ---
 
@@ -97,10 +108,11 @@ AIRTABLE_API_KEY         (Production)
 
 ## 📊 DATA STORAGE HIERARCHY
 
-### **Priority Order** (ALWAYS follow this):
-1. **PRIMARY**: n8n Data Tables (workflow data, leads, logs)
-2. **SECONDARY**: Airtable (dashboards, manual config, reporting)
-3. **TERTIARY**: Notion (documentation only, 15-20 strategic docs)
+### **Priority Order** (ALWAYS follow this – see CLAUDE.md for full matrix):
+1. **PRIMARY (app/customer data)**: PostgreSQL (service instances, customers, payments) – used by rensto-site
+2. **CACHE/QUEUE**: Redis (sessions, rate limits, job queues)
+3. **OPERATIONAL**: Antigravity (primary automation); n8n (backup only)
+4. **LEGACY/REFERENCE**: Firestore, Airtable.com (retired); **Aitable.ai** (in use for dashboards); Notion (docs)
 
 ### **Never Store In**:
 - ❌ MongoDB (unless customer project >50K records)
@@ -127,23 +139,17 @@ AIRTABLE_API_KEY         (Production)
 
 ## 📝 DOCUMENTATION RULES
 
-### **CLAUDE.md** (Single Source of Truth):
-- Located at `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md`
-- ⚠️ **READ THIS BEFORE EVERY MAJOR CHANGE**
-- Contains: Architecture, active systems, service offerings, tech stack
-- Last Updated: October 5, 2025
+### **Single Source of Truth**:
+- **Project Constitution**: `/Users/shaifriedman/New Rensto/rensto/apps/web/rensto-site/gemini.md` ("The Law")
+- **Operational SOP**: `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md` (Technical context only)
+- **Knowledge Brain**: NotebookLM (High-level strategy, research, architecture patterns)
 
-### **When Creating New Features**:
-1. Create `/docs/plans/{feature-name}.md` with BMAD phases
-2. Update CLAUDE.md with implementation status
-3. Create `/tmp/{feature-name}_IMPLEMENTATION_GUIDE.md` for execution
-4. Archive old docs to `/docs/archive/{year-month}/`
-
-### **BMAD Process** (Mandatory for Infrastructure Changes):
-- **B**uild: Requirements, PRD, design
-- **M**easure: KPIs, metrics, success criteria
-- **A**nalyze: Data analysis, optimization opportunities
-- **D**eploy: Production deployment, monitoring
+### **B.L.A.S.T. Process** (Mandatory for all work):
+- **B**lueprint: Requirements, Planning Artifacts.
+- **L**ink: Connectivity check (Stripe, Antigravity/n8n, Postgres/Redis).
+- **A**rchitect: Logical structure & Code.
+- **S**tylize: Visual polish & Micro-animations.
+- **T**rigger: Vercel Deployment & Verification.
 
 ---
 
@@ -236,11 +242,12 @@ Examples:
 ## 🔍 BEFORE EVERY SESSION CHECKLIST
 
 1. ☑️ Read CLAUDE.md sections relevant to your task
-2. ☑️ Check git status and recent commits
-3. ☑️ Verify current branch (usually `main`)
-4. ☑️ Check active deployments on Vercel
-5. ☑️ Review open todos (if TodoWrite tool used)
-6. ☑️ Confirm architecture understanding
+2. ☑️ For business context, priorities, and success target: read `.cursor/AGENT_CONTEXT.md`
+3. ☑️ Check git status and recent commits
+4. ☑️ Verify current branch (usually `main`)
+5. ☑️ Check active deployments on Vercel
+6. ☑️ Review open todos (if TodoWrite tool used)
+7. ☑️ Confirm architecture understanding
 
 ---
 
@@ -265,13 +272,14 @@ Examples:
 ### "Where should this code go?"
 - Public website content? → **Vercel rensto.com** (`/apps/web/rensto-site/src/app/`)
 - API endpoint? → **Vercel rensto.com/api** (`/apps/web/rensto-site/src/app/api/`)
-- Admin dashboard? → **Vercel admin.rensto.com** (`/apps/web/admin-dashboard/`)
+- Admin dashboard? → **Vercel admin.rensto.com** (`/apps/web/rensto-site/src/app/admin`)
 - Customer portal? → **Vercel portal.rensto.com** (`/live-systems/customer-portal/`)
-- Workflow automation? → **n8n** (172.245.56.50:5678)
+- Workflow automation? → **Antigravity** (primary on RackNerd); **n8n** (backup only)
 
 ### "Which database should I use?"
-- Workflow data? → **n8n Data Tables**
-- Dashboards/config? → **Airtable** (sync from n8n every 15 min)
+- App/customer data? → **PostgreSQL** (primary)
+- Cache/sessions/queues? → **Redis**
+- Dashboards/config? → **Aitable.ai** (in use)
 - Documentation? → **Notion** (high-level only)
 - >50K records? → **MongoDB** (customer projects only)
 - Real-time app? → **Supabase** (customer projects only)
@@ -283,7 +291,7 @@ Examples:
 - Current website status: `/docs/infrastructure/WEBSITE_CURRENT_STATUS.md`
 - Migration history: `/webflow/MIGRATION_FINAL_STATUS.md`
 - n8n workflows: `/live-systems/n8n-system/workflows/`
-- BMAD process: `/docs/BMAD_PROCESS_SPECIFIC.md`
+- B.L.A.S.T. process: See .cursorrules "THE MASTER PATTERN (B.L.A.S.T.)"
 - Tech stack details: CLAUDE.md section 14
 
 ---

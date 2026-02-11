@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { verifySession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
     try {

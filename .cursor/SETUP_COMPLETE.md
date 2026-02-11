@@ -1,7 +1,9 @@
 # ✅ MCP CONFIGURATION COMPLETE
 
+> **Current status:** Superseded by **MCP_CONFIGURATION_STATUS.md** for up-to-date server list and counts (e.g. context7 removed, 11 active).
+
 **Date**: October 9, 2025, 1:35 AM
-**Status**: All MCP servers configured and operational
+**Status**: All MCP servers configured and operational (snapshot)
 
 ---
 

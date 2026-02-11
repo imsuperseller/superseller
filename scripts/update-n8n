@@ -120,7 +120,8 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Check if the update script exists
-UPDATE_SCRIPT="$SCRIPT_DIR/n8n/rensto-n8n-upgrade-2.3.1.sh"
+UPDATE_SCRIPT="$SCRIPT_DIR/n8n/rensto-n8n-upgrade.sh"
+TARGET_VERSION="2.4.1"
 if [ ! -f "$UPDATE_SCRIPT" ]; then
     print_error "Update script not found: $UPDATE_SCRIPT"
     exit 1
@@ -129,7 +130,7 @@ fi
 # Confirm before proceeding (unless force mode)
 if [ "$FORCE" = false ]; then
     echo ""
-    print_warning "This will update your n8n instance at $N8N_SERVER. Are you sure you want to continue?"
+    print_warning "This will update your n8n instance at $N8N_SERVER to v$TARGET_VERSION. Are you sure you want to continue?"
     print_warning "Press Ctrl+C to cancel, or Enter to continue..."
     read -r
 fi
@@ -139,7 +140,7 @@ if [ "$DRY_RUN" = true ]; then
     print_status "🔍 DRY RUN: Checking connection to $N8N_SERVER..."
     if ssh -o ConnectTimeout=5 root@$N8N_SERVER "echo 'SSH Connection OK'" 2>/dev/null; then
         print_success "✅ SSH Connection to $N8N_SERVER successful"
-        print_status "🔍 DRY RUN: Would upload $UPDATE_SCRIPT and execute it."
+        print_status "🔍 DRY RUN: Would upload $UPDATE_SCRIPT and execute it for version $TARGET_VERSION."
         exit 0
     else
         print_error "❌ Failed to connect to $N8N_SERVER via SSH"
@@ -154,16 +155,16 @@ SSHPASS_CMD="/opt/homebrew/bin/sshpass -p $SSH_PASS"
 print_status "📤 Uploading update script to server..."
 $SSHPASS_CMD scp -o StrictHostKeyChecking=no "$UPDATE_SCRIPT" root@$N8N_SERVER:/opt/n8n/
 
-print_status "🔧 Executing update script on server..."
-if $SSHPASS_CMD ssh -o StrictHostKeyChecking=no root@$N8N_SERVER "bash /opt/n8n/rensto-n8n-upgrade-2.3.1.sh"; then
+print_status "🔧 Executing update script on server for v$TARGET_VERSION..."
+if $SSHPASS_CMD ssh -o StrictHostKeyChecking=no root@$N8N_SERVER "bash /opt/n8n/rensto-n8n-upgrade.sh $TARGET_VERSION"; then
     echo ""
     print_success "🎉 N8N UPDATE COMPLETED SUCCESSFULLY!"
     print_success "✅ ZERO DATA LOSS CONFIRMED"
     print_success "✅ ALL WORKFLOWS PRESERVED"
     print_success "✅ ALL CREDENTIALS PRESERVED"
     print_success "✅ COMMUNITY NODES MAINTAINED"
-    print_success "✅ VERSION UPGRADED TO v2.3.1"
-    print_success "✅ BACKUP CLEANUP PERFORMED"
+    print_success "✅ VERSION UPGRADED TO v$TARGET_VERSION"
+    print_success "✅ OLD BACKUPS CLEANED (Kept 2.3.1 backup)"
     echo ""
     print_status "🌐 N8N URL: https://n8n.rensto.com"
     echo ""

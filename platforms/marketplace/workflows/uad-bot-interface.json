@@ -1,0 +1,179 @@
+{
+  "updatedAt": "2026-01-21T05:35:07.435Z",
+  "createdAt": "2026-01-21T05:35:07.435Z",
+  "id": "aqlVqv3AyowdXLGt",
+  "name": "UAD v2 - Bot Interface API",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "v1-get-jobs",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "3d32c50d-9ee1-4fb1-bdd5-7589792563ac",
+      "name": "Webhook GET",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        1248
+      ],
+      "webhookId": "v1-get-jobs"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "6T8jI35R2tX1Mni9",
+          "mode": "id"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "Status",
+              "keyValue": "Available"
+            },
+            {
+              "keyName": "Status",
+              "keyValue": "Pending Post"
+            }
+          ]
+        }
+      },
+      "id": "01d1ff34-548b-4f88-9d33-15de5ab897b7",
+      "name": "Get Pending Row",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v1-update-status",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "9c54e0fd-c00e-46c5-8261-3428a9fb5906",
+      "name": "Webhook Update",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        1456
+      ],
+      "webhookId": "v1-update-status"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "6T8jI35R2tX1Mni9",
+          "mode": "id"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "Image_URL",
+              "keyValue": "={{ $json.body.imageUrl }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $json.body.status }}",
+            "ListingDescription": "={{ $json.body.error || '' }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "dffc5481-07f2-453e-a827-3e71bcc33480",
+      "name": "Update Status",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        1456
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook GET": {
+      "main": [
+        [
+          {
+            "node": "Get Pending Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Update": {
+      "main": [
+        [
+          {
+            "node": "Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "ef37063f-a5a4-4660-98d7-9e5c43460e21",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-21T05:35:07.435Z",
+      "createdAt": "2026-01-21T05:35:07.435Z",
+      "role": "workflow:owner",
+      "workflowId": "aqlVqv3AyowdXLGt",
+      "projectId": "6L20DLwgKEB5r0rn"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-12-23T05:11:46.666Z",
+      "createdAt": "2025-12-23T05:11:46.666Z",
+      "id": "1Ao2peGnVNTxvYS1",
+      "name": "facebook marketplace"
+    },
+    {
+      "updatedAt": "2025-12-23T05:13:31.934Z",
+      "createdAt": "2025-12-23T05:13:31.934Z",
+      "id": "817D6PC6uqQmO3b9",
+      "name": "webhook"
+    },
+    {
+      "updatedAt": "2025-12-23T05:13:00.962Z",
+      "createdAt": "2025-12-23T05:13:00.962Z",
+      "id": "VFCy3o7FUAo4l36X",
+      "name": "data tables"
+    },
+    {
+      "updatedAt": "2025-12-23T05:11:28.920Z",
+      "createdAt": "2025-12-23T05:11:28.920Z",
+      "id": "iLdoxl12wjdRHrRz",
+      "name": "szender"
+    }
+  ]
+}

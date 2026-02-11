@@ -1,6 +1,9 @@
 # 👥 Initial Client Data for Firestore
 
-**Purpose**: Seed data for the clients collection
+> [!WARNING]
+> **DEPRECATED**: Firestore is retired. Primary database is PostgreSQL + Redis. Migration in progress. See CLAUDE.md.
+
+**Purpose**: Seed data for the clients collection (legacy)
 
 ---
 
@@ -280,6 +283,56 @@
   "website": "https://ikonicstyle.com",
   "status": "prospect",
   "notes": "Would love to have as client."
+}
+```
+
+### 15. UAD Garage Doors (Active - Performance Core)
+```json
+{
+  "id": "uad-garagedoors",
+  "name": "UAD Garage Doors",
+  "slug": "uad-garagedoors",
+  "contact": {
+    "name": "UAD Team",
+    "location": "Dallas, TX"
+  },
+  "industry": "home-services",
+  "website": "https://uadgaragedoors.com",
+  "status": "active",
+  "tier": "custom",
+  "startDate": "2025-12-01",
+  "source": "direct",
+  "activeWorkflows": 12,
+  "notes": "Primary testbed for FB Marketplace Autolister. 50/50 Profit Split agreement. High-frequency posting.",
+  "deployments": [
+    { "templateId": "FB-LISTER-001", "name": "Marketplace Autolister v2" },
+    { "templateId": "WA-AGENT-001", "name": "Garage Lead Qualify" }
+  ],
+  "secrets": {
+    "profileId": "placeholder_profile_id",
+    "gologinApiKey": "placeholder_gologin_key",
+    "facebookEmail": "placeholder_fb_email",
+    "facebookPassword": "placeholder_fb_pass"
+  }
+}
+```
+
+### 16. Yossi Tarablus / Sportek (Qualified Lead)
+```json
+{
+  "id": "sportek",
+  "name": "Sportek Projects",
+  "slug": "sportek",
+  "contact": {
+    "name": "Yossi Tarablus",
+    "location": "Israel"
+  },
+  "industry": "sports-management",
+  "status": "qualified",
+  "tier": "custom",
+  "notes": "Proposed $2.5k-$10k build for autonomous parent/manager communication via Clay/Apollo.",
+  "interestedIn": ["lead-machine", "autonomous-secretary"],
+  "deployments": []
 }
 ```
 

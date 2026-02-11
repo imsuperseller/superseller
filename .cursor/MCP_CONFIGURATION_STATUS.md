@@ -28,7 +28,7 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 | **n8n-mcp** | npx -y n8n-mcp | ✅ Configured | Access n8n workflows via npx (Docker doesn't work) |
 | **stripe-mcp** | mcp/stripe | ✅ Configured | Stripe API operations |
 
-**Note**: n8n-mcp moved to npx (Docker had stdin issues). See `docs/infrastructure/MCP_CONFIGURATION.md` for working config.
+**Note**: n8n-mcp moved to npx (Docker had stdin issues). Working config is in this file and in Cursor MCP settings.
 
 ### **NPX-Based Servers** (6 - includes n8n-mcp)
 

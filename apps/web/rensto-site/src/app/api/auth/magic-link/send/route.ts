@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+// [MIGRATION] Phase 1: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
@@ -34,47 +37,73 @@ export async function POST(request: NextRequest) {
             clientName = 'Admin';
             role = 'admin';
         } else {
-            // 2. Lookup in Firestore (Custom Solutions Clients)
-            const db = getFirestoreAdmin();
-            const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
-            const querySnapshot = await clientsRef.where('email', '==', normalizedEmail).limit(1).get();
+            // [MIGRATION] Phase 1: Read from Postgres first, fallback to Firestore
+            const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
+            const pgUser = await prisma.user.findUnique({ where: { id: userId } });
 
-            if (querySnapshot.empty) {
-                // Return generic success to prevent email enumeration, but log internally
-                console.log(`Login attempt for unknown email: ${normalizedEmail}`);
-                return NextResponse.json({
-                    success: true,
-                    message: 'If your email is registered, you will receive a magic link.',
-                    // In dev, we can still show the error for debugging
-                    debug: process.env.NODE_ENV === 'development' ? 'Email not found in database' : undefined
-                });
+            if (pgUser) {
+                clientId = pgUser.id;
+                clientName = pgUser.name || 'Client';
+            } else {
+                // Fallback: Firestore (CustomSolutionsClients)
+                const db = getFirestoreAdmin();
+                const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
+                const querySnapshot = await clientsRef.where('email', '==', normalizedEmail).limit(1).get();
+
+                if (querySnapshot.empty) {
+                    // Also try Users collection in Firestore
+                    const usersRef = db.collection(COLLECTIONS.USERS);
+                    const userSnap = await usersRef.where('email', '==', normalizedEmail).limit(1).get();
+
+                    if (userSnap.empty) {
+                        console.log(`Login attempt for unknown email: ${normalizedEmail}`);
+                        return NextResponse.json({
+                            success: true,
+                            message: 'If your email is registered, you will receive a magic link.',
+                            debug: process.env.NODE_ENV === 'development' ? 'Email not found in database' : undefined
+                        });
+                    }
+                    const doc = userSnap.docs[0];
+                    clientId = doc.id;
+                    clientName = doc.data().name || 'Client';
+                } else {
+                    const doc = querySnapshot.docs[0];
+                    clientId = doc.id;
+                    clientName = doc.data().name || 'Client';
+                }
             }
-
-            const doc = querySnapshot.docs[0];
-            clientId = doc.id;
-            clientName = doc.data().name || 'Client';
         }
 
         // Generate new token
         const token = generateToken();
-        const now = Timestamp.now();
-        const expiresAt = Timestamp.fromMillis(Date.now() + TOKEN_EXPIRATION_MS);
+        const expiresAt = new Date(Date.now() + TOKEN_EXPIRATION_MS);
 
-        // Store token in Firestore
-        const db = getFirestoreAdmin();
-        const tokenDoc: MagicLinkToken & { role?: string; redirectTo?: string } = {
-            id: token,
-            email: normalizedEmail,
-            clientId,
-            expiresAt,
-            used: false,
-            createdAt: now,
-            // Add role to token for verification step
-            role,
-            redirectTo
-        };
+        // [MIGRATION] Phase 1: Write token to Postgres (primary)
+        await prisma.magicLinkToken.create({
+            data: {
+                id: token,
+                email: normalizedEmail,
+                clientId,
+                expiresAt,
+                used: false,
+            },
+        });
 
-        await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).set(tokenDoc);
+        // [MIGRATION] Backup: Write to Firestore (non-blocking)
+        await firestoreBackupWrite('magic-link/send', async () => {
+            const db = getFirestoreAdmin();
+            const tokenDoc: MagicLinkToken & { role?: string; redirectTo?: string } = {
+                id: token,
+                email: normalizedEmail,
+                clientId,
+                expiresAt: Timestamp.fromMillis(expiresAt.getTime()),
+                used: false,
+                createdAt: Timestamp.now(),
+                role,
+                redirectTo
+            };
+            await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).set(tokenDoc);
+        });
 
         // Build magic link URL
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com';

@@ -1,46 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { emails } from '@/lib/email';
-
-/**
- * POST /api/support/create
- * 
- * Creates a new support case from the Magic Button or other intake methods.
- * Stores in Firestore and triggers the Care Plan Support Agent workflow.
- */
-
-export interface SupportCase {
-    id?: string;
-    customerId: string;
-    workflowId?: string;
-    carePlanTier: 'starter' | 'growth' | 'scale';
-    submissionMethod: 'magic_button' | 'voice' | 'whatsapp';
-    issueDescription: string;
-    contextData: {
-        recentErrors?: Array<{
-            executionId: string;
-            errorMessage: string;
-            timestamp: string;
-        }>;
-        workflowJson?: object;
-        capturedAt?: string;
-    };
-    status: 'pending' | 'researching' | 'fixing' | 'testing' | 'awaiting_approval' | 'resolved' | 'escalated';
-    aiReasoningLog: string[];
-    attemptCount: number;
-    proposedFix?: {
-        diff: string;
-        testResult: 'pass' | 'fail';
-        confidence: number;
-    };
-    resolution?: {
-        approved: boolean;
-        feedback?: string;
-        resolvedAt: Date;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-}
+import * as dbAdmin from '@/lib/db/admin';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export async function POST(req: NextRequest) {
     try {
@@ -68,52 +30,64 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const db = getFirestoreAdmin();
-
-        // Create the support case
-        const supportCase: Omit<SupportCase, 'id'> = {
+        // [MIGRATION] Phase 5: Write to Postgres (primary)
+        const supportCase = await dbAdmin.createSupportCase({
             customerId,
-            workflowId: workflowId || null,
+            workflowId: workflowId || undefined,
             carePlanTier,
             submissionMethod,
             issueDescription,
-            contextData,
+            contextData: Object.keys(contextData).length > 0 ? contextData : undefined,
             status: 'pending',
             aiReasoningLog: [],
             attemptCount: 0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+        });
 
-        const docRef = await db.collection(COLLECTIONS.SUPPORT_CASES).add(supportCase);
+        // Backup: Firestore
+        await firestoreBackupWrite('support/create', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.SUPPORT_CASES).doc(supportCase.id).set({
+                customerId,
+                workflowId: workflowId || null,
+                carePlanTier,
+                submissionMethod,
+                issueDescription,
+                contextData,
+                status: 'pending',
+                aiReasoningLog: [],
+                attemptCount: 0,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        });
 
-        // Trigger n8n Care Plan Support Agent webhook (if configured)
+        // Trigger n8n Care Plan Support Agent
         const N8N_SUPPORT_WEBHOOK = process.env.N8N_SUPPORT_AGENT_WEBHOOK_URL;
-
         if (N8N_SUPPORT_WEBHOOK) {
             try {
                 await fetch(N8N_SUPPORT_WEBHOOK, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        caseId: docRef.id,
-                        ...supportCase,
+                        caseId: supportCase.id,
+                        customerId,
+                        workflowId,
+                        carePlanTier,
+                        submissionMethod,
+                        issueDescription,
+                        contextData,
                     }),
                 });
             } catch (webhookError) {
                 console.error('Failed to trigger n8n support agent webhook:', webhookError);
-                // Don't fail the request - case is still created
             }
         }
 
         return NextResponse.json({
             success: true,
-            caseId: docRef.id,
+            caseId: supportCase.id,
             message: 'Support case created successfully. Our AI agent will analyze it shortly.',
         });
-
-        // Note: Support ticket email would need customer email lookup
-        // This is handled by n8n webhook which has access to customer data
 
     } catch (error: any) {
         console.error('Support case creation error:', error);

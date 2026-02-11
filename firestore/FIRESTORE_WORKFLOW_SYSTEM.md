@@ -1,7 +1,10 @@
 # 🔥 Firestore Workflow Management System
 
+> [!WARNING]
+> **DEPRECATED**: Firestore is retired. Primary database is PostgreSQL + Redis. See CLAUDE.md.
+
 **Created**: December 11, 2025
-**Purpose**: Comprehensive workflow catalog, client management, and version tracking
+**Purpose**: Comprehensive workflow catalog, client management, and version tracking (legacy)
 **Credential ID**: `fT1kb9qsooSNM3RX` (Google Firebase Cloud Firestore OAuth2 API)
 
 ---

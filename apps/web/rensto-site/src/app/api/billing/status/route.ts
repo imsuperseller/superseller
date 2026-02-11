@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySession } from '@/app/api/auth/magic-link/verify/route';
+import { verifySession } from '@/lib/auth';
+// [MIGRATION] Phase 2: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
     try {
@@ -9,63 +11,107 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const db = getFirestoreAdmin();
         const email = session.email.toLowerCase();
+        const userId = email.replace(/[^a-z0-9]/g, '_');
 
-        // 1. Fetch Subscription Data
-        const subSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS)
-            .where('userEmail', '==', email)
-            .limit(1)
-            .get();
+        // [MIGRATION] Phase 2: Read from Postgres first
+        let subscription: any = null;
+        let invoices: any[] = [];
+        let usageBreakdown: any[] = [];
 
-        const subscription = !subSnap.empty ? subSnap.docs[0].data() : null;
+        try {
+            // 1. Fetch Subscription Data from Postgres
+            const pgSub = await prisma.subscription.findFirst({
+                where: { userEmail: email },
+                orderBy: { createdAt: 'desc' },
+            });
+            subscription = pgSub;
 
-        // 2. Fetch Recent Invoices (Payments)
-        const paymentsSnap = await db.collection('payments')
-            .where('customerEmail', '==', email)
-            .orderBy('timestamp', 'desc')
-            .limit(5)
-            .get();
-
-        const invoices = paymentsSnap.docs.map(doc => {
-            const data = doc.data();
-            return {
-                id: doc.id.slice(0, 8).toUpperCase(),
-                date: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(),
-                amount: (data.amountTotal || 0) / 100,
+            // 2. Fetch Recent Payments from Postgres
+            const pgPayments = await prisma.payment.findMany({
+                where: { userId },
+                orderBy: { createdAt: 'desc' },
+                take: 5,
+            });
+            invoices = pgPayments.map(p => ({
+                id: p.id.slice(0, 8).toUpperCase(),
+                date: p.createdAt,
+                amount: (p.amountTotal || 0) / 100,
                 status: 'paid',
-                description: `${data.flowType || 'Service'} Payment`
-            };
-        });
+                description: `${p.flowType || 'Service'} Payment`,
+            }));
 
-        // 3. Fetch Usage Metrics
-        const usageSnap = await db.collection(COLLECTIONS.USAGE_LOGS)
-            .where('clientEmail', '==', email)
-            .get();
+            // 3. Fetch Usage Metrics from Postgres
+            const pgUsage = await prisma.usageLog.findMany({
+                where: { clientId: userId },
+            });
+            const serviceMap: Record<string, number> = {};
+            pgUsage.forEach(log => {
+                const service = log.serviceType || 'General AI';
+                serviceMap[service] = (serviceMap[service] || 0) + (log.tokenCount || 100);
+            });
+            usageBreakdown = Object.entries(serviceMap).map(([service, tokens]) => ({
+                service,
+                usage: (tokens / 1000).toFixed(2),
+                percentage: Math.min(Math.round((tokens / 100000) * 100), 100),
+            }));
+        } catch (pgError) {
+            // Fallback: Firestore
+            console.warn('[Migration] billing/status: Postgres failed, falling back to Firestore', pgError);
+            const db = getFirestoreAdmin();
 
-        // Calculate service breakdown
-        const serviceMap: Record<string, number> = {};
-        usageSnap.docs.forEach(doc => {
-            const data = doc.data();
-            const service = data.serviceType || 'General AI';
-            serviceMap[service] = (serviceMap[service] || 0) + (data.tokenCount || 100);
-        });
+            const subSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS)
+                .where('userEmail', '==', email).limit(1).get();
+            subscription = !subSnap.empty ? subSnap.docs[0].data() : null;
 
-        const usageBreakdown = Object.entries(serviceMap).map(([service, tokens]) => ({
-            service,
-            usage: (tokens / 1000).toFixed(2), // Mock $ cost for now
-            percentage: Math.min(Math.round((tokens / 100000) * 100), 100)
-        }));
+            const paymentsSnap = await db.collection('payments')
+                .where('customerEmail', '==', email)
+                .orderBy('timestamp', 'desc').limit(5).get();
+            invoices = paymentsSnap.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id.slice(0, 8).toUpperCase(),
+                    date: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(),
+                    amount: (data.amountTotal || 0) / 100,
+                    status: 'paid',
+                    description: `${data.flowType || 'Service'} Payment`,
+                };
+            });
+
+            const usageSnap = await db.collection(COLLECTIONS.USAGE_LOGS)
+                .where('clientEmail', '==', email).get();
+            const serviceMap: Record<string, number> = {};
+            usageSnap.docs.forEach(doc => {
+                const data = doc.data();
+                const service = data.serviceType || 'General AI';
+                serviceMap[service] = (serviceMap[service] || 0) + (data.tokenCount || 100);
+            });
+            usageBreakdown = Object.entries(serviceMap).map(([service, tokens]) => ({
+                service,
+                usage: (tokens / 1000).toFixed(2),
+                percentage: Math.min(Math.round((tokens / 100000) * 100), 100),
+            }));
+        }
 
         return NextResponse.json({
             success: true,
             billing: {
                 currentPeriod: {
-                    start: subscription?.currentPeriodStart?.toDate?.()?.toISOString()?.split('T')[0] || new Date().toISOString().split('T')[0],
-                    end: subscription?.currentPeriodEnd?.toDate?.()?.toISOString()?.split('T')[0] || 'N/A',
+                    start: subscription?.currentPeriodStart
+                        ? (subscription.currentPeriodStart instanceof Date
+                            ? subscription.currentPeriodStart.toISOString().split('T')[0]
+                            : subscription.currentPeriodStart?.toDate?.()?.toISOString?.()?.split('T')[0])
+                        || new Date().toISOString().split('T')[0]
+                        : new Date().toISOString().split('T')[0],
+                    end: subscription?.currentPeriodEnd
+                        ? (subscription.currentPeriodEnd instanceof Date
+                            ? subscription.currentPeriodEnd.toISOString().split('T')[0]
+                            : subscription.currentPeriodEnd?.toDate?.()?.toISOString?.()?.split('T')[0])
+                        || 'N/A'
+                        : 'N/A',
                     total: invoices[0]?.amount || 0,
                     usage: usageBreakdown.reduce((acc, curr) => acc + curr.percentage, 0) / (usageBreakdown.length || 1),
-                    limit: 100
+                    limit: 100,
                 },
                 invoices,
                 usageBreakdown,
@@ -73,9 +119,9 @@ export async function GET(request: NextRequest) {
                     type: subscription?.paymentMethodType || 'Card',
                     last4: subscription?.last4 || '****',
                     expiry: subscription?.expiry || 'N/A',
-                    name: subscription?.userName || 'Valued Client'
-                }
-            }
+                    name: subscription?.userName || 'Valued Client',
+                },
+            },
         });
 
     } catch (error) {

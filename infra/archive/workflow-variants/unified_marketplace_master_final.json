@@ -1,0 +1,496 @@
+{
+    "name": "Unified Marketplace Master [PRODUCTION-FIX]",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 20
+                        }
+                    ]
+                }
+            },
+            "id": "trigger-schedule",
+            "name": "Every 20 Minutes",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "path": "v1/marketplace/jobs/:product",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "trigger-webhook-get",
+            "name": "Marketplace API GET",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                200
+            ],
+            "webhookId": "unified-marketplace-get"
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "v1/marketplace/update/:product",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "trigger-webhook-post",
+            "name": "Marketplace API POST",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                400
+            ],
+            "webhookId": "unified-marketplace-post"
+        },
+        {
+            "parameters": {
+                "jsCode": "const get = $node[\"Marketplace API GET\"];\nconst post = $node[\"Marketplace API POST\"];\nlet product = 'uad';\nlet mode = 'generate';\nif (get) { product = $json.params.product || 'uad'; mode = 'api-get'; }\nelse if (post) { product = $json.params.product || 'uad'; mode = 'api-update'; }\nreturn [{ json: { product, mode } }];"
+            },
+            "id": "router",
+            "name": "Main Router",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                250,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "collectionId": "marketplace_configs",
+                "query": "={{ $json.product }}",
+                "options": {}
+            },
+            "id": "fetch-config",
+            "name": "Fetch Firestore Config",
+            "type": "n8n-nodes-base.firestore",
+            "typeVersion": 1,
+            "position": [
+                450,
+                200
+            ],
+            "credentials": {
+                "firestoreApi": {
+                    "id": "firestore-cred-placeholder",
+                    "name": "Firestore"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "value1": "={{ $node[\"Main Router\"].json.mode }}",
+                "rules": {
+                    "rules": [
+                        {
+                            "value2": "generate",
+                            "output": 0
+                        },
+                        {
+                            "value2": "api-get",
+                            "output": 1
+                        },
+                        {
+                            "value2": "api-update",
+                            "output": 2
+                        }
+                    ]
+                },
+                "dataType": "string"
+            },
+            "id": "mode-switch",
+            "name": "Mode Switch",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.4,
+            "position": [
+                650,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const config = $node[\"Fetch Firestore Config\"].json;\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\nconst phoneNumber = pick(config.phoneNumbers);\nconst city = pick(config.cities);\nconst collection = pick(config.collections || ['Classic']);\nconst total = Math.round((config.basePrice || 2500) * 1.1 * (0.95 + Math.random() * 0.1));\nreturn [{ json: { phoneNumber, city, collection, config, ListingPrice: total, uniqueHash: `mp-${config.slug}-${Date.now()}` } }];"
+            },
+            "id": "pick-random",
+            "name": "Pick Random Config",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                850,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-5-20250929"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ 'Create a Facebook Marketplace listing for ' + $json.config.productName + '.\\n\\nDETAILS: ' + JSON.stringify($json) + '\\n\\nGenerate catching title and description. Include ' + $json.phoneNumber + ' prominently. Return JSON { \"title\": \"...\", \"description\": \"...\" }' }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "anthropic",
+            "name": "Anthropic",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                1050,
+                50
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "Mi6bprya2ly47Vry",
+                    "name": "szender"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $node[\"Pick Random Config\"].json.config.prompts[0], \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+                "options": {}
+            },
+            "id": "kie-image-1",
+            "name": "kie-image-1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1250,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "id": "wait-1",
+            "name": "wait-1",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1450,
+                50
+            ],
+            "webhookId": "wait-1-multi"
+        },
+        {
+            "parameters": {
+                "url": "={{ \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + $node[\"kie-image-1\"].json.data.taskId }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "poll-1",
+            "name": "poll-1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1650,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const d = $node[\"Pick Random Config\"].json;\nlet title = ''; let desc = '';\ntry { const p = JSON.parse($node[\"Anthropic\"].json.message.content[0].text.match(/\\{[\\s\\S]*\\}/)[0]); title = p.title; desc = p.description; } catch(e) {}\nreturn [{ json: { ...d, ListingTitle: title, ListingDescription: desc, Image_URL: JSON.parse($node[\"poll-1\"].json.data.resultJson).resultUrls[0] } }];"
+            },
+            "id": "parse-result",
+            "name": "parse-result",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1850,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "={{ $node[\"Fetch Firestore Config\"].json.dataTableId }}"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "uniqueHash": "={{ $json.uniqueHash }}",
+                        "ListingTitle": "={{ $json.ListingTitle }}",
+                        "ListingDescription": "={{ $json.ListingDescription }}",
+                        "Image_URL": "={{ $json.Image_URL }}",
+                        "Price": "={{ $json.ListingPrice }}",
+                        "Location": "={{ $json.city }}",
+                        "PhoneNumber": "={{ $json.phoneNumber }}",
+                        "Status": "Ready"
+                    }
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "uniqueHash",
+                            "keyValue": "={{ $json.uniqueHash }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "save-final",
+            "name": "save-final",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                2050,
+                50
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "={{ $node[\"Fetch Firestore Config\"].json.dataTableId }}"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Status",
+                            "keyValue": "Ready"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "api-get-row",
+            "name": "API Get Pending Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                850,
+                302
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "={{ $node[\"Fetch Firestore Config\"].json.dataTableId }}"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Image_URL",
+                            "keyValue": "={{ $node[\"Marketplace API POST\"].json.body.imageUrl }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "={{ $node[\"Marketplace API POST\"].json.body.status }}"
+                    }
+                },
+                "options": {}
+            },
+            "id": "api-update-row",
+            "name": "API Update Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                850,
+                400
+            ]
+        }
+    ],
+    "connections": {
+        "Every 20 Minutes": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API GET": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API POST": {
+            "main": [
+                [
+                    {
+                        "node": "Main Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Main Router": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Firestore Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Firestore Config": {
+            "main": [
+                [
+                    {
+                        "node": "Mode Switch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mode Switch": {
+            "main": [
+                [
+                    {
+                        "node": "Pick Random Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "API Get Pending Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "API Update Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Pick Random Config": {
+            "main": [
+                [
+                    {
+                        "node": "Anthropic",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Anthropic": {
+            "main": [
+                [
+                    {
+                        "node": "kie-image-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "kie-image-1": {
+            "main": [
+                [
+                    {
+                        "node": "wait-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "wait-1": {
+            "main": [
+                [
+                    {
+                        "node": "poll-1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "poll-1": {
+            "main": [
+                [
+                    {
+                        "node": "parse-result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "parse-result": {
+            "main": [
+                [
+                    {
+                        "node": "save-final",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

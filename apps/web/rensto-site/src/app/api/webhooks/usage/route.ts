@@ -1,71 +1,86 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS, UsageLog } from '@/lib/firebase-admin';
+// [MIGRATION] Phase 5: Firestore kept as backup
+import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
+import * as dbDashboard from '@/lib/db/dashboard';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export async function POST(request: NextRequest) {
     try {
-        // 1. Authenticate Request
         const apiKey = request.headers.get('x-api-key');
-        // Retrieve valid API key from environment
         const VALID_API_KEY = process.env.RENSTO_API_KEY;
 
         if (!apiKey || apiKey !== VALID_API_KEY) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        // 2. Parse Payload
         const body = await request.json();
         const { clientId, agentId, model, tokens, cost, metadata } = body;
 
-        // Basic validation
         if (!clientId || !agentId || !cost) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
-        const db = getFirestoreAdmin();
-        const batch = db.batch();
-
-        // 3. Create Usage Log Entry
-        const logRef = db.collection(COLLECTIONS.USAGE_LOGS).doc();
-        const logEntry: UsageLog = {
-            id: logRef.id,
+        // [MIGRATION] Phase 5: Write to Postgres (primary)
+        const log = await dbDashboard.createUsageLog({
             clientId,
             agentId,
-            timestamp: FieldValue.serverTimestamp(),
             model: model || 'unknown',
             tokens: tokens || { input: 0, output: 0, total: 0 },
-            cost, // passed from n8n in cents
-            metadata
-        };
-
-        batch.set(logRef, logEntry);
-
-        // 4. Update Client Aggregated Usage (Total Spend)
-        // Stored on the client document for quick access
-        const clientRef = db.collection(COLLECTIONS.CLIENTS).doc(clientId);
-        batch.update(clientRef, {
-            'usage.totalSpend': FieldValue.increment(cost),
-            'usage.lastActiveString': new Date().toISOString()
+            cost,
+            metadata,
+            status: 'completed',
         });
 
-        // 5. Update Agent-Specific Usage for Client
-        // Stored in a subcollection or map on the client doc?
-        // Let's store it on a monthly ledger or just simple increment for now.
-        // For simple v1: Just incrementing a top-level usage map on the client doc might be risky if map grows too large.
-        // Safer: Subcollection `clients/{clientId}/agent_usage/{agentId}`
-        const agentUsageRef = clientRef.collection('agent_usage').doc(agentId);
+        // Update user-level usage aggregation
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: clientId },
+                select: { metrics: true },
+            });
+            const currentMetrics = (user?.metrics as Record<string, any>) || {};
+            await prisma.user.update({
+                where: { id: clientId },
+                data: {
+                    metrics: {
+                        ...currentMetrics,
+                        totalSpend: (currentMetrics.totalSpend || 0) + cost,
+                        lastActiveString: new Date().toISOString(),
+                    },
+                },
+            });
+        } catch (pgErr) {
+            console.warn('[Migration] webhooks/usage: Failed to update user metrics', pgErr);
+        }
 
-        // Use set with merge to handle init
-        batch.set(agentUsageRef, {
-            agentId,
-            totalSpend: FieldValue.increment(cost),
-            totalRuns: FieldValue.increment(1),
-            lastUsed: FieldValue.serverTimestamp()
-        }, { merge: true });
+        // Backup: Firestore
+        await firestoreBackupWrite('webhooks/usage', async () => {
+            const db = getFirestoreAdmin();
+            const batch = db.batch();
 
-        await batch.commit();
+            const logRef = db.collection(COLLECTIONS.USAGE_LOGS).doc(log.id);
+            batch.set(logRef, {
+                id: log.id,
+                clientId,
+                agentId,
+                timestamp: FieldValue.serverTimestamp(),
+                model: model || 'unknown',
+                tokens: tokens || { input: 0, output: 0, total: 0 },
+                cost,
+                metadata,
+            });
 
-        return NextResponse.json({ success: true, logId: logRef.id });
+            const clientRef = db.collection(COLLECTIONS.CLIENTS).doc(clientId);
+            batch.update(clientRef, {
+                'usage.totalSpend': FieldValue.increment(cost),
+                'usage.lastActiveString': new Date().toISOString(),
+            });
+
+            await batch.commit();
+        });
+
+        return NextResponse.json({ success: true, logId: log.id });
 
     } catch (error: any) {
         console.error('Usage Webhook Error:', error);

@@ -1,0 +1,986 @@
+{
+    "name": "Unified Marketplace Master [RESTORED-S7-FIXED]",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 20
+                        }
+                    ]
+                }
+            },
+            "id": "trigger-schedule",
+            "name": "Every 20 Minutes",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                0,
+                -400
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const now = new Date();\nconst dfwTime = new Date(now.toLocaleString(\"en-US\", { timeZone: \"America/Chicago\" }));\nconst hour = dfwTime.getHours();\nconst isWithinHours = true;\nreturn [\n  { json: { isWithinHours: isWithinHours, currentHour: hour, product: \"uad\" } },\n  { json: { isWithinHours: isWithinHours, currentHour: hour, product: \"missparty\" } }\n];"
+            },
+            "name": "Time Check",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                200,
+                -400
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "combinator": "and",
+                    "conditions": [
+                        {
+                            "id": "61091d47-17ef-4261-8a82-ad9fc2c4ca84",
+                            "leftValue": "={{ $json.isWithinHours }}",
+                            "operator": {
+                                "operation": "true",
+                                "singleValue": true,
+                                "type": "boolean"
+                            },
+                            "rightValue": ""
+                        }
+                    ]
+                }
+            },
+            "name": "Within Operating Hours",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                450,
+                -400
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "expression",
+                "output": "={{ $json.product === 'uad' ? 0 : 1 }}"
+            },
+            "name": "Route to Product",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3,
+            "position": [
+                700,
+                -400
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "6T8jI35R2tX1Mni9"
+                }
+            },
+            "name": "Get Existing Listings1",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                950,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const existingItems = $input.all();\nconst existingConfigs = new Set();\nexistingItems.forEach(item => {\n  const d = item.json;\n  if (d.Collection && d.Size && d.Design && d.Color) {\n    existingConfigs.add(`${d.Collection}|${d.Size}|${d.Design}|${d.Color}`);\n  }\n});\n\nconst numbers = [\"+1-469-535-7538\", \"+1-972-954-2407\", \"+1-972-628-3587\", \"+1-469-625-0960\"];\nconst cities = [\"Dallas\", \"Fort Worth\", \"Arlington\", \"Plano\", \"Garland\", \"Irving\", \"McKinney\", \"Frisco\", \"Mesquite\", \"Grand Prairie\", \"Carrollton\", \"Richardson\", \"Lewisville\", \"Allen\", \"Flower Mound\"];\nconst collections = [\"Classic™ Steel\", \"Bridgeport™ Steel\", \"Coachman®\", \"Modern Steel™\", \"Canyon Ridge® Collection\"];\nconst sizes = [\"8x7\", \"9x7\", \"10x7\", \"16x7\", \"16x8\", \"18x7\", \"18x8\"];\nconst designs = [\"Short Panel\", \"Long Panel\"];\nconst colors = [\"White\", \"Almond\", \"Desert Tan\", \"Sandtone\", \"Bronze\", \"Chocolate\", \"Charcoal\", \"Gray\", \"Black\"];\nconst constructions = [\"2\\\" Intellicore® Insulated R-18\", \"1 3/8\\\" Intellicore R-12\", \"2\\\" Polystyrene R-9\", \"1 3/8\\\" Polystyrene R-6\"];\n\nfunction pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }\nlet config = null; let attempts = 0;\nwhile (!config && attempts < 50) {\n  attempts++;\n  const c = { PhoneNumber: pick(numbers), Location: pick(cities) + ', Texas', Collection: pick(collections), Size: pick(sizes), Design: pick(designs), Color: pick(colors), Construction: pick(constructions), Video_URL: '/opt/fb-marketplace-bot/ffb88fcc-ff51-4ce6-87f2-016eabca6a4d.mp4' };\n  if (!existingConfigs.has(`${c.Collection}|${c.Size}|${c.Design}|${c.Color}`)) { config = c; }\n}\nconst c = config || { PhoneNumber: pick(numbers), Location: 'Dallas, Texas', Collection: 'Classic™ Steel', Size: '8x7', Design: 'Short Panel', Color: 'White', Construction: 'R-6', Video_URL: '/opt/fb-marketplace-bot/ffb88fcc-ff51-4ce6-87f2-016eabca6a4d.mp4' };\nconst sizePrices = { '8x7': 1800, '9x7': 2000, '10x7': 2200, '16x7': 3400, '16x8': 3800, '18x7': 4200, '18x8': 4600 };\nconst total = Math.round((sizePrices[c.Size] || 2500) * 1.1 * (0.95 + Math.random() * 0.1));\nconst hash = `${c.Collection}|${c.Size}|${c.Design}|${c.Color}|${Date.now()}`;\nconst phone = 'CALL ' + c.PhoneNumber;\nreturn [{ json: { ...c, Price: total, ListingPrice: total, uniqueHash: hash,\n  prompt1: `${c.Color} ${c.Collection} garage door on Texas home, ${c.Design}, professional daylight, text overlay: ${phone}`,\n  prompt2: `Close up of ${c.Color} ${c.Collection} garage door, ${c.Design}, high resolution suburban photo`,\n  prompt3: `Wide shot: ${c.Color} ${c.Collection} garage door, ${c.Design} design, Texas curb appeal`\n}}];"
+            },
+            "name": "Generate Config1",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1200,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt1, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}",
+                "options": {}
+            },
+            "name": "Kie Image ",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1400,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const response = $json;\nif (response.code !== 200 || !response.data?.taskId) {\n  console.log(\"Kie.ai API Error:\", response.msg || \"No taskId received\");\n  const prev = $(\"Generate Config1\").first().json;\n  return [{ json: { ...prev, taskId1: null, pollUrl1: null, apiError: response.msg || \"Unknown error\" } }];\n}\nconst taskId = response.data.taskId;\nconst prev = $(\"Generate Config1\").first().json;\nreturn [{ json: { ...prev, taskId1: taskId, pollUrl1: \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + taskId } }];"
+            },
+            "name": "Store Task ",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1600,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "name": "Wait ",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1800,
+                -600
+            ],
+            "webhookId": "wait-uad-1"
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.pollUrl1 }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                }
+            },
+            "name": "Poll ",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2000,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const prev = $('Store Task ').first().json;\nlet url1 = '';\ntry { if ($json.data?.state === 'success') url1 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) {}\nreturn [{ json: { ...prev, Image_URL: url1 || '' } }];"
+            },
+            "name": "Extract ",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2200,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt2, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}"
+            },
+            "name": "Kie Image 4",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2400,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const response = $json;\nconst prev = $(\"Extract \").first().json;\nreturn [{ json: { ...prev, taskId2: response.data?.taskId, pollUrl2: \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + response.data?.taskId } }];"
+            },
+            "name": "Store Task 4",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2600,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "name": "Wait 4",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                2800,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.pollUrl2 }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                }
+            },
+            "name": "Poll 4",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                3000,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const prev = $('Store Task 4').first().json;\nlet url2 = '';\ntry { if ($json.data?.state === 'success') url2 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) {}\nreturn [{ json: { ...prev, Image_URL2: url2 || '' } }];"
+            },
+            "name": "Extract 4",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                3200,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt3, \"aspect_ratio\": \"1:1\", \"resolution\": \"1K\" } }) }}"
+            },
+            "name": "Kie Image 5",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                3400,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const response = $json;\nconst prev = $(\"Extract 4\").first().json;\nreturn [{ json: { ...prev, taskId3: response.data?.taskId, pollUrl3: \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + response.data?.taskId } }];"
+            },
+            "name": "Store Task 5",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                3600,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "name": "Wait 5",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                3800,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.pollUrl3 }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                }
+            },
+            "name": "Poll 5",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                4000,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const prev = $('Store Task 5').first().json;\nlet url3 = '';\ntry { if ($json.data?.state === 'success') url3 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) {}\nreturn [{ json: { ...prev, Image_URL3: url3 || '' } }];"
+            },
+            "name": "Extract 5",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                4200,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-5-20250929"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ 'Create a Facebook Marketplace listing for ' + $json.Collection + ' garage door.\\nDETAILS: ' + JSON.stringify($json) + '\\nGenerate catch title and description.' }}"
+                        }
+                    ]
+                }
+            },
+            "name": "Anthropic",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                4450,
+                -600
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "Mi6bprya2ly47Vry",
+                    "name": "szender"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const d = $node[\"Extract 5\"].json;\nlet title = d.Size + ' ' + d.Collection + ' Garage Door';\nlet desc = 'Premium ' + d.Collection + ' garage door. CALL ' + d.PhoneNumber;\ntry { const p = JSON.parse($json.message.content[0].text.match(/\\{[\\s\\S]*\\}/)[0]); title = p.title; desc = p.description; } catch(e) {}\nreturn [{ json: { ...d, ListingTitle: title, ListingDescription: desc } }];"
+            },
+            "name": "Parse Copy1",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                4700,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "6T8jI35R2tX1Mni9"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "uniqueHash",
+                            "keyValue": "={{ $json.uniqueHash }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "uniqueHash": "={{ $json.uniqueHash }}",
+                        "ListingTitle": "={{ $json.ListingTitle }}",
+                        "ListingDescription": "={{ $json.ListingDescription }}",
+                        "Image_URL": "={{ $json.Image_URL }}",
+                        "PhoneNumber": "={{ $json.PhoneNumber }}",
+                        "Status": "Ready"
+                    }
+                }
+            },
+            "name": "Save to Data Table1",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                4950,
+                -600
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lOkdHmJ3IHnz4cPR"
+                }
+            },
+            "name": "Get Existing Listings",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                950,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const phoneNumber = \"+1-469-283-9855\";\nconst city = \"Dallas\";\nconst hash = `missparty-${Date.now()}`;\nreturn [{ json: { PhoneNumber: phoneNumber, Location: city, uniqueHash: hash, ListingPrice: 75, ProductName: \"White Bounce House Rental\", ProductType: \"Inflatable Bouncer\", prompt1: \"White bounce house photo\", prompt2: \"White bouncy castle jumping\", prompt3: \"Bouncer rental setup\" } }];"
+            },
+            "name": "Generate Config",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1200,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.kie.ai/api/v1/jobs/createTask",
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                        }
+                    ]
+                },
+                "jsonBody": "={{ JSON.stringify({ \"model\": \"flux-2/pro-text-to-image\", \"input\": { \"prompt\": $json.prompt1 } }) }}",
+                "sendBody": true,
+                "specifyBody": "json"
+            },
+            "name": "Kie Image 1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1400,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45
+            },
+            "name": "Wait 1",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1600,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ \"https://api.kie.ai/api/v1/jobs/recordInfo?taskId=\" + $json.data.taskId }}"
+            },
+            "name": "Poll 1",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1800,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "let url1 = ''; try { url1 = JSON.parse($json.data.resultJson).resultUrls[0]; } catch(e) {}\nreturn [{ json: { ...$node[\"Generate Config\"].json, Image_URL: url1 } }];"
+            },
+            "name": "Extract 1",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2000,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "authentication": "serviceAccount",
+                "operation": "get",
+                "projectId": "rensto",
+                "collection": "marketplace_configs",
+                "documentId": "={{ $node[\"Time Check\"].json.product }}"
+            },
+            "name": "Upsert to Firestore",
+            "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+            "typeVersion": 1.1,
+            "position": [
+                850,
+                -400
+            ],
+            "credentials": {
+                "googleApi": {
+                    "id": "HbI3P6PUIe8ATqzp",
+                    "name": "Google Service Account account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "path": "v1/marketplace/jobs/:product",
+                "responseMode": "lastNode"
+            },
+            "name": "Marketplace API GET",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                -200
+            ]
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "v1/marketplace/update/:product",
+                "responseMode": "lastNode"
+            },
+            "name": "Marketplace API POST",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "6T8jI35R2tX1Mni9"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Image_URL",
+                            "keyValue": "={{ $node[\"Marketplace API POST\"].json.body.imageUrl }}"
+                        }
+                    ]
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "={{ $node[\"Marketplace API POST\"].json.body.status }}"
+                    }
+                }
+            },
+            "name": "API Update Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                950,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "dataTableId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "6T8jI35R2tX1Mni9"
+                },
+                "filters": {
+                    "conditions": [
+                        {
+                            "keyName": "Status",
+                            "keyValue": "Ready"
+                        }
+                    ]
+                }
+            },
+            "name": "API Get Pending Row",
+            "type": "n8n-nodes-base.dataTable",
+            "typeVersion": 1.1,
+            "position": [
+                950,
+                200
+            ]
+        }
+    ],
+    "connections": {
+        "Every 20 Minutes": {
+            "main": [
+                [
+                    {
+                        "node": "Time Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Time Check": {
+            "main": [
+                [
+                    {
+                        "node": "Within Operating Hours",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Within Operating Hours": {
+            "main": [
+                [
+                    {
+                        "node": "Upsert to Firestore",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Upsert to Firestore": {
+            "main": [
+                [
+                    {
+                        "node": "Route to Product",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Route to Product": {
+            "main": [
+                [
+                    {
+                        "node": "Get Existing Listings1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Get Existing Listings",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Existing Listings1": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Config1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Config1": {
+            "main": [
+                [
+                    {
+                        "node": "Kie Image ",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Kie Image ": {
+            "main": [
+                [
+                    {
+                        "node": "Store Task ",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Task ": {
+            "main": [
+                [
+                    {
+                        "node": "Wait ",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait ": {
+            "main": [
+                [
+                    {
+                        "node": "Poll ",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll ": {
+            "main": [
+                [
+                    {
+                        "node": "Extract ",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract ": {
+            "main": [
+                [
+                    {
+                        "node": "Kie Image 4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Kie Image 4": {
+            "main": [
+                [
+                    {
+                        "node": "Store Task 4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Task 4": {
+            "main": [
+                [
+                    {
+                        "node": "Wait 4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait 4": {
+            "main": [
+                [
+                    {
+                        "node": "Poll 4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll 4": {
+            "main": [
+                [
+                    {
+                        "node": "Extract 4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract 4": {
+            "main": [
+                [
+                    {
+                        "node": "Kie Image 5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Kie Image 5": {
+            "main": [
+                [
+                    {
+                        "node": "Store Task 5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Task 5": {
+            "main": [
+                [
+                    {
+                        "node": "Wait 5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait 5": {
+            "main": [
+                [
+                    {
+                        "node": "Poll 5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll 5": {
+            "main": [
+                [
+                    {
+                        "node": "Extract 5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract 5": {
+            "main": [
+                [
+                    {
+                        "node": "Anthropic",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Anthropic": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Copy1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Copy1": {
+            "main": [
+                [
+                    {
+                        "node": "Save to Data Table1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API GET": {
+            "main": [
+                [
+                    {
+                        "node": "Time Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Marketplace API POST": {
+            "main": [
+                [
+                    {
+                        "node": "Time Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Existing Listings": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Config": {
+            "main": [
+                [
+                    {
+                        "node": "Kie Image 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Kie Image 1": {
+            "main": [
+                [
+                    {
+                        "node": "Wait 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait 1": {
+            "main": [
+                [
+                    {
+                        "node": "Poll 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Poll 1": {
+            "main": [
+                [
+                    {
+                        "node": "Extract 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

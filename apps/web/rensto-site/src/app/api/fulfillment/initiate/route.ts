@@ -2,13 +2,15 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
 import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import { AITableService } from '@/lib/services/AITableService';
+import * as dbServices from '@/lib/db/services';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
-// In production, this would be an env var
 const N8N_FULFILLMENT_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
 
 export async function POST(request: Request) {
@@ -16,7 +18,6 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { clientId, clientEmail, productId, productName, configuration, paymentIntentId } = body;
 
-        // Basic validation
         if (!clientId || !productId || !configuration) {
             return NextResponse.json(
                 { error: 'Missing required fields' },
@@ -24,32 +25,40 @@ export async function POST(request: Request) {
             );
         }
 
-        const db = getFirestoreAdmin();
-        const instancesRef = db.collection(COLLECTIONS.SERVICE_INSTANCES);
-
-        // 1. Create/Update the Service Instance record
-        const newInstance: Omit<ServiceInstance, 'id'> = {
+        // [MIGRATION] Phase 3: Create service instance in Postgres (primary)
+        const instance = await dbServices.createServiceInstance({
             clientId,
             clientEmail: clientEmail || '',
             productId,
             productName: productName || productId,
             status: 'configuring',
             configuration,
-            createdAt: FieldValue.serverTimestamp(),
-            updatedAt: FieldValue.serverTimestamp(),
-            adminNotes: paymentIntentId ? `Paid via ${paymentIntentId}` : 'Manual initiation'
-        };
+            adminNotes: paymentIntentId ? `Paid via ${paymentIntentId}` : 'Manual initiation',
+        });
+        const instanceId = instance.id;
 
-        const docRef = await instancesRef.add(newInstance);
-        const instanceId = docRef.id;
+        // Backup: Firestore
+        await firestoreBackupWrite('fulfillment/initiate', async () => {
+            const db = getFirestoreAdmin();
+            await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(instanceId).set({
+                id: instanceId,
+                clientId,
+                clientEmail: clientEmail || '',
+                productId,
+                productName: productName || productId,
+                status: 'configuring',
+                configuration,
+                createdAt: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp(),
+                adminNotes: paymentIntentId ? `Paid via ${paymentIntentId}` : 'Manual initiation',
+            });
+        });
 
-        // 2. Identify n8n Entry Point based on Product ID (AITable Master Core)
+        // 2. Identify n8n Entry Point based on Product ID
         const products = await AITableService.getProducts();
         const aitProduct = products.find((p: any) => (p['Product ID'] || p.id) === productId);
 
-        let targetWebhook = aitProduct?.['n8n Webhook'] || aitProduct?.n8nWorkflowId || process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
-
-        // Construct full URL if it's just a slug
+        let targetWebhook = aitProduct?.['n8n Webhook'] || aitProduct?.n8nWorkflowId || N8N_FULFILLMENT_WEBHOOK;
         if (targetWebhook && !targetWebhook.startsWith('http')) {
             targetWebhook = `https://n8n.rensto.com/webhook/${targetWebhook}`;
         }
@@ -67,21 +76,17 @@ export async function POST(request: Request) {
                     productId,
                     productName,
                     config: configuration,
-                    timestamp: new Date().toISOString()
-                })
+                    timestamp: new Date().toISOString(),
+                }),
             });
         } catch (webhookError) {
             console.error('Failed to trigger fulfillment webhook:', webhookError);
         }
 
-        // 3. Send fulfillment started email
+        // 4. Send fulfillment started email
         if (clientEmail) {
             try {
-                await emails.fulfillmentStarted(
-                    clientEmail,
-                    clientId, // Using clientId as name fallback
-                    productName || 'Rensto Service'
-                );
+                await emails.fulfillmentStarted(clientEmail, clientId, productName || 'Rensto Service');
             } catch (emailError) {
                 console.error('Failed to send fulfillment email:', emailError);
             }
@@ -90,7 +95,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             instanceId,
-            message: 'Service instance created and fulfillment initiated.'
+            message: 'Service instance created and fulfillment initiated.',
         });
 
     } catch (error: any) {
@@ -99,7 +104,7 @@ export async function POST(request: Request) {
             {
                 error: 'Internal server error',
                 message: error.message,
-                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
             },
             { status: 500 }
         );

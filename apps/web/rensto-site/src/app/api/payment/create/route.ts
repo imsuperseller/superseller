@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StripeApi } from '@/lib/stripe';
+// [MIGRATION] Phase 2: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
+import * as dbPayments from '@/lib/db/payments';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 const stripe = new StripeApi();
 
@@ -35,17 +38,31 @@ export async function POST(request: NextRequest) {
 
     const { paymentIntentId, clientSecret } = paymentIntentResult;
 
-    // Log payment attempt to Firestore
-    const db = getFirestoreAdmin();
-    await db.collection(COLLECTIONS.PAYMENTS).doc(paymentIntentId as string).set({
+    // [MIGRATION] Phase 2: Log payment attempt to Postgres (primary)
+    await dbPayments.createPayment({
+      id: paymentIntentId as string,
+      userId: customer || 'unknown',
       amount,
+      amountTotal: amount,
       currency,
-      customerId: customer,
-      templateId,
       status: 'pending',
-      metadata: metadata || {},
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      productId: templateId,
+      metadata: { customerId: customer, templateId, ...(metadata || {}) },
+    });
+
+    // Backup: Firestore (non-blocking)
+    await firestoreBackupWrite('payment/create', async () => {
+      const db = getFirestoreAdmin();
+      await db.collection(COLLECTIONS.PAYMENTS).doc(paymentIntentId as string).set({
+        amount,
+        currency,
+        customerId: customer,
+        templateId,
+        status: 'pending',
+        metadata: metadata || {},
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      });
     });
 
     await auditAgent.log({

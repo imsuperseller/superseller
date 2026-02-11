@@ -1,0 +1,143 @@
+{
+    "name": "Onboarding Supervisor v1.0",
+    "nodes": [
+        {
+            "parameters": {
+                "collection": "onboarding_requests",
+                "options": {
+                    "triggerOn": "add"
+                }
+            },
+            "id": "firestore-trigger",
+            "name": "Firestore Trigger",
+            "type": "n8n-nodes-base.googleFirestore",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.status }}",
+                            "value2": "submitted"
+                        }
+                    ]
+                }
+            },
+            "id": "status-check",
+            "name": "Is Submitted?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## 🤖 Mission Initialized: {{ $json.solutionName }}\n\nProvisioning system for **{{ $json.clientEmail }}**.\nConfiguration: {{ JSON.stringify($json.inputs) }}",
+                "options": {}
+            },
+            "id": "slack-notify",
+            "name": "Notify Admin (Slack)",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2,
+            "position": [
+                650,
+                150
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "collection": "onboarding_requests",
+                "documentId": "={{ $json.id }}",
+                "fields": [
+                    "status"
+                ],
+                "values": {
+                    "status": "processing"
+                }
+            },
+            "id": "set-processing",
+            "name": "Mark Processing",
+            "type": "n8n-nodes-base.googleFirestore",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.rensto.com/admin/provision",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "value": "={{ $json.id }}"
+                        },
+                        {
+                            "name": "solutionId",
+                            "value": "={{ $json.solutionId }}"
+                        }
+                    ]
+                }
+            },
+            "id": "trigger-provisioning",
+            "name": "Trigger Technical Provisioning",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                850,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Firestore Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "status-check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "status-check": {
+            "main": [
+                [
+                    {
+                        "node": "slack-notify",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "set-processing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "set-processing": {
+            "main": [
+                [
+                    {
+                        "node": "trigger-provisioning",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

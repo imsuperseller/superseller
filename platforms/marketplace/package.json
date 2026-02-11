@@ -1,0 +1,20 @@
+{
+    "name": "@rensto/marketplace-ecosystem",
+    "version": "1.0.0",
+    "description": "Standalone Facebook Marketplace Automation & Lead Hub (UAD/MissParty)",
+    "main": "saas-engine/index.js",
+    "scripts": {
+        "engine:start": "node saas-engine/index.js",
+        "seed:configs": "ts-node scripts/seed-configs.ts",
+        "install:all": "npm install && cd saas-engine && npm install"
+    },
+    "dependencies": {
+        "firebase-admin": "^11.0.0",
+        "dotenv": "^16.0.0",
+        "ts-node": "^10.0.0",
+        "typescript": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

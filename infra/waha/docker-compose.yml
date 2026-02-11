@@ -11,7 +11,7 @@ services:
       WHATSAPP_DEFAULT_ENGINE: "NOWEB"
       
       # API Configuration
-      WAHA_API_KEY: "4fc7e008d7d24fc995475029effc8fa8"
+      WAHA_API_KEY: "${WAHA_API_KEY:-4fc7e008d7d24fc995475029effc8fa8}"
       
       # Session Management
       WAHA_SESSION_MODE: "auto"

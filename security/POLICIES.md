@@ -8,8 +8,9 @@
 
 | System | Access Level | Who |
 | :--- | :--- | :--- |
-| Firestore | Admin | Founder, Developer |
-| n8n | Admin | Founder, Developer |
+| PostgreSQL + Redis | Admin | Founder, Developer (primary) |
+| Firestore | Admin | Founder, Developer (legacy; migration in progress) |
+| n8n | Admin | Founder, Developer (backup; Antigravity primary) |
 | Stripe | Full | Founder |
 | Vercel | Deploy | Founder, Developer |
 | VPS (SSH) | Root | Founder, Developer |
@@ -27,7 +28,7 @@
 
 ## Data Protection
 
-- **Firestore**: Rules restrict read/write to authenticated users.
+- **PostgreSQL**: Row-level security; app backends and marketplace. **Firestore**: Legacy; migration in progress.
 - **Stripe**: PCI compliance handled by Stripe.
 - **GDPR**: User data deleted on request.
 

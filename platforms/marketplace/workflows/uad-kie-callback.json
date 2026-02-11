@@ -1,0 +1,221 @@
+{
+  "updatedAt": "2026-01-21T05:35:07.435Z",
+  "createdAt": "2026-01-21T05:35:07.435Z",
+  "id": "aLvB2ZsquXhCirMy",
+  "name": "UAD v2 - Kie.ai Callback Handler",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kie-callback",
+        "options": {}
+      },
+      "id": "9a68cb96-057c-4b1a-affa-c17dcac33c6f",
+      "name": "Webhook Trigger1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        624
+      ],
+      "webhookId": "766754a1-801b-4842-9f13-064ecedb6454"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst taskId = body.data.taskId;\nconst state = body.data.state;\n\nif (state === 'success') {\n  const resultJson = JSON.parse(body.data.resultJson);\n  return [{ json: { taskId, state, imageUrl: resultJson.resultUrls[0] } }];\n} else {\n  return [{ json: { taskId, state, error: body.data.failMsg } }];\n}"
+      },
+      "id": "7e69ca77-82f7-4da3-8d53-5655ac5d5e1a",
+      "name": "Parse Callback1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.state }}",
+              "value2": "success"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a87120ba-89d6-439d-9adc-930e04951ce5",
+      "name": "Was Success?1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "6T8jI35R2tX1Mni9",
+          "mode": "id"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "taskId",
+              "keyValue": "={{ $json.taskId }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Available",
+            "Image_URL": "={{ $json.imageUrl }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "453bf0cf-27e6-4223-97fd-81e5ab5bc411",
+      "name": "Update Success1",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "6T8jI35R2tX1Mni9",
+          "mode": "id"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "taskId",
+              "keyValue": "={{ $json.taskId }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Failed"
+          }
+        },
+        "options": {}
+      },
+      "id": "840c5838-c77f-4fd7-b93a-b58917db656c",
+      "name": "Update Failure1",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        720
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Parse Callback1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Callback1": {
+      "main": [
+        [
+          {
+            "node": "Was Success?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Was Success?1": {
+      "main": [
+        [
+          {
+            "node": "Update Success1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Failure1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "455554ac-10ca-4471-92cc-0a6374bf2808",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-21T05:35:07.435Z",
+      "createdAt": "2026-01-21T05:35:07.435Z",
+      "role": "workflow:owner",
+      "workflowId": "aLvB2ZsquXhCirMy",
+      "projectId": "6L20DLwgKEB5r0rn"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-12-23T05:16:33.734Z",
+      "createdAt": "2025-12-23T05:16:33.734Z",
+      "id": "52YmY2GKNMJx8Aop",
+      "name": "if node"
+    },
+    {
+      "updatedAt": "2025-12-23T05:13:31.934Z",
+      "createdAt": "2025-12-23T05:13:31.934Z",
+      "id": "817D6PC6uqQmO3b9",
+      "name": "webhook"
+    },
+    {
+      "updatedAt": "2025-12-23T05:13:00.962Z",
+      "createdAt": "2025-12-23T05:13:00.962Z",
+      "id": "VFCy3o7FUAo4l36X",
+      "name": "data tables"
+    },
+    {
+      "updatedAt": "2025-12-23T05:13:20.512Z",
+      "createdAt": "2025-12-23T05:13:20.512Z",
+      "id": "bUeNCB9wzPs4CAil",
+      "name": "code"
+    },
+    {
+      "updatedAt": "2025-12-23T05:11:28.920Z",
+      "createdAt": "2025-12-23T05:11:28.920Z",
+      "id": "iLdoxl12wjdRHrRz",
+      "name": "szender"
+    }
+  ]
+}

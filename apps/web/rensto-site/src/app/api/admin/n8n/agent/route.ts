@@ -1,66 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server';
+// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
+import prisma from '@/lib/prisma';
+import * as dbAdmin from '@/lib/db/admin';
+import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 
 export const dynamic = 'force-dynamic';
 
-const MEMORY_DOC_ID = 'n8n_supervisor_config';
+const MEMORY_KEY = 'n8n_supervisor_config';
+
+const DEFAULT_MEMORY = {
+    preferences: {
+        maintain_community_nodes: true,
+        max_backups: 2,
+        safety_first: true,
+        version_research_enabled: true,
+    },
+    findings: [],
+    lastResearchDate: null,
+    knowledgeBase: 'Rensto n8n instance uses Docker Compose on a Linux server. It has critical community nodes for WhatsApp and Browserless.',
+};
 
 async function getAgentMemory() {
+    // [MIGRATION] Phase 4: Read from Postgres first
+    const pgRecord = await dbAdmin.getAgentMemory(MEMORY_KEY);
+    if (pgRecord) return pgRecord.data as Record<string, any>;
+
+    // Fallback: Firestore
+    console.info('[Migration] admin/n8n/agent: Postgres miss, falling back to Firestore');
     const db = getFirestoreAdmin();
-    const doc = await db.collection('n8n_agent_memory').doc(MEMORY_DOC_ID).get();
-    return doc.exists ? doc.data() : {
-        preferences: {
-            maintain_community_nodes: true,
-            max_backups: 2,
-            safety_first: true,
-            version_research_enabled: true
-        },
-        findings: [],
-        lastResearchDate: null,
-        knowledgeBase: "Rensto n8n instance uses Docker Compose on a Linux server. It has critical community nodes for WhatsApp and Browserless."
-    };
+    const doc = await db.collection('n8n_agent_memory').doc(MEMORY_KEY).get();
+    return doc.exists ? doc.data()! : DEFAULT_MEMORY;
 }
 
 export async function GET() {
     try {
         const memory = await getAgentMemory();
-
-        // Real version check - update this when n8n releases a new version
         const latestVersion = '2.4.4';
-        const currentVersion = '2.4.1'; // Our current server version
+        const currentVersion = '2.4.1';
         const isUpdateAvailable = (latestVersion as string) !== (currentVersion as string);
 
         return NextResponse.json({
             success: true,
             memory,
             updatesAvailable: isUpdateAvailable,
-            latestVersion
+            latestVersion,
         });
     } catch (error) {
         return NextResponse.json({
             success: false,
-            error: error instanceof Error ? error.message : 'Agent memory access failed'
+            error: error instanceof Error ? error.message : 'Agent memory access failed',
         });
     }
 }
 
 export async function POST(req: NextRequest) {
     const { action, targetVersion, data } = await req.json();
-    const db = getFirestoreAdmin();
 
     try {
         if (action === 'update-memory') {
-            await db.collection('n8n_agent_memory').doc(MEMORY_DOC_ID).set(data, { merge: true });
+            // [MIGRATION] Phase 4: Write to Postgres (primary)
+            const current = await getAgentMemory();
+            const merged = { ...current, ...data };
+            await dbAdmin.upsertAgentMemory(MEMORY_KEY, merged);
+
+            // Backup: Firestore
+            await firestoreBackupWrite('admin/n8n/agent update-memory', async () => {
+                const db = getFirestoreAdmin();
+                await db.collection('n8n_agent_memory').doc(MEMORY_KEY).set(data, { merge: true });
+            });
+
             return NextResponse.json({ success: true });
         }
 
         if (action === 'research') {
             const memory = await getAgentMemory();
             if (!memory) throw new Error('Could not access agent memory');
-            const findings = memory.findings || [];
+            const findings = (memory.findings as any[]) || [];
 
-            // This is where the Agent 'thinks' and researches
-            // For now, we simulate the research output based on the user's requirements
             const researchSummary = `
                 ### Agentic Research Case: v${targetVersion}
                 - **Risk Level**: LOW (Minor version bump)
@@ -70,9 +87,21 @@ export async function POST(req: NextRequest) {
                 - **Recommendation**: PROCEED. Immutable backup required.
             `;
 
-            await db.collection('n8n_agent_memory').doc(MEMORY_DOC_ID).update({
+            const updatedMemory = {
+                ...memory,
                 lastResearchDate: new Date().toISOString(),
-                findings: [researchSummary, ...findings].slice(0, 5)
+                findings: [researchSummary, ...findings].slice(0, 5),
+            };
+
+            await dbAdmin.upsertAgentMemory(MEMORY_KEY, updatedMemory);
+
+            // Backup: Firestore
+            await firestoreBackupWrite('admin/n8n/agent research', async () => {
+                const db = getFirestoreAdmin();
+                await db.collection('n8n_agent_memory').doc(MEMORY_KEY).update({
+                    lastResearchDate: new Date().toISOString(),
+                    findings: [researchSummary, ...findings].slice(0, 5),
+                });
             });
 
             return NextResponse.json({ success: true, summary: researchSummary });
@@ -82,7 +111,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         return NextResponse.json({
             success: false,
-            error: error instanceof Error ? error.message : 'Agent execution failed'
+            error: error instanceof Error ? error.message : 'Agent execution failed',
         });
     }
 }

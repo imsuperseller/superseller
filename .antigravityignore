@@ -1,0 +1,15 @@
+# Legacy/Outdated Apps and Folders
+apps/web/admin-dashboard/
+archives/
+backups/
+old/
+temp/
+
+# Airtable.com (retired)
+**/Airtable/
+**/airtable/
+# Aitable.ai is IN USE - do not ignore aitable.ai / Aitable.ai
+
+# Workflow JSONs (Bulk)
+workflows/*.json
+**/temp_workflow.json
