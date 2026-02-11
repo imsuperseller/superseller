@@ -9,7 +9,7 @@
     "dev:port": "PORT=3002 next dev",
     "dev:reliable": "PORT=3002 next dev",
     "start:dev": "PORT=3002 next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",
