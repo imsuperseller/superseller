@@ -42,7 +42,7 @@ function safeJson(val: any): Prisma.InputJsonValue | undefined {
 
 /** Ensure a User row exists for FK references. Creates placeholder if missing. */
 async function ensureUser(id: string, email?: string) {
-  if (!id || id === 'unknown') return;
+  if (!id) return;
   const existing = await prisma.user.findUnique({ where: { id } });
   if (existing) return;
   // Use a unique placeholder email based on the ID to avoid email uniqueness conflicts
@@ -188,11 +188,17 @@ async function migratePayments(db: admin.firestore.Firestore) {
         create: {
           id, userId,
           stripeSessionId: d.stripeSessionId || d.sessionId || null,
-          stripePaymentIntentId: d.stripePaymentIntentId || d.paymentIntentId || null,
           stripeCustomerId: d.stripeCustomerId || d.customerId || null,
-          amount: d.amount || d.amountTotal || 0, currency: d.currency || 'usd',
-          productId: d.productId || null, productName: d.productName || null,
-          serviceType: d.serviceType || d.flowType || null, status: d.status || 'completed',
+          customerId: d.customerId || null,
+          customerEmail: d.customerEmail || null,
+          amount: d.amount || d.amountTotal || 0,
+          amountTotal: d.amountTotal || d.amount || 0,
+          currency: d.currency || 'usd',
+          flowType: d.flowType || d.serviceType || null,
+          productId: d.productId || null,
+          tier: d.tier || null,
+          platform: d.platform || 'rensto-web',
+          status: d.status || 'completed',
           metadata: safeJson({ tier: d.tier, platform: d.platform, flowType: d.flowType }) || {},
           createdAt: toDateOrNow(d.createdAt || d.timestamp),
           updatedAt: toDateOrNow(d.updatedAt || d.timestamp),
@@ -221,7 +227,7 @@ async function migratePurchases(db: admin.firestore.Firestore) {
       }
       await prisma.purchase.upsert({
         where: { id }, update: {},
-        create: { id, userId, templateId: templateId || 'unknown', paymentIntentId: d.paymentIntentId || null, amount: d.amount || 0, status: d.status || 'completed', downloadToken: d.downloadToken || null, downloadExpiry: toDate(d.downloadExpiry), createdAt: toDateOrNow(d.createdAt) },
+        create: { id, userId, templateId: templateId || null, customerEmail: d.customerEmail || d.email || 'unknown@rensto.com', stripeSessionId: d.stripeSessionId || null, downloadToken: d.downloadToken || null, downloadUrl: d.downloadUrl || null, tier: d.tier || null, createdAt: toDateOrNow(d.createdAt || d.timestamp) },
       });
       stats[col].migrated++;
     } catch (e: any) { stats[col].errors++; console.error(`    ⚠ ${col}/${id}: ${e.message.slice(0, 200)}`); }
@@ -257,8 +263,8 @@ async function migrateLeads(db: admin.firestore.Firestore) {
   for (const doc of docs) {
     const d = doc.data()!; const id = doc.id;
     try {
-      const userId = d.userId || 'unknown';
-      await ensureUser(userId);
+      const userId = d.userId || `lead-${id}`;
+      await ensureUser(userId, d.email);
       await prisma.lead.upsert({
         where: { id }, update: {},
         create: { id, userId, source: d.source || 'manual', name: d.name || null, company: d.company || null, email: d.email || null, phone: d.phone || null, website: d.website || null, location: safeJson(d.location) || undefined, qualificationStatus: d.qualificationStatus || 'unqualified', qualificationData: safeJson(d.qualificationData) || undefined, enrichedData: safeJson(d.enrichedData) || undefined, status: d.status || 'new', deliveredAt: toDate(d.deliveredAt), deliveryMethod: d.deliveryMethod || 'dashboard', responseTime: d.responseTime || null, metadata: safeJson(d.metadata) || undefined, tags: d.tags || [], notes: d.notes || null, createdAt: toDateOrNow(d.createdAt), updatedAt: toDateOrNow(d.updatedAt) },
@@ -430,10 +436,15 @@ async function main() {
     await prisma.audit.upsert({ where: { id }, update: {}, create: { id, service: d.service || 'unknown', action: d.action || '', status: d.status || 'info', details: safeJson(d.details) || undefined, errorMessage: d.errorMessage || null, createdAt: toDateOrNow(d.createdAt || d.timestamp) } });
   });
   await migrateSimple(db, 'customizationRequests', async (id, d) => {
-    await prisma.customizationRequest.upsert({ where: { id }, update: {}, create: { id, templateId: d.templateId || d.workflowId || 'unknown', customerEmail: d.customerEmail || d.email || null, requirements: d.requirements || '', budget: d.budget || null, timeline: d.timeline || null, parameters: safeJson(d.parameters) || undefined, status: d.status || 'pending', createdAt: toDateOrNow(d.createdAt) } });
+    const crTemplateId = d.templateId || d.workflowId || 'unknown';
+    const crTplExists = await prisma.template.findUnique({ where: { id: crTemplateId } });
+    if (!crTplExists) { console.log(`    ⚠ customizationRequests/${id}: template ${crTemplateId} not found, skipping`); return; }
+    await prisma.customizationRequest.upsert({ where: { id }, update: {}, create: { id, templateId: crTemplateId, customerEmail: d.customerEmail || d.email || null, parameters: safeJson(d.parameters) || undefined, data: safeJson({ requirements: d.requirements, budget: d.budget, timeline: d.timeline }) || undefined, status: d.status || 'pending', createdAt: toDateOrNow(d.createdAt) } });
   });
   await migrateSimple(db, 'magicLinkTokens', async (id, d) => {
-    await prisma.magicLinkToken.upsert({ where: { id }, update: {}, create: { id, email: d.email || '', clientId: d.clientId || '', expiresAt: toDateOrNow(d.expiresAt), used: d.used ?? false, createdAt: toDateOrNow(d.createdAt) } });
+    const mlClientId = d.clientId || 'unknown';
+    await ensureUser(mlClientId, d.email);
+    await prisma.magicLinkToken.upsert({ where: { id }, update: {}, create: { id, email: d.email || '', clientId: mlClientId, expiresAt: toDateOrNow(d.expiresAt), used: d.used ?? false, createdAt: toDateOrNow(d.createdAt) } });
   });
   await migrateSimple(db, 'launch_tasks', async (id, d) => {
     await prisma.launchTask.upsert({ where: { id }, update: {}, create: { id, title: d.title || '', description: d.description || null, status: d.status || 'pending', order: d.order || 0, metadata: safeJson(d.metadata) || undefined, createdAt: toDateOrNow(d.createdAt) } });
