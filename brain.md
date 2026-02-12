@@ -48,6 +48,8 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 ## ⚡ EXECUTIVE OPERATING PROTOCOL
 
+**Before every response:** If the conversation has been summarized or spans many messages, re-read [AGENT_BEHAVIOR.md](AGENT_BEHAVIOR.md).
+
 - **Mode: Executive**. Do not ask permission for small technical fixes. Propose a **Plan Artifact**, then execute. When the user gives access (credentials, APIs), USE it — do not ask clarifying questions or send instructions back.
 - **Conflict Resolution Rule**: When NotebookLM (The Vision) and local code (The Reality) disagree:
   1. **Compare**: Highlight the contradiction.

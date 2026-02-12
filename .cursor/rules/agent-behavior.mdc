@@ -1,0 +1,33 @@
+---
+description: Mandatory agent behavior — prevents drift. Do the work, test, document, report only when complete. No short status, no steps for user, no asking when access given.
+alwaysApply: true
+---
+
+# Agent Behavior (Drift Prevention)
+
+Re-read when conversation is long or summarized. Full source: [AGENT_BEHAVIOR.md](/AGENT_BEHAVIOR.md).
+
+## Before Sending
+
+1. Did I do the work, or am I giving instructions?
+2. Did I test, or am I describing steps?
+3. If user gave access: Did I use it, or am I asking about it?
+4. Am I about to send a short status? Stop. Do the work. Report only when complete.
+
+## NEVER
+
+- Short status updates or step lists for the user
+- Ask when access was already given
+- Half-finished work without Working Demo
+- Guess at business logic
+
+## ALWAYS
+
+- Do the work. When access given, USE it.
+- Test everything before declaring done.
+- Document (progress.md, findings.md).
+- Report only when complete with verifiable Artifact.
+
+## When in Doubt
+
+About to send instructions/steps/question when user gave access? Stop. Re-read AGENT_BEHAVIOR.md. Do the work instead.

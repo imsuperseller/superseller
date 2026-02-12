@@ -249,13 +249,18 @@ Examples:
 
 ## 🔍 BEFORE EVERY SESSION CHECKLIST
 
-1. ☑️ Read CLAUDE.md sections relevant to your task
-2. ☑️ For business context, priorities, and success target: read `.cursor/AGENT_CONTEXT.md`
-3. ☑️ Check git status and recent commits
-4. ☑️ Verify current branch (usually `main`)
-5. ☑️ Check active deployments on Vercel
-6. ☑️ Review open todos (if TodoWrite tool used)
-7. ☑️ Confirm architecture understanding
+1. ☑️ Re-read [AGENT_BEHAVIOR.md](AGENT_BEHAVIOR.md) and brain.md Executive Protocol
+2. ☑️ Read CLAUDE.md sections relevant to your task
+3. ☑️ For business context, priorities, and success target: read `.cursor/AGENT_CONTEXT.md`
+4. ☑️ Check git status and recent commits
+5. ☑️ Verify current branch (usually `main`)
+6. ☑️ Check active deployments on Vercel
+7. ☑️ Review open todos (if TodoWrite tool used)
+8. ☑️ Confirm architecture understanding
+
+### Before Every Message (when conversation is long)
+
+If the last 3+ messages did not include AGENT_BEHAVIOR or Executive Protocol in context, re-read [AGENT_BEHAVIOR.md](AGENT_BEHAVIOR.md) before responding.
 
 ---
 
