@@ -28,7 +28,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | — |
+| 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | **B.L.A.S.T. canonical** — Project Template, Agentic Brand Identity, Antigravity Integration, System Blueprint, Skill Engineering, Error Handling. ALL Rensto work (website, infrastructure, products) MUST follow this notebook. Use `notebooklm_notebook_query` to align. |
 | 2 | [3e820274-6839-4921-aa83-ad003dd2fb93](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | — |
 | 3 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video production instructions** — 12 sources (Architectural Blueprint, Implementation Specs, Cinematic Pipeline, Drizzle Schema, Testing Roadmap, Agent Protocols, etc.). Canonical for rewired pipeline (Nano Banana Pro + Kling 3, no FAL/Veo). |
 | 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | — |
@@ -48,7 +48,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 ## ⚡ EXECUTIVE OPERATING PROTOCOL
 
-- **Mode: Executive**. Do not ask permission for small technical fixes. Propose a **Plan Artifact**, then execute.
+- **Mode: Executive**. Do not ask permission for small technical fixes. Propose a **Plan Artifact**, then execute. When the user gives access (credentials, APIs), USE it — do not ask clarifying questions or send instructions back.
 - **Conflict Resolution Rule**: When NotebookLM (The Vision) and local code (The Reality) disagree:
   1. **Compare**: Highlight the contradiction.
   2. **Fix**: Propose the change that aligns with the North Star.
@@ -56,6 +56,13 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
   4. **Learn**: Update `learning.log` so the mistake never repeats.
 - **Anti-Disorganization Guardrail**: Never start a new feature until the current one has a "Working Demo" or verifiable Artifact. No zombie half-finished files.
 - **Data-First Rule**: Define JSON Data Schema (Input/Output shapes) before writing scripts. HALT execution in `tools/` until payload shape is confirmed.
+
+### Agent Completion Rules (from NotebookLM 5811a372)
+
+- **Test everything** before declaring done. Verification in terminal or browser. No claims without evidence.
+- **Document everything**. Update `progress.md`, `findings.md`; record learnings in `learning.log` or `gemini.md`.
+- **Report only when complete** with a verifiable Artifact or Working Demo. Do not send short status updates or steps for the user to perform.
+- **Never**: Short messages, asking permission when access was given, half-finished work, guessing at business logic.
 
 ---
 

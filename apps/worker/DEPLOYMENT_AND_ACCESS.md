@@ -1,0 +1,56 @@
+# Zillow-to-Video: Where Things Are and How to Access
+
+## 1. Architecture
+
+| Component | Location in Repo | Where It Runs | URL (if applicable) |
+|-----------|-----------------|---------------|----------------------|
+| **rensto.com** (main site) | `apps/web/rensto-site/` | Vercel | https://rensto.com |
+| **Video pipeline worker** | `apps/worker/` | Your server (RackNerd, Railway, etc.) | Backend process, no public URL |
+
+## 2. rensto.com vs Video Pipeline
+
+- **rensto.com** = Next.js marketing site + dashboard. Deployed by Vercel from `apps/web/rensto-site/`. Auto-deploys on push to `main` when Vercel is linked to `imsuperseller/rensto`.
+- **Video pipeline** = Node.js worker in `apps/worker/`. Does NOT deploy to Vercel. Must be run on a server with Redis, Postgres, R2, Kie API, etc.
+
+## 3. Where to See the Pushed Work
+
+### GitHub (code)
+- **Repo**: https://github.com/imsuperseller/rensto
+- **Latest commit**: `4555169` — Zillow-to-video pipeline changes
+- **Changed paths**: `apps/worker/*`, `brain.md`, `docs/technical/ENV_VARS.md`
+- **Not changed**: `apps/web/rensto-site/*` — rensto.com is unchanged
+
+### Vercel (rensto.com)
+- **Dashboard**: https://vercel.com/dashboard
+- **Project**: Select the project connected to `imsuperseller/rensto`
+- **Deployments**: Each push to `main` triggers a new deployment
+- **Build logs**: Deployment detail → "Building" → view logs
+
+### Video pipeline (worker)
+- Runs on your own infra, not Vercel.
+- To run locally:
+  ```bash
+  cd apps/worker
+  npm install
+  npm run dev
+  ```
+- API base (when running): `http://localhost:3002` (or your server URL)
+- Test flow: `API_URL=http://localhost:3002 ADDRESS="<zillow_url>" npx tsx tools/e2e-from-zillow.ts`
+
+## 4. Email Issues — Likely Sources
+
+| Source | What it sends | Where to fix |
+|--------|----------------|--------------|
+| **Vercel** | Build failed / deployment failed | Vercel Dashboard → Project → Deployments → failed deployment |
+| **GitHub** | PR/branch notifications, workflow failures | GitHub repo → Actions (none present in this repo) |
+| **Worker** | Logs/errors if you have alerting | Your server / monitoring setup |
+
+## 5. Steps to Diagnose Email Issues
+
+1. **Open the email** — check sender and subject (Vercel, GitHub, etc.).
+2. **Vercel build failure**: Go to https://vercel.com → your rensto project → Deployments → click the failed one → open build logs.
+3. **GitHub**: Repo → Actions — this repo has no workflows; GitHub emails would be for other events (PRs, issues, etc.).
+
+---
+
+**Commit `4555169`** did not touch `apps/web/rensto-site/`. So rensto.com deployments should behave the same as before. If the failing emails are from Vercel, they are likely from an earlier build or a different project.

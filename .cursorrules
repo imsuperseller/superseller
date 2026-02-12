@@ -25,12 +25,20 @@ portal.rensto.com   → Vercel (customer portals - planned)
 ---
 
 ## 🌊 THE MASTER PATTERN (B.L.A.S.T.)
-All work must follow the **B.L.A.S.T. Protocol** for deterministic automation:
+
+**Canonical source**: NotebookLM [5811a372](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b). Query it for full protocol. ALL work (website, infrastructure, products) follows B.L.A.S.T.
+
 1. **B**lueprint: Define the Vision/Mission in brain.md / task_plan.md (or docs/templates/tourreel/BLUEPRINT.md for new apps).
 2. **L**ink: Establish data connectivity (MCP, APIs, Environment).
 3. **A**rchitect: Build the A.N.T. structure.
 4. **S**tylize: Refine UI/UX (Linear Aesthetic, Stitch Assets).
 5. **T**rigger: Deploy to Vercel/Production.
+
+### Agent Completion Rules (MANDATORY)
+- **Test everything** before declaring done. Verify in terminal or browser.
+- **Document everything**. Update progress.md, findings.md, learning.log.
+- **Report only when complete** with verifiable Artifact. No short status messages or step lists for the user.
+- **When user gives access** (credentials, APIs): USE it. Execute. Do not ask questions or send instructions back.
 
 ## 🐜 EXECUTION ENGINE (A.N.T.)
 Tasks flow through the **A.N.T. Architecture**:
