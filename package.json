@@ -4,6 +4,10 @@
   "description": "Rensto Business Operations - Centralized business management system",
   "main": "index.js",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "apps/worker-packages/*"
+  ],
   "scripts": {
     "migrate-notion": "node notion-migration-script.js",
     "migrate-notion-v2025": "node notion-migration-script-v2025.js",

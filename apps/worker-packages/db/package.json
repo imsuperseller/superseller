@@ -1,0 +1,21 @@
+{
+    "name": "@zillow-to-video/db",
+    "version": "0.1.0",
+    "private": true,
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "tsc",
+        "db:push": "drizzle-kit push:pg",
+        "db:generate": "drizzle-kit generate:pg",
+        "db:studio": "drizzle-kit studio"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.29.0",
+        "postgres": "^3.4.0"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.20.0",
+        "@types/pg": "^8.11.0",
+        "typescript": "^5.0.0"
+    }
+}
