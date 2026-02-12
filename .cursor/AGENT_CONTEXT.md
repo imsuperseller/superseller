@@ -23,7 +23,7 @@
 ## 3. PostgreSQL + Redis (primary)
 
 - **Target:** **PostgreSQL** and **Redis** are the primary database stack.
-- **Status:** Migration from Firestore in progress. Code may still use Firestore during transition.
+- **Status:** Migration complete (Feb 2026). PostgreSQL + Redis are now primary. Firestore is legacy.
   - PostgreSQL: app/customer data (e.g. user `admin`, database `app_db`).
   - Redis: cache, sessions, job queues.
 - **Credentials:** Never put real DB/Redis passwords in the repo. Use:

@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as backup
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 import type { Prisma } from '@prisma/client';
 
 export async function POST(req: Request) {
     try {
         const { message, sessionId, userId, context } = await req.json();
         const actualSessionId = sessionId || `terry_${uuidv4()}`;
-
-        // [MIGRATION] Phase 4: Read conversation history from Postgres first
         let history: any[] = [];
 
         try {
@@ -63,21 +59,7 @@ export async function POST(req: Request) {
 
         history.push(assistantMsg);
         const trimmedHistory = history.slice(-50);
-
-        // [MIGRATION] Phase 4: Write to Postgres (primary)
         await dbAdmin.updateConversation(actualSessionId, trimmedHistory as Prisma.InputJsonValue[]);
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/terry/chat POST', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('admin_conversations').doc(actualSessionId).set({
-                userId,
-                lastMessageAt: Timestamp.now(),
-                messages: trimmedHistory,
-                context: context || {},
-            }, { merge: true });
-        });
-
         // Trigger n8n Supervisor if configured
         if (process.env.N8N_SUPERVISOR_WEBHOOK) {
             fetch(process.env.N8N_SUPERVISOR_WEBHOOK, {
@@ -112,7 +94,6 @@ export async function GET(req: Request) {
     if (!sessionId) return NextResponse.json({ success: false, error: 'Missing sessionId' });
 
     try {
-        // [MIGRATION] Phase 4: Read from Postgres first
         try {
             const conversation = await prisma.adminConversation.findUnique({
                 where: { id: sessionId },

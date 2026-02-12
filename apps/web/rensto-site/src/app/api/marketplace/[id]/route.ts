@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 3: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
@@ -16,8 +15,6 @@ export async function GET(
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 3: Read from Postgres first
         const pgTemplate = await prisma.template.findUnique({ where: { id } });
 
         if (pgTemplate) {

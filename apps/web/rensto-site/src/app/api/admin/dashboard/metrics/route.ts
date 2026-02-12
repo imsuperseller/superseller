@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    // [MIGRATION] Phase 4: Read from Postgres first
     let customersCount = 0;
     let paymentsCount = 0;
     let totalRevenue = 0;

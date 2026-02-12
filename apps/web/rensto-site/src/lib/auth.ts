@@ -45,8 +45,6 @@ export async function verifySession(): Promise<{
 
         const email = sessionData.email;
         const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',');
-
-        // [MIGRATION] Phase 1: Read from Postgres first
         const userId = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
         const pgUser = await prisma.user.findUnique({ where: { id: userId } });
 

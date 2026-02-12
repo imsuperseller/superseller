@@ -14,7 +14,7 @@
 
 ## Backend & Data
 - **API Routes**: Next.js Edge & Node.js API Routes
-- **Database (Primary)**: **Firebase Firestore** (Admin SDK for server-side)
+- **Database (Primary)**: **PostgreSQL + Redis** (migration from Firestore complete Feb 2026)
 - **Auth**: Firebase Auth (specialized flows)
 - **LLM**: OpenAI (GPT-4o), Gemini
 

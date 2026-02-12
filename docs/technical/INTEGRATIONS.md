@@ -8,7 +8,8 @@
 
 | Service | Purpose | Access |
 | :--- | :--- | :--- |
-| **Firebase/Firestore** | Primary database. | Admin SDK. |
+| **PostgreSQL + Redis** | Primary database. | Connection strings in env. |
+| **Firebase/Firestore** | Legacy database (migration complete Feb 2026). | Admin SDK. |
 | **Stripe** | Payments. | API Key in env. |
 | **OpenAI** | LLM (GPT-4o). | API Key in env. |
 | **Telnyx** | Voice/SMS. | API Key in env. |

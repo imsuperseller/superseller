@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 3: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbPayments from '@/lib/db/payments';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
@@ -92,20 +89,6 @@ export async function GET(
     } catch (dlError) {
       console.error('Failed to log download to Postgres:', dlError);
     }
-
-    // Backup: Firestore
-    await firestoreBackupWrite('marketplace/download', async () => {
-      const db = getFirestoreAdmin();
-      await db.collection(COLLECTIONS.DOWNLOADS).add({
-        templateId,
-        userEmail: customerEmail || 'anonymous',
-        timestamp: Timestamp.now(),
-        status: 'success',
-        userAgent: request.headers.get('user-agent'),
-        ip: request.headers.get('x-forwarded-for') || 'unknown',
-      });
-    });
-
     await auditAgent.log({
       service: 'marketplace',
       action: 'download_success',

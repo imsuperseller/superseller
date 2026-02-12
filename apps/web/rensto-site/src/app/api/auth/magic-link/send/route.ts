@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-// [MIGRATION] Phase 1: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
 const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
@@ -37,7 +34,6 @@ export async function POST(request: NextRequest) {
             clientName = 'Admin';
             role = 'admin';
         } else {
-            // [MIGRATION] Phase 1: Read from Postgres first, fallback to Firestore
             const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
             const pgUser = await prisma.user.findUnique({ where: { id: userId } });
 
@@ -77,8 +73,6 @@ export async function POST(request: NextRequest) {
         // Generate new token
         const token = generateToken();
         const expiresAt = new Date(Date.now() + TOKEN_EXPIRATION_MS);
-
-        // [MIGRATION] Phase 1: Write token to Postgres (primary)
         await prisma.magicLinkToken.create({
             data: {
                 id: token,
@@ -88,23 +82,6 @@ export async function POST(request: NextRequest) {
                 used: false,
             },
         });
-
-        // [MIGRATION] Backup: Write to Firestore (non-blocking)
-        await firestoreBackupWrite('magic-link/send', async () => {
-            const db = getFirestoreAdmin();
-            const tokenDoc: MagicLinkToken & { role?: string; redirectTo?: string } = {
-                id: token,
-                email: normalizedEmail,
-                clientId,
-                expiresAt: Timestamp.fromMillis(expiresAt.getTime()),
-                used: false,
-                createdAt: Timestamp.now(),
-                role,
-                redirectTo
-            };
-            await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).set(tokenDoc);
-        });
-
         // Build magic link URL
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://rensto.com';
         const magicLink = `${baseUrl}/api/auth/magic-link/verify?token=${token}`;

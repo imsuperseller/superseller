@@ -1,9 +1,7 @@
-// [MIGRATION] Phase 1: Firestore kept as backup
+
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 /**
  * USAGE SERVICE
  * Handles metric resets and reporting for the Rensto Dashboard.
@@ -17,7 +15,6 @@ export class UsageService {
      */
     static async resetMonthlyUsage(clientId: string) {
         try {
-            // [MIGRATION] Phase 1: Use Postgres transaction (primary)
             await prisma.$transaction(async (tx) => {
                 const user = await tx.user.findUnique({ where: { id: clientId } });
                 if (!user) throw new Error('User not found');
@@ -37,30 +34,6 @@ export class UsageService {
             });
 
             // Backup: Firestore (non-blocking)
-            await firestoreBackupWrite('UsageService.resetMonthlyUsage', async () => {
-                const db = getFirestoreAdmin();
-                const userRef = db.collection(COLLECTIONS.USERS).doc(clientId);
-
-                await db.runTransaction(async (transaction) => {
-                    const userSnap = await transaction.get(userRef);
-                    if (!userSnap.exists) return;
-
-                    const userData = userSnap.data() || {};
-                    const currentMetrics = userData.metrics || {};
-
-                    transaction.update(userRef, {
-                        'metrics.totalLeads': 0,
-                        'metrics.totalMessages': 0,
-                        'metrics.totalBookings': 0,
-                        'metrics.lastResetAt': FieldValue.serverTimestamp(),
-                        'metrics.previousMonthLeads': currentMetrics.totalLeads || 0,
-                        'metrics.previousMonthMessages': currentMetrics.totalMessages || 0,
-                        'metrics.previousMonthBookings': currentMetrics.totalBookings || 0,
-                        updatedAt: FieldValue.serverTimestamp()
-                    });
-                });
-            });
-
             console.log(`[UsageService] Successfully reset metrics for client: ${clientId}`);
             return { success: true };
         } catch (error) {

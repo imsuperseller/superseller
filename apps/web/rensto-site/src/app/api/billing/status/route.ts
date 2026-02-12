@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-// [MIGRATION] Phase 2: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
@@ -13,8 +12,6 @@ export async function GET(request: NextRequest) {
 
         const email = session.email.toLowerCase();
         const userId = email.replace(/[^a-z0-9]/g, '_');
-
-        // [MIGRATION] Phase 2: Read from Postgres first
         let subscription: any = null;
         let invoices: any[] = [];
         let usageBreakdown: any[] = [];

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 5: Firestore kept as fallback
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import * as dbDashboard from '@/lib/db/dashboard';
 
@@ -14,7 +13,6 @@ export async function GET(req: Request) {
     }
 
     try {
-        // [MIGRATION] Phase 5: Read from Postgres first
         let config: any = null;
 
         if (webhookId) {

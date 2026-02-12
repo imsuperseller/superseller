@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export const dynamic = 'force-dynamic';
 
 const MEMORY_KEY = 'n8n_supervisor_config';
@@ -22,7 +19,6 @@ const DEFAULT_MEMORY = {
 };
 
 async function getAgentMemory() {
-    // [MIGRATION] Phase 4: Read from Postgres first
     const pgRecord = await dbAdmin.getAgentMemory(MEMORY_KEY);
     if (pgRecord) return pgRecord.data as Record<string, any>;
 
@@ -59,17 +55,9 @@ export async function POST(req: NextRequest) {
 
     try {
         if (action === 'update-memory') {
-            // [MIGRATION] Phase 4: Write to Postgres (primary)
             const current = await getAgentMemory();
             const merged = { ...current, ...data };
             await dbAdmin.upsertAgentMemory(MEMORY_KEY, merged);
-
-            // Backup: Firestore
-            await firestoreBackupWrite('admin/n8n/agent update-memory', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection('n8n_agent_memory').doc(MEMORY_KEY).set(data, { merge: true });
-            });
-
             return NextResponse.json({ success: true });
         }
 
@@ -94,16 +82,6 @@ export async function POST(req: NextRequest) {
             };
 
             await dbAdmin.upsertAgentMemory(MEMORY_KEY, updatedMemory);
-
-            // Backup: Firestore
-            await firestoreBackupWrite('admin/n8n/agent research', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection('n8n_agent_memory').doc(MEMORY_KEY).update({
-                    lastResearchDate: new Date().toISOString(),
-                    findings: [researchSummary, ...findings].slice(0, 5),
-                });
-            });
-
             return NextResponse.json({ success: true, summary: researchSummary });
         }
 

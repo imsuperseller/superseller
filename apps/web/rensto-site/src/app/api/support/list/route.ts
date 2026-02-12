@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 5: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
@@ -7,8 +6,6 @@ export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
         const customerId = searchParams.get('customerId');
-
-        // [MIGRATION] Phase 5: Read from Postgres first
         try {
             const where = customerId ? { customerId } : {};
             const cases = await prisma.supportCase.findMany({

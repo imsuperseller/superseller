@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import * as dbAdmin from '@/lib/db/admin';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -29,8 +26,6 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 5: Write to Postgres (primary)
         const supportCase = await dbAdmin.createSupportCase({
             customerId,
             workflowId: workflowId || undefined,
@@ -42,25 +37,6 @@ export async function POST(req: NextRequest) {
             aiReasoningLog: [],
             attemptCount: 0,
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('support/create', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.SUPPORT_CASES).doc(supportCase.id).set({
-                customerId,
-                workflowId: workflowId || null,
-                carePlanTier,
-                submissionMethod,
-                issueDescription,
-                contextData,
-                status: 'pending',
-                aiReasoningLog: [],
-                attemptCount: 0,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
-        });
-
         // Trigger n8n Care Plan Support Agent
         const N8N_SUPPORT_WEBHOOK = process.env.N8N_SUPPORT_AGENT_WEBHOOK_URL;
         if (N8N_SUPPORT_WEBHOOK) {

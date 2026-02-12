@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-
-// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
 import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import { AITableService } from '@/lib/services/AITableService';
 import * as dbServices from '@/lib/db/services';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 const N8N_FULFILLMENT_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
 
 export async function POST(request: Request) {
@@ -24,8 +20,6 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 3: Create service instance in Postgres (primary)
         const instance = await dbServices.createServiceInstance({
             clientId,
             clientEmail: clientEmail || '',
@@ -36,24 +30,6 @@ export async function POST(request: Request) {
             adminNotes: paymentIntentId ? `Paid via ${paymentIntentId}` : 'Manual initiation',
         });
         const instanceId = instance.id;
-
-        // Backup: Firestore
-        await firestoreBackupWrite('fulfillment/initiate', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(instanceId).set({
-                id: instanceId,
-                clientId,
-                clientEmail: clientEmail || '',
-                productId,
-                productName: productName || productId,
-                status: 'configuring',
-                configuration,
-                createdAt: FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp(),
-                adminNotes: paymentIntentId ? `Paid via ${paymentIntentId}` : 'Manual initiation',
-            });
-        });
-
         // 2. Identify n8n Entry Point based on Product ID
         const products = await AITableService.getProducts();
         const aitProduct = products.find((p: any) => (p['Product ID'] || p.id) === productId);

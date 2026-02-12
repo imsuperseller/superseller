@@ -1,13 +1,13 @@
 # 🎯 RENSTO MASTER DOCUMENTATION - Full Technical Context
 
 **Last Updated**: February 2026
-**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live.
+**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live, ✅ PostgreSQL Migration Complete.
 **Purpose**: The ONE place for all Rensto Business, Technical, and Operational knowledge.
 
 > [!WARNING]
 > **DEPRECATION NOTICE**: 
 > - The folder `apps/web/admin-dashboard` was deleted from the repo. Admin lives in `apps/web/rensto-site/src/app/admin`.
-> - **Firestore and Airtable.com are retired.** Primary database: **PostgreSQL + Redis**. **Aitable.ai** remains in use (dashboards, syncs). Migration of app data to Postgres in progress.
+> - **Firestore and Airtable.com are retired.** Primary database: **PostgreSQL + Redis**. **Aitable.ai** remains in use (dashboards, syncs). Migration to Postgres **COMPLETE** (Feb 2026). Firestore fallback reads remain in some routes as safety net; `firestoreBackupWrite` calls have been stripped.
 > - **n8n is backup/reference only.** Primary automation: **Antigravity** on RackNerd.
 > - **Webflow is retired.** All pages served by Next.js (rensto-site) on Vercel.
 > - **BMAD is retired.** Use **B.L.A.S.T.** for all work.
@@ -115,7 +115,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - Only when Antigravity cannot perform the task
 - Workflows kept as reference
 
-**Retired**: Firestore, Airtable.com (migration in progress). **Aitable.ai**: In use for dashboards, syncs.
+**Retired**: Firestore, Airtable.com. Migration to PostgreSQL **COMPLETE** (Feb 2026). **Aitable.ai**: In use for dashboards, syncs.
 
 **Sync to Notion** (DOCUMENTATION):
 - Strategic planning docs
@@ -703,8 +703,8 @@ User clicks button → JavaScript initiates Stripe checkout → Stripe processes
 ### **✅ FULLY IMPLEMENTED**
 1. **Fulfillment Pipeline**: Firestore + n8n orchestration for service delivery.
 2. **Admin Fulfillment Queue**: Centralized dashboard for service activation.
-3. **Core Platform**: Next.js 16/React 19 site with Firestore primary storage.
-4. **Stripe Integration**: Automated flow from purchase to Firestore lead creation and n8n notification.
+3. **Core Platform**: Next.js 16/React 19 site with PostgreSQL + Redis primary storage.
+4. **Stripe Integration**: Automated flow from purchase to PostgreSQL lead creation and n8n notification.
 5. **Product Schemas**: Specialized configuration forms for high-value services (YouTube AI, Calendar Assistant).
 
 ### **⚠️ PARTIALLY IMPLEMENTED / REFACTORING**
@@ -713,9 +713,14 @@ User clicks button → JavaScript initiates Stripe checkout → Stripe processes
 3. **Automation Audit**: Specialized pitch and scorecard generation (migrating from legacy MVPs).
 
 ### **❌ NOT IMPLEMENTED / RETIRED**
-1. **Voice AI**: Legacy architecture (Needs refactoring for Firestore).
-2. **eSignatures**: Legacy architecture (Needs refactoring for Firestore).
+1. **Voice AI**: Legacy architecture (Needs refactoring for PostgreSQL).
+2. **eSignatures**: Legacy architecture (Needs refactoring for PostgreSQL).
 3. **Marketplace Auto-Deploy**: Manual fulfillment currently preferred for quality control.
+
+### **✅ RECENTLY COMPLETED (Feb 2026)**
+1. **Firestore → PostgreSQL Migration**: All 5 phases complete. 331 records migrated. Postgres-first reads, Firestore fallback reads as safety net. `firestoreBackupWrite` calls stripped from 32 files.
+2. **Vercel Build Fix**: `prisma generate` added to build script. DATABASE_URL set on both Vercel projects.
+3. **Dual Vercel Project Discovery**: `rensto.com` (manual deploy) and `api.rensto.com` (auto-deploy) are separate projects. Both now running latest code.
 
 ---
 
@@ -988,11 +993,11 @@ All 5 core payment flows are operational and integrated with Firestore:
 
 ### **Database**
 
-**PostgreSQL + Redis** (Primary — target):
-- PostgreSQL: app/customer data. Migration from Firestore in progress.
+**PostgreSQL + Redis** (Primary):
+- PostgreSQL: app/customer data. Migration from Firestore **COMPLETE** (Feb 2026). 331 records migrated, all API routes use Postgres-first reads.
 - Redis: cache, sessions, queues. See `.env.example` for placeholders.
 
-**Firestore** (Retired): Migration to Postgres in progress.
+**Firestore** (Retired): Legacy fallback reads remain in some routes as safety net. `firestoreBackupWrite` calls stripped. Firebase dependencies remain for fallback reads only.
 
 **Airtable.com** (Retired).
 

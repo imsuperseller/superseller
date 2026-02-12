@@ -1,7 +1,6 @@
 'use client';
 // Force rebuild timestamp: 2026-01-22-16-08
 
-
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -333,7 +332,6 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                     </Link>
                 </div>
             </div>
-
 
         </div>
     );

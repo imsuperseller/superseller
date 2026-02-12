@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 1: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
 import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -14,8 +12,6 @@ export async function GET(request: NextRequest) {
         if (!token) {
             return NextResponse.redirect(new URL('/auth/error?reason=missing_token', request.url));
         }
-
-        // [MIGRATION] Phase 1: Read token from Postgres first
         let tokenData: {
             id: string;
             email: string;
@@ -70,37 +66,19 @@ export async function GET(request: NextRequest) {
         if (tokenData.expiresAt.getTime() < Date.now()) {
             // Delete expired token from both stores
             await prisma.magicLinkToken.delete({ where: { id: token } }).catch(() => {});
-            await firestoreBackupWrite('magic-link/verify-delete-expired', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).delete();
-            });
             return NextResponse.redirect(new URL('/auth/error?reason=expired_token', request.url));
         }
 
         // Token is valid — mark as used in Postgres (primary)
         await prisma.magicLinkToken.update({ where: { id: token }, data: { used: true } });
 
-        // Mark as used in Firestore (backup)
-        await firestoreBackupWrite('magic-link/verify-mark-used', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token).update({ used: true });
-        });
-
-        // Update client's last login in Postgres
+        // Update client's last login
         if (tokenData.clientId !== 'admin') {
             await prisma.user.update({
                 where: { id: tokenData.clientId },
                 data: { lastLoginAt: new Date() },
             }).catch(() => {});
 
-            // Backup: Firestore
-            await firestoreBackupWrite('magic-link/verify-lastlogin', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(tokenData!.clientId).update({
-                    lastLogin: Timestamp.now(),
-                    updatedAt: Timestamp.now()
-                }).catch(() => {});
-            });
         }
 
         // Create session data

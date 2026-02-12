@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function GET() {
     try {
         const tasks = [
@@ -17,8 +14,6 @@ export async function GET() {
             { category: 'Legal', title: 'eSignatures.com API Test', description: 'Verify automated contract generation for Scale-tier subscribers.', status: 'pending', order: 50 },
             { category: 'Lead Gen', title: 'Lead Machine Stress Test', description: 'Process 10 concurrent Israeli leads through full enrichment.', status: 'pending', order: 60 },
         ];
-
-        // [MIGRATION] Phase 4: Seed into Postgres (primary)
         const results = [];
         for (const task of tasks) {
             const record = await prisma.launchTask.create({
@@ -32,20 +27,6 @@ export async function GET() {
             });
             results.push({ id: record.id, title: task.title });
         }
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/launch-tasks/seed', async () => {
-            const db = getFirestoreAdmin();
-            const collectionRef = db.collection(COLLECTIONS.LAUNCH_TASKS);
-            for (const task of tasks) {
-                await collectionRef.add({
-                    ...task,
-                    createdAt: Timestamp.now(),
-                    updatedAt: Timestamp.now(),
-                });
-            }
-        });
-
         return NextResponse.json({ success: true, seeded: results });
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-
-
 // Solution tier definitions - Rensto pricing (2026)
 const SOLUTION_TIERS = {
     starter: {

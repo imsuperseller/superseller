@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 1: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { getDefaultFreeTrialEntitlements, UserEntitlements } from '@/types/entitlements';
 import { sendSlackNotification, SlackTemplates } from '@/lib/slack';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 // Configuration
 const N8N_LEAD_MACHINE_WEBHOOK = 'https://n8n.rensto.com/webhook/universal-lead-machine-v3-optimized';
 const FREE_TRIAL_LIMIT = 10;
@@ -37,8 +34,6 @@ export async function POST(req: Request) {
 
         const normalizedEmail = email.toLowerCase().trim();
         const userDocId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
-
-        // [MIGRATION] Phase 1: Read from Postgres first
         let pgUser = await prisma.user.findUnique({ where: { id: userDocId } });
 
         let entitlements: UserEntitlements;
@@ -107,8 +102,6 @@ export async function POST(req: Request) {
             isNewUser = true;
             dashboardToken = uuidv4().slice(0, 8);
             entitlements = getDefaultFreeTrialEntitlements();
-
-            // [MIGRATION] Phase 1: Create in Postgres (primary)
             pgUser = await prisma.user.create({
                 data: {
                     id: userDocId,
@@ -123,17 +116,6 @@ export async function POST(req: Request) {
                 },
             });
 
-            // Backup: Firestore
-            await firestoreBackupWrite('free-leads/request new-user', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection('users').doc(userDocId).set({
-                    email: normalizedEmail,
-                    name: name || null,
-                    createdAt: FieldValue.serverTimestamp(),
-                    dashboardToken,
-                    entitlements
-                });
-            });
         }
 
         // 2. Decrement freeLeadsRemaining counter
@@ -143,22 +125,10 @@ export async function POST(req: Request) {
             freeLeadsRemaining: newRemaining,
             freeLeadsTrial: newRemaining > 0,
         };
-
-        // [MIGRATION] Phase 1: Update entitlements in Postgres (primary)
         await prisma.user.update({
             where: { id: userDocId },
             data: { entitlements: updatedEntitlements as any },
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('free-leads/request update-entitlements', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('users').doc(userDocId).update({
-                'entitlements.freeLeadsRemaining': newRemaining,
-                'entitlements.freeLeadsTrial': newRemaining > 0
-            });
-        });
-
         // 3. Save lead request to Postgres (primary)
         const leadRequest = await prisma.leadRequest.create({
             data: {
@@ -174,23 +144,6 @@ export async function POST(req: Request) {
                 status: 'pending',
             },
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('free-leads/request lead_request', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('lead_requests').add({
-                email: normalizedEmail,
-                userId: userDocId,
-                niche,
-                source: source || 'web_free_trial',
-                limit: FREE_TRIAL_LIMIT,
-                status: 'pending',
-                createdAt: FieldValue.serverTimestamp(),
-                ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
-                userAgent: req.headers.get('user-agent') || 'unknown'
-            });
-        });
-
         // 4. Trigger n8n Webhook with enforced limit
         console.log(`[FreeLeads] Triggering n8n for ${normalizedEmail} (Search: ${niche})`);
 

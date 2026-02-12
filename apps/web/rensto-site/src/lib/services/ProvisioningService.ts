@@ -7,8 +7,6 @@ import { AITableService } from './AITableService';
 import * as dbUsers from '@/lib/db/users';
 import * as dbServices from '@/lib/db/services';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export class ProvisioningService {
     /**
      * Standardizes User Identity across all flows.
@@ -24,53 +22,6 @@ export class ProvisioningService {
         await dbUsers.getOrCreate(normalizedEmail, { name, stripeCustomerId });
 
         // ── BACKUP: Firestore (non-blocking) ──
-        await firestoreBackupWrite('ProvisioningService.getOrCreateUser', async () => {
-            const db = getFirestoreAdmin();
-            const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
-            const userSnap = await userRef.get();
-
-            if (!userSnap.exists) {
-                const newUser: Partial<User> = {
-                    id: userId,
-                    email: normalizedEmail,
-                    name: name || undefined,
-                    status: 'active',
-                    emailVerified: true,
-                    stripeCustomerId: stripeCustomerId || undefined,
-                    dashboardToken: uuidv4(),
-                    activeServices: {
-                        marketplace: false,
-                        whatsapp: false,
-                        subscriptions: false,
-                        custom_solutions: false,
-                        care_plan: 'none'
-                    },
-                    preferences: {
-                        language: 'en',
-                        emailNotifications: true,
-                        smsNotifications: false
-                    },
-                    createdAt: Timestamp.now(),
-                    updatedAt: Timestamp.now()
-                };
-                await userRef.set(newUser);
-
-                // Legacy clients backup
-                await db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(userId).set({
-                    email: normalizedEmail,
-                    name: name || 'Valued Client',
-                    status: 'qualified',
-                    createdAt: Timestamp.now(),
-                    updatedAt: Timestamp.now()
-                });
-            } else {
-                const updates: any = { updatedAt: Timestamp.now() };
-                if (stripeCustomerId) updates.stripeCustomerId = stripeCustomerId;
-                if (name) updates.name = name;
-                await userRef.update(updates);
-            }
-        });
-
         return userId;
     }
 
@@ -141,25 +92,6 @@ export class ProvisioningService {
             }
 
             // ── BACKUP: Firestore (non-blocking) ──
-            await firestoreBackupWrite('provisionService.marketplace', async () => {
-                await db.collection(COLLECTIONS.PURCHASES).add({
-                    userId, templateId, customerEmail: params.email,
-                    stripeSessionId: params.stripeSessionId,
-                    downloadToken, downloadUrl, tier: params.metadata.tier,
-                    timestamp: Timestamp.now(),
-                });
-                if (isCore7) {
-                    const engineId = serviceInstance?.id || uuidv4();
-                    await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(engineId).set({
-                        id: engineId, clientId: userId, clientEmail: params.email,
-                        productId: templateId, productName: params.productName,
-                        status: 'pending_setup', type: 'marketplace_implementation',
-                        stripeSessionId: params.stripeSessionId,
-                        createdAt: Timestamp.now(), updatedAt: Timestamp.now(),
-                    });
-                }
-            });
-
             return { userId, downloadUrl };
         }
 
@@ -201,26 +133,6 @@ export class ProvisioningService {
             });
 
             // ── BACKUP: Firestore (non-blocking) ──
-            await firestoreBackupWrite('provisionService.managedPlan', async () => {
-                const subDoc = await db.collection(COLLECTIONS.SUBSCRIPTIONS).add({
-                    userId, userEmail: params.email,
-                    stripeSubscriptionId: params.stripeSubscriptionId,
-                    stripeCustomerId: params.stripeSession?.customer,
-                    subscriptionType: 'whatsapp',
-                    whatsappBundle: params.metadata.whatsappBundle || 'manual_custom',
-                    amount: params.stripeSession?.amount_total || 0,
-                    status: 'active', currentPeriodStart: Timestamp.now(),
-                    createdAt: Timestamp.now(), updatedAt: Timestamp.now(),
-                });
-                await db.collection(COLLECTIONS.WHATSAPP_INSTANCES).doc(whatsappInstance.id).set({
-                    id: whatsappInstance.id, userId, userEmail: params.email,
-                    businessName: `${customerName}'s Business`,
-                    bundle: params.metadata.whatsappBundle || 'custom',
-                    status: 'pending_setup', subscriptionId: subDoc.id,
-                    createdAt: Timestamp.now(), updatedAt: Timestamp.now(),
-                });
-            });
-
             return { userId, subscriptionId: subscription.id };
         }
 
@@ -268,23 +180,6 @@ export class ProvisioningService {
             }
 
             // ── BACKUP: Firestore (non-blocking) ──
-            await firestoreBackupWrite('provisionService.registryPurchase', async () => {
-                const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
-                const fsUpdates: any = { updatedAt: Timestamp.now() };
-                if (entitlements.featureFlags) {
-                    const userSnap = await userRef.get();
-                    const currentFlags = (userSnap.data() as any)?.entitlements?.pillars || [];
-                    fsUpdates['entitlements.pillars'] = Array.from(new Set([...currentFlags, ...entitlements.featureFlags]));
-                }
-                if (pPillarId) {
-                    const serviceKey = pPillarId === 'lead-machine' ? 'leads' :
-                        pPillarId === 'autonomous-secretary' ? 'whatsapp' :
-                            pPillarId.replace(/-/g, '_');
-                    fsUpdates[`activeServices.${serviceKey}`] = true;
-                }
-                await userRef.update(fsUpdates);
-            });
-
             // 4. Trigger n8n Fulfillment Hook if defined
             if (pWebhook && process.env.N8N_OPTIMIZER_WEBHOOK) {
                 try {

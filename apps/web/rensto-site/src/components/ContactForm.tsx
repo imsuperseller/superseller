@@ -13,7 +13,6 @@ interface FormData {
   timeline: string;
 }
 
-
 const translations = {
   en: {
     labels: {

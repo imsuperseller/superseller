@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-// [MIGRATION] Phase 1: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
@@ -24,8 +23,6 @@ export async function GET(request: NextRequest) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 1: Read from Postgres first
         let userData: { email: string; name: string | null; dashboardToken: string | null } | null = null;
 
         const pgUser = await prisma.user.findUnique({

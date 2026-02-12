@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -16,8 +13,6 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 5: Upsert to Postgres (primary)
         try {
             await prisma.requirement.upsert({
                 where: { id: clientId },
@@ -41,24 +36,6 @@ export async function POST(request: Request) {
             }
             console.error('[Intake] Postgres save failed:', pgError);
         }
-
-        // Backup: Firestore
-        await firestoreBackupWrite('custom-solutions/intake', async () => {
-            const db = getFirestoreAdmin();
-            const clientRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).doc(clientId);
-            const clientDoc = await clientRef.get();
-
-            await clientRef.set({
-                onboardingConfig: config,
-                status: 'onboarding_submitted',
-                updatedAt: FieldValue.serverTimestamp(),
-                ...(clientDoc.exists ? {} : {
-                    createdAt: FieldValue.serverTimestamp(),
-                    id: clientId,
-                }),
-            }, { merge: true });
-        });
-
         // Trigger n8n Webhook (fire-and-forget)
         const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
         if (n8nWebhookUrl) {

@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as backup
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as dbAdmin from '@/lib/db/admin';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -14,22 +11,10 @@ export async function GET(request: NextRequest) {
         if (!id) {
             return NextResponse.json({ success: false, error: 'Testimonial ID is required' }, { status: 400 });
         }
-
-        // [MIGRATION] Phase 4: Write to Postgres (primary)
         await dbAdmin.updateTestimonial(id, {
             isActive: true,
             approvedAt: new Date(),
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/testimonials/approve', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('testimonials').doc(id).update({
-                active: true,
-                approvedAt: Timestamp.now(),
-            });
-        });
-
         await auditAgent.log({
             service: 'other',
             action: 'testimonial_approved',

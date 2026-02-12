@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
@@ -34,8 +31,6 @@ export async function POST(request: NextRequest) {
     const proposalSections = await generateProposalSections(requirementsAnalysis, clientInfo, projectInfo, template);
     const pricing = calculatePricing(requirementsAnalysis, projectInfo);
     const finalProposal = assembleProposal(proposalSections, pricing, clientInfo);
-
-    // [MIGRATION] Phase 5: Save to Postgres (primary)
     let savedProposal: { success: boolean; recordId: string } = { success: false, recordId: '' };
     try {
       // userId is required; use email as the user identifier
@@ -61,27 +56,6 @@ export async function POST(request: NextRequest) {
     } catch (pgError) {
       console.error('[Proposals] Postgres save failed:', pgError);
     }
-
-    // Backup: Firestore
-    await firestoreBackupWrite('proposals/generate', async () => {
-      const db = getFirestoreAdmin();
-      const docRef = await db.collection(COLLECTIONS.PROPOSALS).add({
-        proposalId: finalProposal.id,
-        title: finalProposal.title,
-        client: clientInfo.company,
-        contact: clientInfo.contact,
-        email: clientInfo.email,
-        project: projectInfo.name,
-        status: 'new',
-        content: finalProposal,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
-      if (!savedProposal.success) {
-        savedProposal = { success: true, recordId: docRef.id };
-      }
-    });
-
     await auditAgent.log({
       service: 'firebase',
       action: 'proposal_generated',

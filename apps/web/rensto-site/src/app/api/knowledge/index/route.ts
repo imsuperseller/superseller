@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 5: Firestore kept as backup
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as dbDashboard from '@/lib/db/dashboard';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 const N8N_INDEXING_WEBHOOK = process.env.N8N_INDEXING_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/knowledge-indexing';
 
 export async function POST(request: NextRequest) {
@@ -45,8 +42,6 @@ export async function POST(request: NextRequest) {
             type = 'url';
             name = new URL(url).hostname + new URL(url).pathname;
         }
-
-        // [MIGRATION] Phase 5: Create record in Postgres (primary)
         const doc = await dbDashboard.createIndexedDocument({
             clientId,
             name,
@@ -55,22 +50,6 @@ export async function POST(request: NextRequest) {
             url: url || null,
             size: size || null,
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('knowledge/index', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('indexed_documents').doc(doc.id).set({
-                clientId,
-                name,
-                type,
-                status: 'processing',
-                indexedAt: Timestamp.now(),
-                size,
-                url,
-                createdAt: Timestamp.now(),
-            });
-        });
-
         // Trigger n8n for real indexing
         try {
             await fetch(N8N_INDEXING_WEBHOOK, {

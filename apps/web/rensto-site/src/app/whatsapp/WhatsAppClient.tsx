@@ -477,7 +477,6 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                                     ))}
                                 </div>
 
-
                                 {/* Extra Numbers Toggle */}
                                 <div className="mt-10 p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] backdrop-blur-3xl relative overflow-hidden group">
                                     <div className="absolute bottom-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl rounded-full" />

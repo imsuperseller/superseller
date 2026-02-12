@@ -30,7 +30,7 @@ All pages are Next.js on Vercel. Webflow is retired.
 | n8n workflow scripts | `infra/n8n-scripts/` |
 | Workflow JSONs (canonical) | `infra/` (unified_marketplace_master_production.json) |
 | Archived workflows | `infra/archive/workflow-variants/` |
-| Firestore documentation | `firestore/` (legacy; Postgres migration in progress) |
+| Firestore documentation | `firestore/` (legacy; PostgreSQL is primary database - migration completed Feb 2026) |
 | Legal pages (static) | `legal-pages/` |
 | Marketplace platform config | `platforms/marketplace/` |
 | Rules for agents | `.cursor/`, `.cursorrules` |
@@ -49,7 +49,7 @@ All pages are Next.js on Vercel. Webflow is retired.
 
 ## Current Stack
 
-- **Database (target)**: PostgreSQL + Redis. Firestore migration in progress.
+- **Database (primary)**: PostgreSQL + Redis. Firestore migration completed Feb 2026.
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Methodology**: B.L.A.S.T. (Blueprint, Link, Architect, Stylize, Trigger)
 - **Retired**: Webflow, BMAD, Firestore, Airtable.com. **Aitable.ai**: In use (dashboards, syncs)

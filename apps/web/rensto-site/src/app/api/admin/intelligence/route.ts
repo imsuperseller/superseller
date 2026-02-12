@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore removed — this route returns static recommendations
 import { verifySession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +14,6 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        // [MIGRATION] Phase 4: This route returned static recommendations.
         // Firestore import was unused — removed.
         const recommendations = [
             {

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -17,7 +16,6 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        // [MIGRATION] Phase 4: Read from Postgres first
         let grossMRR = 0;
 
         try {

@@ -626,7 +626,6 @@ export default function HomePage({ initialLogos, initialTestimonials, initialPro
                 <section className="py-24 px-4 border-t border-white/5 relative overflow-hidden">
                     {/* Abstract Grid Background */}
 
-
                     <div className="container mx-auto">
                         <div className="flex flex-col lg:flex-row items-center gap-16">
                             <div className="lg:w-1/2">

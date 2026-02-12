@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbPayments from '@/lib/db/payments';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 /**
  * API Endpoint: /api/marketplace/downloads
  * Purpose: Securely generate a download link for a marketplace template.
@@ -23,8 +20,6 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 3: Verify template exists in Postgres first
         let templateName = 'Workflow Blueprint';
 
         const pgTemplate = await prisma.template.findUnique({
@@ -54,8 +49,6 @@ export async function POST(request: NextRequest) {
         const downloadToken = Buffer.from(tokenData).toString('base64url');
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rensto.com';
         const downloadUrl = `${baseUrl}/api/marketplace/download/${downloadToken}`;
-
-        // [MIGRATION] Phase 3: Record in Postgres (primary)
         const normalizedEmail = email.toLowerCase().trim();
         const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
 
@@ -66,20 +59,6 @@ export async function POST(request: NextRequest) {
             downloadToken,
             downloadUrl,
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('marketplace/downloads POST', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.PURCHASES).add({
-                templateId,
-                customerEmail: email,
-                downloadToken,
-                downloadUrl,
-                source: 'n8n_fulfillment_api',
-                timestamp: Timestamp.now(),
-            });
-        });
-
         await auditAgent.log({
             service: 'marketplace',
             action: 'fulfillment_link_generated',

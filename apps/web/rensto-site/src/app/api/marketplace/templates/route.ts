@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 3: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
@@ -14,8 +13,6 @@ export async function GET(request: NextRequest) {
     const filterTag = searchParams.get('tag');
     const includeDrafts = searchParams.has('includeDrafts');
     const includeInternal = searchParams.has('includeInternal');
-
-    // [MIGRATION] Phase 3: Read from Postgres first
     let templates: any[];
 
     try {

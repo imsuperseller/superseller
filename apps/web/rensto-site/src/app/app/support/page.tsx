@@ -50,7 +50,6 @@ export default function SupportDashboard() {
     }
   };
 
-
   const getStatusColor = (status: CaseStatus) => {
     switch (status) {
       case 'resolved': return 'bg-green-500/10 text-green-500 border-green-500/20';

@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as backup for seed data
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 // Template seed data (moved from previous Firestore-only implementation)
 const SEED_TEMPLATES = [
     { id: '4OYGXXMYeJFfAo6X', name: 'Celebrity Selfie Video Generator', category: 'Creative Content', price: 297, rating: 5.0, downloadCount: 156, readinessStatus: 'Active', showInMarketplace: true, tags: ['marketplace'], features: ['AI Face Swap', 'Multi-Scene Stitching', 'WhatsApp Delivery'], tools: ['whatsapp', 'n8n', 'higgsfield'], outcomeHeadline: 'Drive High-Engagement Brand Awareness with Viral AI Video Experiences', description: 'Empower your audience to become the star of your brands cinematic journey.' },
@@ -20,7 +17,6 @@ const SEED_TEMPLATES = [
 
 export async function GET() {
     try {
-        // [MIGRATION] Phase 4: Seed into Postgres (primary)
         let seededCount = 0;
 
         for (const tpl of SEED_TEMPLATES) {
@@ -31,23 +27,6 @@ export async function GET() {
             });
             seededCount++;
         }
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/seed', async () => {
-            const db = getFirestoreAdmin();
-            const batch = db.batch();
-            const ref = db.collection(COLLECTIONS.TEMPLATES);
-            SEED_TEMPLATES.forEach(tpl => {
-                batch.set(ref.doc(tpl.id), {
-                    ...tpl,
-                    downloads: tpl.downloadCount,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                });
-            });
-            await batch.commit();
-        });
-
         return NextResponse.json({
             success: true,
             message: `Seeded ${seededCount} templates into Postgres`,

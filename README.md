@@ -115,12 +115,12 @@ npm run dev
 - **Payments**: Stripe webhooks integrated.
 
 ### **🔄 IN PROGRESS**
-- **Database**: Migration from Firestore to PostgreSQL + Redis.
+- **Database**: ✅ Migration from Firestore to PostgreSQL + Redis **COMPLETE** (Feb 2026). PostgreSQL is now primary database.
 - **Admin fulfillment queue**: Finalizing UI and activation logic.
 - **Product Schemas**: Specialized configuration forms for all services.
 
 ### **📋 PENDING / RETIRED**
-- **Legacy Sync**: Firestore, Airtable, Boost.space — retired. Migration to Postgres in progress.
+- **Legacy Sync**: Firestore, Airtable, Boost.space — retired. Migration to Postgres **COMPLETE** (Feb 2026). PostgreSQL is primary database.
 - **White-Label Portals**: Customer portal development (Phase 2).
 - **Payment Integration**: QuickBooks integration (n8n-based).
 

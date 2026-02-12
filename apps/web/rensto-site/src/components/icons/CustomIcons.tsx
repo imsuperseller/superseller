@@ -446,5 +446,3 @@ export function NewWayCheckIcon({ className = '', size = 20 }: IconProps) {
     );
 }
 
-
-

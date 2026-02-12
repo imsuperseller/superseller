@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-
-// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import * as dbServices from '@/lib/db/services';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -20,8 +16,6 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-
-        // [MIGRATION] Phase 3: Read + update in Postgres (primary)
         const instance = await dbServices.getServiceInstance(instanceId);
 
         if (!instance) {
@@ -55,19 +49,6 @@ export async function POST(request: Request) {
             activatedAt: new Date(),
             adminNotes: adminNotes || instance.adminNotes || '',
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('fulfillment/finalize', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(instanceId).set({
-                n8nWorkflowId,
-                status: 'active',
-                activatedAt: FieldValue.serverTimestamp(),
-                adminNotes: adminNotes || instance.adminNotes || '',
-                updatedAt: FieldValue.serverTimestamp(),
-            }, { merge: true });
-        });
-
         // Trigger Activation Notification via N8N
         const N8N_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/fulfillment-orchestrator';
         try {

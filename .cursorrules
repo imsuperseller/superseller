@@ -112,7 +112,7 @@ AIRTABLE_API_KEY         (Production)
 1. **PRIMARY (app/customer data)**: PostgreSQL (service instances, customers, payments) – used by rensto-site
 2. **CACHE/QUEUE**: Redis (sessions, rate limits, job queues)
 3. **OPERATIONAL**: Antigravity (primary automation); n8n (backup only)
-4. **LEGACY/REFERENCE**: Firestore, Airtable.com (retired); **Aitable.ai** (in use for dashboards); Notion (docs)
+4. **LEGACY/REFERENCE**: Firestore (retired, fallback reads only — migration complete Feb 2026), Airtable.com (retired); **Aitable.ai** (in use for dashboards); Notion (docs)
 
 ### **Never Store In**:
 - ❌ MongoDB (unless customer project >50K records)

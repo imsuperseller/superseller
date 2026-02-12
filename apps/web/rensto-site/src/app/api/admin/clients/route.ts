@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-// [MIGRATION] Phase 1: Firestore kept as backup for writes
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 async function checkAuth() {
     const session = await verifySession();
     if (!session.isValid || session.role !== 'admin') {
@@ -20,7 +17,6 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        // [MIGRATION] Phase 1: Read from Postgres
         const clients = await prisma.user.findMany({
             orderBy: { email: 'asc' },
         });
@@ -47,8 +43,6 @@ export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
         const { id, ...saveData } = data;
-
-        // [MIGRATION] Phase 1: Write to Postgres (primary)
         const email = (saveData.email || '').toLowerCase().trim();
         const userId = email.replace(/[^a-z0-9]/g, '_');
 
@@ -63,17 +57,6 @@ export async function POST(req: NextRequest) {
                 ...( saveData.phone ? { phone: saveData.phone } : {}),
             },
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/clients POST', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.USERS).doc(userId).set({
-                ...saveData,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-        });
-
         return NextResponse.json({ success: true, id: created.id });
     } catch (error) {
         console.error('Failed to create client:', error);
@@ -90,22 +73,10 @@ export async function PATCH(req: NextRequest) {
         const { id, ...updateData } = data;
 
         if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
-
-        // [MIGRATION] Phase 1: Write to Postgres (primary)
         await prisma.user.update({
             where: { id },
             data: updateData,
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/clients PATCH', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.USERS).doc(id).update({
-                ...updateData,
-                updatedAt: new Date()
-            });
-        });
-
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Failed to update client:', error);
@@ -121,16 +92,7 @@ export async function DELETE(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
         if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
-
-        // [MIGRATION] Phase 1: Delete from Postgres (primary)
         await prisma.user.delete({ where: { id } });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/clients DELETE', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.USERS).doc(id).delete();
-        });
-
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Failed to delete client:', error);

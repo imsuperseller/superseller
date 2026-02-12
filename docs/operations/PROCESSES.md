@@ -8,7 +8,7 @@
 
 | System | Purpose | URL |
 | :--- | :--- | :--- |
-| **Firestore** | Primary database for leads, customers, service instances. | Firebase Console |
+| **PostgreSQL + Redis** | Primary database for leads, customers, service instances. | Connection strings in env |
 | **n8n** | Workflow automation engine. | https://n8n.rensto.com |
 | **Vercel** | Frontend hosting. | https://vercel.com/rensto |
 | **Stripe** | Payments. | https://dashboard.stripe.com |

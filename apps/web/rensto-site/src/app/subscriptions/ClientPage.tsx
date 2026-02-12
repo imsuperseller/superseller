@@ -28,7 +28,6 @@ import {
 } from 'lucide-react';
 import { TypeformButton } from '@/components/TypeformEmbed';
 
-
 export default function SubscriptionsPage() {
   const [selectedSubscriptionType, setSelectedSubscriptionType] = useState('lead-gen');
   const [selectedNiche, setSelectedNiche] = useState('');

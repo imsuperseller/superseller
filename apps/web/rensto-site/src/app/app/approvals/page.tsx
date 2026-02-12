@@ -71,7 +71,6 @@ export default function ApprovalsPage() {
     fetchApprovals();
   }, [userId]);
 
-
   const handleApprove = async (id: string) => {
     try {
       const db = getFirestore(app);

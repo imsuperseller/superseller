@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-// [MIGRATION] Phase 3: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 /**
  * POST /api/marketplace/customize
  * Handles workflow customization requests from the CustomizationModal.
@@ -28,8 +25,6 @@ export async function POST(req: NextRequest) {
         }
 
         const resolvedEmail = parameters.email || customerEmail || null;
-
-        // [MIGRATION] Phase 3: Write to Postgres (primary)
         const record = await prisma.customizationRequest.create({
             data: {
                 templateId: workflowId,
@@ -38,20 +33,6 @@ export async function POST(req: NextRequest) {
                 status: 'pending',
             },
         });
-
-        // Backup: Firestore
-        await firestoreBackupWrite('marketplace/customize', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.CUSTOMIZATION_REQUESTS).add({
-                workflowId,
-                parameters,
-                customerEmail: resolvedEmail,
-                status: 'pending',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
-        });
-
         // Trigger n8n Workflow Generalizer webhook (if configured)
         const N8N_WEBHOOK_URL = process.env.N8N_CUSTOMIZE_WEBHOOK_URL;
         if (N8N_WEBHOOK_URL) {

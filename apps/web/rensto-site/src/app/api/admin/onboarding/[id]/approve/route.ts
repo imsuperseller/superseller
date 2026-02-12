@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, getStorageAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -12,7 +9,6 @@ export async function POST(
     const { id } = await params;
 
     try {
-        // [MIGRATION] Phase 4: Read from Postgres first
         let onboardingData: any = null;
         let source: 'postgres' | 'firestore' = 'postgres';
 
@@ -74,28 +70,6 @@ export async function POST(
                 approvedAt: new Date(),
             });
         }
-
-        // Backup: Firestore
-        await firestoreBackupWrite('admin/onboarding/approve', async () => {
-            const db = getFirestoreAdmin();
-            await db.collection('clients').doc(clientId).set({
-                orgName: onboardingData.orgName,
-                contactEmail: onboardingData.contactEmail,
-                timezone: onboardingData.timezone,
-                postingWindow: onboardingData.postingWindow,
-                status: 'active',
-                solutionId: onboardingData.solutionId,
-                solutionName: onboardingData.solutionName,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }, { merge: true });
-
-            await db.collection('onboarding_requests').doc(id).update({
-                status: 'approved',
-                approvedAt: new Date().toISOString(),
-            });
-        });
-
         return NextResponse.json({ success: true, message: 'Onboarding approved and client activated' });
 
     } catch (error: any) {

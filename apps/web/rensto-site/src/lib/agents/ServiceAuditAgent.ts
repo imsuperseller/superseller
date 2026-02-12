@@ -70,8 +70,6 @@ export class ServiceAuditAgent {
             keyPresent: !!stripeKey
         });
 
-
-
         // 3. Check Firebase
         try {
             const db = getFirestoreAdmin();

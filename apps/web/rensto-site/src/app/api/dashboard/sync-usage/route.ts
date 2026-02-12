@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbDashboard from '@/lib/db/dashboard';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 export const dynamic = 'force-dynamic';
 
 /**
@@ -33,8 +30,6 @@ export async function POST(request: Request) {
         if (!clientId || !type) {
             return NextResponse.json({ error: 'Missing clientId or type' }, { status: 400 });
         }
-
-        // [MIGRATION] Phase 4: Write to Postgres (primary)
         // 1. Log the individual event
         await dbDashboard.createUsageLog({
             clientId,
@@ -72,34 +67,6 @@ export async function POST(request: Request) {
                 console.warn('[Migration] sync-usage: Failed to update PG user metrics', pgErr);
             }
         }
-
-        // Backup: Firestore
-        await firestoreBackupWrite('dashboard/sync-usage', async () => {
-            const db = getFirestoreAdmin();
-            const batch = db.batch();
-
-            const logRef = db.collection(COLLECTIONS.USAGE_LOGS).doc();
-            batch.set(logRef, {
-                clientId,
-                type,
-                count,
-                metadata,
-                status: 'completed',
-                createdAt: FieldValue.serverTimestamp(),
-            });
-
-            if (incrementField) {
-                const clientRef = db.collection(COLLECTIONS.USERS).doc(clientId);
-                batch.update(clientRef, {
-                    [`metrics.${incrementField}`]: FieldValue.increment(count),
-                    'metrics.lastActivityAt': FieldValue.serverTimestamp(),
-                    updatedAt: FieldValue.serverTimestamp(),
-                });
-            }
-
-            await batch.commit();
-        });
-
         return NextResponse.json({
             success: true,
             message: `Logged ${count} ${type} for client ${clientId}`,

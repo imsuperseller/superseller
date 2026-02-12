@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
-// [MIGRATION] Phase 4: Firestore kept as fallback
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        // [MIGRATION] Phase 4: Read from Postgres first
         let allProjects: any[] = [];
 
         try {

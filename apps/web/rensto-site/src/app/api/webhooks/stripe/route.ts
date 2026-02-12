@@ -1,15 +1,12 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-// [MIGRATION] Phase 2: Firestore kept as backup for payment logging
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import { ProvisioningService } from '@/lib/services/ProvisioningService';
 import * as dbPayments from '@/lib/db/payments';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
 });
@@ -41,8 +38,6 @@ export async function POST(req: Request) {
 
             const customerEmail = session.customer_details?.email?.toLowerCase().trim() || null;
             const userId = customerEmail ? customerEmail.replace(/[^a-z0-9]/g, '_') : undefined;
-
-            // [MIGRATION] Phase 2: Log payment to Postgres (primary)
             await dbPayments.createPayment({
                 userId: userId || 'unknown',
                 stripeSessionId: session.id,
@@ -60,22 +55,6 @@ export async function POST(req: Request) {
             });
 
             // Backup: Firestore (non-blocking)
-            await firestoreBackupWrite('stripe-webhook/payment', async () => {
-                const db = getFirestoreAdmin();
-                await db.collection('payments').add({
-                    stripeSessionId: session.id,
-                    customerId: session.customer,
-                    customerEmail,
-                    amountTotal: session.amount_total ?? 0,
-                    currency: session.currency || 'usd',
-                    flowType: metadata.flowType || 'unknown',
-                    productId: metadata.productId || metadata.workflowId || null,
-                    tier: metadata.tier || null,
-                    platform: metadata.platform || 'rensto-web',
-                    timestamp: Timestamp.now()
-                });
-            });
-
             // 2. UNIFIED PROVISIONING (Postgres-first via ProvisioningService)
             if (customerEmail) {
                 const provisioning = await ProvisioningService.provisionService({

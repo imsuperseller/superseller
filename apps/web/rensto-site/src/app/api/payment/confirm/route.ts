@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StripeApi } from '@/lib/stripe';
-// [MIGRATION] Phase 2: Firestore kept as backup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbPayments from '@/lib/db/payments';
-import { firestoreBackupWrite } from '@/lib/db/migration-helpers';
-
 const stripe = new StripeApi();
 
 export async function POST(request: NextRequest) {
@@ -30,8 +27,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    // [MIGRATION] Phase 2: Update payment status in Postgres (primary)
     const pgPayment = await prisma.payment.findUnique({ where: { id: paymentIntentId } });
 
     if (pgPayment) {
@@ -53,33 +48,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Backup: Firestore (non-blocking)
-    await firestoreBackupWrite('payment/confirm', async () => {
-      const db = getFirestoreAdmin();
-      const paymentRef = db.collection(COLLECTIONS.PAYMENTS).doc(paymentIntentId);
-
-      await paymentRef.update({
-        status: confirmation.status,
-        updatedAt: Timestamp.now()
-      });
-
-      if (confirmation.status === 'succeeded') {
-        const paymentDoc = await paymentRef.get();
-        const paymentData = paymentDoc.data();
-        if (paymentData) {
-          await db.collection(COLLECTIONS.PURCHASES).add({
-            paymentIntentId,
-            customerId: paymentData.customerId,
-            templateId: paymentData.templateId,
-            amount: paymentData.amount,
-            currency: paymentData.currency,
-            status: 'completed',
-            purchasedAt: Timestamp.now(),
-            updatedAt: Timestamp.now()
-          });
-        }
-      }
-    });
-
     await auditAgent.log({
       service: 'stripe',
       action: 'payment_confirmed',

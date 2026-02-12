@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-// [MIGRATION] Phase 2: Firestore kept as fallback for template lookup
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { AITableService } from '@/lib/services/AITableService';
@@ -69,8 +68,6 @@ export async function POST(req: Request) {
         // 2. Special Case: Marketplace Implementation (Legacy support)
         else if (flowType === 'marketplace-template') {
             mode = 'payment';
-
-            // [MIGRATION] Phase 2: Read template from Postgres first, then Firestore
             let workflow: any = null;
 
             const pgTemplate = await prisma.template.findUnique({ where: { id: productId } });

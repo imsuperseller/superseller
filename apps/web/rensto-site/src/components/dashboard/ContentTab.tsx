@@ -185,7 +185,6 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                 Generate Content
             </Button>
 
-
             {/* Content List */}
             <div
                 className="rounded-xl overflow-hidden"
