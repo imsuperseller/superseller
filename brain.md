@@ -30,7 +30,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 |---|----------|---------|
 | 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | — |
 | 2 | [3e820274-6839-4921-aa83-ad003dd2fb93](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | — |
-| 3 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | — |
+| 3 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video production instructions** — 12 sources (Architectural Blueprint, Implementation Specs, Cinematic Pipeline, Drizzle Schema, Testing Roadmap, Agent Protocols, etc.). Canonical for rewired pipeline (Nano Banana Pro + Kling 3, no FAL/Veo). |
 | 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | — |
 | 5 | [286f3e4a-a3a2-40ab-9c45-d198e91b27f4](https://notebooklm.google.com/notebook/286f3e4a-a3a2-40ab-9c45-d198e91b27f4) | — |
 | 6 | [12c80d7d-9baa-4b86-a6b0-b434f41aba37](https://notebooklm.google.com/notebook/12c80d7d-9baa-4b86-a6b0-b434f41aba37) | — |

@@ -31,7 +31,8 @@ Analyze the floorplan and return a JSON object with this EXACT structure:
     "Master Bathroom",
     "Bedroom 2",
     "Bathroom 2",
-    "Backyard"
+    "Backyard",
+    "Pool"
   ],
   "total_rooms": 9,
   "property_type": "house",
@@ -44,16 +45,17 @@ Analyze the floorplan and return a JSON object with this EXACT structure:
 }
 
 CRITICAL RULES for the tour sequence:
-1. ALWAYS start with "Exterior Front" → "Front Door" (the approach shot)
+1. ALWAYS start with "Exterior Front" → "Front Door" (the approach shot — realtor walks from front of house toward door)
 2. After entering, follow a LOGICAL WALKING PATH — never teleport between disconnected rooms
 3. Prefer this general flow: entrance → main living areas → kitchen/dining → bedrooms → bathrooms → outdoor spaces
 4. Group rooms by proximity — visit adjacent rooms before moving to distant ones
 5. For multi-story: complete the main floor first, then use "Stairs" as a transition, then complete upper floors
-6. End with outdoor spaces (backyard, patio, pool) if they exist
-7. Never include utility rooms (HVAC closet, electrical panel) unless they are a notable feature
-8. Include hallways ONLY if they are architecturally significant or necessary for the walking path
-9. Bathrooms should follow their associated bedrooms (Master Bedroom → Master Bathroom)
-10. The kitchen and dining room should be adjacent in sequence since they usually connect
+6. POOL IS A HERO FEATURE: When special_features includes "pool", ALWAYS add "Pool" to the tour. Place it as the FINALE (last or second-to-last). Pool is the "Big Reveal" and primary selling point — must be shown prominently.
+7. End with outdoor spaces (backyard, patio, pool) if they exist. Order: Backyard → Pool (when pool exists) so Pool is the finale.
+8. Never include utility rooms (HVAC closet, electrical panel) unless they are a notable feature
+9. Include hallways ONLY if they are architecturally significant or necessary for the walking path
+10. Bathrooms should follow their associated bedrooms (Master Bedroom → Master Bathroom)
+11. The kitchen and dining room should be adjacent in sequence since they usually connect
 
 Room type classifications (use exactly these):
 - "living", "kitchen", "dining", "bedroom", "bathroom", "foyer", "hallway", "office", "laundry", "garage", "outdoor", "stairs", "closet", "bonus", "other"
@@ -124,29 +126,100 @@ function buildPropertyContext(listing?: any): string {
 }
 
 export function buildTourSequence(analysis: FloorplanAnalysis): TourRoom[] {
+    return buildTourSequenceFromRoomNames(analysis.suggested_tour_sequence);
+}
+
+/** Build TourRoom[] from ordered room names. Used for floorplan analysis and default sequences. */
+export function buildTourSequenceFromRoomNames(roomNames: string[]): TourRoom[] {
     const sequence: TourRoom[] = [];
-    const rooms = analysis.suggested_tour_sequence;
-
-    for (let i = 0; i < rooms.length - 1; i++) {
-        const from = rooms[i];
-        const to = rooms[i + 1];
-
+    for (let i = 0; i < roomNames.length - 1; i++) {
+        const from = roomNames[i];
+        const to = roomNames[i + 1];
         let transition_type: TourRoom["transition_type"] = "walk";
         if (to.toLowerCase().includes("door") || to.toLowerCase().includes("entrance")) {
             transition_type = "enter";
         } else if (to.toLowerCase().includes("stair") || to.toLowerCase().includes("upstairs")) {
             transition_type = "stairs";
-        } else if (to.toLowerCase().includes("exterior") || to.toLowerCase().includes("backyard")) {
+        } else if (to.toLowerCase().includes("exterior") || to.toLowerCase().includes("backyard") || to.toLowerCase().includes("pool")) {
             transition_type = "exit";
         }
+        sequence.push({ order: i + 1, from, to, transition_type });
+    }
+    return sequence;
+}
 
-        sequence.push({
-            order: i + 1,
-            from,
-            to,
-            transition_type,
-        });
+/** Default tour sequences when no floorplan. Pool appended when hasPool. */
+const DEFAULT_SEQUENCES: Record<string, string[]> = {
+    house_3bed_2bath: [
+        "Exterior Front", "Front Door", "Foyer", "Living Room",
+        "Kitchen", "Dining Room", "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bedroom 3", "Bathroom 2", "Backyard"
+    ],
+    house_4bed_2bath: [
+        "Exterior Front", "Front Door", "Foyer", "Living Room",
+        "Kitchen", "Dining Room", "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bedroom 3", "Bedroom 4", "Bathroom 2", "Backyard"
+    ],
+    house_4bed_3bath: [
+        "Exterior Front", "Front Door", "Foyer", "Living Room",
+        "Kitchen", "Dining Room", "Family Room",
+        "Stairs", "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bedroom 3", "Bedroom 4",
+        "Bathroom 2", "Bathroom 3", "Backyard"
+    ],
+    house_5bed_3bath: [
+        "Exterior Front", "Front Door", "Foyer", "Living Room",
+        "Kitchen", "Dining Room", "Family Room",
+        "Stairs", "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bedroom 3", "Bedroom 4", "Bedroom 5",
+        "Bathroom 2", "Bathroom 3", "Backyard"
+    ],
+    condo_2bed_2bath: [
+        "Building Exterior", "Lobby", "Elevator/Hallway", "Unit Entry",
+        "Living Room", "Kitchen", "Dining Area",
+        "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bathroom 2", "Balcony"
+    ],
+    apartment_1bed_1bath: [
+        "Building Exterior", "Lobby", "Unit Entry",
+        "Living Area", "Kitchen", "Bedroom", "Bathroom"
+    ],
+    townhouse_3bed_2bath: [
+        "Exterior Front", "Front Door", "Living Room",
+        "Kitchen", "Dining Room", "Powder Room",
+        "Stairs", "Master Bedroom", "Master Bathroom",
+        "Bedroom 2", "Bedroom 3", "Bathroom 2",
+        "Patio/Deck"
+    ],
+};
+
+/** Pool suffix: append to sequence when property has pool (finale). */
+const POOL_SUFFIX = ["Backyard", "Pool"];
+
+export function getDefaultSequence(
+    propertyType: string,
+    bedrooms: number,
+    bathrooms: number,
+    hasPool: boolean
+): string[] {
+    const baseKey = `${propertyType}_${bedrooms}bed_${Math.floor(bathrooms)}bath`;
+    let rooms = DEFAULT_SEQUENCES[baseKey];
+
+    if (!rooms) {
+        const candidates = Object.entries(DEFAULT_SEQUENCES)
+            .filter(([k]) => k.startsWith(propertyType))
+            .sort((a, b) => {
+                const aBeds = parseInt(a[0].match(/(\d+)bed/)?.[1] || "0");
+                const bBeds = parseInt(b[0].match(/(\d+)bed/)?.[1] || "0");
+                return Math.abs(aBeds - bedrooms) - Math.abs(bBeds - bedrooms);
+            });
+        rooms = candidates[0]?.[1] ?? DEFAULT_SEQUENCES.house_3bed_2bath;
     }
 
-    return sequence;
+    if (hasPool && !rooms.some((r) => r.toLowerCase().includes("pool"))) {
+        const withoutBackyard = rooms.filter((r) => !r.toLowerCase().includes("backyard"));
+        rooms = [...withoutBackyard, ...POOL_SUFFIX];
+    }
+
+    return rooms;
 }

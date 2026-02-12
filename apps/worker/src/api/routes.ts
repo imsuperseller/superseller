@@ -93,7 +93,7 @@ apiRouter.post("/jobs", async (req: Request, res: Response) => {
         `INSERT INTO video_jobs (listing_id, user_id, status, model_preference)
      VALUES ($1, $2, 'pending', $3)
      RETURNING *`,
-        [listingId, userId, ["kling_3", "veo_31_fast", "veo_31_quality"].includes(model || "") ? model : "kling_3"]
+        [listingId, userId, "kling_3"]
     );
 
     // Enqueue
@@ -112,61 +112,77 @@ const fromZillowSchema = z.object({
 });
 
 apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
-    const parsed = fromZillowSchema.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+    try {
+        const parsed = fromZillowSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
 
-    const { addressOrUrl, userId, floorplanPath } = parsed.data;
+        const { addressOrUrl, userId, floorplanPath } = parsed.data;
 
-    const user = await queryOne("SELECT id FROM users WHERE id = $1", [userId]);
-    if (!user) return res.status(404).json({ error: "User not found" });
+        const user = await queryOne("SELECT id FROM users WHERE id = $1", [userId]);
+        if (!user) return res.status(404).json({ error: "User not found" });
 
-    const scraped = await scrapeZillowListing(addressOrUrl, 30);
-    if (!scraped.photos?.length) return res.status(400).json({ error: "No photos found for listing" });
+        const scraped = await scrapeZillowListing(addressOrUrl, 30);
+        if (!scraped.photos?.length) return res.status(400).json({ error: "No photos found for listing" });
 
-    const exteriorPhoto = scraped.photos[0];
-    const additionalPhotos = scraped.photos.slice(1);
+        const exteriorPhoto = scraped.photos[0];
+        const additionalPhotos = scraped.photos.slice(1);
 
-    let floorplanUrl: string | null = null;
-    if (floorplanPath) {
-        const absPath = join(process.cwd(), floorplanPath.replace(/^\.\//, ""));
-        if (existsSync(absPath)) {
-            floorplanUrl = await uploadToR2(absPath, buildR2Key(userId, `floorplan-${Date.now()}`, "floorplan.webp"));
+        let floorplanUrl: string | null = null;
+        if (floorplanPath) {
+            const isAbs = floorplanPath.startsWith("/");
+            const absPath = isAbs ? floorplanPath : join(process.cwd(), floorplanPath.replace(/^\.\//, ""));
+
+            if (existsSync(absPath)) {
+                floorplanUrl = await uploadToR2(absPath, buildR2Key(userId, `floorplan-${Date.now()}`, "floorplan.webp"));
+            } else {
+                logger.warn({ msg: "Floorplan file not found", path: absPath });
+            }
         }
+
+        const amenitiesJson = Array.isArray(scraped.amenities) ? JSON.stringify(scraped.amenities) : JSON.stringify([]);
+        const resoFactsJson = scraped.resoFacts ? JSON.stringify(scraped.resoFacts) : null;
+
+        const [listing] = await query(
+            `INSERT INTO listings (user_id, address, city, state, zip, property_type, bedrooms, bathrooms, sqft, listing_price, exterior_photo_url, floorplan_url, additional_photos, description, amenities, reso_facts)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+         RETURNING *`,
+            [
+                userId,
+                scraped.address,
+                scraped.city ?? null,
+                scraped.state ?? null,
+                scraped.zip ?? null,
+                mapPropertyType(scraped.property_type),
+                scraped.bedrooms ?? null,
+                scraped.bathrooms ?? null,
+                scraped.sqft ?? null,
+                scraped.price ?? null,
+                exteriorPhoto,
+                floorplanUrl,
+                JSON.stringify(additionalPhotos),
+                scraped.description ?? null,
+                amenitiesJson,
+                resoFactsJson,
+            ]
+        );
+
+        const [job] = await query(
+            `INSERT INTO video_jobs (listing_id, user_id, status, model_preference)
+         VALUES ($1, $2, 'pending', 'kling_3')
+         RETURNING *`,
+            [listing.id, userId]
+        );
+
+        const jobData: VideoPipelineJobData = { jobId: job.id, listingId: listing.id, userId };
+        await videoPipelineQueue.add(`video-${job.id}`, jobData);
+
+        logger.info({ msg: "Enqueued from-zillow job", jobId: job.id, listingId: listing.id });
+        res.status(201).json({ job, listing });
+
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /jobs/from-zillow", error: err.message, stack: err.stack });
+        res.status(500).json({ error: err.message });
     }
-
-    const [listing] = await query(
-        `INSERT INTO listings (user_id, address, city, state, zip, property_type, bedrooms, bathrooms, sqft, listing_price, exterior_photo_url, floorplan_url, additional_photos)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-     RETURNING *`,
-        [
-            userId,
-            scraped.address,
-            scraped.city ?? null,
-            scraped.state ?? null,
-            scraped.zip ?? null,
-            mapPropertyType(scraped.property_type),
-            scraped.bedrooms ?? null,
-            scraped.bathrooms ?? null,
-            scraped.sqft ?? null,
-            scraped.price ?? null,
-            exteriorPhoto,
-            floorplanUrl,
-            JSON.stringify(additionalPhotos),
-        ]
-    );
-
-    const [job] = await query(
-        `INSERT INTO video_jobs (listing_id, user_id, status, model_preference)
-     VALUES ($1, $2, 'pending', 'kling_3')
-     RETURNING *`,
-        [listing.id, userId]
-    );
-
-    const jobData: VideoPipelineJobData = { jobId: job.id, listingId: listing.id, userId };
-    await videoPipelineQueue.add(`video-${job.id}`, jobData);
-
-    logger.info({ msg: "Enqueued from-zillow job", jobId: job.id, listingId: listing.id });
-    res.status(201).json({ job, listing });
 });
 
 // ─── DEV: Ensure test user (for E2E only) ───

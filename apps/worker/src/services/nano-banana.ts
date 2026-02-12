@@ -43,32 +43,42 @@ export async function createNanoBananaTask(request: NanoBananaRequest): Promise<
     const url = `${KIE_BASE}/v1/jobs/createTask`;
     logger.info({ msg: "Nano Banana Pro task creating", url, promptLen: request.prompt.length, refImages: request.image_input?.length || 0 });
 
-    const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
 
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Nano Banana Pro failed (${response.status}): ${errText}`);
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(body),
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Nano Banana Pro failed (${response.status}): ${errText}`);
+        }
+
+        const data = await response.json();
+        if (data.code !== 200 && data.code !== 0) {
+            throw new Error(`Nano Banana Pro API error (code ${data.code}): ${data.msg}`);
+        }
+
+        if (!data.data?.taskId) {
+            throw new Error(`Nano Banana Pro failed to return taskId: ${JSON.stringify(data)}`);
+        }
+
+        return data.data.taskId;
+    } finally {
+        clearTimeout(timeout);
     }
-
-    const data = await response.json();
-    if (data.code !== 200 && data.code !== 0) {
-        throw new Error(`Nano Banana Pro API error (code ${data.code}): ${data.msg}`);
-    }
-
-    if (!data.data?.taskId) {
-        throw new Error(`Nano Banana Pro failed to return taskId: ${JSON.stringify(data)}`);
-    }
-
-    return data.data.taskId;
 }
 
 export async function getNanoBananaTaskStatus(taskId: string): Promise<{ status: "pending" | "processing" | "completed" | "failed"; image_url?: string; error?: string }> {
     const url = `${KIE_BASE}/v1/jobs/recordInfo?taskId=${taskId}`;
-    const response = await fetch(url, { headers });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    const response = await fetch(url, { headers, signal: controller.signal }).finally(() => clearTimeout(timeout));
 
     if (!response.ok) {
         throw new Error(`Nano Banana Pro status failed (${response.status})`);

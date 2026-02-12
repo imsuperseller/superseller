@@ -52,6 +52,8 @@
 ### APIs
 | Variable | Purpose |
 | :--- | :--- |
+| `KIE_API_KEY` | Kie.ai (video, music, image generation) |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Gemini LLM for prompts |
 | `OPENAI_API_KEY` | GPT API access |
 | `RESEND_API_KEY` | Email sending |
 | `SERPAPI_API_KEY` | Search API |
@@ -69,6 +71,8 @@
 ## Removed/Legacy
 
 The following were removed (per comment in `env.ts`):
+- `FAL_KEY` (Replaced by Kie.ai)
+- `OPENROUTER_API_KEY` (Replaced by Gemini direct)
 - `INSTANTLY_API_KEY` (Replaced by Microsoft Outlook)
 - `VAPI_API_KEY` (Replaced by Telnyx)
 - `TIDYCAL_TOKEN` (Replaced by AI Agent)

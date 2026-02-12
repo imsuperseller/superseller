@@ -18,8 +18,15 @@ export interface ZillowListingData {
     photos: string[];
     property_type?: string;
     mls_number?: string;
-    /** Resolved Zillow listing URL (hdpUrl or constructed). Use this for display and downstream. */
     zillow_url?: string;
+    // Deep metadata for spatial reasoning
+    yearBuilt?: number;
+    lotSize?: string;
+    neighborhood?: string;
+    amenities?: string[];
+    resoFacts?: any;
+    homeInsights?: any[];
+    attributionInfo?: any;
 }
 
 const ZILLOW_URL_PATTERN = /^https?:\/\/(www\.)?zillow\.com\//i;
@@ -33,17 +40,15 @@ function isZillowUrl(input: string): boolean {
 
 /**
  * Scrape Zillow listing by address OR Zillow URL.
- * If address is given, it is resolved to a Zillow URL internally by the Apify actor.
- * Both paths use the same detail scraper; the resolved zillow_url is included in the result.
  */
 export async function scrapeZillowListing(
     addressOrUrl: string,
-    maxPhotos: number = 30
+    maxPhotos: number = 50
 ): Promise<ZillowListingData> {
     const trimmed = addressOrUrl.trim();
     const isUrl = isZillowUrl(trimmed);
 
-    logger.info({ msg: "Starting Zillow scrape", inputType: isUrl ? "url" : "address", value: trimmed });
+    logger.info({ msg: "Starting Deep Zillow scrape", inputType: isUrl ? "url" : "address", value: trimmed });
 
     try {
         const input: Record<string, unknown> = isUrl
@@ -64,7 +69,6 @@ export async function scrapeZillowListing(
         const state = raw.address?.state || raw.state;
         const zip = raw.address?.zipcode || raw.zipcode;
 
-        // Prefer canonical Zillow URL from scrape output; ensure full URL (Apify may return relative path)
         const base = "https://www.zillow.com";
         const rawUrl = raw.url || raw.hdpUrl;
         const slug =
@@ -75,7 +79,7 @@ export async function scrapeZillowListing(
             rawUrl && rawUrl.startsWith("http") ? rawUrl : rawUrl && rawUrl.startsWith("/") ? `${base}${rawUrl}` : undefined;
         zillowUrl = zillowUrl || (isUrl ? trimmed : undefined) || (slug ? `${base}/homedetails/${slug}/${raw.zpid}_zpid/` : undefined);
 
-        // Map Apify data to our internal structure
+        // Map Deep Data
         return {
             address,
             city,
@@ -86,10 +90,22 @@ export async function scrapeZillowListing(
             bathrooms: raw.bathrooms,
             sqft: raw.livingArea,
             description: raw.description,
-            photos: (raw.photos || raw.responsivePhotos || []).flat().filter(Boolean).slice(0, maxPhotos),
+            photos: (raw.photos || raw.responsivePhotos || [])
+                .flat()
+                .filter(Boolean)
+                .map((p: any) => (typeof p === "string" ? p : p?.url))
+                .filter((u: any): u is string => typeof u === "string" && u.startsWith("http"))
+                .slice(0, maxPhotos),
             property_type: raw.homeType,
             mls_number: raw.mlsid || raw.mlsId,
             zillow_url: zillowUrl,
+            yearBuilt: raw.yearBuilt,
+            lotSize: raw.lotSize,
+            neighborhood: raw.address?.neighborhood || raw.neighborhood,
+            amenities: raw.resoFacts?.atAGlanceFacts?.map((f: any) => `${f.factLabel}: ${f.factValue}`) || [],
+            resoFacts: raw.resoFacts,
+            homeInsights: raw.homeInsights,
+            attributionInfo: raw.attributionInfo,
         };
     } catch (err: any) {
         logger.error({ msg: "Zillow scrape failed", input: trimmed, error: err.message });

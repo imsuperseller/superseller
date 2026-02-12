@@ -183,6 +183,38 @@ export async function addMusicOverlay(
     logger.info({ msg: "Music overlay complete", output: outputPath });
 }
 
+// ─── ADD TEXT OVERLAYS (STUB) ───
+/**
+ * Placeholder for AI-generated text overlays (room labels, hero moments, property details).
+ * Per NotebookLM: overlays should align to music beats for rhythm-based editing.
+ * Currently a no-op pass-through — implement with drawtext filter or Remotion when ready.
+ * @see https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c
+ */
+export interface TextOverlaySpec {
+    text: string;
+    startSeconds: number;
+    durationSeconds: number;
+    position?: "top" | "center" | "bottom";
+}
+
+export async function addTextOverlays(
+    inputPath: string,
+    outputPath: string,
+    _overlays: TextOverlaySpec[] = []
+): Promise<void> {
+    // STUB: No overlays implemented yet. Pass-through copy.
+    if (_overlays.length === 0) {
+        const { copyFileSync } = await import("fs");
+        copyFileSync(inputPath, outputPath);
+        logger.debug({ msg: "Text overlays stub: pass-through (no overlays)", input: inputPath });
+        return;
+    }
+    // TODO: Implement with ffmpeg drawtext or Remotion. Align to music beats.
+    const { copyFileSync } = await import("fs");
+    copyFileSync(inputPath, outputPath);
+    logger.debug({ msg: "Text overlays stub: pass-through (overlays not yet implemented)", count: _overlays.length });
+}
+
 // ─── GENERATE FORMAT VARIANTS ───
 export async function generateVariants(
     masterPath: string,

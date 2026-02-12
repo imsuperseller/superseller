@@ -40,10 +40,10 @@ Stage 2: TOUR SEQUENCE REFINEMENT (LLM — Text)
   Output: Final ordered room sequence with transition types
   Model:  Gemini 2.5 Pro / GPT-4o
 
-Stage 3: VIDEO CLIP GENERATION (Kling 3.0 / Veo 3.1)
-  Input:  Per-clip prompt + start frame + end frame
+Stage 3: VIDEO CLIP GENERATION (Rewired)
+  Input:  Scene image (from Nano Banana Pro when realtor) or exterior/interior photo + per-clip prompt
   Output: 5-8 second video clip
-  Model:  Kling 3.0 via fal.ai (primary) / Veo 3.1 via kie.ai (backup)
+  Model:  Kling 3.0 via kie.ai only. Nano Banana Pro for realtor-in-scene images. No FAL. No Veo.
 
 Stage 4: MUSIC GENERATION (Suno V5)
   Input:  Style prompt + duration target
@@ -422,6 +422,13 @@ Cinematic steadicam shot ascending the staircase from the {{FROM_FLOOR}} floor t
 Smooth steadicam shot exiting through {{EXIT_DOOR}} into the {{OUTDOOR_SPACE}}. The camera passes through the doorframe, transitioning from interior to exterior as {{TIME_OF_DAY}} light floods the frame. {{OUTDOOR_DESCRIPTION}}. The camera gently slows to a stop, framing the full outdoor space in a wide establishing shot. Professional real estate cinematography, 4K, warm golden tones, cinematic conclusion.
 ```
 
+#### Pool as Hero Feature (When property has pool)
+
+**Pool is a HERO FEATURE and the Big Reveal finale.** When special_features includes "pool", the pool MUST be in the tour as the last or second-to-last clip.
+```
+Wide sweeping pan of the sparkling pool area. Hero moment: gentle glide or orbit. The guide gestures toward the water with a "Can you believe this?" expression. Lifestyle sell, vacation energy. Cinematic real estate, 4K, golden hour on deck.
+```
+
 ---
 
 ## 5. Room-Type Prompt Library
@@ -711,13 +718,13 @@ blurry, out of focus, distorted, warped, low quality, low resolution, overexpose
 
 ### 8B. Model-Specific Negative Prompt Extensions
 
-**For Kling 3.0 (fal.ai):**
+**For Kling 3.0 (kie.ai):**
 
 ```
 {{UNIVERSAL_NEGATIVE}}, sudden scene change, abrupt cut, inconsistent wall color between frames, door appearing or disappearing, window changing shape, floor material changing mid-shot, ceiling height shifting
 ```
 
-**For Veo 3.1 (kie.ai):**
+**For Kling 3.0 (kie.ai) — prompt guidelines:**
 
 ```
 {{UNIVERSAL_NEGATIVE}}, jittery motion, frame rate drops, audio artifacts, lip sync, speech, talking, singing, unnatural camera acceleration, zoom in zoom out, rapid movement
@@ -999,7 +1006,7 @@ Return ONLY valid JSON.
 
 ## 11. Prompt Assembly Logic
 
-This is the actual code that builds the final prompt string sent to Kling 3.0 or Veo 3.1.
+This is the actual code that builds the final prompt string sent to Kling 3.0 (kie.ai).
 
 ```typescript
 // src/services/prompt-generator.ts — assembleClipPrompt()
@@ -1199,7 +1206,7 @@ Return ONLY valid JSON.
 
 ### 13B. Model-Specific Tuning Notes
 
-**Kling 3.0 (fal.ai):**
+**Kling 3.0 (kie.ai):**
 
 * `cfg_scale`: Start at 0.5. Increase to 0.7 if prompt adherence is low. Decrease to 0.3 if results are over-stylized.
 * Best at: Smooth camera movements, consistent lighting, architectural spaces
@@ -1207,7 +1214,7 @@ Return ONLY valid JSON.
 * Sweet spot: 5 seconds at 16:9 — longer clips (8-10s) show more drift
 * **Pro tip:** Adding "photograph-quality" to the prompt significantly reduces painterly artifacts
 
-**Veo 3.1 (kie.ai):**
+**Kling 3.0 (alternative style):**
 
 * Best at: Natural lighting, outdoor scenes, establishing shots
 * Struggles with: Complex interior geometry, tight spaces (bathrooms), overhead angles
@@ -1219,7 +1226,7 @@ Return ONLY valid JSON.
 
 ```
 Kling 3.0: 80-150 words OPTIMAL. Under 50 = too vague. Over 200 = model gets confused.
-Veo 3.1:   50-100 words OPTIMAL. More direct is better. Over 150 = diminishing returns.
+Kling 3.0: 50-150 words. More direct is better for image-to-video.
 Suno:      20-50 words for style/mood. Longer descriptions don't improve music quality.
 LLM (floorplan): No limit but structured prompt with JSON schema produces reliable output.
 ```
@@ -1296,7 +1303,7 @@ export const PROMPT_VERSIONS = {
 | `{{DURATION}}`              | config.video.defaultClipDuration           | `"5"`                                                         |
 | `{{STYLE_MODIFIER}}`        | Lookup from STYLE_MODIFIERS                | Full style object                                               |
 | `{{NEGATIVE_PROMPT}}`       | Assembled from universal + room-specific   | Full negative string                                            |
-| `{{MODEL_NAME}}`            | Based on model_preference                  | `"Kling 3.0"`or `"Veo 3.1"`                                 |
+| `{{MODEL_NAME}}`            | model_preference (kling_3 only)            | `"Kling 3.0"`                                               |
 | `{{CAMERA_HEIGHT}}`         | Room-specific or default                   | `"eye level"`                                                 |
 | `{{EXTERIOR_DESCRIPTION}}`  | From listing photos or generic             | `"a modern farmhouse facade with stone accents"`              |
 | `{{VIDEO_DURATION}}`        | Calculated total                           | `"55"`(seconds)                                               |

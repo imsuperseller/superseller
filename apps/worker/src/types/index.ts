@@ -82,7 +82,7 @@ export interface DbClip {
     start_frame_url: string | null;
     end_frame_url: string | null;
     model_used: string | null;
-    provider: "fal" | "kie" | null;
+    provider: "kie" | null;
     external_task_id: string | null;
     status: ClipStatus;
     video_url: string | null;
@@ -103,7 +103,7 @@ export interface DbClip {
 
 export type SubscriptionTier = "free" | "starter" | "pro" | "team";
 export type PropertyType = "house" | "condo" | "apartment" | "townhouse" | "commercial" | "land";
-export type ModelPreference = "kling_3" | "veo_31_fast" | "veo_31_quality";
+export type ModelPreference = "kling_3"; // No Veo — Kie Kling 3 only (rewired architecture)
 export type TransitionStyle = "fade" | "dissolve" | "wipeleft" | "wiperight" | "circleopen" | "circleclose" | "radial" | "smoothleft";
 export type SubscriptionStatus = "active" | "canceled" | "past_due" | "trialing" | "incomplete";
 
@@ -170,22 +170,22 @@ export interface TierLimits {
 export const TIER_LIMITS: Record<SubscriptionTier, TierLimits> = {
     free: {
         monthly_videos: 1,
-        models_allowed: ["veo_31_fast"],
+        models_allowed: ["kling_3"],
         priority: 3,
     },
     starter: {
         monthly_videos: 5,
-        models_allowed: ["veo_31_fast"],
+        models_allowed: ["kling_3"],
         priority: 3,
     },
     pro: {
         monthly_videos: 15,
-        models_allowed: ["veo_31_fast", "veo_31_quality", "kling_3"],
+        models_allowed: ["kling_3"],
         priority: 2,
     },
     team: {
         monthly_videos: 50,
-        models_allowed: ["veo_31_fast", "veo_31_quality", "kling_3"],
+        models_allowed: ["kling_3"],
         priority: 1,
     },
 };

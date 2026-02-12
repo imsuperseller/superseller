@@ -26,7 +26,8 @@ export interface KieTaskResponse {
     task_id: string;
     status: "pending" | "processing" | "completed" | "failed";
     result?: {
-        video_url: string;
+        video_url?: string;
+        audio_url?: string;
         duration: number;
     };
     error?: string;
@@ -72,9 +73,10 @@ export interface KieKlingRequest {
     image_url: string;
     mode?: "std" | "pro";
     aspect_ratio?: "16:9" | "9:16" | "1:1";
+    model?: string; // default kling-3.0/video; use kling-2.6/image-to-video as fallback
 }
 
-/** Generate clip via Kie Kling (sync: create + poll until done). For FAL fallback when FAL_KEY is invalid. */
+/** Generate clip via Kie Kling (sync: create + poll until done). */
 export async function generateClipKie(request: KieKlingRequest): Promise<{ video: { url: string } }> {
     const taskId = await createKlingTask(request);
     const status = await waitForTask(taskId, "kling");
@@ -84,7 +86,7 @@ export async function generateClipKie(request: KieKlingRequest): Promise<{ video
 
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
     const body = {
-        model: "kling-3.0/video",
+        model: request.model || "kling-3.0/video",
         input: {
             prompt: request.prompt,
             image_urls: [request.image_url],
@@ -159,7 +161,8 @@ export async function getTaskStatus(taskId: string, type: "veo" | "suno" | "klin
 
                 if (videoUrl || audioUrl) {
                     result = {
-                        video_url: videoUrl || audioUrl,
+                        video_url: videoUrl,
+                        audio_url: audioUrl,
                         duration: parsedRes.duration || 8
                     };
                 }

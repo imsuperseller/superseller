@@ -1,8 +1,6 @@
 import { config } from "../config";
 import { logger } from "../utils/logger";
 import axios from "axios";
-import { chatCompletion as openRouterChat } from "./openrouter";
-
 // State-of-the-Art 2026 Models (Gemini 3.0 Series via Kie AI)
 const DEFAULT_TEXT_MODEL = "google/gemini-3-pro";
 const DEFAULT_VISION_MODEL = "google/gemini-3-pro";
@@ -97,6 +95,11 @@ export async function geminiVisionAnalysis(
                 }
             }
         );
+
+        if (!response.data || !response.data.choices || !response.data.choices.length) {
+            logger.error({ msg: "Kie AI Vision returned unexpected structure", data: response.data });
+            throw new Error(`Invalid response from Kie AI Vision (choices missing). Raw: ${JSON.stringify(response.data)}`);
+        }
 
         const choice = response.data.choices[0];
         const content = choice.message?.content || choice.delta?.content || "";

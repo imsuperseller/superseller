@@ -36,10 +36,15 @@ export async function uploadToR2(
         CacheControl: "public, max-age=31536000",
     }));
 
+    // CRITICAL: When passing URLs to Kie.ai (Kling, Nano Banana), they MUST be full public URLs.
+    // If R2_PUBLIC_URL is empty, we return a relative path — Kie will fail with "media file unavailable."
     const publicUrl = config.r2.publicUrl
         ? `${config.r2.publicUrl.replace(/\/$/, "")}/${r2Key}`
         : `/${r2Key}`;
 
+    if (!config.r2.publicUrl && publicUrl.startsWith("/")) {
+        logger.warn({ msg: "R2_PUBLIC_URL not set — returned URL is relative; Kie.ai cannot fetch it", key: r2Key });
+    }
     logger.info({ msg: "R2 upload complete", url: publicUrl });
     return publicUrl;
 }

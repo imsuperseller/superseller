@@ -11,7 +11,7 @@
 
 A self-serve SaaS where realtors upload their listing photos and floorplan, and receive back a fully produced AI-generated property tour video — complete with room-to-room transitions and background music.
 
-The core innovation is  **frame-chaining** : each video clip's end frame becomes the next clip's start frame, creating seamless continuity as the camera "walks" through the property. AI analyzes the floorplan to determine the optimal room sequence, then generates clips for each transition using Veo 3.1 or Kling 3.0's start-and-end-frame conditioning.
+The core innovation is  **frame-chaining** : each video clip's end frame becomes the next clip's start frame, creating seamless continuity as the camera "walks" through the property. AI analyzes the floorplan to determine the optimal room sequence. **Nano Banana Pro** (Kie.ai) places the realtor into scene images; **Kling 3.0** (Kie.ai) turns those images into video clips. No FAL. No Veo.
 
 **Production cost per video:** ~$8–25 depending on model tier and clip count
 **Target price point:** $49–149/month subscription or $29–39 per video
@@ -47,7 +47,7 @@ The core innovation is  **frame-chaining** : each video clip's end frame becomes
 │  │  Jobs:                                             │    │
 │  │  1. Floorplan analysis (→ OpenRouter)              │    │
 │  │  2. Prompt generation (→ OpenRouter)               │    │
-│  │  3. Clip generation (→ fal.ai / kie.ai)           │    │
+│  │  3. Clip generation (→ kie.ai Kling 3.0)         │    │
 │  │  4. Video stitching (→ FFmpeg local)               │    │
 │  │  5. Music overlay (→ kie.ai Suno + FFmpeg)         │    │
 │  │  6. Upload final (→ Cloudflare R2)                 │    │
@@ -55,15 +55,13 @@ The core innovation is  **frame-chaining** : each video clip's end frame becomes
 └─────────────────────────────────────────────────────────┘
                          │
         ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│   fal.ai     │ │   kie.ai     │ │ OpenRouter   │
-│              │ │              │ │              │
-│ Kling 3.0    │ │ Veo 3.1      │ │ GPT-4o       │
-│ (video gen)  │ │ (video gen)  │ │ Gemini 2.5   │
-│              │ │ Suno V5      │ │ (floorplan   │
-│              │ │ (music gen)  │ │  analysis)   │
-└──────────────┘ └──────────────┘ └──────────────┘
+        ▼                ▼
+┌──────────────────────┐ ┌──────────────────┐
+│   kie.ai             │ │ OpenRouter       │
+│ Kling 3 (video)      │ │ GPT-4o/Gemini    │
+│ Nano Banana (realtor)│ │ (floorplan)      │
+│ Suno V5 (music)      │ │                  │
+└──────────────────────┘ └──────────────────┘
                          │
                          ▼
               ┌──────────────────┐
@@ -84,8 +82,8 @@ The core innovation is  **frame-chaining** : each video clip's end frame becomes
 | Database            | **PostgreSQL on RackNerd**               | Already installed, full SQL, no row limits, no monthly cost            |
 | Job Queue           | **Redis + BullMQ on RackNerd**           | Already installed, proven async job pattern, retries built-in          |
 | Video Stitching     | **FFmpeg on RackNerd**                   | Already installed, xfade filter for transitions, zero API cost         |
-| Video Gen (primary) | **Kling 3.0 via fal.ai**                 | Start+end frame, 3–15s clips, elements for identity, exclusive to fal |
-| Video Gen (backup)  | **Veo 3.1 via kie.ai**                   | Start+end frame via last_frame param, reference images, 4–8s clips    |
+| Video Gen           | **Kling 3.0 via kie.ai**                 | Image-to-video, 3–15s clips. No FAL. Kie Kling 3 only. |
+| Realtor placement   | **Nano Banana Pro via kie.ai**           | Places realtor into room photos (avatar + room image) |
 | Music               | **Suno V5 via kie.ai**                   | Watermark-free commercial, instrumental mode, ~$0.10–0.30/track       |
 | LLM (floorplan)     | **OpenRouter**→ GPT-4o / Gemini 2.5 Pro | Vision models for floorplan analysis, $0.01–0.05/call                 |
 | Object Storage      | **Cloudflare R2**(free tier)             | 10GB free, zero egress, S3-compatible, CDN included                    |
@@ -183,115 +181,45 @@ A second LLM call generates the video prompts for each clip transition. Each pro
 **Cost:** $0.02–0.05 via OpenRouter
 **Key insight:** The end_frame_image of clip N becomes the start_frame_image of clip N+1. This is the frame-chain.
 
-### Phase 3: Clip Generation
+### Phase 3: Clip Generation (Rewired Architecture)
 
-#### Primary Engine — Kling 3.0 via fal.ai
+**Pipeline:** Nano Banana Pro → scene images with realtor → Kling 3.0 → video clips. No FAL. No Veo.
 
-Kling 3.0 is the preferred engine because it supports:
+#### Step 1: Realtor in Scene Images — Nano Banana Pro (Kie.ai)
 
-* **Start + end frame conditioning** (image-to-video with dual keyframes)
-* **Elements** — reusable character/object references for identity consistency
-* **Multi-shot storyboarding** — up to 6 shots in one request
-* **Native audio** — ambient sound generation (optional, we add music separately)
-* **3–15 second clips** — flexible duration per clip
+Nano Banana Pro places the realtor into room photos. **Opening:** Realtor walking from front of house toward front door (approach walk). **Pool:** Hero Moment — gesture toward pool, "Can you believe this?" expression. Input: realtor avatar URL + room photo URL. Output: composite image with realtor in the scene.
 
 ```javascript
-// fal.ai Kling 3.0 — Image to Video with start + end frame
-import { fal } from "@fal-ai/client";
-
-fal.config({ credentials: process.env.FAL_KEY });
-
-const result = await fal.subscribe("fal-ai/kling-video/o3/pro/image-to-video", {
-  input: {
-    prompt: clipPrompt,
-    image_url: startFrameUrl,        // Start frame
-    tail_image_url: endFrameUrl,     // End frame (continuity chain)
-    duration: "5",                    // 3-15 seconds
-    aspect_ratio: "16:9",
-    cfg_scale: 0.5,
-    audio: false,                     // We add Suno music later
-    // Optional: elements for realtor identity consistency
-    elements: [
-      {
-        image_url: realtorHeadshotUrl,    // Frontal reference
-        reference_image_urls: [            // Additional angles
-          realtorSideUrl,
-          realtorThreeQuarterUrl
-        ]
-      }
-    ]
-  }
+// kie.ai Nano Banana Pro — realtor into room photo
+const taskId = await createNanoBananaTask({
+  prompt: "Professional guide from reference photo standing at entrance, gesturing naturally...",
+  image_input: [realtorAvatarUrl, roomPhotoUrl],
+  aspect_ratio: "16:9",
+  resolution: "2K",
+  output_format: "png",
 });
-
-const videoUrl = result.video.url;
+const { image_url } = await waitForNanoBananaTask(taskId);
 ```
 
-**Pricing (fal.ai Kling 3.0):**
+#### Step 2: Video Clips — Kling 3.0 (Kie.ai)
 
-| Tier     | Cost/second (no audio)          | Cost/second (with audio) | 5s clip |
-| -------- | ------------------------------- | ------------------------ | ------- |
-| Standard | $0.168                 | $0.252 | $0.84–$1.26             |         |
-| Pro      | $0.224                 | $0.336 | $1.12–$1.68             |         |
-
-**For a 10-clip tour at 5 seconds each (Standard, no audio):** ~$8.40
-
-#### Backup Engine — Veo 3.1 via kie.ai
-
-Used when Kling quality is insufficient for a specific scene, or as A/B test:
+Kling 3.0 turns each scene image into a video clip. Start frame = Nano Banana output (or exterior photo). End frame chains to next clip for continuity.
 
 ```javascript
-// kie.ai Veo 3.1 — with start + end frame
-const response = await fetch("https://api.kie.ai/v1/veo3/generate", {
-  method: "POST",
-  headers: {
-    "Authorization": `Bearer ${process.env.KIE_API_KEY}`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    model: "veo-3.1-fast",          // or "veo-3.1" for quality
-    prompt: clipPrompt,
-    image_url: startFrameUrl,        // Start frame
-    last_frame: endFrameUrl,         // End frame
-    duration: 8,                      // 4, 6, or 8 seconds
-    aspect_ratio: "16:9",
-    reference_images: [               // Up to 3-4 for identity
-      realtorRef1,
-      realtorRef2
-    ]
-  })
+// kie.ai Kling 3.0 — Image to Video
+const taskId = await createKlingTask({
+  prompt: clipPrompt,
+  image_url: startFrameUrl,   // From Nano Banana or previous clip's last frame
+  mode: "std",
+  aspect_ratio: "16:9",
 });
-// Returns task_id → poll or webhook for completion
+const status = await waitForTask(taskId, "kling");
+const videoUrl = status.result.video_url;
 ```
 
-**Pricing (kie.ai Veo 3.1):**
-
-| Tier                    | Cost per 8s clip | Resolution |
-| ----------------------- | ---------------- | ---------- |
-| Veo 3.1 Fast            | $0.40            | 720p       |
-| Veo 3.1 Fast + audio    | $0.60            | 720p       |
-| Veo 3.1 Quality         | $2.00            | 1080p      |
-| Veo 3.1 Quality + audio | $3.20            | 1080p      |
-
-**For a 10-clip tour at Veo Fast:** ~$4.00–6.00
-
-#### Model Selection Strategy
-
-```
-DEFAULT: Kling 3.0 Standard via fal.ai
-  → Best start+end frame control
-  → Elements system for realtor consistency
-  → 3-15s flexible duration
-
-FALLBACK 1: Veo 3.1 Fast via kie.ai
-  → When Kling fails or queue is backed up
-  → Cheaper per clip but less control
-
-FALLBACK 2: Veo 3.1 Quality via kie.ai
-  → Premium tier for agents who pay for 1080p
-  → Best cinematic quality
-
-FUTURE: A/B test both and let quality scores determine default
-```
+**Model stack:**
+- **Nano Banana Pro** — Realtor placement in scene images
+- **Kling 3.0** — Image-to-video. No fallback to Veo or FAL.
 
 ### Phase 4: Video Stitching on RackNerd (FFmpeg)
 
@@ -560,7 +488,7 @@ CREATE TABLE video_jobs (
     -- adding_music → exporting → complete → failed
   
     -- Configuration
-    model_preference VARCHAR(50) DEFAULT 'kling_3',  -- kling_3, veo_31_fast, veo_31_quality
+    model_preference VARCHAR(50) DEFAULT 'kling_3',  -- kling_3 only (no Veo)
     tour_sequence JSONB,            -- Ordered room array (from AI or manual override)
     music_style VARCHAR(100),       -- "upbeat", "elegant", "modern", etc.
     music_track_id UUID,            -- Reference to pre-generated track or NULL for fresh
@@ -607,11 +535,11 @@ CREATE TABLE clips (
     prompt TEXT,
     start_frame_url TEXT,            -- Input image URL
     end_frame_url TEXT,              -- Input image URL
-    model_used VARCHAR(50),          -- kling_3, veo_31_fast, etc.
-    provider VARCHAR(20),            -- fal, kie
+    model_used VARCHAR(50),          -- kling_3
+    provider VARCHAR(20),            -- kie
   
     -- API tracking
-    external_task_id VARCHAR(255),   -- fal request_id or kie task_id
+    external_task_id VARCHAR(255),   -- kie task_id
     status VARCHAR(50) DEFAULT 'pending',
     -- pending → generating → complete → failed → retrying
   
@@ -829,7 +757,7 @@ GET    /api/listings          → List user's listings
 POST   /api/floorplan/analyze → Analyze floorplan (returns room sequence)
 GET    /api/usage             → Get current month usage stats
 POST   /api/webhooks/stripe   → Stripe webhook handler
-POST   /api/webhooks/fal      → fal.ai completion callback
+POST   /api/webhooks/kie      → kie.ai completion callback (optional; we poll for Kling/Nano Banana)
 POST   /api/webhooks/kie      → kie.ai completion callback
 ```
 
@@ -907,17 +835,17 @@ Connect R2 to your domain via Cloudflare:
 
 ### Scenario: 10-clip property tour, 50 seconds total
 
-| Component                       | Kling 3.0 (Default)                   | Veo 3.1 Fast (Budget) | Veo 3.1 Quality (Premium) |
-| ------------------------------- | ------------------------------------- | --------------------- | ------------------------- |
-| Floorplan analysis (OpenRouter) | $0.03               | $0.03           | $0.03                 |                           |
-| Prompt generation (OpenRouter)  | $0.03               | $0.03           | $0.03                 |                           |
-| 10 clips generation             | $8.40               | $4.00           | $20.00                |                           |
-| 3 retries (~30% failure rate)   | $2.52               | $1.20           | $6.00                 |                           |
-| Music (Suno via kie.ai)         | $0.20               | $0.20           | $0.20                 |                           |
-| FFmpeg processing               | $0.00               | $0.00           | $0.00                 |                           |
-| R2 storage (amortized)          | $0.01               | $0.01           | $0.01                 |                           |
-| R2 delivery                     | $0.00               | $0.00           | $0.00                 |                           |
-| **Total COGS per video**  | **$11.19**    | **$5.47** | **$26.27**      |                           |
+| Component                       | Kling 3.0 (Kie.ai) |
+| ------------------------------- | ------------------ |
+| Floorplan analysis (OpenRouter) | $0.03              |
+| Prompt generation (OpenRouter)  | $0.03              |
+| 10 clips generation             | ~$8–12             |
+| 3 retries (~30% failure rate)   | ~$2–4              |
+| Nano Banana (realtor images)    | ~$0.50–2           |
+| Music (Suno via kie.ai)          | $0.20              |
+| FFmpeg processing               | $0.00              |
+| R2 storage + delivery           | $0.01              |
+| **Total COGS per video**        | **~$11–20**        |
 
 ### Infrastructure Fixed Costs
 
@@ -938,12 +866,10 @@ Connect R2 to your domain via Cloudflare:
 | Starter                         | $49/mo  | 5         | $55.95             | -14% ⚠️ |                      |              |
 | Starter (adjusted)              | $79/mo  | 5         | $55.95             | 29%       |                      |              |
 | Professional                    | $149/mo | 15        | $167.85            | -13% ⚠️ |                      |              |
-| Professional (Veo Fast default) | $149/mo | 15        | $82.05             | 45% ✅    |                      |              |
-| Team / Brokerage                | $299/mo | 50        | $273.50 (Veo Fast) | 9%        |                      |              |
+| Professional                    | $149/mo | 15        | ~$165–300          | varies    |
+| Team / Brokerage                | $299/mo | 50        | ~$550–1000         | varies    |
 
-**Margin strategy:** Use **Veo 3.1 Fast as the default engine** ($5.47/video) and offer **Kling 3.0 as "HD Premium"** ($11.19/video) for higher tiers. This makes $149/mo at 15 videos profitable at 45% gross margin.
-
-Or: **Hybrid approach** — use Kling 3.0 for the first and last clips (most visible) and Veo Fast for middle clips to reduce cost while keeping quality where it matters.
+**Margin strategy:** Kling 3.0 (Kie.ai) + Nano Banana Pro. No Veo. No FAL.
 
 ---
 
@@ -1007,14 +933,14 @@ This gives you HTTPS, DDoS protection, and hides your VPS IP — all free on Clo
 3. **Exterior/backyard/garage handling** — Floorplans don't show outdoor spaces. Add a checkbox list: "Include exterior approach? Backyard? Garage? Pool?" and generate those clips from listing photos separately.
 4. **Processing time UX** — At 5–20 minutes per tour, the dashboard must be fully async. Show a progress bar (updated via polling every 5s), send email notification on completion, and optionally browser push notifications.
 5. **End-frame generation** — The concept assumes you have an image for each room's entrance. In reality, you'll need to generate these intermediate frames. Options: (a) use the last frame extracted from the previous clip via FFmpeg, (b) use an image generation model to create the "entrance to next room" image from the floorplan + listing description, or (c) only specify start frames and let the video model interpolate naturally.
-6. **Webhook infrastructure** — Both fal.ai and kie.ai are async APIs that return task IDs. You need webhook endpoints on RackNerd to receive completion callbacks, plus a polling fallback for when webhooks fail.
+6. **Webhook infrastructure** — kie.ai is async. We poll for completion. Optional webhook for callbacks.
 
 ### Important for V1.1
 
 7. **Multi-story homes** — Detect multiple floors in floorplan analysis. Generate a "walking upstairs" transition clip between floors.
 8. **Open-concept layouts** — Large open spaces (kitchen → dining → living) should be treated as a single long scene, not three separate clips.
 9. **Retry budget caps** — Set a maximum retry count (3) and total cost cap per video. If a clip fails 3 times, skip it and stitch without it rather than burning credits.
-10. **Rate limit management** — Both fal.ai and kie.ai have concurrency limits. Implement exponential backoff and respect 429 responses. Queue clips intelligently.
+10. **Rate limit management** — kie.ai has concurrency limits. Implement exponential backoff and respect 429 responses.
 
 ### V2 Features
 
@@ -1030,7 +956,7 @@ This gives you HTTPS, DDoS protection, and hides your VPS IP — all free on Clo
 | 1  | **Product Requirements Document (PRD)** | User stories, acceptance criteria, MoSCoW features                         | P0       |
 | 2  | **Technical Architecture Doc**          | System diagram (use the one above), API contracts, data flow               | P0       |
 | 3  | **Database Schema + Migrations**        | The SQL above, plus migration scripts                                      | P0       |
-| 4  | **API Integration Specs**               | fal.ai, kie.ai, OpenRouter endpoints, auth, schemas, retry logic           | P0       |
+| 4  | **API Integration Specs**               | kie.ai (Kling, Nano Banana, Suno), OpenRouter endpoints, auth, schemas       | P0       |
 | 5  | **Video Pipeline Spec**                 | Frame-chain logic, prompt templates, FFmpeg commands, error handling       | P0       |
 | 6  | **Wireframes / UI Mockups**             | Dashboard, upload flow, progress view, preview/approve screen              | P0       |
 | 7  | **User Flow Diagrams**                  | Signup → upload → generate → approve → download/share                  | P1       |
@@ -1050,7 +976,7 @@ This gives you HTTPS, DDoS protection, and hides your VPS IP — all free on Clo
 | Week  | Phase                      | Deliverable                                                                         |
 | ----- | -------------------------- | ----------------------------------------------------------------------------------- |
 | 1–2  | **Foundation**       | Postgres schema, Express API on RackNerd, Clerk auth, project scaffolding           |
-| 3–4  | **Pipeline Core**    | fal.ai + kie.ai integration, single clip generation working, webhook handling       |
+| 3–4  | **Pipeline Core**    | kie.ai (Nano Banana + Kling 3) integration, single clip generation working       |
 | 5–6  | **Chain Logic**      | Floorplan analysis, prompt generation, full clip chain (10 clips), FFmpeg stitching |
 | 7–8  | **Music + Polish**   | Suno integration, music overlay, multi-format export, R2 upload pipeline            |
 | 9–10 | **Frontend**         | Next.js dashboard, upload flow, job progress, video preview, download               |
@@ -1063,8 +989,7 @@ This gives you HTTPS, DDoS protection, and hides your VPS IP — all free on Clo
 
 ```
 □ Sign up for API keys:
-  □ fal.ai account + API key (Kling 3.0)
-  □ kie.ai account + API key (Veo 3.1 + Suno)
+  □ kie.ai account + API key (Kling 3, Nano Banana Pro, Suno)
   □ OpenRouter account + API key
   □ Clerk account (auth)
   □ Stripe account (payments)
@@ -1092,8 +1017,8 @@ This gives you HTTPS, DDoS protection, and hides your VPS IP — all free on Clo
   □ Deploy
 
 □ Proof of concept (do this FIRST):
-  □ Generate 1 clip with fal.ai Kling 3.0 (start + end frame)
-  □ Generate 1 clip with kie.ai Veo 3.1 (start + end frame)
+  □ Generate 1 scene image with kie.ai Nano Banana Pro (realtor + room photo)
+  □ Generate 1 clip with kie.ai Kling 3.0 (image to video)
   □ Chain 3 clips where end_frame[N] = start_frame[N+1]
   □ Stitch 3 clips with FFmpeg xfade
   □ Add Suno music overlay

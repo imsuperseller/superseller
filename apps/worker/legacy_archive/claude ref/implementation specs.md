@@ -1,8 +1,18 @@
 # TourReel — Implementation Spec / Project Bible
 
-**Version:** 1.0
-**Date:** February 10, 2026
+**Version:** 1.1
+**Date:** February 11, 2026
 **Purpose:** Complete implementation reference for AI coding agents (Claude Code, Antigravity, Cursor). Every file path, every dependency, every API contract, every function signature. Build exactly this.
+
+> **⚠️ REWIRED ARCHITECTURE (Feb 2026) — READ FIRST**
+> 
+> **Video generation:** Kie.ai Kling 3.0 only. **Realtor placement:** Kie.ai Nano Banana Pro. **No FAL. No Veo.**
+> 
+> - Do NOT create fal.ts, FAL_KEY, or @fal-ai/client
+> - Do NOT use Veo for video clips
+> - Pipeline: Nano Banana Pro → scene images with realtor → Kling 3.0 → video clips
+> - See `apps/worker/AGENT_SELF_AUDIT.md` for full audit
+> - **Ignore** all FAL and Veo 3.1 sections below — they are legacy
 
 ---
 
@@ -48,8 +58,7 @@
 
 **External APIs:**
 
-* fal.ai — Kling 3.0 video generation (primary)
-* kie.ai — Veo 3.1 video generation (backup) + Suno V5 music
+* kie.ai — Kling 3.0 video generation (primary) + Nano Banana Pro (realtor placement) + Suno V5 music
 * OpenRouter — GPT-4o / Gemini 2.5 Pro for floorplan analysis
 * Clerk — Authentication
 * Stripe — Payments

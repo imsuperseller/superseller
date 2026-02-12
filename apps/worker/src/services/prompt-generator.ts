@@ -67,6 +67,18 @@ export const ROOM_DESCRIPTIONS: Record<string, any> = {
         lighting_note: "Full natural outdoor light, golden hour warmth across the landscape",
         material_hints: "paver stone patio, outdoor furniture, mature landscaping, green lawn",
     },
+    "pool": {
+        typical_features: "crystal clear swimming pool or spa area, tiled water line, surrounding deck or lounge space. HERO FEATURE — main selling point, Big Reveal finale.",
+        camera_focus: "Wide sweeping pan of the entire pool area. Hero moment: gentle glide or orbit. Emphasize lifestyle, relaxation, vacation energy.",
+        lighting_note: "Sunlight reflecting off the water surface, blue water tones contrasting with warm deck materials",
+        material_hints: "sparkling water, stone or wood decking, modern lounge chairs, outdoor umbrellas",
+    },
+    "backyard": {
+        typical_features: "spacious private backyard with lawn, mature trees, and potential for entertaining",
+        camera_focus: "Dolly forward from the patio into the lawn area, looking back to show the home's rear elevation",
+        lighting_note: "Open outdoor lighting, soft shadows from trees, golden hour highlights",
+        material_hints: "manicured lawn, varied plantings, wood fencing or privacy hedging",
+    },
     "stairs": {
         typical_features: "staircase connecting floors with railing and architectural character",
         camera_focus: "Ascending steadicam at handrail height, following the stair geometry upward",
@@ -99,42 +111,39 @@ export const STYLE_MODIFIERS: Record<string, any> = {
     },
 };
 
-// Realtor mode: allow single realtor. Avoid morphing, multiple people, inconsistent faces.
-export const REALTOR_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, morphing face, melting face, inconsistent facial features, multiple people, crowd, extra faces, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic";
+export const REALTOR_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, morphing face, melting face, inconsistent facial features, multiple people, crowd, extra faces, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic, fashion show, runway walk, robotic walk, stiff movement, excessive smiling, posing, staring at camera, blocking doorway, out of character";
 
 // Legacy (no realtor): ban all people.
 export const UNIVERSAL_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, people, person, human figure, hand, finger, face, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic";
 
 const REALTOR_SYSTEM_PROMPT = `You are a world-class real estate cinematographer directing an AI video generation model. Your job is to write detailed video prompts for a REALTOR-CENTRIC property tour.
 
-THE REALTOR IS THE ANCHOR:
-- A single professional realtor (business casual, warm and confident) walks through each room as the guide.
-- The realtor uses "Silent Hype" body language: power walk at 70% speed, 5-8 feet ahead of camera, touches luxury features (marble island, velvet sofa), glances back with a smile when entering new rooms.
-- Facial expressions: "The Wow" (eyebrows up on entry), "The Knowing Smirk" (confident when pointing at features), "The Welcome Home" (warm look at lens for finale).
-- The home is the star; the realtor provides scale and life. No other people or pets.
+THE REALTOR IS A PROFESSIONAL GUIDE:
+- The realtor is the person in the provided reference photo (Visual Identity Anchor).
+- DO NOT describe clothing like "sharp blazer" or "business casual". Describe the realtor ONLY as "the person from the reference photo".
+- CONDUCT: The realtor acts as a humble, professional guide. They are purposefully leading the viewer into the home.
+- MOVEMENT: Natural, understated walking. NO "power walking", NO "runway walk", NO "fashion show" behavior.
+- BEHAVIOR: They walk into rooms, towards focal points (islands, fireplaces, views), and point naturally at features from a distance. They stay out of the way of the camera's path when necessary.
+- EXPRESSIONS: Subdued and professional. A genuine, brief nod to the viewer upon entry, then focusing on the home. No constant smirking or posing.
+- DIRECTION: They walk TOWARDS the doors and focal points, guiding the camera's eye.
 
 CINEMATIC RULES:
-1. CAMERA MOVEMENT: Every clip must specify ONE primary camera movement (forward dolly, tracking, push-in, pan, pull-back reveal, doorway dolly, staircase follow).
-2. CAMERA HEIGHT: Always "eye level" (5ft). Camera follows the realtor.
-3. LIGHTING: Consistent warm golden hour.
-4. SPEED: Slow and steady (realtor walks at 70% normal speed).
-5. CONTINUITY: The end of clip N must visually match the start of clip N+1. Same room state, same realtor position.
+1. CAMERA MOVEMENT: specify ONE primary movement (forward dolly, tracking, push-in, pan, door-push).
+2. CAMERA HEIGHT: Stable eye level (5ft).
+3. CONTINUITY: The realtor's position at the end of Clip N must match the start of Clip N+1.
+4. SPATIAL LOGIC: Every property has HERO MOMENTS (top 3 selling points). When pool exists: pool is the FINALE. When no pool: elevate kitchen island, fireplace, view, master suite, or other notable features as hero focus. Identify and emphasize the main hero in your prompts.
 
-OUTPUT FORMAT:
-Return a JSON array of clip prompts. Each prompt (80-150 words) must describe the REALTOR in the frame—position, gesture, expression—along with room details.`;
+Return a JSON array of clip prompts. 80-150 words each.`;
 
-const LEGACY_SYSTEM_PROMPT = `You are a world-class real estate cinematographer directing an AI video generation model. Your job is to write detailed video prompts that produce cinematic, smooth, professional property tour clips.
+const LEGACY_SYSTEM_PROMPT = `You are a world-class real estate cinematographer directing an AI video generation model. Your job is to write detailed video prompts for a property tour WITHOUT any people.
 
 CINEMATIC RULES:
-1. CAMERA MOVEMENT: Every clip must specify ONE primary camera movement (forward dolly, tracking, push-in, pan, pull-back reveal, doorway dolly, staircase follow).
-2. CAMERA HEIGHT: Always "eye level" (5ft) unless special feature.
-3. LIGHTING CONSISTENCY: All clips MUST use consistent time of day (default: warm golden hour).
-4. SPEED: Slow and steady.
-5. CONTINUITY: The end of clip N must visually match the start of clip N+1.
-6. NO people, pets, text, logos, or unrealistic elements.
+1. CAMERA MOVEMENT: specify ONE primary movement (forward dolly, tracking, push-in, pan, door-push).
+2. CAMERA HEIGHT: Stable eye level (5ft).
+3. NO PEOPLE: Empty property—no realtor, no humans. Focus on architecture, light, and space.
+4. SPATIAL LOGIC: Every property has HERO MOMENTS (top 3 selling points). When pool exists: pool is the FINALE. When no pool: elevate kitchen island, fireplace, view, master suite, or other notable features as hero focus.
 
-OUTPUT FORMAT:
-Return a JSON array of clip prompts. Each prompt (80-150 words) should be dense with visual detail.`;
+Return a JSON array of clip prompts. 80-150 words each. Each object: clip_number, from_room, to_room, prompt, duration_seconds (5), negative_prompt (optional).`;
 
 export async function generateClipPrompts(
     tourSequence: TourRoom[],
@@ -142,8 +151,12 @@ export async function generateClipPrompts(
         property_type: string;
         style?: string;
         architectural_style?: string;
+        description?: string;
         exterior_description?: string;
         includeRealtor?: boolean;
+        resoFacts?: any;
+        amenities?: string[];
+        heroFeatures?: string[];
     }
 ): Promise<ClipPrompt[]> {
     const includeRealtor = propertyDetails.includeRealtor ?? true;
@@ -158,31 +171,21 @@ export async function generateClipPrompts(
         return `${i + 1}. ${t.from} (${fromDesc.typical_features}) → ${t.to} (${toDesc.typical_features}) [Type: ${t.transition_type}]`;
     }).join("\n");
 
-    const realtorNote = includeRealtor ? "\n\nEach prompt MUST describe where the realtor is in the frame, their pose or gesture (e.g. 'realtor entering from left, hand on door frame, looking back with smile'), and the room. The realtor anchors the tour." : "";
+    const factsNote = propertyDetails.resoFacts ? `\nDeep Metadata: ${JSON.stringify(propertyDetails.resoFacts).substring(0, 1000)}` : "";
+    const amenitiesNote = propertyDetails.amenities?.length ? `\nKey Amenities: ${propertyDetails.amenities.join(", ")}` : "";
+    const heroNote = propertyDetails.heroFeatures?.length
+        ? `\nHero Features (emphasize these as focal points): ${propertyDetails.heroFeatures.join(", ")}. Elevate hero rooms with orbit gestures, "wow" moments.`
+        : "";
 
     const userMessage = `Property: ${propertyDetails.property_type}
 Style: ${styleKey}
-Details: ${selectedStyle.interior_palette}, ${selectedStyle.material_emphasis}, ${selectedStyle.mood}
-Exterior: ${propertyDetails.exterior_description || "Property exterior shot"}
-Realtor in video: ${includeRealtor ? "YES — describe realtor position and expression in every prompt" : "NO"}
-${realtorNote}
+Description: ${propertyDetails.description}${factsNote}${amenitiesNote}${heroNote}
+Realtor: ${includeRealtor ? "YES (Identity Anchor: use reference photo)" : "NO"}
 
-Tour sequence (generate one prompt per transition):
+Tour sequence:
 ${tourDescription}
 
-Return a JSON array where each element has:
-{
-  "clip_number": number,
-  "from_room": string,
-  "to_room": string,
-  "prompt": "Full cinematic paragraph (include realtor if enabled)...",
-  "camera_movement": string,
-  "duration_seconds": 5,
-  "negative_prompt": "assembled negative prompt here"
-}
-
-Ensure visual continuity: Clip N ends where N+1 begins.
-Return ONLY valid JSON array.`;
+Generate one cinematic prompt per transition. Focus on natural guiding behavior. Emphasize hero features where they appear.`;
 
     logger.info({ msg: "Generating cinematic clip prompts", clips: tourSequence.length, includeRealtor });
 
@@ -194,7 +197,6 @@ Return ONLY valid JSON array.`;
         {
             temperature: 0.4,
             max_tokens: 8192,
-            response_format: { type: "json_object" },
         }
     );
 
@@ -220,7 +222,7 @@ Return ONLY valid JSON array.`;
                 : baseNegative
         }));
     } catch (err: any) {
-        logger.error({ msg: "Cinematic prompt generation failed", error: err.message, content: content.substring(0, 500) });
-        throw new Error("Cinematic prompt generation failed");
+        logger.warn({ msg: "Prompt parse error", error: err?.message, contentPreview: content?.substring(0, 200) });
+        throw new Error(`Cinematic prompt generation failed: ${err?.message || "invalid JSON"}`);
     }
 }

@@ -620,7 +620,7 @@ Clerk customization (via Clerk Dashboard → Appearance):
 │  ├──────────────────────────────────────────────────────────┤   │
 │  │ ┌────┐  456 Oak Ave, Dallas TX      Generating Clips    │   │
 │  │ │thumb│  Colonial · 8 clips           ⏳ 65%       │   │
-│  │ │    │  Model: Veo 3.1 Fast           [View] [⋯]  │   │
+│  │ │    │  Model: Kling 3.0              [View] [⋯]  │   │
 │  │ └────┘                                              │   │
 │  ├──────────────────────────────────────────────────────────┤   │
 │  │ ┌────┐  789 Pine Dr, San Antonio TX    Failed           │   │
@@ -953,7 +953,7 @@ Clerk customization (via Clerk Dashboard → Appearance):
 │  "Video Quality"                                             │
 │  ┌──────────────────┐  ┌──────────────────┐                  │
 │  │ ⊙ Standard       │  │ ○ Premium HD     │                  │
-│  │   Veo 3.1 Fast   │  │   Kling 3.0      │                  │
+│  │   Kling 3.0      │                                  │
 │  │                  │  │                  │                  │
 │  │   Good quality,  │  │   Best quality,  │                  │
 │  │   fast generation│  │   slower gen     │                  │
@@ -1253,7 +1253,7 @@ Clerk customization (via Clerk Dashboard → Appearance):
 │  │  ❌ Generation Failed                   5m 12s   │        │
 │  │  [████████████████░░░░░░░░░░░░░░░░░]   45%      │        │
 │  │  Error: Clip 5 failed after 3 retries            │        │
-│  │  "fal.ai returned 503 — service temporarily      │        │
+│  │  "kie.ai returned 503 — service temporarily     │        │
 │  │   unavailable"                                   │        │
 │  │                                                  │        │
 │  │  ┌──────────────┐  ┌────────────────────┐        │        │

@@ -12,7 +12,7 @@ async function bootstrap() {
     // 1. Express Setup
     const app = express();
     app.use(cors({
-        origin: config.app.corsOrigins,
+        origin: [...config.app.corsOrigins],
         credentials: true
     }));
     app.use(express.json());

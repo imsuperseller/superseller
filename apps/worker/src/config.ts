@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import * as path from "path";
 import { logger } from "./utils/logger";
 
-// Use an absolute path or search up for the .env file in the workspace root
-const envPath = path.resolve(__dirname, "../../../.env");
-dotenv.config({ path: envPath });
+// Load root .env first, then apps/worker/.env (worker overrides)
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+const workerEnv = path.resolve(process.cwd(), ".env");
+dotenv.config({ path: workerEnv, override: true });
 
 function required(key: string): string {
     const value = process.env[key];
@@ -36,14 +37,12 @@ export const config = {
         url: optional("REDIS_URL", "redis://127.0.0.1:6379"),
     },
 
-    fal: {
-        key: required("FAL_KEY"),
-        webhookSecret: process.env.FAL_WEBHOOK_SECRET,
-    },
+
 
     kie: {
         apiKey: required("KIE_API_KEY"),
         baseUrl: "https://api.kie.ai",
+        webhookUrl: process.env.KIE_WEBHOOK_URL || "",
         defaultModel: "gemini-3-pro",
         fallbackModel: "gemini-3-flash",
     },
@@ -52,12 +51,7 @@ export const config = {
         apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || "",
     },
 
-    openRouter: {
-        apiKey: process.env.OPENROUTER_API_KEY || "",
-        baseUrl: "https://openrouter.ai/api/v1",
-        defaultModel: optional("OPENROUTER_DEFAULT_MODEL", "google/gemini-3-pro"),
-        fallbackModel: optional("OPENROUTER_FALLBACK_MODEL", "google/gemini-3-flash"),
-    },
+
 
     clerk: {
         secretKey: process.env.CLERK_SECRET_KEY || "", // Optional for now
@@ -80,7 +74,14 @@ export const config = {
         accessKeyId: required("R2_ACCESS_KEY_ID"),
         secretAccessKey: required("R2_SECRET_ACCESS_KEY"),
         bucket: optional("R2_BUCKET_NAME", process.env.R2_BUCKET || "tour-videos"),
-        publicUrl: optional("R2_PUBLIC_URL", process.env.R2_PUBLIC_DOMAIN || ""),
+        // videos.rensto.com is not configured; use r2.dev for Kie.ai to fetch media
+        publicUrl: (() => {
+            const raw = optional("R2_PUBLIC_URL", process.env.R2_PUBLIC_DOMAIN || "");
+            if (raw && raw.includes("videos.rensto.com")) {
+                return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev";
+            }
+            return raw;
+        })(),
         endpoint: r2Endpoint || `https://${r2AccountId}.r2.cloudflarestorage.com`,
     },
 
@@ -98,7 +99,7 @@ export const config = {
     app: {
         url: optional("APP_URL", "http://localhost:3001"),
         apiUrl: optional("API_URL", "http://localhost:3002"),
-        corsOrigins: optional("CORS_ORIGINS", "http://localhost:3001,http://localhost:3000").split(","),
+        corsOrigins: ["http://localhost:3000", "http://localhost:3001", "https://rensto.com", "https://www.rensto.com"],
     },
 
     video: {
