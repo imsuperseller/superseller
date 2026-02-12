@@ -2,7 +2,7 @@
 
 This document describes the data infrastructure for proving the ROI of each Pillar product via Looker Studio.
 
-## Firestore Collection: `metrics_snapshots`
+## PostgreSQL table: `metrics_snapshots`
 
 We store metrics as daily "snapshots" to allow for historical trending in Looker Studio.
 

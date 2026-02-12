@@ -11,7 +11,7 @@ A structured approach to evolving the Rensto ecosystem—turning n8n workflows i
 
 **Key Tools:**
 - **Google Antigravity:** Agentic development & orchestration
-- **Google Firebase:** User authentication + Firestore database (Users, Purchases, Messages)
+- **PostgreSQL + Redis: Primary database (Firebase retired Feb 2026) (Users, Purchases, Messages)
 - **Stripe:** Payments (Marketplace Downloads & Deployment Services)
 - **Rensto Server:** n8n instance for powering backend logic
 - **Vercel:** Production deployment

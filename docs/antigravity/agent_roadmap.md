@@ -4,7 +4,7 @@ We currently have **Terry** (Infra Monitoring). To transform Rensto into a fully
 
 ## 1. 💹 Finny (The Profit Guardian)
 **Goal**: Real-time financial intelligence and proactive churn management.
-- **Tools**: Stripe API, QuickBooks n8n nodes, Firestore `payments` collection.
+- **Tools**: Stripe API, QuickBooks n8n nodes, PostgreSQL `payments` table.
 - **Capabilities**:
     - "Finny, who is our highest LTV customer but has low engagement?"
     - "Generate a P&L for Tax4Us from Dec 2025."

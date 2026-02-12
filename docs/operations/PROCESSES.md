@@ -19,7 +19,7 @@
 ## Fulfillment Process
 
 1.  **Purchase**: Stripe webhook fires.
-2.  **Lead Creation**: API creates `ServiceInstance` in Firestore.
+2.  **Lead Creation**: API creates `ServiceInstance` in PostgreSQL.
 3.  **Notification**: n8n notifies admin via Slack/email.
 4.  **Queue**: Appears in Admin Fulfillment Queue (`/control/fulfillment`).
 5.  **Delivery**: Admin completes setup, marks as fulfilled.

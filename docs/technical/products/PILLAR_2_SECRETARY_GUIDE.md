@@ -27,7 +27,7 @@ The n8n system acts as the "Brain". It must be **dynamic**, fetching configurati
 2.  **Identify Client**: 
     - **Voice**: Inbound Call `To` Number -> Lookup `secretary_configs` where `phoneNumber == To`.
     - **WhatsApp**: Webhook ID -> Lookup `secretary_configs` where `n8nWebhookId == ID`.
-3.  **Fetch Config**: Get `agentName`, `systemPrompt`, `tools` from Firestore.
+3.  **Fetch Config**: Get `agentName`, `systemPrompt`, `tools` from PostgreSQL.
 4.  **Execute Agent**: Pass these parameters to the LangChain/AI node.
 
 ## Setup Instructions for New Clients

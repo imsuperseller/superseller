@@ -5,7 +5,7 @@ Follow this order to ensure the entire "Machine" is working from lead-to-fulfill
 ## 1. The "Money" Test (Stripe -> Instance)
 - [ ] **Action**: Create a Stripe Checkout session using one of the new Price IDs (e.g. Lead Machine `price_1SnYffDE8rt1dEs1oFKGGkQx`).
 - [ ] **Verification**: 
-  - Check Firestore `service_instances` collection.
+  - Check PostgreSQL `service_instances` table.
   - Does a new document appear with `status: "pending_setup"`?
   - Does the `productId` match the template ID?
 

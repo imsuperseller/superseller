@@ -9,7 +9,7 @@
 
 ## 1. Current State
 
-### Firestore Collections (from firebase-admin.ts + grep)
+### PostgreSQL tables (from firebase-admin.ts + grep)
 
 | Collection | Used In | Domain |
 |------------|---------|--------|

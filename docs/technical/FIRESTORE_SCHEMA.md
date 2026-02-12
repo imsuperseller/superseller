@@ -1,6 +1,6 @@
 # 🗄️ Firestore Schema
 
-> **Source of Truth for all Firestore collections and their purpose.**
+> **Source of Truth for all PostgreSQL tables and their purpose.**
 
 ---
 

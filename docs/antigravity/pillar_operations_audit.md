@@ -14,7 +14,7 @@ flowchart TD
     B --> C[Stripe Checkout Session Created]
     C --> D[Customer Pays]
     D --> E[Stripe Webhook /api/webhooks/stripe]
-    E --> F1[Create payments record in Firestore]
+    E --> F1[Create payments record in PostgreSQL]
     E --> F2[Create purchases record if marketplace-template]
     E --> F3[Create client record if service-purchase]
     E --> F4[Create user + subscription + whatsapp_instance if managed-plan]
@@ -144,7 +144,7 @@ metrics: {
    - Telnyx API (Voice AI call logs)
    - LightRAG logs (Knowledge Engine queries)
    - Social platform APIs (Content Engine engagement)
-3. **Firestore Collection** `pillar_metrics` with daily snapshots
+3. **PostgreSQL table** `pillar_metrics` with daily snapshots
 4. **Client Dashboard** showing their specific pillar's performance
 
 ---

@@ -16,7 +16,7 @@ Strategic design for converting social media attention into qualified high-ticke
     - **> $10M**: High-Ticket Custom. Push to **Whale Onboarding**.
 
 ### Lead Scoring & CRM Integration
-- All leads from DM flows are pushed to the **Rensto Master CRM** (n8n + Firestore `leads` collection).
+- All leads from DM flows are pushed to the **Rensto Master CRM** (n8n + PostgreSQL `leads` table).
 - n8n analyzes the business niche and drafts a "Personalized Problem-Solver" response for Shai to review.
 
 ## Revenue Loops
@@ -26,4 +26,4 @@ Strategic design for converting social media attention into qualified high-ticke
 ## Technical Requirements
 - ManyChat API Integration.
 - n8n Webhook for DM data ingestion.
-- Firestore `leads` collection updates.
+- PostgreSQL `leads` table updates.

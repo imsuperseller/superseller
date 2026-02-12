@@ -8,7 +8,7 @@ To maintain a high-performance autonomous system, we follow the **Single Source 
 | **System Map** | [ARCHITECTURE.md](file:///Users/shaifriedman/New%20Rensto/rensto/ARCHITECTURE.md) |
 | **Production API** | `apps/web/rensto-site/src/app/api/` |
 | **Bilingual Schema** | `apps/web/rensto-site/src/types/firestore.ts` |
-| **Infra Credentials** | [Admin Dashboard / Vault] + [Firestore `restricted/` collection] |
+| **Infra Credentials** | [Admin Dashboard / Vault] + [PostgreSQL (was Firestore) `restricted/` collection] |
 
 ## 💰 2. Financial & Business Truth
 | Domain | Authoritative Path |
@@ -21,9 +21,9 @@ To maintain a high-performance autonomous system, we follow the **Single Source 
 ## 👤 3. Relationship & Client Truth
 | Domain | Authoritative Path |
 | :--- | :--- |
-| **Active Clients** | [Admin Dashboard / CRM] + [Firestore `clients/` collection] |
+| **Active Clients** | [Admin Dashboard / CRM] + [PostgreSQL (was Firestore) `clients/` collection] |
 | **Custom Workflows** | `library/client-workflows/` |
-| **Public Testimonials**| [Admin Dashboard / Landing Content] + [Firestore `testimonials/` collection] |
+| **Public Testimonials**| [Admin Dashboard / Landing Content] + [PostgreSQL (was Firestore) `testimonials/` collection] |
 
 ## 🛠️ 4. Automation Truth (n8n)
 | Domain | Authoritative Path |
