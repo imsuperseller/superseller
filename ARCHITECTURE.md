@@ -17,7 +17,6 @@
 | **infra/mcp-servers/** | MCP server configs |
 | **infra/n8n-scripts/** | n8n workflow deploy/fix scripts |
 | **infra/archive/** | Archived infra (old workflows, legacy) |
-| **firestore/** | Firestore docs (legacy; PostgreSQL is primary database - migration completed Feb 2026) |
 | **library/** | Legacy data, client workflows, reference configs |
 | **legal-pages/** | Privacy policy, terms, compliance |
 | **platforms/marketplace/** | Marketplace platform config and engine |
@@ -44,7 +43,7 @@
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Retired**: Firestore, Airtable.com. **In use**: Aitable.ai (dashboards, syncs)
 
-**Firestore → Postgres migration**: ✅ **COMPLETE** (February 2026). PostgreSQL is now the primary database. **Provision Postgres**: Use Neon via Vercel Marketplace (Vercel Postgres retired Dec 2024). See `docs/technical/PROVISION_NEON_POSTGRES.md`.
+**Firestore → Postgres migration**: ✅ **COMPLETE** (February 2026). PostgreSQL is now the primary database. See `docs/technical/FIRESTORE_TO_POSTGRES_MIGRATION_PLAN.md` for historical reference.
 
 ---
 
