@@ -1,121 +1,72 @@
-# 🗄️ Firestore Schema
+# Database Schema Reference
 
-> **Source of Truth for all PostgreSQL tables and their purpose.**
+> **Historical reference.** This file originally documented Firestore collections. The primary database is now **PostgreSQL** (migration completed Feb 2026). For the current schema, see `apps/web/rensto-site/prisma/schema.prisma`.
 
 ---
 
-## Core Collections
+## PostgreSQL Models (Primary)
 
-| Collection | Purpose |
+| Model | Purpose |
 | :--- | :--- |
-| `users` | **[PRIMARY]** Unified identity, entitlements, and service status |
-| `templates` | Marketplace workflow templates (with visibility rules) |
-| `purchases` | Download tokens and purchase records |
-| `payments` | All Stripe payment events |
-| `service_instances` | Active service deployments |
-| `clients` | **[DEPRECATED]** Legacy client records (Public/Legacy only) |
-| `customSolutionsClients` | **[DEPRECATED]** Legacy managed clients |
+| `User` | Unified identity, entitlements, billing, service status |
+| `Template` | Marketplace workflow templates (with visibility rules) |
+| `Purchase` | Download tokens and purchase records |
+| `Payment` | All Stripe payment events |
+| `ServiceInstance` | Active service deployments |
+| `Subscription` | Recurring billing subscriptions |
+| `Lead` | Lead generation data |
+| `Proposal` | Generated proposal documents |
+| `OnboardingRequest` | Onboarding and fulfillment flow |
+| `CustomizationRequest` | Template modification requests |
+| `SupportCase` | Customer support tickets |
+| `ContentPost` | Blog and content posts |
+| `SecretaryConfig` | Secretary AI configurations |
+| `UsageLog` | API usage tracking |
+| `AdminConversation` | Admin AI chat conversations |
+| `N8nAgentMemory` | Agent state persistence |
+| `MagicLinkToken` | Passwordless auth tokens |
+| `Download` | Download link tracking |
+| `Testimonial` | Client testimonials |
+| `Solution` | Ready solution packages |
+| `SolutionInstance` | Active solution deployments |
+| `WhatsAppInstance` | WhatsApp instance configs |
+| `OutreachCampaign` | Outreach campaign data |
 
-### `clients` Schema (Key Fields)
-```typescript
-{
-  name: string;
-  logoUrl: string;
-  showLogoOnLanding: boolean; // Controls "Industry Leaders" grid
-  privacySettings: {
-    hideBusinessName: boolean;
-    customLabel?: string; // e.g., "CLIENT"
-  };
-  hebrew: {
-    name: string;
-  };
-  status: 'active' | 'inactive';
-}
-```
+## Template Visibility Rules
 
----
-
-### `testimonials` Schema (Key Fields)
-```typescript
-{
-  clientId: string; // Relation to client record
-  language: 'en' | 'he';
-  author: string;
-  role: string;
-  quote: string;
-  result: string;
-  imageUrl?: string;
-  label?: string; // Optional overlay label (e.g. "TAX4US")
-  order: number;
-  isActive: boolean;
-}
-```
-
----
-
-## Template Visibility Rules (NEW)
-
-Each template now has visibility flags:
+Each template has visibility flags:
 ```typescript
 showInMarketplace: boolean;      // Public marketplace
-showInAdminDashboard: boolean;   // Admin /control panel
+showInAdminDashboard: boolean;   // Admin control panel
 showInClientDashboard: boolean;  // Client's dashboard
 ```
 
 Plus ownership tracking:
 ```typescript
 owner: 'rensto' | 'client';
-clientId?: string;  // if client-owned
+clientId?: string;
 department: 'lead_machine' | 'autonomous_secretary' | 'knowledge_engine' | 'content_engine' | 'internal_ops' | 'client_fulfillment';
 ```
 
 ---
 
-## Custom Solutions
+## Legacy Collections (Firestore - Retired)
 
-| Collection | Purpose |
+These were the original Firestore collections. Data has been migrated to PostgreSQL.
+
+| Collection | Migrated To |
 | :--- | :--- |
-| `customSolutionsClients` | Clients who purchased custom/managed services |
-| `consultations` | Discovery call records |
-| `proposals` | Generated proposal documents |
-| `requirements` | Client requirements from intake |
-| `customizationRequests` | Requests for template modifications |
+| `users` | `User` model |
+| `clients` | Merged into `User` |
+| `customSolutionsClients` | Merged into `User` |
+| `templates` | `Template` model |
+| `payments` | `Payment` model |
+| `purchases` | `Purchase` model |
+| `service_instances` | `ServiceInstance` model |
+| `subscriptions` | `Subscription` model |
+| `leads` | `Lead` model |
+| `magicLinkTokens` | `MagicLinkToken` model |
 
 ---
 
-## Audit & Analytics
-
-| Collection | Purpose |
-| :--- | :--- |
-| `audits` | System audit logs (ServiceAuditAgent) |
-| `analytics` | Page/feature analytics |
-| `usage_logs` | API usage tracking |
-| `optimizer_audits` | CRO/optimizer audit results |
-| `scorecards` | Client automation scorecards |
-
----
-
-## Support & Downloads
-
-| Collection | Purpose |
-| :--- | :--- |
-| `supportCases` | Customer support tickets |
-| `downloads` | Download link tracking |
-| `testimonials` | Client testimonials |
-| `service_manifests` | Service configuration manifests |
-
----
-
-## Auth
-
-| Collection | Purpose |
-| :--- | :--- |
-| `magicLinkTokens` | Passwordless auth tokens |
-
----
-
-## Schema Notes
-
-- **Timestamps**: All records use `firebase-admin/firestore.Timestamp`
-- **IDs**: Auto-generated by Firestore unless specified
-- **Indexes**: Custom indexes in `firestore.indexes.json`
+**Canonical schema**: `apps/web/rensto-site/prisma/schema.prisma`

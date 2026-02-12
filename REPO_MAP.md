@@ -25,12 +25,11 @@ All pages are Next.js on Vercel. Webflow is retired.
 | Admin dashboard | `apps/web/rensto-site/src/app/admin/` |
 | API routes | `apps/web/rensto-site/src/app/api/` |
 | Components | `apps/web/rensto-site/src/components/` |
-| Libs (Firebase, services, etc.) | `apps/web/rensto-site/src/lib/` |
+| Libs (Prisma, services, etc.) | `apps/web/rensto-site/src/lib/` |
+| Database schema | `apps/web/rensto-site/prisma/schema.prisma` |
 | MCP servers | `infra/mcp-servers/` |
 | n8n workflow scripts | `infra/n8n-scripts/` |
 | Workflow JSONs (canonical) | `infra/` (unified_marketplace_master_production.json) |
-| Archived workflows | `infra/archive/workflow-variants/` |
-| Firestore documentation | `firestore/` (legacy; PostgreSQL is primary database - migration completed Feb 2026) |
 | Legal pages (static) | `legal-pages/` |
 | Marketplace platform config | `platforms/marketplace/` |
 | Rules for agents | `.cursor/`, `.cursorrules` |
@@ -44,12 +43,13 @@ All pages are Next.js on Vercel. Webflow is retired.
 - **apps/gateway-worker** — Deleted
 - **apps/marketplace** — Deleted (marketplace is in rensto-site)
 - **apps/web/admin-dashboard** — Deleted (admin is in rensto-site)
+- **firestore/** — Deleted (migration to PostgreSQL complete Feb 2026)
 
 ---
 
 ## Current Stack
 
-- **Database (primary)**: PostgreSQL + Redis. Firestore migration completed Feb 2026.
+- **Database (primary)**: PostgreSQL + Redis (on RackNerd). Migration from Firestore complete Feb 2026.
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Methodology**: B.L.A.S.T. (Blueprint, Link, Architect, Stylize, Trigger)
 - **Retired**: Webflow, BMAD, Firestore, Airtable.com. **Aitable.ai**: In use (dashboards, syncs)
@@ -58,7 +58,8 @@ All pages are Next.js on Vercel. Webflow is retired.
 
 ## Where to Read More
 
-- **CLAUDE.md** — Single source of truth
+- **brain.md** — Mission Control (read first)
+- **CLAUDE.md** — Full technical context
 - **ARCHITECTURE.md** — Folder map
-- **CODEBASE_CONSISTENCY_MASTER_PLAN.md** — Consistency and migration plan
 - **.cursor/AGENT_CONTEXT.md** — Business priorities
+- **docs/NOTEBOOKLM_INDEX.md** — NotebookLM notebook registry
