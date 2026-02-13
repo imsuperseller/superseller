@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
@@ -19,17 +18,13 @@ export async function GET(req: NextRequest) {
         let grossMRR = 0;
 
         try {
-            const result = await prisma.subscription.aggregate({
+            const agg = await prisma.subscription.aggregate({
                 _sum: { amount: true },
                 where: { status: 'active' },
             });
-            grossMRR = result._sum.amount || 0;
-        } catch (pgError) {
-            // Fallback: Firestore
-            console.info('[Migration] admin/financials: Postgres fail, falling back to Firestore');
-            const db = getFirestoreAdmin();
-            const subsSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS).get();
-            grossMRR = subsSnap.docs.reduce((acc, doc) => acc + (doc.data().amount || 0), 0);
+            grossMRR = agg._sum.amount || 0;
+        } catch {
+            grossMRR = 0;
         }
 
         const platformExpenses = 1840;

@@ -99,3 +99,37 @@ npm audit --audit-level=high
 *   Webflow integration (Retired Feb 2026)
 *   BMAD Testing framework (Retired Feb 2026)
 *   Care Plan model (Moving to Self-Serving SaaS model)
+
+---
+
+## 7. Active Systems Reference
+
+### n8n
+- **URL**: https://n8n.rensto.com (172.245.56.50:5678)
+- **Role**: Backup/reference only. Antigravity is primary automation.
+- **Customer instances**: Tax4Us Cloud, Shelly Cloud
+- **Access**: MCP tools only. Direct API forbidden.
+
+### Airtable.com (Retired)
+Legacy reference. **Aitable.ai** used for dashboards. Base IDs archived: Operations app6saCaH88uK3kCO, Core app4nJpP1ytGukXQT, Client appQijHhqqP4z6wGe, Financial app6yzlm67lRNuQZD.
+
+### Notion
+- 3 databases: Business References, Customer Management, Project Tracking
+- Syncs with legacy Airtable. Notion is source of truth for newer data.
+
+### Boost.space
+- URL: https://superseller.boost.space
+- Spaces: 39 (MCP), 41 (References), 45 (n8n Workflows)
+- Cost: $0 (lifetime plan)
+
+### MCP Servers (12 active)
+n8n MCP, Context7, Airtable, Notion, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Code Forms. QuickBooks disabled.
+
+### Quick Reference URLs
+| Service | URL |
+|---------|-----|
+| n8n Rensto | http://n8n.rensto.com |
+| Admin | https://admin.rensto.com |
+| Vercel | https://vercel.com/dashboard |
+
+**Key files**: `apps/worker/PIPELINE_SPEC.md`, `apps/web/rensto-site/prisma/schema.prisma`, `apps/worker-packages/db/src/schema.ts`

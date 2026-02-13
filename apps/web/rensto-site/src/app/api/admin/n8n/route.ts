@@ -9,9 +9,9 @@ async function sshExec(command: string) {
     const { exec } = require('child_process');
     const execAsync = promisify(exec);
 
-    // Using verified credentials
-    const sshPass = 'y0JEu4uI0hAQ606Mfr';
-    const serverIp = '172.245.56.50';
+    const sshPass = process.env.VPS_PASSWORD || process.env.RACKNERD_SSH_PASSWORD;
+    if (!sshPass) throw new Error('VPS_PASSWORD or RACKNERD_SSH_PASSWORD required for SSH');
+    const serverIp = process.env.RACKNERD_IP || '172.245.56.50';
     const sshpassPath = '/opt/homebrew/bin/sshpass';
 
     try {
@@ -124,10 +124,9 @@ export async function POST(req: NextRequest) {
 
             sendUpdate('info', `🚀 Starting remote upgrade to v${targetVersion}...`);
 
-            // Use the verified sshpass + ssh command
-            // Note: In production, these should be env variables
-            const sshPass = 'y0JEu4uI0hAQ606Mfr';
-            const serverIp = '172.245.56.50';
+            const sshPass = process.env.VPS_PASSWORD || process.env.RACKNERD_SSH_PASSWORD;
+            if (!sshPass) throw new Error('VPS_PASSWORD or RACKNERD_SSH_PASSWORD required');
+            const serverIp = process.env.RACKNERD_IP || '172.245.56.50';
             const sshpassPath = '/opt/homebrew/bin/sshpass';
 
             const child = spawn(sshpassPath, [

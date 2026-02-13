@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
@@ -28,44 +26,42 @@ export async function POST(request: NextRequest) {
         let clientName = '';
         let role = 'client';
 
-        // 1. Check if Admin
+        // 1. Check if Admin - use admin user record (Postgres)
         if (ADMIN_EMAILS.includes(normalizedEmail)) {
-            clientId = 'admin';
+            const adminUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+            if (adminUser) {
+                clientId = adminUser.id;
+            } else {
+                const created = await prisma.user.create({
+                    data: {
+                        email: normalizedEmail,
+                        name: 'Admin',
+                        status: 'active',
+                        emailVerified: new Date(),
+                        dashboardToken: crypto.randomUUID(),
+                    },
+                });
+                clientId = created.id;
+            }
             clientName = 'Admin';
             role = 'admin';
         } else {
             const pgUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+            const csc = await prisma.customSolutionsClient.findFirst({ where: { email: normalizedEmail } });
 
             if (pgUser) {
                 clientId = pgUser.id;
                 clientName = pgUser.name || 'Client';
+            } else if (csc) {
+                clientId = csc.id;
+                clientName = csc.name || 'Client';
             } else {
-                // Fallback: Firestore (CustomSolutionsClients)
-                const db = getFirestoreAdmin();
-                const clientsRef = db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS);
-                const querySnapshot = await clientsRef.where('email', '==', normalizedEmail).limit(1).get();
-
-                if (querySnapshot.empty) {
-                    // Also try Users collection in Firestore
-                    const usersRef = db.collection(COLLECTIONS.USERS);
-                    const userSnap = await usersRef.where('email', '==', normalizedEmail).limit(1).get();
-
-                    if (userSnap.empty) {
-                        console.log(`Login attempt for unknown email: ${normalizedEmail}`);
-                        return NextResponse.json({
-                            success: true,
-                            message: 'If your email is registered, you will receive a magic link.',
-                            debug: process.env.NODE_ENV === 'development' ? 'Email not found in database' : undefined
-                        });
-                    }
-                    const doc = userSnap.docs[0];
-                    clientId = doc.id;
-                    clientName = doc.data().name || 'Client';
-                } else {
-                    const doc = querySnapshot.docs[0];
-                    clientId = doc.id;
-                    clientName = doc.data().name || 'Client';
-                }
+                console.log(`Login attempt for unknown email: ${normalizedEmail}`);
+                return NextResponse.json({
+                    success: true,
+                    message: 'If your email is registered, you will receive a magic link.',
+                    debug: process.env.NODE_ENV === 'development' ? 'Email not found in database' : undefined,
+                });
             }
         }
 

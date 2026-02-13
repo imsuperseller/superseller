@@ -1,20 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { Outfit } from 'next/font/google';
 import './globals.css';
-import Providers from '@/components/Providers';
-import { RouteAwareLayout } from '@/components/RouteAwareLayout';
-import { StickyMobileCTA } from '@/components/StickyMobileCTA';
-import { CTAPopup } from '@/components/CTAPopup';
-import { SupportWidget } from '@/components/SupportWidget';
-import { WhatsAppButton } from '@/components/WhatsAppButton';
-import { GTMProvider } from '@/components/analytics/GTMProvider';
-import { Schema, organizationSchema, websiteSchema, localBusinessSchema } from '@/components/seo/Schema';
 
 const outfit = Outfit({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-outfit',
-  display: 'swap',
+  display: 'optional', // Prevents font-load reflow flash (swap causes visible jump)
 });
 
 export const metadata: Metadata = {
@@ -97,20 +89,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`}>
-      <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif' }}>
-        <GTMProvider>
-          <Providers>
-            <RouteAwareLayout>
-              <Schema type="Organization" data={organizationSchema} />
-              <Schema type="WebSite" data={websiteSchema} />
-              <Schema type="LocalBusiness" data={localBusinessSchema} />
-              {children}
-              <StickyMobileCTA />
-              <WhatsAppButton />
-            </RouteAwareLayout>
-          </Providers>
-        </GTMProvider>
+    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#110d28' }}>
+      <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif', backgroundColor: '#110d28' }}>
+        {children}
       </body>
     </html>
   );

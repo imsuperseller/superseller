@@ -11,7 +11,7 @@
 > - Do NOT create fal.ts, FAL_KEY, or @fal-ai/client
 > - Do NOT use Veo for video clips
 > - Pipeline: Nano Banana Pro → scene images with realtor → Kling 3.0 → video clips
-> - See `apps/worker/AGENT_SELF_AUDIT.md` for full audit
+> - See NotebookLM 0baf5f36 (Zillow-to-Video) for full audit
 > - **Ignore** all FAL and Veo 3.1 sections below — they are legacy
 
 ---

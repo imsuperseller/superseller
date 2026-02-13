@@ -39,6 +39,15 @@ VERCEL_TOKEN=your-vercel-token
 RENDER_API_KEY=your-render-api-key-here
 
 # ============================================
+# 🖥️ RACKNERD VPS (Admin n8n route SSH)
+# ============================================
+# Required for /api/admin/n8n (deep diagnostics, restart, upgrade)
+# Only needed if admin runs that route; Vercel may not have sshpass.
+VPS_PASSWORD=your-racknerd-root-password
+RACKNERD_SSH_PASSWORD=alternate-name-for-same
+RACKNERD_IP=172.245.56.50
+
+# ============================================
 # 📚 OPTIONAL (LightRag, etc.)
 # ============================================
 LIGHTRAG_WEBHOOK_URL=https://rensto-lightrag.onrender.com/webhook

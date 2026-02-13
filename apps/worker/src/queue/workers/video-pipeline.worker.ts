@@ -318,65 +318,29 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                 let result: { video: { url: string } } | null = null;
                 let modelUsed: string | null = null;
-                const { createVeoTask, createKlingTask, waitForTask } = await import("../../services/kie");
+                const { createKlingTask, waitForTask } = await import("../../services/kie");
                 const klingPrompt = includeRealtor
-                    ? `${clip.prompt} Seamless motion from start to end frame. Same person throughout. Lips closed, no speaking, silent walkthrough.`
+                    ? `${clip.prompt} Seamless motion from start to end frame. IDENTICAL person from reference image—same face, hair, skin. Do NOT generate a different person. Lips closed, no speaking, silent walkthrough.`
                     : clip.prompt;
 
-                const providers: Array<{ name: string; run: () => Promise<{ video: { url: string } }> }> = [
-                    {
-                        name: "kling-3.0/video",
-                        run: async () => {
-                            const taskId = await createKlingTask({
-                                prompt: klingPrompt,
-                                image_url: startFrame,
-                                ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
-                                negative_prompt: (clip as any).negative_prompt,
-                                mode: "pro",
-                                aspect_ratio: "16:9",
-                                model: "kling-3.0/video",
-                            });
+                // Kling 3.0 ONLY. No Veo fallback. Per PIPELINE_SPEC, NotebookLM 0baf5f36: Veo caused quality/plastic issues.
+                const taskId = await createKlingTask({
+                    prompt: klingPrompt,
+                    image_url: startFrame,
+                    ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
+                    negative_prompt: (clip as any).negative_prompt,
+                    mode: "pro",
+                    aspect_ratio: "16:9",
+                    model: "kling-3.0/video",
+                });
 
-                            // Deduct for Kling clip
-                            await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
-
-                            await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
-                            const status = await waitForTask(taskId, "kling");
-                            if (!status.result?.video_url) throw new Error("Kling 3 completed but no video URL");
-                            return { video: { url: status.result.video_url } };
-                        },
-                    },
-                    {
-                        name: "veo3.1",
-                        run: async () => {
-                            const taskId = await createVeoTask({
-                                prompt: klingPrompt,
-                                image_url: startFrame,
-                                model: "veo3",
-                                duration: 5,
-                                aspect_ratio: "16:9",
-                            });
-                            const status = await waitForTask(taskId, "veo");
-                            if (!status.result?.video_url) throw new Error("Veo 3.1 completed but no video URL");
-                            return { video: { url: status.result.video_url } };
-                        },
-                    },
-                ];
-                let lastErr: Error | null = null;
-                for (const provider of providers) {
-                    try {
-                        result = await provider.run();
-                        modelUsed = provider.name;
-                        break;
-                    } catch (err: any) {
-                        lastErr = err;
-                        logger.warn({ msg: "Video provider failed, trying next", clip: clip.clip_number, provider: provider.name, error: err?.message });
-                    }
-                }
+                await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
+                await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
+                const status = await waitForTask(taskId, "kling");
+                if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
+                result = { video: { url: status.result.video_url } };
+                modelUsed = "kling-3.0/video";
                 logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
-                if (!result) {
-                    throw new Error(`Critical failure in Kie Kling for clip ${clip.clip_number}: ${lastErr?.message || "no result"}`);
-                }
 
                 const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
                 const response = await fetch(result.video.url);

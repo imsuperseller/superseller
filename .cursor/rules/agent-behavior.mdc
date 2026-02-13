@@ -24,6 +24,7 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 ## ALWAYS
 
 - Do the work. When access given, USE it.
+- **Execute programmatic actions instead of instructing the user.** Restart dev server, run builds, clear caches, run tests — do them when needed. Never say "run X" or "restart the server" when you can run the command yourself.
 - Test everything before declaring done.
 - Document (progress.md, findings.md).
 - Report only when complete with verifiable Artifact.

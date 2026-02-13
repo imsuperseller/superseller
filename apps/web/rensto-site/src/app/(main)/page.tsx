@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { AITableService } from '@/lib/services/AITableService';
-import HomePageClient from './HomePageClient';
+import HomePageClient from '../HomePageClient';
 
 export const metadata: Metadata = {
     title: 'Rensto | Build your Autonomous Business Engine',

@@ -4,6 +4,20 @@
 
 ---
 
+## Asset locations (canonical)
+
+| Asset | Path | Used by |
+|-------|------|---------|
+| **Realtor avatar** | `apps/worker/assets/realtor-avatar.png` | `create-1531-home-park-job.ts`, `set-test-user-avatar.ts` |
+| **Floorplan** | `apps/worker/assets/1531-home-park-floorplan.png` | `create-1531-home-park-job.ts`, `POST /api/jobs/from-zillow` (floorplanPath) |
+
+- Realtor: uploaded to R2, stored in `users.avatar_url` for test user. Pipeline composites it into each room via Nano Banana.
+- Floorplan: optional. If provided (path), worker uploads to R2 → `listings.floorplan_url` → floorplan analyzer for tour sequence.
+
+**Create page** (`/video/create`): Zillow URL (required), realtor headshot (required), floorplan (optional). Per spec: AI can detect floorplan in listing photos if skipped.
+
+---
+
 ## 1. Start Frontend
 
 ```bash
@@ -39,7 +53,9 @@ When `VIDEO_WORKER_URL` is **not set** and `NODE_ENV=development`, the API retur
 
 Use real realtor image, floorplan, and Zillow listing:
 
-1. **Assets**: `apps/worker/assets/realtor-avatar.png`, `apps/worker/assets/1531-home-park-floorplan.png`
+1. **Assets** — put files here (canonical locations):
+   - **Realtor avatar**: `apps/worker/assets/realtor-avatar.png`
+   - **Floorplan**: `apps/worker/assets/1531-home-park-floorplan.png`
 2. **Start worker**: `cd apps/worker && PORT=3001 npx tsx src/index.ts`
 3. **Start rensto-site**: `VIDEO_WORKER_URL=http://localhost:3001 pnpm dev`
 4. **Create job**: `cd apps/worker && WORKER_URL=http://localhost:3001 npx tsx tools/create-1531-home-park-job.ts`

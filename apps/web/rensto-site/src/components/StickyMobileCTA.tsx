@@ -21,8 +21,9 @@ export function StickyMobileCTA() {
     const isAppRoute = pathname?.startsWith('/app');
     const isPortalRoute = pathname?.startsWith('/portal');
     const isLoginRoute = pathname === '/login';
+    const isVideoRoute = pathname?.startsWith('/video');
 
-    const isHiddenRoute = isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isLoginRoute;
+    const isHiddenRoute = isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isLoginRoute || isVideoRoute;
 
     useEffect(() => {
         const handleScroll = () => {

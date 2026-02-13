@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS, type MagicLinkToken } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth';
+
+const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
 
 export async function GET(request: NextRequest) {
     try {
@@ -12,93 +12,38 @@ export async function GET(request: NextRequest) {
         if (!token) {
             return NextResponse.redirect(new URL('/auth/error?reason=missing_token', request.url));
         }
-        let tokenData: {
-            id: string;
-            email: string;
-            clientId: string;
-            used: boolean;
-            expiresAt: Date;
-            redirectTo?: string;
-            role?: string;
-        } | null = null;
-        let tokenSource: 'postgres' | 'firestore' = 'postgres';
-
         const pgToken = await prisma.magicLinkToken.findUnique({ where: { id: token } });
 
-        if (pgToken) {
-            tokenData = {
-                id: pgToken.id,
-                email: pgToken.email,
-                clientId: pgToken.clientId,
-                used: pgToken.used,
-                expiresAt: pgToken.expiresAt,
-            };
-        } else {
-            // Fallback: Firestore
-            tokenSource = 'firestore';
-            const db = getFirestoreAdmin();
-            const tokenRef = db.collection(COLLECTIONS.MAGIC_LINK_TOKENS).doc(token);
-            const tokenDoc = await tokenRef.get();
-
-            if (!tokenDoc.exists) {
-                return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
-            }
-
-            const fsData = tokenDoc.data() as MagicLinkToken & { redirectTo?: string; role?: string };
-            tokenData = {
-                id: token,
-                email: fsData.email,
-                clientId: fsData.clientId,
-                used: fsData.used,
-                expiresAt: new Date(fsData.expiresAt.toMillis()),
-                redirectTo: fsData.redirectTo,
-                role: fsData.role,
-            };
-            console.info('[Migration] Token read from Firestore fallback');
-        }
-
-        // Check if token was already used
-        if (tokenData.used) {
+        if (!pgToken) {
             return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
         }
 
-        // Check expiration
-        if (tokenData.expiresAt.getTime() < Date.now()) {
-            // Delete expired token from both stores
+        if (pgToken.used) {
+            return NextResponse.redirect(new URL('/auth/error?reason=invalid_token', request.url));
+        }
+
+        if (pgToken.expiresAt.getTime() < Date.now()) {
             await prisma.magicLinkToken.delete({ where: { id: token } }).catch(() => {});
             return NextResponse.redirect(new URL('/auth/error?reason=expired_token', request.url));
         }
 
-        // Token is valid — mark as used in Postgres (primary)
         await prisma.magicLinkToken.update({ where: { id: token }, data: { used: true } });
 
-        // Update client's last login
-        if (tokenData.clientId !== 'admin') {
-            await prisma.user.update({
-                where: { id: tokenData.clientId },
-                data: { lastLoginAt: new Date() },
-            }).catch(() => {});
+        await prisma.user.update({
+            where: { id: pgToken.clientId },
+            data: { lastLoginAt: new Date() },
+        }).catch(() => {});
 
-        }
-
-        // Create session data
         const sessionData = {
-            email: tokenData.email,
-            clientId: tokenData.clientId,
-            authenticatedAt: Date.now()
+            email: pgToken.email,
+            clientId: pgToken.clientId,
+            authenticatedAt: Date.now(),
         };
 
-        // Encode session data
         const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString('base64');
 
-        // Determine Redirect URL
-        let destination = `/dashboard/${tokenData.clientId}`;
-
-        if (tokenData.redirectTo) {
-            destination = tokenData.redirectTo;
-        } else if (tokenData.clientId === 'admin') {
-            destination = '/admin';
-        }
+        const isAdmin = ADMIN_EMAILS.includes(pgToken.email.toLowerCase());
+        const destination = isAdmin ? '/admin' : `/dashboard/${pgToken.clientId}`;
 
         // Set auth cookie and redirect to dashboard
         const response = NextResponse.redirect(

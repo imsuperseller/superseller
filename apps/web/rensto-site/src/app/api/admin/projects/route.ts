@@ -1,18 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        let allProjects: any[] = [];
-
-        try {
-            const [serviceInstances, whatsappInstances] = await Promise.all([
+        const [serviceInstances, whatsappInstances] = await Promise.all([
                 prisma.serviceInstance.findMany({ orderBy: { createdAt: 'desc' } }),
                 prisma.whatsAppInstance.findMany({ orderBy: { createdAt: 'desc' } }),
-            ]);
+        ]);
 
-            allProjects = [
+        const allProjects = [
                 ...serviceInstances.map(s => ({
                     id: s.id,
                     name: s.productName || 'Unnamed Engine',
@@ -31,59 +27,9 @@ export async function GET() {
                     dueDate: w.createdAt ? w.createdAt.toISOString().split('T')[0] : 'No Date',
                     pillar: 'WhatsApp',
                 })),
-            ];
+        ];
 
-            if (allProjects.length > 0) {
-                return NextResponse.json({ success: true, projects: allProjects });
-            }
-            throw new Error('No projects in Postgres');
-        } catch (pgError) {
-            // Fallback: Firestore
-            console.info('[Migration] admin/projects: Postgres fail, falling back to Firestore');
-            const db = getFirestoreAdmin();
-
-            const [serviceInstancesSnap, whatsappInstancesSnap, legacySnap] = await Promise.all([
-                db.collection(COLLECTIONS.SERVICE_INSTANCES).get(),
-                db.collection(COLLECTIONS.WHATSAPP_INSTANCES).get(),
-                db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).get(),
-            ]);
-
-            const serviceInstances = serviceInstancesSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Builder' }));
-            const whatsappInstances = whatsappInstancesSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Bundle' }));
-            const legacyProjects = legacySnap.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Custom' }));
-
-            allProjects = [
-                ...serviceInstances.map((s: any) => ({
-                    id: s.id,
-                    name: s.productName || 'Unnamed Engine',
-                    clientName: s.clientEmail || 'Unknown Client',
-                    status: mapStatus(s.status),
-                    progress: calculateProgress(s.status),
-                    dueDate: formatDate(s.createdAt),
-                    pillar: 'Marketplace',
-                })),
-                ...whatsappInstances.map((w: any) => ({
-                    id: w.id,
-                    name: w.bundle === 'full_ai_sales_rep' ? 'Sales AI Rep' : 'WhatsApp Agent',
-                    clientName: w.userEmail || 'Unknown Client',
-                    status: mapStatus(w.status),
-                    progress: calculateProgress(w.status),
-                    dueDate: formatDate(w.createdAt),
-                    pillar: 'WhatsApp',
-                })),
-                ...legacyProjects.map((l: any) => ({
-                    id: l.id,
-                    name: 'Custom Implementation',
-                    clientName: l.name || l.email,
-                    status: mapStatus(l.status),
-                    progress: calculateProgress(l.status),
-                    dueDate: formatDate(l.createdAt),
-                    pillar: l.type,
-                })),
-            ];
-
-            return NextResponse.json({ success: true, projects: allProjects });
-        }
+        return NextResponse.json({ success: true, projects: allProjects });
     } catch (error: any) {
         console.error('Failed to fetch admin projects:', error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

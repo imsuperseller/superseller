@@ -3,15 +3,17 @@
  * Kie.ai can only fetch from public URLs; Clerk/Facebook CDNs often fail.
  *
  * Usage: npx tsx tools/set-test-user-avatar.ts [imagePath] [userId]
- * Defaults: asset path from workspace, test user from ensure-test-user
+ * Default: apps/worker/assets/realtor-avatar.png (run from apps/worker)
+ * Override: AVATAR_IMAGE_PATH env or first arg
  */
 import "dotenv/config";
 import { existsSync } from "fs";
+import { join } from "path";
 import { uploadToR2 } from "../src/services/r2";
 import { queryOne, query } from "../src/db/client";
 
 const DEFAULT_IMAGE = process.env.AVATAR_IMAGE_PATH ||
-    "/Users/shaifriedman/.cursor/projects/Users-shaifriedman-New-Rensto-rensto/assets/474447580_10162710146543846_2609663045130967931_n-removebg-preview-41e2f061-0af1-456b-b95b-1112ac40ac6e.png";
+    join(process.cwd(), "assets/realtor-avatar.png");
 
 async function main() {
     const imagePath = process.argv[2] || DEFAULT_IMAGE;

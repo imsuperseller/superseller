@@ -53,7 +53,7 @@ function StatusBadge({ status }: { status: string }) {
     );
 }
 
-function ProgressBar({ step, progress }: { step: string; progress: number }) {
+function ProgressBar({ step, progress, isFailed }: { step: string; progress: number; isFailed?: boolean }) {
     const steps = [
         { id: "analyzing", label: "Analysis" },
         { id: "generating_prompts", label: "Scripting" },
@@ -70,11 +70,12 @@ function ProgressBar({ step, progress }: { step: string; progress: number }) {
                 {steps.map((s, idx) => (
                     <div key={s.id} className={cn("flex flex-col items-center gap-2", idx <= currentIdx ? "text-white" : "text-gray-600")}>
                         <div className={cn("w-8 h-8 rounded-full flex items-center justify-center border transition-all",
-                            idx < currentIdx ? "bg-green-500/20 border-green-500 text-green-500" :
-                                idx === currentIdx ? "bg-blue-500/20 border-blue-500 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" :
-                                    "bg-gray-800 border-gray-700"
+                            isFailed && idx === currentIdx ? "bg-red-500/20 border-red-500 text-red-500" :
+                                idx < currentIdx ? "bg-green-500/20 border-green-500 text-green-500" :
+                                    idx === currentIdx ? "bg-blue-500/20 border-blue-500 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" :
+                                        "bg-gray-800 border-gray-700"
                         )}>
-                            {idx < currentIdx ? <CheckCircle2 size={16} /> : idx === currentIdx ? <Loader2 className="animate-spin" size={16} /> : <Circle size={16} />}
+                            {idx < currentIdx ? <CheckCircle2 size={16} /> : idx === currentIdx && isFailed ? <AlertCircle size={16} /> : idx === currentIdx ? <Loader2 className="animate-spin" size={16} /> : <Circle size={16} />}
                         </div>
                         <span className="text-xs font-medium tracking-wide">{s.label}</span>
                     </div>
@@ -210,7 +211,7 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
 
                 {/* Progress Bar */}
                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm">
-                    <ProgressBar step={job.current_step || "analyzing"} progress={job.progress_percent || 0} />
+                    <ProgressBar step={job.current_step || "analyzing"} progress={job.progress_percent || 0} isFailed={job.status === "failed"} />
                     <div className="mt-4 flex justify-between text-xs text-gray-500 font-mono">
                         <span>JOB ID: {job.id?.slice(0, 8) || "LOADING"}</span>
                         <span>MODEL: KLING_3.0</span>

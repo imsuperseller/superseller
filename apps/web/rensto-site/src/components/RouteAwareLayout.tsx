@@ -13,18 +13,14 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Don't render global header/footer until mounted
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
-  // Don't render header on dashboard routes, admin routes, app routes, portal routes, or customer portals
+  // Skip routes: return immediately, no mounted delay (avoids re-render flash)
   const isDashboardRoute = pathname?.startsWith('/ortal-dashboard') || pathname?.startsWith('/workflow-dashboard') || pathname?.startsWith('/dashboard');
   const isAdminRoute = pathname?.startsWith('/admin');
   const isAppRoute = pathname?.startsWith('/app');
   const isPortalRoute = pathname?.startsWith('/portal');
   const isCustomerPortalRoute = pathname?.startsWith('/ortal') || pathname?.startsWith('/portal-') || pathname?.startsWith('/portal/');
   const isProductRoute = pathname?.startsWith('/products/');
+  const isVideoRoute = pathname?.startsWith('/video');
 
   // Main service pages and custom landing pages have their own headers
   const isServicePage =
@@ -52,8 +48,15 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   // Custom Offer and Onboarding pages manage their own layout
   const isCustomLanding = pathname?.startsWith('/offer') || pathname?.startsWith('/onboarding');
 
-  // Skip global layout for dashboard, admin, app, portal, customer portal, service pages, and custom landing pages
-  if (isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isCustomerPortalRoute || isServicePage || isCustomLanding || isProductRoute) {
+  const isSkipRoute = isDashboardRoute || isAdminRoute || isAppRoute || isPortalRoute || isCustomerPortalRoute || isServicePage || isCustomLanding || isProductRoute || isVideoRoute;
+
+  // Skip routes: no header/footer, return immediately (avoids mounted transition flash)
+  if (isSkipRoute) {
+    return <>{children}</>;
+  }
+
+  // Routes that need header/footer: wait for mounted to avoid hydration issues
+  if (!mounted) {
     return <>{children}</>;
   }
 

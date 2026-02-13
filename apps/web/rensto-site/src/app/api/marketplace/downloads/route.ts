@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
-import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbPayments from '@/lib/db/payments';
 /**
@@ -30,18 +28,10 @@ export async function POST(request: NextRequest) {
         if (pgTemplate) {
             templateName = pgTemplate.name;
         } else {
-            // Fallback: Firestore
-            console.info('[Migration] marketplace/downloads: Template not in Postgres');
-            const db = getFirestoreAdmin();
-            const templateRef = db.collection(COLLECTIONS.TEMPLATES).doc(templateId);
-            const templateDoc = await templateRef.get();
-            if (!templateDoc.exists) {
-                return NextResponse.json(
-                    { success: false, error: 'Template not found' },
-                    { status: 404 }
-                );
-            }
-            templateName = templateDoc.data()?.name || templateName;
+            return NextResponse.json(
+                { success: false, error: 'Template not found' },
+                { status: 404 }
+            );
         }
 
         // Create secure download token

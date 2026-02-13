@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -44,25 +43,8 @@ export async function GET(request: NextRequest) {
         showInMarketplace: t.showInMarketplace,
         createdAt: t.createdAt,
       }));
-
-      if (templates.length === 0) throw new Error('No templates in Postgres, try Firestore');
     } catch (pgError) {
-      // Fallback: Firestore
-      console.info('[Migration] marketplace/templates: Postgres miss, falling back to Firestore');
-      const db = getFirestoreAdmin();
-      let query: any = db.collection(COLLECTIONS.TEMPLATES);
-      if (category && category !== 'all') query = query.where('category', '==', category);
-      if (!includeDrafts) query = query.where('readinessStatus', '==', 'Active');
-
-      const snapshot = await query.get();
-      templates = snapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data(),
-        downloadPrice: doc.data().price || doc.data().downloadPrice || 97,
-        price: doc.data().price || doc.data().downloadPrice || 97,
-        rating: doc.data().rating || 0,
-        downloads: doc.data().downloads || 0,
-      }));
+      templates = [];
     }
 
     // Filter out internal/client-specific templates from public view

@@ -2,6 +2,21 @@ import { geminiChatCompletion as chatCompletion } from "./gemini";
 import { TourRoom, ClipPrompt } from "../types";
 import { logger } from "../utils/logger";
 
+/** Infer room type key from room name for ROOM_NEGATIVE_ADDITIONS lookup. */
+function inferRoomType(roomName: string): string {
+    const lower = roomName.toLowerCase();
+    if (lower.includes("kitchen")) return "kitchen";
+    if (lower.includes("master bath") || lower.includes("primary bath") || lower.includes("en-suite")) return "master_bathroom";
+    if (lower.includes("bath") || lower.includes("powder")) return "bathroom";
+    if (lower.includes("master bed") || lower.includes("primary bed") || lower.includes("primary suite")) return "master_bedroom";
+    if (lower.includes("bed")) return "bedroom";
+    if (lower.includes("pool")) return "pool";
+    if (lower.includes("backyard") || lower.includes("patio") || lower.includes("deck") || lower.includes("garden")) return "backyard";
+    if (lower.includes("outdoor") || lower.includes("exterior") || lower.includes("balcony") || lower.includes("terrace")) return "outdoor";
+    if (lower.includes("garage") || lower.includes("carport")) return "garage";
+    return "";
+}
+
 // ═══════════════════════════════════════════
 // CINEMATIC LOOKUP TABLES (THE BIBLE)
 // ═══════════════════════════════════════════
@@ -109,6 +124,58 @@ export const STYLE_MODIFIERS: Record<string, any> = {
         material_emphasis: "marble slabs, brushed gold fixtures, custom millwork, automated systems, designer lighting",
         mood: "opulent sophistication with cutting-edge design",
     },
+    "farmhouse": {
+        interior_palette: "warm white shiplap, natural wood tones, muted sage or dusty blue accents",
+        material_emphasis: "reclaimed wood, shiplap walls, apron-front sink, barn door hardware, open shelving",
+        mood: "rustic charm meets modern comfort",
+    },
+    "mediterranean": {
+        interior_palette: "warm terracotta, sandy beige, deep ocean blue, burnt sienna accents",
+        material_emphasis: "terracotta tile, wrought iron details, arched passages, stucco texture, hand-painted tile",
+        mood: "sun-drenched warmth with old-world character",
+    },
+    "mid_century_modern": {
+        interior_palette: "warm wood paneling, burnt orange, avocado green, mustard yellow, teak tones",
+        material_emphasis: "walnut paneling, terrazzo floors, butterfly roofline, floor-to-ceiling windows, organic shapes",
+        mood: "retro sophistication with warm organic flow",
+    },
+    "coastal": {
+        interior_palette: "bright white, sea glass blue, sandy beige, coral and driftwood accents",
+        material_emphasis: "whitewashed wood, natural linen, rattan, light-toned tile, jute rugs",
+        mood: "breezy and light with relaxed seaside elegance",
+    },
+    "luxury_contemporary": {
+        interior_palette: "rich charcoal, warm taupe, gold accents, cream marble",
+        material_emphasis: "marble slabs, brushed gold fixtures, custom millwork, automated systems, designer lighting",
+        mood: "opulent sophistication with cutting-edge design",
+    },
+    "colonial": {
+        interior_palette: "warm whites, dusty blue, colonial red, dark wood trim",
+        material_emphasis: "wide plank pine floors, built-in bookcases, brick fireplace, paneled doors, dentil molding",
+        mood: "dignified historical character with modern updates",
+    },
+    "generic": {
+        interior_palette: "neutral warm tones, light walls, medium-toned wood accents",
+        material_emphasis: "hardwood or tile floors, clean painted walls, standard fixtures with modern updates",
+        mood: "clean, bright, and welcoming",
+    },
+};
+
+// Aliases for compound style names from listing/floorplan data
+STYLE_MODIFIERS["modern farmhouse"] = STYLE_MODIFIERS["farmhouse"];
+STYLE_MODIFIERS["mid century modern"] = STYLE_MODIFIERS["mid_century_modern"];
+
+/** Room-specific negative prompt additions (from playbook). Appended to base negative per clip. */
+const ROOM_NEGATIVE_ADDITIONS: Record<string, string> = {
+    kitchen: "dirty dishes, messy counters, open cabinets, food, cooking, steam",
+    bathroom: "toilet seat up, dirty towels, soap scum, water stains, shower running",
+    master_bathroom: "toilet seat up, dirty towels, soap scum, water stains, shower running",
+    bedroom: "unmade bed, messy clothes, personal items scattered, alarm clock flashing",
+    master_bedroom: "unmade bed, messy clothes, personal items scattered, alarm clock flashing",
+    outdoor: "rain, cloudy sky, dead plants, brown lawn, trash, construction",
+    pool: "rain, cloudy sky, dead plants, brown lawn, trash, construction",
+    backyard: "rain, cloudy sky, dead plants, brown lawn, trash, construction",
+    garage: "oil stains, cluttered, messy tools, broken items",
 };
 
 export const REALTOR_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, morphing face, melting face, inconsistent facial features, multiple people, crowd, extra faces, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic, fashion show, runway walk, robotic walk, stiff movement, excessive smiling, posing, out of character, talking, speaking, mouth moving, lips moving, mouth open, speech";
@@ -169,8 +236,9 @@ export async function generateClipPrompts(
     }
 ): Promise<ClipPrompt[]> {
     const includeRealtor = propertyDetails.includeRealtor ?? true;
-    const styleKey = propertyDetails.style?.toLowerCase() || propertyDetails.architectural_style?.toLowerCase() || "modern";
-    const selectedStyle = STYLE_MODIFIERS[styleKey] || STYLE_MODIFIERS["modern"];
+    const rawStyle = propertyDetails.style?.toLowerCase() || propertyDetails.architectural_style?.toLowerCase() || "modern";
+    const styleKey = rawStyle.replace(/\s+/g, " ").trim();
+    const selectedStyle = STYLE_MODIFIERS[styleKey] || STYLE_MODIFIERS[styleKey.replace(/\s+/g, "_")] || STYLE_MODIFIERS["modern"];
     const systemPrompt = includeRealtor ? REALTOR_SYSTEM_PROMPT : LEGACY_SYSTEM_PROMPT;
     const baseNegative = includeRealtor ? REALTOR_NEGATIVE : UNIVERSAL_NEGATIVE;
 
@@ -223,18 +291,21 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
             const fromRoom = clip.from_room || tourSequence[index]?.from || "Exterior";
             const toRoom = clip.to_room || tourSequence[index]?.to || "Living Room";
             const prompt = (clip.prompt && String(clip.prompt).trim()) || `Cinematic forward dolly from ${fromRoom} into ${toRoom}. Natural light, professional real estate tour. Smooth tracking shot at eye level.`;
+            const roomType = inferRoomType(toRoom);
+            const roomAddition = roomType ? ROOM_NEGATIVE_ADDITIONS[roomType] : "";
+            const fullBaseNegative = roomAddition ? `${baseNegative}, ${roomAddition}` : baseNegative;
             return {
-            clip_number: clip.clip_number || index + 1,
-            from_room: fromRoom,
-            to_room: toRoom,
-            prompt,
-            start_frame_url: null,
-            end_frame_url: null,
-            duration_seconds: clip.duration_seconds || 5,
-            negative_prompt: clip.negative_prompt
-                ? `${clip.negative_prompt}, ${baseNegative}`
-                : baseNegative
-        };
+                clip_number: clip.clip_number || index + 1,
+                from_room: fromRoom,
+                to_room: toRoom,
+                prompt,
+                start_frame_url: null,
+                end_frame_url: null,
+                duration_seconds: clip.duration_seconds || 5,
+                negative_prompt: clip.negative_prompt
+                    ? `${clip.negative_prompt}, ${fullBaseNegative}`
+                    : fullBaseNegative
+            };
         });
     } catch (err: any) {
         logger.warn({ msg: "Prompt parse error", error: err?.message, contentPreview: content?.substring(0, 200) });

@@ -8,6 +8,9 @@
 - Airtable.com: Retired; Aitable.ai for dashboards. CLAUDE.md Section 3 updated.
 - Firestore: Fallback reads only (intentional). Postgres primary.
 
+**Trim complete (Feb 2026)**:
+- CLAUDE.md reduced to lean router (~3.7k chars, was 45k). Reference material moved to docs/INFRA_SSOT.md and docs/PRODUCT_BIBLE.md.
+
 ---
 
 ## 1. SCRIPTS DELETED ✅ (Obsolete per Architecture)

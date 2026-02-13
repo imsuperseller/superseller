@@ -1,8 +1,4 @@
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
-import { v4 as uuidv4 } from 'uuid';
 import registry from '../../configs/service-registry.json';
-import { User, ServiceInstance, Subscription } from '@/types/firestore';
 import { AITableService } from './AITableService';
 import * as dbUsers from '@/lib/db/users';
 import * as dbServices from '@/lib/db/services';
@@ -41,7 +37,6 @@ export class ProvisioningService {
         metadata: any;
         stripeSession?: any;
     }) {
-        const db = getFirestoreAdmin();
         const customerName = params.stripeSession?.customer_details?.name || params.metadata.customerName || 'Valued Client';
         const userId = await this.getOrCreateUser(params.email, customerName, params.stripeSession?.customer);
 

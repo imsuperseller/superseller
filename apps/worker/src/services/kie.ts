@@ -89,13 +89,20 @@ export async function generateClipKie(request: KieKlingRequest): Promise<{ video
 
 const SILENT_NEGATIVE = "talking, speaking, mouth moving, lips moving, mouth open, speech, lips talking, dialogue, words, vocal";
 
+/** When realtor composite is used: reject identity drift (different person in scene). */
+const IDENTITY_NEGATIVE = "different person, different face, wrong person, imposter, different realtor, altered facial features, morphing face";
+
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
     // Kling 3.0 Start & End Frames: image_urls[0]=start, image_urls[1]=end for continuity
     // NO kling_elements: Elements combines/blends multiple images → collage effect. Realtor already in Nano Banana composite.
     const imageUrls = request.last_frame
         ? [request.image_url, request.last_frame]
         : [request.image_url];
-    const negPrompt = [SILENT_NEGATIVE, request.negative_prompt].filter(Boolean).join(", ");
+    const negPrompt = [
+        SILENT_NEGATIVE,
+        request.last_frame ? IDENTITY_NEGATIVE : null, // When using start+end frames, enforce same person
+        request.negative_prompt,
+    ].filter(Boolean).join(", ");
     const input: Record<string, unknown> = {
         prompt: request.prompt,
         image_urls: imageUrls,

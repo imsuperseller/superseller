@@ -437,8 +437,10 @@ echo "✅ Configuration optimization completed!"
 echo ""
 echo "📤 DEPLOYING OPTIMIZED CONFIGURATIONS..."
 
-# Deploy optimized configurations to server
-sshpass -p "05ngBiq2pTA8XSF76x" scp -o StrictHostKeyChecking=no -r config root@172.245.56.50:/var/www/html/
+# Deploy optimized configurations to server (requires VPS_PASSWORD or SSHPASS env)
+DEPLOY_PASS="${VPS_PASSWORD:-$SSHPASS}"
+if [ -z "$DEPLOY_PASS" ]; then echo "Error: Set VPS_PASSWORD or SSHPASS for deploy"; exit 1; fi
+sshpass -p "$DEPLOY_PASS" scp -o StrictHostKeyChecking=no -r config root@172.245.56.50:/var/www/html/
 
 echo ""
 echo "🎉 PHASE 4-5: FILE CLEANUP & CONFIGURATION OPTIMIZATION COMPLETE!"

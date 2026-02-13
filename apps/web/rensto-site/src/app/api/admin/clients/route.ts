@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 async function checkAuth() {
@@ -22,17 +21,8 @@ export async function GET(req: NextRequest) {
         });
         return NextResponse.json({ clients });
     } catch (error) {
-        // Fallback: Firestore
-        console.warn('[Migration] admin/clients GET: Postgres failed, falling back to Firestore', error);
-        try {
-            const db = getFirestoreAdmin();
-            const usersSnap = await db.collection(COLLECTIONS.USERS).orderBy('email').get();
-            const clients = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            return NextResponse.json({ clients });
-        } catch (fsError) {
-            console.error('Error fetching clients:', fsError);
-            return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
-        }
+        console.error('Error fetching clients:', error);
+        return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
     }
 }
 

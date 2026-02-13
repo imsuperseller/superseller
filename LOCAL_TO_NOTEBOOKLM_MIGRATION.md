@@ -54,9 +54,9 @@
 - apps/worker/PIPELINE_SPEC.md
 - apps/worker/PIPELINE_MODEL_COMPLIANCE.md
 - apps/worker/TOURREEL_STATUS_AND_FIXES.md
-- apps/worker/AGENT_SELF_AUDIT.md (merge key points into 0baf5f36)
-- apps/worker/AGENT_HANDOFF.md
-- apps/worker/3-SCENE_VERIFICATION.md
+- apps/worker/AGENT_SELF_AUDIT.md ✓ (archived to infra/archive/worker-docs-in-notebooklm-2026-02/)
+- apps/worker/AGENT_HANDOFF.md ✓
+- apps/worker/3-SCENE_VERIFICATION.md ✓
 - AGENT_BEHAVIOR.md (→ 5811a372)
 - gemini.md (→ 5811a372)
 - apps/web/rensto-site/gemini.md

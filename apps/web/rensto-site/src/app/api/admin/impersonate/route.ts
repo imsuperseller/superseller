@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -25,24 +24,10 @@ export async function GET(request: NextRequest) {
         }
         let userData: { email: string; name: string | null; dashboardToken: string | null } | null = null;
 
-        const pgUser = await prisma.user.findUnique({
+        userData = await prisma.user.findUnique({
             where: { id: userId },
             select: { email: true, name: true, dashboardToken: true },
         });
-
-        if (pgUser) {
-            userData = pgUser;
-        } else {
-            // Fallback: Firestore
-            console.info('[Migration] admin/impersonate: Postgres miss, falling back to Firestore');
-            const db = getFirestoreAdmin();
-            const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
-            const userSnap = await userRef.get();
-            if (userSnap.exists) {
-                const d = userSnap.data()!;
-                userData = { email: d.email, name: d.name || null, dashboardToken: d.dashboardToken || null };
-            }
-        }
 
         if (!userData) {
             return NextResponse.json(

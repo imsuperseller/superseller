@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, getStorageAdmin } from '@/lib/firebase-admin';
+import { getStorageAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
 export async function POST(
@@ -9,24 +9,11 @@ export async function POST(
     const { id } = await params;
 
     try {
-        let onboardingData: any = null;
-        let source: 'postgres' | 'firestore' = 'postgres';
-
         const pgOnboarding = await dbAdmin.getOnboardingRequest(id);
-        if (pgOnboarding) {
-            onboardingData = pgOnboarding;
-        } else {
-            // Fallback: Firestore
-            console.info('[Migration] admin/onboarding/approve: Postgres miss, falling back to Firestore');
-            source = 'firestore';
-            const db = getFirestoreAdmin();
-            const doc = await db.collection('onboarding_requests').doc(id).get();
-            if (!doc.exists) {
-                return NextResponse.json({ error: 'Onboarding request not found' }, { status: 404 });
-            }
-            onboardingData = doc.data();
+        if (!pgOnboarding) {
+            return NextResponse.json({ error: 'Onboarding request not found' }, { status: 404 });
         }
-
+        const onboardingData = pgOnboarding as any;
         const clientId = onboardingData.createdByUid || onboardingData.userId || id;
 
         // 1. Create/update client record in Postgres
@@ -63,13 +50,10 @@ export async function POST(
             }
         }
 
-        // 3. Update onboarding request status
-        if (source === 'postgres') {
-            await dbAdmin.updateOnboardingRequest(id, {
-                status: 'approved',
-                approvedAt: new Date(),
-            });
-        }
+        await dbAdmin.updateOnboardingRequest(id, {
+            status: 'approved',
+            approvedAt: new Date(),
+        });
         return NextResponse.json({ success: true, message: 'Onboarding approved and client activated' });
 
     } catch (error: any) {

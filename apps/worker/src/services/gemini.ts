@@ -139,7 +139,7 @@ export async function pickBestApproachPhotoForOpening(urls: string[]): Promise<n
     const content: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
         {
             type: "text",
-            text: `You are analyzing photos of a house for a real estate video. The opening shot MUST show the FRONT of the house—the walkway/path leading to the front door.
+            text: `You are analyzing photos of a house for a real estate video. The opening shot MUST show the PATHWAY START—where a prospect arrives and the realtor begins the tour walking toward the front door.
 
 CRITICAL - REJECT these for the opening (choose a different image):
 - Pool, swimming pool, backyard, patio with pool, water—visible ANYWHERE in the frame (including edges, background, reflection)
@@ -147,7 +147,7 @@ CRITICAL - REJECT these for the opening (choose a different image):
 - Aerial/drone shot, shot from above
 - Any image where pool/water/backyard is visible—the pool is in the BACK of the house, NOT the front. If you see water or pool, that is the WRONG image.
 
-The opening must show: ground-level view of the front door area ONLY, walkway, or driveway approach. Where a visitor would stand when they first arrive. NO pool visible. NO backyard visible.
+ACCEPT: Ground-level view of the front door area, walkway, driveway approach, or pathway leading to the front entrance. Where a visitor would stand when they first arrive. Mimics a real tour that begins at the approach.
 When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the index (0, 1, 2, etc.)—no other text.`,
         },
         ...urls.slice(0, 5).map((url) => ({ type: "image_url" as const, image_url: { url } })),

@@ -1,6 +1,5 @@
-import { getFirestoreAdmin, COLLECTIONS } from '../firebase-admin';
 import { getStripeAdmin } from '../stripe';
-import { Timestamp } from 'firebase-admin/firestore';
+import prisma from '@/lib/prisma';
 
 export type ServiceType = 'firebase' | 'stripe' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'marketplace' | 'provisioning' | 'whatsapp' | 'other';
 
@@ -27,31 +26,26 @@ export class ServiceAuditAgent {
     }
 
     /**
-     * Log a service interaction to Firestore
+     * Log a service interaction to Postgres Audit table
      */
     async log(log: Partial<AuditLog>) {
         try {
-            const db = getFirestoreAdmin();
-            const logEntry: AuditLog = {
+            const logEntry = {
                 service: log.service || 'other',
                 action: log.action || 'unknown',
                 status: log.status || 'success',
-                details: log.details || {},
+                details: { ...(log.details || {}), ...(log.metadata || {}) },
                 errorMessage: log.errorMessage,
-                timestamp: Timestamp.now(),
-                metadata: log.metadata || {}
             };
 
-            await db.collection(COLLECTIONS.AUDITS).add(logEntry);
+            await prisma.audit.create({ data: logEntry });
 
-            // Console log for immediate visibility in Vercel/Local logs
             if (logEntry.status === 'error') {
                 console.error(`[AUDIT ERROR] ${logEntry.service}: ${logEntry.action} - ${logEntry.errorMessage}`);
             } else {
                 console.log(`[AUDIT] ${logEntry.service}: ${logEntry.action}`);
             }
         } catch (error) {
-            // Failsafe to prevent audit logging from breaking main application flow
             console.error('CRITICAL: ServiceAuditAgent failed to log:', error);
         }
     }
@@ -62,29 +56,27 @@ export class ServiceAuditAgent {
     async runHealthCheck() {
         const results: any[] = [];
 
-        // 1. Check Stripe
+        // 1. Stripe
         const stripeKey = process.env.STRIPE_SECRET_KEY;
         results.push({
             service: 'stripe',
             status: stripeKey ? 'configured' : 'missing',
-            keyPresent: !!stripeKey
+            keyPresent: !!stripeKey,
         });
 
-        // 3. Check Firebase
+        // 2. Postgres
         try {
-            const db = getFirestoreAdmin();
-            await db.collection(COLLECTIONS.AUDITS).limit(1).get();
-            results.push({ service: 'firebase', status: 'connected' });
+            await prisma.audit.findFirst({ take: 1 });
+            results.push({ service: 'postgres', status: 'connected' });
         } catch (error: any) {
-            results.push({ service: 'firebase', status: 'error', error: error.message });
+            results.push({ service: 'postgres', status: 'error', error: error.message });
         }
 
-        // Log the summary
         await this.log({
             service: 'other',
             action: 'system_health_check',
-            status: results.some(r => r.status === 'error' || r.status === 'missing') ? 'warning' : 'success',
-            details: { results }
+            status: results.some((r) => r.status === 'error' || r.status === 'missing') ? 'warning' : 'success',
+            details: { results },
         });
 
         return results;
@@ -93,16 +85,15 @@ export class ServiceAuditAgent {
     async runFullHealthCheck() {
         const results: Record<string, any> = {
             timestamp: new Date().toISOString(),
-            services: {}
+            services: {},
         };
 
-        // 1. Firebase Firestore Check
+        // 1. Postgres
         try {
-            const db = getFirestoreAdmin();
-            await db.collection('audits').limit(1).get();
-            results.services.firebase = { status: 'healthy' };
+            await prisma.audit.findFirst({ take: 1 });
+            results.services.postgres = { status: 'healthy' };
         } catch (e: any) {
-            results.services.firebase = { status: 'unhealthy', error: e.message };
+            results.services.postgres = { status: 'unhealthy', error: e.message };
         }
 
         // 2. Stripe Check

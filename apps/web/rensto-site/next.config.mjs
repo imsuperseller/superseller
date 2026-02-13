@@ -1,9 +1,15 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable experimental features that might cause issues
+  outputFileTracingRoot: path.join(__dirname),
   experimental: {
-    // Enable optimizePackageImports for smaller bundle sizes
     optimizePackageImports: ['lucide-react', '@radix-ui/react-avatar', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-label', '@radix-ui/react-progress', '@radix-ui/react-select', '@radix-ui/react-slot', '@radix-ui/react-switch', '@radix-ui/react-tabs', '@radix-ui/react-toast'],
+    // Allow large bodies for /video/create uploads (floorplan + realtor base64)
+    serverActions: { bodySizeLimit: '50mb' },
   },
 
   // Transpile packages that use modern ESM but are not fully compatible with server build
@@ -78,6 +84,16 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, s-maxage=3600, stale-while-revalidate=31536000, max-age=60',
+          },
+        ],
+      },
+      {
+        // Video routes: no cache — prevents server/client hydration mismatch from stale RSC vs fresh client bundle
+        source: '/video/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate',
           },
         ],
       },

@@ -4,7 +4,7 @@ import { query, queryOne } from "../db/client";
 import { videoPipelineQueue, VideoPipelineJobData } from "../queue/queues";
 import { logger } from "../utils/logger";
 import { scrapeZillowListing } from "../services/apify";
-import { uploadToR2, buildR2Key } from "../services/r2";
+import { uploadToR2, uploadBufferToR2, buildR2Key } from "../services/r2";
 import { existsSync } from "fs";
 import { join } from "path";
 
@@ -109,6 +109,10 @@ const fromZillowSchema = z.object({
     addressOrUrl: z.string().min(1),
     userId: z.string().uuid(),
     floorplanPath: z.string().optional(),
+    floorplanBase64: z.string().optional(),
+    floorplanContentType: z.string().optional(),
+    realtorBase64: z.string().optional(),
+    realtorContentType: z.string().optional(),
 });
 
 apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
@@ -116,10 +120,14 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
         const parsed = fromZillowSchema.safeParse(req.body);
         if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
 
-        const { addressOrUrl, userId, floorplanPath } = parsed.data;
+        const { addressOrUrl, userId, floorplanPath, floorplanBase64, floorplanContentType, realtorBase64, realtorContentType } = parsed.data;
 
-        const user = await queryOne("SELECT id FROM users WHERE id = $1", [userId]);
+        const user = await queryOne("SELECT id, avatar_url FROM users WHERE id = $1", [userId]);
         if (!user) return res.status(404).json({ error: "User not found" });
+        const hasAvatar = !!user.avatar_url && user.avatar_url.length > 0;
+        if (!hasAvatar && !realtorBase64) return res.status(400).json({
+            error: "Realtor photo required. Upload via the form or run: cd apps/worker && npx tsx tools/set-test-user-avatar.ts [path/to/photo.png]",
+        });
 
         const scraped = await scrapeZillowListing(addressOrUrl, 30);
         if (!scraped.photos?.length) return res.status(400).json({ error: "No photos found for listing" });
@@ -127,8 +135,33 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
         const exteriorPhoto = scraped.photos[0];
         const additionalPhotos = scraped.photos.slice(1);
 
+        const safeImageType = (t: string | undefined) =>
+            /^image\/(jpeg|png|webp)$/i.test(t || "") ? t! : "image/png";
+
+        // Realtor avatar from web dropzone → upload to R2, set user.avatar_url
+        if (realtorBase64) {
+            try {
+                const buf = Buffer.from(realtorBase64, "base64");
+                const r2Key = `${userId}/avatar/avatar.png`;
+                const avatarUrl = await uploadBufferToR2(buf, r2Key, safeImageType(realtorContentType));
+                await query("UPDATE users SET avatar_url = $1 WHERE id = $2", [avatarUrl, userId]);
+                logger.info({ msg: "Realtor avatar set from web upload", userId });
+            } catch (e) {
+                logger.warn({ msg: "Realtor avatar upload failed", error: (e as Error).message });
+            }
+        }
+
         let floorplanUrl: string | null = null;
-        if (floorplanPath) {
+        if (floorplanBase64) {
+            try {
+                const buf = Buffer.from(floorplanBase64, "base64");
+                const ct = safeImageType(floorplanContentType);
+                const ext = ct.includes("png") ? "png" : ct.includes("webp") ? "webp" : "jpg";
+                floorplanUrl = await uploadBufferToR2(buf, buildR2Key(userId, `floorplan-${Date.now()}`, `floorplan.${ext}`), ct);
+            } catch (e) {
+                logger.warn({ msg: "Floorplan upload from base64 failed", error: (e as Error).message });
+            }
+        } else if (floorplanPath) {
             const isAbs = floorplanPath.startsWith("/");
             const absPath = isAbs ? floorplanPath : join(process.cwd(), floorplanPath.replace(/^\.\//, ""));
 
@@ -188,13 +221,16 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
 // ─── DEV: Ensure test user (for E2E only) ───
 apiRouter.post("/dev/ensure-test-user", async (_req: Request, res: Response) => {
     const clerkId = "e2e-test-user";
-    const existing = await queryOne("SELECT id FROM users WHERE clerk_id = $1", [clerkId]);
-    if (existing) return res.json({ userId: existing.id });
+    const existing = await queryOne("SELECT id, avatar_url FROM users WHERE clerk_id = $1", [clerkId]);
+    if (existing) return res.json({
+        userId: existing.id,
+        hasAvatar: !!existing.avatar_url && existing.avatar_url.length > 0,
+    });
     const [u] = await query(
         `INSERT INTO users (clerk_id, email, full_name) VALUES ($1, $2, $3) RETURNING id`,
         [clerkId, "e2e@test.local", "E2E Test User"]
     );
-    res.status(201).json({ userId: u.id });
+    res.status(201).json({ userId: u.id, hasAvatar: false });
 });
 
 // ─── HEALTH ───

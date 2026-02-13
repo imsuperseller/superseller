@@ -79,3 +79,24 @@ Products operate on a **Usage-Based Credit** system or **Tiered Subscriptions**.
 *   **Uptime**: Monitored via `HealthCheckSchema` (app, database, worker, stripe).
 *   **Tenant Isolation**: All runs strictly isolated by `tenantId` in Postgres.
 *   **Self-Healing**: Workers auto-retry failed Kling tasks; n8n alerts for critical engine failures.
+
+---
+
+## 6. Service Offerings (Revenue Streams)
+
+| Type | Price | Status |
+|------|-------|--------|
+| **Marketplace** | $29-$3,500+ | Stripe LIVE |
+| **Ready Solutions** | $890-$2,990+ | Stripe LIVE |
+| **Subscriptions** | $299-$1,499/mo | Stripe LIVE |
+| **Custom Solutions** | $3,500-$8,000+ | Stripe LIVE |
+| **Content AI** | $297-$1,997/mo | In development |
+
+### Customer Journey (4 Stages)
+1. Awareness → Purchase (SEO, Stripe) ✅ LIVE
+2. Purchase → Onboarding (Webhook, partial automation) ⚠️ 40–60%
+3. Onboarding → Active (Portal) ❌ Not built
+4. Active → Retention (Lifecycle) ❌ Not built
+
+### Admin Portal
+admin.rensto.com. Next.js, Tailwind. Demo: admin@rensto.com / admin123. Needs redesign for 4 service types.

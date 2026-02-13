@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
-import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbPayments from '@/lib/db/payments';
 export async function GET(
@@ -40,44 +38,29 @@ export async function GET(
       );
     }
 
-    // 2. [MIGRATION] Phase 3: Fetch template from Postgres first
-    let template: any = null;
-
     const pgTemplate = await prisma.template.findUnique({ where: { id: templateId } });
-    if (pgTemplate) {
-      template = pgTemplate;
-    } else {
-      // Fallback: Firestore
-      console.info('[Migration] marketplace/download: Template not in Postgres, falling back to Firestore');
-      const db = getFirestoreAdmin();
-      const docRef = db.collection(COLLECTIONS.TEMPLATES).doc(templateId);
-      const doc = await docRef.get();
-
-      if (!doc.exists) {
-        await auditAgent.log({
-          service: 'marketplace',
-          action: 'download_failed',
-          status: 'error',
-          errorMessage: `Template ${templateId} not found for download`,
-          details: { templateId, customerEmail },
-        });
-        return NextResponse.json(
-          { success: false, error: 'Template not found' },
-          { status: 404 }
-        );
-      }
-      template = doc.data();
+    if (!pgTemplate) {
+      await auditAgent.log({
+        service: 'marketplace',
+        action: 'download_failed',
+        status: 'error',
+        errorMessage: `Template ${templateId} not found for download`,
+        details: { templateId, customerEmail },
+      });
+      return NextResponse.json(
+        { success: false, error: 'Template not found' },
+        { status: 404 }
+      );
     }
 
-    // Check if content exists
-    if (!template?.content) {
+    if (!pgTemplate.content) {
       return NextResponse.json(
         { success: false, error: 'Template content is empty' },
         { status: 500 }
       );
     }
 
-    // 3. [MIGRATION] Phase 3: Log download to Postgres (primary)
+    // 3. Log download to Postgres
     try {
       await dbPayments.createDownload({
         templateId,
@@ -93,15 +76,15 @@ export async function GET(
       service: 'marketplace',
       action: 'download_success',
       status: 'success',
-      details: { templateId, customerEmail, templateName: template.name },
+      details: { templateId, customerEmail, templateName: pgTemplate.name },
     });
 
     // 4. Return the file as a JSON download
-    const filename = `${(template.name || 'template').toLowerCase().replace(/[^a-z0-9]/g, '-')}.json`;
+    const filename = `${(pgTemplate.name || 'template').toLowerCase().replace(/[^a-z0-9]/g, '-')}.json`;
 
-    const content = typeof template.content === 'string'
-      ? template.content
-      : JSON.stringify(template.content, null, 2);
+    const content = typeof pgTemplate.content === 'string'
+      ? pgTemplate.content
+      : JSON.stringify(pgTemplate.content, null, 2);
 
     return new NextResponse(content, {
       headers: {

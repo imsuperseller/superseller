@@ -1,5 +1,7 @@
 # Zillow-to-Video Product Status — What Exists, What's Missing, What to Do
 
+> **For pipeline fixes (pathway, realtor consistency, transitions)**: See `TOURREEL_STATUS_AND_FIXES.md`.
+
 ## 1. Links
 
 ### Product page (direct link, no clientId needed)

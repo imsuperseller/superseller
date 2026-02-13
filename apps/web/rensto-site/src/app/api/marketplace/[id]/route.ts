@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(
@@ -37,27 +36,6 @@ export async function GET(
                     metrics: pgTemplate.metrics,
                     rating: pgTemplate.rating,
                     downloads: pgTemplate.downloadCount,
-                },
-            });
-        }
-
-        // Fallback: Firestore
-        console.info('[Migration] marketplace/[id]: Postgres miss, falling back to Firestore');
-        const db = getFirestoreAdmin();
-        const docRef = db.collection(COLLECTIONS.TEMPLATES).doc(id);
-        const doc = await docRef.get();
-
-        if (doc.exists) {
-            const data = doc.data();
-            return NextResponse.json({
-                success: true,
-                workflow: {
-                    id: doc.id,
-                    ...data,
-                    downloadPrice: data?.price,
-                    complexity: data?.complexity || 'Intermediate',
-                    setupTime: data?.setupTime || '2 hours',
-                    targetMarket: data?.targetMarket || 'General',
                 },
             });
         }

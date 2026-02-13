@@ -13,3 +13,5 @@
 - `ui wireframe.md` — UI/UX wireframes
 
 When these conflict with `PIPELINE_SPEC.md` or the actual codebase, the spec and code win.
+
+See `../../REFERENCE_VS_REALITY.md` for alignment summary.

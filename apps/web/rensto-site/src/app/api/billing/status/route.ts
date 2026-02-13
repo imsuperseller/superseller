@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -53,41 +52,7 @@ export async function GET(request: NextRequest) {
                 percentage: Math.min(Math.round((tokens / 100000) * 100), 100),
             }));
         } catch (pgError) {
-            // Fallback: Firestore
-            console.warn('[Migration] billing/status: Postgres failed, falling back to Firestore', pgError);
-            const db = getFirestoreAdmin();
-
-            const subSnap = await db.collection(COLLECTIONS.SUBSCRIPTIONS)
-                .where('userEmail', '==', email).limit(1).get();
-            subscription = !subSnap.empty ? subSnap.docs[0].data() : null;
-
-            const paymentsSnap = await db.collection('payments')
-                .where('customerEmail', '==', email)
-                .orderBy('timestamp', 'desc').limit(5).get();
-            invoices = paymentsSnap.docs.map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id.slice(0, 8).toUpperCase(),
-                    date: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(),
-                    amount: (data.amountTotal || 0) / 100,
-                    status: 'paid',
-                    description: `${data.flowType || 'Service'} Payment`,
-                };
-            });
-
-            const usageSnap = await db.collection(COLLECTIONS.USAGE_LOGS)
-                .where('clientEmail', '==', email).get();
-            const serviceMap: Record<string, number> = {};
-            usageSnap.docs.forEach(doc => {
-                const data = doc.data();
-                const service = data.serviceType || 'General AI';
-                serviceMap[service] = (serviceMap[service] || 0) + (data.tokenCount || 100);
-            });
-            usageBreakdown = Object.entries(serviceMap).map(([service, tokens]) => ({
-                service,
-                usage: (tokens / 1000).toFixed(2),
-                percentage: Math.min(Math.round((tokens / 100000) * 100), 100),
-            }));
+            console.warn('[billing/status] Postgres error:', pgError);
         }
 
         return NextResponse.json({

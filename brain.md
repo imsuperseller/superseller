@@ -44,6 +44,8 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 *Map notebook IDs to purpose in `docs/NOTEBOOKLM_INDEX.md`. Use `source_get_content` to extract key modules as Markdown to save tokens.*
 
+**Codebase vs NotebookLM**: See [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md). Codebase = IDE essentials (paths, env, routers). NotebookLM = specs, methodology, references. When in doubt → query notebooks.
+
 ---
 
 ## ⚡ EXECUTIVE OPERATING PROTOCOL

@@ -17,7 +17,7 @@
 ## Setup
 
 1. Open Cursor's **integrated terminal** (`` Ctrl+` `` or `View → Terminal`)
-2. Navigate to project root: `cd /path/to/rensto`
+2. Navigate to project root: `cd /Users/shaifriedman/New\ Rensto/rensto` (or you may already be there)
 3. Run Claude Code: `claude` (or your CLI command)
 
 Claude Code will have:

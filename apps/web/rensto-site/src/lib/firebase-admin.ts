@@ -1,12 +1,13 @@
-// Shared Firebase configuration for server-side usage
+/**
+ * Firebase Admin — Storage ONLY. Firestore removed (Feb 2026).
+ * Use Postgres for all data. getStorageAdmin kept for onboarding secrets migration.
+ */
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
-import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import fs from 'fs';
 import path from 'path';
 
 let firebaseApp: App | null = null;
-let firestoreDb: Firestore | null = null;
 
 export function getStorageAdmin() {
     getFirebaseAdmin();
@@ -64,63 +65,12 @@ export function getFirebaseAdmin(): App {
     return firebaseApp;
 }
 
-export function getFirestoreAdmin(): Firestore {
-    if (firestoreDb) return firestoreDb;
-
-    getFirebaseAdmin();
-    firestoreDb = getFirestore();
-    try {
-        firestoreDb.settings({ ignoreUndefinedProperties: true });
-    } catch (e) {
-        // Ignore if already initialized
-        console.warn('Firestore settings already initialized');
-    }
-    return firestoreDb;
+// DEPRECATED - Firestore removed Feb 2026. Use Postgres. Throws if called.
+export function getFirestoreAdmin(): never {
+    throw new Error('Firestore removed. Use Postgres. See FIRESTORE_REMOVAL.md');
 }
+export const COLLECTIONS = {} as Record<string, string>;
 
-// Collection names
-export const COLLECTIONS = {
-    // [DEPRECATED] Legacy collections - Use USERS for primary client data
-    CUSTOM_SOLUTIONS_CLIENTS: 'customSolutionsClients',
-    CLIENTS: 'clients',
-
-    MAGIC_LINK_TOKENS: 'magicLinkTokens',
-    TEMPLATES: 'templates',
-    DOWNLOADS: 'downloads',
-    AUDITS: 'audits',
-    ANALYTICS: 'analytics',
-    SCORECARDS: 'scorecards',
-    CONSULTATIONS: 'consultations',
-    PROPOSALS: 'proposals',
-    PURCHASES: 'purchases',
-    PAYMENTS: 'payments',
-    REQUIREMENTS: 'requirements',
-    OPTIMIZER_AUDITS: 'optimizer_audits',
-    TESTIMONIALS: 'testimonials',
-    SERVICE_MANIFESTS: 'service_manifests',
-    USAGE_LOGS: 'usage_logs',
-    CUSTOMIZATION_REQUESTS: 'customizationRequests',
-    SUPPORT_CASES: 'supportCases',
-    SERVICE_INSTANCES: 'service_instances',
-
-    // New collections (Jan 2026 - Optimized for SMB Service Businesses)
-    USERS: 'users',
-    WHATSAPP_INSTANCES: 'whatsapp_instances',
-    WHATSAPP_MESSAGES: 'whatsapp_messages',
-    APPOINTMENT_BOOKINGS: 'appointment_bookings',
-    SUBSCRIPTIONS: 'subscriptions',
-    CARE_PLAN_DELIVERABLES: 'care_plan_deliverables',
-    LEADS: 'leads',
-    BUSINESS_NICHES: 'business_niches',
-    RESPONSE_TIME_METRICS: 'response_time_metrics',
-    LAUNCH_TASKS: 'launch_tasks',
-    OUTREACH_CAMPAIGNS: 'outreach_campaigns',
-    VOICE_CALL_LOGS: 'voice_call_logs',
-    CONTENT_ITEMS: 'content_posts',
-    SECRETARY_CONFIGS: 'secretary_configs',
-    MARKETPLACE_TEMPLATES: 'templates' // Alias for clarity in video workflow
-} as const;
-
-// Export interfaces from definitions file
+// Re-export types (no Firestore runtime)
 export * from '@/types/firestore';
 export * from '@/types/entitlements';

@@ -17,7 +17,10 @@
     "db:seed": "tsx prisma/seed.ts",
     "check-port": "node scripts/check-port.js",
     "setup": "node scripts/setup-system.js",
-    "test:credits": "tsx tools/test-credits.ts"
+    "test:credits": "tsx tools/test-credits.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test e2e/video-create-flash.spec.ts --headed"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -60,6 +63,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^24.3.0",
     "@types/react": "^19",

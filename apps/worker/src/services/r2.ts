@@ -4,6 +4,35 @@ import { lookup } from "mime-types";
 import { config } from "../config";
 import { logger } from "../utils/logger";
 
+/** Upload a Buffer to R2 (for base64 from web forms). Returns public URL. */
+export async function uploadBufferToR2(
+    buffer: Buffer,
+    r2Key: string,
+    contentType: string = "image/png"
+): Promise<string> {
+    logger.info({
+        msg: "Uploading buffer to R2",
+        key: r2Key,
+        size: `${(buffer.length / 1024).toFixed(1)}KB`,
+        type: contentType,
+    });
+    await r2Client.send(new PutObjectCommand({
+        Bucket: config.r2.bucket,
+        Key: r2Key,
+        Body: buffer,
+        ContentType: contentType,
+        CacheControl: "public, max-age=31536000",
+    }));
+    const publicUrl = config.r2.publicUrl
+        ? `${config.r2.publicUrl.replace(/\/$/, "")}/${r2Key}`
+        : `/${r2Key}`;
+    if (!config.r2.publicUrl && publicUrl.startsWith("/")) {
+        logger.warn({ msg: "R2_PUBLIC_URL not set — Kie.ai cannot fetch relative URL", key: r2Key });
+    }
+    logger.info({ msg: "R2 buffer upload complete", url: publicUrl });
+    return publicUrl;
+}
+
 const r2Client = new S3Client({
     region: "auto",
     endpoint: config.r2.endpoint,

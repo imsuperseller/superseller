@@ -1,49 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    let customersCount = 0;
-    let paymentsCount = 0;
-    let totalRevenue = 0;
-    let scorecardsCount = 0;
-    let consultationsCount = 0;
-    let requirementsCount = 0;
-
-    try {
-      [customersCount, paymentsCount, scorecardsCount, consultationsCount, requirementsCount] =
-        await Promise.all([
-          prisma.user.count(),
-          prisma.payment.count(),
-          prisma.scorecard.count(),
-          prisma.consultation.count(),
-          prisma.requirement.count(),
-        ]);
-
-      const revenueAgg = await prisma.payment.aggregate({
-        _sum: { amount: true },
-        where: { status: 'succeeded' },
-      });
-      totalRevenue = revenueAgg._sum.amount || 0;
-    } catch (pgError) {
-      // Fallback: Firestore
-      console.info('[Migration] admin/dashboard/metrics: Postgres fail, falling back to Firestore');
-      const db = getFirestoreAdmin();
-      customersCount = (await db.collection(COLLECTIONS.CUSTOM_SOLUTIONS_CLIENTS).count().get()).data().count;
-      paymentsCount = (await db.collection(COLLECTIONS.PAYMENTS).count().get()).data().count;
-      scorecardsCount = (await db.collection(COLLECTIONS.SCORECARDS).count().get()).data().count;
-      consultationsCount = (await db.collection(COLLECTIONS.CONSULTATIONS).count().get()).data().count;
-      requirementsCount = (await db.collection(COLLECTIONS.REQUIREMENTS).count().get()).data().count;
-
-      const successfulPayments = await db.collection(COLLECTIONS.PAYMENTS)
-        .where('status', '==', 'succeeded')
-        .limit(100)
-        .get();
-      successfulPayments.forEach(doc => {
-        totalRevenue += (doc.data().amount || 0);
-      });
-    }
+    const [customersCount, paymentsCount, scorecardsCount, consultationsCount, requirementsCount, revenueAgg] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.payment.count(),
+        prisma.scorecard.count(),
+        prisma.consultation.count(),
+        prisma.requirement.count(),
+        prisma.payment.aggregate({
+          _sum: { amount: true },
+          where: { status: 'completed' },
+        }),
+      ]);
+    const totalRevenue = revenueAgg._sum.amount || 0;
 
     const metrics = {
       revenue: {

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import { AITableService } from '@/lib/services/AITableService';
 import prisma from '@/lib/prisma';
@@ -68,23 +67,12 @@ export async function POST(req: Request) {
         // 2. Special Case: Marketplace Implementation (Legacy support)
         else if (flowType === 'marketplace-template') {
             mode = 'payment';
-            let workflow: any = null;
 
             const pgTemplate = await prisma.template.findUnique({ where: { id: productId } });
-            if (pgTemplate) {
-                workflow = pgTemplate;
-            } else {
-                // Fallback: Firestore
-                console.info('[Migration] checkout: Template not in Postgres, falling back to Firestore');
-                const db = getFirestoreAdmin();
-                const doc = await db.collection(COLLECTIONS.TEMPLATES).doc(productId).get();
-                if (!doc.exists) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-                workflow = doc.data();
-            }
-
-            if (!workflow) {
+            if (!pgTemplate) {
                 return NextResponse.json({ error: 'Product not found' }, { status: 404 });
             }
+            const workflow = pgTemplate;
 
             let unitAmount = (workflow.price || 97) * 100;
             if (tier === 'install') unitAmount = (workflow.installPrice || 797) * 100;

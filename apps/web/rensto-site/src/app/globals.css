@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Critical: prevent white flash before full hydration (video/create, all dark pages) */
+html,
+body {
+  background-color: #110d28 !important;
+  color-scheme: dark;
+}
+
 /* shadcn/ui CSS Variables */
 @layer base {
   :root {

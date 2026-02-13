@@ -32,6 +32,7 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** – Folder map (active vs legacy paths).
 - **[REPO_MAP.md](REPO_MAP.md)** – What you're seeing: where everything lives in plain language.
 - **[CODEBASE_AUDIT.md](CODEBASE_AUDIT.md)** – Cleanup checklist, audit order, what's done vs open.
+- **[AUDIT_REPORT_2026-02.md](AUDIT_REPORT_2026-02.md)** – Feb 2026 audit: security fix, NotebookLM index, doc cross-refs.
 - **[CLEANUP_DETERMINED.md](CLEANUP_DETERMINED.md)** – Items determined as not in place, outdated, consolidatable, or redundant.
 - **.cursor/AGENT_CONTEXT.md** – Business context, success target ($20k/mo by 2027), priorities.
 - **.cursor/MCP_CONFIGURATION_STATUS.md** – MCP server status (not docs/).

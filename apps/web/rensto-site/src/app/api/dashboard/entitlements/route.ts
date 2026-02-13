@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { UserEntitlements, getDefaultFreeTrialEntitlements } from '@/types/entitlements';
 import prisma from '@/lib/prisma';
 
@@ -36,30 +35,10 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // Fallback: Firestore
-        console.info('[Migration] dashboard/entitlements: Postgres miss, falling back to Firestore');
-        const dbAdmin = getFirestoreAdmin();
-        const usersRef = dbAdmin.collection(COLLECTIONS.USERS);
-        const querySnap = await usersRef.where('dashboardToken', '==', token).limit(1).get();
-
-        if (querySnap.empty) {
-            return NextResponse.json(
-                { error: 'Invalid token or user not found' },
-                { status: 404 }
-            );
-        }
-
-        const userSnap = querySnap.docs[0];
-        const userData = userSnap.data();
-
-        const entitlements: UserEntitlements = userData.entitlements || getDefaultFreeTrialEntitlements();
-
-        return NextResponse.json({
-            success: true,
-            email: userData.email,
-            name: userData.name || null,
-            entitlements,
-        });
+        return NextResponse.json(
+            { error: 'Invalid token or user not found' },
+            { status: 404 }
+        );
 
     } catch (error) {
         console.error('[Entitlements API] Error:', error);
