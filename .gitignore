@@ -274,6 +274,7 @@ tmp/
 # Archive directories (Oct 2025 reorganization)
 archives/
 archived/
+infra/archive/
 data/archived-files/
 data/backups/
 

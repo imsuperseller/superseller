@@ -1,0 +1,32 @@
+---
+description: Why the user finds issues before the agent. Mandatory verification before handoff.
+globs: 
+alwaysApply: true
+---
+
+# Work Method Accountability
+
+**User feedback (persistent)**: "I find this before you." The user repeatedly reports issues the agent should have caught.
+
+## Root Causes
+
+1. **Reactive, not proactive**: Fixing symptoms after user reports instead of verifying before handoff.
+2. **No browser verification**: Sharing URLs, links, or flows without opening them in the browser first.
+3. **No pipeline verification**: Making code changes without running dry-run, preflight, or 1-clip smoke.
+4. **Ignoring feedback**: User has stated work-method concerns in multiple messages; agent continued same pattern.
+
+## MANDATORY Before Handoff
+
+1. **Document each thing**: Update `progress.md` and `findings.md` after each task—not only at session end. "Each little thing" = log it.
+2. **User-facing flows** (video page, checkout, dashboard): **Open the URL in the browser**. Confirm:
+   - Page loads without console errors
+   - No "Failed to fetch", 404, or opaque errors
+   - Key interactions work
+3. **Pipeline changes**: Run `npx tsx tools/dry-run-pipeline.ts JOB_ID` (or preflight). Confirm no regressions.
+
+## When the User Reports an Issue
+
+1. **Acknowledge the work-method failure first**: "You found this before I did. I should have verified in the browser / run the pipeline before handoff."
+2. Fix the issue.
+3. **Verify the fix** in the same environment the user used.
+4. Update findings.md with root cause so it does not recur.

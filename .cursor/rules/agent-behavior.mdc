@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Agent Behavior (Drift Prevention)
 
-Re-read when conversation is long or summarized. Full source: [AGENT_BEHAVIOR.md](/AGENT_BEHAVIOR.md).
+Re-read when conversation is long or summarized. Full source: NotebookLM 5811a372 (query for agent behavior, completion rules).
 
 ## Before Sending
 
@@ -27,7 +27,20 @@ Re-read when conversation is long or summarized. Full source: [AGENT_BEHAVIOR.md
 - Test everything before declaring done.
 - Document (progress.md, findings.md).
 - Report only when complete with verifiable Artifact.
+- Reference conflicts: Query NotebookLM 5811a372 for hierarchy and cross-reference map.
+
+## Git Completion (MANDATORY)
+
+- **Never leave work untracked or uncommitted.** When the user gives access, complete the full workflow: add, commit, push. Untracked files = disconnected state = manual work for the user. That defeats the purpose.
+- Before ending a task: run `git status`. If there are changes from this work, stage and commit with a clear message. Push to origin so GitHub is updated.
+
+## Archive / Migration Audit (When Archiving or Migrating)
+
+Before deleting or archiving docs, ask:
+1. **Contradictions?** Does the archived content point to files/systems that no longer exist? (Would mislead anyone who used it.)
+2. **Unique content?** Is there anything needed for website, mechanisms, products, or references that we don't have elsewhere?
+3. **Keep or discard?** If no unique content and it has stale pointers → safe to delete or gitignore. Don't commit stale backups to the repo.
 
 ## When in Doubt
 
-About to send instructions/steps/question when user gave access? Stop. Re-read AGENT_BEHAVIOR.md. Do the work instead.
+About to send instructions/steps/question when user gave access? Stop. Query NotebookLM 5811a372. Do the work instead.

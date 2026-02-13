@@ -20,7 +20,8 @@ portal.rensto.com   → Vercel (customer portals - planned)
 1. ✅ **rensto.com is on Vercel** - Next.js app (`apps/web/rensto-site/`)
 2. ✅ **API routes available at**: `rensto.com/api/*` AND `api.rensto.com/api/*` (both work)
 3. ✅ **ALWAYS** read brain.md first (Mission Control), then CLAUDE.md before architectural decisions
-4. ⚠️ **Webflow**: Retired. All pages served by Next.js (rensto-site) on Vercel.
+4. ✅ **Reference conflicts**: Query NotebookLM 5811a372 for hierarchy and cross-reference map
+5. ⚠️ **Webflow**: Retired. All pages served by Next.js (rensto-site) on Vercel.
 
 ---
 
@@ -148,7 +149,7 @@ AIRTABLE_API_KEY         (Production)
 ## 📝 DOCUMENTATION RULES
 
 ### **Single Source of Truth**:
-- **Project Constitution**: `/Users/shaifriedman/New Rensto/rensto/apps/web/rensto-site/gemini.md` ("The Law")
+- **Project Constitution**: NotebookLM 5811a372 ("The Law" — agent behavior, constraints)
 - **Operational SOP**: `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md` (Technical context only)
 - **Knowledge Brain**: NotebookLM (High-level strategy, research, architecture patterns)
 
@@ -249,7 +250,7 @@ Examples:
 
 ## 🔍 BEFORE EVERY SESSION CHECKLIST
 
-1. ☑️ Re-read [AGENT_BEHAVIOR.md](AGENT_BEHAVIOR.md) and brain.md Executive Protocol
+1. ☑️ Query NotebookLM 5811a372 for agent behavior; read brain.md Executive Protocol
 2. ☑️ Read CLAUDE.md sections relevant to your task
 3. ☑️ For business context, priorities, and success target: read `.cursor/AGENT_CONTEXT.md`
 4. ☑️ Check git status and recent commits
@@ -260,7 +261,7 @@ Examples:
 
 ### Before Every Message (when conversation is long)
 
-If the last 3+ messages did not include AGENT_BEHAVIOR or Executive Protocol in context, re-read [AGENT_BEHAVIOR.md](AGENT_BEHAVIOR.md) before responding.
+If the last 3+ messages did not include agent behavior or Executive Protocol in context, query NotebookLM 5811a372 before responding.
 
 ---
 
@@ -305,7 +306,7 @@ If the last 3+ messages did not include AGENT_BEHAVIOR or Executive Protocol in 
 - Migration history: `/webflow/MIGRATION_FINAL_STATUS.md`
 - n8n workflows: `/live-systems/n8n-system/workflows/`
 - B.L.A.S.T. process: See .cursorrules "THE MASTER PATTERN (B.L.A.S.T.)"
-- Tech stack details: CLAUDE.md section 14
+- Tech stack details: CLAUDE.md + docs/INFRA_SSOT.md
 
 ---
 
