@@ -19,6 +19,7 @@ cd apps/web/rensto-site && pnpm dev
 
 | Route | Purpose |
 |-------|---------|
+| `/video/create` | **Create job** — Paste Zillow URL → creates job → redirects to viewer |
 | `/video/[jobId]` | Standalone shareable view — e.g. `/video/abc-123-def` |
 | `/dashboard/[clientId]/video?jobId=[jobId]` | Embedded in dashboard |
 

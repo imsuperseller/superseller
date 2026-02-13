@@ -8,6 +8,8 @@
 
 ## 2026-02-13
 
+- **Customer create-job flow**: Added `/video/create` page with Zillow URL form, `/api/video/jobs/from-zillow` proxy to worker. Creates job via ensure-test-user + worker from-zillow, redirects to `/video/[jobId]`. "Create new tour" CTA in VideoGeneration sidebar.
+
 - **Local docs → NotebookLM migration**: Round 1 + Round 2 (gap audit). Added full REFERENCE_ALIGNMENT, RENSTO_DESIGN (Parts 1–3 + layout patterns), pipeline (testing, config, model compliance, three fixes), AGENT_SELF_AUDIT, AGENT_HANDOFF, 3-SCENE_VERIFICATION, full gemini schema. See LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT.md.
 
 - **1531 Home Park Dr job run**: Job `68fc0ba2-4415-4841-a7a9-b47288b38b43` created via `create-1531-home-park-job.ts`. Listing `9deabefc-fe9b-4f1a-84d6-af7ca0b2da4f`. Test user `c60b6d2f-856d-49fd-8737-7e1fee3fa848`. Avatar uploaded to R2. Worker on 3001, rensto-site on 3002 with VIDEO_WORKER_URL. Browser verification: page at `/video/68fc0ba2-4415-4841-a7a9-b47288b38b43` shows real data (1531 Home Park Dr, Allen TX), status FAILED (likely Insufficient Credits).

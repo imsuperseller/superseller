@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Play, Pause, CheckCircle2, Circle, Clock, Loader2, Video, Settings, LayoutDashboard, Home, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { Play, Pause, CheckCircle2, Circle, Clock, Loader2, Video, Settings, LayoutDashboard, Home, AlertCircle, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ export interface VideoJob {
     status: "pending" | "analyzing" | "generating_prompts" | "generating_clips" | "stitching" | "completed" | "failed";
     progress_percent: number;
     current_step: string;
+    error_message?: string;
     listing: {
         address: string;
         city: string;
@@ -103,19 +105,33 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
         const fetchJob = async () => {
             try {
                 const res = await fetch(`/api/video/jobs/${jobId}`);
-                if (!res.ok) throw new Error("Failed to fetch job");
-                const data = await res.json();
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    const msg =
+                        data?.error ||
+                        data?.message ||
+                        (data?.job?.error_message ? `Job failed: ${data.job.error_message}` : null) ||
+                        `Failed to fetch job (${res.status})`;
+                    throw new Error(msg);
+                }
+
+                // Normalize clips: worker returns resultUrl, component expects video_url
+                const clips = (data.clips || []).map((c: any) => ({
+                    ...c,
+                    video_url: c.video_url ?? c.resultUrl,
+                    status: c.status === "done" ? "completed" : c.status,
+                }));
 
                 // Flatten the response to match VideoJob interface
                 if (data.job && data.listing) {
                     setJob({
                         ...data.job,
+                        current_step: data.job.current_step ?? data.job.currentStep,
                         listing: data.listing,
-                        clips: data.clips || []
+                        clips
                     });
                 } else {
-                    // Fallback if structure is already correct or different
-                    setJob(data);
+                    setJob({ ...data, clips });
                 }
 
                 // Set active clip to first generating or completed if none selected
@@ -155,6 +171,12 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
                     </div>
                     Rensto<span className="text-gray-500">Video</span>
                 </div>
+                <Link
+                    href="/video/create"
+                    className="flex items-center justify-center gap-2 w-full py-3 mb-6 rounded-lg bg-[#fe3d51] hover:bg-[#ff4d61] text-white font-semibold transition-colors"
+                >
+                    <Plus size={18} /> Create new tour
+                </Link>
                 <nav className="space-y-2 text-sm font-medium text-gray-400">
                     <div className="p-3 hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3 transition-colors"><LayoutDashboard size={18} /> Dashboard</div>
                     <div className="p-3 hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3 transition-colors"><Home size={18} /> Listings</div>
@@ -178,6 +200,13 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
                     </div>
                     <StatusBadge status={job.status || "pending"} />
                 </div>
+
+                {job.status === "failed" && job.error_message && (
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
+                        <AlertCircle size={20} className="flex-shrink-0" />
+                        <span>{job.error_message}</span>
+                    </div>
+                )}
 
                 {/* Progress Bar */}
                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm">
