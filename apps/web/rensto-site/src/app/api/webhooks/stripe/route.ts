@@ -1,12 +1,12 @@
-import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
-import { Timestamp } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import { ProvisioningService } from '@/lib/services/ProvisioningService';
 import * as dbPayments from '@/lib/db/payments';
+import prisma from '@/lib/prisma';
+import { CreditService } from '@/lib/credits';
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
 });
@@ -54,56 +54,88 @@ export async function POST(req: Request) {
                 metadata: { customerEmail },
             });
 
-            // Backup: Firestore (non-blocking)
-            // 2. UNIFIED PROVISIONING (Postgres-first via ProvisioningService)
-            if (customerEmail) {
-                const provisioning = await ProvisioningService.provisionService({
-                    email: customerEmail,
-                    productId: (metadata.productId || metadata.workflowId || metadata.pillarId) as string,
-                    productName: (metadata.productName || metadata.pillarName || 'Rensto Product') as string,
-                    flowType: (metadata.flowType || (metadata.pillarId ? 'pillar-purchase' : 'unknown')) as string,
-                    stripeSessionId: session.id,
-                    stripeSubscriptionId: session.subscription as string,
-                    metadata: metadata,
-                    stripeSession: session
-                });
+            let provisioning: { userId: string; downloadUrl?: string; amount?: number } = { userId: userId || 'unknown' };
 
-                // 3. Trigger Specialized Emails based on Provisioning Result
-                if (metadata.flowType === 'marketplace-template' && provisioning.downloadUrl) {
-                    await emails.downloadDelivery(
-                        customerEmail,
-                        (metadata.productName || 'Rensto Template') as string,
-                        provisioning.downloadUrl,
-                        session.id
-                    );
-                } else if (metadata.flowType === 'managed-plan' || metadata.flowType === 'service-purchase') {
-                    await emails.welcome(customerEmail, session.customer_details?.name || undefined);
-                    if (session.amount_total) {
+            if (customerEmail) {
+                if (metadata.flowType === 'credit-topup') {
+                    const creditAmount = parseInt(metadata.creditAmount || '0', 10);
+                    if (creditAmount > 0) {
+                        provisioning = await ProvisioningService.provisionCredits({
+                            email: customerEmail,
+                            amount: creditAmount,
+                            type: 'topup',
+                            stripeSessionId: session.id,
+                        });
                         await emails.invoiceReceipt(
                             customerEmail,
-                            (metadata.productId || 'Automation Service') as string,
-                            session.amount_total / 100,
+                            `${creditAmount} Credits Refill`,
+                            (session.amount_total || 0) / 100,
+                            session.id
+                        );
+                    }
+                } else {
+                    provisioning = await ProvisioningService.provisionService({
+                        email: customerEmail,
+                        productId: (metadata.productId || metadata.workflowId || metadata.pillarId) as string,
+                        productName: (metadata.productName || metadata.pillarName || 'Rensto Product') as string,
+                        flowType: (metadata.flowType || (metadata.pillarId ? 'pillar-purchase' : 'unknown')) as string,
+                        stripeSessionId: session.id,
+                        stripeSubscriptionId: session.subscription as string,
+                        metadata: metadata,
+                        stripeSession: session,
+                    });
+
+                    if (metadata.flowType === 'marketplace-template' && provisioning.downloadUrl) {
+                        await emails.downloadDelivery(
+                            customerEmail,
+                            (metadata.productName || 'Rensto Template') as string,
+                            provisioning.downloadUrl,
                             session.id
                         );
                     }
                 }
-
-                await auditAgent.log({
-                    service: 'provisioning',
-                    action: 'unified_flow_complete',
-                    status: 'success',
-                    details: { userId: provisioning.userId, flowType: metadata.flowType }
-                });
             }
 
-            // 4. Forward to n8n for additional integrations (QuickBooks, etc)
-            if (n8nWebhookUrl) {
-                await fetch(n8nWebhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(event)
+            await auditAgent.log({
+                service: 'provisioning',
+                action: 'unified_flow_complete',
+                status: 'success',
+                details: { userId: provisioning.userId, flowType: metadata.flowType },
+            });
+        }
+
+        // Handle invoice.paid for monthly subscription credit resets
+        if (event.type === 'invoice.paid') {
+            const invoice = event.data.object as Stripe.Invoice;
+            const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription?.id;
+            if (subscriptionId) {
+                const sub = await prisma.subscription.findFirst({
+                    where: { stripeSubscriptionId: subscriptionId },
+                    select: { userId: true },
                 });
+                if (sub) {
+                    const creditsPerCycle = parseInt(
+                        (invoice.metadata?.creditsPerCycle || process.env.CREDITS_PER_SUBSCRIPTION_CYCLE || '500') as string,
+                        10
+                    );
+                    if (creditsPerCycle > 0) {
+                        await CreditService.addCredits(sub.userId, creditsPerCycle, 'reset', {
+                            stripeInvoiceId: invoice.id,
+                            stripeSubscriptionId: subscriptionId,
+                            billingReason: invoice.billing_reason || 'subscription_cycle',
+                        });
+                    }
+                }
             }
+        }
+
+        // Forward to n8n for additional integrations (QuickBooks, etc)
+        if (n8nWebhookUrl) {
+            await fetch(n8nWebhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(event),
+            });
         }
 
         return NextResponse.json({ received: true });
@@ -114,7 +146,7 @@ export async function POST(req: Request) {
             action: 'webhook_processing_failed',
             status: 'error',
             errorMessage: err.message,
-            details: { eventId: event.id, eventType: event.type }
+            details: { eventId: event.id, eventType: event.type },
         });
         return new NextResponse(`Internal Error: ${err.message}`, { status: 500 });
     }

@@ -1,4 +1,4 @@
-import { logger } from "../../apps/worker/src/utils/logger";
+import { logger } from "../../src/utils/logger";
 import { exec } from "child_process";
 import { promisify } from "util";
 

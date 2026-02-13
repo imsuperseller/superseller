@@ -7,6 +7,7 @@ import { AITableService } from './AITableService';
 import * as dbUsers from '@/lib/db/users';
 import * as dbServices from '@/lib/db/services';
 import prisma from '@/lib/prisma';
+import { CreditService } from '../credits';
 export class ProvisioningService {
     /**
      * Standardizes User Identity across all flows.
@@ -208,5 +209,24 @@ export class ProvisioningService {
         }
 
         return { userId };
+    }
+
+    /**
+     * Specifically handles credit deposits.
+     */
+    static async provisionCredits(params: {
+        email: string;
+        amount: number;
+        type: 'topup' | 'grant';
+        stripeSessionId?: string;
+    }) {
+        const userId = await this.getOrCreateUser(params.email);
+
+        await CreditService.addCredits(userId, params.amount, params.type, {
+            stripeSessionId: params.stripeSessionId,
+            email: params.email,
+        });
+
+        return { userId, amount: params.amount };
     }
 }

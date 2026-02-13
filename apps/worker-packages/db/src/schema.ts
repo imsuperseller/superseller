@@ -15,14 +15,74 @@ export const jobStatusEnum = [
 
 export const clipStatusEnum = ["queued", "generating", "done", "failed"] as const;
 
+// Multi-Tenancy
+export const tenants = pgTable("tenants", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    status: text("status").notNull().default("active"),
+    plan: jsonb("plan"),
+    settings: jsonb("settings"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    slugIdx: uniqueIndex("idx_tenants_slug").on(table.slug),
+    statusIdx: index("idx_tenants_status").on(table.status),
+}));
+
+export const tenantUsers = pgTable("tenant_users", {
+    tenantId: uuid("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    role: text("role").notNull().default("user"),
+}, (table) => ({
+    pk: index("tenant_users_pk").on(table.tenantId, table.userId),
+}));
+
 // Tables
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull().unique(),
     name: text("name"),
+    phone: text("phone"),
     image: text("image"),
+    dashboardToken: text("dashboard_token").unique(),
+
+    // Business Profile
+    businessName: text("business_name"),
+    businessType: text("business_type"),
+    businessSize: text("business_size"),
+    revenueRange: text("revenue_range"),
+
+    // Account Status
+    status: text("status").notNull().default("active"),
+    role: text("role").notNull().default("USER"),
+    emailVerified: timestamp("email_verified", { withTimezone: true }),
+
+    // Service Access & Entitlements
+    activeServices: jsonb("active_services"),
+    entitlements: jsonb("entitlements"),
+
+    // Billing
+    stripeCustomerId: text("stripe_customer_id"),
+
+    // Preferences & Metrics
+    preferences: jsonb("preferences").default({}),
+    metrics: jsonb("metrics"), // { totalLeads, totalMessages, totalBookings, lastActivityAt }
+
+    // Acquisition
+    source: text("source"),
+    referrerId: text("referrer_id"),
+    qualificationScore: integer("qualification_score"),
+    qualificationTier: text("qualification_tier"),
+
+    // Timestamps
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    emailIdx: uniqueIndex("idx_users_email").on(table.email),
+    tokenIdx: uniqueIndex("idx_users_token").on(table.dashboardToken),
+}));
 
 export const stripeCustomers = pgTable("stripe_customers", {
     userId: uuid("user_id").primaryKey().references(() => users.id),
@@ -30,7 +90,7 @@ export const stripeCustomers = pgTable("stripe_customers", {
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const entitlements = pgTable("entitlements", {
+export const entitlementsTable = pgTable("entitlements", {
     userId: uuid("user_id").primaryKey().references(() => users.id),
     creditsBalance: numeric("credits_balance").notNull().default("0"),
     plan: text("plan").notNull().default("starter"), // starter | pro | team

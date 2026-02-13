@@ -8,36 +8,44 @@
 import type { HeroFeaturesResult } from "./hero-features";
 import { isHeroRoom } from "./hero-features";
 
-/** Opening shot: Realtor walking FROM front of house TOWARD front door (approach walk). */
-export const NANO_BANANA_OPENING_PROMPT =
-    "Professional guide from reference photo walking along the walkway from the front of the house toward the front door, leading the camera in a steady approach. Natural stride, 5-8 feet ahead of the camera, acting as a magnet pulling the viewer in. No posing. Real estate cinematography.";
+/** Identity anchor: Ensures the SAME person appears in every room. Per Nano Banana consistency guide. */
+export const IDENTITY_ANCHOR =
+    "THE EXACT SAME PERSON from the first reference image. Maintain exact facial features, bone structure, skin tone, hair, eyes. Do not alter their appearance. ";
 
-/** Room-specific prompts for realtor placement. Pool gets Hero Moment treatment. */
+/** POV: Camera = the prospective buyer. The realtor is showing the property TO this person. */
+const GUEST_POV = "The camera represents the prospective buyer's eyes. The realtor is welcoming and showing the property TO this person. ";
+
+/** Opening: Realtor ON the pathway/walkway, walking TOWARD the front door (approach walk). NOT standing at the door. NEVER aerial/drone. Lips closed—no speaking. */
+export const NANO_BANANA_OPENING_PROMPT =
+    IDENTITY_ANCHOR + GUEST_POV +
+    "The realtor ON the pathway or walkway leading to the front door, walking TOWARD the door (approach walk). The realtor is midway along the path—NOT yet at the door. Warm, inviting, lips closed, not speaking. Ground level, eye height. NOT aerial, NOT drone, NOT wide shot from above. Silent—no mouth movement.";
+
+/** Room-specific prompts. Realtor walks WITH the guest, faces them when gesturing. SILENT: lips closed, no speaking. */
 export const NANO_BANANA_ROOM_PROMPTS: Record<string, string> = {
     living:
-        "The guide from reference photo walking into the living room, leading the camera towards the fireplace. Natural stride.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor walking with the guest into the living room, then turning to face the guest (camera) to gesture toward the fireplace. Lips closed, silent, no speaking.",
     kitchen:
-        "The guide from reference photo standing near the island, glancing at the appliances. No posing.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor at the island, facing the guest (camera) as they run a hand along the surface or gesture at the appliances. Lips closed, silent, no speaking.",
     dining:
-        "The guide from reference photo leading the way through the dining area. Professional conduct.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor walking with the guest through the dining area, turning to point out features. Lips closed, silent, no speaking.",
     bedroom:
-        "The guide from reference photo entering the bedroom, stepping to the side to reveal the window view.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor entering with the guest, stepping aside and turning to face them to reveal the window view. Lips closed, silent, no speaking.",
     master_bedroom:
-        "The guide from reference photo walking into the primary suite, gesturing towards the scale of the room.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor in the primary suite, turning to face the guest (camera) to gesture at the scale and amenities. Lips closed, silent, no speaking.",
     bathroom:
-        "The guide from reference photo briefly visible in the mirror or doorway, keeping focus on the fixtures.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor at the doorway, briefly facing the guest or visible in the mirror. Lips closed, silent, no speaking.",
     master_bathroom:
-        "The guide from reference photo at the entrance of the en-suite, stepping aside to show the tub.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor at the en-suite entrance, turning to face the guest to gesture toward the tub. Lips closed, silent, no speaking.",
     foyer:
-        "The guide from reference photo leading the camera from the entry into the main hall.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor walking with the guest from the entry into the main hall. May turn to welcome or point ahead. Lips closed, silent, no speaking.",
     hallway:
-        "The guide from reference photo walking down the corridor at a steady pace.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor walking down the corridor with the guest, occasionally turning to gesture. Lips closed, silent, no speaking.",
     outdoor:
-        "The guide from reference photo walking toward the pool or garden, looking ahead. Natural. Leading the camera to the outdoor space.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor on the patio or deck, facing the guest (camera) and gesturing toward the view. Standing still or walking along the deck—never toward pool water. Lips closed, silent, no speaking.",
     pool:
-        "The guide from reference photo on the deck, gesturing toward the sparkling pool with a 'Can you believe this?' expression. Hero moment, lifestyle sell. Silent hype. Main focus on the water features.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor STANDING on the deck or patio, well back from the pool edge. FACING the guest (camera), gesturing toward the pool from a safe distance. Never walking toward the water. Hero moment. Lips closed, silent, no speaking.",
     backyard:
-        "The guide from reference photo walking into the backyard, leading the camera. If pool is visible, gesture toward it as the hero feature.",
+        IDENTITY_ANCHOR + GUEST_POV + "The realtor standing on the patio or lawn, facing the guest (camera) and gesturing toward the yard or pool from a safe distance. Never walking toward the pool. Lips closed, silent, no speaking.",
 };
 
 /** Normalize room name to prompt key (e.g. "Master Bedroom" -> "master_bedroom") */
@@ -45,12 +53,12 @@ function toPromptKey(room: string): string {
     return room.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
 
-/** Hero-moment prompts for non-pool features. Every room can be a hero. */
+/** Hero-moment prompts. Realtor FACES the guest (camera) when sharing the moment. SILENT. */
 const HERO_ROOM_PROMPTS: Record<string, string> = {
-    living: "The guide from reference photo in the living room, gesturing toward the fireplace or view with a 'Can you believe this?' expression. Hero moment. Silent hype.",
-    kitchen: "The guide from reference photo at the kitchen island, running a hand along the surface. Hero moment — touching the luxury. Gesture toward appliances or view.",
-    master_bedroom: "The guide from reference photo in the primary suite, gesturing toward the scale and amenities. Hero moment. Silent hype.",
-    master_bathroom: "The guide from reference photo at the en-suite entrance, gesturing toward the tub or rain shower. Hero moment.",
+    living: IDENTITY_ANCHOR + GUEST_POV + "The realtor standing in the living room, FACING the guest (camera), gesturing toward the fireplace. Hero moment. Lips closed, silent, no speaking.",
+    kitchen: IDENTITY_ANCHOR + GUEST_POV + "The realtor at the kitchen island, facing the guest, running a hand along the surface. Hero moment. Lips closed, silent, no speaking.",
+    master_bedroom: IDENTITY_ANCHOR + GUEST_POV + "The realtor in the primary suite, facing the guest to gesture at scale and amenities. Hero moment. Lips closed, silent, no speaking.",
+    master_bathroom: IDENTITY_ANCHOR + GUEST_POV + "The realtor at the en-suite entrance, facing the guest to gesture toward the tub. Hero moment. Lips closed, silent, no speaking.",
 };
 
 export function getNanoBananaRoomPrompt(
@@ -79,5 +87,5 @@ export function getNanoBananaRoomPrompt(
     if (key.includes("outdoor") || key.includes("patio") || key.includes("deck"))
         return NANO_BANANA_ROOM_PROMPTS.outdoor;
 
-    return "The guide from reference photo in room. Natural pose. Real estate cinematography.";
+    return IDENTITY_ANCHOR + GUEST_POV + "The realtor in the room, facing or turning to the guest (camera). Lips closed, silent, no speaking. Real estate walkthrough.";
 }

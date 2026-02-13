@@ -119,9 +119,12 @@ export async function getNanoBananaTaskStatus(taskId: string): Promise<{ status:
     return { status: "processing" };
 }
 
+// 6 min default — Nano Banana Pro can exceed 3 min under load; Kie Kling uses 15 min
+const DEFAULT_NANO_BANANA_TIMEOUT = parseInt(process.env.NANO_BANANA_TIMEOUT_MS || "360000", 10);
+
 export async function waitForNanoBananaTask(
     taskId: string,
-    timeoutMs: number = 120000,
+    timeoutMs: number = DEFAULT_NANO_BANANA_TIMEOUT,
     pollIntervalMs: number = 5000
 ): Promise<NanoBananaResult> {
     const start = Date.now();

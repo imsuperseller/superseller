@@ -126,3 +126,57 @@ async function fetchImageData(url: string): Promise<string> {
     const response = await axios.get(url, { responseType: "arraybuffer" });
     return Buffer.from(response.data, "binary").toString("base64");
 }
+
+/**
+ * Pick the best photo for the opening shot: ground-level walkway/path to front door.
+ * Avoids aerial/drone shots. Returns the index into the urls array (0-based).
+ */
+export async function pickBestApproachPhotoForOpening(urls: string[]): Promise<number> {
+    if (!urls.length) return 0;
+    if (urls.length === 1) return 0;
+
+    // Build multi-image message for vision model
+    const content: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
+        {
+            type: "text",
+            text: `You are analyzing photos of a house for a real estate video. The opening shot MUST show the FRONT of the house—the walkway/path leading to the front door.
+
+CRITICAL - REJECT these for the opening (choose a different image):
+- Pool, swimming pool, backyard, patio with pool, water—visible ANYWHERE in the frame (including edges, background, reflection)
+- Interior rooms (living room, kitchen, bedroom, etc.)
+- Aerial/drone shot, shot from above
+- Any image where pool/water/backyard is visible—the pool is in the BACK of the house, NOT the front. If you see water or pool, that is the WRONG image.
+
+The opening must show: ground-level view of the front door area ONLY, walkway, or driveway approach. Where a visitor would stand when they first arrive. NO pool visible. NO backyard visible.
+When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the index (0, 1, 2, etc.)—no other text.`,
+        },
+        ...urls.slice(0, 5).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+    ];
+
+    try {
+        const response = await axios.post(
+            `${config.kie.baseUrl}/gemini-3-pro/v1/chat/completions`,
+            {
+                messages: [{ role: "user", content }],
+                stream: false,
+                include_thoughts: false,
+                reasoning_effort: "low",
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${config.kie.apiKey}`,
+                },
+            }
+        );
+
+        const choice = response.data?.choices?.[0];
+        const text = (choice?.message?.content || choice?.delta?.content || "").trim();
+        const match = text.match(/\b([0-4])\b/);
+        const idx = match ? parseInt(match[1], 10) : 0;
+        return Math.min(idx, urls.length - 1);
+    } catch (err: any) {
+        logger.warn({ msg: "pickBestApproachPhotoForOpening failed, using first photo", error: err.message });
+        return 0;
+    }
+}

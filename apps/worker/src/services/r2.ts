@@ -7,6 +7,7 @@ import { logger } from "../utils/logger";
 const r2Client = new S3Client({
     region: "auto",
     endpoint: config.r2.endpoint,
+    forcePathStyle: true, // R2: avoid virtual-hosted style (bucket.endpoint) which causes ENOTFOUND
     credentials: {
         accessKeyId: config.r2.accessKeyId,
         secretAccessKey: config.r2.secretAccessKey,

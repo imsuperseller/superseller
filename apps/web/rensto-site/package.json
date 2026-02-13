@@ -16,7 +16,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "check-port": "node scripts/check-port.js",
-    "setup": "node scripts/setup-system.js"
+    "setup": "node scripts/setup-system.js",
+    "test:credits": "tsx tools/test-credits.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

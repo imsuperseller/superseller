@@ -1,7 +1,7 @@
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { existsSync } from "fs";
-import { join } from "path";
+import { join, resolve } from "path";
 import { logger } from "../utils/logger";
 import { config } from "../config";
 
@@ -46,9 +46,13 @@ export async function normalizeClip(
 }
 
 // ─── STITCH CLIPS WITH CONCAT (SEAMLESS, NO TRANSITIONS) ───
-// Uses concat demuxer: zero-loss hard cuts. Use when clips are generated with
-// first+last frame matching (Chain Invariant). No visible xfade between scenes.
-export async function stitchClipsConcat(clipPaths: string[], outputPath: string): Promise<{ duration: number }> {
+// Uses concat demuxer. When boundaryFramePaths provided: insert extracted last-frame as 1-frame segment
+// at each boundary so clip N+1 starts with the EXACT same frame clip N ended on (Kling may alter first frame).
+export async function stitchClipsConcat(
+    clipPaths: string[],
+    outputPath: string,
+    options?: { boundaryFramePaths?: string[] }
+): Promise<{ duration: number }> {
     if (clipPaths.length === 0) throw new Error("No clips to stitch");
 
     if (clipPaths.length === 1) {
@@ -59,20 +63,62 @@ export async function stitchClipsConcat(clipPaths: string[], outputPath: string)
         return { duration };
     }
 
-    const listPath = outputPath.replace(/\.(mp4|mkv)$/i, "_list.txt");
-    const listContent = clipPaths.map((p) => `file '${p}'`).join("\n");
-    const { writeFileSync } = await import("fs");
-    writeFileSync(listPath, listContent);
+    const boundaryFrames = options?.boundaryFramePaths;
+    const useBoundaryFrames = boundaryFrames && boundaryFrames.length >= clipPaths.length - 1;
 
-    await execFileAsync("ffmpeg", [
-        "-y", "-f", "concat", "-safe", "0", "-i", listPath,
-        "-c", "copy",
-        "-movflags", "+faststart",
-        outputPath,
-    ], { timeout: 300000 });
-
-    const { unlinkSync } = await import("fs");
-    try { unlinkSync(listPath); } catch (_) {}
+    if (useBoundaryFrames) {
+        // Build: clip0 + frame0 + clip1_trim1 + frame1 + clip2_trim1 + ... for perfect continuity.
+        const { join } = await import("path");
+        const { writeFileSync, unlinkSync } = await import("fs");
+        const outDir = join(outputPath, "..");
+        const segments: string[] = [clipPaths[0]];
+        const fps = 24;
+        const width = config.video.outputWidth;
+        const height = config.video.outputHeight;
+        for (let i = 1; i < clipPaths.length; i++) {
+            const framePath = resolve(boundaryFrames![i - 1]);
+            const oneFrameVideo = join(outDir, `_boundary_${i}.mp4`);
+            await execFileAsync("ffmpeg", [
+                "-y", "-loop", "1", "-i", framePath,
+                "-c:v", "libx264", "-t", String(1 / fps), "-r", String(fps),
+                "-pix_fmt", "yuv420p",
+                "-vf", `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
+                oneFrameVideo,
+            ], { timeout: 30000 });
+            segments.push(oneFrameVideo);
+            const trimmed = join(outDir, `_clip${i}_trim.mp4`);
+            await execFileAsync("ffmpeg", [
+                "-y", "-i", clipPaths[i],
+                "-vf", `select=gte(n\\,1),setpts=PTS-STARTPTS`, "-r", String(fps),
+                "-c:v", "libx264", "-crf", "18", "-an", trimmed,
+            ], { timeout: 120000 });
+            segments.push(trimmed);
+        }
+        const listPath = outputPath.replace(/\.(mp4|mkv)$/i, "_list.txt");
+        const listContent = segments.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join("\n");
+        writeFileSync(listPath, listContent);
+        await execFileAsync("ffmpeg", [
+            "-y", "-f", "concat", "-safe", "0", "-i", listPath,
+            "-c", "copy", "-movflags", "+faststart", outputPath,
+        ], { timeout: 300000 });
+        try {
+            for (let i = 1; i < clipPaths.length; i++) {
+                try { unlinkSync(join(outDir, `_boundary_${i}.mp4`)); } catch (_) {}
+                try { unlinkSync(join(outDir, `_clip${i}_trim.mp4`)); } catch (_) {}
+            }
+        } catch (_) {}
+        try { unlinkSync(listPath); } catch (_) {}
+    } else {
+        const listPath = outputPath.replace(/\.(mp4|mkv)$/i, "_list.txt");
+        const listContent = clipPaths.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join("\n");
+        const { writeFileSync, unlinkSync } = await import("fs");
+        writeFileSync(listPath, listContent);
+        await execFileAsync("ffmpeg", [
+            "-y", "-f", "concat", "-safe", "0", "-i", listPath,
+            "-c", "copy", "-movflags", "+faststart", outputPath,
+        ], { timeout: 300000 });
+        try { unlinkSync(listPath); } catch (_) {}
+    }
 
     const duration = await getVideoDuration(outputPath);
     logger.info({ msg: "Stitch concat complete", count: clipPaths.length, duration: `${duration.toFixed(1)}s` });
@@ -264,24 +310,37 @@ export async function extractLastFrame(
     videoPath: string,
     outputPath: string
 ): Promise<void> {
+    // Try frame-count first; fallback to duration-based when nb_read_frames is N/A (VFR, etc.)
     const { stdout } = await execFileAsync("ffprobe", [
         "-v", "quiet",
         "-count_frames",
         "-select_streams", "v:0",
-        "-show_entries", "stream=nb_read_frames",
+        "-show_entries", "stream=nb_read_frames,r_frame_rate",
+        "-show_entries", "format=duration",
         "-print_format", "json",
         videoPath,
     ]);
     const data = JSON.parse(stdout);
-    const totalFrames = parseInt(data.streams[0].nb_read_frames) - 1;
+    const stream = data.streams?.[0];
+    const nbFrames = stream?.nb_read_frames != null ? parseInt(String(stream.nb_read_frames), 10) : NaN;
+    let lastFrameIdx = Number.isFinite(nbFrames) ? nbFrames - 1 : -1;
+
+    if (lastFrameIdx < 0) {
+        const duration = parseFloat(data.format?.duration ?? "0");
+        const fpsMatch = (stream?.r_frame_rate ?? "24/1").split("/");
+        const fps = fpsMatch.length === 2
+            ? parseFloat(fpsMatch[0]) / parseFloat(fpsMatch[1])
+            : 24;
+        lastFrameIdx = Math.max(0, Math.floor(duration * fps) - 1);
+    }
 
     await execFileAsync("ffmpeg", [
         "-i", videoPath,
-        "-vf", `select=eq(n\\,${totalFrames})`,
+        "-vf", `select=eq(n\\,${lastFrameIdx})`,
         "-frames:v", "1",
         "-q:v", "1",
         "-y", outputPath,
     ], { timeout: 30000 });
 
-    logger.debug({ msg: "Last frame extracted", frame: totalFrames, output: outputPath });
+    logger.debug({ msg: "Last frame extracted", frame: lastFrameIdx, output: outputPath });
 }

@@ -1,6 +1,7 @@
-# Marketplace Platform Bible (Standalone)
+# Marketplace Platform Bible (Standalone / Isolated Legacy)
 
-This directory contains the fully isolated **Facebook Marketplace Listing & Lead Engine**. It has been decoupled from the main Rensto repository to serve as a portable, productized solution.
+> [!CAUTION]
+> **LEGACY ISLAND**: This platform currently operates as an isolated legacy system. Unlike the primary Rensto SSOT (which uses PostgreSQL), this engine still depends on **Firestore** for configuration and n8n for orchestration. Do NOT attempt to port this logic to the main database without a full rewrite.
 
 ## 🏗 Directory Architecture
 

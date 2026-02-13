@@ -28,12 +28,47 @@ enum BillingInterval {
 }
 
 // ==========================================
+// GROUP 0: MULTI-TENANCY
+// ==========================================
+
+/// Multi-tenant business account.
+model Tenant {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  slug           String   @unique
+  status         String   @default("active") // active, paused, closed
+  
+  plan           Json?    // PlanSchema shape
+  settings       Json?    // { timezone, dateFormat, branding }
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  users          TenantUser[]
+  
+  @@index([slug])
+  @@index([status])
+}
+
+/// Join table for User <-> Tenant many-to-many relationship
+model TenantUser {
+  tenantId String @db.Uuid
+  userId   String @db.Uuid
+  role     String @default("user") // owner, admin, user, viewer
+  
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@id([tenantId, userId])
+}
+
+// ==========================================
 // GROUP 1: AUTH & USER IDENTITY
 // ==========================================
 
-/// Primary user/client record. ID is email-derived (e.g. john_example_com).
+/// Primary user/client record. Standardized to native UUID.
 model User {
-  id             String  @id // email-derived, set by app
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email          String  @unique
   name           String?
   phone          String?
@@ -47,9 +82,9 @@ model User {
   revenueRange String? // '$200k-500k','$500k-1m', etc.
 
   // Account Status
-  status        String   @default("active") // active,configuring,suspended,cancelled,lead,prospect,qualified
+  status        String   @default("active")
   role          UserRole @default(USER)
-  emailVerified Boolean  @default(false)
+  emailVerified DateTime?
 
   // Infrastructure (JSON — rarely queried individually)
   n8nInstance Json? // { url, apiKey, mcpToken }
@@ -83,11 +118,15 @@ model User {
   lastLoginAt DateTime?
 
   // ---- Relations ----
+  tenants        TenantUser[]
+  
   // NextAuth (future use)
   accounts Account[]
   sessions Session[]
 
   // App relations
+  entitlement          Entitlement?
+  usageEvents          UsageEvent[]
   magicLinkTokens      MagicLinkToken[]
   payments             Payment[]
   purchases            Purchase[]
@@ -121,7 +160,7 @@ model User {
 /// NextAuth Account — kept for future OAuth integration
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @db.Uuid
   type              String
   provider          String
   providerAccountId String
@@ -142,7 +181,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.Uuid
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -161,7 +200,7 @@ model VerificationToken {
 model MagicLinkToken {
   id        String   @id @default(cuid())
   email     String
-  clientId  String
+  clientId  String   @db.Uuid
   used      Boolean  @default(false)
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -174,7 +213,7 @@ model MagicLinkToken {
 
 /// Legacy custom-solutions client record (backward compat during migration)
 model CustomSolutionsClient {
-  id    String @id // same ID as User
+  id    String @id @db.Uuid // same ID as User
   email String
   name  String
 
@@ -205,7 +244,7 @@ model CustomSolutionsClient {
 
 /// Legacy client branding record
 model Client {
-  id                String  @id
+  id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name              String
   logoUrl           String?
   showLogoOnLanding Boolean @default(false)
@@ -225,21 +264,21 @@ model Client {
 
 /// Stripe payment events logged from webhooks
 model Payment {
-  id              String  @id @default(cuid())
-  userId          String?
-  stripeSessionId String?
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String? @db.Uuid
+  stripeSessionId  String?
   stripeCustomerId String? // Stripe customer ID (cus_xxx)
-  customerId      String? // Legacy: Stripe customer ID alias
-  customerEmail   String?
-  amount          Int     @default(0) // cents (unified field name)
-  amountTotal     Int     @default(0) // cents (legacy compat)
-  currency        String  @default("usd")
-  status          String  @default("pending") // pending, completed, failed, refunded
-  flowType        String? // marketplace-template, managed-plan, pillar-purchase, etc.
-  productId       String?
-  tier            String?
-  platform        String  @default("rensto-web")
-  metadata        Json?   // Flexible metadata for any extra info
+  customerId       String? // Legacy: Stripe customer ID alias
+  customerEmail    String?
+  amount           Int     @default(0) // cents (unified field name)
+  amountTotal      Int     @default(0) // cents (legacy compat)
+  currency         String  @default("usd")
+  status           String  @default("pending") // pending, completed, failed, refunded
+  flowType         String? // marketplace-template, managed-plan, pillar-purchase, etc.
+  productId        String?
+  tier             String?
+  platform         String  @default("rensto-web")
+  metadata         Json?   // Flexible metadata for any extra info
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -255,8 +294,8 @@ model Payment {
 
 /// Marketplace purchase records with secure download tokens
 model Purchase {
-  id              String  @id @default(cuid())
-  userId          String
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String  @db.Uuid
   templateId      String?
   customerEmail   String
   stripeSessionId String?
@@ -276,7 +315,7 @@ model Purchase {
 
 /// Template download events
 model Download {
-  id              String  @id @default(cuid())
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   templateId      String
   userEmail       String
   paymentIntentId String?
@@ -298,8 +337,8 @@ model Download {
 
 /// Active service instances (marketplace installs, Core 7, etc.)
 model ServiceInstance {
-  id          String @id @default(cuid())
-  clientId    String
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId    String @db.Uuid
   clientEmail String
   productId   String?
   productName String?
@@ -314,7 +353,7 @@ model ServiceInstance {
   stripeSessionId String?
 
   // WhatsApp-specific
-  whatsappInstanceId String?
+  whatsappInstanceId String? @db.Uuid
   whatsappBundle     String?
 
   // Performance
@@ -339,8 +378,8 @@ model ServiceInstance {
 
 /// Recurring subscriptions (WhatsApp, care plan, lead gen, content AI)
 model Subscription {
-  id        String @id @default(cuid())
-  userId    String
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String @db.Uuid
   userEmail String
 
   // Stripe
@@ -352,7 +391,7 @@ model Subscription {
 
   // WhatsApp-specific
   whatsappBundle     String?
-  whatsappInstanceId String?
+  whatsappInstanceId String? @db.Uuid
 
   // Care Plan-specific
   carePlanTier               String?
@@ -394,9 +433,9 @@ model Subscription {
 
 /// Monthly care plan deliverable tracking
 model CarePlanDeliverable {
-  id             String @id @default(cuid())
-  userId         String
-  subscriptionId String
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String @db.Uuid
+  subscriptionId String @db.Uuid
   carePlanTier   String // starter, growth, scale
 
   periodStart DateTime
@@ -493,7 +532,7 @@ model Template {
 
   // Ownership
   owner      String? // rensto, client
-  clientId   String?
+  clientId   String? @db.Uuid
   department String?
 
   // n8n Integration
@@ -557,7 +596,7 @@ model Template {
 
 /// Marketplace customization requests
 model CustomizationRequest {
-  id            String  @id @default(cuid())
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   templateId    String
   customerEmail String?
   parameters    Json?   // Customization parameters from modal
@@ -575,7 +614,7 @@ model CustomizationRequest {
 
 /// Solution catalog (Jan 2026 restructuring — outcome-focused products)
 model Solution {
-  id              String  @id @default(cuid())
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name            String
   description     String? @db.Text
   outcomeHeadline String?
@@ -604,9 +643,9 @@ model Solution {
 
 /// Client-specific solution instance with deployment tracking
 model SolutionInstance {
-  id          String @id @default(cuid())
-  solutionId  String
-  clientId    String
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  solutionId  String @db.Uuid
+  clientId    String @db.Uuid
   clientEmail String
 
   model  String @default("builder") // builder, bundle
@@ -641,8 +680,8 @@ model SolutionInstance {
 
 /// WhatsApp AI agent instances per customer
 model WhatsAppInstance {
-  id           String  @id @default(cuid())
-  userId       String
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String  @db.Uuid
   userEmail    String
   businessName String?
   businessType String?
@@ -659,8 +698,8 @@ model WhatsAppInstance {
   metrics       Json? // { totalMessages, averageResponseTime, leadsCaptured, ... }
   configuration Json? // { businessHours, serviceAreas, pricing, calendarIntegration, ... }
 
-  subscriptionId String?
-  carePlanId     String?
+  subscriptionId String? @db.Uuid
+  carePlanId     String? @db.Uuid
 
   createdAt   DateTime  @default(now())
   activatedAt DateTime?
@@ -680,9 +719,9 @@ model WhatsAppInstance {
 
 /// Individual WhatsApp messages with speed-to-lead tracking
 model WhatsAppMessage {
-  id                 String @id @default(cuid())
-  whatsappInstanceId String
-  userId             String
+  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  whatsappInstanceId String @db.Uuid
+  userId             String @db.Uuid
 
   from        String
   to          String
@@ -716,9 +755,9 @@ model WhatsAppMessage {
 
 /// Appointments booked through WhatsApp AI
 model AppointmentBooking {
-  id                 String @id @default(cuid())
-  whatsappInstanceId String
-  userId             String
+  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  whatsappInstanceId String @db.Uuid
+  userId             String @db.Uuid
 
   customerName  String
   customerPhone String
@@ -739,7 +778,7 @@ model AppointmentBooking {
   calendarProvider String? // tidycal, calendly, google
 
   source            String  @default("whatsapp_ai") // whatsapp_ai, manual, website, phone
-  whatsappMessageId String?
+  whatsappMessageId String? @db.Uuid
 
   notes         String? @db.Text
   internalNotes String? @db.Text
@@ -761,14 +800,14 @@ model AppointmentBooking {
 
 /// Lead records from all sources with speed-to-lead and conversion tracking
 model Lead {
-  id String @id @default(cuid())
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   source   String // whatsapp, linkedin, google_maps, facebook, apify, manual, qualification_quiz
   sourceId String?
 
-  userId             String
-  subscriptionId     String?
-  whatsappInstanceId String?
+  userId             String @db.Uuid
+  subscriptionId     String? @db.Uuid
+  whatsappInstanceId String? @db.Uuid
 
   // Contact info
   name    String?
@@ -825,8 +864,8 @@ model Lead {
 
 /// Free-leads trial requests
 model LeadRequest {
-  id     String @id @default(cuid())
-  userId String
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @db.Uuid
   data   Json? // Full request payload
   status String @default("pending")
 
@@ -839,8 +878,8 @@ model LeadRequest {
 
 /// Email / LinkedIn / multi-channel outreach campaigns
 model OutreachCampaign {
-  id     String  @id @default(cuid())
-  userId String
+  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String  @db.Uuid
   name   String?
   type   String? // email, linkedin, etc.
   status String  @default("draft")
@@ -857,10 +896,10 @@ model OutreachCampaign {
 
 /// Monthly response-time analytics per user
 model ResponseTimeMetrics {
-  id                 String @id @default(cuid())
-  userId             String
-  whatsappInstanceId String?
-  subscriptionId     String?
+  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String @db.Uuid
+  whatsappInstanceId String? @db.Uuid
+  subscriptionId     String? @db.Uuid
 
   period      String // "2026-01"
   periodStart DateTime
@@ -891,9 +930,9 @@ model ResponseTimeMetrics {
 
 /// Agent execution logs (n8n runs, AI calls, etc.)
 model UsageLog {
-  id       String @id @default(cuid())
-  clientId String
-  userId   String? // alias for clientId (used by billing queries)
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId String @db.Uuid
+  userId   String? @db.Uuid // alias for clientId (used by billing queries)
   agentId  String  @default("system") // matches ServiceManifest.id
   status   String  @default("completed") // completed, failed, running
 
@@ -925,8 +964,8 @@ model UsageLog {
 
 /// Blog posts and social content
 model ContentPost {
-  id     String  @id @default(cuid())
-  userId String
+  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String  @db.Uuid
   title  String?
   content String? @db.Text
   type   String? // blog, social, etc.
@@ -950,8 +989,8 @@ model ContentPost {
 
 /// Knowledge-base indexed documents (PDF, URL, text)
 model IndexedDocument {
-  id       String @id @default(cuid())
-  clientId String
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId String @db.Uuid
   name     String
   type     String // pdf, url, text
   status   String @default("processing") // indexed, processing, failed
@@ -971,8 +1010,8 @@ model IndexedDocument {
 
 /// Voice / WhatsApp AI secretary configuration per client
 model SecretaryConfig {
-  id              String  @id @default(cuid())
-  clientId        String
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId        String  @db.Uuid
   agentName       String?
   voiceId         String?
   greeting        String? @db.Text
@@ -1001,8 +1040,8 @@ model SecretaryConfig {
 
 /// Voice call log entries
 model VoiceCallLog {
-  id     String @id @default(cuid())
-  userId String
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @db.Uuid
   data   Json // Full call log payload
 
   createdAt DateTime @default(now())
@@ -1019,8 +1058,8 @@ model VoiceCallLog {
 
 /// Customer support cases with AI reasoning
 model SupportCase {
-  id               String  @id @default(cuid())
-  customerId       String
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId       String  @db.Uuid
   workflowId       String?
   carePlanTier     String?
   submissionMethod String? // magic_button, voice, whatsapp
@@ -1046,8 +1085,8 @@ model SupportCase {
 
 /// Content / workflow approval requests
 model ApprovalRequest {
-  id          String  @id @default(cuid())
-  clientId    String
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId    String  @db.Uuid
   serviceId   String
   title       String
   description String? @db.Text
@@ -1068,8 +1107,8 @@ model ApprovalRequest {
 
 /// Client testimonials (linked to legacy Client model)
 model Testimonial {
-  id       String  @id @default(cuid())
-  clientId String?
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId String? @db.Uuid
   language String  @default("en") // en, he
 
   // Core fields (used by admin CRUD)
@@ -1099,9 +1138,9 @@ model Testimonial {
 
 /// Onboarding form submissions for solution setup
 model OnboardingRequest {
-  id         String  @id @default(cuid())
-  userId     String
-  solutionId String?
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String  @db.Uuid
+  solutionId String? @db.Uuid
   status     String  @default("draft") // draft, submitted, approved, rejected
   data       Json? // Full form data
 
@@ -1117,7 +1156,7 @@ model OnboardingRequest {
 
 /// System audit trail
 model Audit {
-  id           String  @id @default(cuid())
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   service      String
   action       String
   status       String // success, error
@@ -1132,7 +1171,7 @@ model Audit {
 
 /// Pre-launch task management
 model LaunchTask {
-  id          String  @id @default(cuid())
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   description String? @db.Text
   status      String  @default("pending")
@@ -1151,8 +1190,8 @@ model LaunchTask {
 
 /// AI-generated proposals for custom solutions
 model Proposal {
-  id      String @id @default(cuid())
-  userId  String
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId  String @db.Uuid
   content Json // Full proposal payload
   status  String @default("draft")
 
@@ -1166,8 +1205,8 @@ model Proposal {
 
 /// Qualification scorecard results
 model Scorecard {
-  id     String @id @default(cuid())
-  userId String
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @db.Uuid
   data   Json // Full scorecard payload
 
   createdAt DateTime @default(now())
@@ -1179,9 +1218,9 @@ model Scorecard {
 
 /// Custom-solution consultation records
 model Consultation {
-  id       String  @id @default(cuid())
-  userId   String
-  clientId String? // alias for userId (used in proposals)
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String  @db.Uuid
+  clientId String? @db.Uuid // alias for userId (used in proposals)
   type     String? // proposal, discovery_call, etc.
   data     Json? // Full consultation payload
   status   String  @default("pending")
@@ -1198,8 +1237,8 @@ model Consultation {
 
 /// Business requirements documents
 model Requirement {
-  id       String  @id @default(cuid())
-  clientId String? // who submitted
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId String? @db.Uuid // who submitted
   type     String? // onboarding, feature_request, etc.
   data     Json? // Full requirements payload
   metadata Json? // Additional structured data
@@ -1213,7 +1252,7 @@ model Requirement {
 
 /// Workflow optimizer audit results
 model OptimizerAudit {
-  id   String @id @default(cuid())
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   data Json
 
   createdAt DateTime @default(now())
@@ -1221,7 +1260,7 @@ model OptimizerAudit {
 
 /// Admin AI assistant (Terry) chat history
 model AdminConversation {
-  id       String @id @default(cuid())
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   messages Json // Array of { role, content, timestamp }
 
   createdAt DateTime @default(now())
@@ -1230,7 +1269,7 @@ model AdminConversation {
 
 /// n8n agent persistent memory store
 model N8nAgentMemory {
-  id   String  @id @default(cuid())
+  id   String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   key  String?
   data Json
 
@@ -1240,9 +1279,45 @@ model N8nAgentMemory {
   @@index([key])
 }
 
+/// User account entitlements (credits, usage limits)
+/// SSOT: Aligned with Drizzle entitlementsTable and CreditService
+model Entitlement {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String    @unique @db.Uuid @map("user_id")
+  creditsBalance Int       @default(0) @map("credits_balance") // unit-based (e.g. 1000 = 1000 credits)
+  plan           String    @default("starter")
+  status         String    @default("active")
+  resetAt        DateTime? @map("reset_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("entitlements")
+}
+
+/// Precise usage events for auditing and billing
+/// SSOT: Aligned with Drizzle usageEvents and CreditService
+model UsageEvent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @db.Uuid @map("user_id")
+  type      String   // debit, refund, topup, grant, reset
+  amount    Int      // Positive for topup/refund, negative for debit
+  jobId     String?  @db.Uuid @map("job_id")
+  metadata  Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("usage_events")
+}
+
 /// Generic analytics events
 model Analytics {
-  id     String  @id @default(cuid())
+  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type   String
   data   Json
   period String?
@@ -1255,7 +1330,7 @@ model Analytics {
 
 /// Industry niche definitions with WhatsApp FAQ templates
 model BusinessNiche {
-  id       String @id @default(cuid())
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String
   slug     String @unique
   category String // home_services, professional_services, retail, food_service, other
@@ -1279,7 +1354,7 @@ model BusinessNiche {
 
 /// Encrypted secrets vault (replaces Firestore restricted/{sub}/items)
 model VaultItem {
-  id       String @id @default(cuid())
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   category String // The subcollection name
   key      String
   value    String @db.Text // Encrypted value

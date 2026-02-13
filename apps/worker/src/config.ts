@@ -3,9 +3,12 @@ import * as path from "path";
 import { logger } from "./utils/logger";
 
 // Load root .env first, then apps/worker/.env (worker overrides)
+// Preserve explicit MAX_CLIPS from shell so 1-clip tests aren't overridden by .env
+const explicitMaxClips = process.env.MAX_CLIPS;
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 const workerEnv = path.resolve(process.cwd(), ".env");
 dotenv.config({ path: workerEnv, override: true });
+if (explicitMaxClips !== undefined) process.env.MAX_CLIPS = explicitMaxClips;
 
 function required(key: string): string {
     const value = process.env[key];
@@ -106,10 +109,19 @@ export const config = {
         defaultModel: "kling_3" as const,
         defaultTransition: "fade" as const,
         defaultClipDuration: 5,
-        maxClipsPerVideo: 15,
+        maxClipsPerVideo: parseInt(optional("MAX_CLIPS", "15")), // Normal: 15 (full tour). Quick smoke: MAX_CLIPS=3
         maxRetriesPerClip: 3,
         maxCostPerVideo: 50.00,
         xfadeDuration: 0.5,
+        // OUTPUT_RESOLUTION: "4k" -> 3840x2160, "1080p" or default -> 1920x1080
+        outputWidth: (() => {
+            const r = (optional("OUTPUT_RESOLUTION", "1080p") || "1080p").toLowerCase();
+            return r === "4k" ? 3840 : 1920;
+        })(),
+        outputHeight: (() => {
+            const r = (optional("OUTPUT_RESOLUTION", "1080p") || "1080p").toLowerCase();
+            return r === "4k" ? 2160 : 1080;
+        })(),
     },
 } as const;
 

@@ -16,12 +16,13 @@
 | **Codebase** | `apps/worker/src/services/kie.ts` — `createKlingTask` with model `kling-3.0/video` | No `fal.ts` exists in src/ |
 
 **Canonical order when starting**:  
-1. **NotebookLM Zillow-to-Video** — [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) — **Production instructions live here.** 12 sources: Architectural Blueprint, Implementation Specs, Cinematic Pipeline Config, Drizzle Schema, Testing Roadmap, Agent Protocols, etc. Query via `notebooklm_notebook_query` before architectural decisions.  
-2. `brain.md` (Mission Control)  
-3. `CLAUDE.md` (technical context)  
-4. `.cursor/AGENT_CONTEXT.md` (priorities)  
-5. `apps/worker/legacy_archive/PROJECT_SOURCE_OF_TRUTH.md` (local production spec)  
-6. `apps/worker/AGENT_SELF_AUDIT.md` (this file)
+1. **`apps/worker/PIPELINE_SPEC.md`** — **Single source of truth** for pipeline architecture and flow.  
+2. **NotebookLM Zillow-to-Video** — [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) — Production instructions. Query via `notebooklm_notebook_query` for high-level alignment.  
+3. `brain.md` (Mission Control)  
+4. `CLAUDE.md` (technical context)  
+5. `.cursor/AGENT_CONTEXT.md` (priorities)  
+6. `apps/worker/legacy_archive/PROJECT_SOURCE_OF_TRUTH.md` (retrospective; PIPELINE_SPEC supersedes)  
+7. `apps/worker/AGENT_SELF_AUDIT.md` (this file — past mistakes, R2 config)
 
 **Conflict rule:** When NotebookLM (Zillow-to-Video) and local `claude ref/` disagree, NotebookLM wins.
 
@@ -47,7 +48,7 @@
 
 ## 4. WHAT I SHOULD DO BUT AM STILL NOT
 
-1. **Update blueprint + implementation specs** — Change all references from "fal primary / kie backup" to "Kie Kling 3 primary, no FAL."
+1. ~~**Update blueprint + implementation specs**~~ — **Consolidated**: See `PIPELINE_SPEC.md`. Legacy docs archived in `legacy_archive/claude ref/`.
 2. **Fix R2 URL handling** — Ensure `R2_PUBLIC_URL` is set in production and that `uploadToR2` always returns a full public URL when images are passed to Kie (so Kie can fetch them).
 3. **Query NotebookLM before changes** — Production instructions (rewired plan, Nano Banana Pro, Kling 3, pipeline specs) are in NotebookLM. Run `notebooklm-mcp-auth` if auth expired, then `notebooklm_notebook_query` to validate architecture.
 4. **Document Kie Kling 3 API quirks** — e.g. `sound` param behavior, `image_urls` format, so future failures don’t require re-discovery.

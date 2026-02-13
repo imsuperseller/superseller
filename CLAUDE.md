@@ -1,16 +1,27 @@
-# 🎯 RENSTO MASTER DOCUMENTATION - Full Technical Context
+# 🎯 RENSTO MASTER DOCUMENTATION — Canonical SSOT Router
 
-**Last Updated**: February 2026
-**Status**: ✅ Lead Machine v3 Live (Outlook), ✅ Telnyx Voice AI Live, ✅ Content Engine (LightRAG) Ready, ✅ 7 Stripe Payment Links Live, ✅ PostgreSQL Migration Complete.
-**Purpose**: The ONE place for all Rensto Business, Technical, and Operational knowledge.
+**Current Era**: Self-Serving SaaS (Programmatic Stack)  
+**Main Engine**: Antigravity (Node.js/Postgres/R2)  
+
+> [!IMPORTANT]
+> **SSOT ARCHITECTURE**: Do NOT search for documentation elsewhere. Use these Bibles:
+> 1. **Infrastructure Bible**: [`docs/INFRA_SSOT.md`](file:///Users/shaifriedman/New%20Rensto/rensto/docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment.
+> 2. **Product Bible**: [`docs/PRODUCT_BIBLE.md`](file:///Users/shaifriedman/New%20Rensto/rensto/docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs.
+> 3. **History/Lessons Bible**: [`docs/REMOVAL_LOG.md`](file:///Users/shaifriedman/New%20Rensto/rensto/docs/REMOVAL_LOG.md) — Archive of failures and pivots.
+> 4. **Video Pipeline Spec**: [`apps/worker/PIPELINE_SPEC.md`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/worker/PIPELINE_SPEC.md) — TourReel technical truth.
+
+> [!NOTE]
+> **Database Stack**: 
+> - **Primary (Web)**: Prisma + PostgreSQL (apps/web/rensto-site/prisma/schema.prisma).
+> - **Video Worker**: Drizzle + PostgreSQL (apps/worker-packages/db/src/schema.ts).
+> - Both use the same `DATABASE_URL`. Shared tables like `User` must be manually synced across schemas.
 
 > [!WARNING]
-> **DEPRECATION NOTICE**: 
-> - The folder `apps/web/admin-dashboard` was deleted from the repo. Admin lives in `apps/web/rensto-site/src/app/admin`.
-> - **Firestore and Airtable.com are retired.** Primary database: **PostgreSQL + Redis**. **Aitable.ai** remains in use (dashboards, syncs). Migration to Postgres **COMPLETE** (Feb 2026). Firestore fallback reads remain in some routes as safety net; `firestoreBackupWrite` calls have been stripped.
-> - **n8n is backup/reference only.** Primary automation: **Antigravity** on RackNerd.
-> - **Webflow is retired.** All pages served by Next.js (rensto-site) on Vercel.
-> - **BMAD is retired.** Use **B.L.A.S.T.** for all work.
+> **Pivots & Deprecations**:
+> - **n8n** is for storage/prototyping ONLY. extraction is in progress.
+> - **Firestore/Airtable** are retired. **PostgreSQL** is the only transactional DB truth.
+> - **Webflow/BMAD** are retired. The system is 100% programmatic.
+
 
 > [!IMPORTANT]
 > **📖 Canonical docs**: Read **brain.md** first — Mission Control. This file (CLAUDE.md) provides full technical context. See also **ARCHITECTURE.md** (folder map), **REPO_MAP.md** (what you're seeing in plain language), **CODEBASE_AUDIT.md** (cleanup checklist, audit order), **CLEANUP_DETERMINED.md**, **MASTERY_STATUS.md** (what’s been gone through vs what’s left, and in which order to continue) (items 100% determined as not in place / outdated / consolidatable / redundant). For business context and priorities: **`.cursor/AGENT_CONTEXT.md`**.
@@ -115,7 +126,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 - Only when Antigravity cannot perform the task
 - Workflows kept as reference
 
-**Retired**: Firestore, Airtable.com. Migration to PostgreSQL **COMPLETE** (Feb 2026). **Aitable.ai**: In use for dashboards, syncs.
+**Retired**: Firestore (fallback reads only), Airtable.com. Migration to PostgreSQL **COMPLETE** (Feb 2026). **Aitable.ai**: In use for dashboards, syncs. See `CLAUDE_CODE_WORKFLOW.md` for terminal/Claude Code workflow.
 
 **Sync to Notion** (DOCUMENTATION):
 - Strategic planning docs
@@ -136,7 +147,7 @@ We operate on a **"Sell Outcomes, Not Workflows"** philosophy inspired by Ryan D
 
 **Current State**:
 - n8n Data Tables: 13 workflows actively using (INT-LEAD-001 is primary)
-- Airtable: 11 bases, 867 records across 124 tables → **Consolidate to 30-40 tables**
+- **Airtable.com**: Retired. Legacy reference below; Aitable.ai used for dashboards.
 - Notion: 80 records in 3 databases → **Reduce to 15-20 docs**
 
 **Action Plan**:
@@ -982,6 +993,11 @@ All 5 core payment flows are operational and integrated with Firestore:
 - **Hosting**: Vercel
 - **Documentation**: `apps/web/README.md`
 
+**TourReel / Zillow-to-Video** (`apps/worker/`):
+- **Purpose**: AI property tour video pipeline (Kie Kling 3 + Nano Banana Pro)
+- **Canonical spec**: `apps/worker/PIPELINE_SPEC.md` — single source of truth for pipeline architecture
+- **Stack**: Node.js worker, BullMQ, PostgreSQL, Redis, FFmpeg, Kie.ai, Cloudflare R2
+
 ### **Automation**
 
 **Antigravity** (Primary):
@@ -1096,6 +1112,7 @@ All 5 core payment flows are operational and integrated with Firestore:
 
 | Resource | Location |
 |----------|----------|
+| **TourReel Pipeline Spec** | `apps/worker/PIPELINE_SPEC.md` |
 | **Core Applications** | `/apps/web/` |
 | **Workflows** | `/workflows/` |
 | **Customers** | `/Customers/` |

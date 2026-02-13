@@ -43,10 +43,9 @@ export async function verifySession(): Promise<{
             return { isValid: false };
         }
 
-        const email = sessionData.email;
+        const email = sessionData.email.toLowerCase();
         const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',');
-        const userId = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        const pgUser = await prisma.user.findUnique({ where: { id: userId } });
+        const pgUser = await prisma.user.findUnique({ where: { email } });
 
         if (pgUser) {
             return {
@@ -62,7 +61,7 @@ export async function verifySession(): Promise<{
         // Fallback: Firestore
         console.info('[Migration] verifySession: Postgres miss, falling back to Firestore');
         const db = getFirestoreAdmin();
-
+        const userId = email.replace(/[^a-z0-9]/g, '_');
         const userRef = db.collection(COLLECTIONS.USERS).doc(userId);
         const userSnap = await userRef.get();
         const userData = userSnap.exists ? userSnap.data() : null;

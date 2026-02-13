@@ -34,13 +34,14 @@ export interface KieTaskResponse {
 }
 
 export async function createVeoTask(request: KieVeoRequest): Promise<string> {
+    const imageUrls = request.last_frame
+        ? [request.image_url, request.last_frame]
+        : [request.image_url];
     const body = {
-        model: request.model || "veo3_fast",
-        generation_type: request.last_frame ? "FIRST_AND_LAST_FRAMES_2_VIDEO" : "IMAGE_TO_VIDEO",
+        model: request.model || "veo3",
+        generationType: request.last_frame ? "FIRST_AND_LAST_FRAMES_2_VIDEO" : "FIRST_AND_LAST_FRAMES_2_VIDEO",
         prompt: request.prompt,
-        image_url: request.image_url,
-        ...(request.last_frame ? { last_frame: request.last_frame } : {}),
-        duration: request.duration || 8,
+        imageUrls,
         aspect_ratio: request.aspect_ratio || "16:9",
         generate_audio: request.generate_audio ?? false,
         negative_prompt: request.negative_prompt,
@@ -71,9 +72,11 @@ export async function createVeoTask(request: KieVeoRequest): Promise<string> {
 export interface KieKlingRequest {
     prompt: string;
     image_url: string;
+    last_frame?: string; // End frame for seamless continuity (Kling Start & End Frames Control)
+    negative_prompt?: string; // Exclude: talking, lips moving, etc.
     mode?: "std" | "pro";
     aspect_ratio?: "16:9" | "9:16" | "1:1";
-    model?: string; // default kling-3.0/video; use kling-2.6/image-to-video as fallback
+    model?: string; // kling-3.0/video only (no Kling 2.6)
 }
 
 /** Generate clip via Kie Kling (sync: create + poll until done). */
@@ -84,17 +87,26 @@ export async function generateClipKie(request: KieKlingRequest): Promise<{ video
     return { video: { url: status.result.video_url } };
 }
 
+const SILENT_NEGATIVE = "talking, speaking, mouth moving, lips moving, mouth open, speech, lips talking, dialogue, words, vocal";
+
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
-    const body = {
-        model: request.model || "kling-3.0/video",
-        input: {
-            prompt: request.prompt,
-            image_urls: [request.image_url],
-            sound: false,
-            duration: "5",
-            mode: request.mode || "std",
-        }
+    // Kling 3.0 Start & End Frames: image_urls[0]=start, image_urls[1]=end for continuity
+    // NO kling_elements: Elements combines/blends multiple images → collage effect. Realtor already in Nano Banana composite.
+    const imageUrls = request.last_frame
+        ? [request.image_url, request.last_frame]
+        : [request.image_url];
+    const negPrompt = [SILENT_NEGATIVE, request.negative_prompt].filter(Boolean).join(", ");
+    const input: Record<string, unknown> = {
+        prompt: request.prompt,
+        image_urls: imageUrls,
+        sound: false,
+        duration: "5",
+        mode: request.mode || "std",
+        multi_shots: false,
+        negative_prompt: negPrompt,
+        ...(request.last_frame ? {} : { aspect_ratio: request.aspect_ratio || "16:9" }),
     };
+    const body = { model: request.model || "kling-3.0/video", input };
 
     const url = `${KIE_BASE}/v1/jobs/createTask`;
     logger.info({ msg: "kie.ai Kling task creating", url, model: body.model });
@@ -148,27 +160,41 @@ export async function getTaskStatus(taskId: string, type: "veo" | "suno" | "klin
     let result = undefined;
     if (status === "completed") {
         const res = statusData.response || statusData.resultJson;
-        if (res) {
+        // Veo 3.1 may return resultUrls at top level (JSON string)
+        const rawResultUrls = statusData.resultUrls || (res && (typeof res === 'string' ? res : (res as any)?.resultUrls));
+        let videoUrl: string | undefined;
+        let audioUrl: string | undefined;
+
+        if (rawResultUrls) {
+            try {
+                const urls = typeof rawResultUrls === 'string' ? JSON.parse(rawResultUrls) : rawResultUrls;
+                const first = Array.isArray(urls) ? urls[0] : urls;
+                videoUrl = typeof first === 'string' ? first : (first?.url ?? first?.videoUrl ?? first?.resultUrl);
+            } catch (_) {
+                videoUrl = undefined;
+            }
+        }
+
+        if (!videoUrl && res) {
             try {
                 const parsedRes = typeof res === 'string' ? JSON.parse(res) : res;
-                // Complex extraction logic for Suno, Veo, and Kling nested structures
-                const videoUrl = parsedRes.videoUrl ||
+                videoUrl = parsedRes.videoUrl ||
                     parsedRes.url ||
-                    (parsedRes.resultUrls && parsedRes.resultUrls[0]) ||
+                    (Array.isArray(parsedRes.resultUrls) ? parsedRes.resultUrls[0] : undefined) ||
                     (parsedRes.data && (parsedRes.data[0]?.videoUrl || parsedRes.data[0]?.url || parsedRes.data[0]?.resultUrl));
-                const audioUrl = parsedRes.audioUrl ||
+                audioUrl = parsedRes.audioUrl ||
                     (parsedRes.data && (parsedRes.data[0]?.audioUrl || parsedRes.data[0]?.musicUrl || parsedRes.data.find((item: any) => item.type === "audio" || item.type === "music")?.url));
-
-                if (videoUrl || audioUrl) {
-                    result = {
-                        video_url: videoUrl,
-                        audio_url: audioUrl,
-                        duration: parsedRes.duration || 8
-                    };
-                }
             } catch (e) {
                 logger.warn({ msg: "Failed to parse Kie.ai response", response: res });
             }
+        }
+
+        // Ensure video_url is a string (Kling can return {url: "..."} or array of objects)
+        const videoUrlStr = typeof videoUrl === "string" ? videoUrl
+            : (videoUrl && typeof videoUrl === "object" && (videoUrl as any).url) ? (videoUrl as any).url
+            : undefined;
+        if (videoUrlStr || audioUrl) {
+            result = { video_url: videoUrlStr, audio_url: audioUrl, duration: 8 };
         }
     }
 

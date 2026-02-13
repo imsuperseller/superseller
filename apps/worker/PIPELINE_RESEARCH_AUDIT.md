@@ -11,7 +11,7 @@
 |-------|------------|--------|
 | No realtor visible | `includeRealtor = false` (hardcoded) to fix Nano Banana "media unavailable" | Fixable |
 | Pool not featured | Zillow data lacks floorplan; pool never detected; no amenity extraction | Gap |
-| Low quality | Kling 2.6 used as fallback (Kling 3 fails with "Internal Error") | Investigate |
+| Low quality | Veo 3.1 primary, Kling 3 fallback. Kling 2.6 removed. | Fixed Feb 2026 |
 | Few scenes (7) | No floorplan → empty tour sequence → LLM invents minimal sequence | Major gap |
 
 ---
@@ -96,26 +96,13 @@ const includeRealtor = false;  // Hardcoded
 
 ---
 
-## 5. Video Quality (Kling 2.6 vs 3)
+## 5. Video Quality (Veo 3.1 → Kling 3)
 
-### Current
+### Current (Feb 2026)
 
-- Try `kling-3.0/video` first → fails with "Internal Error"
-- Fallback to `kling-2.6/image-to-video` → succeeds but lower quality
-
-### Hypotheses for Kling 3 Failure
-
-- Kie.ai API or model instability
-- Image format/size limits
-- Account/rate limits
-- Different request shape for kling-3.0
-
-### Options
-
-1. **Contact Kie.ai** – Clarify "Internal Error" for kling-3.0
-2. **Inspect Kling 3 request** – Compare to docs, try minor parameter changes
-3. **Prefer Kling 3 when it works** – Keep fallback but log which model succeeded
-4. **Alternative:** Veo (already in kie.ts) for image-to-video when Kling fails
+- **Primary:** Veo 3.1 (veo3 Quality model) — test if quality was lost when switching from Veo to Kling
+- **Fallback:** Kling 3.0 (kling-3.0/video, mode: pro)
+- **Removed:** Kling 2.6 — no longer used in this product (per NotebookLM ref)
 
 ---
 

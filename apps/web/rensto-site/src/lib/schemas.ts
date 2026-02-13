@@ -5,7 +5,7 @@ import { z } from 'zod';
 // ============================================================================
 
 export const PlanSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   name: z.string(),
   price: z.number(),
   currency: z.string().default('USD'),
@@ -19,7 +19,7 @@ export const PlanSchema = z.object({
 });
 
 export const TenantSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   name: z.string(),
   slug: z.string(),
   status: z.enum(['active', 'paused', 'closed']),
@@ -59,7 +59,7 @@ export const TenantSchema = z.object({
 });
 
 export const UserSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   email: z.string().email(),
   name: z.string(),
   role: z.enum(['owner', 'admin', 'user', 'viewer']),
@@ -99,8 +99,8 @@ export const AgentDefinitionSchema = z.object({
 });
 
 export const AgentInstanceSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   name: z.string(),
   definitionKey: z.string(),
   definitionVersion: z.string(),
@@ -125,9 +125,9 @@ export const AgentInstanceSchema = z.object({
 });
 
 export const RunSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
-  agentInstanceId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
+  agentInstanceId: z.string().uuid(),
   status: z.enum(['queued', 'running', 'completed', 'failed', 'cancelled']),
   input: z.record(z.string(), z.any()),
   output: z.record(z.string(), z.any()).optional(),
@@ -142,7 +142,7 @@ export const RunSchema = z.object({
   })),
   metadata: z.object({
     triggeredBy: z.enum(['schedule', 'manual', 'webhook', 'api']),
-    userId: z.string().optional(),
+    userId: z.string().uuid().optional(),
     ipAddress: z.string().optional(),
     userAgent: z.string().optional(),
   }),
@@ -151,8 +151,8 @@ export const RunSchema = z.object({
 });
 
 export const CredentialSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   service: z.enum([
     'wordpress',
     'linkedin',
@@ -191,8 +191,8 @@ export const CredentialSchema = z.object({
 // ============================================================================
 
 export const InvoiceSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   number: z.string(),
   amount: z.number(),
   currency: z.string().default('USD'),
@@ -214,8 +214,8 @@ export const InvoiceSchema = z.object({
 });
 
 export const PaymentSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   invoiceId: z.string().optional(),
   amount: z.number(),
   currency: z.string().default('USD'),
@@ -235,8 +235,8 @@ export const PaymentSchema = z.object({
 // ============================================================================
 
 export const ReportSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   type: z.enum(['weekly', 'monthly', 'custom']),
   period: z.object({
     start: z.date(),
@@ -262,10 +262,10 @@ export const ReportSchema = z.object({
 // ============================================================================
 
 export const AuditLogSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   timestamp: z.date(),
   actor: z.object({
-    userId: z.string().optional(),
+    userId: z.string().uuid().optional(),
     email: z.string().optional(),
     ipAddress: z.string(),
     userAgent: z.string(),
@@ -285,15 +285,15 @@ export const AuditLogSchema = z.object({
 // ============================================================================
 
 export const InviteSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
   email: z.string().email(),
   role: z.enum(['admin', 'user', 'viewer']),
   status: z.enum(['sent', 'accepted', 'expired', 'cancelled']),
   token: z.string(),
   expiresAt: z.date(),
   acceptedAt: z.date().optional(),
-  acceptedBy: z.string().optional(), // User ID
+  acceptedBy: z.string().uuid().optional(), // User ID
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -303,15 +303,15 @@ export const InviteSchema = z.object({
 // ============================================================================
 
 export const ApprovalSchema = z.object({
-  id: z.string(),
-  tenantId: z.string(),
-  agentInstanceId: z.string(),
-  runId: z.string(),
+  id: z.string().uuid(),
+  tenantId: z.string().uuid(),
+  agentInstanceId: z.string().uuid(),
+  runId: z.string().uuid(),
   type: z.enum(['wordpress', 'social', 'custom']),
   content: z.record(z.string(), z.any()),
   status: z.enum(['pending', 'approved', 'rejected', 'published']),
-  requestedBy: z.string(), // User ID
-  reviewedBy: z.string().optional(), // User ID
+  requestedBy: z.string().uuid(), // User ID
+  reviewedBy: z.string().uuid().optional(), // User ID
   reviewedAt: z.date().optional(),
   rejectionReason: z.string().optional(),
   publishedAt: z.date().optional(),
@@ -359,13 +359,13 @@ export const IncidentSchema = z.object({
 export const CreateTenantSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only'),
-  planId: z.string().min(1, 'Plan is required'),
+  planId: z.string().uuid().min(1, 'Plan is required'),
 });
 
 export const UpdateTenantSchema = z.object({
   name: z.string().min(1, 'Name is required').optional(),
   status: z.enum(['active', 'paused', 'closed']).optional(),
-  planId: z.string().min(1, 'Plan is required').optional(),
+  planId: z.string().uuid().min(1, 'Plan is required').optional(),
   settings: z.object({
     timezone: z.string().optional(),
     dateFormat: z.string().optional(),
@@ -469,3 +469,41 @@ export type CreateAgentInstance = z.infer<typeof CreateAgentInstanceSchema>;
 export type UpdateAgentInstance = z.infer<typeof UpdateAgentInstanceSchema>;
 export type CreateCredential = z.infer<typeof CreateCredentialSchema>;
 export type InviteUser = z.infer<typeof InviteUserSchema>;
+
+// Credit-based gating — SSOT aligned with Prisma and Drizzle
+
+export const EntitlementSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  creditsBalance: z.number().int().min(0),
+  plan: z.string(),
+  status: z.string(),
+  resetAt: z.date().nullable(),
+  updatedAt: z.date(),
+});
+
+export const UsageEventSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  type: z.enum(['debit', 'refund', 'topup', 'grant', 'reset']),
+  amount: z.number().int(), // positive for topup/refund, negative for debit
+  jobId: z.string().uuid().nullable(),
+  metadata: z.record(z.string(), z.any()).nullable(),
+  createdAt: z.date(),
+});
+
+/** Input schema for creating a usage event (debit) */
+export const UsageEventDebitSchema = z.object({
+  userId: z.string().uuid(),
+  amount: z.number().int().positive(),
+  type: z.string(),
+  jobId: z.string().uuid().optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
+});
+
+/** Input schema for credit top-up */
+export const CreditTopupSchema = z.object({
+  userId: z.string().uuid(),
+  amount: z.number().int().positive(),
+  type: z.enum(['topup', 'grant']),
+});

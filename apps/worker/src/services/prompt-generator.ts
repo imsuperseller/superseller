@@ -69,7 +69,7 @@ export const ROOM_DESCRIPTIONS: Record<string, any> = {
     },
     "pool": {
         typical_features: "crystal clear swimming pool or spa area, tiled water line, surrounding deck or lounge space. HERO FEATURE — main selling point, Big Reveal finale.",
-        camera_focus: "Wide sweeping pan of the entire pool area. Hero moment: gentle glide or orbit. Emphasize lifestyle, relaxation, vacation energy.",
+        camera_focus: "Wide sweeping pan of the pool area from the deck. Realtor STANDS on the deck, faces the guest, gestures toward the pool—never walks toward the water. Hero moment: gentle glide or orbit.",
         lighting_note: "Sunlight reflecting off the water surface, blue water tones contrasting with warm deck materials",
         material_hints: "sparkling water, stone or wood decking, modern lounge chairs, outdoor umbrellas",
     },
@@ -111,27 +111,36 @@ export const STYLE_MODIFIERS: Record<string, any> = {
     },
 };
 
-export const REALTOR_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, morphing face, melting face, inconsistent facial features, multiple people, crowd, extra faces, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic, fashion show, runway walk, robotic walk, stiff movement, excessive smiling, posing, staring at camera, blocking doorway, out of character";
+export const REALTOR_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, morphing face, melting face, inconsistent facial features, multiple people, crowd, extra faces, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic, fashion show, runway walk, robotic walk, stiff movement, excessive smiling, posing, out of character, talking, speaking, mouth moving, lips moving, mouth open, speech";
 
 // Legacy (no realtor): ban all people.
 export const UNIVERSAL_NEGATIVE = "blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, people, person, human figure, hand, finger, face, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic";
 
 const REALTOR_SYSTEM_PROMPT = `You are a world-class real estate cinematographer directing an AI video generation model. Your job is to write detailed video prompts for a REALTOR-CENTRIC property tour.
 
-THE REALTOR IS A PROFESSIONAL GUIDE:
-- The realtor is the person in the provided reference photo (Visual Identity Anchor).
-- DO NOT describe clothing like "sharp blazer" or "business casual". Describe the realtor ONLY as "the person from the reference photo".
-- CONDUCT: The realtor acts as a humble, professional guide. They are purposefully leading the viewer into the home.
-- MOVEMENT: Natural, understated walking. NO "power walking", NO "runway walk", NO "fashion show" behavior.
-- BEHAVIOR: They walk into rooms, towards focal points (islands, fireplaces, views), and point naturally at features from a distance. They stay out of the way of the camera's path when necessary.
-- EXPRESSIONS: Subdued and professional. A genuine, brief nod to the viewer upon entry, then focusing on the home. No constant smirking or posing.
-- DIRECTION: They walk TOWARDS the doors and focal points, guiding the camera's eye.
+CAMERA POV = THE PROSPECTIVE BUYER:
+- The camera represents the buyer's eyes. The realtor has just welcomed them at the door and is now walking through the property WITH them.
+- The realtor should always feel like there is a person (the buyer) they are showing the property to. Personalization is the goal—show the realtor's face; do not avoid it.
+
+THE REALTOR AS HOST:
+- The realtor is the person from the reference photo (Visual Identity Anchor). Describe them ONLY as "the person from the reference photo".
+- SCENARIO: Natural as if the person just arrived at the door. The realtor welcomes them, then walks through the home WITH them—side by side or slightly leading but turning frequently to engage, gesture, point out features.
+- BEHAVIOR: The realtor FACES the camera (the guest) when welcoming, when pointing out features, when sharing hero moments. Walking together, not with back turned the whole time.
+- MOVEMENT: Natural, understated. NO "power walking", NO "runway walk". They walk WITH the guest, turn to gesture at islands, fireplaces, views. Conversational energy.
+- EXPRESSIONS: Warm, welcoming when facing the guest. Genuine engagement. No constant smirking or posing.
+- SILENT: The realtor NEVER speaks. Lips closed at all times. No mouth movement, no talking. Gesturing only. Silent walkthrough.
 
 CINEMATIC RULES:
 1. CAMERA MOVEMENT: specify ONE primary movement (forward dolly, tracking, push-in, pan, door-push).
-2. CAMERA HEIGHT: Stable eye level (5ft).
-3. CONTINUITY: The realtor's position at the end of Clip N must match the start of Clip N+1.
-4. SPATIAL LOGIC: Every property has HERO MOMENTS (top 3 selling points). When pool exists: pool is the FINALE. When no pool: elevate kitchen island, fireplace, view, master suite, or other notable features as hero focus. Identify and emphasize the main hero in your prompts.
+2. CAMERA HEIGHT: Stable eye level (5ft)—the buyer's perspective. Ground level. NEVER aerial, drone, or wide shot from above.
+3. CONTINUITY: Frame-chain continuity. The END frame of Clip N IS the START frame of Clip N+1. One continuous walk—no cuts, no transitions between scenes. The realtor walks seamlessly from room to room; each clip continues exactly where the previous ended.
+4. SPATIAL LOGIC: Hero moments (pool, kitchen, fireplace, view, master suite). When pointing them out, the realtor faces the guest (camera).
+5. POOL SAFETY: For pool/backyard clips: realtor STANDS on the deck or patio, well back from the pool edge. Faces the guest and gestures toward the pool. NEVER walks toward the water. Safe distance at all times.
+
+CRITICAL - OPENING CLIP (Exterior → Front Door, always Clip 1):
+- The realtor starts ON the pathway or walkway to the house, walking TOWARD the front door (approach walk). The buyer (camera) follows. NOT realtor standing at the door—realtor is on the path, approaching.
+- Opening MUST show the front door area, walkway, or approach—NOT pool, backyard, or interior.
+- NEVER: aerial, drone, wide shot from above. Ground-level, personal, as if you (the buyer) are being shown in.
 
 Return a JSON array of clip prompts. 80-150 words each.`;
 
@@ -181,6 +190,7 @@ export async function generateClipPrompts(
 Style: ${styleKey}
 Description: ${propertyDetails.description}${factsNote}${amenitiesNote}${heroNote}
 Realtor: ${includeRealtor ? "YES (Identity Anchor: use reference photo)" : "NO"}
+${includeRealtor ? "Clip 1 (Exterior → Front Door): Realtor ON the pathway/walkway, walking TOWARD the front door. Approach walk. Ground-level, personal. NEVER aerial, drone, or wide shot." : ""}
 
 Tour sequence:
 ${tourDescription}
@@ -209,18 +219,23 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
         let parsed = JSON.parse(jsonStr);
         const clips: any[] = Array.isArray(parsed) ? parsed : (parsed.clips || parsed.prompts || []);
 
-        return clips.map((clip, index) => ({
+        return clips.map((clip, index) => {
+            const fromRoom = clip.from_room || tourSequence[index]?.from || "Exterior";
+            const toRoom = clip.to_room || tourSequence[index]?.to || "Living Room";
+            const prompt = (clip.prompt && String(clip.prompt).trim()) || `Cinematic forward dolly from ${fromRoom} into ${toRoom}. Natural light, professional real estate tour. Smooth tracking shot at eye level.`;
+            return {
             clip_number: clip.clip_number || index + 1,
-            from_room: clip.from_room || tourSequence[index]?.from,
-            to_room: clip.to_room || tourSequence[index]?.to,
-            prompt: clip.prompt,
+            from_room: fromRoom,
+            to_room: toRoom,
+            prompt,
             start_frame_url: null,
             end_frame_url: null,
             duration_seconds: clip.duration_seconds || 5,
             negative_prompt: clip.negative_prompt
                 ? `${clip.negative_prompt}, ${baseNegative}`
                 : baseNegative
-        }));
+        };
+        });
     } catch (err: any) {
         logger.warn({ msg: "Prompt parse error", error: err?.message, contentPreview: content?.substring(0, 200) });
         throw new Error(`Cinematic prompt generation failed: ${err?.message || "invalid JSON"}`);

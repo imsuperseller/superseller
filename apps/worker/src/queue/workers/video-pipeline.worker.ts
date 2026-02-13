@@ -10,8 +10,10 @@ import { generateClipPrompts } from "../../services/prompt-generator";
 import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration } from "../../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
-import { NANO_BANANA_OPENING_PROMPT, getNanoBananaRoomPrompt } from "../../services/nano-banana-prompts";
+import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
 import { deriveHeroFeatures } from "../../services/hero-features";
+import { pickBestApproachPhotoForOpening } from "../../services/gemini";
+import { CreditManager } from "../../services/credits";
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { config } from "../../config";
@@ -31,6 +33,15 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             // 1. Update Job Status: Analyzing
             await updateJobStatus(jobId, "analyzing", 5);
+
+            // 1b. Credit Pre-check — fail early with clear message
+            const currentBalance = await CreditManager.checkBalance(userId);
+            const minimumRequired = config.video.maxClipsPerVideo * 15; // Rough estimate: 15 credits per clip avg
+            if (currentBalance < minimumRequired) {
+                await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", ["Insufficient Credits", jobId]);
+                throw new Error("Insufficient Credits");
+            }
+            logger.info({ msg: "Credit pre-check passed", userId, currentBalance });
 
             const listing = await queryOne("SELECT * FROM listings WHERE id = $1", [listingId]);
             if (!listing) throw new Error("Listing not found");
@@ -68,6 +79,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 logger.info({ msg: "Using default tour sequence", rooms: roomNames.length, hasPool: heroResult.hasPool });
             }
 
+            // Cap clips for smoke tests (MAX_CLIPS=3 to verify pipeline)
+            const maxClips = config.video.maxClipsPerVideo;
+            if (tourRooms.length > maxClips) {
+                tourRooms = tourRooms.slice(0, maxClips);
+                await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
+                logger.info({ msg: "Capped tour to max clips", maxClips });
+            }
+
             // 3. Generate Prompts (realtor-centric when user has avatar)
             await updateJobStatus(jobId, "generating_prompts", 15);
             const user = await queryOne("SELECT avatar_url FROM users WHERE id = $1", [userId]);
@@ -76,18 +95,18 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             if (avatarUrlRaw && avatarUrlRaw.startsWith("http")) {
                 try {
                     const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
-                        if (!url || !url.startsWith("http")) return url;
+                        if (!url || !url.startsWith("http")) return null;
                         if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
                         try {
                             const resp = await fetch(url);
-                            if (!resp.ok) return url;
+                            if (!resp.ok) return null;
                             const ext = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] || "jpg";
                             const localPath = join(workDir, `_fetch_${label}.${ext}`);
                             writeFileSync(localPath, Buffer.from(await resp.arrayBuffer()));
                             return await uploadToR2(localPath, buildR2Key(userId, jobId, `frames/${label}.${ext}`));
                         } catch (e: any) {
                             logger.warn({ msg: "ensurePublicUrl failed", label, error: e.message });
-                            return url;
+                            return null;
                         }
                     };
                     avatarPublic = await ensurePublicUrl(avatarUrlRaw, "avatar");
@@ -95,7 +114,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     logger.warn({ msg: "Avatar upload to R2 failed, disabling realtor", error: e.message });
                 }
             }
-            const includeRealtor = !!avatarPublic;
+            const forceNoRealtor = (process.env.FORCE_NO_REALTOR ?? "").toLowerCase();
+            const includeRealtor = forceNoRealtor !== "1" && forceNoRealtor !== "true" && !!avatarPublic;
 
             // Enrich property context with deep data
             const prompts = await generateClipPrompts(tourRooms, {
@@ -108,15 +128,20 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 heroFeatures: heroResult.heroFeatures,
             });
 
+            if (prompts.length === 0) {
+                throw new Error("No clip prompts generated. Ensure listing has a valid tour sequence.");
+            }
+
             // 4. Create Clip Records (skip if retry - clips already exist)
             const existingClips = await query("SELECT 1 FROM clips WHERE video_job_id = $1 LIMIT 1", [jobId]);
             if (existingClips.length === 0) {
                 await transaction(async (client) => {
                     for (const p of prompts) {
+                        const promptText = (p.prompt && String(p.prompt).trim()) || `Cinematic property tour clip.`;
                         await client.query(
                             `INSERT INTO clips (id, video_job_id, clip_number, from_room, to_room, prompt, negative_prompt, duration_seconds, status)
              VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, 'pending')`,
-                            [jobId, p.clip_number, p.from_room, p.to_room, p.prompt, (p as any).negative_prompt, p.duration_seconds]
+                            [jobId, p.clip_number, p.from_room, p.to_room, promptText, (p as any).negative_prompt, p.duration_seconds]
                         );
                     }
                 });
@@ -127,6 +152,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const clips = await query("SELECT * FROM clips WHERE video_job_id = $1 ORDER BY clip_number", [jobId]);
 
             const clipFiles: string[] = [];
+            const boundaryFramePaths: string[] = [];
 
             // Helper: extract plain URL from Zillow photo (can be string or {url, caption, mixedSources} object)
             const extractPhotoUrl = (p: any): string | null => {
@@ -183,60 +209,106 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             let lastFrameUrl: string | null = exteriorPublic;
             const usePhotos = additionalPublic.length ? additionalPublic : additionalPhotos;
 
-            const frameUrls: (string | null)[] = []; // frameUrls[i] = start frame for clip i; frameUrls[i+1] = end frame (tail) for clip i
-
-            // Pre-compute frames for first+last continuity (Chain Invariant)
-            // Frame 0: opening (exterior + realtor when available)
-            if (includeRealtor && avatarPublic && lastFrameUrl) {
+            // Opening MUST be front of house (walkway to door). REJECT pool, backyard, interior.
+            // When property has pool: prefer exterior (index 0)—additional photos often show pool/backyard.
+            const openingCandidates = [exteriorPublic, ...additionalPublic.slice(0, 2)].filter((u): u is string => !!u);
+            if (openingCandidates.length >= 1) {
                 try {
+                    let bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
+                    if (heroResult.hasPool && bestIdx > 0) {
+                        bestIdx = 0;
+                        logger.info({ msg: "Pool property: forcing exterior (index 0) for opening to avoid pool-at-front", hadPick: true });
+                    }
+                    lastFrameUrl = openingCandidates[bestIdx];
+                    if (bestIdx > 0) logger.info({ msg: "Using non-first photo for opening (front-of-house)", index: bestIdx });
+                } catch (e) {
+                    lastFrameUrl = exteriorPublic;
+                }
+            }
+
+            // frameUrls[i] = composite for scene i. Clip i: first=frameUrls[i], last=frameUrls[i+1].
+            // All frames from Nano Banana when realtor = same person. Clip N last = Clip N+1 first = seamless.
+            const frameUrls: (string | null)[] = [];
+
+            const uploadNanoBananaResult = async (imageUrl: string, label: string): Promise<string> => {
+                const imgResp = await fetch(imageUrl);
+                const imgPath = join(workDir, `${label}.png`);
+                writeFileSync(imgPath, Buffer.from(await imgResp.arrayBuffer()));
+                return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
+            };
+
+            // Map room type to photo: avoid pool/backyard for early rooms. Zillow often puts pool at end.
+            const getPhotoForRoom = (toRoom: string, idx: number): string | null => {
+                const r = (toRoom || "").toLowerCase();
+                const poolOrBackyard = r.includes("pool") || r.includes("backyard") || r.includes("patio");
+                if (poolOrBackyard && usePhotos.length > 2) {
+                    return usePhotos[usePhotos.length - 1] ?? usePhotos[usePhotos.length - 2];
+                }
+                if (r.includes("exterior") && !r.includes("front")) {
+                    return exteriorPublic || usePhotos[0];
+                }
+                if (r.includes("front") && r.includes("door")) {
+                    return usePhotos[0] || exteriorPublic;
+                }
+                if (r.includes("foyer") || r.includes("entry")) {
+                    return usePhotos[Math.min(1, usePhotos.length - 1)] || usePhotos[0];
+                }
+                return usePhotos[Math.min(idx, usePhotos.length - 1)] || usePhotos[0];
+            };
+
+            if (includeRealtor && avatarPublic) {
+                // Pre-generate ALL Nano Banana composites (opening + every room). Same avatar = same realtor.
+                if (lastFrameUrl) {
                     const taskId = await createNanoBananaTask({
                         prompt: NANO_BANANA_OPENING_PROMPT,
                         image_input: [avatarPublic, lastFrameUrl],
                         aspect_ratio: "16:9",
-                        resolution: "2K",
+                        resolution: "4K",
                         output_format: "png",
                     });
-                    const { image_url } = await waitForNanoBananaTask(taskId);
-                    const imgResp = await fetch(image_url);
-                    const imgPath = join(workDir, "realtor_exterior_opening.png");
-                    writeFileSync(imgPath, Buffer.from(await imgResp.arrayBuffer()));
-                    lastFrameUrl = await uploadToR2(imgPath, buildR2Key(userId, jobId, "frames/realtor_exterior_opening.png"));
-                } catch (err: any) {
-                    logger.warn({ msg: "Nano Banana opening frame failed", error: err.message });
-                }
-            }
-            frameUrls[0] = lastFrameUrl;
+                    // Deduct for opening frame
+                    await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
 
-            if (includeRealtor && avatarPublic && usePhotos.length >= clips.length) {
-                for (let i = 0; i < clips.length; i++) {
-                    const toRoom = (clips[i] as any).to_room || "living";
-                    const roomPrompt = getNanoBananaRoomPrompt(toRoom, heroResult.hasPool, heroResult);
-                    const roomPhoto = usePhotos[i];
-                    if (!roomPhoto) break;
-                    try {
-                        const taskId = await createNanoBananaTask({
-                            prompt: roomPrompt,
-                            image_input: [avatarPublic, roomPhoto],
-                            aspect_ratio: "16:9",
-                            resolution: "2K",
-                            output_format: "png",
-                        });
-                        const { image_url } = await waitForNanoBananaTask(taskId);
-                        const imgResp = await fetch(image_url);
-                        const imgPath = join(workDir, `frame_${i + 1}.png`);
-                        writeFileSync(imgPath, Buffer.from(await imgResp.arrayBuffer()));
-                        frameUrls[i + 1] = await uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/room_${i + 1}.png`));
-                    } catch (err: any) {
-                        logger.warn({ msg: "Nano Banana interior frame failed", clip: i + 1, toRoom, error: err.message });
-                        frameUrls[i + 1] = null;
-                    }
+                    const { image_url } = await waitForNanoBananaTask(taskId);
+                    frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
+                    lastFrameUrl = frameUrls[0];
+                } else {
+                    frameUrls[0] = null;
                 }
+                for (let i = 0; i < clips.length; i++) {
+                    const clip = clips[i];
+                    const roomPhoto = getPhotoForRoom((clip as any).to_room, i) || lastFrameUrl;
+                    if (!roomPhoto) {
+                        frameUrls[i + 1] = null;
+                        continue;
+                    }
+                    const roomPrompt = getNanoBananaRoomPrompt((clip as any).to_room || "Living", heroResult.hasPool, heroResult);
+                    const taskId = await createNanoBananaTask({
+                        prompt: roomPrompt,
+                        image_input: [avatarPublic, roomPhoto],
+                        aspect_ratio: "16:9",
+                        resolution: "4K",
+                        output_format: "png",
+                    });
+                    // Deduct for room frame
+                    await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
+
+                    const { image_url } = await waitForNanoBananaTask(taskId);
+                    frameUrls[i + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${i + 1}`);
+                }
+            } else {
+                frameUrls[0] = lastFrameUrl;
             }
 
             for (const clip of clips) {
                 const clipIdx = clip.clip_number - 1;
-                const startFrame = frameUrls[clipIdx] ?? lastFrameUrl;
-                const tailFrame = frameUrls[clipIdx + 1] ?? null;
+                // Start: Use EXTRACTED last frame from previous clip for true frame continuity (no visible cut).
+                // Kling doesn't output the exact last_frame we pass—it interpolates—so Nano end frames cause a mismatch.
+                // Only clip 1 uses Nano/exterior; clips 2+ use the actual last frame from the previous video.
+                const startFrame = clipIdx === 0
+                    ? (frameUrls[0] ?? lastFrameUrl)
+                    : lastFrameUrl;
+                const endFrame = includeRealtor ? (frameUrls[clipIdx + 1] ?? null) : null;
 
                 if (!startFrame) {
                     throw new Error(`Missing start frame for clip ${clip.clip_number}. Ensure listing has exterior_photo_url or realtor opening frame.`);
@@ -245,30 +317,63 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
 
                 let result: { video: { url: string } } | null = null;
-                let klingModelUsed: string | null = null;
-                const { createKlingTask, waitForTask } = await import("../../services/kie");
-                const models: string[] = ["kling-3.0/video", "kling-2.6/image-to-video"];
+                let modelUsed: string | null = null;
+                const { createVeoTask, createKlingTask, waitForTask } = await import("../../services/kie");
+                const klingPrompt = includeRealtor
+                    ? `${clip.prompt} Seamless motion from start to end frame. Same person throughout. Lips closed, no speaking, silent walkthrough.`
+                    : clip.prompt;
+
+                const providers: Array<{ name: string; run: () => Promise<{ video: { url: string } }> }> = [
+                    {
+                        name: "kling-3.0/video",
+                        run: async () => {
+                            const taskId = await createKlingTask({
+                                prompt: klingPrompt,
+                                image_url: startFrame,
+                                ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
+                                negative_prompt: (clip as any).negative_prompt,
+                                mode: "pro",
+                                aspect_ratio: "16:9",
+                                model: "kling-3.0/video",
+                            });
+
+                            // Deduct for Kling clip
+                            await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
+
+                            await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
+                            const status = await waitForTask(taskId, "kling");
+                            if (!status.result?.video_url) throw new Error("Kling 3 completed but no video URL");
+                            return { video: { url: status.result.video_url } };
+                        },
+                    },
+                    {
+                        name: "veo3.1",
+                        run: async () => {
+                            const taskId = await createVeoTask({
+                                prompt: klingPrompt,
+                                image_url: startFrame,
+                                model: "veo3",
+                                duration: 5,
+                                aspect_ratio: "16:9",
+                            });
+                            const status = await waitForTask(taskId, "veo");
+                            if (!status.result?.video_url) throw new Error("Veo 3.1 completed but no video URL");
+                            return { video: { url: status.result.video_url } };
+                        },
+                    },
+                ];
                 let lastErr: Error | null = null;
-                for (const model of models) {
+                for (const provider of providers) {
                     try {
-                        const taskId = await createKlingTask({
-                            prompt: clip.prompt,
-                            image_url: startFrame,
-                            mode: "std",
-                            aspect_ratio: "16:9",
-                            model,
-                        });
-                        const status = await waitForTask(taskId, "kling");
-                        if (!status.result?.video_url) throw new Error("Kie Kling completed but no video URL");
-                        result = { video: { url: status.result.video_url } };
-                        klingModelUsed = model;
+                        result = await provider.run();
+                        modelUsed = provider.name;
                         break;
                     } catch (err: any) {
                         lastErr = err;
-                        logger.warn({ msg: "Kie Kling failed, trying fallback", clip: clip.clip_number, model, error: err?.message });
+                        logger.warn({ msg: "Video provider failed, trying next", clip: clip.clip_number, provider: provider.name, error: err?.message });
                     }
                 }
-                logger.info({ msg: "Kling clip generated", clip: clip.clip_number, model: klingModelUsed });
+                logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
                 if (!result) {
                     throw new Error(`Critical failure in Kie Kling for clip ${clip.clip_number}: ${lastErr?.message || "no result"}`);
                 }
@@ -277,13 +382,17 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const response = await fetch(result.video.url);
                 writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
 
-                // Extract last frame for next clip
+                // ALWAYS extract last frame from video for next clip's start. Same frame at cut = no visible transition.
                 const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
                 await extractLastFrame(videoPath, lastFramePath);
+                boundaryFramePaths.push(lastFramePath);
                 lastFrameUrl = await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                 const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                await normalizeClip(videoPath, normalizedPath);
+                await normalizeClip(videoPath, normalizedPath, {
+                    width: config.video.outputWidth,
+                    height: config.video.outputHeight,
+                });
                 clipFiles.push(normalizedPath);
 
                 await query(
@@ -299,7 +408,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             await updateJobStatus(jobId, "stitching", 75);
             const outputName = "master_silent.mp4";
             const masterSilentPath = join(workDir, outputName);
-            await stitchClipsConcat(clipFiles, masterSilentPath);
+            await stitchClipsConcat(clipFiles, masterSilentPath, {
+                boundaryFramePaths: boundaryFramePaths.length >= clipFiles.length - 1 ? boundaryFramePaths : undefined,
+            });
 
             // 7. Add Music (Strictly Kie Suno)
             await updateJobStatus(jobId, "adding_music", 85);
@@ -330,8 +441,12 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         instrumental: true,
                         model: "V3_5",
                     });
+
+                    // Deduct for Suno music
+                    await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
+
                     const status = await waitForTask(taskId, "suno");
-                    musicUrl = (status.result as any)?.audio_url || null;
+                    musicUrl = (status as any).result?.audio_url || null;
                 } catch (err: any) {
                     logger.warn({ msg: "Kie Suno failed, using SoundHelix fallback", error: err.message });
                     musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
@@ -402,12 +517,32 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
         } catch (err: any) {
             logger.error({ msg: "Video pipeline failed", jobId, error: err.message });
+
+            // Refund strategy: calculate what was spent on THIS job and refund
+            try {
+                const spent = await queryOne(
+                    "SELECT ABS(SUM(amount)) as total FROM usage_events WHERE job_id = $1 AND type = 'debit'",
+                    [jobId]
+                );
+                const refundAmount = Number(spent?.total || 0);
+                if (refundAmount > 0) {
+                    await CreditManager.refundCredits(userId, refundAmount, jobId, `Job failed: ${err.message}`);
+                    logger.info({ msg: "Automatic refund processed", jobId, userId, refundAmount });
+                }
+            } catch (refundErr: any) {
+                logger.error({ msg: "Failed to process automatic refund", jobId, error: refundErr.message });
+            }
+
             await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [err.message, jobId]);
             throw err;
         } finally {
-            // 11. Cleanup
+            // 11. Cleanup — remove job temp dir to avoid residue
             if (existsSync(workDir)) {
-                // rmSync(workDir, { recursive: true, force: true });
+                try {
+                    rmSync(workDir, { recursive: true, force: true });
+                } catch (e: any) {
+                    logger.warn({ msg: "Work dir cleanup failed", jobId, error: e?.message });
+                }
             }
         }
     },

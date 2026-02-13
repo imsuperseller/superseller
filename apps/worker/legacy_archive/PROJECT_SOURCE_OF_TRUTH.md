@@ -1,6 +1,8 @@
 # Technical Audit & Unified Production Roadmap
 
-This document serves as the absolute **Source of Truth** for the TourReel project. It synthesizes all previous conversation context, identifies technical failures, and outlines the corrected path to a production-ready property tour generator.
+> **→ For current pipeline architecture and flow, see `apps/worker/PIPELINE_SPEC.md`.**
+
+This document serves as a retrospective audit of the TourReel project. It synthesizes past technical failures and lessons learned. The canonical implementation spec is now `PIPELINE_SPEC.md`.
 
 ## 1. Context & Retrospective: The Failure Audit
 

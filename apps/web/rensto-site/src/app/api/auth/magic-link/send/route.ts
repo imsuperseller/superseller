@@ -34,8 +34,7 @@ export async function POST(request: NextRequest) {
             clientName = 'Admin';
             role = 'admin';
         } else {
-            const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
-            const pgUser = await prisma.user.findUnique({ where: { id: userId } });
+            const pgUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
             if (pgUser) {
                 clientId = pgUser.id;

@@ -22,22 +22,22 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: web/rensto-site/package-lock.json
+          cache-dependency-path: apps/web/rensto-site/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Run ESLint
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm run lint
 
       - name: Run TypeScript check
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm run typecheck
 
       - name: Check formatting
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm run format:check
 
   test:
@@ -51,14 +51,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: web/rensto-site/package-lock.json
+          cache-dependency-path: apps/web/rensto-site/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Run unit tests
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm test -- --coverage
 
       - name: Upload coverage reports
@@ -79,14 +79,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: web/rensto-site/package-lock.json
+          cache-dependency-path: apps/web/rensto-site/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Build application
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm run build
         env:
           NEXT_PUBLIC_SITE_NAME: Rensto
@@ -109,14 +109,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: web/rensto-site/package-lock.json
+          cache-dependency-path: apps/web/rensto-site/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Run npm audit
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm audit --audit-level=high
         continue-on-error: true
 
@@ -176,10 +176,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: web/rensto-site/package-lock.json
+          cache-dependency-path: apps/web/rensto-site/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Make gates script executable
@@ -202,11 +202,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install dependencies
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: npm ci
 
       - name: Build and start server
-        working-directory: web/rensto-site
+        working-directory: apps/web/rensto-site
         run: |
           npm run build
           npm start &
