@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Deploy apps/worker to RackNerd. Run: VPS_PASSWORD=xxx ./apps/worker/deploy-to-racknerd.sh
-# Or: RACKNERD_SSH_PASSWORD=xxx ./apps/worker/deploy-to-racknerd.sh
+# Deploy apps/worker to RackNerd.
+# Uses: VPS_PASSWORD or RACKNERD_SSH_PASSWORD from env, or .env.racknerd (copy from racknerd-credentials.example)
 set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+[ -f "$REPO_ROOT/.env.racknerd" ] && set -a && . "$REPO_ROOT/.env.racknerd" && set +a
 PASS="${VPS_PASSWORD:-$RACKNERD_SSH_PASSWORD}"
 if [ -z "$PASS" ]; then
   echo "Error: Set VPS_PASSWORD or RACKNERD_SSH_PASSWORD"
@@ -9,8 +12,6 @@ if [ -z "$PASS" ]; then
 fi
 HOST="172.245.56.50"
 REMOTE_DIR="/opt/tourreel-worker"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 echo "Deploying worker from $REPO_ROOT to root@$HOST:$REMOTE_DIR..."
 sshpass -p "$PASS" rsync -avz --delete \

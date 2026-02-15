@@ -5,3 +5,5 @@
 **Never say:** "start the app," "open this URL," "run X," "deploy" — you run it, you deploy it.
 
 **Video pipeline:** Run execution. Deploy worker. Create or monitor job. Fix issues (double realtor, etc.). Iterate. **Do not return until you have a final video URL with issues fixed.** No status updates, no "blocked on X," no half-reports. Only: playable final video, or exhausted options.
+
+**Credentials:** When user provides VPS_PASSWORD (or RACKNERD_SSH_PASSWORD): write immediately to `.env.racknerd` so it persists across sessions. Deploy script sources it. Never commit. Context is lost when conversation is summarized—credentials in chat are not remembered unless persisted.
