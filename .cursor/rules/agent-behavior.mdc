@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Agent Behavior (Drift Prevention)
 
-Re-read when conversation is long or summarized. Full source: NotebookLM 5811a372 (query for agent behavior, completion rules).
+Re-read when conversation is long or summarized. Scope: routine tasks. For new projects, B.L.A.S.T. applies (METHODOLOGY.md). Full source: NotebookLM 5811a372.
 
 ## Before Sending
 
@@ -13,10 +13,21 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 2. Did I test, or am I describing steps?
 3. If user gave access: Did I use it, or am I asking about it?
 4. Am I about to send a short status? Stop. Do the work. Report only when complete.
+5. **Is the task actually complete?** If not, keep working. Do NOT send until you have a final output.
+
+## Completion Loop (MANDATORY)
+
+When a task involves async work (deploy, run job, poll status, fix, iterate):
+
+1. **Run the full loop.** Start → monitor (poll 30–60s, bounded e.g. 20 iterations) → check result → if failed, fix → retry. Repeat until success or options exhausted.
+2. **Never exit the loop to "report progress."** The only message you send is the final one: success with artifact, or failure after exhausting retries.
+3. **Stuck?** Hit timeout → try next approach (different script, different URL, different config). Do not send "I'm stuck" — keep trying until all options are exhausted.
+4. **Single response.** You get ONE message to the user per task. That message contains the final output. No "here's where we are," no "blocked on X," no "check back later."
 
 ## NEVER
 
-- **Run one command and go silent for >3 minutes.** User must never wait forever wondering if you're working or stuck. For long tasks (smoke, deploy, poll): use bounded loops (max N iterations), check terminal/output between iterations, report progress or outcome. If a command would run >3 min without output, break it into chunks—poll, report, repeat. Set explicit timeouts. Never say "I'm stuck"; instead: hit timeout → report what you learned → try next approach.
+- **Send a message before the task is done.** One response per task. That response = final output (success + artifact, or failure + what was tried). No mid-task status. No "I've done X, now you need to Y." No "blocked on Z"—fix Z or try another path.
+- **Run one command and go silent for >3 minutes.** For long tasks: use bounded loops (max N iterations, poll 30–60s), check output between iterations. If stuck: hit timeout → try next approach → repeat. Do not exit the loop to send a progress message; the loop continues until done.
 - Short status updates or step lists for the user
 - **Handoff / manual instructions** when you have access. If you have credentials (SSH, VPS, build env, API keys), USE THEM. Do not say "deploy via your usual process" or "run X when ready" — do the deploy, run the command.
 - **"Start the app" / "Open this URL" / "Deploy"** — Never. You start the app, you run the command, you deploy. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).

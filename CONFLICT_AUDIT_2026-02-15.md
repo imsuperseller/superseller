@@ -4,6 +4,18 @@
 
 ---
 
+## 0. Methodology (Single System)
+
+| Check | Result |
+|-------|--------|
+| METHODOLOGY.md exists | Single SSOT for B.L.A.S.T. vs Agent Behavior |
+| brain.md HALT scoped to Protocol 0 | Routine tasks use Agent Behavior, no HALT |
+| .cursorrules points to METHODOLOGY.md | ✓ |
+
+**Rule**: B.L.A.S.T. = new projects. Agent Behavior = routine tasks. No conflict.
+
+---
+
 ## 1. Git
 
 | Check | Result |

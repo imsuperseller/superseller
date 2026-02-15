@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -29,6 +30,71 @@ function getMockJob(id: string) {
     };
 }
 
+/** Fetch job + listing + clips from DB when worker is unreachable. Returns real data (address, floorplan, exterior) or null. */
+async function fetchJobFromDb(jobId: string): Promise<{ job: any; listing: any; clips: any[] } | null> {
+    try {
+        const job = await prisma.$queryRawUnsafe<any[]>(
+            "SELECT * FROM video_jobs WHERE id = $1 LIMIT 1",
+            jobId
+        );
+        if (!job?.[0]) return null;
+        const j = job[0];
+
+        const listingRows = await prisma.$queryRawUnsafe<any[]>(
+            "SELECT * FROM listings WHERE id = $1 LIMIT 1",
+            j.listing_id
+        );
+        const listing = listingRows?.[0] ?? null;
+        if (!listing) return null;
+
+        let realtorAvatarUrl: string | undefined;
+        try {
+            const userRows = await prisma.$queryRawUnsafe<any[]>(
+                "SELECT avatar_url FROM users WHERE id = $1 LIMIT 1",
+                j.user_id
+            );
+            realtorAvatarUrl = userRows?.[0]?.avatar_url ?? undefined;
+        } catch {
+            // users table may not exist if worker uses separate DB
+        }
+
+        const clipsRows = await prisma.$queryRawUnsafe<any[]>(
+            "SELECT * FROM clips WHERE video_job_id = $1 ORDER BY clip_number",
+            jobId
+        );
+        const clips = (clipsRows ?? []).map((c: any) => ({
+            id: c.id,
+            clip_number: c.clip_number,
+            status: c.status === "complete" ? "done" : c.status,
+            prompt: c.prompt,
+            video_url: c.video_url,
+        }));
+
+        return {
+            job: {
+                id: j.id,
+                status: j.status,
+                progress_percent: j.progress_percent ?? j.progress,
+                current_step: j.current_step ?? j.currentStep,
+                error_message: j.error_message,
+                finalUrl: j.master_video_url ?? j.finalUrl,
+            },
+            listing: {
+                address: listing.address,
+                city: listing.city,
+                state: listing.state,
+                zip: listing.zip,
+                exterior_photo_url: listing.exterior_photo_url,
+                floorplan_url: listing.floorplan_url,
+                realtor_avatar_url: realtorAvatarUrl,
+            },
+            clips,
+        };
+    } catch {
+        return null;
+    }
+}
+
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -50,7 +116,11 @@ export async function GET(
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-            // Dev fallback: 404 or 5xx → return mock so UI always loads. User gets working page, not "Failed to fetch job".
+            // Worker 404/5xx: try DB for real address, floorplan, clips.
+            const fromDb = await fetchJobFromDb(id);
+            if (fromDb) {
+                return NextResponse.json({ ...fromDb, _fallback: true });
+            }
             if (IS_DEV) {
                 return NextResponse.json(getMockJob(id));
             }
@@ -58,7 +128,12 @@ export async function GET(
         }
         return NextResponse.json(data);
     } catch (err: any) {
-        // Dev: return mock so UI loads. Prod: return mock with _fallback so page loads with demo + banner (worker offline).
+        // Worker unreachable: try DB fallback for real address, floorplan, exterior, clips.
+        const fromDb = await fetchJobFromDb(id);
+        if (fromDb) {
+            return NextResponse.json({ ...fromDb, _fallback: true });
+        }
+        // No DB record or DB error: use mock so page at least loads.
         const mock = { ...getMockJob(id), _fallback: true };
         if (IS_DEV) {
             return NextResponse.json(getMockJob(id));

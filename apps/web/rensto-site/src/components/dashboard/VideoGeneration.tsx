@@ -29,6 +29,8 @@ export interface VideoJob {
         state: string;
         zip: string;
         exterior_photo_url?: string;
+        floorplan_url?: string;
+        realtor_avatar_url?: string;
     };
     clips: Clip[];
 }

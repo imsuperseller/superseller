@@ -6,6 +6,7 @@
 
 ## 2026-02-15
 
+- **Methodology consolidation**: Multiple working methods (B.L.A.S.T., agent behavior, work-method) had conflicting guidance—B.L.A.S.T. "HALT" vs agent "one output." Created METHODOLOGY.md as single SSOT: B.L.A.S.T. for new projects (phase gates), Agent Behavior for routine tasks (one final output). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior rules to reference METHODOLOGY.md. No more conflicts.
 - **Full video + regen workflow**: Generate FULL video first. Quality issues (cartoon, style drift) can appear in any scene (2, 3, 4+). To fix bad clips only: `JOB_ID=xxx CLIP_NUMBERS=2,3 npx tsx tools/regen-clips.ts`. MAX_CLIPS=1 is DEBUG ONLY—never for quality validation.
 - **Smoke "stuck"**: Job can sit behind others in BullMQ queue. Run `npx tsx tools/smoke-preflight.ts --drain` first to clear waiting jobs + ensure credits. Worker must have MAX_CLIPS=1 for fast (1-clip) smoke.
 - **Video quality (cartoon, style drift, weird motion)**: Kling was getting no negative prompt. Added short `KLING_REALTOR_NEGATIVE` (~250 chars): cartoon, duplicate person, walking in circles, barefoot, different century, etc. Updated `buildRealtorOnlyKlingPrompt`: "Person moves FORWARD through the space—no circular pacing", "Photorealistic. Preserve the exact room, furniture, and style shown in the image."
@@ -16,7 +17,7 @@
 - **Port confusion**: README said site 3001 (wrong—it's 3002). VIDEO_APP_USER_GUIDE said localhost:3000 (wrong—3002). e2e-from-zillow, run-smoke defaulted to 3002 for API_URL but worker is 3001 when both run. Fix: PORT_REFERENCE.md = SSOT. All docs/tools updated.
 - **Conflict audit protocol**: When user asks "do you have conflicts?"—run CONFLICT_AUDIT_2026-02-15.md checks (git, ports, docs, config), do not confirm without executing. Audit doc is runnable checklist.
 - **Video page 404 on rensto.com**: Vercel rensto-site had rootDirectory=null. Fixed via API + deploy from repo root. rensto-site.vercel.app/video/[jobId] works; rensto.com still 404 post-deploy (domain aliased to deployment per API). Possible Cloudflare proxy/cache—check origin points to Vercel.
-- **Video "fetch failed"**: API proxies to VIDEO_WORKER_URL (RackNerd 172.245.56.50:3002); worker unreachable from Vercel → fetch throws. Added prod fallback: return mock + _fallback when catch, UI shows "Video service temporarily unavailable — showing demo" banner. Page loads instead of error.
+- **Video "fetch failed"**: API proxies to VIDEO_WORKER_URL; worker unreachable or 404 → fetchJobFromDb reads video_jobs+listings+clips from shared Postgres. Returns real address, exterior_photo_url, floorplan_url, clips. Only falls back to mock if DB has no record.
 - **Kie.ai charges every couple minutes**: BullMQ retries (attempts: 3, backoff 30s) caused repeated pipeline runs when job failed (e.g. Insufficient Credits). Each retry = full Kie.ai usage. Fix: throw `UnrecoverableError` for unrecoverable errors.
 
 ---

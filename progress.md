@@ -8,6 +8,7 @@
 
 ## 2026-02-15
 
+- **Methodology consolidation**: Created METHODOLOGY.md (single system SSOT). Resolved B.L.A.S.T. "HALT" vs Agent Behavior "one output" conflict by scoping: B.L.A.S.T. = new projects (phase gates); Agent Behavior = routine tasks (one final message). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior.mdc, .claude/rules/agent-behavior.md, CLAUDE.md, CODEBASE_VS_NOTEBOOKLM, AGENT_CONTEXT. When asked "conflicts?", run CONFLICT_AUDIT (now includes methodology check).
 - **Pipeline config SSOT**: TOURREEL_REALTOR_HANDOFF_SPEC §0b added. config.ts = single source for defaultClipDuration (5), maxClipsPerVideo (15). kie.ts, prompt-generator, video-pipeline, regen-clips now read from config; no hardcoded 5 or 15. Clip count unchanged: 12 for 1531 Home Park (4bed+pool); MAX_CLIPS=1 was debug-only.
 - **Port reference audit**: Created PORT_REFERENCE.md (SSOT). Fixed conflicts: README (3001→3002, dev:3001 removed), VIDEO_APP_USER_GUIDE (3000→3002), e2e-from-zillow default 3002→3001, run-1clip-validation, DEPLOYMENT_AND_ACCESS, ZILLOW_VIDEO_PRODUCT_STATUS, agent-behavior. All port refs now point to PORT_REFERENCE.md or match it.
 - **Conflict audit**: Full audit run. Created CONFLICT_AUDIT_2026-02-15.md. Git: clean. Ports: worker 3002 conflicts with rensto-site 3002—use PORT=3001 for worker when both run. run-smoke default changed 3002→3001 (must hit worker). PIPELINE_RESEARCH_OUTPUT §1.2 Veo: deprecation notice added.

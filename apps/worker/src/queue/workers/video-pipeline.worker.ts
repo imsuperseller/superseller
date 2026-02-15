@@ -12,6 +12,7 @@ import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
 import { deriveHeroFeatures } from "../../services/hero-features";
+import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
 import { pickBestApproachPhotoForOpening } from "../../services/gemini";
 import { CreditManager } from "../../services/credits";
 import { join } from "path";
@@ -215,7 +216,6 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
             // Do NOT pad with original URLs—Kie cannot fetch Zillow/source URLs. Only use successfully uploaded R2 URLs.
             let lastFrameUrl: string | null = exteriorPublic;
-            const usePhotos = additionalPublic.length ? additionalPublic : (exteriorPublic ? [exteriorPublic] : []);
             const allUsablePhotos = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
             if (allUsablePhotos.length === 0) {
                 throw new UnrecoverableError("No property photos could be fetched and uploaded to R2. Kie.ai requires public URLs—Zillow/source URLs are not fetchable by Kie (causes 500).");
@@ -250,24 +250,21 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
             };
 
-            // Map room type to photo: avoid pool/backyard for early rooms. Zillow often puts pool at end.
-            const getPhotoForRoom = (toRoom: string, idx: number): string | null => {
-                const r = (toRoom || "").toLowerCase();
-                const poolOrBackyard = r.includes("pool") || r.includes("backyard") || r.includes("patio");
-                if (poolOrBackyard && usePhotos.length > 2) {
-                    return usePhotos[usePhotos.length - 1] ?? usePhotos[usePhotos.length - 2];
-                }
-                if (r.includes("exterior") && !r.includes("front")) {
-                    return exteriorPublic || usePhotos[0];
-                }
-                if (r.includes("front") && r.includes("door")) {
-                    return usePhotos[0] || exteriorPublic;
-                }
-                if (r.includes("foyer") || r.includes("entry")) {
-                    return usePhotos[Math.min(1, usePhotos.length - 1)] || usePhotos[0];
-                }
-                return usePhotos[Math.min(idx, usePhotos.length - 1)] || usePhotos[0];
-            };
+            // Photo–room alignment: single source of truth (room-photo-mapper)
+            const photoAssignments = assignPhotosToClips(clips, {
+                exteriorUrl: exteriorPublic,
+                additionalPhotos: additionalPublic,
+                heroResult,
+            });
+            logger.info({ msg: "Photo–room assignments", count: photoAssignments.length, clips: photoAssignments.map((a) => `${a.clipNumber}:${a.toRoom}`) });
+            const photoValidation = validateClipPhotoAssignments(photoAssignments, lastFrameUrl);
+            if (!photoValidation.valid) {
+                throw new UnrecoverableError(
+                    `Clip photo validation failed: ${photoValidation.errors.join("; ")}`
+                );
+            }
+            const getPhotoForRoom = (_toRoom: string, idx: number): string | null =>
+                photoAssignments[idx]?.photoUrl ?? null;
 
             const exteriorBeforeNano = lastFrameUrl;
             // Progress during Nano Banana: 20→35% so user sees movement (phase can take 5–15 min)

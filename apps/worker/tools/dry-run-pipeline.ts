@@ -152,8 +152,30 @@ async function main() {
         console.log("\n4. OPENING PHOTO (skipped --skip-vision, using index 0)");
     }
 
-    // 5. Verification checks (3-scene success criteria)
-    console.log("\n5. VERIFICATION CHECKS (3-scene criteria)");
+    // 5. Photo–room alignment (room-photo-mapper)
+    const clipsForMapper =
+        prompts.length > 0
+            ? prompts.map((p: any, i: number) => ({ clip_number: p.clip_number ?? i + 1, to_room: p.to_room ?? p.to }))
+            : tourRooms.map((r: any, i: number) => ({ clip_number: i + 1, to_room: r.to }));
+    const { assignPhotosToClips, validateClipPhotoAssignments } = await import("../src/services/room-photo-mapper");
+    const photoAssignments = assignPhotosToClips(clipsForMapper, {
+        exteriorUrl: exteriorUrl ?? null,
+        additionalPhotos: additionalPhotos,
+        heroResult,
+    });
+    const openingPhotoUrl = openingCandidates[openingIdx] ?? exteriorUrl ?? null;
+    const photoValidation = validateClipPhotoAssignments(photoAssignments, openingPhotoUrl);
+    console.log("\n5. PHOTO–ROOM ALIGNMENT (room-photo-mapper)");
+    photoAssignments.forEach((a: any) => {
+        console.log(`   Clip ${a.clipNumber} (${a.toRoom}): ${a.source}[${a.photoIndex}]`);
+    });
+    console.log("   Validation:", photoValidation.valid ? "✓" : "✗");
+    if (!photoValidation.valid) {
+        photoValidation.errors.forEach((e: string) => console.log("   Error:", e));
+    }
+
+    // 6. Verification checks (3-scene success criteria)
+    console.log("\n6. VERIFICATION CHECKS (3-scene criteria)");
     const firstRoom = tourRooms[0];
     const startsExterior = firstRoom?.from?.toLowerCase().includes("exterior") ?? false;
     const firstPrompt = prompts[0]?.prompt || "";

@@ -37,7 +37,7 @@
 ## 4. What matters most right now
 
 - **Cleanup, order, and updateness** — so the repo and docs are consistent and up to date.
-- **Knowing "all is good to progress smartly"** — no conflicting docs, no broken references, clear architecture and priorities (like this file and CLAUDE.md).
+- **Knowing "all is good to progress smartly"** — no conflicting docs, no broken references, clear architecture and priorities (like this file, CLAUDE.md, METHODOLOGY.md).
 - **Then:** Progress toward the $20k/month goal (product, automation, sales, retention) without tripping over tech or doc debt.
 
 ---

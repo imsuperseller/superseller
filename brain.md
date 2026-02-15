@@ -76,6 +76,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 /
 ├── brain.md                 ← YOU ARE HERE (Mission Control)
 ├── CLAUDE.md                ← Full technical context
+├── METHODOLOGY.md           ← Single system: B.L.A.S.T. vs Agent Behavior (no conflicts)
 ├── task_plan.md             ← Approved implementation phases
 ├── findings.md              ← Research, discoveries, root causes
 ├── progress.md              ← Execution logs, error tracking
@@ -134,13 +135,15 @@ For every new marketplace app:
 
 ## 🌊 B.L.A.S.T. PROTOCOL
 
+**Scope**: New projects, major architecture changes. For routine tasks (fix, deploy, verify), use Agent Behavior—see METHODOLOGY.md.
+
 1. **B**lueprint: Define vision, 5 discovery questions, data schema in brain.md/task_plan.
 2. **L**ink: Verify API connections, .env credentials.
 3. **A**rchitect: 3-layer A.N.T. (Architecture SOPs → Navigation → Tools).
 4. **S**tylize: UI/UX per design tokens, Rensto style.
 5. **T**rigger: Deploy to Vercel/n8n, activate automation.
 
-*Full framework: `docs/frameworks/blast-framework.md`*
+*Full framework: `docs/frameworks/blast-framework.md` | Single system: `METHODOLOGY.md`*
 
 ---
 
@@ -153,7 +156,7 @@ Before any code:
 4. **Delivery Payload**: Where is the final result delivered?
 5. **Behavioral Rules**: Any "Do Not" constraints?
 
-Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprint is verified.
+Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprint is verified. *(For routine tasks, skip Protocol 0—see METHODOLOGY.md.)*
 
 ---
 

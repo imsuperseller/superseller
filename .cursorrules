@@ -27,7 +27,7 @@ portal.rensto.com   → Vercel (customer portals - planned)
 
 ## 🌊 THE MASTER PATTERN (B.L.A.S.T.)
 
-**Canonical source**: NotebookLM [5811a372](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b). Query it for full protocol. ALL work (website, infrastructure, products) follows B.L.A.S.T.
+**Single system**: See [METHODOLOGY.md](METHODOLOGY.md). B.L.A.S.T. for new projects; Agent Behavior for routine tasks. **Canonical source**: NotebookLM [5811a372](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b).
 
 1. **B**lueprint: Define the Vision/Mission in brain.md / task_plan.md (or docs/templates/tourreel/BLUEPRINT.md for new apps).
 2. **L**ink: Establish data connectivity (MCP, APIs, Environment).
@@ -40,6 +40,7 @@ portal.rensto.com   → Vercel (customer portals - planned)
 - **Verify every link before sharing.** curl/fetch the URL; only give links that return 200 (or expected response).
 - **Document everything**. Update progress.md, findings.md (root causes so issues never repeat).
 - **Report only when complete** with verifiable Artifact. No short status messages or step lists for the user.
+- **Completion Loop**: For async tasks (deploy, poll, fix, iterate)—run the full loop. Monitor until done. One message per task = final output. Never exit the loop to "report progress."
 - **When user gives access** (credentials, APIs): USE it. Execute. Do not ask questions or send instructions back.
 
 ## 🐜 EXECUTION ENGINE (A.N.T.)

@@ -26,6 +26,7 @@
 
 ## 📖 Canonical Docs
 
+- **Methodology (single system)**: [`METHODOLOGY.md`](METHODOLOGY.md) — B.L.A.S.T. vs Agent Behavior, no conflicts.
 - **Codebase vs NotebookLM**: [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md) — What lives in codebase vs notebooks. Codebase = IDE essentials; NotebookLM = specs, methodology.
 - **Reference Alignment**: NotebookLM 5811a372 — Hierarchy, cross-reference map, sync discipline. Consult when sources conflict.
 - **Mission Control**: [`brain.md`](brain.md) — North Star, Agent protocol.

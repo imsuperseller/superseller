@@ -59,9 +59,10 @@ Full index: `brain.md` Knowledge Hierarchy.
 
 ## Conflict Resolution
 
-1. **Code vs NotebookLM disagree** → NotebookLM wins for specs and methodology.
-2. **Code vs code** → NotebookLM 0baf5f36 (Zillow-to-Video) is canonical for TourReel.
-3. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply.
+1. **Methodology (B.L.A.S.T. vs Agent Behavior)** → [METHODOLOGY.md](METHODOLOGY.md) is SSOT. B.L.A.S.T. = new projects. Agent Behavior = routine tasks.
+2. **Code vs NotebookLM disagree** → NotebookLM wins for specs and methodology.
+3. **Code vs code** → NotebookLM 0baf5f36 (Zillow-to-Video) is canonical for TourReel.
+4. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply.
 
 ---
 
