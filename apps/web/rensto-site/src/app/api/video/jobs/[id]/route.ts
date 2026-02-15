@@ -58,13 +58,11 @@ export async function GET(
         }
         return NextResponse.json(data);
     } catch (err: any) {
-        // Dev fallback: worker unreachable → return mock so UI loads instead of 502.
+        // Dev: return mock so UI loads. Prod: return mock with _fallback so page loads with demo + banner (worker offline).
+        const mock = { ...getMockJob(id), _fallback: true };
         if (IS_DEV) {
             return NextResponse.json(getMockJob(id));
         }
-        return NextResponse.json(
-            { error: err?.message || "Worker unreachable" },
-            { status: 502 }
-        );
+        return NextResponse.json(mock);
     }
 }

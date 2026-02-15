@@ -102,6 +102,7 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
     const [regenClips, setRegenClips] = useState<Set<number>>(new Set());
     const [regenLoading, setRegenLoading] = useState(false);
     const [regenError, setRegenError] = useState<string | null>(null);
+    const [fallbackMode, setFallbackMode] = useState(false);
 
     const fetchJob = useCallback(async () => {
         if (!jobId) return;
@@ -131,6 +132,7 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
             } else {
                 setJob({ ...data, clips });
             }
+            if (data._fallback) setFallbackMode(true);
             if (data.clips?.length > 0) {
                 setActiveClipId((prev) => {
                     if (prev) return prev;
@@ -198,6 +200,11 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30">
+            {fallbackMode && (
+                <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center text-sm text-amber-200">
+                    Video service temporarily unavailable — showing demo. Worker may be offline.
+                </div>
+            )}
             {/* Sidebar (Mock) */}
             <div className="fixed left-0 top-0 h-full w-64 border-r border-gray-800 bg-[#0a0a0a] p-6 hidden md:block">
                 <div className="flex items-center gap-2 mb-10 text-xl font-bold tracking-tight">

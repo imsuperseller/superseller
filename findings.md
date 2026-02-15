@@ -15,6 +15,8 @@
 - **Pipeline config duplication**: Clip duration (5s) and max clips (15) were hardcoded in kie.ts, prompt-generator, video-pipeline. Fix: TOURREEL_REALTOR_HANDOFF_SPEC §0b declares config.ts as SSOT; all code reads config.video.defaultClipDuration and config.video.maxClipsPerVideo.
 - **Port confusion**: README said site 3001 (wrong—it's 3002). VIDEO_APP_USER_GUIDE said localhost:3000 (wrong—3002). e2e-from-zillow, run-smoke defaulted to 3002 for API_URL but worker is 3001 when both run. Fix: PORT_REFERENCE.md = SSOT. All docs/tools updated.
 - **Conflict audit protocol**: When user asks "do you have conflicts?"—run CONFLICT_AUDIT_2026-02-15.md checks (git, ports, docs, config), do not confirm without executing. Audit doc is runnable checklist.
+- **Video page 404 on rensto.com**: Vercel rensto-site had rootDirectory=null. Fixed via API + deploy from repo root. rensto-site.vercel.app/video/[jobId] works; rensto.com still 404 post-deploy (domain aliased to deployment per API). Possible Cloudflare proxy/cache—check origin points to Vercel.
+- **Video "fetch failed"**: API proxies to VIDEO_WORKER_URL (RackNerd 172.245.56.50:3002); worker unreachable from Vercel → fetch throws. Added prod fallback: return mock + _fallback when catch, UI shows "Video service temporarily unavailable — showing demo" banner. Page loads instead of error.
 - **Kie.ai charges every couple minutes**: BullMQ retries (attempts: 3, backoff 30s) caused repeated pipeline runs when job failed (e.g. Insufficient Credits). Each retry = full Kie.ai usage. Fix: throw `UnrecoverableError` for unrecoverable errors.
 
 ---
