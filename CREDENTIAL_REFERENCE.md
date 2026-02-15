@@ -1,0 +1,31 @@
+# Credential Reference — Where to Look (No Secrets)
+
+**Purpose**: Agent reference. Know where credentials live so you use them. **Never store actual secrets here.**
+
+---
+
+## Where Credentials Are
+
+| Purpose | Location | Notes |
+|---------|----------|-------|
+| **Vercel** | Vercel Dashboard → Project → Settings → Environment Variables | Production, Preview, Development. VIDEO_WORKER_URL, DATABASE_URL, Stripe, etc. |
+| **Local (.env)** | `apps/web/rensto-site/.env.local`, `apps/worker/.env`, repo root `.env` | Copy from .env.example. Never commit. |
+| **MCP** | `~/.cursor/mcp.json` | n8n API, Airtable, Notion, Stripe, etc. |
+| **RackNerd** | VPS env, SSH keys | Worker deploy; `deploy-to-racknerd.sh` uses env. |
+| **Kie.ai** | Env or worker config | Video pipeline API. |
+| **PostgreSQL** | DATABASE_URL in Vercel / .env | Same for rensto-site and worker. |
+
+---
+
+## Before Running Commands
+
+- **Deploy rensto-site**: `VERCEL_TOKEN` in repo `.env`. From root: `eval "$(grep -E '^VERCEL_TOKEN=' .env)" && vercel --prod`.
+- **Worker on RackNerd**: Need SSH access; password/token in env (e.g. VPS_PASSWORD, RACKNERD_SSH_PASSWORD).
+- **Create video job**: Need VIDEO_WORKER_URL in Vercel so `/api/video/jobs/from-zillow` can reach worker.
+- **Stripe webhook**: Webhook secret in Vercel env.
+
+---
+
+## Rule
+
+When user gives access: **USE it.** Check Vercel env, .env.local, mcp.json for the keys you need. Don't ask "do you have X?" if they said you have access.
