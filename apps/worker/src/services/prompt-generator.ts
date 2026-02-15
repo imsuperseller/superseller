@@ -1,6 +1,7 @@
 import { geminiChatCompletion as chatCompletion } from "./gemini";
 import { TourRoom, ClipPrompt } from "../types";
 import { logger } from "../utils/logger";
+import { config } from "../config";
 
 /** Infer room type key from room name for ROOM_NEGATIVE_ADDITIONS lookup. */
 function inferRoomType(roomName: string): string {
@@ -219,7 +220,7 @@ CINEMATIC RULES:
 3. NO PEOPLE: Empty property—no realtor, no humans. Focus on architecture, light, and space.
 4. SPATIAL LOGIC: Every property has HERO MOMENTS (top 3 selling points). When pool exists: pool is the FINALE. When no pool: elevate kitchen island, fireplace, view, master suite, or other notable features as hero focus.
 
-Return a JSON array of clip prompts. 80-150 words each. Each object: clip_number, from_room, to_room, prompt, duration_seconds (5), negative_prompt (optional).`;
+Return a JSON array of clip prompts. 80-150 words each. Each object: clip_number, from_room, to_room, prompt, duration_seconds (${config.video.defaultClipDuration}), negative_prompt (optional).`;
 
 export async function generateClipPrompts(
     tourSequence: TourRoom[],
@@ -301,7 +302,7 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
                 prompt,
                 start_frame_url: null,
                 end_frame_url: null,
-                duration_seconds: clip.duration_seconds || 5,
+                duration_seconds: clip.duration_seconds ?? config.video.defaultClipDuration,
                 negative_prompt: clip.negative_prompt
                     ? `${clip.negative_prompt}, ${fullBaseNegative}`
                     : fullBaseNegative

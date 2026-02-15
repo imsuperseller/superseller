@@ -16,6 +16,7 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 
 ## NEVER
 
+- **Run one command and go silent for >3 minutes.** User must never wait forever wondering if you're working or stuck. For long tasks (smoke, deploy, poll): use bounded loops (max N iterations), check terminal/output between iterations, report progress or outcome. If a command would run >3 min without output, break it into chunks—poll, report, repeat. Set explicit timeouts. Never say "I'm stuck"; instead: hit timeout → report what you learned → try next approach.
 - Short status updates or step lists for the user
 - **Handoff / manual instructions** when you have access. If you have credentials (SSH, VPS, build env, API keys), USE THEM. Do not say "deploy via your usual process" or "run X when ready" — do the deploy, run the command.
 - **"Start the app" / "Open this URL" / "Deploy"** — Never. You start the app, you run the command, you deploy. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).
@@ -28,11 +29,11 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 - Do the work. When access given, USE it.
 - **Execute programmatic actions instead of instructing the user.** Restart dev server, run builds, clear caches, run tests — do them when needed. Never say "run X" or "restart the server" when you can run the command yourself.
 - **Deploy yourself when you have access.** Build locally if server build fails; rsync/scp the artifact; restart the service. Do not end with "deploy via your usual process."
-- **Monitor until done.** After retry/deploy, poll job status until complete or failed. Provide a live monitor link. Do not stop at "it's running."
+- **Monitor until done.** After retry/deploy, poll job status until complete or failed. Provide a live monitor link. Do not stop at "it's running." Use bounded poll loops (e.g. 20×30s) so you don't block forever. Report "still running after X min" or final result.
 - **Video pipeline: Never report until final video with issues fixed.** Deploy worker. Run/create job. Monitor (poll 30–60s). Fix issues (double realtor, pool, etc.). Iterate. Return only when: playable `master_video_url` AND issues user reported are fixed. No status updates, no "blocked on X," no "check back later." Exhaust options first.
 - **Verify links before giving them.** curl/fetch every URL you share. Only give links that return 200 (or the expected response). Never give a link without checking it works.
 - Test everything before declaring done.
-- Document (progress.md, findings.md).
+- **Document at end of every task.** Update progress.md (what was done, where we are). Update findings.md (root causes, never repeat). The project memory is the reference—not the user. Do NOT send session summaries or "I updated X" lists to the user.
 - Report only when complete with verifiable Artifact.
 - Reference conflicts: Query NotebookLM 5811a372 for hierarchy and cross-reference map.
 

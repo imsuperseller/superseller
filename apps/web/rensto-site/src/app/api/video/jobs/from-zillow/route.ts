@@ -13,7 +13,18 @@ async function ensureTestUserId(workerBase: string): Promise<string> {
     return d.userId;
 }
 
+/** Production gate: video create is localhost-only until explicitly enabled. */
+const IS_PRODUCTION =
+    process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+const VIDEO_CREATE_ENABLED = process.env.VIDEO_CREATE_ENABLED === "true" || process.env.VIDEO_CREATE_ENABLED === "1";
+
 export async function POST(request: NextRequest) {
+    if (IS_PRODUCTION && !VIDEO_CREATE_ENABLED) {
+        return NextResponse.json(
+            { error: "Video creation is not available in production yet." },
+            { status: 503 }
+        );
+    }
     if (!WORKER_URL) {
         return NextResponse.json(
             { error: "Video worker not configured. Set VIDEO_WORKER_URL." },

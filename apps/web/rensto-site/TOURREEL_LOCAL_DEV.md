@@ -2,6 +2,8 @@
 
 **Purpose**: Run frontend on localhost, test the video UI, share outputs with agents for debugging. Align with B.L.A.S.T., wireframes, and NotebookLM (Stitch + AntiGravity).
 
+**Ports SSOT**: [PORT_REFERENCE.md](../../PORT_REFERENCE.md) — site 3002, worker 3001 (when both run).
+
 ---
 
 ## Asset locations (canonical)

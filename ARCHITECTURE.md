@@ -10,6 +10,7 @@
 | Path | Purpose |
 |------|---------|
 | **apps/web/rensto-site/** | Main Next.js app (rensto.com, admin.rensto.com, api.rensto.com) |
+| **apps/worker/** | Video pipeline worker (TourReel: Nano Banana, Kling, R2) |
 | **apps/web/rensto-site/src/app/** | Pages and API routes |
 | **apps/web/rensto-site/src/app/admin/** | Admin dashboard |
 | **apps/web/rensto-site/src/app/api/** | API endpoints |
@@ -18,20 +19,21 @@
 | **infra/n8n-scripts/** | n8n workflow deploy/fix scripts |
 | **infra/archive/** | Archived infra (old workflows, legacy) |
 | **library/** | Legacy data, client workflows, reference configs |
-| **legal-pages/** | Privacy policy, terms, compliance |
 | **platforms/marketplace/** | Marketplace platform config and engine |
-| **docs/** | Documentation: **docs/frameworks/** (B.L.A.S.T., Antigravity, etc.), **docs/templates/tourreel/** (marketplace app template), **docs/n8n/N8N_WORKFLOWS_CATALOG.md** (workflow grouping), **docs/NOTEBOOKLM_INDEX.md** |
+| **docs/** | Documentation: **docs/frameworks/**, **docs/templates/tourreel/**, **docs/n8n/N8N_WORKFLOWS_CATALOG.md**, **docs/NOTEBOOKLM_INDEX.md** |
 | **security/** | Security policies, credential rotation |
-| **directives/** | n8n governance, debugging, strategy |
 | **.cursor/** | Agent rules, context, MCP status |
+| **.claude/skills/** | Agent skills (n8n, Tax4Us, workflow generator) |
 
 ---
 
 ## Not Present at Repo Root
 
 - **packages/** — Does not exist. Use `apps/web/rensto-site/src/` or `infra/`.
-- **scripts/** — In .cursorignore. Use `infra/n8n-scripts/` for automation scripts.
-- **archives/** — Does not exist. Use `infra/archive/` for archived material.
+- **scripts/** — Exists but in .cursorignore. Use `infra/n8n-scripts/` for automation scripts.
+- **archives/** — Does not exist. Use `infra/archive/` or `docs/archive/` for archived material.
+- **directives/** — Deleted. n8n governance in NotebookLM 5811a372.
+- **legal-pages/** — Deleted. Legal content in rensto-site or external.
 - **apps/api**, **apps/gateway-worker**, **apps/marketplace** — Deleted from repo.
 - **apps/web/admin-dashboard** — Deleted. Admin lives in `rensto-site/src/app/admin`.
 
@@ -43,7 +45,7 @@
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Retired**: Firestore, Airtable.com. **In use**: Aitable.ai (dashboards, syncs)
 
-**Firestore → Postgres migration**: ✅ **COMPLETE** (February 2026). PostgreSQL is now the primary database. See `docs/technical/FIRESTORE_TO_POSTGRES_MIGRATION_PLAN.md` for historical reference.
+**Firestore → Postgres migration**: ✅ **COMPLETE** (February 2026). PostgreSQL is now the primary database. See `docs/REMOVAL_LOG.md` for migration history.
 
 ---
 

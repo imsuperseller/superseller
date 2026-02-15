@@ -50,8 +50,8 @@ CRITICAL RULES for the tour sequence:
 3. Prefer this general flow: entrance → main living areas → kitchen/dining → bedrooms → bathrooms → outdoor spaces
 4. Group rooms by proximity — visit adjacent rooms before moving to distant ones
 5. For multi-story: complete the main floor first, then use "Stairs" as a transition, then complete upper floors
-6. POOL IS A HERO FEATURE: When special_features includes "pool", ALWAYS add "Pool" to the tour. Place it as the FINALE (last or second-to-last). Pool is the "Big Reveal" and primary selling point — must be shown prominently.
-7. End with outdoor spaces (backyard, patio, pool) if they exist. Order: Backyard → Pool (when pool exists) so Pool is the finale.
+6. POOL: Add "Pool" ONLY if the floorplan CLEARLY shows a pool (labeled pool, distinct pool shape). Do NOT assume pool from generic outdoor space. At most ONE "Pool" room.
+7. End with outdoor spaces. At most ONE "Backyard" and ONE "Pool" — never duplicate (no "Pool Deck", "Pool Area" as separate rooms). Order: Backyard → Pool when both exist.
 8. Never include utility rooms (HVAC closet, electrical panel) unless they are a notable feature
 9. Include hallways ONLY if they are architecturally significant or necessary for the walking path
 10. Bathrooms should follow their associated bedrooms (Master Bedroom → Master Bathroom)
@@ -125,8 +125,22 @@ function buildPropertyContext(listing?: any): string {
         : "No additional property details available.";
 }
 
+/** Collapse duplicate pool rooms — at most one Pool (no Pool Deck, Pool Area as separate clips). */
+function dedupePoolRooms(roomNames: string[]): string[] {
+    const poolLike = /^(pool|pool deck|pool area|pool patio)$/i;
+    let seenPool = false;
+    return roomNames.filter((r) => {
+        if (poolLike.test(r.trim())) {
+            if (seenPool) return false;
+            seenPool = true;
+        }
+        return true;
+    });
+}
+
 export function buildTourSequence(analysis: FloorplanAnalysis): TourRoom[] {
-    return buildTourSequenceFromRoomNames(analysis.suggested_tour_sequence);
+    const deduped = dedupePoolRooms(analysis.suggested_tour_sequence || []);
+    return buildTourSequenceFromRoomNames(deduped);
 }
 
 /** Build TourRoom[] from ordered room names. Used for floorplan analysis and default sequences. */

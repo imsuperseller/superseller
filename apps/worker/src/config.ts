@@ -77,13 +77,12 @@ export const config = {
         accessKeyId: required("R2_ACCESS_KEY_ID"),
         secretAccessKey: required("R2_SECRET_ACCESS_KEY"),
         bucket: optional("R2_BUCKET_NAME", process.env.R2_BUCKET || "tour-videos"),
-        // videos.rensto.com is not configured; use r2.dev for Kie.ai to fetch media
+        // Kie.ai must fetch media from public URLs. If unset, use r2.dev (tour-videos bucket) so pipeline works.
         publicUrl: (() => {
             const raw = optional("R2_PUBLIC_URL", process.env.R2_PUBLIC_DOMAIN || "");
-            if (raw && raw.includes("videos.rensto.com")) {
-                return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev";
-            }
-            return raw;
+            if (raw && raw.startsWith("http")) return raw;
+            if (raw && raw.includes("videos.rensto.com")) return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev";
+            return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev"; // fallback: Kie needs absolute URLs
         })(),
         endpoint: r2Endpoint || `https://${r2AccountId}.r2.cloudflarestorage.com`,
     },

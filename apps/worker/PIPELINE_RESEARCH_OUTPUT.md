@@ -4,6 +4,8 @@
 **Plan:** pipeline_phase_research_plan_ba183408  
 **Purpose:** Actionable findings from online research tied to specific code paths.
 
+**Current pipeline (Feb 2026):** Kling 3.0 only. Veo retired. Nano Banana → composite; Kling → interpolate. See TOURREEL_REALTOR_HANDOFF_SPEC §0. Kie refs: kie.ai/kling-3-0, kie.ai/nano-banana-pro.
+
 ---
 
 ## 1. Kie.ai API–Level Details
@@ -16,7 +18,9 @@
 | Kie.ai docs | Supports first+last frame for continuity | Add `last_frame`/equivalent param in Kling calls when we have end-frame from previous clip | Medium |
 | Kie.ai docs | "Internal Error" common with bad image format or oversized inputs | Add image validation (dimensions, size) before Kling API call; retry with fallback resolution if needed | Medium |
 
-### 1.2 Veo 3.1 Parameters
+### 1.2 Veo 3.1 Parameters — **DEPRECATED (Veo retired Feb 2026)**
+
+> Do not implement. Kling 3.0 only per TOURREEL_REALTOR_HANDOFF_SPEC §0.
 
 | Source | Finding | Suggested Change | Confidence |
 |--------|---------|------------------|------------|
@@ -27,7 +31,7 @@
 
 | Source | Finding | Suggested Change | Confidence |
 |--------|---------|------------------|------------|
-| [Kie.ai Nano Banana Pro](https://docs.kie.ai/market/google/pro-image-to-image) | `image_input`: array; JPEG/PNG/WEBP max 30MB; up to 8 images; `resolution`: 1K/2K/4K; no explicit identity-preservation params | Use `resolution: "4K"` (already done). Image order in `image_input` may affect composition—document order: [avatar, scene] and keep consistent | Medium |
+| [Kie.ai Nano Banana Pro](https://kie.ai/nano-banana-pro) ([docs.kie.ai](https://docs.kie.ai) for API params) | `image_input`: array; JPEG/PNG/WEBP max 30MB; up to 8 images; `resolution`: 1K/2K/4K; no explicit identity-preservation params | Use `resolution: "4K"` (already done). Image order in `image_input` may affect composition—document order: [avatar, scene] and keep consistent | Medium |
 
 ---
 
@@ -46,21 +50,21 @@
 
 | Source | Finding | Suggested Change | Confidence |
 |--------|---------|------------------|------------|
-| Kie.ai docs, practitioner posts | Using both start and end frames gives smoother clip-to-clip transitions | In `video-pipeline.worker.ts`, when generating clip N+1, pass last frame of clip N as Veo/Kling end-frame if API supports it | High |
-| Internal `blueprint.md` | Frame-chain continuity: end of clip N → start of clip N+1 | We mostly use start-frame only; implement last-frame extraction and pass to next clip generation | Medium |
+| Kie.ai docs, practitioner posts | Using both start and end frames gives smoother clip-to-clip transitions | In `video-pipeline.worker.ts`, pass last frame of clip N as Kling end-frame for clip N+1 (implemented: frame chaining) | High |
+| Internal `blueprint.md` | Frame-chain continuity: end of clip N → start of clip N+1 | Implemented: start+end frames per clip; Nano composites chain to next clip | Medium |
 
 ### 2.3 Negative Prompts
 
 | Source | Finding | Suggested Change | Confidence |
 |--------|---------|------------------|------------|
 | Config | `negative_prompt` column exists in DB | Ensure `prompt-generator.ts` or Kie calls include negative prompt: "blurry, distorted, artifacts, bad motion" or similar | Low |
-| Practitioner posts | Negative prompts help avoid artifacts | Add configurable `negative_prompt` in `config.ts`; pass to Kling/Veo if supported | Low |
+| Practitioner posts | Negative prompts help avoid artifacts | Add configurable `negative_prompt` in `config.ts`; pass to Kling if supported | Low |
 
-### 2.4 Veo vs Kling for Real Estate
+### 2.4 Video Model (Kling Only)
 
 | Source | Finding | Suggested Change | Confidence |
 |--------|---------|------------------|------------|
-| Web search | Kling cheaper; good at image-to-video. Veo tends more polished but slower/expensive | Current order (Veo first, Kling fallback) aligns with testing quality-first; keep as-is | Medium |
+| TOURREEL_REALTOR_HANDOFF_SPEC | Kling 3.0 only; Veo retired (quality/plastic issues) | Kling 3.0 for all clips. No Veo fallback. | High |
 
 ---
 
@@ -109,9 +113,9 @@
 
 ## Summary of High-Priority Code Changes
 
-1. **prompt-generator.ts**: Add "Shot N:" structure for Kling; describe camera + motion explicitly; optionally add last-frame param when available.
-2. **kie.ts**: Add `FIRST_AND_LAST_FRAMES_2_VIDEO` for Veo when both frames available; validate Kling image inputs (format, size).
-3. **video-pipeline.worker.ts**: Extract last frame of clip N, pass as end-frame for clip N+1 when APIs support it.
+1. **prompt-generator.ts**: Add "Shot N:" structure for Kling; describe camera + motion explicitly. (Last-frame: implemented in pipeline; Kling uses image_urls start+end.)
+2. **kie.ts**: Kling uses image_urls with start+end frames. Validate image inputs (format, size). Veo code exists for legacy reference but is not used in pipeline.
+3. **video-pipeline.worker.ts**: Frame chaining implemented—clip N end = clip N+1 start (Nano composites).
 4. **floorplan-analyzer.ts**: Ensure `getDefaultSequence` follows exterior → interior; add pool variants.
 5. **apify.ts** / **routes.ts**: Persist `description`, `amenities`, `resoFacts` (already mapped; ensure DB + routes store them).
 6. **nano-banana.ts**: Standardize `image_input` order [avatar, scene]; use R2-hosted avatar URL.

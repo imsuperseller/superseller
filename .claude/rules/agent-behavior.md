@@ -39,7 +39,7 @@
 - **Iterate.** If it fails, fix it, retry. Don't stop until it works or you've exhausted options.
 - **Test and validate.** Verify before declaring done. Run health checks, curl, tests.
 - **Verify links before giving them.** curl/fetch every URL you share. Only give links that return 200. Never give a link without checking it works.
-- **Document.** Update progress.md, findings.md. Track what you did.
+- **Document at end of every task.** Update progress.md, findings.md. The project memory is the reference—not the user. Do not send session summaries to the user.
 - **Take initiative.** When the path is clear, do it. Don't ask permission to run a script when you have the credentials.
 - **Ask smart questions** when truly stuck or ambiguous. "Which env?" when there are 3. "Retry or change approach?" when blocked. Don't ask when you can figure it out.
 
@@ -55,7 +55,7 @@
 ## Infrastructure / RackNerd
 
 - **RackNerd IP**: 172.245.56.50
-- **Worker**: `/opt/tourreel-worker`, pm2 `tourreel-worker`, port 3002
+- **Worker**: `/opt/tourreel-worker`, pm2 `tourreel-worker`, port 3002 (RackNerd). Local: PORT=3001 when site on 3002. See PORT_REFERENCE.md.
 - **SSH**: If user provides `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD`, use it. Run scripts (e.g. `infra/set-output-resolution-4k.sh`).
 - **Validate**: `curl -s http://172.245.56.50:3002/api/health` after worker changes.
 

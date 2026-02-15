@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Play, Pause, CheckCircle2, Circle, Clock, Loader2, Video, Settings, LayoutDashboard, Home, AlertCircle, Plus } from "lucide-react";
+import { Play, Pause, CheckCircle2, Circle, Clock, Loader2, Video, Settings, LayoutDashboard, Home, AlertCircle, Plus, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +43,7 @@ function StatusBadge({ status }: { status: string }) {
         generating_clips: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
         stitching: "bg-orange-500/10 text-orange-500 border-orange-500/20",
         completed: "bg-green-500/10 text-green-500 border-green-500/20",
+        complete: "bg-green-500/10 text-green-500 border-green-500/20",
         failed: "bg-red-500/10 text-red-500 border-red-500/20",
     };
 
@@ -98,60 +99,61 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeClipId, setActiveClipId] = useState<string | null>(null);
+    const [regenClips, setRegenClips] = useState<Set<number>>(new Set());
+    const [regenLoading, setRegenLoading] = useState(false);
+    const [regenError, setRegenError] = useState<string | null>(null);
+
+    const fetchJob = useCallback(async () => {
+        if (!jobId) return;
+        try {
+            const res = await fetch(`/api/video/jobs/${jobId}`);
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                const msg =
+                    data?.error ||
+                    data?.message ||
+                    (data?.job?.error_message ? `Job failed: ${data.job.error_message}` : null) ||
+                    `Failed to fetch job (${res.status})`;
+                throw new Error(msg);
+            }
+            const clips = (data.clips || []).map((c: any) => ({
+                ...c,
+                video_url: c.video_url ?? c.resultUrl,
+                status: c.status === "done" ? "completed" : c.status,
+            }));
+            if (data.job && data.listing) {
+                setJob({
+                    ...data.job,
+                    current_step: data.job.current_step ?? data.job.currentStep,
+                    listing: data.listing,
+                    clips
+                });
+            } else {
+                setJob({ ...data, clips });
+            }
+            if (data.clips?.length > 0) {
+                setActiveClipId((prev) => {
+                    if (prev) return prev;
+                    const fp = data.clips.find((c: Clip) => (c.status === "completed" || c.status === "done") && (c.video_url || c.resultUrl));
+                    return fp?.id ?? data.clips[0].id;
+                });
+            }
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [jobId]);
 
     // Poll for job updates
     useEffect(() => {
         if (!jobId) return;
 
-        const fetchJob = async () => {
-            try {
-                const res = await fetch(`/api/video/jobs/${jobId}`);
-                const data = await res.json().catch(() => ({}));
-                if (!res.ok) {
-                    const msg =
-                        data?.error ||
-                        data?.message ||
-                        (data?.job?.error_message ? `Job failed: ${data.job.error_message}` : null) ||
-                        `Failed to fetch job (${res.status})`;
-                    throw new Error(msg);
-                }
-
-                // Normalize clips: worker returns resultUrl, component expects video_url
-                const clips = (data.clips || []).map((c: any) => ({
-                    ...c,
-                    video_url: c.video_url ?? c.resultUrl,
-                    status: c.status === "done" ? "completed" : c.status,
-                }));
-
-                // Flatten the response to match VideoJob interface
-                if (data.job && data.listing) {
-                    setJob({
-                        ...data.job,
-                        current_step: data.job.current_step ?? data.job.currentStep,
-                        listing: data.listing,
-                        clips
-                    });
-                } else {
-                    setJob({ ...data, clips });
-                }
-
-                // Set active clip to first generating or completed if none selected
-                if (!activeClipId && data.clips?.length > 0) {
-                    const firstPlayable = data.clips.find((c: Clip) => (c.status === "completed" || c.status === "done") && c.video_url) || data.clips[0];
-                    setActiveClipId(firstPlayable.id);
-                }
-            } catch (err: any) {
-                console.error(err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchJob();
         const interval = setInterval(fetchJob, 3000); // Poll every 3s
         return () => clearInterval(interval);
-    }, [jobId, activeClipId]);
+    }, [jobId, fetchJob]);
 
     if (!jobId) return <div className="p-10 text-center text-gray-500">No Job ID provided.</div>;
     if (loading && !job) return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="animate-spin text-blue-500" size={32} /></div>;
@@ -161,6 +163,38 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
     const clips = job.clips || [];
     const activeClip = clips.find(c => c.id === activeClipId) || clips[0] || null;
     const listing = job.listing || { address: "Loading...", city: "", state: "", zip: "" };
+    const isComplete = job.status === "completed" || job.status === "complete";
+    const masterUrl = (job as any).finalUrl || (job as any).master_video_url;
+
+    const handleRegenerate = async () => {
+        if (regenClips.size === 0 || !jobId) return;
+        setRegenLoading(true);
+        setRegenError(null);
+        try {
+            const res = await fetch(`/api/video/jobs/${jobId}/regenerate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clipNumbers: Array.from(regenClips) }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || `Regenerate failed: ${res.status}`);
+            setRegenClips(new Set());
+            await fetchJob();
+        } catch (err: any) {
+            setRegenError(err.message);
+        } finally {
+            setRegenLoading(false);
+        }
+    };
+
+    const toggleRegenClip = (n: number) => {
+        setRegenClips((prev) => {
+            const next = new Set(prev);
+            if (next.has(n)) next.delete(n);
+            else next.add(n);
+            return next;
+        });
+    };
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30">
@@ -305,6 +339,63 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
                         </div>
                     </div>
                 </div>
+
+                {/* Regenerate section — when complete */}
+                {isComplete && clips.length > 0 && (
+                    <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm">
+                        <h3 className="font-medium flex items-center gap-2 mb-4">
+                            <RefreshCw size={18} className="text-blue-400" />
+                            Regenerate scenes
+                        </h3>
+                        <p className="text-sm text-gray-400 mb-4">
+                            Select scenes to regenerate (keeps the rest, re-stitches in order). Uses credits.
+                        </p>
+                        <div className="flex flex-wrap gap-3 mb-4">
+                            {clips.map((clip) => (
+                                <label
+                                    key={clip.id}
+                                    className={cn(
+                                        "flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors",
+                                        regenClips.has(clip.clip_number)
+                                            ? "bg-blue-500/20 border-blue-500/50"
+                                            : "bg-gray-800/30 border-gray-700 hover:border-gray-600"
+                                    )}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={regenClips.has(clip.clip_number)}
+                                        onChange={() => toggleRegenClip(clip.clip_number)}
+                                        className="rounded border-gray-600"
+                                    />
+                                    <span className="text-sm">Scene {clip.clip_number}</span>
+                                </label>
+                            ))}
+                        </div>
+                        {regenError && (
+                            <p className="text-red-400 text-sm mb-3">{regenError}</p>
+                        )}
+                        <button
+                            onClick={handleRegenerate}
+                            disabled={regenClips.size === 0 || regenLoading}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium"
+                        >
+                            {regenLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                            Regenerate selected
+                        </button>
+                        {masterUrl && (
+                            <div className="mt-4">
+                                <a
+                                    href={masterUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-blue-400 hover:underline"
+                                >
+                                    Open full video ↗
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

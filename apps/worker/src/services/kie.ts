@@ -79,6 +79,8 @@ export interface KieKlingRequest {
     mode?: "std" | "pro";
     aspect_ratio?: "16:9" | "9:16" | "1:1";
     model?: string; // kling-3.0/video only (no Kling 2.6)
+    /** Clip duration in seconds. Default: config.video.defaultClipDuration (5). */
+    duration?: number;
 }
 
 /** Generate clip via Kie Kling (sync: create + poll until done). */
@@ -97,6 +99,13 @@ const IDENTITY_NEGATIVE = "different person, different face, wrong person, impos
 /** When start frame already has realtor (Nano composite): reject duplicate/double figure. */
 const DUPLICATE_FIGURE_NEGATIVE = "duplicate person, two people, double figure, two identical figures, ghost figure, extra person, clone, second copy";
 
+/** Spatial: reject impossible movement (walking through furniture, walls). */
+const SPATIAL_NEGATIVE = "person walking through walls, person walking through furniture, floating person, person clipping through objects, impossible movement, person gliding, walking through sofa, walking through table";
+
+/** Short negative for Kling (Kie max ~500 chars). Reject: cartoon, duplicates, style drift, weird motion. */
+const KLING_REALTOR_NEGATIVE =
+    "cartoon, anime, illustration, stylized, CGI, video game, duplicate person, two people, double figure, clone, extra person, walking in circles, pacing in place, circular motion, barefoot, period costume, different century, vintage furniture, low quality, blurry, distorted, morphing";
+
 /** When realtor already in frame: minimal prompt—camera + room only. NO person action description (triggers double figure). */
 export function buildRealtorOnlyKlingPrompt(clip: { clip_number: number; from_room?: string; to_room?: string }): string {
     const toRoom = (clip.to_room || "room").replace(/_/g, " ");
@@ -104,35 +113,50 @@ export function buildRealtorOnlyKlingPrompt(clip: { clip_number: number; from_ro
     const camera = isOpening
         ? "Smooth forward dolly along the path toward the door. Ground level, eye height."
         : "Smooth steadicam forward dolly through the space. Natural real estate tour pace.";
-    return `The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. ${camera} ${toRoom} in view. Seamless motion from start to end frame. Lips closed, no speaking, silent walkthrough.`;
+    return `The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. Person moves FORWARD through the space—no circular pacing, no walking in place. Respect furniture and walls. Photorealistic. Preserve the exact room, furniture, and style shown in the image. ${camera} ${toRoom} in view. Lips closed, no speaking, silent walkthrough.`;
+}
+
+function isPublicFetchableUrl(url: string): boolean {
+    if (!url || !url.startsWith("http")) return false;
+    if (url.includes("zillow") || url.includes("zillowstatic")) return false;
+    if (url.startsWith("/")) return false;
+    return true;
 }
 
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
-    // Kling 3.0 Start & End Frames: image_urls[0]=start, image_urls[1]=end for continuity
-    // NO kling_elements: Elements combines/blends multiple images → collage effect. Realtor already in Nano Banana composite.
+    if (!isPublicFetchableUrl(request.image_url)) {
+        throw new Error(`Kie.ai Kling requires a public fetchable URL for image_url. Got non-public or Zillow URL (Kie 500).`);
+    }
+    if (request.last_frame && !isPublicFetchableUrl(request.last_frame)) {
+        throw new Error(`Kie.ai Kling requires a public fetchable URL for last_frame. Got non-public or Zillow URL (Kie 500).`);
+    }
+    // EXACT payload matching working 4555169. Kie 500 caused by:
+    // - duration: must be "5" or "10" (enum), not "5.00" from DB
+    // - negative_prompt: Kie max 500 chars; we were sending 600–1000+ chars
+    // - multi_shots: working version did not send; unknown param may trigger 500
     const imageUrls = request.last_frame
         ? [request.image_url, request.last_frame]
         : [request.image_url];
-    const negPrompt = [
-        SILENT_NEGATIVE,
-        request.last_frame ? IDENTITY_NEGATIVE : null, // When using start+end frames, enforce same person
-        request.realtor_in_frame ? DUPLICATE_FIGURE_NEGATIVE : null, // Start frame has realtor; prevent double figure
-        request.negative_prompt,
-    ].filter(Boolean).join(", ");
+    const rawDur = request.duration ?? config.video.defaultClipDuration ?? 5;
+    const durationSec = typeof rawDur === "string" ? parseInt(rawDur, 10) : Math.round(Number(rawDur));
+    const duration = durationSec >= 10 ? "10" : "5"; // Kie enum: only "5" | "10"
+
+    // Keep negative under 500 chars. When realtor: reject cartoon, duplicates, style drift, weird motion.
+    const negPrompt = request.realtor_in_frame ? KLING_REALTOR_NEGATIVE : (request.negative_prompt?.slice(0, 500) || undefined);
     const input: Record<string, unknown> = {
         prompt: request.prompt,
         image_urls: imageUrls,
         sound: false,
-        duration: "5",
+        duration,
         mode: request.mode || "std",
-        multi_shots: false,
-        negative_prompt: negPrompt,
+        multi_shots: false, // Kie 422: "multi_shots cannot be empty" when omitted
+        ...(negPrompt ? { negative_prompt: negPrompt } : {}),
         ...(request.last_frame ? {} : { aspect_ratio: request.aspect_ratio || "16:9" }),
     };
     const body = { model: request.model || "kling-3.0/video", input };
 
     const url = `${KIE_BASE}/v1/jobs/createTask`;
-    logger.info({ msg: "kie.ai Kling task creating", url, model: body.model });
+    logger.info({ msg: "kie.ai Kling task creating", url, model: body.model, duration, inputKeys: Object.keys(input) });
 
     const response = await fetch(url, {
         method: "POST",
@@ -147,6 +171,8 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
 
     const data = await response.json();
     if (data.code !== 200 && data.code !== 0) {
+        const extra = data.data ? ` data=${JSON.stringify(data.data).slice(0, 200)}` : "";
+        logger.error({ msg: "Kie Kling API error", code: data.code, msg: data.msg, extra });
         throw new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
     }
 

@@ -71,12 +71,33 @@ export interface HeroFeaturesResult {
     hasPool: boolean;
 }
 
-const POOL_INDICATORS = ["pool", "swimming pool", "in-ground pool", "in ground pool", "salt water pool"];
+/** Definitive pool phrases — avoids "room for pool", "pool table", "car pool", "pool of light". */
+const POOL_INDICATORS = [
+    "swimming pool",
+    "in-ground pool",
+    "in ground pool",
+    "private pool",
+    "salt water pool",
+    "pool: in ground",
+    "pool: above ground",
+    "pool and spa",
+];
+
+/** Exclude false positives (pool table, car pool, pool of light, "potential for pool"). */
+const POOL_EXCLUSIONS = ["pool table", "car pool", "pool of light", "potential for pool", "potential pool", "room for pool", "room for a pool", "pool-sized"];
 
 function textIndicatesPool(text: string | null | undefined): boolean {
     if (!text) return false;
     const lower = String(text).toLowerCase();
+    if (POOL_EXCLUSIONS.some((e) => lower.includes(e))) return false;
     return POOL_INDICATORS.some((p) => lower.includes(p));
+}
+
+/** Amenities from Zillow resoFacts (e.g. "Pool: In Ground") — authoritative, use looser check. */
+function amenitiesIndicatePool(amenitiesStr: string): boolean {
+    if (!amenitiesStr) return false;
+    const lower = amenitiesStr.toLowerCase();
+    return /pool\s*:\s*(in ground|above ground|yes|private)/.test(lower) || lower.includes("swimming pool");
 }
 
 /**
@@ -96,12 +117,14 @@ export function deriveHeroFeatures(input: {
     const roomNotable = (analysis.rooms || [])
         .flatMap((r) => (r.notable_features || []).map((n) => String(n).toLowerCase().trim()));
 
-    // Pool from listing (Zillow) when no floorplan
+    // Pool from listing (Zillow). Amenities (resoFacts) are authoritative; description needs stricter phrases.
     const amenitiesArr = Array.isArray(input.amenities) ? input.amenities : [];
     const amenitiesStr = amenitiesArr
         .map((a) => (typeof a === "string" ? a : `${(a as any).factLabel || ""} ${(a as any).factValue || ""}`))
         .join(" ");
-    const hasPoolFromListing = textIndicatesPool(input.description) || textIndicatesPool(amenitiesStr);
+    const hasPoolFromListing =
+        amenitiesIndicatePool(amenitiesStr) ||
+        textIndicatesPool(input.description);
 
     for (const hf of HERO_PRIORITY) {
         if (seen.has(hf)) continue;

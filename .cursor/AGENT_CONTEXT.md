@@ -47,3 +47,4 @@
 - **Architecture and stack:** CLAUDE.md, ARCHITECTURE.md (folder map).
 - **Cleanup and file layout:** CODEBASE_AUDIT.md.
 - **Rules for agents:** .cursorrules, .cursor/rules.md.
+- **User preferences (mandatory):** .cursor/USER_PREFERENCES.md — never give instructions; do the work.

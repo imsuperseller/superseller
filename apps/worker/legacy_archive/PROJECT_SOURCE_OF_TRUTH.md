@@ -1,8 +1,8 @@
 # Technical Audit & Unified Production Roadmap
 
-> **→ For current pipeline architecture and flow, see `apps/worker/PIPELINE_SPEC.md`.**
+> **→ For current pipeline architecture and flow, see `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`.** (PIPELINE_SPEC was migrated.)
 
-This document serves as a retrospective audit of the TourReel project. It synthesizes past technical failures and lessons learned. The canonical implementation spec is now `PIPELINE_SPEC.md`.
+This document serves as a retrospective audit of the TourReel project. It synthesizes past technical failures and lessons learned. The canonical implementation spec is now `TOURREEL_REALTOR_HANDOFF_SPEC.md` (formerly PIPELINE_SPEC).
 
 ## 1. Context & Retrospective: The Failure Audit
 

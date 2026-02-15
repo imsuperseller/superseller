@@ -67,15 +67,15 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 
 ## 🔧 **DEVELOPMENT PORTS**
 
-To avoid conflicts with external tools and reservation requirements, the following ports are designated for local development:
+See **[PORT_REFERENCE.md](PORT_REFERENCE.md)** for the single source of truth. Quick ref:
 
-- **Website (Next.js)**: `3001` (Strictly avoid `3000`)
-- **n8n Local**: `5678` (Default)
+- **rensto-site** (Next.js): `3002` (package.json sets PORT=3002)
+- **Worker** (TourReel): `3001` when site runs; `3002` when worker-only
+- **n8n Local**: `5678`
 
-To start the website on the correct port:
 ```bash
 cd apps/web/rensto-site
-npm run dev:3001
+npm run dev   # Runs on 3002
 ```
 
 ## 🚀 **QUICK START**
@@ -98,7 +98,7 @@ npm install
 cd apps/web/rensto-site
 npm install
 npm run dev
-# Or: npm run dev:3001  (port 3001 to avoid conflicts)
+# Site runs on 3002. For video pipeline: also start worker (PORT=3001). See PORT_REFERENCE.md.
 ```
 
 ### **Configuration:**

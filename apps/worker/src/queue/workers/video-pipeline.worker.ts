@@ -1,4 +1,4 @@
-import { Worker, Job } from "bullmq";
+import { Worker, Job, UnrecoverableError } from "bullmq";
 import { redisConnection } from "../connection";
 import { VideoPipelineJobData, clipGenerationQueue } from "../queues";
 import { query, queryOne, transaction } from "../../db/client";
@@ -39,12 +39,12 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const minimumRequired = config.video.maxClipsPerVideo * 15; // Rough estimate: 15 credits per clip avg
             if (currentBalance < minimumRequired) {
                 await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", ["Insufficient Credits", jobId]);
-                throw new Error("Insufficient Credits");
+                throw new UnrecoverableError("Insufficient Credits"); // No retry—won't fix
             }
             logger.info({ msg: "Credit pre-check passed", userId, currentBalance });
 
             const listing = await queryOne("SELECT * FROM listings WHERE id = $1", [listingId]);
-            if (!listing) throw new Error("Listing not found");
+            if (!listing) throw new UnrecoverableError("Listing not found"); // No retry—data issue
 
             // 2. Floorplan Analysis (if exists)
             let tourRooms: TourRoom[] = listing.tour_sequence || [];
@@ -94,11 +94,12 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             let avatarPublic: string | null = null;
             if (avatarUrlRaw && avatarUrlRaw.startsWith("http")) {
                 try {
-                    const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
-                        if (!url || !url.startsWith("http")) return null;
-                        if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
-                        try {
-                            const resp = await fetch(url);
+            const FETCH_TIMEOUT_MS = 30_000;
+            const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
+                if (!url || !url.startsWith("http")) return null;
+                if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
+                try {
+                    const resp = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
                             if (!resp.ok) return null;
                             const ext = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] || "jpg";
                             const localPath = join(workDir, `_fetch_${label}.${ext}`);
@@ -129,14 +130,16 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             });
 
             if (prompts.length === 0) {
-                throw new Error("No clip prompts generated. Ensure listing has a valid tour sequence.");
+                throw new UnrecoverableError("No clip prompts generated. Ensure listing has a valid tour sequence."); // No retry—data/logic issue
             }
+            // Trim prompts to maxClips—LLM may return extra; Nano/Kling cost scales with clip count
+            const trimmedPrompts = prompts.slice(0, maxClips).map((p, i) => ({ ...p, clip_number: i + 1 }));
 
             // 4. Create Clip Records (skip if retry - clips already exist)
             const existingClips = await query("SELECT 1 FROM clips WHERE video_job_id = $1 LIMIT 1", [jobId]);
             if (existingClips.length === 0) {
                 await transaction(async (client) => {
-                    for (const p of prompts) {
+                    for (const p of trimmedPrompts) {
                         const promptText = (p.prompt && String(p.prompt).trim()) || `Cinematic property tour clip.`;
                         await client.query(
                             `INSERT INTO clips (id, video_job_id, clip_number, from_room, to_room, prompt, negative_prompt, duration_seconds, status)
@@ -182,20 +185,25 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
             logger.info({ msg: "Photo extraction", additionalPhotosCount: additionalPhotos.length, hasExterior: !!listing.exterior_photo_url });
 
-            // Upload photos to R2 so Kie can fetch them (Zillow blocks programmatic access)
+            // Upload photos to R2 so Kie can fetch them. NEVER pass source URLs (Zillow, etc.) to Kie—they block
+            // programmatic access, causing Kie 500. Return null on fetch/upload failure; do not fall back to original URL.
+            const PHOTO_FETCH_TIMEOUT_MS = 30_000;
             const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
-                if (!url || !url.startsWith("http")) return url;
+                if (!url || !url.startsWith("http")) return null;
                 if (url.includes(config.r2.publicUrl || "r2.dev")) return url; // already on R2
                 try {
-                    const resp = await fetch(url);
-                    if (!resp.ok) return url;
+                    const resp = await fetch(url, { signal: AbortSignal.timeout(PHOTO_FETCH_TIMEOUT_MS) });
+                    if (!resp.ok) {
+                        logger.warn({ msg: "ensurePublicUrl fetch failed", label, status: resp.status });
+                        return null;
+                    }
                     const ext = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] || "jpg";
                     const localPath = join(workDir, `_fetch_${label}.${ext}`);
                     writeFileSync(localPath, Buffer.from(await resp.arrayBuffer()));
                     return await uploadToR2(localPath, buildR2Key(userId, jobId, `frames/${label}.${ext}`));
                 } catch (e: any) {
                     logger.warn({ msg: "ensurePublicUrl failed", label, error: e.message });
-                    return url;
+                    return null;
                 }
             };
             let exteriorPublic = await ensurePublicUrl(extractPhotoUrl(listing.exterior_photo_url) ?? null, "exterior");
@@ -205,26 +213,28 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const p = await ensurePublicUrl(additionalPhotos[i], `room_${i}`);
                 if (p) additionalPublic.push(p);
             }
-            for (let i = additionalPublic.length; i < additionalPhotos.length; i++) additionalPublic.push(additionalPhotos[i]);
+            // Do NOT pad with original URLs—Kie cannot fetch Zillow/source URLs. Only use successfully uploaded R2 URLs.
             let lastFrameUrl: string | null = exteriorPublic;
-            const usePhotos = additionalPublic.length ? additionalPublic : additionalPhotos;
+            const usePhotos = additionalPublic.length ? additionalPublic : (exteriorPublic ? [exteriorPublic] : []);
+            const allUsablePhotos = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
+            if (allUsablePhotos.length === 0) {
+                throw new UnrecoverableError("No property photos could be fetched and uploaded to R2. Kie.ai requires public URLs—Zillow/source URLs are not fetchable by Kie (causes 500).");
+            }
 
             // Opening MUST be front of house (walkway to door). REJECT pool, backyard, interior.
-            // When property has pool: prefer exterior (index 0)—additional photos often show pool/backyard.
-            const openingCandidates = [exteriorPublic, ...additionalPublic.slice(0, 2)].filter((u): u is string => !!u);
+            // DO NOT force index 0 when hasPool—Zillow often uses pool/backyard as "exterior" (hero shot).
+            // Trust Gemini to pick the true front-of-house from all candidates.
+            const openingCandidates = [exteriorPublic, ...additionalPublic.slice(0, 4)].filter((u): u is string => !!u);
             if (openingCandidates.length >= 1) {
                 try {
-                    let bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
-                    // Only force index 0 when it's the actual exterior. When exteriorPublic is null,
-                    // openingCandidates[0] may be pool (Zillow often puts pool first)—forcing would pick pool.
-                    if (heroResult.hasPool && bestIdx > 0 && exteriorPublic && openingCandidates[0] === exteriorPublic) {
-                        bestIdx = 0;
-                        logger.info({ msg: "Pool property: forcing exterior (index 0) for opening to avoid pool-at-front", hadPick: true });
-                    }
+                    const bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
                     lastFrameUrl = openingCandidates[bestIdx];
                     if (bestIdx > 0) logger.info({ msg: "Using non-first photo for opening (front-of-house)", index: bestIdx });
                 } catch (e) {
-                    lastFrameUrl = exteriorPublic;
+                    // Fallback: skip index 0 if pool property (exterior may be pool)—try first additional
+                    lastFrameUrl = heroResult.hasPool && openingCandidates.length > 1
+                        ? openingCandidates[1]
+                        : openingCandidates[0];
                 }
             }
 
@@ -232,8 +242,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             // All frames from Nano Banana when realtor = same person. Clip N last = Clip N+1 first = seamless.
             const frameUrls: (string | null)[] = [];
 
+            const MEDIA_FETCH_TIMEOUT_MS = 60_000;
             const uploadNanoBananaResult = async (imageUrl: string, label: string): Promise<string> => {
-                const imgResp = await fetch(imageUrl);
+                const imgResp = await fetch(imageUrl, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
                 const imgPath = join(workDir, `${label}.png`);
                 writeFileSync(imgPath, Buffer.from(await imgResp.arrayBuffer()));
                 return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
@@ -276,7 +287,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             prompt: NANO_BANANA_OPENING_PROMPT,
                             image_input: [avatarPublic, lastFrameUrl],
                             aspect_ratio: "16:9",
-                            resolution: "4K",
+                            resolution: "2K", // 4K outputs 11–34MB; Kling max 10MB. 2K = smaller, was working at 4555169
                             output_format: "png",
                         });
                         await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
@@ -300,7 +311,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             prompt: roomPrompt,
                             image_input: [avatarPublic, roomPhoto],
                             aspect_ratio: "16:9",
-                            resolution: "4K",
+                            resolution: "2K", // 4K outputs 11–34MB; Kling max 10MB. 2K = smaller, was working at 4555169
                             output_format: "png",
                         });
                         await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
@@ -345,16 +356,17 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     ? buildRealtorOnlyKlingPrompt(clip)
                     : clip.prompt;
 
-                // Kling 3.0 ONLY. No Veo fallback. Per PIPELINE_SPEC, NotebookLM 0baf5f36: Veo caused quality/plastic issues.
+                // Kling 3.0 ONLY. No Veo fallback. Per TOURREEL_REALTOR_HANDOFF_SPEC.
+                // Single image only (no last_frame) — matches working 4555169. Two-frame was causing Kie 500.
                 const taskId = await createKlingTask({
                     prompt: klingPrompt,
                     image_url: startFrame,
-                    ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
                     realtor_in_frame: includeRealtor,
                     negative_prompt: (clip as any).negative_prompt,
-                    mode: "pro",
+                    mode: "std", // "pro" may cause 500; std was working at 4555169
                     aspect_ratio: "16:9",
                     model: "kling-3.0/video",
+                    duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
                 });
 
                 await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
@@ -366,7 +378,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
 
                 const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
-                const response = await fetch(result.video.url);
+                const response = await fetch(result.video.url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
                 writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
 
                 // ALWAYS extract last frame from video for next clip's start. Same frame at cut = no visible transition.
@@ -444,7 +456,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             if (!musicUrl) throw new Error("Could not acquire or generate music via Kie AI.");
 
             const musicPath = join(workDir, "music.mp3");
-            const mResp = await fetch(musicUrl);
+            const mResp = await fetch(musicUrl, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
             writeFileSync(musicPath, Buffer.from(await mResp.arrayBuffer()));
 
             const masterPath = join(workDir, "master.mp4");
@@ -455,7 +467,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             let cumSec = 0;
             const overlaySpecs = clips.map((c) => {
                 const start = cumSec;
-                const dur = (c as any).duration_seconds || 5;
+                const dur = (c as any).duration_seconds ?? config.video.defaultClipDuration;
                 cumSec += dur;
                 return {
                     text: (c as any).to_room || "Room",

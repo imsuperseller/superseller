@@ -150,7 +150,7 @@ CRITICAL - REJECT these for the opening (choose a different image):
 ACCEPT: Ground-level view of the front door area, walkway, driveway approach, or pathway leading to the front entrance. Where a visitor would stand when they first arrive. Mimics a real tour that begins at the approach.
 When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the index (0, 1, 2, etc.)—no other text.`,
         },
-        ...urls.slice(0, 5).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+        ...urls.slice(0, 8).map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
 
     try {
@@ -172,7 +172,7 @@ When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the 
 
         const choice = response.data?.choices?.[0];
         const text = (choice?.message?.content || choice?.delta?.content || "").trim();
-        const match = text.match(/\b([0-4])\b/);
+        const match = text.match(/\b([0-7])\b/);
         const idx = match ? parseInt(match[1], 10) : 0;
         return Math.min(idx, urls.length - 1);
     } catch (err: any) {

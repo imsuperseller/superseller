@@ -1,6 +1,6 @@
 /**
  * E2E: Create job from Zillow → poll until complete → output final video URL.
- * Run: cd zillow-to-video && API_URL=http://localhost:3002 npx tsx tools/e2e-from-zillow.ts
+ * API_URL must point to WORKER. Local: API_URL=http://localhost:3001. RackNerd: API_URL=http://172.245.56.50:3002
  * Optional: ADDRESS or ZILLOW_URL, USER_ID (default: ensure test user), FLOORPLAN_PATH
  */
 import * as dotenv from "dotenv";
@@ -9,7 +9,7 @@ import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
 
-const API_URL = process.env.API_URL || "http://localhost:3002";
+const API_URL = process.env.API_URL || "http://localhost:3001";
 const ADDRESS = process.env.ADDRESS || process.env.ZILLOW_URL || "1531 Home Park Dr, Allen, TX 75002";
 const FLOORPLAN = process.env.FLOORPLAN_PATH;
 const POLL_MS = 30_000;

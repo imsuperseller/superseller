@@ -1,6 +1,6 @@
 # Zillow-to-Video Product Status — What Exists, What's Missing, What to Do
 
-> **For pipeline fixes (pathway, realtor consistency, transitions)**: See `TOURREEL_STATUS_AND_FIXES.md`.
+> **For pipeline fixes (pathway, realtor consistency, selective regen)**: See `TOURREEL_REALTOR_HANDOFF_SPEC.md`.
 
 ## 1. Links
 
@@ -21,10 +21,10 @@
 
 | Component | Status | Where |
 |-----------|--------|-------|
-| **Pipeline (backend)** | Code complete, in repo | `apps/worker/` — runs on your server, NOT on rensto.com |
-| **Video dashboard (UI)** | Code exists, **not committed** | `apps/web/rensto-site/.../video/`, `VideoGeneration.tsx` |
-| **Create-job flow** | No UI. API exists in worker. | `POST /api/jobs/from-zillow` — callable only when worker is running |
-| **Worker deployment** | Not deployed | Must run on RackNerd, Railway, or similar (Redis, Postgres, R2, Kie API) |
+| **Pipeline (backend)** | Code complete, in repo | `apps/worker/` — runs on RackNerd (172.245.56.50) or locally |
+| **Video dashboard (UI)** | Code exists | `apps/web/rensto-site/.../video/`, `/video/create` |
+| **Create-job flow** | UI at `/video/create` + API | `POST /api/jobs/from-zillow` — worker must be running |
+| **Worker deployment** | Deployed on RackNerd | Redis, Postgres, R2, Kie API required |
 
 ---
 
@@ -48,7 +48,7 @@
 
 2. **Add API proxy in rensto-site**  
    - Create `/api/video/jobs/[id]` (and optional `/api/video/jobs/from-zillow`) that forwards to the worker.  
-   - Today the dashboard calls `http://localhost:3002` directly; that only works locally.  
+   - Dashboard proxies to worker via VIDEO_WORKER_URL. Local: `http://localhost:3001`; RackNerd: `http://172.245.56.50:3002`. See PORT_REFERENCE.md.  
 
 3. **Deploy the worker**  
    - Deploy `apps/worker` to RackNerd, Railway, or Render.  

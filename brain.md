@@ -57,14 +57,14 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
   1. **Compare**: Highlight the contradiction.
   2. **Fix**: Propose the change that aligns with the North Star.
   3. **Test**: Verify the fix in terminal/browser.
-  4. **Learn**: Update `learning.log` so the mistake never repeats.
+  4. **Learn**: Update `findings.md` with root cause so the mistake never repeats.
 - **Anti-Disorganization Guardrail**: Never start a new feature until the current one has a "Working Demo" or verifiable Artifact. No zombie half-finished files.
 - **Data-First Rule**: Define JSON Data Schema (Input/Output shapes) before writing scripts. HALT execution in `tools/` until payload shape is confirmed.
 
 ### Agent Completion Rules (from NotebookLM 5811a372)
 
 - **Test everything** before declaring done. Verification in terminal or browser. No claims without evidence.
-- **Document everything**. Update `progress.md`, `findings.md`; record learnings in `learning.log` or `gemini.md`.
+- **Document everything**. Update `progress.md`, `findings.md`; record root causes in findings.md so issues never repeat.
 - **Report only when complete** with a verifiable Artifact or Working Demo. Do not send short status updates or steps for the user to perform.
 - **Never**: Short messages, asking permission when access was given, half-finished work, guessing at business logic.
 
@@ -77,30 +77,31 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 ├── brain.md                 ← YOU ARE HERE (Mission Control)
 ├── CLAUDE.md                ← Full technical context
 ├── task_plan.md             ← Approved implementation phases
-├── findings.md              ← Research, discoveries, constraints
+├── findings.md              ← Research, discoveries, root causes
 ├── progress.md              ← Execution logs, error tracking
+├── CONFLICT_AUDIT_*.md      ← Run when asked "do you have conflicts?" — execute, don't guess
+├── PORT_REFERENCE.md        ← Ports SSOT: 3001=worker (local both), 3002=site, RackNerd worker :3002
 ├── .env                     ← API keys (verified in Link phase)
 │
 ├── docs/
 │   ├── frameworks/          ← B.L.A.S.T., Antigravity, Brand Identity, etc.
-│   ├── templates/           ← TourReel template for new credit-based SaaS apps
-│   │   └── tourreel/        ← Blueprint, Implementation Spec, Prompt Playbook
-│   ├── n8n/                 ← N8N_WORKFLOWS_CATALOG.md (grouped by purpose)
+│   ├── templates/tourreel/  ← Blueprint, Implementation Spec, Prompt Playbook
+│   ├── n8n/                 ← N8N_WORKFLOWS_CATALOG.md
 │   └── NOTEBOOKLM_INDEX.md  ← Notebook IDs mapped to purpose
 │
 ├── apps/web/rensto-site/    ← Main Next.js app (rensto.com, admin)
-├── architecture/            ← Layer 1: Technical SOPs
-├── tools/                   ← Layer 3: Atomic scripts (.py)
-├── .tmp/                    ← Temporary workbench
+├── apps/worker/             ← Video pipeline (Nano Banana, Kling)
+├── apps/worker-packages/    ← Shared packages (db, etc.)
+├── infra/                   ← MCP servers, n8n scripts, migrations
+├── platforms/marketplace/   ← Marketplace config
+├── library/                 ← Client workflows, reference data
+├── security/                ← Policies, credential rotation
 │
-└── .agent/skills/           ← Skills (gerund naming: managing-databases)
-    └── [skill-name]/
-        ├── SKILL.md
-        ├── ADVANCED.md
-        ├── scripts/
-        ├── examples/
-        └── resources/
+├── .cursor/                 ← Agent rules, context, MCP status
+└── .claude/skills/          ← Agent skills (n8n-tax4us, n8n-typescript-patterns, etc.)
 ```
+
+**Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/rensto-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
 
 ---
 

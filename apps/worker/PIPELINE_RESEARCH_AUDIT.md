@@ -11,7 +11,7 @@
 |-------|------------|--------|
 | No realtor visible | `includeRealtor = false` (hardcoded) to fix Nano Banana "media unavailable" | Fixable |
 | Pool not featured | Zillow data lacks floorplan; pool never detected; no amenity extraction | Gap |
-| Low quality | Veo 3.1 primary, Kling 3 fallback. Kling 2.6 removed. | Fixed Feb 2026 |
+| Low quality | Kling 3.0 only (Veo retired Feb 2026). Kling 2.6 removed. | Fixed Feb 2026 |
 | Few scenes (7) | No floorplan → empty tour sequence → LLM invents minimal sequence | Major gap |
 
 ---
@@ -96,12 +96,12 @@ const includeRealtor = false;  // Hardcoded
 
 ---
 
-## 5. Video Quality (Veo 3.1 → Kling 3)
+## 5. Video Quality (Kling 3.0 Only)
 
 ### Current (Feb 2026)
 
-- **Primary:** Veo 3.1 (veo3 Quality model) — test if quality was lost when switching from Veo to Kling
-- **Fallback:** Kling 3.0 (kling-3.0/video, mode: pro)
+- **Primary:** Kling 3.0 (kling-3.0/video, mode: pro) — only model used for clips
+- **Veo:** Retired — caused quality/plastic issues per TOURREEL_REALTOR_HANDOFF_SPEC
 - **Removed:** Kling 2.6 — no longer used in this product (per NotebookLM ref)
 
 ---
@@ -147,7 +147,7 @@ const includeRealtor = false;  // Hardcoded
 
 1. Log which Kling model succeeded
 2. Re-test Kling 3 with same images; capture full API response on failure
-3. Consider Veo as alternate when both Kling models fail
+3. Kling 3 only—no Veo fallback (per TOURREEL_REALTOR_HANDOFF_SPEC)
 
 ### P3 – Listing Data Completeness
 

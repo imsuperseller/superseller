@@ -30,7 +30,7 @@ All pages are Next.js on Vercel. Webflow is retired.
 | MCP servers | `infra/mcp-servers/` |
 | n8n workflow scripts | `infra/n8n-scripts/` |
 | Workflow JSONs (canonical) | `infra/` (unified_marketplace_master_production.json) |
-| Legal pages (static) | `legal-pages/` |
+| Video pipeline worker (TourReel) | `apps/worker/` |
 | Marketplace platform config | `platforms/marketplace/` |
 | Rules for agents | `.cursor/`, `.cursorrules` |
 | Master documentation | `CLAUDE.md` |
@@ -44,6 +44,8 @@ All pages are Next.js on Vercel. Webflow is retired.
 - **apps/marketplace** — Deleted (marketplace is in rensto-site)
 - **apps/web/admin-dashboard** — Deleted (admin is in rensto-site)
 - **firestore/** — Deleted (migration to PostgreSQL complete Feb 2026)
+- **legal-pages/** — Deleted (legal content in rensto-site or external)
+- **directives/** — Deleted (n8n governance in NotebookLM)
 
 ---
 

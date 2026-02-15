@@ -44,7 +44,7 @@ export async function createNanoBananaTask(request: NanoBananaRequest): Promise<
     logger.info({ msg: "Nano Banana Pro task creating", url, promptLen: request.prompt.length, refImages: request.image_input?.length || 0 });
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 60000); // 60s; Kie can be slow under load
 
     try {
         const response = await fetch(url, {
@@ -77,7 +77,7 @@ export async function createNanoBananaTask(request: NanoBananaRequest): Promise<
 export async function getNanoBananaTaskStatus(taskId: string): Promise<{ status: "pending" | "processing" | "completed" | "failed"; image_url?: string; error?: string }> {
     const url = `${KIE_BASE}/v1/jobs/recordInfo?taskId=${taskId}`;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 60000); // 60s; Kie status can be slow
     const response = await fetch(url, { headers, signal: controller.signal }).finally(() => clearTimeout(timeout));
 
     if (!response.ok) {
@@ -119,8 +119,8 @@ export async function getNanoBananaTaskStatus(taskId: string): Promise<{ status:
     return { status: "processing" };
 }
 
-// 6 min default — Nano Banana Pro can exceed 3 min under load; Kie Kling uses 15 min
-const DEFAULT_NANO_BANANA_TIMEOUT = parseInt(process.env.NANO_BANANA_TIMEOUT_MS || "360000", 10);
+// 15 min default — Nano Banana Pro can exceed 5 min under load; match Kie Kling timeout
+const DEFAULT_NANO_BANANA_TIMEOUT = parseInt(process.env.NANO_BANANA_TIMEOUT_MS || "900000", 10);
 
 export async function waitForNanoBananaTask(
     taskId: string,

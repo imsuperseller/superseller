@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-02-15
+
+- **Pipeline config SSOT**: TOURREEL_REALTOR_HANDOFF_SPEC §0b added. config.ts = single source for defaultClipDuration (5), maxClipsPerVideo (15). kie.ts, prompt-generator, video-pipeline, regen-clips now read from config; no hardcoded 5 or 15. Clip count unchanged: 12 for 1531 Home Park (4bed+pool); MAX_CLIPS=1 was debug-only.
+- **Port reference audit**: Created PORT_REFERENCE.md (SSOT). Fixed conflicts: README (3001→3002, dev:3001 removed), VIDEO_APP_USER_GUIDE (3000→3002), e2e-from-zillow default 3002→3001, run-1clip-validation, DEPLOYMENT_AND_ACCESS, ZILLOW_VIDEO_PRODUCT_STATUS, agent-behavior. All port refs now point to PORT_REFERENCE.md or match it.
+- **Conflict audit**: Full audit run. Created CONFLICT_AUDIT_2026-02-15.md. Git: clean. Ports: worker 3002 conflicts with rensto-site 3002—use PORT=3001 for worker when both run. run-smoke default changed 3002→3001 (must hit worker). PIPELINE_RESEARCH_OUTPUT §1.2 Veo: deprecation notice added.
+- **Smoke run (local)**: Worker started on PORT=3001. Smoke test created job `b6487225`; job likely failed (Insufficient Credits) → BullMQ retried 3× → repeated Kie.ai charges.
+- **Kie fixes (duration, negative_prompt, multi_shots)**: duration must be "5" or "10" (enum); omit negative_prompt (exceeded 500 chars); add multi_shots: false (422 when empty). Nano timeouts 30s→60s. Smoke: poll-job.ts, clip status done|complete.
+- **Kie 500 fix**: ensurePublicUrl returns null on failure (not original URL). No padding with Zillow URLs. R2 publicUrl fallback. kie.ts URL guard. progress.md, findings.md.
+- **Smoke run (2026-02-15)**: MAX_CLIPS=1, SMOKE_MAX_POLLS=20. Job `69caf060` created, polled every 30s with elapsed time. Pipeline progressed: generating_prompts → generating_clips. Failed at 6m: Kie.ai Kling 500 ("Server exception, please try again later"). Smoke script behaved: bounded polls, progress logs, clear FAILED + exit 1. Kie 500 = external; pipeline/timeout fixes working.
+- **UnrecoverableError fix**: Insufficient Credits, Listing not found, No clip prompts now throw `UnrecoverableError`—no BullMQ retries, no repeated Kie calls. Deployed to RackNerd.
+- **Port layout**: Worker default 3002 conflicts with rensto-site. Local dev: use `PORT=3001` for worker; rensto-site keeps 3002. VIDEO_WORKER_URL for prod points to RackNerd.
+
 ## 2026-02-13
 
 - **Customer create-job flow**: Added `/video/create` page with Zillow URL form, `/api/video/jobs/from-zillow` proxy to worker. Creates job via ensure-test-user + worker from-zillow, redirects to `/video/[jobId]`. "Create new tour" CTA in VideoGeneration sidebar.
@@ -20,9 +32,35 @@
 
 - **Reference alignment**: Created REFERENCE_ALIGNMENT.md — canonical hierarchy (NotebookLM → brain → CLAUDE → Bibles → Cursor rules), cross-reference map (topic → SSOT), sync discipline, anti-patterns. Wired into brain.md, CLAUDE.md, .cursorrules, agent-behavior.mdc. Prevents mixed references across Cursor, Antigravity, CLAUDE, NotebookLM, Aitable, Postgres.
 
-- **Pipeline model compliance**: Removed Veo fallback from video-pipeline.worker.ts. Per PIPELINE_SPEC, AGENT_SELF_AUDIT: Kling 3 only; Veo caused quality/plastic issues. Created PIPELINE_MODEL_COMPLIANCE.md (model rules, realtor, tour order, transitions). Created .cursor/rules/work-method-accountability.mdc (why user finds issues first; mandatory browser/pipeline verification).
+- **Pipeline model compliance**: Removed Veo fallback from video-pipeline.worker.ts. Per TOURREEL_REALTOR_HANDOFF_SPEC, AGENT_SELF_AUDIT: Kling 3 only; Veo caused quality/plastic issues. Model rules in TOURREEL_REALTOR_HANDOFF_SPEC §0 (Nano composite → Kling interpolate). Created .cursor/rules/work-method-accountability.mdc (why user finds issues first; mandatory browser/pipeline verification).
 
 - **VideoGeneration "Failed to fetch job" fix**: (1) Improved error handling in `VideoGeneration.tsx` to surface actual API errors. (2) **Dev fallback in API route**: When worker returns 404/5xx or is unreachable, return mock job data instead of error. In dev, `/video/*` always loads—no "Failed to fetch job". Production unchanged (strict 4xx/5xx). Verified: mock-job-001 and invalid UUID both load.
+
+- **Doc reconciliation (pipeline)**: TOURREEL_REALTOR_HANDOFF_SPEC §0 added (Nano composite → Kling interpolate, no injection). Fixed PIPELINE_SPEC→TOURREEL_REALTOR_HANDOFF_SPEC refs in progress, findings, REALTOR_SPATIAL_RESEARCH, video-pipeline.worker. Fixed Veo/Kling contradictions in PIPELINE_RESEARCH_OUTPUT, PIPELINE_RESEARCH_AUDIT. Kie refs: kie.ai/kling-3-0, kie.ai/nano-banana-pro.
+
+- **Learning docs**: Removed learning.log refs from brain, .cursorrules. findings.md = single place for "never repeat" (root causes). AGENT_BEHAVIOR→work-method-accountability in findings.
+
+- **Stray/learning audit**: AUDIT_STRAY_AND_LEARNING.md created. DOC_UPDATE_PLAN §6 handover ref.
+
+- **Folder structure alignment**: brain.md UNIFIED LAYOUT, ARCHITECTURE.md, REPO_MAP.md, .claude/skills/README.md updated to match actual structure. Removed: architecture/, tools/, .tmp/, .agent/skills/, directives/, legal-pages/. Added apps/worker/, .claude/skills/. Fixed Firestore migration ref. AUDIT_STRAY_AND_LEARNING §5.
+
+- **Agent protocol**: Update progress.md at end of every task—not the user. User does not want session summaries in conversation; project memory (progress.md, findings.md) is the reference.
+
+## Last Video Issues (User-Reported, Pre-Next Test)
+
+1. **Pool-first**: Video started at pool instead of front of house. Fix: no force index 0 when hasPool; Gemini picks from 5 opening candidates; fallback skips index 0 on pool properties. Code: video-pipeline.worker.ts, gemini.ts.
+2. **Double realtor**: Two realtors in living room (seconds 2–7). Fix: buildRealtorOnlyKlingPrompt (no clip.prompt); DUPLICATE_FIGURE_NEGATIVE; realtor_in_frame. Code: kie.ts, video-pipeline.worker.ts.
+3. **Realtor spatial**: Realtor walks through furniture/doors. Fix: SPATIAL_ANCHOR (nano-banana-prompts), SPATIAL_NEGATIVE (kie.ts), spatial hint in buildRealtorOnlyKlingPrompt.
+
+## Before Next Video Test (Checklist)
+
+- [x] Preflight --free passes (Postgres, Redis, FFmpeg)
+- [x] Deploy: `./apps/worker/deploy-to-racknerd.sh` (completed 2026-02-15)
+- [x] Port layout: worker on 3001, rensto-site on 3002 (no conflict)
+- [x] Smoke: `API_URL=http://localhost:3001 npx tsx tools/run-smoke.ts` (2026-02-15 job 69caf060: Kie 500; pipeline OK)
+- [ ] Create job via /video/create (Zillow URL, avatar) OR retry existing: `POST /api/jobs/:id/retry-fresh` or `npx tsx tools/retry-job-fresh.ts <jobId>`
+- [ ] Optional: JOB_ID=xxx npx tsx tools/dry-run-pipeline.ts (validates pipeline logic for existing job before full run)
+- [ ] Optional: 1-clip validation first (MAX_CLIPS=1 worker + run-1clip-validation.ts) to verify opening before full run
 
 ## 2026-02-12
 

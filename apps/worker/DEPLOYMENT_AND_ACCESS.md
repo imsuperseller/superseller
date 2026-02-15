@@ -34,8 +34,8 @@
   npm install
   npm run dev
   ```
-- API base (when running): `http://localhost:3002` (or your server URL)
-- Test flow: `API_URL=http://localhost:3002 ADDRESS="<zillow_url>" npx tsx tools/e2e-from-zillow.ts`
+- API base: Worker URL. Local (both run): `http://localhost:3001`. RackNerd: `http://172.245.56.50:3002`
+- Test flow: `API_URL=http://localhost:3001 ADDRESS="<zillow_url>" npx tsx tools/e2e-from-zillow.ts` (see PORT_REFERENCE.md)
 
 ## 4. Email Issues — Likely Sources
 

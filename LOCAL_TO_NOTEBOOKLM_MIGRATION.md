@@ -4,6 +4,8 @@
 
 **Status**: Complete (Feb 13, 2026)
 
+**As of Feb 2026:** In-repo pipeline SSOT = `TOURREEL_REALTOR_HANDOFF_SPEC.md` §0 (Nano composite → Kling interpolate). PIPELINE_SPEC/TOURREEL_STATUS_AND_FIXES content lives in NotebookLM 0baf5f36 and TOURREEL_REALTOR_HANDOFF_SPEC.
+
 ---
 
 ## Migration Map (Local Doc → Target Notebook)

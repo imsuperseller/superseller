@@ -3,7 +3,7 @@
 **Version**: 1.0  
 **Purpose**: Reusable structure for product PRDs. Use for video products (TourReel, Winner), non-video products, and different niches.
 
-> **Source**: Pattern extracted from Winner Video Automator PRD + TourReel PIPELINE_SPEC. Adapt sections as needed—not all apply to every product.
+> **Source**: Pattern extracted from Winner Video Automator PRD + TourReel TOURREEL_REALTOR_HANDOFF_SPEC. Adapt sections as needed—not all apply to every product.
 
 ---
 
@@ -89,7 +89,7 @@ User Input → [Processing Stage] → [Generation Stage] → [Post-Processing] �
 
 ## 8. References
 
-- **TourReel**: `apps/worker/PIPELINE_SPEC.md`, `TOURREEL_STATUS_AND_FIXES.md`
+- **TourReel**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `VIDEO_APP_USER_GUIDE.md`
 - **Winner PRD**: External document (provided by user)
 - **Infra**: `docs/INFRA_SSOT.md`
 - **NotebookLM**: Production instructions per product

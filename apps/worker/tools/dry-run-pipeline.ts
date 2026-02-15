@@ -134,7 +134,8 @@ async function main() {
         } catch (_) {}
     }
     const exteriorUrl = extractPhotoUrl(listing.exterior_photo_url) ?? null;
-    const openingCandidates = [exteriorUrl, ...additionalPhotos.slice(0, 2)].filter(
+    // Match pipeline: 5 candidates (exterior + first 4 additional)
+    const openingCandidates = [exteriorUrl, ...additionalPhotos.slice(0, 4)].filter(
         (u): u is string => !!u
     );
 

@@ -73,6 +73,7 @@
 ### Key Files
 | Resource | Location |
 |----------|----------|
+| **Ports** | `PORT_REFERENCE.md` — site 3002, worker 3001 (local both) or 3002 (RackNerd) |
 | TourReel Spec | NotebookLM 0baf5f36 |
 | Prisma Schema | `apps/web/rensto-site/prisma/schema.prisma` |
 | Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |

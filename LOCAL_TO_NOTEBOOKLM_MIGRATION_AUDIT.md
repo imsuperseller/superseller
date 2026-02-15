@@ -8,7 +8,7 @@
 ## Archive Audit (Feb 2026)
 
 **Q: Contradictions in backup snapshots?**  
-Yes. Archived REFERENCE_ALIGNMENT points to `apps/worker/PIPELINE_SPEC.md`, `AGENT_BEHAVIOR.md` as Primary SSOT — those files were deleted. Using the archive would mislead.
+Yes. Archived REFERENCE_ALIGNMENT points to `apps/worker/PIPELINE_SPEC.md`, `AGENT_BEHAVIOR.md` as Primary SSOT — those files were deleted. Using the archive would mislead. **As of Feb 2026:** In-repo pipeline SSOT = `TOURREEL_REALTOR_HANDOFF_SPEC.md` §0.
 
 **Q: Unique content we need for website, mechanisms, products, references?**  
 No. All material content (hierarchy, design tokens, pipeline spec, agent rules, Lead/Token schema) was migrated to NotebookLM. The archive is a snapshot of the originals — nothing product-critical lives only there.

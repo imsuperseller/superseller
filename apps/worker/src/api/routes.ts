@@ -233,5 +233,62 @@ apiRouter.post("/dev/ensure-test-user", async (_req: Request, res: Response) => 
     res.status(201).json({ userId: u.id, hasAvatar: false });
 });
 
+// ─── REGENERATE CLIPS (SELECTIVE) ───
+/**
+ * Regenerate only specified clips, keep good ones, re-stitch.
+ * Mechanism: Same start/end frames → Kling interpolates → continuity preserved.
+ * Usage: POST /api/jobs/:id/regenerate { "clipNumbers": [2, 3] }
+ */
+const regenSchema = z.object({
+    clipNumbers: z.array(z.number().int().min(1)).min(1).max(20),
+});
+apiRouter.post("/jobs/:id/regenerate", async (req: Request, res: Response) => {
+    const jobId = req.params.id;
+    const parsed = regenSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+    const job = await queryOne("SELECT * FROM video_jobs WHERE id = $1", [jobId]);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+    if ((job as any).status !== "complete") return res.status(400).json({ error: "Job must be complete to regenerate clips" });
+
+    const clips = await query("SELECT clip_number FROM clips WHERE video_job_id = $1 AND status = 'complete'", [jobId]);
+    const validNumbers = new Set((clips as any[]).map((c) => c.clip_number));
+    const invalid = parsed.data.clipNumbers.filter((n) => !validNumbers.has(n));
+    if (invalid.length > 0) {
+        return res.status(400).json({ error: `Invalid clip numbers: ${invalid.join(", ")}` });
+    }
+
+    // Enqueue regen job (runs regen-clips logic; for now spawn script or run inline)
+    // TODO: Add regen-clip-queue for async processing. For MVP, run inline.
+    try {
+        const { runRegenClips } = await import("../services/regen-clips");
+        const result = await runRegenClips(jobId, parsed.data.clipNumbers);
+        return res.json({ success: true, master_video_url: result.masterUrl });
+    } catch (err: any) {
+        logger.error({ msg: "Regenerate clips failed", jobId, error: err.message });
+        return res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── RETRY JOB FRESH (clears clips, re-runs full pipeline) ───
+apiRouter.post("/jobs/:id/retry-fresh", async (req: Request, res: Response) => {
+    const jobId = req.params.id;
+    const job = await queryOne("SELECT * FROM video_jobs WHERE id = $1", [jobId]);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    await query("DELETE FROM clips WHERE video_job_id = $1", [jobId]);
+    await query(
+        "UPDATE video_jobs SET status = 'pending', error_message = NULL, progress_percent = 0, current_step = NULL, master_video_url = NULL, vertical_video_url = NULL, thumbnail_url = NULL, video_duration_seconds = NULL, completed_at = NULL WHERE id = $1",
+        [jobId]
+    );
+    await videoPipelineQueue.add("video-pipeline", {
+        jobId,
+        listingId: job.listing_id,
+        userId: job.user_id,
+    });
+    logger.info({ msg: "Fresh retry enqueued", jobId });
+    return res.json({ success: true, message: "Job reset and re-queued" });
+});
+
 // ─── HEALTH ───
 apiRouter.get("/health", (req, res) => res.json({ status: "ok" }));

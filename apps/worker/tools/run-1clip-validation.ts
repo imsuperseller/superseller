@@ -39,7 +39,7 @@ async function main() {
     }
 
     console.log("\n--- Creating 1-clip job (run-smoke) ---");
-    console.log("Ensure API is running (localhost:3002) and worker has MAX_CLIPS=1.\n");
+    console.log("Ensure worker is running (PORT=3001 when site on 3002; default 3002 when worker-only). MAX_CLIPS=1.\n");
 
     if (!run("smoke (1 clip)", "npx tsx tools/run-smoke.ts")) {
         process.exit(1);

@@ -20,8 +20,8 @@
 
 | Doc | Status | Action |
 |-----|--------|--------|
-| **ZILLOW_VIDEO_PRODUCT_STATUS.md** | Deployment/UI status | Added cross-ref to TOURREEL_STATUS_AND_FIXES. |
-| **TOURREEL_STATUS_AND_FIXES.md** | Pipeline status | Canonical for pipeline. |
+| **ZILLOW_VIDEO_PRODUCT_STATUS.md** | Deployment/UI status | Cross-ref to TOURREEL_REALTOR_HANDOFF_SPEC. |
+| **TOURREEL_REALTOR_HANDOFF_SPEC.md** | Pipeline flow (§0), handoff | Canonical for pipeline. (TOURREEL_STATUS_AND_FIXES migrated.) |
 | **brain.md** | NotebookLM index | Filled in purpose for notebooks 2–13 (KIE.AI, N8n, Stitch, etc.). |
 
 ---

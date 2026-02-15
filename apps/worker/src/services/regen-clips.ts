@@ -73,9 +73,10 @@ export async function runRegenClips(
             ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
             realtor_in_frame: includeRealtor,
             negative_prompt: (clip as any).negative_prompt,
-            mode: "pro",
+            mode: "std", // Match pipeline; "pro" can trigger Kie 500
             aspect_ratio: "16:9",
             model: "kling-3.0/video",
+            duration: clip.duration_seconds ?? config.video.defaultClipDuration,
         });
         await CreditManager.deductCredits(userId, 10, "kling_video_regen", jobId, {
             taskId,
@@ -166,7 +167,7 @@ export async function runRegenClips(
     let cumSec = 0;
     const overlaySpecs = clips.map((c: any) => {
         const start = cumSec;
-        const dur = c.duration_seconds || 5;
+        const dur = c.duration_seconds ?? config.video.defaultClipDuration;
         cumSec += dur;
         return { text: c.to_room || "Room", startSeconds: start, durationSeconds: 2, position: "bottom" as const };
     });

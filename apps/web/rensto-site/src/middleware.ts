@@ -6,6 +6,15 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl;
     const path = url.pathname;
 
+    // Video routes: localhost only until ready for production
+    const isProductionHost =
+        hostname === 'rensto.com' ||
+        hostname === 'www.rensto.com' ||
+        hostname.endsWith('.rensto.com');
+    if (isProductionHost && path.startsWith('/video')) {
+        return new NextResponse(null, { status: 404 });
+    }
+
     const isAdminDomain = hostname === 'admin.rensto.com' || hostname.startsWith('admin.localhost');
 
     if (isAdminDomain) {

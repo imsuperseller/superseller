@@ -37,7 +37,8 @@ portal.rensto.com   → Vercel (customer portals - planned)
 
 ### Agent Completion Rules (MANDATORY)
 - **Test everything** before declaring done. Verify in terminal or browser.
-- **Document everything**. Update progress.md, findings.md, learning.log.
+- **Verify every link before sharing.** curl/fetch the URL; only give links that return 200 (or expected response).
+- **Document everything**. Update progress.md, findings.md (root causes so issues never repeat).
 - **Report only when complete** with verifiable Artifact. No short status messages or step lists for the user.
 - **When user gives access** (credentials, APIs): USE it. Execute. Do not ask questions or send instructions back.
 
