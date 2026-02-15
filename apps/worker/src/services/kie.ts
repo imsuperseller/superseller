@@ -74,6 +74,8 @@ export interface KieKlingRequest {
     image_url: string;
     last_frame?: string; // End frame for seamless continuity (Kling Start & End Frames Control)
     negative_prompt?: string; // Exclude: talking, lips moving, etc.
+    /** When true: start frame already has realtor (Nano composite). Add duplicate-figure negative. */
+    realtor_in_frame?: boolean;
     mode?: "std" | "pro";
     aspect_ratio?: "16:9" | "9:16" | "1:1";
     model?: string; // kling-3.0/video only (no Kling 2.6)
@@ -92,6 +94,19 @@ const SILENT_NEGATIVE = "talking, speaking, mouth moving, lips moving, mouth ope
 /** When realtor composite is used: reject identity drift (different person in scene). */
 const IDENTITY_NEGATIVE = "different person, different face, wrong person, imposter, different realtor, altered facial features, morphing face";
 
+/** When start frame already has realtor (Nano composite): reject duplicate/double figure. */
+const DUPLICATE_FIGURE_NEGATIVE = "duplicate person, two people, double figure, two identical figures, ghost figure, extra person, clone, second copy";
+
+/** When realtor already in frame: minimal prompt—camera + room only. NO person action description (triggers double figure). */
+export function buildRealtorOnlyKlingPrompt(clip: { clip_number: number; from_room?: string; to_room?: string }): string {
+    const toRoom = (clip.to_room || "room").replace(/_/g, " ");
+    const isOpening = clip.clip_number === 1;
+    const camera = isOpening
+        ? "Smooth forward dolly along the path toward the door. Ground level, eye height."
+        : "Smooth steadicam forward dolly through the space. Natural real estate tour pace.";
+    return `The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. ${camera} ${toRoom} in view. Seamless motion from start to end frame. Lips closed, no speaking, silent walkthrough.`;
+}
+
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
     // Kling 3.0 Start & End Frames: image_urls[0]=start, image_urls[1]=end for continuity
     // NO kling_elements: Elements combines/blends multiple images → collage effect. Realtor already in Nano Banana composite.
@@ -101,6 +116,7 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     const negPrompt = [
         SILENT_NEGATIVE,
         request.last_frame ? IDENTITY_NEGATIVE : null, // When using start+end frames, enforce same person
+        request.realtor_in_frame ? DUPLICATE_FIGURE_NEGATIVE : null, // Start frame has realtor; prevent double figure
         request.negative_prompt,
     ].filter(Boolean).join(", ");
     const input: Record<string, unknown> = {

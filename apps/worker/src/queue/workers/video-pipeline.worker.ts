@@ -115,7 +115,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
             const forceNoRealtor = (process.env.FORCE_NO_REALTOR ?? "").toLowerCase();
-            const includeRealtor = forceNoRealtor !== "1" && forceNoRealtor !== "true" && !!avatarPublic;
+            let includeRealtor = forceNoRealtor !== "1" && forceNoRealtor !== "true" && !!avatarPublic;
 
             // Enrich property context with deep data
             const prompts = await generateClipPrompts(tourRooms, {
@@ -215,7 +215,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             if (openingCandidates.length >= 1) {
                 try {
                     let bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
-                    if (heroResult.hasPool && bestIdx > 0) {
+                    // Only force index 0 when it's the actual exterior. When exteriorPublic is null,
+                    // openingCandidates[0] may be pool (Zillow often puts pool first)—forcing would pick pool.
+                    if (heroResult.hasPool && bestIdx > 0 && exteriorPublic && openingCandidates[0] === exteriorPublic) {
                         bestIdx = 0;
                         logger.info({ msg: "Pool property: forcing exterior (index 0) for opening to avoid pool-at-front", hadPick: true });
                     }
@@ -256,47 +258,65 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 return usePhotos[Math.min(idx, usePhotos.length - 1)] || usePhotos[0];
             };
 
+            const exteriorBeforeNano = lastFrameUrl;
+            // Progress during Nano Banana: 20→35% so user sees movement (phase can take 5–15 min)
+            const nanoTotal = 1 + clips.length;
+            let nanoDone = 0;
+            const updateNanoProgress = () => {
+                nanoDone++;
+                const pct = 20 + Math.floor(15 * nanoDone / nanoTotal);
+                updateJobStatus(jobId, "generating_clips", Math.min(pct, 34));
+            };
+
             if (includeRealtor && avatarPublic) {
-                // Pre-generate ALL Nano Banana composites (opening + every room). Same avatar = same realtor.
-                if (lastFrameUrl) {
-                    const taskId = await createNanoBananaTask({
-                        prompt: NANO_BANANA_OPENING_PROMPT,
-                        image_input: [avatarPublic, lastFrameUrl],
-                        aspect_ratio: "16:9",
-                        resolution: "4K",
-                        output_format: "png",
-                    });
-                    // Deduct for opening frame
-                    await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
+                try {
+                    // Pre-generate ALL Nano Banana composites (opening + every room). Same avatar = same realtor.
+                    if (lastFrameUrl) {
+                        const taskId = await createNanoBananaTask({
+                            prompt: NANO_BANANA_OPENING_PROMPT,
+                            image_input: [avatarPublic, lastFrameUrl],
+                            aspect_ratio: "16:9",
+                            resolution: "4K",
+                            output_format: "png",
+                        });
+                        await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
 
-                    const { image_url } = await waitForNanoBananaTask(taskId);
-                    frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
-                    lastFrameUrl = frameUrls[0];
-                } else {
-                    frameUrls[0] = null;
-                }
-                for (let i = 0; i < clips.length; i++) {
-                    const clip = clips[i];
-                    const roomPhoto = getPhotoForRoom((clip as any).to_room, i) || lastFrameUrl;
-                    if (!roomPhoto) {
-                        frameUrls[i + 1] = null;
-                        continue;
+                        const { image_url } = await waitForNanoBananaTask(taskId);
+                        frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
+                        lastFrameUrl = frameUrls[0];
+                        updateNanoProgress();
+                    } else {
+                        frameUrls[0] = null;
                     }
-                    const roomPrompt = getNanoBananaRoomPrompt((clip as any).to_room || "Living", heroResult.hasPool, heroResult);
-                    const taskId = await createNanoBananaTask({
-                        prompt: roomPrompt,
-                        image_input: [avatarPublic, roomPhoto],
-                        aspect_ratio: "16:9",
-                        resolution: "4K",
-                        output_format: "png",
-                    });
-                    // Deduct for room frame
-                    await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
+                    for (let i = 0; i < clips.length; i++) {
+                        const clip = clips[i];
+                        const roomPhoto = getPhotoForRoom((clip as any).to_room, i) || lastFrameUrl;
+                        if (!roomPhoto) {
+                            frameUrls[i + 1] = null;
+                            continue;
+                        }
+                        const roomPrompt = getNanoBananaRoomPrompt((clip as any).to_room || "Living", heroResult.hasPool, heroResult);
+                        const taskId = await createNanoBananaTask({
+                            prompt: roomPrompt,
+                            image_input: [avatarPublic, roomPhoto],
+                            aspect_ratio: "16:9",
+                            resolution: "4K",
+                            output_format: "png",
+                        });
+                        await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
 
-                    const { image_url } = await waitForNanoBananaTask(taskId);
-                    frameUrls[i + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${i + 1}`);
+                        const { image_url } = await waitForNanoBananaTask(taskId);
+                        frameUrls[i + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${i + 1}`);
+                        updateNanoProgress();
+                    }
+                } catch (nanoErr: any) {
+                    logger.warn({ msg: "Nano Banana failed, falling back to property-only (no realtor)", error: nanoErr.message });
+                    includeRealtor = false;
+                    lastFrameUrl = exteriorBeforeNano;
+                    frameUrls[0] = lastFrameUrl;
                 }
-            } else {
+            }
+            if (!includeRealtor || frameUrls.length === 0) {
                 frameUrls[0] = lastFrameUrl;
             }
 
@@ -318,9 +338,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                 let result: { video: { url: string } } | null = null;
                 let modelUsed: string | null = null;
-                const { createKlingTask, waitForTask } = await import("../../services/kie");
+                const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt } = await import("../../services/kie");
+                // When realtor in frame (Nano composite): do NOT use clip.prompt—it describes realtor actions and triggers Kling to add a second figure.
+                // Use minimal camera+room-only prompt. No person action description.
                 const klingPrompt = includeRealtor
-                    ? `${clip.prompt} Seamless motion from start to end frame. IDENTICAL person from reference image—same face, hair, skin. Do NOT generate a different person. Lips closed, no speaking, silent walkthrough.`
+                    ? buildRealtorOnlyKlingPrompt(clip)
                     : clip.prompt;
 
                 // Kling 3.0 ONLY. No Veo fallback. Per PIPELINE_SPEC, NotebookLM 0baf5f36: Veo caused quality/plastic issues.
@@ -328,6 +350,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     prompt: klingPrompt,
                     image_url: startFrame,
                     ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
+                    realtor_in_frame: includeRealtor,
                     negative_prompt: (clip as any).negative_prompt,
                     mode: "pro",
                     aspect_ratio: "16:9",
