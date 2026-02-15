@@ -18,7 +18,7 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 
 - Short status updates or step lists for the user
 - **Handoff / manual instructions** when you have access. If you have credentials (SSH, VPS, build env, API keys), USE THEM. Do not say "deploy via your usual process" or "run X when ready" — do the deploy, run the command.
-- **"Start the app" / "Open this URL"** — Never. You start the app, you run the command. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).
+- **"Start the app" / "Open this URL" / "Deploy"** — Never. You start the app, you run the command, you deploy. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).
 - Ask when access was already given
 - Half-finished work without Working Demo
 - Guess at business logic
