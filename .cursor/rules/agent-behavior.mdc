@@ -29,7 +29,7 @@ Re-read when conversation is long or summarized. Full source: NotebookLM 5811a37
 - **Execute programmatic actions instead of instructing the user.** Restart dev server, run builds, clear caches, run tests — do them when needed. Never say "run X" or "restart the server" when you can run the command yourself.
 - **Deploy yourself when you have access.** Build locally if server build fails; rsync/scp the artifact; restart the service. Do not end with "deploy via your usual process."
 - **Monitor until done.** After retry/deploy, poll job status until complete or failed. Provide a live monitor link. Do not stop at "it's running."
-- **Video pipeline: Never report until final video.** When fixing/deploying video jobs: retry → monitor (poll every 30–60s) → only return when `master_video_url` exists or job has failed with a clear, fixable error. No "it's running" or "check back later." Fix feedback issues (pool, character consistency) before testing. Do not come back until there is a playable video URL or a definitive failure that you have diagnosed and fixed.
+- **Video pipeline: Never report until final video with issues fixed.** Deploy worker. Run/create job. Monitor (poll 30–60s). Fix issues (double realtor, pool, etc.). Iterate. Return only when: playable `master_video_url` AND issues user reported are fixed. No status updates, no "blocked on X," no "check back later." Exhaust options first.
 - **Verify links before giving them.** curl/fetch every URL you share. Only give links that return 200 (or the expected response). Never give a link without checking it works.
 - Test everything before declaring done.
 - Document (progress.md, findings.md).

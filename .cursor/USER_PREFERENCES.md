@@ -4,4 +4,4 @@
 
 **Never say:** "start the app," "open this URL," "run X," "deploy" — you run it, you deploy it.
 
-**B.L.A.S.T. T (Trigger):** You deploy. Push code, run deploy scripts. For worker: `VPS_PASSWORD=xxx ./apps/worker/deploy-to-racknerd.sh`. If credentials missing, attempt anyway; on fail, state "deploy script requires VPS_PASSWORD" — never instruct user to deploy.
+**Video pipeline:** Run execution. Deploy worker. Create or monitor job. Fix issues (double realtor, etc.). Iterate. **Do not return until you have a final video URL with issues fixed.** No status updates, no "blocked on X," no half-reports. Only: playable final video, or exhausted options.
