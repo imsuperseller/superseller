@@ -12,7 +12,7 @@ body {
 /* shadcn/ui CSS Variables */
 @layer base {
   :root {
-    /* Rensto brand default (dark-first) - Matching Webflow Brand System */
+    /* Rensto brand default (dark-first) */
     --background: 266 47% 10%;
     /* #110d28 - matches Rensto brand */
     --foreground: 210 40% 98%;
@@ -41,40 +41,40 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Rensto Brand Colors (authoritative) - Matching Webflow Brand System */
+    /* Rensto Brand Colors (authoritative) */
     --rensto-primary: #fe3d51;
-    /* Primary Red - matches Webflow */
+    /* Primary Red */
     --rensto-red: #fe3d51;
     /* Alias for compatibility */
     --rensto-secondary: #bf5700;
-    /* Secondary Orange - matches Webflow */
+    /* Secondary Orange */
     --rensto-orange: #bf5700;
     /* Alias for compatibility */
     --rensto-accent-blue: #1eaef7;
-    /* Accent Blue - matches Webflow */
+    /* Accent Blue */
     --rensto-blue: #1eaef7;
     /* Alias for compatibility */
     --rensto-accent-cyan: #5ffbfd;
-    /* Accent Cyan - matches Webflow */
+    /* Accent Cyan */
     --rensto-cyan: #5ffbfd;
     /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
 
-    /* Rensto Background Colors - Matching Webflow Brand System */
+    /* Rensto Background Colors */
     --rensto-bg-primary: #110d28;
-    /* app background - matches Webflow */
+    /* app background */
     --rensto-bg-secondary: #1a162f;
-    /* panels, surfaces - matches Webflow */
+    /* panels, surfaces */
     --rensto-bg-card: #1a153f;
     /* cards */
     --rensto-bg-surface: #17123a;
 
-    /* Rensto Text Colors - Matching Webflow Brand System */
+    /* Rensto Text Colors */
     --rensto-text-primary: #fffff3;
-    /* Light text - matches Webflow */
+    /* Light text */
     --rensto-text-secondary: #b0bec5;
-    /* Gray text - matches Webflow */
+    /* Gray text */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
 
@@ -117,39 +117,39 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Rensto Brand Colors (Dark Mode) - Matching Webflow Brand System */
+    /* Rensto Brand Colors (Dark Mode) */
     --rensto-primary: #fe3d51;
-    /* Primary Red - matches Webflow */
+    /* Primary Red */
     --rensto-red: #fe3d51;
     /* Alias for compatibility */
     --rensto-secondary: #bf5700;
-    /* Secondary Orange - matches Webflow */
+    /* Secondary Orange */
     --rensto-orange: #bf5700;
     /* Alias for compatibility */
     --rensto-accent-blue: #1eaef7;
-    /* Accent Blue - matches Webflow */
+    /* Accent Blue */
     --rensto-blue: #1eaef7;
     /* Alias for compatibility */
     --rensto-accent-cyan: #5ffbfd;
-    /* Accent Cyan - matches Webflow */
+    /* Accent Cyan */
     --rensto-cyan: #5ffbfd;
     /* Alias for compatibility */
     --rensto-neon: #5ffbfd;
     --rensto-glow: #1eaef7;
 
-    /* Rensto Background Colors (Dark Mode) - Matching Webflow Brand System */
+    /* Rensto Background Colors (Dark Mode) */
     --rensto-bg-primary: #110d28;
-    /* matches Webflow */
+    /* brand */
     --rensto-bg-secondary: #1a162f;
-    /* matches Webflow */
+    /* brand */
     --rensto-bg-card: #1a153f;
     --rensto-bg-surface: #17123a;
 
-    /* Rensto Text Colors (Dark Mode) - Matching Webflow Brand System */
+    /* Rensto Text Colors (Dark Mode) */
     --rensto-text-primary: #fffff3;
-    /* matches Webflow */
+    /* brand */
     --rensto-text-secondary: #b0bec5;
-    /* matches Webflow */
+    /* brand */
     --rensto-text-muted: #94a3b8;
     --rensto-text-accent: #5ffbfd;
 
@@ -413,7 +413,7 @@ body {
   }
 
   body {
-    /* Use Rensto brand colors directly - matching Webflow brand system */
+    /* Use Rensto brand colors directly */
     background-color: var(--rensto-bg-primary) !important;
     color: var(--rensto-text-primary) !important;
     scrollbar-width: thin;

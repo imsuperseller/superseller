@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
 
 // Generate magic link token
 const generateToken = (): string => {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
+import { verifySession } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 
 const MEMORY_KEY = 'n8n_supervisor_config';
@@ -30,6 +31,11 @@ async function getAgentMemory() {
 }
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const memory = await getAgentMemory();
         const latestVersion = '2.4.4';
@@ -51,6 +57,11 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { action, targetVersion, data } = await req.json();
 
     try {

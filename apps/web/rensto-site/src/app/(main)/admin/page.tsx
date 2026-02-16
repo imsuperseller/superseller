@@ -101,8 +101,7 @@ export default async function AdminDashboardPage() {
   }
 
   // Admin Check
-  const ADMIN_EMAILS = ['admin@rensto.com', 'shaifriedman2010@gmail.com'];
-  if (!ADMIN_EMAILS.includes(session.email)) {
+  if (session.role !== 'admin') {
     // Not an admin, redirect to their client dashboard
     redirect(`/dashboard/${session.clientId}`);
   }

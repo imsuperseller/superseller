@@ -56,10 +56,7 @@ export const config = {
 
 
 
-    clerk: {
-        secretKey: process.env.CLERK_SECRET_KEY || "", // Optional for now
-        webhookSecret: process.env.CLERK_WEBHOOK_SECRET,
-    },
+    // Clerk removed — auth is magic-link via Resend (Feb 2026)
 
     stripe: {
         secretKey: required("STRIPE_SECRET_KEY"),
@@ -108,6 +105,13 @@ export const config = {
         defaultModel: "kling_3" as const,
         defaultTransition: "fade" as const,
         defaultClipDuration: 5,
+        /** Kling mode: "pro" = 1080p native (quality); "std" = 720p (upscaling causes blur). Set KIE_KLING_MODE=std to revert if Pro causes Kie 500. */
+        klingMode: (optional("KIE_KLING_MODE", "pro") || "pro").toLowerCase() === "pro" ? "pro" : "std",
+        /** Nano Banana resolution: "4K" = sharper realtor composites for Kling; "2K" = smaller files. NANO_BANANA_RESOLUTION env. */
+        nanoBananaResolution: (() => {
+            const r = (optional("NANO_BANANA_RESOLUTION", "4K") || "4K").toUpperCase();
+            return (r === "1K" || r === "2K" || r === "4K") ? r : "4K";
+        })(),
         maxClipsPerVideo: parseInt(optional("MAX_CLIPS", "15")), // Normal: 15 (full tour). Quick smoke: MAX_CLIPS=3
         maxRetriesPerClip: 3,
         maxCostPerVideo: 50.00,

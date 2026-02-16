@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { verifySession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
+  const session = await verifySession();
+  if (!session.isValid || session.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const [customersCount, paymentsCount, scorecardsCount, consultationsCount, requirementsCount, revenueAgg] =
       await Promise.all([

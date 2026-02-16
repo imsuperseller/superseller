@@ -114,7 +114,7 @@ export async function POST(req: Request) {
                 flowType,
                 productId,
                 tier,
-                platform: 'rensto-firebase'
+                platform: 'rensto-web'
             }
         });
 

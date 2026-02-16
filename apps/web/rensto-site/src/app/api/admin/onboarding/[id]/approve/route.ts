@@ -2,10 +2,16 @@ import { NextResponse } from 'next/server';
 import { getStorageAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
+import { verifySession } from '@/lib/auth';
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = await params;
 
     try {

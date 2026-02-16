@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { verifySession } from '@/lib/auth';
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const tasks = await prisma.launchTask.findMany({
             orderBy: { order: 'asc' },
@@ -14,6 +20,11 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const { taskId, status } = await request.json();
         if (!taskId || !status) {
@@ -31,6 +42,11 @@ export async function PATCH(request: Request) {
 }
 
 export async function POST(request: Request) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const task = await request.json();
         const record = await prisma.launchTask.create({

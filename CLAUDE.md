@@ -44,7 +44,7 @@
 
 **Store in PostgreSQL**: Service instances, customers, payments, leads, fulfillment.  
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
-**Retired**: Firestore (fallback reads only), Airtable.com. **Aitable.ai** for dashboards only.
+**Retired**: Firestore (deprecated Feb 2026), Airtable.com. **Aitable.ai** for dashboards only.
 
 ---
 
@@ -53,7 +53,7 @@
 | Layer | Stack |
 |-------|-------|
 | **Web** | Next.js 14+ (rensto-site), Vercel |
-| **Worker** | Node.js, BullMQ, FFmpeg, Kie.ai, R2 |
+| **Worker** | Node.js, BullMQ, FFmpeg, Kie.ai Kling 3.0, R2 |
 | **Automation** | Antigravity (primary), n8n (backup) |
 | **Database** | PostgreSQL (Prisma + Drizzle), Redis |
 
@@ -74,6 +74,9 @@
 ### Key Files
 | Resource | Location |
 |----------|----------|
+| **Decisions** | `DECISIONS.md` — user decisions as canonical truth |
+| **Credentials** | `CREDENTIAL_REFERENCE.md` — where to look (paths only) |
+| **Vercel deploy** | `VERCEL_PROJECT_MAP.md` — domain → project, auto-deploy vs manual |
 | **Ports** | `PORT_REFERENCE.md` — site 3002, worker 3001 (local both) or 3002 (RackNerd) |
 | TourReel Spec | NotebookLM 0baf5f36 |
 | Prisma Schema | `apps/web/rensto-site/prisma/schema.prisma` |

@@ -5,8 +5,14 @@ import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
 import type { Prisma } from '@prisma/client';
+import { verifySession } from '@/lib/auth';
 
 export async function POST(req: Request) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const { message, sessionId, userId, context } = await req.json();
         const actualSessionId = sessionId || `terry_${uuidv4()}`;
@@ -88,6 +94,11 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const sessionId = searchParams.get('sessionId');
 

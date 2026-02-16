@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import { promisify } from 'util'; // Added for sshExec
+import { verifySession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,11 @@ async function sshExec(command: string) {
 }
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         // 1. Check n8n API health
         const n8nUrl = 'https://n8n.rensto.com/api/v1/healthz';
@@ -91,6 +97,11 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { action, targetVersion } = await req.json();
 
     // Handling Quick Actions

@@ -8,12 +8,13 @@ import { cn } from "@/lib/utils";
 const PLANS = [
     {
         name: "Starter",
-        price: 49,
+        price: 299,
         period: "/mo",
-        videos: 5,
-        credits: 250,
+        videos: 10,
+        credits: 500,
+        priceEnvKey: "starter",
         features: [
-            "5 video tours per month",
+            "10 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
@@ -23,13 +24,14 @@ const PLANS = [
         popular: false,
     },
     {
-        name: "Professional",
-        price: 99,
+        name: "Pro",
+        price: 699,
         period: "/mo",
-        videos: 15,
-        credits: 750,
+        videos: 30,
+        credits: 1500,
+        priceEnvKey: "pro",
         features: [
-            "15 video tours per month",
+            "30 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
@@ -37,26 +39,27 @@ const PLANS = [
             "Priority processing",
             "Text overlays",
         ],
-        cta: "Go Professional",
+        cta: "Go Pro",
         popular: true,
     },
     {
-        name: "Agency",
-        price: 199,
+        name: "Enterprise",
+        price: 1499,
         period: "/mo",
-        videos: 50,
-        credits: 2500,
+        videos: 80,
+        credits: 4000,
+        priceEnvKey: "team",
         features: [
-            "50 video tours per month",
+            "80 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
             "Scene regeneration",
             "Priority processing",
             "Text overlays",
-            "Team access (coming soon)",
+            "Team access",
         ],
-        cta: "Scale with Agency",
+        cta: "Scale with Enterprise",
         popular: false,
     },
 ];
@@ -74,11 +77,23 @@ export default function PricingPage() {
             .catch(() => {});
     }, []);
 
-    const handleSubscribe = async (planName: string) => {
-        setPurchasing(planName);
-        // TODO: Integrate with Stripe checkout via /api/checkout
-        // For now, show a placeholder
-        alert(`Stripe checkout integration coming soon for ${planName} plan. Contact support for early access.`);
+    const handleSubscribe = async (plan: typeof PLANS[number]) => {
+        setPurchasing(plan.name);
+        try {
+            const res = await fetch("/api/video/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: plan.priceEnvKey }),
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+                return;
+            }
+            alert(data.error || "Could not start checkout. Please try again.");
+        } catch {
+            alert("Network error. Please try again.");
+        }
         setPurchasing(null);
     };
 
@@ -138,7 +153,7 @@ export default function PricingPage() {
                         </ul>
 
                         <button
-                            onClick={() => handleSubscribe(plan.name)}
+                            onClick={() => handleSubscribe(plan)}
                             disabled={purchasing !== null}
                             className={cn(
                                 "w-full py-3 rounded-xl font-medium transition-colors",

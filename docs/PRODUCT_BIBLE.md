@@ -43,7 +43,7 @@ All products must align with one of these tactical pillars:
 *   **Target**: Real Estate agents / Zillow listings.
 *   **Logic**: `apps/worker/src/queue/workers/video-pipeline.worker.ts`
 *   **Architecture**: Kie.ai Kling 3.0 (Video) + Suno (Music) + Nano Banana (Identity).
-*   **Source of Truth**: `apps/worker/PIPELINE_SPEC.md`.
+*   **Source of Truth**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` + NotebookLM 0baf5f36.
 
 ### 🤖 Facebook Marketplace Autoposter
 *   **Target**: High-volume marketplace sellers.

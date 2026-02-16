@@ -6,7 +6,7 @@ import { Loader2, Home, Upload, Coins, AlertCircle, Image as ImageIcon } from "l
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const VIDEO_CREDIT_COST = 50;
+const VIDEO_CREDIT_COST = parseInt(process.env.NEXT_PUBLIC_VIDEO_CREDIT_COST || "50", 10);
 
 async function fileToBase64(file: File): Promise<{ base64: string; contentType: string }> {
     return new Promise((resolve, reject) => {

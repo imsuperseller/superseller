@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
+import { verifySession } from '@/lib/auth';
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const tasks = [
             { category: 'Infrastructure', title: 'Cloudflare DNS Mapping', description: 'Resolve reachability issues for market. and gateway. subdomains.', status: 'pending', order: 10 },

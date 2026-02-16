@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { verifySession } from '@/lib/auth';
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const [serviceInstances, whatsappInstances] = await Promise.all([
                 prisma.serviceInstance.findMany({ orderBy: { createdAt: 'desc' } }),

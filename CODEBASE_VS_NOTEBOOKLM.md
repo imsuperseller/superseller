@@ -52,8 +52,11 @@ When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If 
 | **3e820274** | Kie.ai — API docs |
 | **12c80d7d** | Antigravity — automation engine |
 | **fc048ba8** | n8n workflows |
+| **719854ee** | rensto website — main site, business model, subscription tiers |
+| **b906e69f** | Claude Code — Claude Code mastery, agentic workflows, tooling |
+| **f0747c8b** | prd template — **LEGACY** (different product version, do not use for current TourReel) |
 
-Full index: `brain.md` Knowledge Hierarchy.
+Full index: `docs/NOTEBOOKLM_INDEX.md` (canonical), also referenced in `brain.md` Knowledge Hierarchy.
 
 ---
 

@@ -122,8 +122,8 @@ Legacy reference. **Aitable.ai** used for dashboards. Base IDs archived: Operati
 - Spaces: 39 (MCP), 41 (References), 45 (n8n Workflows)
 - Cost: $0 (lifetime plan)
 
-### MCP Servers (12 active)
-n8n MCP, Context7, Airtable, Notion, Make, Stripe, TidyCal, Supabase, Webflow, Boost.space, Shadcn, Code Forms. QuickBooks disabled.
+### MCP Servers
+See `.cursor/MCP_CONFIGURATION_STATUS.md` for current list and status. Key active servers: n8n MCP, NotebookLM, Airtable, Notion, Make, Stripe, Shadcn, Apify, Ollama, GitHub, Postgres, Redis, Docker. QuickBooks disabled.
 
 ### Quick Reference URLs
 | Service | URL |
@@ -132,4 +132,4 @@ n8n MCP, Context7, Airtable, Notion, Make, Stripe, TidyCal, Supabase, Webflow, B
 | Admin | https://admin.rensto.com |
 | Vercel | https://vercel.com/dashboard |
 
-**Key files**: `apps/worker/PIPELINE_SPEC.md`, `apps/web/rensto-site/prisma/schema.prisma`, `apps/worker-packages/db/src/schema.ts`
+**Key files**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `apps/web/rensto-site/prisma/schema.prisma`, `apps/worker-packages/db/src/schema.ts`

@@ -1,38 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { getFirestoreAdmin, COLLECTIONS, ServiceManifest } from '@/lib/firebase-admin';
 import { getStripeAdmin } from '@/lib/stripe';
+import { verifySession } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
-        // 1. Verify Admin Session
-        const cookieStore = await cookies();
-        const sessionCookie = cookieStore.get('session');
-
-        if (!sessionCookie?.value) {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-        }
-
-        // Verify the user is actually an admin (simple check or verify with Firebase Auth)
-        // For this implementation, we assume the session cookie "admin" check logic from other routes usually suffices 
-        // OR we can decode it. To be safe, let's verify against valid admin emails if possible, or trust the middleware/session.
-        // Assuming secure cookie for now. 
-        if (sessionCookie.value !== 'admin-session-token' && !sessionCookie.value.includes('admin')) {
-            return NextResponse.json({ success: false, error: 'Forbidden: Admin access required' }, { status: 403 });
-        }
-
         const body = await request.json();
         const { name, description, slug, pricing, n8n, type } = body;
 
-        // 2. Validate Input
         if (!name || !pricing.subscription || !n8n.webhookId) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Get Stripe instance
         const stripe = getStripeAdmin();
 
-        // 3. Create Stripe Product
         const product = await stripe.products.create({
             name: `${name} (Agent)`,
             description: description || `Subscription for ${name}`,
@@ -43,18 +29,14 @@ export async function POST(request: NextRequest) {
             }
         });
 
-        // 4. Create Stripe Price (Subscription)
         const price = await stripe.prices.create({
             product: product.id,
             unit_amount: pricing.subscription,
             currency: 'usd',
             recurring: { interval: 'month' },
-            metadata: {
-                slug
-            }
+            metadata: { slug }
         });
 
-        // 5. Create Setup Fee (Optional)
         let setupPriceId = undefined;
         if (pricing.setup > 0) {
             const setupPrice = await stripe.prices.create({
@@ -62,17 +44,12 @@ export async function POST(request: NextRequest) {
                 unit_amount: pricing.setup,
                 currency: 'usd',
                 nickname: 'One-time Setup Fee',
-                metadata: {
-                    type: 'setup_fee',
-                    slug
-                }
+                metadata: { type: 'setup_fee', slug }
             });
             setupPriceId = setupPrice.id;
         }
 
-        // 6. Save Service Manifest to Firestore
-        const db = getFirestoreAdmin();
-        const manifest: ServiceManifest = {
+        const manifest = {
             id: slug,
             name,
             slug,
@@ -90,7 +67,17 @@ export async function POST(request: NextRequest) {
             updatedAt: new Date().toISOString()
         };
 
-        await db.collection(COLLECTIONS.SERVICE_MANIFESTS).doc(slug).set(manifest);
+        // Store in Postgres instead of Firestore
+        await prisma.serviceInstance.create({
+            data: {
+                slug,
+                productName: name,
+                status: 'active',
+                metadata: manifest as any,
+            },
+        }).catch((err: any) => {
+            console.warn('Could not save to ServiceInstance table:', err.message);
+        });
 
         return NextResponse.json({ success: true, manifest });
 
