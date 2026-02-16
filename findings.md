@@ -8,6 +8,51 @@
 
 ## 2026-02-16
 
+### Session Test Results (full regression after all changes)
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| 1 | Build (next build) | PASS | All routes compile, no errors |
+| 2 | Firebase client removal | PASS | Zero imports of firebase-client/firebase.ts/firebase SDK in src/ |
+| 3 | firebase-admin Storage-only | PASS | Only 2 files: firebase-admin.ts + onboarding approve route |
+| 4 | firebase SDK removed from package.json | PASS | `"firebase"` not in dependencies |
+| 5 | firebase-client.ts + firebase.ts deleted | PASS | Files confirmed gone |
+| 6 | rensto.com returns 200 | PASS | Production healthy |
+| 7 | admin.rensto.com → login (307→200) | PASS | Domain moved from stale rensto-admin to rensto-site |
+| 8 | rensto.com/video/create | PASS | 307 to login (auth required — expected) |
+| 9 | rensto.com/login | PASS | 200 |
+| 10 | API health check | PASS | rensto.com/api/admin/health-check 200 |
+| 11 | api.rensto.com | PASS | 200 |
+| 12 | Prisma User for service@rensto.com | PASS | id=5fd79287, role=ADMIN, status=active |
+| 13 | Drizzle user for service@rensto.com | PASS | Same UUID, tier=pro, limit=500 |
+| 14 | User IDs match across tables | PASS | Both tables share 5fd79287-... |
+| 15 | Entitlement with 500 credits | PASS | credits_balance=500, plan=pro, status=active |
+| 16 | User role is ADMIN | PASS | Confirmed |
+| 17 | Valid magic link tokens exist | PASS | 3 unused tokens ready |
+| 18 | ADMIN_EMAILS in all 3 auth files | PASS | service@rensto.com,admin@rensto.com |
+| 19 | Cookie domain .rensto.com (verify) | PASS | Cross-subdomain auth works |
+| 20 | Admin redirect to admin.rensto.com | PASS | `https://admin.rensto.com` in verify route |
+| 21 | Logout cookie domain matches | PASS | .rensto.com in logout route |
+| 22 | Design system brand colors | PASS | #fe3d51, #bf5700, #1eaef7, #5ffbfd, #110d28 |
+| 23 | No wrong design colors | PASS | No #7C3AED, Poppins only in anti-patterns |
+| 24 | VERCEL_PROJECT_MAP has admin.rensto.com | PASS | Listed under rensto-site |
+| 25 | Middleware handles admin.rensto.com | PASS | hostname check present |
+
+**25/25 PASS.** All changes verified.
+
+---
+
+### Changes made this session
+
+- **admin.rensto.com broken (was 404)**: Root cause — domain was on stale `rensto-admin` Vercel project that had no working app. Fix: removed from rensto-admin, added to rensto-site. Middleware in rensto-site already handled admin.rensto.com rewrites.
+- **Cross-subdomain auth**: Cookie had no `domain` attribute → scoped to rensto.com only → admin.rensto.com couldn't read it. Fix: set `domain: '.rensto.com'` in verify and logout routes.
+- **Magic link admin redirect**: Was `/admin` (path on rensto.com) → now `https://admin.rensto.com` in production.
+- **Owner account created**: `service@rensto.com` with ADMIN role, 500 credits, in both Prisma User + Drizzle users tables (same UUID). Entitlement active.
+- **RESEND_API_KEY**: Set in Vercel production + preview via API.
+- **ADMIN_EMAILS default**: Changed from `admin@rensto.com` to `service@rensto.com,admin@rensto.com` in auth.ts, send/route.ts, verify/route.ts.
+- **Schema drift noted**: Prisma schema says `emailVerified DateTime?` but actual DB column is `boolean`. `User.id` is `@db.Uuid` in schema but `text` in actual DB. Not fixed (requires migration) but worked around with raw SQL.
+- **Two user tables**: `"User"` (Prisma, text id) and `users` (Drizzle, uuid id). Entitlements FK → `users`. Owner account inserted into both with matching UUID.
+
 - **Complete Firestore elimination**: All 7 client-side pages that queried Firestore directly have been migrated to server-side API routes backed by Prisma/PostgreSQL. All Firestore seed/migration scripts deleted. `firebase` client SDK package removed from package.json. Only `firebase-admin` remains (Storage-only for onboarding secrets). AITable sync tools (`sync_leads_to_aitable.js`, `sync_extended_to_aitable.js`, `simulate_lead.js`) rewritten from Firestore to Postgres.
   - **Pages migrated**: approvals, dashboard, runs, agents, fulfillment queue, vault management, onboarding client
   - **API routes created**: `/api/app/approvals`, `/api/app/approvals/[id]/respond`, `/api/app/runs`, `/api/app/dashboard`, `/api/app/agents`, `/api/admin/fulfillment/queue`, `/api/admin/vault`, `/api/app/onboarding/submit`
