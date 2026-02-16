@@ -1,57 +1,73 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Play, Pause, CheckCircle2, Circle, Clock, Loader2, Video, Settings, LayoutDashboard, Home, AlertCircle, Plus, RefreshCw } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Play, CheckCircle2, Circle, Clock, Loader2, Video, AlertCircle, Plus, RefreshCw, Download, Copy, Check, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // --- Types ---
 export interface Clip {
     id: string;
     clip_number: number;
-    status: "pending" | "generating" | "completed" | "failed";
+    status: "pending" | "generating" | "completed" | "done" | "failed";
     video_url?: string;
     prompt?: string;
     error_message?: string;
+    to_room?: string;
 }
 
 export interface VideoJob {
     id: string;
-    status: "pending" | "analyzing" | "generating_prompts" | "generating_clips" | "stitching" | "completed" | "failed";
+    status: string;
     progress_percent: number;
     current_step: string;
     error_message?: string;
+    finalUrl?: string;
+    master_video_url?: string;
+    vertical_video_url?: string;
+    square_video_url?: string;
+    portrait_video_url?: string;
+    thumbnail_url?: string;
     listing: {
         address: string;
         city: string;
         state: string;
         zip: string;
-        exterior_photo_url?: string;
-        floorplan_url?: string;
-        realtor_avatar_url?: string;
     };
     clips: Clip[];
 }
 
-// --- Components ---
+// --- Sub-components ---
 
 function StatusBadge({ status }: { status: string }) {
     const colors: Record<string, string> = {
-        pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-        analyzing: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-        generating_prompts: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-        generating_clips: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-        stitching: "bg-orange-500/10 text-orange-500 border-orange-500/20",
-        completed: "bg-green-500/10 text-green-500 border-green-500/20",
-        complete: "bg-green-500/10 text-green-500 border-green-500/20",
-        failed: "bg-red-500/10 text-red-500 border-red-500/20",
+        pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+        analyzing: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+        generating_prompts: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+        generating_clips: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+        stitching: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+        exporting: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+        completed: "bg-green-500/10 text-green-400 border-green-500/20",
+        complete: "bg-green-500/10 text-green-400 border-green-500/20",
+        failed: "bg-red-500/10 text-red-400 border-red-500/20",
+    };
+
+    const labels: Record<string, string> = {
+        pending: "Queued",
+        analyzing: "Analyzing",
+        generating_prompts: "Scripting",
+        generating_clips: "Generating",
+        stitching: "Assembling",
+        exporting: "Exporting",
+        completed: "Ready",
+        complete: "Ready",
+        failed: "Failed",
     };
 
     return (
         <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium border uppercase tracking-wider", colors[status] || colors.pending)}>
-            {status.replace("_", " ")}
+            {labels[status] || status}
         </span>
     );
 }
@@ -64,8 +80,7 @@ function ProgressBar({ step, progress, isFailed }: { step: string; progress: num
         { id: "stitching", label: "Assembly" },
         { id: "completed", label: "Ready" },
     ];
-
-    const currentIdx = steps.findIndex((s) => s.id === step) !== -1 ? steps.findIndex((s) => s.id === step) : 0;
+    const currentIdx = Math.max(steps.findIndex((s) => s.id === step), 0);
 
     return (
         <div className="w-full space-y-4">
@@ -78,7 +93,9 @@ function ProgressBar({ step, progress, isFailed }: { step: string; progress: num
                                     idx === currentIdx ? "bg-blue-500/20 border-blue-500 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" :
                                         "bg-gray-800 border-gray-700"
                         )}>
-                            {idx < currentIdx ? <CheckCircle2 size={16} /> : idx === currentIdx && isFailed ? <AlertCircle size={16} /> : idx === currentIdx ? <Loader2 className="animate-spin" size={16} /> : <Circle size={16} />}
+                            {idx < currentIdx ? <CheckCircle2 size={16} /> :
+                                idx === currentIdx && isFailed ? <AlertCircle size={16} /> :
+                                    idx === currentIdx ? <Loader2 className="animate-spin" size={16} /> : <Circle size={16} />}
                         </div>
                         <span className="text-xs font-medium tracking-wide">{s.label}</span>
                     </div>
@@ -89,12 +106,52 @@ function ProgressBar({ step, progress, isFailed }: { step: string; progress: num
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.max(progress, 5)}%` }}
                     transition={{ duration: 0.5 }}
-                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full box-shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
                 />
             </div>
         </div>
     );
 }
+
+function DownloadButtons({ job }: { job: VideoJob }) {
+    const masterUrl = job.finalUrl || job.master_video_url;
+    const formats = [
+        { label: "Horizontal (16:9)", url: masterUrl, desc: "MLS, YouTube, Website" },
+        { label: "Vertical (9:16)", url: job.vertical_video_url, desc: "TikTok, Reels, Shorts" },
+        { label: "Square (1:1)", url: job.square_video_url, desc: "Instagram Feed" },
+        { label: "Portrait (4:5)", url: job.portrait_video_url, desc: "Instagram Post" },
+    ].filter((f) => f.url);
+
+    if (formats.length === 0) return null;
+
+    return (
+        <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+            <h3 className="font-medium flex items-center gap-2 mb-4">
+                <Download size={18} className="text-green-400" />
+                Download Your Video
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {formats.map((f) => (
+                    <a
+                        key={f.label}
+                        href={f.url!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 transition-colors group"
+                    >
+                        <div>
+                            <p className="text-sm font-medium">{f.label}</p>
+                            <p className="text-xs text-gray-500">{f.desc}</p>
+                        </div>
+                        <Download size={16} className="text-gray-500 group-hover:text-white transition-colors" />
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// --- Main Component ---
 
 export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) {
     const [job, setJob] = useState<VideoJob | null>(null);
@@ -105,6 +162,8 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
     const [regenLoading, setRegenLoading] = useState(false);
     const [regenError, setRegenError] = useState<string | null>(null);
     const [fallbackMode, setFallbackMode] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const [startTime] = useState(Date.now());
 
     const fetchJob = useCallback(async () => {
         if (!jobId) return;
@@ -112,11 +171,7 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
             const res = await fetch(`/api/video/jobs/${jobId}`);
             const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-                const msg =
-                    data?.error ||
-                    data?.message ||
-                    (data?.job?.error_message ? `Job failed: ${data.job.error_message}` : null) ||
-                    `Failed to fetch job (${res.status})`;
+                const msg = data?.error || `Failed to fetch job (${res.status})`;
                 throw new Error(msg);
             }
             const clips = (data.clips || []).map((c: any) => ({
@@ -129,7 +184,7 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
                     ...data.job,
                     current_step: data.job.current_step ?? data.job.currentStep,
                     listing: data.listing,
-                    clips
+                    clips,
                 });
             } else {
                 setJob({ ...data, clips });
@@ -138,37 +193,57 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
             if (data.clips?.length > 0) {
                 setActiveClipId((prev) => {
                     if (prev) return prev;
-                    const fp = data.clips.find((c: Clip) => (c.status === "completed" || c.status === "done") && (c.video_url || c.resultUrl));
-                    return fp?.id ?? data.clips[0].id;
+                    const done = data.clips.find((c: any) => (c.status === "completed" || c.status === "done") && c.video_url);
+                    return done?.id ?? data.clips[0].id;
                 });
             }
         } catch (err: any) {
-            console.error(err);
             setError(err.message);
         } finally {
             setLoading(false);
         }
     }, [jobId]);
 
-    // Poll for job updates
     useEffect(() => {
         if (!jobId) return;
-
         fetchJob();
-        const interval = setInterval(fetchJob, 3000); // Poll every 3s
+        const interval = setInterval(fetchJob, 3000);
         return () => clearInterval(interval);
     }, [jobId, fetchJob]);
 
+    useEffect(() => {
+        if (!job) return;
+        if (job.status === "completed" || job.status === "complete") {
+            const url = job.finalUrl || job.master_video_url;
+            if (url) setActiveClipId("full");
+        }
+    }, [job?.id, job?.status]);
+
     if (!jobId) return <div className="p-10 text-center text-gray-500">No Job ID provided.</div>;
-    if (loading && !job) return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="animate-spin text-blue-500" size={32} /></div>;
-    if (error) return <div className="p-10 text-center text-red-500 flex flex-col items-center gap-2"><AlertCircle /> {error}</div>;
+    if (loading && !job) return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="animate-spin text-gray-500" size={32} /></div>;
+    if (error) return (
+        <div className="max-w-md mx-auto p-10 text-center">
+            <AlertCircle className="mx-auto mb-4 text-red-400" size={32} />
+            <p className="text-red-400 mb-4">{error}</p>
+            <Link href="/video" className="text-sm text-gray-400 hover:text-white">← Back to My Videos</Link>
+        </div>
+    );
     if (!job) return null;
 
     const clips = job.clips || [];
-    const activeClip = clips.find(c => c.id === activeClipId) || clips[0] || null;
+    const viewingFull = activeClipId === "full";
+    const activeClip = viewingFull ? null : (clips.find(c => c.id === activeClipId) || clips[0] || null);
     const listing = job.listing || { address: "Loading...", city: "", state: "", zip: "" };
     const isComplete = job.status === "completed" || job.status === "complete";
-    const masterUrl = (job as any).finalUrl || (job as any).master_video_url;
+    const masterUrl = job.finalUrl || job.master_video_url;
+
+    // Dynamic time estimate
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const progress = job.progress_percent || 0;
+    const estTotal = progress > 5 ? Math.floor(elapsed / (progress / 100)) : 600;
+    const estRemaining = Math.max(0, estTotal - elapsed);
+    const estMin = Math.floor(estRemaining / 60);
+    const estSec = estRemaining % 60;
 
     const handleRegenerate = async () => {
         if (regenClips.size === 0 || !jobId) return;
@@ -194,219 +269,215 @@ export default function VideoGenerationDashboard({ jobId }: { jobId?: string }) 
     const toggleRegenClip = (n: number) => {
         setRegenClips((prev) => {
             const next = new Set(prev);
-            if (next.has(n)) next.delete(n);
-            else next.add(n);
+            if (next.has(n)) next.delete(n); else next.add(n);
             return next;
         });
     };
 
+    const handleCopyLink = () => {
+        const url = `${window.location.origin}/video/${jobId}`;
+        navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30">
+        <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
             {fallbackMode && (
-                <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center text-sm text-amber-200">
-                    Video service temporarily unavailable — showing demo. Worker may be offline.
+                <div className="bg-amber-500/20 border border-amber-500/40 px-4 py-2 rounded-xl text-center text-sm text-amber-200">
+                    Video service temporarily unavailable — showing cached data.
                 </div>
             )}
-            {/* Sidebar (Mock) */}
-            <div className="fixed left-0 top-0 h-full w-64 border-r border-gray-800 bg-[#0a0a0a] p-6 hidden md:block">
-                <div className="flex items-center gap-2 mb-10 text-xl font-bold tracking-tight">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <Video size={18} className="text-white" />
+
+            {/* Header */}
+            <div className="flex items-start justify-between">
+                <div>
+                    <Link href="/video" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-white mb-2 transition-colors">
+                        <ArrowLeft size={14} /> My Videos
+                    </Link>
+                    <h1 className="text-2xl font-bold tracking-tight">{listing.address || "Loading..."}</h1>
+                    <div className="flex items-center gap-3 text-gray-400 text-sm mt-1">
+                        <span>{listing.city}{listing.state ? `, ${listing.state}` : ""}</span>
+                        {!isComplete && progress > 5 && (
+                            <>
+                                <span className="w-1 h-1 bg-gray-600 rounded-full" />
+                                <Clock size={14} />
+                                <span>~{estMin}:{estSec.toString().padStart(2, "0")} remaining</span>
+                            </>
+                        )}
                     </div>
-                    Rensto<span className="text-gray-500">Video</span>
                 </div>
-                <Link
-                    href="/video/create"
-                    className="flex items-center justify-center gap-2 w-full py-3 mb-6 rounded-lg bg-[#fe3d51] hover:bg-[#ff4d61] text-white font-semibold transition-colors"
-                >
-                    <Plus size={18} /> Create new tour
-                </Link>
-                <nav className="space-y-2 text-sm font-medium text-gray-400">
-                    <div className="p-3 hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3 transition-colors"><LayoutDashboard size={18} /> Dashboard</div>
-                    <div className="p-3 hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3 transition-colors"><Home size={18} /> Listings</div>
-                    <div className="p-3 bg-blue-600/10 text-blue-500 rounded-lg cursor-pointer flex items-center gap-3"><Video size={18} /> Videos</div>
-                    <div className="p-3 hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3 transition-colors"><Settings size={18} /> Settings</div>
-                </nav>
-            </div>
-
-            {/* Main Content */}
-            <div className="md:ml-64 p-8 max-w-7xl mx-auto space-y-8">
-
-                {/* Header */}
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight mb-2">{listing.address || "Loading..."}</h1>
-                        <div className="flex items-center gap-3 text-gray-400 text-sm">
-                            <span>{listing.city}{listing.state ? `, ${listing.state}` : ""}</span>
-                            <span className="w-1 h-1 bg-gray-600 rounded-full" />
-                            <Clock size={14} /> <span>Est. remaining: 02:45</span>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                    {isComplete && (
+                        <button
+                            onClick={handleCopyLink}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-300 hover:bg-white/10 transition-colors"
+                        >
+                            {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                            {copied ? "Copied!" : "Share"}
+                        </button>
+                    )}
                     <StatusBadge status={job.status || "pending"} />
                 </div>
+            </div>
 
-                {job.status === "failed" && job.error_message && (
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
-                        <AlertCircle size={20} className="flex-shrink-0" />
-                        <span>{job.error_message}</span>
-                    </div>
-                )}
+            {/* Error banner */}
+            {job.status === "failed" && job.error_message && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
+                    <AlertCircle size={20} className="flex-shrink-0" />
+                    <span className="text-sm">{job.error_message}</span>
+                </div>
+            )}
 
-                {/* Progress Bar */}
-                <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm">
-                    <ProgressBar step={job.current_step || "analyzing"} progress={job.progress_percent || 0} isFailed={job.status === "failed"} />
-                    <div className="mt-4 flex justify-between text-xs text-gray-500 font-mono">
-                        <span>JOB ID: {job.id?.slice(0, 8) || "LOADING"}</span>
-                        <span>MODEL: KLING_3.0</span>
+            {/* Progress Bar */}
+            {!isComplete && (
+                <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+                    <ProgressBar step={job.current_step || "analyzing"} progress={progress} isFailed={job.status === "failed"} />
+                    <p className="mt-3 text-xs text-gray-500 text-center">
+                        You can leave this page — your video will keep generating. Check back in a few minutes.
+                    </p>
+                </div>
+            )}
+
+            {/* Download buttons (when complete) */}
+            {isComplete && <DownloadButtons job={job} />}
+
+            {/* Split View: Video + Clips */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ minHeight: "500px" }}>
+                {/* Video Player */}
+                <div className="lg:col-span-2">
+                    <div className="h-full bg-gray-900/30 border border-gray-800 rounded-2xl overflow-hidden relative aspect-video lg:aspect-auto">
+                        {viewingFull && isComplete && masterUrl ? (
+                            <video src={masterUrl} className="w-full h-full object-contain bg-black" controls autoPlay />
+                        ) : activeClip?.video_url ? (
+                            <video src={activeClip.video_url} className="w-full h-full object-contain bg-black" controls autoPlay loop />
+                        ) : (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                {activeClip?.status === "generating" ? (
+                                    <>
+                                        <Loader2 className="animate-spin text-blue-500" size={48} />
+                                        <p className="mt-4 text-white/80 font-medium">Generating Scene {activeClip.clip_number}...</p>
+                                        <p className="text-sm mt-1 text-gray-400 max-w-md text-center px-4">
+                                            {activeClip.to_room?.replace(/_/g, " ") || "Processing..."}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Play className="text-gray-600" size={48} />
+                                        <p className="mt-4">Waiting for clip...</p>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                        <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-mono text-white/80">
+                            {viewingFull ? "FULL VIDEO" : `SCENE ${activeClip?.clip_number || "0"} · ${(activeClip?.to_room || "").replace(/_/g, " ")}`}
+                        </div>
                     </div>
                 </div>
 
-                {/* Split View */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[600px]">
-
-                    {/* Left: Video Player / Preview */}
-                    <div className="lg:col-span-2 space-y-4">
-                        <div className="h-full bg-gray-900/30 border border-gray-800 rounded-2xl overflow-hidden relative group">
-                            {activeClip?.video_url ? (
-                                <video
-                                    src={activeClip.video_url}
-                                    className="w-full h-full object-cover"
-                                    controls
-                                    autoPlay
-                                    loop
-                                />
-                            ) : (
-                                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-900/50 backdrop-blur-sm">
-                                    {activeClip?.status === 'generating' ? (
-                                        <>
-                                            <div className="relative">
-                                                <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                                                <Loader2 className="animate-spin text-blue-500 relative z-10" size={48} />
-                                            </div>
-                                            <p className="mt-6 text-lg font-medium text-white/80">Generating Clip {activeClip?.clip_number}...</p>
-                                            <p className="text-sm mt-2 text-gray-400 max-w-md text-center px-4">&quot;{activeClip?.prompt?.slice(0, 100) || "Processing..."}...&quot;</p>
-                                        </>
-                                    ) : (
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                                                <Play className="ml-1 text-gray-600" size={24} />
-                                            </div>
-                                            <p>Clip Pending</p>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Overlay Info */}
-                            <div className="absolute top-4 left-4 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-xs font-mono text-white/90">
-                                CLIP {activeClip?.clip_number || "0"} • {activeClip?.status?.toUpperCase() || "WAITING"}
-                            </div>
-                        </div>
+                {/* Clip Queue */}
+                <div className="bg-gray-900/30 border border-gray-800 rounded-2xl overflow-hidden flex flex-col">
+                    <div className="p-4 border-b border-gray-800">
+                        <h3 className="font-medium flex items-center gap-2 text-sm">
+                            <Video size={14} className="text-gray-400" />
+                            Scenes
+                            <span className="ml-auto text-xs bg-gray-800 px-2 py-0.5 rounded text-gray-400">{clips.length}</span>
+                        </h3>
                     </div>
-
-                    {/* Right: Clip Queue */}
-                    <div className="bg-gray-900/30 border border-gray-800 rounded-2xl overflow-hidden flex flex-col">
-                        <div className="p-4 border-b border-gray-800 bg-gray-900/50">
-                            <h3 className="font-medium flex items-center gap-2">
-                                <Video size={16} className="text-gray-400" />
-                                Clip Queue
-                                <span className="ml-auto text-xs bg-gray-800 px-2 py-0.5 rounded text-gray-400">{clips.length} Scenes</span>
-                            </h3>
-                        </div>
-                        <div className="overflow-y-auto flex-1 p-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-800">
-                            {clips.map((clip) => (
+                    <div className="overflow-y-auto flex-1 p-2 space-y-1.5">
+                        {isComplete && masterUrl && (
+                            <div
+                                onClick={() => setActiveClipId("full")}
+                                className={cn(
+                                    "p-3 rounded-xl border transition-all cursor-pointer",
+                                    viewingFull
+                                        ? "bg-blue-500/10 border-blue-500/50"
+                                        : "bg-gray-800/20 border-gray-800 hover:bg-gray-800/50"
+                                )}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <span className={cn("text-xs font-bold px-1.5 py-0.5 rounded", viewingFull ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-400")}>
+                                        Full Video
+                                    </span>
+                                    <CheckCircle2 size={14} className="text-green-500" />
+                                </div>
+                            </div>
+                        )}
+                        {clips.map((clip) => {
+                            const isDone = clip.status === "completed" || clip.status === "done";
+                            return (
                                 <div
                                     key={clip.id}
                                     onClick={() => setActiveClipId(clip.id)}
                                     className={cn(
-                                        "p-3 rounded-xl border transition-all cursor-pointer group",
+                                        "p-3 rounded-xl border transition-all cursor-pointer",
                                         activeClipId === clip.id
-                                            ? "bg-blue-500/10 border-blue-500/50 shadow-[inset_0_0_10px_rgba(59,130,246,0.1)]"
-                                            : "bg-gray-800/20 border-gray-800 hover:bg-gray-800/50 hover:border-gray-700"
+                                            ? "bg-blue-500/10 border-blue-500/50"
+                                            : "bg-gray-800/20 border-gray-800 hover:bg-gray-800/50"
                                     )}
                                 >
-                                    <div className="flex justify-between items-start mb-2">
-                                        <span className={cn("text-xs font-bold px-1.5 py-0.5 rounded",
-                                            activeClipId === clip.id ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-400"
-                                        )}>
-                                            Scene {clip.clip_number}
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="text-xs font-medium text-gray-300">
+                                            Scene {clip.clip_number}{clip.to_room ? ` · ${clip.to_room.replace(/_/g, " ")}` : ""}
                                         </span>
-                                        {(clip.status === 'completed' || clip.status === 'done') && <CheckCircle2 size={14} className="text-green-500" />}
-                                        {clip.status === 'generating' && <Loader2 size={14} className="animate-spin text-blue-500" />}
-                                        {clip.status === 'failed' && <AlertCircle size={14} className="text-red-500" />}
+                                        {isDone && <CheckCircle2 size={12} className="text-green-500" />}
+                                        {clip.status === "generating" && <Loader2 size={12} className="animate-spin text-blue-500" />}
+                                        {clip.status === "failed" && <AlertCircle size={12} className="text-red-500" />}
                                     </div>
-                                    <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-2">
-                                        {clip.prompt || "Awaiting prompt..."}
-                                    </p>
-                                    {clip.video_url && (
-                                        <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+                                    {isDone && clip.video_url && (
+                                        <div className="h-0.5 w-full bg-green-500/30 rounded-full overflow-hidden">
                                             <div className="h-full bg-green-500 w-full" />
                                         </div>
                                     )}
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
                 </div>
-
-                {/* Regenerate section — when complete */}
-                {isComplete && clips.length > 0 && (
-                    <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm">
-                        <h3 className="font-medium flex items-center gap-2 mb-4">
-                            <RefreshCw size={18} className="text-blue-400" />
-                            Regenerate scenes
-                        </h3>
-                        <p className="text-sm text-gray-400 mb-4">
-                            Select scenes to regenerate (keeps the rest, re-stitches in order). Uses credits.
-                        </p>
-                        <div className="flex flex-wrap gap-3 mb-4">
-                            {clips.map((clip) => (
-                                <label
-                                    key={clip.id}
-                                    className={cn(
-                                        "flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors",
-                                        regenClips.has(clip.clip_number)
-                                            ? "bg-blue-500/20 border-blue-500/50"
-                                            : "bg-gray-800/30 border-gray-700 hover:border-gray-600"
-                                    )}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={regenClips.has(clip.clip_number)}
-                                        onChange={() => toggleRegenClip(clip.clip_number)}
-                                        className="rounded border-gray-600"
-                                    />
-                                    <span className="text-sm">Scene {clip.clip_number}</span>
-                                </label>
-                            ))}
-                        </div>
-                        {regenError && (
-                            <p className="text-red-400 text-sm mb-3">{regenError}</p>
-                        )}
-                        <button
-                            onClick={handleRegenerate}
-                            disabled={regenClips.size === 0 || regenLoading}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium"
-                        >
-                            {regenLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                            Regenerate selected
-                        </button>
-                        {masterUrl && (
-                            <div className="mt-4">
-                                <a
-                                    href={masterUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-sm text-blue-400 hover:underline"
-                                >
-                                    Open full video ↗
-                                </a>
-                            </div>
-                        )}
-                    </div>
-                )}
             </div>
+
+            {/* Regenerate section */}
+            {isComplete && clips.length > 0 && (
+                <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+                    <h3 className="font-medium flex items-center gap-2 mb-2">
+                        <RefreshCw size={18} className="text-blue-400" />
+                        Fix Bad Scenes
+                    </h3>
+                    <p className="text-sm text-gray-400 mb-4">
+                        Select only the scenes that need fixing. Good scenes are kept and re-stitched. 10 credits per scene.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {clips.map((clip) => (
+                            <label
+                                key={clip.id}
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-sm",
+                                    regenClips.has(clip.clip_number)
+                                        ? "bg-blue-500/20 border-blue-500/50 text-white"
+                                        : "bg-gray-800/30 border-gray-700 text-gray-400 hover:border-gray-600"
+                                )}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={regenClips.has(clip.clip_number)}
+                                    onChange={() => toggleRegenClip(clip.clip_number)}
+                                    className="rounded border-gray-600"
+                                />
+                                {clip.clip_number}{clip.to_room ? `: ${clip.to_room.replace(/_/g, " ")}` : ""}
+                            </label>
+                        ))}
+                    </div>
+                    {regenError && <p className="text-red-400 text-sm mb-3">{regenError}</p>}
+                    <button
+                        onClick={handleRegenerate}
+                        disabled={regenClips.size === 0 || regenLoading}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm"
+                    >
+                        {regenLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                        Regenerate {regenClips.size > 0 ? `(${regenClips.size} scene${regenClips.size > 1 ? "s" : ""} · ${regenClips.size * 10} credits)` : "selected"}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
-

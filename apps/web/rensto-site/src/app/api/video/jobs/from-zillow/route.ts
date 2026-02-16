@@ -1,22 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
+import { CreditService } from "@/lib/credits";
 
 const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
+const VIDEO_CREDIT_COST = parseInt(process.env.VIDEO_CREDIT_COST || "50", 10);
 
-/** Ensure test user exists in worker DB; return userId. Used for demo/create flow when no auth. */
-async function ensureTestUserId(workerBase: string): Promise<string> {
-    const res = await fetch(`${workerBase}/api/dev/ensure-test-user`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) throw new Error(`ensure-test-user failed: ${res.status}`);
-    const d = await res.json();
-    return d.userId;
-}
-
+/** POST /api/video/jobs/from-zillow — create video from Zillow URL. Requires auth + credits. */
 export async function POST(request: NextRequest) {
+    const session = await verifySession();
+    if (!session.isValid || !session.clientId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (!WORKER_URL) {
         return NextResponse.json(
-            { error: "Video worker not configured. Set VIDEO_WORKER_URL." },
+            { error: "Video worker not configured." },
             { status: 503 }
         );
     }
@@ -31,8 +29,22 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Check credits before creating job
+        const balance = await CreditService.checkBalance(session.clientId);
+        if (balance < VIDEO_CREDIT_COST) {
+            return NextResponse.json(
+                {
+                    error: `Insufficient credits. You need ${VIDEO_CREDIT_COST} credits but have ${balance}. Purchase more credits to continue.`,
+                    needCredits: true,
+                    required: VIDEO_CREDIT_COST,
+                    available: balance,
+                },
+                { status: 402 }
+            );
+        }
+
         const workerBase = WORKER_URL.replace(/\/$/, "");
-        const userId = await ensureTestUserId(workerBase);
+        const userId = session.clientId;
 
         const payload: Record<string, unknown> = {
             addressOrUrl,
@@ -41,11 +53,13 @@ export async function POST(request: NextRequest) {
         };
         if (typeof body.floorplanBase64 === "string") {
             payload.floorplanBase64 = body.floorplanBase64;
-            if (typeof body.floorplanContentType === "string") payload.floorplanContentType = body.floorplanContentType;
+            if (typeof body.floorplanContentType === "string")
+                payload.floorplanContentType = body.floorplanContentType;
         }
         if (typeof body.realtorBase64 === "string") {
             payload.realtorBase64 = body.realtorBase64;
-            if (typeof body.realtorContentType === "string") payload.realtorContentType = body.realtorContentType;
+            if (typeof body.realtorContentType === "string")
+                payload.realtorContentType = body.realtorContentType;
         }
 
         const res = await fetch(`${workerBase}/api/jobs/from-zillow`, {
@@ -70,6 +84,15 @@ export async function POST(request: NextRequest) {
                 { status: 502 }
             );
         }
+
+        // Deduct credits after successful job creation
+        await CreditService.deductCredits(
+            session.clientId,
+            VIDEO_CREDIT_COST,
+            "video_generation",
+            jobId,
+            { addressOrUrl }
+        );
 
         return NextResponse.json({ job: { id: jobId }, listing: data.listing });
     } catch (err: unknown) {

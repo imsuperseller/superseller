@@ -6,21 +6,68 @@
 
 ---
 
+## 2026-02-16 — TourReel Video App Full Rebuild
+
+### Phase 1: Pipeline Fix (DONE)
+- **Worker was DOWN** — crashed 100x due to dotenv + bullmq + ioredis + pg + pino + zod all in devDependencies. Moved to dependencies.
+- **Deployed fixed worker** to RackNerd. Health check: OK. pm2 online 10+ min stable.
+- **Fixed 23 stuck jobs** (generating_clips/generating_prompts/pending → failed) via SQL.
+- **Added square + portrait variant uploads** to pipeline (were generated but never uploaded to R2).
+- **Added DB columns** square_video_url, portrait_video_url (already existed in schema).
+
+### Phase 2: Auth & Credits Wiring (DONE)
+- **Wired verifySession()** to all 4 video API routes (jobs list, job detail, from-zillow, regenerate).
+- **Removed test user** (ensureTestUserId) — now uses real authenticated user from session cookie.
+- **Added CreditService** to video creation (50 credits per video, check + deduct).
+- **Added CreditService** to regeneration (10 credits per scene, check + deduct).
+- **Created /api/video/credits** endpoint for balance display.
+- **Created /api/video/usage** endpoint for usage history.
+- **Auth redirect**: All /video/* routes redirect to /login if not authenticated.
+
+### Phase 3: UI Rebuild (DONE)
+- **New VideoNav component** — top nav with TourReel logo, My Videos, Create, Pricing, Account, credit balance badge, mobile responsive.
+- **Video layout** — server-side auth check, redirects to /login if not authenticated.
+- **My Videos dashboard** — card grid with thumbnails, status badges, progress bars, time ago, empty state onboarding.
+- **Create Video page** — credit balance display, Zillow URL validation, image previews, cost display, insufficient credits CTA.
+- **Video viewer** — download buttons for all 4 formats (16:9, 9:16, 1:1, 4:5), dynamic time estimate, share/copy link, removed mock sidebar.
+- **Pricing page** — 3-tier subscription cards (Starter $49, Pro $99, Agency $199), feature comparison.
+- **Account page** — credit balance, usage history with transaction details.
+
+### Deployment
+- Frontend: Deployed to rensto.com via Vercel (2 deploys).
+- Worker: Deployed to RackNerd 172.245.56.50:3002 (pm2 tourreel-worker).
+- All /video/* routes require login (verified via curl).
+
+### Existing Completed Videos
+25 previously completed videos exist with accessible R2 URLs. Latest:
+- Job 458f0c6b: 75.6s full tour (15 clips) — 2752 Teakwood Ln
+- Job deb73ec3: 60.5s (12 clips)
+
+### Still TODO (Future sessions)
+- Stripe checkout integration for pricing tiers (products need to be created in Stripe Dashboard)
+- Text overlays (ffmpeg drawtext — currently stubbed)
+- Email notifications on video complete/fail (Resend integration)
+- User testing of the full flow (login → create → watch → download)
+
+---
+
 ## 2026-02-15
+
+- **Archive extraction & removal**: Merged archive content (2026-02-one-time-audits, residue-2026-02, research) into findings.md, DECISIONS.md, VERCEL_PROJECT_MAP, progress. Updated README, infra/README, agent-behavior.mdc. Deleted root archive/ folder.
 
 - **Video production gate fix**: Deployed rensto-site via `vercel --prod` (token from .env). rensto.com now returns "fetch failed" (worker reach) instead of "Video creation is not available in production yet." Production gate removed. Deploy: rensto-site-gf5fw4fnl. Aliased rensto.com.
 
-- **NotebookLM audit**: Audited 5811a372, 0baf5f36, 719854ee, 286f3e4a. Found contradictions in 5811a372 (learning.log, AGENT_BEHAVIOR.md, architecture/) and gaps (METHODOLOGY.md, Data-First scope). Added sync sources to 5811a372 and 719854ee. (archived: archive/residue-2026-02/).
+- **NotebookLM audit**: Audited 5811a372, 0baf5f36, 719854ee, 286f3e4a. Found contradictions in 5811a372 (learning.log, AGENT_BEHAVIOR.md, architecture/) and gaps (METHODOLOGY.md, Data-First scope). Added sync sources to 5811a372 and 719854ee.
 
-- **Doc hygiene cleanup**: Archived 6 residue .md files (NOTEBOOKLM_CONFLICTS, NOTEBOOKLM_AUDIT, INFRASTRUCTURE_AND_CODEBASE_ANALYSIS, LOCAL_TO_NOTEBOOKLM_MIGRATION, QUESTIONS_FOR_USER, AUDIT_STRAY_AND_LEARNING) to archive/residue-2026-02/. Renamed CONFLICT_AUDIT_2026-02-15 → CONFLICT_AUDIT.md. Updated all refs to main docs. Added doc hygiene rule to findings + agent-behavior.mdc.
+- **Doc hygiene cleanup**: Merged 6 residue .md files (NOTEBOOKLM_CONFLICTS, NOTEBOOKLM_AUDIT, INFRASTRUCTURE_AND_CODEBASE_ANALYSIS, LOCAL_TO_NOTEBOOKLM_MIGRATION, QUESTIONS_FOR_USER, AUDIT_STRAY_AND_LEARNING) into findings, DECISIONS, progress. Renamed CONFLICT_AUDIT_2026-02-15 → CONFLICT_AUDIT.md. Updated all refs to main docs. Added doc hygiene rule to findings + agent-behavior.mdc.
 
-- **NotebookLM conflict fix**: Audited 5811a372, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 5811a372; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. (archived: archive/residue-2026-02/). Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in TourReel stack) — keep for now.
+- **NotebookLM conflict fix**: Audited 5811a372, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 5811a372; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in TourReel stack) — keep for now.
 
 - **User decisions applied**: Created DECISIONS.md from QUESTIONS_FOR_USER answers. Removed video production gate — video create works in prod (VIDEO_WORKER_URL required). REALTOR_PLACEMENT added to 0baf5f36, archived. CREDENTIAL_REFERENCE, NOTEBOOKLM_SCOPE, EXECUTION_PLAN created. QuickBooks: quickbooks-online-mcp-server canonical; docs updated. Credential rotation: no (per user). Infra→NotebookLM: NOTEBOOKLM_SCOPE clarifies what goes where.
 
 - **Methodology doc fixes**: REPO_MAP, CODEBASE_AUDIT now point to METHODOLOGY.md (not "B.L.A.S.T. only"). brain.md Data-First Rule scoped to new scripts (routine fixes = no HALT). .cursorrules: rensto-site deploy corrected (manual, not auto). CLAUDE_CODE_WORKFLOW: Vercel deploy clarified. CONFLICT_AUDIT: added Data-First + methodology-pointers check.
 
-- **Phase 2–3 restructuring**: Archived one-time audits (AUDIT_REPORT_2026-02, LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT, DEPLOY_VIDEO_PAGE_FIX) to archive/2026-02-one-time-audits/. Updated README, progress. DOC_UPDATE_PLAN marked executed. VERCEL_PROJECT_MAP: rensto project = legacy; deploy unification options (A/B/C) documented. REALTOR_PLACEMENT_INDUSTRY_RESEARCH tagged for NotebookLM migration when MCP available.
+- **Phase 2–3 restructuring**: Merged one-time audits (AUDIT_REPORT_2026-02, LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT, DEPLOY_VIDEO_PAGE_FIX) into findings, VERCEL_PROJECT_MAP, progress. DOC_UPDATE_PLAN marked executed. VERCEL_PROJECT_MAP: rensto project = legacy; deploy unification options (A/B/C) documented. REALTOR_PLACEMENT_INDUSTRY_RESEARCH tagged for NotebookLM migration when MCP available.
 
 - **Methodology consolidation**: Created METHODOLOGY.md (single system SSOT). Resolved B.L.A.S.T. "HALT" vs Agent Behavior "one output" conflict by scoping: B.L.A.S.T. = new projects (phase gates); Agent Behavior = routine tasks (one final message). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior.mdc, .claude/rules/agent-behavior.md, CLAUDE.md, CODEBASE_VS_NOTEBOOKLM, AGENT_CONTEXT. When asked "conflicts?", run CONFLICT_AUDIT.md (now includes methodology check).
 - **Pipeline config SSOT**: TOURREEL_REALTOR_HANDOFF_SPEC §0b added. config.ts = single source for defaultClipDuration (5), maxClipsPerVideo (15). kie.ts, prompt-generator, video-pipeline, regen-clips now read from config; no hardcoded 5 or 15. Clip count unchanged: 12 for 1531 Home Park (4bed+pool); MAX_CLIPS=1 was debug-only.
@@ -37,7 +84,7 @@
 
 - **Customer create-job flow**: Added `/video/create` page with Zillow URL form, `/api/video/jobs/from-zillow` proxy to worker. Creates job via ensure-test-user + worker from-zillow, redirects to `/video/[jobId]`. "Create new tour" CTA in VideoGeneration sidebar.
 
-- **Local docs → NotebookLM migration**: Round 1 + Round 2 (gap audit). Added full REFERENCE_ALIGNMENT, RENSTO_DESIGN (Parts 1–3 + layout patterns), pipeline (testing, config, model compliance, three fixes), AGENT_SELF_AUDIT, AGENT_HANDOFF, 3-SCENE_VERIFICATION, full gemini schema. See archive/2026-02-one-time-audits/LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT.md.
+- **Local docs → NotebookLM migration**: Round 1 + Round 2 (gap audit). Added full REFERENCE_ALIGNMENT, RENSTO_DESIGN (Parts 1–3 + layout patterns), pipeline (testing, config, model compliance, three fixes), AGENT_SELF_AUDIT, AGENT_HANDOFF, 3-SCENE_VERIFICATION, full gemini schema.
 
 - **1531 Home Park Dr job run**: Job `68fc0ba2-4415-4841-a7a9-b47288b38b43` created via `create-1531-home-park-job.ts`. Listing `9deabefc-fe9b-4f1a-84d6-af7ca0b2da4f`. Test user `c60b6d2f-856d-49fd-8737-7e1fee3fa848`. Avatar uploaded to R2. Worker on 3001, rensto-site on 3002 with VIDEO_WORKER_URL. Browser verification: page at `/video/68fc0ba2-4415-4841-a7a9-b47288b38b43` shows real data (1531 Home Park Dr, Allen TX), status FAILED (likely Insufficient Credits).
 

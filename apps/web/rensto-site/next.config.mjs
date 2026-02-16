@@ -69,6 +69,7 @@ const nextConfig = {
         destination: '/admin',
         permanent: true,
       },
+      // /video is now the dashboard (My Videos). No redirect needed.
     ];
   },
 

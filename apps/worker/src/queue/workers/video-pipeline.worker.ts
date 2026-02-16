@@ -5,7 +5,7 @@ import { query, queryOne, transaction } from "../../db/client";
 import { TourRoom } from "../../types";
 import { logger } from "../../utils/logger";
 import { scrapeZillowListing } from "../../services/apify";
-import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames } from "../../services/floorplan-analyzer";
+import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } from "../../services/floorplan-analyzer";
 import { generateClipPrompts } from "../../services/prompt-generator";
 import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration } from "../../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../../services/r2";
@@ -13,7 +13,7 @@ import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
 import { deriveHeroFeatures } from "../../services/hero-features";
 import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
-import { pickBestApproachPhotoForOpening } from "../../services/gemini";
+import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
 import { CreditManager } from "../../services/credits";
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
@@ -30,6 +30,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
         logger.info({ msg: "Starting video pipeline", jobId, userId });
 
         try {
+            // 0. Idempotent start: if already complete (e.g. previous run succeeded then threw), sync and exit
+            const existing = await queryOne("SELECT status, master_video_url FROM video_jobs WHERE id = $1", [jobId]);
+            if (existing?.master_video_url) {
+                logger.info({ msg: "Job already has master_video_url, syncing status and exiting", jobId });
+                await query("UPDATE video_jobs SET status = 'complete', progress_percent = 100, completed_at = COALESCE(completed_at, NOW()) WHERE id = $1", [jobId]);
+                return; // Success — no retry
+            }
+
             if (!existsSync(workDir)) mkdirSync(workDir, { recursive: true });
 
             // 1. Update Job Status: Analyzing
@@ -46,6 +54,60 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             const listing = await queryOne("SELECT * FROM listings WHERE id = $1", [listingId]);
             if (!listing) throw new UnrecoverableError("Listing not found"); // No retry—data issue
+
+            // 2a. Detect floorplan in listing photos when user didn't upload one
+            if (!listing.floorplan_url) {
+                const extractPhotoUrl = (p: any): string | null => {
+                    if (typeof p === "string" && p.startsWith("http")) return p;
+                    if (p && typeof p === "object" && typeof p.url === "string") return p.url;
+                    return null;
+                };
+                let flatPhotos: string[] = [];
+                const ext = extractPhotoUrl(listing.exterior_photo_url);
+                if (ext) flatPhotos.push(ext);
+                const raw = listing.additional_photos;
+                if (Array.isArray(raw)) flatPhotos.push(...raw.map(extractPhotoUrl).filter((u): u is string => !!u));
+                else if (typeof raw === "string") {
+                    try {
+                        const p = JSON.parse(raw);
+                        const arr = Array.isArray(p) ? p : (p?.urls || p?.photos || []);
+                        flatPhotos.push(...arr.map(extractPhotoUrl).filter((u: any): u is string => !!u));
+                    } catch (_) {}
+                }
+                if (flatPhotos.length >= 2) {
+                    const PHOTO_FETCH_MS = 30_000;
+                    const ensurePublic = async (url: string | null, label: string): Promise<string | null> => {
+                        if (!url || !url.startsWith("http")) return null;
+                        if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
+                        try {
+                            const resp = await fetch(url, { signal: AbortSignal.timeout(PHOTO_FETCH_MS) });
+                            if (!resp.ok) return null;
+                            const ex = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] || "jpg";
+                            const localPath = join(workDir, `_fpdetect_${label}.${ex}`);
+                            writeFileSync(localPath, Buffer.from(await resp.arrayBuffer()));
+                            return await uploadToR2(localPath, buildR2Key(userId, jobId, `frames/_fpdetect_${label}.${ex}`));
+                        } catch (e: any) {
+                            logger.warn({ msg: "ensurePublic (fp detect) failed", label, error: e.message });
+                            return null;
+                        }
+                    };
+                    const toCheck = flatPhotos.slice(0, 20);
+                    const publicUrls: string[] = [];
+                    for (let i = 0; i < toCheck.length; i++) {
+                        const u = await ensurePublic(toCheck[i], `img${i}`);
+                        if (u) publicUrls.push(u);
+                    }
+                    if (publicUrls.length >= 2) {
+                        const fpIdx = await detectFloorplanInPhotos(publicUrls);
+                        if (fpIdx != null) {
+                            const detectedUrl = publicUrls[fpIdx];
+                            await query("UPDATE listings SET floorplan_url = $1 WHERE id = $2", [detectedUrl, listingId]);
+                            (listing as any).floorplan_url = detectedUrl;
+                            logger.info({ msg: "Floorplan auto-detected from listing photos", index: fpIdx });
+                        }
+                    }
+                }
+            }
 
             // 2. Floorplan Analysis (if exists)
             let tourRooms: TourRoom[] = listing.tour_sequence || [];
@@ -74,7 +136,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const propType = (listing.property_type || "house").toLowerCase().replace(/\s+/g, "_");
                 const beds = Math.max(1, Number(listing.bedrooms) || 3);
                 const baths = Math.max(1, Number(listing.bathrooms) || 2);
-                const roomNames = getDefaultSequence(propType, beds, baths, heroResult.hasPool);
+                const singleStory = isSingleStory(listing);
+                const roomNames = getDefaultSequence(propType, beds, baths, heroResult.hasPool, singleStory);
                 tourRooms = buildTourSequenceFromRoomNames(roomNames);
                 await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
                 logger.info({ msg: "Using default tour sequence", rooms: roomNames.length, hasPool: heroResult.hasPool });
@@ -250,11 +313,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
             };
 
-            // Photo–room alignment: single source of truth (room-photo-mapper)
+            // Photo–room alignment: AI vision by default; set USE_AI_PHOTO_MATCH=false for heuristic only
+            const allPhotosForMatch = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
+            const visionMap = await matchPhotosToRoomsWithVision(allPhotosForMatch, clips.map((c) => (c as any).to_room || ""));
             const photoAssignments = assignPhotosToClips(clips, {
                 exteriorUrl: exteriorPublic,
                 additionalPhotos: additionalPublic,
                 heroResult,
+                visionOverride: visionMap ?? undefined,
             });
             logger.info({ msg: "Photo–room assignments", count: photoAssignments.length, clips: photoAssignments.map((a) => `${a.clipNumber}:${a.toRoom}`) });
             const photoValidation = validateClipPhotoAssignments(photoAssignments, lastFrameUrl);
@@ -284,7 +350,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             prompt: NANO_BANANA_OPENING_PROMPT,
                             image_input: [avatarPublic, lastFrameUrl],
                             aspect_ratio: "16:9",
-                            resolution: "2K", // 4K outputs 11–34MB; Kling max 10MB. 2K = smaller, was working at 4555169
+                            resolution: config.video.nanoBananaResolution, // 4K = sharper input for Kling
                             output_format: "png",
                         });
                         await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
@@ -308,7 +374,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             prompt: roomPrompt,
                             image_input: [avatarPublic, roomPhoto],
                             aspect_ratio: "16:9",
-                            resolution: "2K", // 4K outputs 11–34MB; Kling max 10MB. 2K = smaller, was working at 4555169
+                            resolution: config.video.nanoBananaResolution,
                             output_format: "png",
                         });
                         await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
@@ -360,7 +426,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     image_url: startFrame,
                     realtor_in_frame: includeRealtor,
                     negative_prompt: (clip as any).negative_prompt,
-                    mode: "std", // "pro" may cause 500; std was working at 4555169
+                    mode: config.video.klingMode, // pro=1080p native; std=720p (causes blur when upscaled)
                     aspect_ratio: "16:9",
                     model: "kling-3.0/video",
                     duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
@@ -483,6 +549,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             const masterUrl = await uploadToR2(masterForExport, buildR2Key(userId, jobId, "master.mp4"));
             const verticalUrl = await uploadToR2(variants.vertical, buildR2Key(userId, jobId, "vertical.mp4"));
+            const squareUrl = await uploadToR2(variants.square, buildR2Key(userId, jobId, "square.mp4"));
+            const portraitUrl = await uploadToR2(variants.portrait, buildR2Key(userId, jobId, "portrait.mp4"));
             const thumbUrl = await uploadToR2(variants.thumbnail, buildR2Key(userId, jobId, "thumb.jpg"));
 
             // 9. Production-readiness verification
@@ -490,23 +558,25 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             if (masterDuration < 1) {
                 throw new Error(`Video too short (${masterDuration.toFixed(1)}s). Production check failed.`);
             }
-            if (!masterUrl || !verticalUrl || !thumbUrl) {
+            if (!masterUrl || !verticalUrl || !squareUrl || !portraitUrl || !thumbUrl) {
                 throw new Error("One or more upload URLs missing. Production check failed.");
             }
-            logger.info({ msg: "Production verification passed", duration: `${masterDuration.toFixed(1)}s`, clips: clipFiles.length });
+            logger.info({ msg: "Production verification passed", duration: `${masterDuration.toFixed(1)}s`, clips: clipFiles.length, variants: ["master", "vertical", "square", "portrait", "thumb"] });
 
             // 10. Complete
             await query(
-                `UPDATE video_jobs SET 
-          status = 'complete', 
-          progress_percent = 100, 
-          master_video_url = $1, 
-          vertical_video_url = $2, 
+                `UPDATE video_jobs SET
+          status = 'complete',
+          progress_percent = 100,
+          master_video_url = $1,
+          vertical_video_url = $2,
           thumbnail_url = $3,
           video_duration_seconds = $4,
-          completed_at = NOW() 
-         WHERE id = $5`,
-                [masterUrl, verticalUrl, thumbUrl, masterDuration, jobId]
+          square_video_url = $5,
+          portrait_video_url = $6,
+          completed_at = NOW()
+         WHERE id = $7`,
+                [masterUrl, verticalUrl, thumbUrl, masterDuration, squareUrl, portraitUrl, jobId]
             );
 
             logger.info({ msg: "Video pipeline complete", jobId });
@@ -549,7 +619,12 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 );
 
 async function updateJobStatus(jobId: string, status: string, progress: number) {
-    await query("UPDATE video_jobs SET status = $1, progress_percent = $2, current_step = $1 WHERE id = $3", [status, progress, jobId]);
+    // Never overwrite a job that is already complete (avoids retry race: Run 1 completes, Run 2 overwrites status)
+    await query(
+        `UPDATE video_jobs SET status = $1, progress_percent = $2, current_step = $1 WHERE id = $3 
+         AND (status != 'complete' OR master_video_url IS NULL)`,
+        [status, progress, jobId]
+    );
 }
 
 export async function initWorkers() {
