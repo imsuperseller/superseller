@@ -1300,8 +1300,8 @@ model Entitlement {
 model UsageEvent {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId    String   @db.Uuid @map("user_id")
-  type      String   // debit, refund, topup, grant, reset
-  amount    Int      // Positive for topup/refund, negative for debit
+  type      String   @map("event_type") // debit, refund, topup, grant, reset
+  amount    Int?     @map("credits_used") // Positive for topup/refund, negative for debit
   jobId     String?  @db.Uuid @map("job_id")
   metadata  Json?
 
