@@ -15,9 +15,6 @@ import {
   Eye,
   Terminal
 } from 'lucide-react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, orderBy, updateDoc, doc } from 'firebase/firestore';
-import { app } from '@/lib/firebase';
 import { ApprovalRequest } from '@/types/firestore';
 import { Input } from '@/components/ui/input-enhanced';
 
@@ -26,67 +23,34 @@ export default function ApprovalsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [approvals, setApprovals] = useState<ApprovalRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
+    fetch('/api/app/approvals')
+      .then(res => {
+        if (res.status === 401) { setLoading(false); return; }
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(data => { if (data) setApprovals(data); })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    async function fetchApprovals() {
-      if (!userId) return;
-      const db = getFirestore(app);
-      try {
-        setLoading(true);
-        const ref = collection(db, 'approvals');
-        // Fetch meaningful amount, ideally paginated
-        const q = query(ref, where('clientId', '==', userId), orderBy('requestedAt', 'desc'));
-        const snapshot = await getDocs(q);
-        const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ApprovalRequest));
-        setApprovals(fetched);
-      } catch (error: any) {
-        console.error("Error fetching approvals:", error);
-        if (error.code === 'failed-precondition') {
-          console.warn("Index missing for approvals.");
-          // Fallback
-          const ref = collection(db, 'approvals');
-          const q = query(ref, where('clientId', '==', userId));
-          const snapshot = await getDocs(q);
-          const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ApprovalRequest));
-          fetched.sort((a, b) => (b.requestedAt?.seconds || 0) - (a.requestedAt?.seconds || 0));
-          setApprovals(fetched);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchApprovals();
-  }, [userId]);
 
   const handleApprove = async (id: string) => {
     try {
-      const db = getFirestore(app);
       // Optimistic update
       setApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'approved' } : a));
 
-      const approvalRef = doc(db, 'approvals', id);
-      await updateDoc(approvalRef, {
-        status: 'approved',
-        respondedAt: new Date()
+      const res = await fetch(`/api/app/approvals/${id}/respond`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'approved' }),
       });
+      if (!res.ok) throw new Error('Failed to approve');
       console.log('Approved:', id);
     } catch (error) {
       console.error('Approval failed:', error);
       alert('Failed to approve. Please try again.');
-      // Revert if needed, but for now simple alert
       window.location.reload();
     }
   };
@@ -94,14 +58,14 @@ export default function ApprovalsPage() {
   const handleReject = async (id: string) => {
     if (!confirm("Are you sure you want to reject this request?")) return;
     try {
-      const db = getFirestore(app);
       setApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a));
 
-      const approvalRef = doc(db, 'approvals', id);
-      await updateDoc(approvalRef, {
-        status: 'rejected',
-        respondedAt: new Date()
+      const res = await fetch(`/api/app/approvals/${id}/respond`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'rejected' }),
       });
+      if (!res.ok) throw new Error('Failed to reject');
       console.log('Rejected:', id);
     } catch (error) {
       console.error('Rejection failed:', error);
@@ -267,9 +231,7 @@ export default function ApprovalsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="text-rensto-text-secondary text-sm">
-                        {approval.requestedAt?.toDate
-                          ? approval.requestedAt.toDate().toLocaleDateString()
-                          : new Date(approval.requestedAt).toLocaleDateString()}
+                        {new Date(approval.requestedAt).toLocaleDateString()}
                       </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(approval.status)}</TableCell>

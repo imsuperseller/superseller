@@ -23,10 +23,7 @@ import {
   Users,
   AlertTriangle,
 } from 'lucide-react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { app } from '@/lib/firebase';
-import { ServiceInstance } from '@/types/firestore';
+interface ServiceInstance { id: string; clientId: string; clientEmail: string; productId: string; productName: string; status: string; configuration: Record<string, any>; serviceId?: string; parameters?: Record<string, any>; createdAt: string; [key: string]: any; }
 
 export default function AgentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,40 +31,17 @@ export default function AgentsPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [agents, setAgents] = useState<ServiceInstance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
+    fetch('/api/app/agents')
+      .then(res => {
+        if (res.status === 401) { setLoading(false); return null; }
+        return res.json();
+      })
+      .then(data => { if (data) setAgents(data); })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!userId) return;
-      const db = getFirestore(app);
-      try {
-        setLoading(true);
-        // Fetch Service Instances (Agents)
-        const servicesRef = collection(db, 'service_instances');
-        const qServices = query(servicesRef, where('clientId', '==', userId));
-        const snapshot = await getDocs(qServices);
-        const fetchedAgents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ServiceInstance));
-        setAgents(fetchedAgents);
-      } catch (error) {
-        console.error("Error fetching agents:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [userId]);
 
   const filteredAgents = agents.filter(agent => {
     const matchesSearch = (agent.serviceId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -113,8 +87,7 @@ export default function AgentsPage() {
 
   const formatDate = (timestamp: any) => {
     if (!timestamp) return 'Never';
-    // Handle Firestore Timestamp or Date string
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const date = new Date(timestamp);
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',

@@ -21,9 +21,6 @@ import { Badge } from '@/components/ui/badge-enhanced';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
-import { db, auth, storage } from '@/lib/firebase-client';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
 
 interface OnboardingClientProps {
     product: any;
@@ -131,9 +128,6 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
         setIsSubmitting(true);
 
         try {
-            const user = auth.currentUser;
-            const uid = user?.uid || 'anonymous';
-
             // 1. Split secrets from normal fields
             const secrets: Record<string, string> = {};
             const publicFields: Record<string, string> = {};
@@ -146,56 +140,46 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
                 }
             });
 
-            // 2. Initial non-sensitive doc
-            const docRef = await addDoc(collection(db, 'onboarding_requests'), {
-                productId: product.id,
-                solutionId: product.id, // Compatibility
-                solutionName: product.name,
-                inputs: publicFields,
-                status: 'submitted',
-                createdAt: serverTimestamp(),
-                createdByUid: uid,
-                pillarId: product.pillarId || 'marketplace'
-            });
-            const requestId = docRef.id;
-
-            // 3. Encrypt and upload secrets if any
+            // 2. Encrypt secrets client-side if any
+            let encryptedSecrets = null;
             if (Object.keys(secrets).length > 0) {
-                const encrypted = await encryptSecrets(secrets, { passphrase, uid });
-                const secretsBlob = new Blob([JSON.stringify(encrypted, null, 2)], { type: 'application/json' });
-                const secretsPath = `onboarding_secrets/${requestId}/secrets.enc.json`;
-                const secretsRef = ref(storage, secretsPath);
-
-                await uploadBytes(secretsRef, secretsBlob, {
-                    contentType: 'application/json',
-                    customMetadata: {
-                        requestId,
-                        createdByUid: uid,
-                        encryptionMode: encrypted.encryptionMode
-                    }
-                });
-
-                const { updateDoc, doc } = await import('firebase/firestore');
-                await updateDoc(doc(db, 'onboarding_requests', requestId), {
-                    hasSecrets: true,
-                    secretsPath
-                });
+                encryptedSecrets = await encryptSecrets(secrets, { passphrase, uid: 'session' });
             }
+
+            // 3. Submit via API (creates OnboardingRequest + stores secrets in Vault)
+            const submitRes = await fetch('/api/app/onboarding/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productId: product.id,
+                    solutionName: product.name,
+                    inputs: publicFields,
+                    pillarId: product.pillarId || 'marketplace',
+                    encryptedSecrets,
+                }),
+            });
+
+            if (!submitRes.ok) {
+                const err = await submitRes.json();
+                throw new Error(err.error || 'Submission failed');
+            }
+
+            const { id: requestId } = await submitRes.json();
 
             // 4. Trigger Fulfillment API (The Bridge)
             await fetch('/api/fulfillment/initiate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    clientId: uid,
-                    clientEmail: user?.email || formData['email'],
+                    clientId: requestId,
+                    clientEmail: formData['email'] || '',
                     productId: product.id,
                     productName: product.name,
                     configuration: {
                         ...publicFields,
-                        requestId // Pass ID for reference
-                    }
-                })
+                        requestId,
+                    },
+                }),
             });
 
             setIsSuccess(true);

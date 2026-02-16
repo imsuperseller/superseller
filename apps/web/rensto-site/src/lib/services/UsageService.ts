@@ -1,6 +1,3 @@
-
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 /**
  * USAGE SERVICE

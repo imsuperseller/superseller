@@ -8,6 +8,12 @@
 
 ## 2026-02-16
 
+- **Complete Firestore elimination**: All 7 client-side pages that queried Firestore directly have been migrated to server-side API routes backed by Prisma/PostgreSQL. All Firestore seed/migration scripts deleted. `firebase` client SDK package removed from package.json. Only `firebase-admin` remains (Storage-only for onboarding secrets). AITable sync tools (`sync_leads_to_aitable.js`, `sync_extended_to_aitable.js`, `simulate_lead.js`) rewritten from Firestore to Postgres.
+  - **Pages migrated**: approvals, dashboard, runs, agents, fulfillment queue, vault management, onboarding client
+  - **API routes created**: `/api/app/approvals`, `/api/app/approvals/[id]/respond`, `/api/app/runs`, `/api/app/dashboard`, `/api/app/agents`, `/api/admin/fulfillment/queue`, `/api/admin/vault`, `/api/app/onboarding/submit`
+  - **Files deleted**: `firebase-client.ts`, `firebase.ts`, 17 obsolete Firestore seed/migration scripts
+  - **Build verified**: `next build` passes with zero errors
+
 - **Full SaaS + NotebookLM cross-reference audit**: 4-agent codebase audit + 7-notebook deep query. Found 13 cross-notebook contradictions, 6 notebook-vs-codebase mismatches, 4 redundancies. Key fixes applied:
   - **Pricing conflict**: 3 notebooks had different pricing models (tokens vs credits vs per-video). Canonical: "credits" at 50/video. Override sources added to 719854ee, 0baf5f36.
   - **Veo deprecated but referenced**: 5811a372 promoted Veo 3.1 as viable. Override added marking Veo deprecated, Kling 3.0 only.
@@ -34,8 +40,8 @@
   - **Design system verified**: globals.css colors match notebook 286f3e4a exactly (#fe3d51, #bf5700, #1eaef7, #5ffbfd, #110d28).
 
 - **Remaining technical debt** (not launch-blocking for TourReel self-serve):
-  - 20+ server-side routes still import `getFirestoreAdmin` — old agency/custom-solutions model, not TourReel. Will crash if visited, but these routes are not linked from TourReel UI.
-  - 6 client-side pages import `firebase/firestore` — old app pages (approvals, dashboard, runs, agents, fulfillment, onboarding). Same: not linked from TourReel UI.
+  - ~~20+ server-side routes still import `getFirestoreAdmin`~~ — RESOLVED: `getFirestoreAdmin()` throws; 17 dead scripts deleted.
+  - ~~6 client-side pages import `firebase/firestore`~~ — RESOLVED: All 7 pages migrated to Postgres API routes.
   - `custom-solutions/intake` has demo mode hardcoded IDs — old flow, not TourReel.
   - Rate limiting missing on public POST routes — security best practice, not a crash.
   - Stripe price IDs (`STRIPE_STARTER_PRICE_ID` etc.) need real values from Stripe dashboard before pricing page works end-to-end.

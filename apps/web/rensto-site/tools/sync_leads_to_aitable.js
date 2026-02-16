@@ -1,15 +1,14 @@
 /**
  * tools/sync_leads_to_aitable.js
- * 
- * Purpose: Syncs "New" Leads from Firestore to AITable for manual admin processing.
+ *
+ * Purpose: Syncs unsynced Leads and Users from PostgreSQL to AITable for admin dashboards.
  * Protocol: BLAST Layer 3 (Atomic Tool)
- * 
- * Usage: node tools/sync_leads_to_aitable.js
+ *
+ * Usage: npx tsx tools/sync_leads_to_aitable.js
+ *   OR:  node tools/sync_leads_to_aitable.js  (after prisma generate)
  */
 
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-const serviceAccount = require('../service-account.json');
+const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
 
@@ -23,7 +22,6 @@ if (fs.existsSync(envPath)) {
         if (match) {
             const key = match[1];
             let value = match[2] || '';
-            // Remove leading/trailing quotes
             value = value.replace(/(^['"]|['"]$)/g, '').trim();
             process.env[key] = value;
         }
@@ -31,41 +29,39 @@ if (fs.existsSync(envPath)) {
 }
 console.log('🔑 AITABLE_API_TOKEN status:', process.env.AITABLE_API_TOKEN ? 'LOADED' : 'MISSING');
 
-// Initialize Firebase (if not already)
-if (!process.env.FIREBASE_CONFIG) {
-    initializeApp({
-        credential: cert(serviceAccount)
-    });
-}
-
-const db = getFirestore();
+const prisma = new PrismaClient();
 const AITABLE_API_TOKEN = process.env.AITABLE_API_TOKEN;
 const LEADS_ID = process.env.AITABLE_RENSTO_LEADS_ID;
 const CLIENTS_ID = process.env.AITABLE_RENSTO_CLIENTS_ID;
-const PRODUCTS_ID = process.env.AITABLE_RENSTO_PRODUCTS_ID;
 
-async function syncCollection(collectionName, datasheetId, mapper) {
+async function syncLeads(datasheetId) {
     if (!datasheetId) {
-        console.warn(`⚠️ Skipping ${collectionName}: Datasheet ID missing.`);
+        console.warn('⚠️ Skipping leads: AITABLE_RENSTO_LEADS_ID missing.');
         return;
     }
 
-    console.log(`🔍 Checking for unsynced ${collectionName}...`);
-    const snapshot = await db.collection(collectionName)
-        // Check for syncedToAITable flag (handle case where it doesn't exist yet)
-        .where('syncedToAITable', '==', false)
-        .limit(50)
-        .get();
+    console.log('🔍 Checking for unsynced leads...');
+    const leads = await prisma.lead.findMany({
+        where: { syncedToAITable: false },
+        take: 50,
+    });
 
-    if (snapshot.empty) {
-        console.log(`✅ No new ${collectionName} to sync.`);
+    if (leads.length === 0) {
+        console.log('✅ No new leads to sync.');
         return;
     }
 
-    const docs = [];
-    snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-
-    const records = docs.map(mapper);
+    const records = leads.map(lead => ({
+        fields: {
+            "Lead Name": lead.name || "Unknown",
+            "Email": lead.email || "",
+            "Phone": lead.phone || "",
+            "Source": lead.source || "Website",
+            "Status": lead.status || "New",
+            "Postgres ID": lead.id,
+            "Created At": lead.createdAt ? lead.createdAt.toISOString() : new Date().toISOString()
+        }
+    }));
 
     try {
         const response = await fetch(`https://aitable.ai/fusion/v1/datasheets/${datasheetId}/records`, {
@@ -80,54 +76,78 @@ async function syncCollection(collectionName, datasheetId, mapper) {
         const result = await response.json();
         if (!result.success) throw new Error(result.message);
 
-        console.log(`✅ Successfully pushed ${docs.length} records to ${collectionName}.`);
+        console.log(`✅ Successfully pushed ${leads.length} leads to AITable.`);
 
-        const batch = db.batch();
-        docs.forEach(doc => {
-            const ref = db.collection(collectionName).doc(doc.id);
-            batch.update(ref, { syncedToAITable: true });
+        // Mark as synced
+        await prisma.lead.updateMany({
+            where: { id: { in: leads.map(l => l.id) } },
+            data: { syncedToAITable: true },
         });
-        await batch.commit();
-        console.log(`✅ Firestore ${collectionName} updated.`);
+        console.log('✅ PostgreSQL leads marked as synced.');
     } catch (error) {
-        console.error(`❌ ${collectionName} Sync Failed:`, error.message);
+        console.error('❌ Leads sync failed:', error.message);
+    }
+}
+
+async function syncClients(datasheetId) {
+    if (!datasheetId) {
+        console.warn('⚠️ Skipping clients: AITABLE_RENSTO_CLIENTS_ID missing.');
+        return;
+    }
+
+    console.log('🔍 Fetching users for client sync...');
+    const users = await prisma.user.findMany({
+        take: 50,
+        orderBy: { createdAt: 'desc' },
+    });
+
+    if (users.length === 0) {
+        console.log('✅ No users to sync.');
+        return;
+    }
+
+    const records = users.map(user => ({
+        fields: {
+            "Client Name": user.name || "Unknown",
+            "Email": user.email || "",
+            "Status": user.status || "Active",
+            "Business": user.businessName || "N/A",
+            "Postgres ID": user.id,
+            "Created At": user.createdAt ? user.createdAt.toISOString() : new Date().toISOString()
+        }
+    }));
+
+    try {
+        const response = await fetch(`https://aitable.ai/fusion/v1/datasheets/${datasheetId}/records`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${AITABLE_API_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ records })
+        });
+
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message);
+
+        console.log(`✅ Successfully pushed ${users.length} clients to AITable.`);
+    } catch (error) {
+        console.error('❌ Clients sync failed:', error.message);
     }
 }
 
 async function main() {
     if (!AITABLE_API_TOKEN) {
         console.error('❌ AITABLE_API_TOKEN missing.');
-        return;
+        process.exit(1);
     }
 
-    // 1. Sync Leads
-    await syncCollection('leads', LEADS_ID, lead => ({
-        fields: {
-            "Lead Name": lead.name || "Unknown",
-            "Email": lead.email || "",
-            "Phone": lead.phone || "",
-            "Source": lead.source || "Website",
-            "Status": "New",
-            "Firestore ID": lead.id,
-            "Created At": lead.createdAt?.toDate ? lead.createdAt.toDate().toISOString() : new Date().toISOString()
-        }
-    }));
-
-    // 2. Sync Clients (Users collection)
-    await syncCollection('users', CLIENTS_ID, user => ({
-        fields: {
-            "Client Name": `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.name || "Unknown",
-            "Email": user.email || "",
-            "Status": user.status || "Active",
-            "Subscription": user.subscriptionPlan || "N/A",
-            "Firestore ID": user.id,
-            "Created At": user.createdAt?.toDate ? user.createdAt.toDate().toISOString() : new Date().toISOString()
-        }
-    }));
-
-    // 3. Sync Products
-    // Products are mostly in ProductRegistry.ts but we can port them as a one-time thing or keep in sync if they hit Firestore
-    // For now, let's just run the Leads and Clients.
+    try {
+        await syncLeads(LEADS_ID);
+        await syncClients(CLIENTS_ID);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
 main();

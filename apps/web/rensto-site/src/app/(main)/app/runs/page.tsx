@@ -18,9 +18,6 @@ import {
   Download,
   Terminal
 } from 'lucide-react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
-import { app } from '@/lib/firebase';
 import { UsageLog } from '@/types/firestore';
 
 export default function RunsPage() {
@@ -28,60 +25,18 @@ export default function RunsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [runs, setRuns] = useState<UsageLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
+    fetch('/api/app/runs')
+      .then(res => {
+        if (res.status === 401) { setLoading(false); return; }
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(data => { if (data) setRuns(data); })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!userId) return;
-      const db = getFirestore(app);
-      try {
-        setLoading(true);
-        const logsRef = collection(db, 'usage_logs');
-        // Fetch last 50 runs for this client
-        const qLogs = query(
-          logsRef,
-          where('clientId', '==', userId),
-          orderBy('startedAt', 'desc'),
-          limit(50)
-        );
-        const snapshot = await getDocs(qLogs);
-        const fetchedRuns = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as UsageLog));
-        setRuns(fetchedRuns);
-      } catch (error: any) {
-        // If index is missing, it might error. Fallback or log.
-        console.error("Error fetching runs:", error);
-        // Fallback for dev: try without orderBy if it fails, or just client side sort
-        if (error.code === 'failed-precondition') {
-          console.warn("Index missing. Fetching without sort.");
-          const qLogsNoSort = query(logsRef, where('clientId', '==', userId), limit(50));
-          const snapshot2 = await getDocs(qLogsNoSort);
-          const fetchedRuns2 = snapshot2.docs.map(doc => ({ id: doc.id, ...doc.data() } as UsageLog));
-          // Manual sort
-          fetchedRuns2.sort((a, b) => {
-            const tA = a.startedAt?.toMillis ? a.startedAt.toMillis() : 0;
-            const tB = b.startedAt?.toMillis ? b.startedAt.toMillis() : 0;
-            return tB - tA;
-          });
-          setRuns(fetchedRuns2);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [userId]);
 
   const filteredRuns = runs.filter(run => {
     const matchesSearch = (run.agentId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -176,7 +131,7 @@ export default function RunsPage() {
                     <TableCell className="font-medium text-rensto-text-primary capitalize">{run.agentId.replace(/-/g, ' ')}</TableCell>
                     <TableCell>{getStatusBadge(run.status)}</TableCell>
                     <TableCell className="text-rensto-text-secondary">
-                      {run.startedAt?.toDate ? run.startedAt.toDate().toLocaleString() : new Date(run.startedAt).toLocaleString()}
+                      {new Date(run.startedAt).toLocaleString()}
                     </TableCell>
                     <TableCell className="text-rensto-text-secondary">{formatDuration(run.durationMs)}</TableCell>
                     <TableCell className="text-rensto-text-secondary">${(run.cost / 100).toFixed(4)}</TableCell>

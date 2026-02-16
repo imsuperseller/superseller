@@ -44,7 +44,7 @@
 
 **Store in PostgreSQL**: Service instances, customers, payments, leads, fulfillment.  
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
-**Retired**: Firestore (deprecated Feb 2026), Airtable.com. **Aitable.ai** for dashboards only.
+**Retired**: Firestore (fully removed Feb 2026 — zero runtime usage), Airtable.com. **Aitable.ai** for dashboards only. `firebase-admin` kept for Storage only (onboarding secrets).
 
 ---
 

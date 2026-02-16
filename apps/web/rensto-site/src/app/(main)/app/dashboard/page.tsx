@@ -22,16 +22,13 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
-import { collection, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase-client';
-import { ServiceInstance, UsageLog } from '@/types/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+interface ServiceInstance { id: string; productName: string; status: string; [key: string]: any; }
+interface UsageLog { id: string; agentId: string; status: string; startedAt: string; completedAt?: string; durationMs?: number; model?: string; tokens?: { input: number; output: number; total: number }; cost: number; output?: string; [key: string]: any; }
 
 export default function ClientDashboardPage() {
   const [services, setServices] = React.useState<ServiceInstance[]>([]);
   const [usageLogs, setUsageLogs] = React.useState<UsageLog[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [userId, setUserId] = React.useState<string | null>(null);
 
   // KPIs State
   const [kpis, setKpis] = React.useState({
@@ -46,52 +43,21 @@ export default function ClientDashboardPage() {
   const [volumeData, setVolumeData] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-        fetchDashboardData(user.uid);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
+    fetch('/api/app/dashboard')
+      .then(res => {
+        if (res.status === 401) { setLoading(false); return null; }
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        setServices(data.services || []);
+        setUsageLogs(data.usageLogs || []);
+        calculateKPIs(data.usageLogs || []);
+      })
+      .catch(err => console.error('Dashboard fetch error:', err))
+      .finally(() => setLoading(false));
   }, []);
-
-  const fetchDashboardData = async (uid: string) => {
-    setLoading(true);
-    try {
-      // 1. Fetch Services (Active Agents)
-      const servicesQuery = query(
-        collection(db, 'service_instances'),
-        where('clientId', '==', uid)
-      );
-      const servicesSnap = await getDocs(servicesQuery);
-      const servicesData = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as ServiceInstance));
-      setServices(servicesData);
-
-      // 2. Fetch Usage Logs (Recent Runs & Spend)
-      // Limit to last 50 runs for dashboard performance
-      const logsQuery = query(
-        collection(db, 'usage_logs'),
-        where('clientId', '==', uid),
-        orderBy('startedAt', 'desc'),
-        limit(50)
-      );
-      const logsSnap = await getDocs(logsQuery);
-      const logsData = logsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as UsageLog));
-      setUsageLogs(logsData);
-
-      // 3. Calculate KPIs
-      calculateKPIs(logsData);
-
-    } catch (err) {
-      console.error("Error fetching dashboard data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const calculateKPIs = (logs: UsageLog[]) => {
     const now = new Date();
@@ -99,7 +65,7 @@ export default function ClientDashboardPage() {
 
     // Filter last 7 days
     const recentLogs = logs.filter(log => {
-      const date = log.startedAt?.toDate ? log.startedAt.toDate() : new Date(log.startedAt);
+      const date = new Date(log.startedAt);
       return date >= sevenDaysAgo;
     });
 
@@ -125,7 +91,7 @@ export default function ClientDashboardPage() {
     }
 
     recentLogs.forEach(log => {
-      const date = log.startedAt?.toDate ? log.startedAt.toDate() : new Date(log.startedAt);
+      const date = new Date(log.startedAt);
       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
       if (daysMap.has(dayName)) {
         daysMap.set(dayName, (daysMap.get(dayName) || 0) + 1);
@@ -169,7 +135,7 @@ export default function ClientDashboardPage() {
 
   const formatTime = (timestamp: any) => {
     if (!timestamp) return '';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const date = new Date(timestamp);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 

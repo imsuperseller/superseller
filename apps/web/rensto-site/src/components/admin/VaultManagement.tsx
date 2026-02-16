@@ -20,18 +20,15 @@ import { Card } from '@/components/ui/card-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Input } from '@/components/ui/input-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
-import { db } from '@/lib/firebase-client';
-import { collection, query, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 interface VaultItem {
     id: string;
-    key?: string;
-    config?: Record<string, any>;
-    metadata?: {
-        description?: string;
-        lastUpdated?: any;
-        status: 'active' | 'revoked' | 'expiring';
-    };
+    category: string;
+    key: string;
+    value: string;
+    metadata?: Record<string, any>;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export default function VaultManagement() {
@@ -53,10 +50,10 @@ export default function VaultManagement() {
     const fetchVault = async () => {
         setLoading(true);
         try {
-            const q = query(collection(db, 'restricted', activeSubTab, 'items'));
-            const snapshot = await getDocs(q);
-            const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as VaultItem));
-            setItems(fetched);
+            const res = await fetch(`/api/admin/vault?category=${activeSubTab}`);
+            if (!res.ok) throw new Error('Failed to fetch');
+            const data = await res.json();
+            setItems(data);
         } catch (error) {
             console.error('Failed to fetch vault:', error);
         } finally {
@@ -227,9 +224,7 @@ function HeartbeatPanel() {
 }
 
 function VaultCard({ item, isRevealed, onToggleReveal, onCopy, isCopied, type }: any) {
-    const displayValue = isRevealed
-        ? (type === 'credentials' ? item.key : JSON.stringify(item.config, null, 2))
-        : '●●●●●●●●●●●●●●●●';
+    const displayValue = isRevealed ? item.value : '●●●●●●●●●●●●●●●●';
 
     return (
         <Card className="group relative overflow-hidden bg-white/[0.02] border-white/5 hover:border-cyan-500/30 transition-all duration-500 rounded-[2.5rem] p-8 space-y-6">
@@ -255,7 +250,7 @@ function VaultCard({ item, isRevealed, onToggleReveal, onCopy, isCopied, type }:
                     <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10" onClick={onToggleReveal}>
                         {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </Button>
-                    <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10" onClick={() => onCopy(item.id, type === 'credentials' ? item.key : JSON.stringify(item.config))}>
+                    <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10" onClick={() => onCopy(item.id, item.value)}>
                         {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                     </Button>
                 </div>

@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { query, collection, where, orderBy, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase-client';
-import { ServiceInstance } from '@/types/firestore';
 import {
     ClipboardList,
     CheckCircle2,
@@ -23,6 +20,18 @@ import {
 import { Button } from '@/components/ui/button-enhanced';
 import { toast } from 'sonner';
 import { NoiseTexture } from '@/components/ui/premium/NoiseTexture';
+
+interface ServiceInstance {
+    id: string;
+    clientId: string;
+    clientEmail: string;
+    productId: string;
+    productName: string;
+    status: string;
+    configuration: Record<string, any>;
+    createdAt: string;
+    [key: string]: any;
+}
 
 interface FulfillmentQueueClientProps {
     initialProducts: any[];
@@ -60,7 +69,6 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
 
     useEffect(() => {
         fetchInstances();
-        fetchOnboardingRequests();
     }, []);
 
     const filteredInstances = instances.filter(inst =>
@@ -71,30 +79,12 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
         selectedPillar === 'all' || req.productId?.includes(selectedPillar) || req.solutionId?.includes(selectedPillar)
     );
 
-    const fetchOnboardingRequests = async () => {
-        try {
-            const q = query(
-                collection(db, 'onboarding_requests'),
-                where('status', '==', 'submitted'),
-                orderBy('createdAt', 'desc')
-            );
-            const querySnapshot = await getDocs(q);
-            const fetched = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setOnboardingRequests(fetched);
-        } catch (error) {
-            console.error('Error fetching onboarding:', error);
-        }
-    };
-
     const handleApproveOnboarding = async (id: string) => {
         try {
             const response = await fetch(`/api/admin/onboarding/${id}/approve`, { method: 'POST' });
             if (response.ok) {
                 toast.success('Mission approved and activated!');
-                fetchOnboardingRequests();
+                fetchInstances();
             } else {
                 toast.error('Failed to approve mission');
             }
@@ -106,19 +96,13 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
     const fetchInstances = async () => {
         setLoading(true);
         try {
-            const q = query(
-                collection(db, 'service_instances'),
-                where('status', '==', 'pending_setup'),
-                orderBy('createdAt', 'desc')
-            );
-            const querySnapshot = await getDocs(q);
-            const fetchedInstances = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as ServiceInstance[];
-            setInstances(fetchedInstances);
+            const res = await fetch('/api/admin/fulfillment/queue');
+            if (!res.ok) throw new Error('Failed to load');
+            const data = await res.json();
+            setInstances(data.instances || []);
+            setOnboardingRequests(data.onboardingRequests || []);
         } catch (error) {
-            console.error('Error fetching instances:', error);
+            console.error('Error fetching queue:', error);
             toast.error('Failed to load fulfillment queue');
         } finally {
             setLoading(false);
@@ -338,7 +322,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
                                                 <div className="text-right hidden md:block">
                                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Timestamp</p>
                                                     <p className="text-xs font-bold text-white uppercase">
-                                                        {new Date((instance as any).createdAt?.seconds * 1000).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                                                        {new Date(instance.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                                                     </p>
                                                 </div>
                                                 <button
