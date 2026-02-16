@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
                         email: normalizedEmail,
                         name: 'Admin',
                         status: 'active',
-                        emailVerified: new Date(),
+                        emailVerified: true,
                         dashboardToken: crypto.randomUUID(),
                     },
                 });

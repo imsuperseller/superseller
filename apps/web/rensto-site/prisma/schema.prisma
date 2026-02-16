@@ -84,7 +84,7 @@ model User {
   // Account Status
   status        String   @default("active")
   role          UserRole @default(USER)
-  emailVerified DateTime?
+  emailVerified Boolean?
 
   // Infrastructure (JSON — rarely queried individually)
   n8nInstance Json? // { url, apiKey, mcpToken }
