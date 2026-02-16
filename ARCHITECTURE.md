@@ -12,7 +12,7 @@
 | **apps/web/rensto-site/** | Main Next.js app (rensto.com, admin.rensto.com, api.rensto.com) |
 | **apps/worker/** | Video pipeline worker (TourReel: Nano Banana, Kling, R2) |
 | **apps/web/rensto-site/src/app/** | Pages and API routes |
-| **apps/web/rensto-site/src/app/admin/** | Admin dashboard |
+| **apps/web/rensto-site/src/app/(main)/admin/** | Admin dashboard (served via admin.rensto.com) |
 | **apps/web/rensto-site/src/app/api/** | API endpoints |
 | **infra/** | MCP servers, n8n scripts, migrations, workflow artifacts |
 | **infra/mcp-servers/** | MCP server configs |
@@ -55,7 +55,9 @@
 |--------|--------|
 | rensto.com, www.rensto.com | Main site, marketplace, all public pages |
 | admin.rensto.com | Admin dashboard |
-| api.rensto.com | Same as rensto.com/api/* |
+| api.rensto.com | Same app as rensto.com (separate Vercel project) |
+
+**Deploy details**: See **VERCEL_PROJECT_MAP.md** — which Vercel project owns each domain, auto-deploy vs manual.
 
 ---
 

@@ -43,19 +43,22 @@ export async function GET(request: NextRequest) {
         const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString('base64');
 
         const isAdmin = ADMIN_EMAILS.includes(pgToken.email.toLowerCase());
-        const destination = isAdmin ? '/admin' : `/dashboard/${pgToken.clientId}`;
+        const isProd = process.env.NODE_ENV === 'production';
+        const adminUrl = isProd ? 'https://admin.rensto.com' : '/admin';
+        const destination = isAdmin ? adminUrl : `/dashboard/${pgToken.clientId}`;
 
-        // Set auth cookie and redirect to dashboard
+        // Set auth cookie and redirect
         const response = NextResponse.redirect(
-            new URL(destination, request.url)
+            destination.startsWith('http') ? destination : new URL(destination, request.url)
         );
 
         response.cookies.set(AUTH_COOKIE_NAME, sessionToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: isProd,
             sameSite: 'lax',
             maxAge: COOKIE_MAX_AGE,
-            path: '/'
+            path: '/',
+            domain: isProd ? '.rensto.com' : undefined,
         });
 
         return response;

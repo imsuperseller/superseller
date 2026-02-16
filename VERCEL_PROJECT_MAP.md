@@ -9,9 +9,11 @@
 
 | Domain(s) | Vercel Project | Root Directory | Auto-deploy on push? |
 |-----------|----------------|----------------|----------------------|
-| rensto.com, www.rensto.com | **rensto-site** | `apps/web/rensto-site` | **No** — manual deploy |
+| rensto.com, www.rensto.com, admin.rensto.com | **rensto-site** | `apps/web/rensto-site` | **No** — manual deploy |
 | api.rensto.com | **api-rensto-site** | `apps/web/rensto-site` | **Yes** — Git push → deploy |
 | rensto.vercel.app | **rensto** | `apps/web/rensto-site` | No |
+
+**Note**: `admin.rensto.com` is served by rensto-site. Middleware rewrites requests to `/admin/*`. The stale `rensto-admin` project was removed Feb 2026.
 
 **Both rensto-site and api-rensto-site build the same app** from the same path. Different projects exist for domain separation (main vs API subdomain).
 

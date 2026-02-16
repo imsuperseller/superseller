@@ -6,7 +6,7 @@
 ```
 rensto.com          → Vercel (Next.js - main site, marketplace, all public pages) — apps/web/rensto-site/
 www.rensto.com      → Vercel (same as rensto.com)
-admin.rensto.com    → Vercel (admin dashboard — integrated in rensto-site/src/app/admin)
+admin.rensto.com    → Vercel (admin dashboard — integrated in rensto-site/src/app/(main)/admin)
 api.rensto.com      → Vercel (API endpoints — same app, rensto.com/api/*)
 portal.rensto.com   → Vercel (customer portals - planned)
 ```
