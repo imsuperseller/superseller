@@ -46,7 +46,7 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 
 | Server | Location | Status | Purpose |
 |--------|----------|--------|---------|
-| **webflow-mcp** | infra/mcp-servers/webflow-mcp-server/ | ✅ Configured | Webflow site management |
+| **webflow-mcp** | infra/mcp-servers/webflow-mcp-server/ | ❌ **RETIRED** | Webflow retired (Feb 2026). All pages on Next.js/Vercel. |
 | **make-mcp** | infra/mcp-servers/make-mcp-server/ | ✅ Configured | Make.com workflow automation |
 | **typeform-mcp** | infra/mcp-servers/typeform-mcp-server/ | ✅ Configured | Typeform API (5 forms) |
 | **tidycal-mcp** | infra/mcp-servers/tidycal-mcp-server/ | ✅ Configured | TidyCal scheduling API |
@@ -57,7 +57,7 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 
 | Server | Location | Status | Reason |
 |--------|----------|--------|--------|
-| **quickbooks-mcp** | infra/mcp-servers/quickbooks-mcp-server/ | ⚠️ **DISABLED** | Needs Node.js MCP wrapper (current directory contains Java-based CData project) |
+| **quickbooks-online** | infra/mcp-servers/quickbooks-online-mcp-server/ | Node.js, can enable | QuickBooks Online. quickbooks-mcp-server = legacy Java, disabled. |
 
 **Note**: QuickBooks OAuth credentials preserved in mcp.json for future implementation. Use existing OAuth scripts in `/scripts/` for now.
 
