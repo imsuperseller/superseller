@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import { authRateLimiter } from '@/lib/rate-limiter';
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
 
 // Generate magic link token
 const generateToken = (): string => {

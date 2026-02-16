@@ -39,7 +39,7 @@ export async function verifySession(): Promise<{
         }
 
         const email = sessionData.email.toLowerCase();
-        const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',');
+        const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
         const pgUser = await prisma.user.findUnique({ where: { email } });
 
         if (pgUser) {
