@@ -1,12 +1,12 @@
 # Codebase Audit — Scripts, MD, JSON Cleanup
 
-**Methodology**: B.L.A.S.T. (Blueprint, Link, Architect, Stylize, Trigger)  
+**Methodology**: B.L.A.S.T. for new projects; Agent Behavior for routine. SSOT: [METHODOLOGY.md](METHODOLOGY.md)  
 **Source**: brain.md, CLAUDE.md, REPO_MAP.md, .cursorrules  
 **Last Updated**: February 2026
 
 **Contradictions resolved (Feb 2026)**:
 - Airtable.com: Retired; Aitable.ai for dashboards. CLAUDE.md Section 3 updated.
-- Firestore: Fallback reads only (intentional). Postgres primary.
+- Firestore: Fully removed (Feb 2026). Zero runtime usage. `firebase-admin` kept for Storage only.
 
 **Trim complete (Feb 2026)**:
 - CLAUDE.md reduced to lean router (~3.7k chars, was 45k). Reference material moved to docs/INFRA_SSOT.md and docs/PRODUCT_BIBLE.md.

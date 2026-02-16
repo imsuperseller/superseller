@@ -44,7 +44,7 @@ Before making changes, ensure alignment with:
 ## Data / Architecture Truth (Feb 2026)
 
 - **Primary DB**: PostgreSQL (Prisma in rensto-site, Drizzle in worker)
-- **Firestore**: Fallback reads only (migration complete)
+- **Firestore**: Fully removed (Feb 2026). `firebase-admin` kept for Storage only.
 - **Airtable.com**: Retired. **Aitable.ai**: Dashboards/syncs only
 - **n8n**: Backup/reference; Antigravity is primary automation
 
@@ -89,7 +89,7 @@ If Qwen gives short/JSON responses instead of doing the work, the rules should s
 
 - Cursor's MCP config ≠ Claude Code's. Configure MCP in Claude Code separately if needed.
 - For offline work: Use Ollama via Claude Code's Ollama MCP.
-- GitHub = source of truth. Vercel auto-deploys from `main`.
+- GitHub = source of truth. api.rensto.com auto-deploys from `main`; rensto.com needs manual deploy. See VERCEL_PROJECT_MAP.md.
 
 ---
 
