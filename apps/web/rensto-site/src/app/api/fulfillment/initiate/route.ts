@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { ServiceInstance } from '@/types/firestore';
-import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import { AITableService } from '@/lib/services/AITableService';
 import * as dbServices from '@/lib/db/services';
@@ -11,6 +10,11 @@ const N8N_FULFILLMENT_WEBHOOK = process.env.N8N_FULFILLMENT_WEBHOOK_URL || 'http
 
 export async function POST(request: Request) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || session.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await request.json();
         const { clientId, clientEmail, productId, productName, configuration, paymentIntentId } = body;
 

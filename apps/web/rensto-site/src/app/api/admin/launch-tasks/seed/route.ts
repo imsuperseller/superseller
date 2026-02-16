@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import { verifySession } from '@/lib/auth';
 export async function GET() {

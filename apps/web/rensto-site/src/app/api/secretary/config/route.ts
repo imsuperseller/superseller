@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin } from '@/lib/firebase-admin';
+import { verifySession } from '@/lib/auth';
 import * as dbDashboard from '@/lib/db/dashboard';
 export async function POST(req: Request) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || !session.clientId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { clientId, config } = body;
 

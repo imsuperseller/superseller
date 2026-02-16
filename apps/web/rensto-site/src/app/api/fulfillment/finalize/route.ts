@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
 import { emails } from '@/lib/email';
 import * as dbServices from '@/lib/db/services';
 export async function POST(request: Request) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || session.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await request.json();
         const { instanceId, n8nWorkflowId, adminNotes } = body;
 
@@ -19,27 +23,7 @@ export async function POST(request: Request) {
         const instance = await dbServices.getServiceInstance(instanceId);
 
         if (!instance) {
-            // Fallback: check Firestore
-            const db = getFirestoreAdmin();
-            const doc = await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(instanceId).get();
-            if (!doc.exists) {
-                return NextResponse.json({ error: 'Instance not found' }, { status: 404 });
-            }
-            // Firestore-only instance -- update there and return
-            await db.collection(COLLECTIONS.SERVICE_INSTANCES).doc(instanceId).update({
-                n8nWorkflowId,
-                status: 'active',
-                activatedAt: FieldValue.serverTimestamp(),
-                adminNotes: adminNotes || doc.data()?.adminNotes || '',
-                updatedAt: FieldValue.serverTimestamp(),
-            });
-            const clientEmail = doc.data()?.clientEmail;
-            if (clientEmail) {
-                try {
-                    await emails.fulfillmentComplete(clientEmail, doc.data()?.clientId || 'Valued Customer', doc.data()?.productName || 'Rensto Service', `https://rensto.com/dashboard/${doc.data()?.clientId}`);
-                } catch (e) { console.error('Email error:', e); }
-            }
-            return NextResponse.json({ success: true, message: 'Service instance activated (Firestore fallback).' });
+            return NextResponse.json({ error: 'Instance not found' }, { status: 404 });
         }
 
         // Postgres update

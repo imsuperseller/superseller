@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 export async function POST(request: Request) {
     try {

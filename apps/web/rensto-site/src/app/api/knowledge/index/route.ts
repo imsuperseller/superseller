@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
+import { verifySession } from '@/lib/auth';
 import * as dbDashboard from '@/lib/db/dashboard';
 const N8N_INDEXING_WEBHOOK = process.env.N8N_INDEXING_WEBHOOK_URL || 'https://n8n.rensto.com/webhook/knowledge-indexing';
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || !session.clientId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const contentType = request.headers.get('content-type') || '';
 
         let clientId = '';

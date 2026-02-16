@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import OpenAI from 'openai';
 
 // Solution tier definitions - Rensto pricing (2026)
@@ -104,6 +105,11 @@ Generate a JSON response with this exact structure:
 ALWAYS be specific and personalized. Reference their actual answers.`;
 
 export async function POST(request: NextRequest) {
+    const session = await verifySession();
+    if (!session.isValid || !session.clientId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
     });

@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
@@ -18,19 +16,8 @@ export async function POST(req: Request) {
         const actualSessionId = sessionId || `terry_${uuidv4()}`;
         let history: any[] = [];
 
-        try {
-            const conversation = await dbAdmin.getOrCreateConversation(actualSessionId);
-            history = (conversation.messages as any[]) || [];
-        } catch (pgError) {
-            // Fallback: Firestore
-            console.info('[Migration] admin/terry/chat POST: Postgres miss, falling back to Firestore');
-            const db = getFirestoreAdmin();
-            const chatRef = db.collection('admin_conversations').doc(actualSessionId);
-            const sessionSnap = await chatRef.get();
-            if (sessionSnap.exists) {
-                history = sessionSnap.data()?.messages || [];
-            }
-        }
+        const conversation = await dbAdmin.getOrCreateConversation(actualSessionId);
+        history = (conversation.messages as any[]) || [];
 
         const userMsg = {
             id: uuidv4(),
@@ -105,24 +92,10 @@ export async function GET(req: Request) {
     if (!sessionId) return NextResponse.json({ success: false, error: 'Missing sessionId' });
 
     try {
-        try {
-            const conversation = await prisma.adminConversation.findUnique({
-                where: { id: sessionId },
-            });
-            if (conversation) {
-                return NextResponse.json({ success: true, messages: conversation.messages || [] });
-            }
-        } catch (pgError) {
-            console.info('[Migration] admin/terry/chat GET: Postgres miss');
-        }
-
-        // Fallback: Firestore
-        const db = getFirestoreAdmin();
-        const chatSnap = await db.collection('admin_conversations').doc(sessionId).get();
-        if (!chatSnap.exists) {
-            return NextResponse.json({ success: true, messages: [] });
-        }
-        return NextResponse.json({ success: true, messages: chatSnap.data()?.messages || [] });
+        const conversation = await prisma.adminConversation.findUnique({
+            where: { id: sessionId },
+        });
+        return NextResponse.json({ success: true, messages: conversation?.messages || [] });
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }

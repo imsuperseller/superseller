@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
+import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import * as dbDashboard from '@/lib/db/dashboard';
 export async function POST(req: Request) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || !session.clientId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { clientId, type, topic, platform } = body;
 
@@ -20,13 +25,6 @@ export async function POST(req: Request) {
         if (pgUser) {
             const ent = pgUser.entitlements as any;
             hasEntitlement = ent?.pillars?.includes('content') ?? false;
-        } else {
-            // Fallback: Firestore
-            console.info('[Migration] content/generate: User not in Postgres, checking Firestore');
-            const db = getFirestoreAdmin();
-            const userSnap = await db.collection(COLLECTIONS.USERS).doc(clientId).get();
-            const userData = userSnap.data();
-            hasEntitlement = userData?.entitlements?.pillars?.includes('content') ?? false;
         }
 
         if (!hasEntitlement) {

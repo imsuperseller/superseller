@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import OpenAI from 'openai';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import prisma from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
@@ -17,6 +16,11 @@ function getOpenAI(): OpenAI {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await verifySession();
+    if (!session.isValid || !session.clientId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { requirements, clientInfo, projectInfo } = await request.json();
 
     if (!requirements || !clientInfo || !projectInfo) {

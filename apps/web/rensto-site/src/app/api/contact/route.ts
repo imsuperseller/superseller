@@ -1,6 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { apiRateLimiter } from '@/lib/rate-limiter';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+    const rateLimited = apiRateLimiter.middleware()(request);
+    if (rateLimited) return rateLimited;
+
     try {
         const body = await request.json();
         const { name, email, message, company, budget, timeline } = body;

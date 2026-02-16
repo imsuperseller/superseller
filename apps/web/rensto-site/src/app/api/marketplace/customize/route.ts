@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { apiRateLimiter } from '@/lib/rate-limiter';
 /**
  * POST /api/marketplace/customize
  * Handles workflow customization requests from the CustomizationModal.
  */
 export async function POST(req: NextRequest) {
+    const rateLimited = apiRateLimiter.middleware()(req);
+    if (rateLimited) return rateLimited;
+
     try {
         const body = await req.json();
         const { workflowId, parameters, customerEmail } = body;

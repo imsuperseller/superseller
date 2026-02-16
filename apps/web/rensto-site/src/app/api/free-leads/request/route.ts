@@ -1,16 +1,18 @@
-import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { getDefaultFreeTrialEntitlements, UserEntitlements } from '@/types/entitlements';
 import { sendSlackNotification, SlackTemplates } from '@/lib/slack';
 import prisma from '@/lib/prisma';
+import { authRateLimiter } from '@/lib/rate-limiter';
 // Configuration
 const N8N_LEAD_MACHINE_WEBHOOK = 'https://n8n.rensto.com/webhook/universal-lead-machine-v3-optimized';
 const FREE_TRIAL_LIMIT = 10;
 const RATE_LIMIT_HOURS = 24; // One request per 24 hours per email
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+    const rateLimited = authRateLimiter.middleware()(req);
+    if (rateLimited) return rateLimited;
+
     try {
         const body = await req.json();
         const { email, niche, source, name } = body;

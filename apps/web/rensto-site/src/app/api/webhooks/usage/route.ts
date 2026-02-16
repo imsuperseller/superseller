@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
 import prisma from '@/lib/prisma';
 import * as dbDashboard from '@/lib/db/dashboard';
 export async function POST(request: NextRequest) {

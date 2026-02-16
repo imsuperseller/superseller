@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import * as dbAdmin from '@/lib/db/admin';
 export async function PATCH(req: NextRequest) {
     try {

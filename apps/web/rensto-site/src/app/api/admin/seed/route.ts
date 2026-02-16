@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 // Template seed data (moved from previous Firestore-only implementation)
 const SEED_TEMPLATES = [

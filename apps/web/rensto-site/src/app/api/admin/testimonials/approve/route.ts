@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin } from '@/lib/firebase-admin';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
-import { Timestamp } from 'firebase-admin/firestore';
 import * as dbAdmin from '@/lib/db/admin';
 export async function GET(request: NextRequest) {
     try {

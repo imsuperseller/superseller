@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestoreAdmin } from '@/lib/firebase-admin';
-import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
 import { verifySession } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
@@ -22,12 +20,7 @@ const DEFAULT_MEMORY = {
 async function getAgentMemory() {
     const pgRecord = await dbAdmin.getAgentMemory(MEMORY_KEY);
     if (pgRecord) return pgRecord.data as Record<string, any>;
-
-    // Fallback: Firestore
-    console.info('[Migration] admin/n8n/agent: Postgres miss, falling back to Firestore');
-    const db = getFirestoreAdmin();
-    const doc = await db.collection('n8n_agent_memory').doc(MEMORY_KEY).get();
-    return doc.exists ? doc.data()! : DEFAULT_MEMORY;
+    return DEFAULT_MEMORY;
 }
 
 export async function GET() {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prisma from '@/lib/prisma';
+import { authRateLimiter } from '@/lib/rate-limiter';
 // Token expiration: 24 hours
 const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
@@ -11,6 +12,9 @@ const generateToken = (): string => {
 };
 
 export async function POST(request: NextRequest) {
+    const rateLimited = authRateLimiter.middleware()(request);
+    if (rateLimited) return rateLimited;
+
     try {
         const { email, redirectTo } = await request.json();
 

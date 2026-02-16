@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-import { getFirestoreAdmin, COLLECTIONS } from '@/lib/firebase-admin';
 import { verifySession } from '@/lib/auth';
-import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
 async function checkAuth() {
     const session = await verifySession();
@@ -16,17 +14,8 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        try {
-            const testimonials = await dbAdmin.listTestimonials();
-            return NextResponse.json({ testimonials });
-        } catch (pgError) {
-            // Fallback: Firestore
-            console.info('[Migration] admin/testimonials GET: Postgres fail, falling back to Firestore');
-            const db = getFirestoreAdmin();
-            const snap = await db.collection(COLLECTIONS.TESTIMONIALS).orderBy('order', 'asc').get();
-            const testimonials = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            return NextResponse.json({ testimonials });
-        }
+        const testimonials = await dbAdmin.listTestimonials();
+        return NextResponse.json({ testimonials });
     } catch (error) {
         console.error('Error fetching testimonials:', error);
         return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
