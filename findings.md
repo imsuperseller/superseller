@@ -8,6 +8,48 @@
 
 ## 2026-02-16
 
+### Instruction Hierarchy + Alignment Audit (Session 2)
+
+- **Authority Precedence enforced across codebase + NotebookLM**: brain.md is Tier 1. Previously, NotebookLM 5811a372 had NotebookLM as Rank 1 and brain.md as Rank 2. Fixed by pushing compliance override sources to 6 notebooks.
+- **NotebookLM compliance sources pushed (6 notebooks)**:
+  - 5811a372 (B.L.A.S.T.): Authority override — brain.md = Tier 1, gemini.md superseded, Veo/Firestore/learning.log deprecated
+  - 0baf5f36 (Zillow-to-Video): Authority override — brain.md wins over "NotebookLM wins over local"
+  - fc048ba8 (n8n workflows): n8n = backup only, Antigravity primary, Firestore retired
+  - 743744d5 (Marketplace): Firestore, Airtable.com, BMAD, Webflow = retired
+  - 98b120fa (Aitable.ai): Dashboards-only scope restriction
+  - 3e820274 (KIE.AI): Kling 3.0 only for Rensto production
+- **Verified**: Queried 5811a372 post-push — now correctly returns brain.md as Tier 1, NotebookLM as Tier 7.
+- **Stripe publishable key**: Rotated to `pk_live_...xQM`, added to Vercel production + preview via CLI.
+- **Codebase fixes (committed earlier this session)**:
+  - docs/operations/BIBLE.md: Removed broad SSOT claim, added brain.md ref
+  - platforms/marketplace/PLATFORM_BIBLE.md: Added brain.md reference
+  - docs/operations/business/MODEL.md: Firestore → PostgreSQL
+  - security/CREDENTIAL_ROTATION_CHECKLIST.md: Redacted Stripe live key
+  - CODEBASE_VS_NOTEBOOKLM.md: Fixed "NotebookLM wins" → "brain.md is Tier 1"
+  - brain.md: Added 2 missing notebooks (Claude Code b906e69f, Kling 3.0 6bb5f16d)
+
+### Vercel Token — Root Cause for Repeated "Invalid Token" (NEVER REPEAT)
+
+- **Token**: Stored in `CREDENTIAL_REFERENCE.md` (paths only). Account: `service-3617`. VALID, PERMANENT.
+- **Root cause**: The Vercel CLI has a global auth.json at `~/Library/Application Support/com.vercel.cli/auth.json` with a stale token. When `VERCEL_TOKEN` env var is set, the global auth.json can still interfere.
+- **Correct invocation**: Always use `--token <token>` as an explicit CLI flag. Never rely on env var alone.
+- **Confirmed working**: `vercel whoami --token <token>` → `service-3617`. `vercel env add` works. `vercel env ls` works.
+
+### NotebookLM Auth — Root Cause for Repeated Disconnects (NEVER REPEAT)
+
+- Google OAuth tokens expire after ~1 hour. The NotebookLM MCP auth file at `~/.notebooklm-mcp/auth.json` goes stale.
+- **Fix**: Run `notebooklm-mcp-auth` CLI (opens Chrome, auto-detects login, extracts cookies). If that fails, user can paste cookies manually via `save_auth_tokens` tool.
+- **After re-auth**: Must call `refresh_auth` tool OR the MCP server picks up new tokens on next call.
+- **Session ID format**: `251165511850668720` (from Feb 2026 re-auth).
+
+### Remaining Technical Debt
+
+- **8 docs/frameworks/ files** (~5,900 lines) identified as candidates for NotebookLM migration per CODEBASE_VS_NOTEBOOKLM boundary rules. Not migrated yet.
+- **Stripe live secret key in git history** — redacted in file but still in git history. Needs BFG Repo-Cleaner or key rotation.
+- **Prisma ↔ Drizzle schema sync** — manual process, no automated check. Enum representations differ between ORMs.
+
+---
+
 ### Session Test Results (full regression after all changes)
 
 | # | Test | Result | Notes |

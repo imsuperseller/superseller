@@ -6,6 +6,22 @@
 
 ---
 
+## 2026-02-16 — Instruction Hierarchy + Alignment Audit (Session 2)
+
+### Codebase Fixes (DONE)
+- 9 instruction files updated to establish brain.md as Tier 1 authority (commit 138b74c)
+- 6 secondary alignment fixes: BIBLE.md, MODEL.md, PLATFORM_BIBLE.md, credential redaction, CODEBASE_VS_NOTEBOOKLM.md, brain.md notebook additions (commit 98d8b7f)
+
+### NotebookLM Compliance Sources (DONE)
+- 6 override sources pushed to fix authority hierarchy inversion
+- Verified: 5811a372 now returns brain.md as Tier 1, NotebookLM as Tier 7
+
+### Vercel Operations (DONE)
+- STRIPE_PUBLISHABLE_KEY added to production + preview
+- Token confirmed working: `--token vcp_0PlCp13...` → `service-3617`
+
+---
+
 ## 2026-02-16 — TourReel Video App Full Rebuild
 
 ### Phase 1: Pipeline Fix (DONE)
