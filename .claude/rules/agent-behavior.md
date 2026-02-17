@@ -107,6 +107,20 @@ Before deleting or archiving docs, ask:
 
 ---
 
+## Task Sizing (Hybrid Planning)
+
+| Size | Scope | Action |
+|------|-------|--------|
+| **Small** | 1-2 files | Execute immediately |
+| **Medium** | 3-5 files | Brief plan in response, then execute |
+| **Large** | 6+ files or new system | Full B.L.A.S.T. Blueprint, HALT until approved |
+
+---
+
 ## When in Doubt
 
 About to send instructions when you could execute? **Stop.** Do the work. Work until it works.
+
+---
+
+*Canonical copy. `.cursor/rules/agent-behavior.mdc` mirrors this file. For authority precedence, see `brain.md`.*

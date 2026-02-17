@@ -1,8 +1,10 @@
-# Cursor Rensto Rules (Authoritative)
+# Cursor Rensto Rules
 
-## 🚨 ARCHITECTURE - READ FIRST (MANDATORY)
+**Authority**: For conflict resolution, see [`brain.md`](../brain.md) Authority Precedence table.
 
-### **Domain Architecture** (NEVER DEVIATE):
+## Architecture
+
+### Domain Architecture:
 ```
 rensto.com          → Vercel (Next.js - main site, marketplace, all public pages) — apps/web/rensto-site/
 www.rensto.com      → Vercel (same as rensto.com)
@@ -12,15 +14,10 @@ portal.rensto.com   → Vercel (customer portals - planned)
 ```
 **Webflow**: Retired. All pages served by Next.js on Vercel.
 
-### **Critical Architecture Rules**:
-- ✅ **rensto.com is on Vercel** — main Next.js app is `apps/web/rensto-site/`
-- ✅ **ALWAYS** read brain.md first (Mission Control), then CLAUDE.md before architectural decisions
-- ✅ **ALWAYS** deploy API routes to `/apps/web/rensto-site/src/app/api/`
-
-### **Single Source of Truth**:
-- Before ANY major change, read: brain.md (Mission Control), then `/Users/shaifriedman/New Rensto/rensto/CLAUDE.md`
-- Contains: Complete architecture, active systems, service offerings, tech stack
-- Last Updated: February 2026
+### Architecture Rules:
+- rensto.com is on Vercel — main Next.js app is `apps/web/rensto-site/`
+- Read brain.md first, then CLAUDE.md before architectural decisions
+- Deploy API routes to `/apps/web/rensto-site/src/app/api/`
 
 ---
 
@@ -53,7 +50,7 @@ portal.rensto.com   → Vercel (customer portals - planned)
 22) **Always include necessary import statements** and dependencies.
 
 ## Documentation
-23) **Update CLAUDE.md** for any architectural changes (single source of truth).
+23) **Update CLAUDE.md** for any architectural changes.
 24) **Use Markdown files** for documentation rather than relying on first files found.
 25) **Clean up and update** Markdown documentation files when making changes.
 

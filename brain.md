@@ -1,8 +1,27 @@
 # 🏗️ THE ARCHITECT'S COMMAND DECK
 
-**Purpose**: Mission Control for Rensto. The single source of truth for agents (Cursor, Antigravity). Read this first.
+**Purpose**: Mission Control for Rensto. Top-level authority for all agents (Claude Code, Cursor, Antigravity). Read this first.
 
 **Last Updated**: February 2026
+
+---
+
+## 📋 AUTHORITY PRECEDENCE (Conflict Resolution)
+
+When sources conflict, higher tier wins. If same tier conflicts, brain.md decides.
+
+| Tier | File | Authority Scope |
+|------|------|-----------------|
+| 1 | `brain.md` | Mission, north star, conflict resolution, final say |
+| 2 | `CLAUDE.md` | Technical router — paths, URLs, stack, key files |
+| 3 | `docs/INFRA_SSOT.md` | Infrastructure only (servers, DB, storage, env vars) |
+| 3 | `docs/PRODUCT_BIBLE.md` | Products and services only (SaaS, billing, agents) |
+| 4 | `METHODOLOGY.md` | Process methodology (B.L.A.S.T. vs Agent Behavior) |
+| 5 | `.claude/rules/agent-behavior.md` | Agent execution rules (canonical copy) |
+| 5 | `.cursor/rules/agent-behavior.mdc` | Agent execution rules (Cursor mirror) |
+| 6 | `ARCHITECTURE.md`, `REPO_MAP.md` | Code structure reference |
+| 7 | NotebookLM notebooks | Specs, deep context, methodology source |
+| 8 | `.cursorrules` | Legacy pointer only — do not rely on for current state |
 
 ---
 
@@ -59,7 +78,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
   3. **Test**: Verify the fix in terminal/browser.
   4. **Learn**: Update `findings.md` with root cause so the mistake never repeats.
 - **Anti-Disorganization Guardrail**: Never start a new feature until the current one has a "Working Demo" or verifiable Artifact. No zombie half-finished files.
-- **Data-First Rule**: Define JSON Data Schema (Input/Output shapes) before writing scripts. HALT execution in `tools/` until payload shape is confirmed.
+- **Data-First Rule**: When writing *new* scripts in `tools/`, define JSON schema first (B.L.A.S.T. Blueprint). For routine fixes to existing tools, use Agent Behavior—no HALT.
 
 ### Agent Completion Rules (from NotebookLM 5811a372)
 
@@ -77,10 +96,12 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 ├── brain.md                 ← YOU ARE HERE (Mission Control)
 ├── CLAUDE.md                ← Full technical context
 ├── METHODOLOGY.md           ← Single system: B.L.A.S.T. vs Agent Behavior (no conflicts)
+├── DECISIONS.md             ← User decisions as canonical truth
+├── CREDENTIAL_REFERENCE.md  ← Where credentials live (paths only, no secrets)
 ├── task_plan.md             ← Approved implementation phases
 ├── findings.md              ← Research, discoveries, root causes
 ├── progress.md              ← Execution logs, error tracking
-├── CONFLICT_AUDIT_*.md      ← Run when asked "do you have conflicts?" — execute, don't guess
+├── CONFLICT_AUDIT.md        ← Run when asked "do you have conflicts?" — execute, don't guess
 ├── PORT_REFERENCE.md        ← Ports SSOT: 3001=worker (local both), 3002=site, RackNerd worker :3002
 ├── .env                     ← API keys (verified in Link phase)
 │
@@ -176,4 +197,4 @@ Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprin
 
 ---
 
-*When in doubt, read brain.md first. It is the law.*
+*When in doubt, read brain.md first. See Authority Precedence table above for conflict resolution.*

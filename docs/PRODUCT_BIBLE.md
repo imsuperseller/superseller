@@ -1,6 +1,7 @@
-# 📦 PRODUCT BIBLE (SaaS SSOT)
+# 📦 PRODUCT BIBLE
 
-> **Canonical reference for all Rensto Self-Serving SaaS products.**  
+> **Single source of truth for Rensto products and services** (SaaS billing, agents, service offerings).
+> For overall authority precedence, see [`brain.md`](../brain.md).
 > **Rule**: Products are defined as **Agents** or **Applets**. Logic is programmatic; n8n is for prototypes only.
 
 ---

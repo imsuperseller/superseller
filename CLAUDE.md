@@ -1,13 +1,14 @@
-# 🎯 RENSTO MASTER DOCUMENTATION — Canonical SSOT Router
+# 🎯 RENSTO MASTER DOCUMENTATION — Technical Router
 
-**Current Era**: Self-Serving SaaS (Programmatic Stack)  
-**Main Engine**: Antigravity (Node.js/Postgres/R2)  
+**Current Era**: Self-Serving SaaS (Programmatic Stack)
+**Main Engine**: Antigravity (Node.js/Postgres/R2)
+**Authority**: For conflict resolution and precedence, see [`brain.md`](brain.md) Authority Precedence table.
 
 > [!IMPORTANT]
-> **SSOT ARCHITECTURE**: Do NOT search for documentation elsewhere. Use these Bibles:
-> 1. **Infrastructure Bible**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
-> 2. **Product Bible**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
-> 3. **History/Lessons Bible**: [`docs/REMOVAL_LOG.md`](docs/REMOVAL_LOG.md) — Archive of failures and pivots.
+> **Key References**:
+> 1. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
+> 2. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
+> 3. **History/Lessons**: [`docs/REMOVAL_LOG.md`](docs/REMOVAL_LOG.md) — Archive of failures and pivots.
 > 4. **Video Pipeline Spec**: NotebookLM 0baf5f36 (Zillow-to-Video) — TourReel technical truth.
 
 > [!NOTE]
@@ -96,4 +97,4 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 
 ---
 
-**For detailed systems, products, customer journey, financial tracking, admin portal, MCP list, Airtable/Notion reference: read the Bibles.**
+**For detailed systems, products, customer journey, financial tracking, admin portal, MCP list, Airtable/Notion reference: see the references above.**

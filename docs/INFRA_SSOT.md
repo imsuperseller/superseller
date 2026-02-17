@@ -1,7 +1,8 @@
-# 🏗️ INFRASTRUCTURE SSOT (The Bible)
+# 🏗️ INFRASTRUCTURE SSOT
 
-> **Canonical Bible for all Rensto Infrastructure.**  
-> **Rule**: If a setting contradicts this doc, this doc wins. If this doc is missing a setting, add it here FIRST.
+> **Single source of truth for Rensto infrastructure** (servers, DB, storage, env vars, deployment).
+> For overall authority precedence, see [`brain.md`](../brain.md).
+> **Rule**: If an infrastructure setting contradicts this doc, this doc wins within its domain.
 
 ---
 

@@ -1,6 +1,6 @@
-# Rensto Methodology — Single System
+# Rensto Methodology
 
-**Purpose**: One system. No conflicts. When in doubt, this file wins for methodology questions.
+**Purpose**: Process methodology for B.L.A.S.T. vs Agent Behavior. For authority precedence across all docs, see [`brain.md`](brain.md).
 
 **Last Updated**: February 2026
 
@@ -142,6 +142,6 @@ python3 .claude/skills/ui-ux-pro-max-skill/src/ui-ux-pro-max/scripts/search.py "
 
 ## 8. What Was Consolidated (Feb 2026)
 
-- Agent behavior duplicated in .cursor and .claude → kept in sync, same content.
+- Agent behavior duplicated in .cursor and .claude → kept in sync, same content. `.claude/rules/agent-behavior.md` is canonical; `.cursor/rules/agent-behavior.mdc` mirrors it.
 - B.L.A.S.T. "HALT" vs Agent "one output" → scoped to different contexts (new project vs routine).
-- Multiple methodology sources → this doc is the single methodology SSOT.
+- Multiple methodology sources → this doc covers process methodology. For overall authority, see `brain.md`.
