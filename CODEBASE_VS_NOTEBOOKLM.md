@@ -62,10 +62,13 @@ Full index: `docs/NOTEBOOKLM_INDEX.md` (canonical), also referenced in `brain.md
 
 ## Conflict Resolution
 
-1. **Methodology (B.L.A.S.T. vs Agent Behavior)** → [METHODOLOGY.md](METHODOLOGY.md) is SSOT. B.L.A.S.T. = new projects. Agent Behavior = routine tasks.
-2. **Code vs NotebookLM disagree** → NotebookLM wins for specs and methodology.
-3. **Code vs code** → NotebookLM 0baf5f36 (Zillow-to-Video) is canonical for TourReel.
-4. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply.
+Per [`brain.md`](brain.md) Authority Precedence table:
+
+1. **brain.md is Tier 1** — final authority on all conflicts.
+2. **Methodology** → [METHODOLOGY.md](METHODOLOGY.md) (Tier 4). B.L.A.S.T. = new projects. Agent Behavior = routine tasks.
+3. **Code vs NotebookLM disagree** → brain.md decides. NotebookLM provides deep context but does not override brain.md or codebase instruction files.
+4. **TourReel pipeline specifics** → NotebookLM 0baf5f36 is the spec reference; brain.md and codebase override on authority questions.
+5. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply, subordinate to brain.md.
 
 ---
 

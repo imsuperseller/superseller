@@ -1,9 +1,10 @@
 # 📖 Rensto Bible
-> **The Single Source of Truth for the Rensto Ecosystem**
+> **Business operations index for the Rensto Ecosystem.**
+> For overall authority precedence, see [`brain.md`](../../brain.md).
 
-This is the master index for all canonical Rensto documentation. Every section is the **authoritative source** for its domain.
+This is the master index for Rensto business documentation.
 
-**Last Audited**: January 4, 2026 (421 residue files archived, 0 contradictions)
+**Last Audited**: February 16, 2026
 
 > [!TIP]
 > **Notion Version**: [Rensto Bible on Notion](https://www.notion.so/Rensto-Bible-2de30b70a04481368097ffec81f42020) – synced with this file.
@@ -47,8 +48,8 @@ Rensto operates on the belief that businesses shouldn't reinvent the wheel. We r
 | **Technical Stack** | [STACK.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/STACK.md) | Frontend, backend, infra. |
 | **Integrations & APIs** | [INTEGRATIONS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/INTEGRATIONS.md) | External services. |
 | **API Routes** | [API_ROUTES.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/API_ROUTES.md) | 21 Next.js endpoints. |
-| **Firestore Schema** | [FIRESTORE_SCHEMA.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/FIRESTORE_SCHEMA.md) | 18 collections. |
-| **Environment Variables** | [ENV_VARS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/ENV_VARS.md) | All env vars. |
+| **Database Schema** | Prisma: `apps/web/rensto-site/prisma/schema.prisma`, Drizzle: `apps/worker-packages/db/src/schema.ts` | PostgreSQL (Firestore retired Feb 2026). |
+| **Environment Variables** | `docs/INFRA_SSOT.md` § Environment Variables | All env vars. |
 | **Admin Portal** | [ADMIN_PORTAL.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/ADMIN_PORTAL.md) | Control panel docs. |
 | **Workflow Inventory** | [WORKFLOW_INVENTORY.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/technical/WORKFLOW_INVENTORY.md) | Map of all n8n workflows. |
 

@@ -60,6 +60,8 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | 11 | [98b120fa-bc5e-466a-a8d2-7a609c044283](https://notebooklm.google.com/notebook/98b120fa-bc5e-466a-a8d2-7a609c044283) | **aitable.ai** — Dashboards, syncs |
 | 12 | [0789acdb-2485-43ec-9b4a-6dc227fcaead](https://notebooklm.google.com/notebook/0789acdb-2485-43ec-9b4a-6dc227fcaead) | **WAHA Pro** — WhatsApp API |
 | 13 | [f54f121b-97b1-45b2-8a05-156d1c8ad3f7](https://notebooklm.google.com/notebook/f54f121b-97b1-45b2-8a05-156d1c8ad3f7) | **Apify** — Scraping, actors |
+| 14 | [b906e69f-...](https://notebooklm.google.com/notebook/b906e69f) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling |
+| 15 | [6bb5f16d-...](https://notebooklm.google.com/notebook/6bb5f16d) | **Kling 3.0** — Cinematic prompt engineering, Video API |
 
 *Map notebook IDs to purpose in `docs/NOTEBOOKLM_INDEX.md`. Use `source_get_content` to extract key modules as Markdown to save tokens.*
 

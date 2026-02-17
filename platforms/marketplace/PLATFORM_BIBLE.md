@@ -1,7 +1,9 @@
 # Marketplace Platform Bible (Standalone / Isolated Legacy)
 
+> For overall authority precedence, see [`brain.md`](../../brain.md).
+
 > [!CAUTION]
-> **LEGACY ISLAND**: This platform currently operates as an isolated legacy system. Unlike the primary Rensto SSOT (which uses PostgreSQL), this engine still depends on **Firestore** for configuration and n8n for orchestration. Do NOT attempt to port this logic to the main database without a full rewrite.
+> **LEGACY ISLAND**: This platform currently operates as an isolated legacy system. Unlike the primary Rensto stack (which uses PostgreSQL), this engine still depends on **Firestore** for configuration and n8n for orchestration. Do NOT attempt to port this logic to the main database without a full rewrite.
 
 ## 🏗 Directory Architecture
 

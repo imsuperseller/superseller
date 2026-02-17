@@ -52,7 +52,7 @@ The following credentials were committed to git history and need rotation:
 ---
 
 ### **3. Stripe API Key** (Line 104) ⚠️ **CRITICAL**
-- **Key**: `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`
+- **Key**: `sk_live_...[REDACTED — rotate immediately via Stripe dashboard]`
 - **Type**: **LIVE SECRET KEY** (most dangerous!)
 - **Risk**: Can process real payments, access all Stripe data
 
