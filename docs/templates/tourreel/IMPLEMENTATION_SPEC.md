@@ -2,6 +2,8 @@
 **Version:** 1.0
 **Date:** February 10, 2026
 **Purpose:** Complete implementation reference for AI coding agents (Claude Code, Antigravity, Cursor). Every file path, every dependency, every API contract, every function signature. Build exactly this.
+
+> **⚠️ STALE REFERENCES**: This spec was written when fal.ai was the primary video provider and Clerk handled auth. As of Feb 2026: **Kie.ai Kling 3.0** is the only video provider (fal.ai deprecated), **Resend magic-link** replaced Clerk, and **Ollama + pgvector** provides RAG. For current implementation, see `apps/worker/src/services/kie.ts` and `apps/worker/src/services/rag.ts`. The architecture and pipeline flow below remain accurate — only the provider names differ.
 ---
 ## TABLE OF CONTENTS
 1. [Project Overview](#1-project-overview)
@@ -35,12 +37,12 @@
 - Redis (job queue)
 - FFmpeg (video processing)
 **External APIs:**
-- fal.ai — Kling 3.0 video generation (primary)
-- kie.ai — Veo 3.1 video generation (backup) + Suno V5 music
-- OpenRouter — GPT-4o / Gemini 2.5 Pro for floorplan analysis
-- Clerk — Authentication
+- Kie.ai — Kling 3.0 video generation (primary) + Suno music
+- Gemini Flash — Floorplan analysis, prompt generation
+- Resend — Magic-link authentication (Clerk removed Feb 2026)
 - Stripe — Payments
 - Cloudflare R2 — Video storage + CDN
+- Ollama + pgvector — RAG embedding pipeline
 ---
 ## 2. Repository Structure
 ### `tourreel-web/` (Next.js — Vercel)

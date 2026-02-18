@@ -2,6 +2,8 @@
 **Version:** 1.0
 **Date:** February 10, 2026
 **Purpose:** Complete implementation reference for AI coding agents (Claude Code, Antigravity, Cursor). Every file path, every dependency, every API contract, every function signature. Build exactly this.
+
+> **⚠️ EXAMPLE TEMPLATE**: This is the framework example based on TourReel v1. References to fal.ai, Clerk, and OpenRouter are outdated. Current stack: **Kie.ai Kling 3.0**, **Resend magic-link**, **Gemini Flash**, **Ollama + pgvector**. See `apps/worker/src/services/` for live implementation.
 ---
 ## TABLE OF CONTENTS
 1. [Project Overview](#1-project-overview)

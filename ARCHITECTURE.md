@@ -58,7 +58,8 @@
 
 ## Data Storage (Target)
 
-- **Primary**: PostgreSQL + Redis
+- **Primary**: PostgreSQL + pgvector 0.8.1 + Redis
+- **RAG**: Ollama nomic-embed-text (768-dim) → pgvector HNSW → `documents` table (multi-tenant)
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Retired**: Firestore, Airtable.com. **In use**: Aitable.ai (dashboards, syncs)
 

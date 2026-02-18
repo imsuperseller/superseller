@@ -2,6 +2,8 @@
 **Version:** 1.0
 **Date:** February 10, 2026
 **Purpose:** Every prompt used in the TourReel pipeline — exact text, variable slots, expected outputs, failure modes, and tuning notes. This is the creative engine of the product. The quality of these prompts directly determines the quality of every video we generate.
+
+> **⚠️ EXAMPLE TEMPLATE**: References to "fal.ai" below should be read as **Kie.ai Kling 3.0** (current provider). Prompt structures remain accurate.
 ---
 ## TABLE OF CONTENTS
 1. [Prompt Architecture Overview](#1-prompt-architecture-overview)

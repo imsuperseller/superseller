@@ -33,7 +33,6 @@
 - **Mission Control**: [`brain.md`](brain.md) — North Star, Agent protocol.
 - **This file**: Technical router. For full context, read the Bibles above.
 - **Architecture**: [`ARCHITECTURE.md`](ARCHITECTURE.md), [`REPO_MAP.md`](REPO_MAP.md).
-- **Cleanup**: [`CODEBASE_AUDIT.md`](CODEBASE_AUDIT.md).
 - **Terminal workflow**: [`CLAUDE_CODE_WORKFLOW.md`](CLAUDE_CODE_WORKFLOW.md).
 - **Business context**: [`.cursor/AGENT_CONTEXT.md`](.cursor/AGENT_CONTEXT.md).
 
@@ -55,8 +54,9 @@
 |-------|-------|
 | **Web** | Next.js 14+ (rensto-site), Vercel |
 | **Worker** | Node.js, BullMQ, FFmpeg, Kie.ai Kling 3.0, R2 |
+| **RAG** | Ollama nomic-embed-text (768-dim) + pgvector 0.8.1 HNSW |
 | **Automation** | Antigravity (primary), n8n (backup) |
-| **Database** | PostgreSQL (Prisma + Drizzle), Redis |
+| **Database** | PostgreSQL + pgvector (Prisma + Drizzle), Redis |
 
 **Key paths**: `apps/web/rensto-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`.
 
@@ -94,6 +94,43 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 **✅ Done**: Firestore→Postgres migration, Stripe checkout (19 pages), credits schema, worker gating, Phase 2 credit-based SaaS.  
 **⚠️ Partial**: Customer journey automation, admin redesign.  
 **❌ Not done**: Customer portals, lifecycle automation, Voice AI / eSignatures refactor.
+
+---
+
+## 6. Build / Deploy / Test Commands
+
+### Web (apps/web/rensto-site)
+```bash
+cd apps/web/rensto-site
+npm run dev              # Local dev on port 3002
+npm run build            # prisma generate + next build
+npm run lint             # Next.js lint
+npm run db:generate      # Prisma generate only
+npm run db:push          # Push schema to DB
+npm run test:credits     # Credit system test
+npm run test:e2e         # Playwright E2E tests
+```
+**Deploy**: `git push` auto-deploys `api.rensto.com`. For `rensto.com`: run `vercel --prod` from repo root.
+
+### Worker (apps/worker)
+```bash
+cd apps/worker
+npm run dev              # tsx watch src/index.ts (local port 3001)
+npm run build            # tsc
+```
+**Deploy to RackNerd**:
+```bash
+ssh root@172.245.56.50
+cd /opt/tourreel-worker && git pull && cd apps/worker && npm run build && pm2 restart tourreel-worker
+```
+Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.245.56.50:/opt/tourreel-worker/apps/worker/`
+
+### Health Checks
+```bash
+curl -s https://rensto.com/api/health          # Web
+curl -s http://172.245.56.50:3002/api/health   # Worker
+curl -s http://172.245.56.50:11434/api/tags    # Ollama
+```
 
 ---
 

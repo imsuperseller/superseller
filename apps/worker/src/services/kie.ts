@@ -180,7 +180,7 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
         image_urls: imageUrls,
         sound: false,
         duration,
-        mode: request.mode || "std",
+        mode: request.mode || "pro",
         multi_shots: false, // Kie 422: "multi_shots cannot be empty" when omitted
         ...(negPrompt ? { negative_prompt: negPrompt } : {}),
         ...(request.last_frame ? {} : { aspect_ratio: request.aspect_ratio || "16:9" }),

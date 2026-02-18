@@ -8,24 +8,18 @@ export class ProvisioningService {
     /**
      * Standardizes User Identity across all flows.
      * Uses email-based ID for consistency and easy lookup.
-     *
-     * [MIGRATION] Phase 1: Postgres is PRIMARY, Firestore is backup.
      */
     static async getOrCreateUser(email: string, name?: string, stripeCustomerId?: string): Promise<string> {
         const normalizedEmail = email.toLowerCase().trim();
         const userId = normalizedEmail.replace(/[^a-z0-9]/g, '_');
 
-        // ── PRIMARY: Postgres ──
         await dbUsers.getOrCreate(normalizedEmail, { name, stripeCustomerId });
 
-        // ── BACKUP: Firestore (non-blocking) ──
         return userId;
     }
 
     /**
      * Provisions a service based on product metadata.
-     *
-     * [MIGRATION] Phase 2: Postgres is PRIMARY (transactional), Firestore is backup.
      */
     static async provisionService(params: {
         email: string;
@@ -87,7 +81,7 @@ export class ProvisioningService {
                 });
             }
 
-            // ── BACKUP: Firestore (non-blocking) ──
+
             return { userId, downloadUrl };
         }
 
@@ -128,7 +122,7 @@ export class ProvisioningService {
                 },
             });
 
-            // ── BACKUP: Firestore (non-blocking) ──
+
             return { userId, subscriptionId: subscription.id };
         }
 
@@ -175,7 +169,7 @@ export class ProvisioningService {
                 await prisma.user.update({ where: { id: userId }, data: updates });
             }
 
-            // ── BACKUP: Firestore (non-blocking) ──
+
             // 4. Trigger n8n Fulfillment Hook if defined
             if (pWebhook && process.env.N8N_OPTIMIZER_WEBHOOK) {
                 try {

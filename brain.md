@@ -122,7 +122,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 ├── security/                ← Policies, credential rotation
 │
 ├── .cursor/                 ← Agent rules, context, MCP status
-└── .claude/skills/          ← Agent skills (n8n-tax4us, n8n-typescript-patterns, etc.)
+└── .claude/skills/          ← Agent skills (rag-pgvector, tourreel-pipeline, stripe-credits, ui-ux-pro-max, etc.)
 ```
 
 **Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/rensto-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
@@ -137,7 +137,8 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | **Automation (backup)** | n8n (RackNerd) | Use only when Antigravity cannot |
 | **Payments** | Stripe | Credits, subscriptions, token ledger |
 | **Creative AI** | Kie.ai | Video (Kling 3.0), audio (Suno), compositing (Nano Banana) |
-| **App database** | PostgreSQL + Redis | All marketplace apps and app backends |
+| **App database** | PostgreSQL + pgvector + Redis | All marketplace apps and app backends |
+| **RAG** | Ollama nomic-embed-text + pgvector HNSW | Multi-tenant document embeddings, hybrid search |
 | **Internal dashboards** | Aitable.ai | Syncs, config, reference data |
 | **Frontend** | Next.js, Tailwind, shadcn/ui | Rensto design system |
 | **Deployment** | Vercel | rensto.com, admin, API |

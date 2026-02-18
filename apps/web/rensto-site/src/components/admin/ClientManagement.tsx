@@ -120,7 +120,7 @@ export default function ClientManagement() {
         return (
             <div className="flex flex-col items-center justify-center p-24 space-y-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">Scanning Firestore Segments...</p>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500">Loading Client Records...</p>
             </div>
         );
     }
@@ -284,7 +284,7 @@ export default function ClientManagement() {
                                 <h3 className="text-2xl font-black uppercase tracking-tighter text-white">
                                     {editingClient.id ? 'Modify Entity' : 'Core Registration'}
                                 </h3>
-                                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Firestore Record Management</p>
+                                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Client Record Management</p>
                             </div>
                             <button onClick={() => setEditingClient(null)} className="p-2 text-slate-500 hover:text-white transition-colors">
                                 <X className="w-6 h-6" />

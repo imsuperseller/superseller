@@ -6,6 +6,26 @@
 
 ---
 
+## 2026-02-18 — Codebase Audit Fixes + CLAUDE.md Build Commands
+
+### Stale Reference Cleanup (DONE)
+- Deleted 3 Firestore maintenance scripts (seed, inspect, health-check)
+- Fixed admin UI labels: "Firestore" → "PostgreSQL + pgvector" / "Client Records"
+- Fixed IMPLEMENTATION_SPEC: fal.ai/Clerk/OpenRouter → Kie.ai/Resend/Gemini/Ollama
+- Fixed kie.ts fallback mode: "std" → "pro" (matches config default)
+- Removed 6 stale Firestore migration comments from ProvisioningService.ts
+- Updated NOTEBOOKLM_INDEX: 18 → 25 notebooks with source counts
+- Added RAG (Ollama + pgvector) to brain.md, ARCHITECTURE.md, REPO_MAP.md tech stacks
+- Added deprecation notices to template/framework example docs
+- Added build/deploy/test commands section to CLAUDE.md (section 6)
+
+### Remaining Notebook-Level Fixes (NOT YET DONE)
+- Stitch notebook (286f3e4a): Should note v0.dev > Stitch hierarchy
+- Zillow-to-Video (0baf5f36): Stale deployment paths (references /root/tourreel-worker)
+- Project Template (5811a372): Wrong primary color, missing design-tokens.json reference
+
+---
+
 ## 2026-02-17 — Post-Change Cross-Reference Audit (Session 4 cont.)
 
 ### Full Audit After Massive Changes (DONE)

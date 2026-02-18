@@ -54,7 +54,8 @@ All pages are Next.js on Vercel. Webflow is retired.
 
 ## Current Stack
 
-- **Database (primary)**: PostgreSQL + Redis (on RackNerd). Migration from Firestore complete Feb 2026.
+- **Database (primary)**: PostgreSQL + pgvector 0.8.1 + Redis (on RackNerd). Firestore migration complete Feb 2026.
+- **RAG**: Ollama nomic-embed-text → pgvector HNSW (`documents` table, multi-tenant)
 - **Automation**: Antigravity (primary), n8n (backup only)
 - **Methodology**: B.L.A.S.T. for new projects; Agent Behavior for routine tasks. SSOT: [METHODOLOGY.md](METHODOLOGY.md)
 - **Retired**: Webflow, BMAD, Firestore, Airtable.com. **Aitable.ai**: In use (dashboards, syncs)

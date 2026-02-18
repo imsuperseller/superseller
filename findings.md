@@ -6,6 +6,24 @@
 
 ---
 
+## 2026-02-18
+
+### Codebase Audit — Stale References Cleanup (DONE)
+
+**Root causes found and fixed:**
+- **Firestore scripts still active**: 3 scripts in `scripts/maintenance/` (seed-firestore.ts, inspect-collections.ts, health-check.ts) were importing firebase-admin/firestore. Firestore was retired Feb 2026. **Deleted all 3.**
+- **Admin UI showed "Firestore"**: ClientManagement.tsx loading text said "Scanning Firestore Segments" and modal said "Firestore Record Management". SystemHealth.tsx showed "Firebase Firestore" as DB label. **Fixed to PostgreSQL/Client Records.**
+- **IMPLEMENTATION_SPEC listed fal.ai as primary**: External APIs section in `docs/templates/tourreel/IMPLEMENTATION_SPEC.md` showed fal.ai + Clerk + OpenRouter. **Fixed to Kie.ai + Resend + Gemini Flash + Ollama/pgvector.** Added deprecation notices to spec, playbook, and framework examples.
+- **kie.ts fallback mode was "std" not "pro"**: Line 183 defaulted to "std" when request.mode is unset. Config defaults to "pro" (1080p native). **Fixed fallback to "pro".**
+- **ProvisioningService had stale migration comments**: 6 comments referencing "MIGRATION Phase 1/2" and "BACKUP: Firestore". Migration is complete. **Removed all.**
+- **NOTEBOOKLM_INDEX had 18/25 notebooks**: Missing 7 notebooks (Kling 3.0, mivnim, Mastering Claude Code, Facebook, Instagram, Israeli Expatriates, tiktok). **Updated to all 25 with source counts.**
+- **RAG missing from brain.md, ARCHITECTURE.md, REPO_MAP.md**: pgvector + Ollama added to all 3 tech stack sections.
+- **CLAUDE.md missing build/deploy commands**: Added full section 6 with web/worker commands, deploy runbook, health checks.
+
+**Never repeat**: When a provider is deprecated (fal.ai→Kie.ai, Firestore→Postgres, Clerk→Resend), grep the entire codebase for stale references. Templates and admin UI labels are easy to miss.
+
+---
+
 ## 2026-02-17
 
 ### Port Conflict Reference (from CONFLICT_AUDIT.md — NEVER REPEAT)
