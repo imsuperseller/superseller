@@ -51,8 +51,6 @@ export const localBusinessSchema = {
         '@type': 'PostalAddress',
         'streetAddress': '444 Alaska Avenue',
         'addressLocality': 'Torrance',
-        'addressRegion': 'CA',
-        'postalCode': '90503',
         'addressCountry': 'US'
     },
     geo: {

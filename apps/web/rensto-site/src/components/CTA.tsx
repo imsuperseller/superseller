@@ -54,7 +54,7 @@ export function CTA() {
         </div>
 
         <div className="text-sm text-muted">
-          <p>📍 Based in Torrance, CA • ⚡ Response within 24 hours</p>
+          <p>📍 Based in Torrance • ⚡ Response within 24 hours</p>
           <p className="mt-1">📧 {env.NEXT_PUBLIC_CONTACT_EMAIL}</p>
         </div>
       </div>

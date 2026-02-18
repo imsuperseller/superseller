@@ -40,8 +40,8 @@ const translations = {
       {
         icon: MapPin,
         title: 'Location',
-        value: 'Torrance, CA',
-        link: 'https://maps.google.com/?q=444+Alaska+Avenue+Torrance+CA+90503',
+        value: 'Torrance',
+        link: 'https://maps.google.com/?q=444+Alaska+Avenue+Torrance',
         description: 'Serving clients nationwide'
       },
       {
