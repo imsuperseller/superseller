@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
-import { ServiceInstance } from '@/types/firestore';
+import { ServiceInstance } from '@/types/legacy-types';
 import { emails } from '@/lib/email';
 import { AITableService } from '@/lib/services/AITableService';
 import * as dbServices from '@/lib/db/services';

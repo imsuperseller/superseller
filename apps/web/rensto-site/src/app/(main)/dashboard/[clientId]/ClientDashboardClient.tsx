@@ -613,7 +613,7 @@ export default function ClientDashboardClient({
                                 >
                                     <div className="flex items-center gap-3">
                                         <MessageSquare className="w-5 h-5" style={{ color: 'var(--rensto-cyan)' }} />
-                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Submit Issue to n8n Resolver</span>
+                                        <span style={{ color: 'var(--rensto-text-primary)' }}>Contact Support</span>
                                     </div>
                                     <ExternalLink className="w-4 h-4" style={{ color: 'var(--rensto-text-muted)' }} />
                                 </button>

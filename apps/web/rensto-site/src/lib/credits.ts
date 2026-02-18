@@ -56,11 +56,11 @@ export class CreditService {
                 },
             });
 
-            // Log usage event
+            // Log usage event (event_type must match DB check constraint)
             await tx.usageEvent.create({
                 data: {
                     userId,
-                    type: 'debit',
+                    type: 'credit_debit',
                     amount: -amount,
                     jobId,
                     metadata: {
@@ -102,7 +102,7 @@ export class CreditService {
             await tx.usageEvent.create({
                 data: {
                     userId,
-                    type: 'refund',
+                    type: 'credit_refund',
                     amount: amount,
                     jobId,
                     metadata: {
@@ -121,7 +121,7 @@ export class CreditService {
     static async addCredits(
         userId: string,
         amount: number,
-        type: 'topup' | 'grant' | 'reset',
+        type: 'credit_topup' | 'credit_grant' | 'credit_reset',
         metadata?: any
     ): Promise<void> {
         if (amount <= 0) return;

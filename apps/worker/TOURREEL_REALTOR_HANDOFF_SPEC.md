@@ -22,6 +22,8 @@
 
 **Code**: `nano-banana.ts`, `kie.ts`, `video-pipeline.worker.ts`.
 
+**Prompt quality**: When realtor in frame, use `buildRealtorOnlyKlingPrompt` (no clip.prompt). Focus on camera + room; never "Person moves FORWARD" (causes robotic motion). See `VIDEO_QUALITY_AUDIT.md` for good/bad history and fix-only-broken-part rule.
+
 ---
 
 ## 0b. Pipeline Config (SSOT)
@@ -84,6 +86,8 @@
 ---
 
 ## 6. Feedback & Regenerate Flow
+
+**Default rule**: When feedback is only about some scenes, **fix only those scenes**. Do not retry the whole job.
 
 **Status**: Selective regeneration **implemented**. Full feedback→AI mapping still backlog.
 

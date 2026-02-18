@@ -6,6 +6,96 @@
 
 ---
 
+## 2026-02-17
+
+### Port Conflict Reference (from CONFLICT_AUDIT.md — NEVER REPEAT)
+
+- **Local dev (both apps running)**: Worker MUST use `PORT=3001`. rensto-site keeps 3002. Both share same DATABASE_URL and REDIS_URL.
+- **RackNerd**: Worker runs on port 3002 at `/opt/tourreel-worker`. rensto-site is on Vercel.
+- **run-smoke.ts**: `API_URL` must point to WORKER, not site. Local: `API_URL=http://localhost:3001`. RackNerd: `API_URL=http://172.245.56.50:3002`.
+- **BullMQ retry fix**: UnrecoverableError for Insufficient Credits, Listing not found, No clip prompts — prevents repeated Kie.ai charges.
+- **Preflight before video test**: `cd apps/worker && npx tsx tools/run-preflight.ts --free` (checks Postgres, Redis, FFmpeg).
+
+### Skills Audit Findings (NEVER REPEAT)
+
+- **Ghost reference files in skills**: All 6 skills had `references/*.md` links to files that never existed (15 total). Root cause: skill-template includes placeholder reference tables. Fix: point to actual source files (findings.md, INFRA_SSOT.md, actual source code paths) or inline the content.
+- **Skills activation rate was ~20-30%**: 5/13 skills had broken frontmatter (no YAML `---` delimiters), 0/13 had negative triggers, 0/13 had usage examples. After cleanup: 8 active skills, all with proper frontmatter, negative triggers, and examples.
+- **n8n skills dominated context**: 12/13 skills were n8n-related while system migrated away. All n8n project skills deleted, global skills archived. Active skills now: antigravity, database-management, rag-pgvector, stripe-credits, tourreel-pipeline, ui-design-workflow, ui-ux-pro-max, skill-template.
+
+### Post-Change Audit Findings (NEVER REPEAT)
+
+- **Ghost reference files fixed (see above)**.
+- **ARCHITECTURE.md had stale skills list**: Listed "n8n, Tax4Us, workflow generator" — all 3 were deleted. Replaced with actual 8 active skills. Always update ARCHITECTURE.md when skills change.
+- **Firestore references persist in comments**: 4 API routes still had Firestore in comments/variable names despite full retirement. Comments are invisible but misleading for agents. Clean stale comments after any migration.
+- **UI labels can drift from architecture**: "Submit Issue to n8n Resolver" button actually did `mailto:support@rensto.com` — label was stale from pre-paradigm-shift. Check UI labels after architectural changes.
+- **firestore.ts type file still imported by 6+ components**: AdminDashboardClient, ClientIntelligence, ClientManagement, WorkflowManagement, AIAgentManagement, HomePageClient all import `Template` from `@/types/firestore.ts`. Tech debt — should migrate to Prisma types eventually. Not blocking.
+
+### Admin Monitoring Dashboard Implementation
+
+- **Service registry pattern**: Each monitored service has id, name, category, healthCheck function, and alertThreshold. Categories: infrastructure (PostgreSQL, Worker, Vercel, Ollama), api (Kie.ai, Gemini, Resend, Stripe), database (Prisma migrations), backup (n8n). n8n is intentionally in "backup" category with highest failure tolerance.
+- **Health checker runs concurrent checks**: All services checked in parallel via `Promise.allSettled`. Results persisted to `service_health` table. Uptime calculated from historical checks.
+- **Alert engine with cooldown**: Prevents alert storm. Each rule has `cooldownMinutes` (default 30). `lastFiredAt` tracked per rule. Auto-resolve fires when service recovers.
+- **Expense tracker uses known rates**: Kling Pro $0.10/clip, Kling Std $0.03/clip, Suno $0.02/music, Gemini Flash $0.001/prompt. Anomaly = daily spend > 2x rolling 7-day average.
+- **DB tables created via raw SQL** (not `prisma db push`): Pre-existing schema drift (UUID type mismatches on existing tables) prevents `db push`. New monitoring tables created safely via direct SQL.
+- **Admin role check pattern**: Use `session.role !== 'admin'` (lowercase) not `'ADMIN'` (uppercase). The verifySession() returns lowercase role strings.
+
+### UI Design Workflow — Tool Landscape (NEVER REPEAT)
+
+- **v0.dev is the primary tool for React/Next.js generation**: It outputs shadcn/ui components directly, has a beta Platform API for programmatic generation, supports custom Tailwind config and Shadcn Registry for design token injection. Always prefer v0 over Stitch for production React code.
+- **Google Stitch (stitch.withgoogle.com)**: Good for visual prototyping only (350 Standard gen/month at 10-20s, 50 Experimental/month at 30-60s). Outputs HTML/CSS, not React. No official API yet. No native design system import (prompt-based only). Generic layouts, weak accessibility, multi-screen consistency unreliable beyond 2-3 screens.
+- **`@_davideast/stitch-mcp`**: MCP bridge for Claude Code to access Stitch. Provides `get_screen_code`, `get_screen_image`, `build_site`, Vite serve. Auto token refresh. Useful for extracting Stitch designs programmatically.
+- **rebrand-component.ts**: Always run on externally generated code before committing. Handles Tailwind class replacement and inline hex replacement. Hover variants must be processed before base patterns (ordering matters in replacement rules).
+- **Brand token source of truth**: `globals.css` CSS custom properties. 50+ tokens across colors, backgrounds, text, gradients, glows, animations. All dark-first.
+- **Complementary skills**: `ui-ux-pro-max` provides design intelligence (what to build), `ui-design-workflow` provides execution pipelines (how to build it with external tools).
+
+### n8n Paradigm Shift — What Changed (NEVER REPEAT)
+
+- **n8n workflows = reference patterns for Antigravity migration**, NOT production systems
+- **Production automation = Antigravity** (Node.js + BullMQ on RackNerd)
+- **RAG stack = Antigravity-native** (Ollama + pgvector via programmatic API, not n8n nodes)
+- **Service registry categorizes n8n as "backup"** with 5 consecutive failures threshold and 120min cooldown (vs 2 failures / 15min for PostgreSQL)
+- **Active n8n webhook calls still exist**: fulfillment/initiate, content/generate routes. These are migration candidates but not blocking.
+- **rag-pgvector skill updated**: Architecture diagram changed from "n8n AI Agent" to "Antigravity Worker / API Routes"
+
+### Ollama Installation on RackNerd (NEVER REPEAT)
+
+- **Ollama v0.16.2 installed** at 172.245.56.50, CPU-only. Systemd service managed (`systemctl start/stop/restart ollama`).
+- **Memory budget**: nomic-embed-text uses ~500MB when loaded. With KEEP_ALIVE=0, it unloads immediately after each request. Server has 5.8GB total RAM, ~3.1GB available at rest. Safe margin.
+- **Config location**: `/etc/systemd/system/ollama.service.d/override.conf` — contains KEEP_ALIVE=0, MAX_LOADED_MODELS=1, NUM_PARALLEL=1, FLASH_ATTENTION=1, HOST=0.0.0.0.
+- **Port**: 11434 (Ollama default). Accessible at `http://172.245.56.50:11434`.
+- **SSH password**: Documented in CREDENTIAL_REFERENCE.md. Check conversation history or RackNerd panel. NEVER ask user again.
+- **Existing services audit (Feb 2026)**: Docker containers: postgres_db, redis_cache, n8n_rensto, waha, browserless_rensto, video-merge. PM2: saas-engine, tourreel-worker, video-merge-service, webhook-server (online); facebook-bot-enhanced, master-bot (stopped); server (errored). Nginx on 80/8080.
+
+### Full-Stack Conflict & Completeness Audit (Session 4)
+
+- **PRODUCT_BIBLE.md had stale design tokens**: Colors were #0B1318/#2F6A92/#FF6536 but actual globals.css uses #110d28/#fe3d51/#bf5700/#1eaef7/#5ffbfd (Spotlight Dark Mode). NotebookLM 719854ee + 286f3e4a agreed with globals.css. Fix: Updated PRODUCT_BIBLE.md to match reality.
+- **PRODUCT_BIBLE.md had stale pricing model**: Referenced Starter/Growth/Scale with agent-limits. Actual model is $299/$699/$1,499 credit-based (500/1500/4000). Fix: Updated to current credit model. Added TourReel 50 credits/video.
+- **brain.md listed Veo as active**: Lines 37 + 139 referenced Veo. All notebooks and INFRA_SSOT say Veo is deprecated. Fix: Removed Veo, updated to "Kling 3.0, Suno, Nano Banana".
+- **Veo code still in kie.ts**: KieVeoRequest interface and createVeoTask function exported. Fix: Removed Veo interface, function, and type references. Changed getTaskStatus/waitForTask defaults from "veo" to "kling".
+- **ADMIN_EMAILS duplicated in 4 files**: auth.ts, send/route.ts, verify/route.ts all had identical `(process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com')`. Fix: Exported ADMIN_EMAILS from auth.ts, imported in route files.
+- **Admin demo password in PRODUCT_BIBLE.md**: `admin@rensto.com / admin123` documented publicly. Fix: Removed, replaced with magic-link auth description.
+- **Agent-behavior files (.cursor vs .claude)**: Verified identical content (198-byte diff = YAML frontmatter only). No actual drift.
+- **NotebookLM compliance pushed (3 notebooks)**: fc048ba8 (n8n=backup), 3e820274 (Kling 3.0 only), 8a655666 (fal.ai=deprecated).
+- **9 missing Claude skills identified**: Created 3 P1 skills (stripe-credits, database-management, antigravity-automation) + skill-template scaffold. 6 P2-P3 skills documented as TODO.
+- **Admin dashboard audit**: 14 tabs already exist. Health checks, usage tracking, customer dashboard all functional. Gap: automated alerting, MCP monitoring, expense tracking, anomaly detection. Blueprint written in task_plan.md.
+- **Credential exposure in git history**: Stripe LIVE key, Notion token, 3 n8n API keys still in git history. BFG Repo-Cleaner not yet run. Cookie consent banner missing for GDPR.
+- **Prisma vs Drizzle type conflicts**: emailVerified (Boolean vs timestamp), role (enum vs text). Known issue, not fixed yet — requires coordinated migration.
+
+---
+
+### Video Quality Overhaul (Session 3)
+
+- **Root cause: double realtor**: Nano Banana composites realtor into clip 1 start frame. Kling generates video; last frame carries person traces. This frame becomes clip 2's start. Even though clip 2 uses "no people" prompt, Kling may animate the person visible in the start frame → double/ghost realtor. Fix: Added Kling 3.0 `kling_elements` support (native character reference via `@realtor` in prompts). Set `USE_KLING_ELEMENTS=1` to enable. When enabled, Nano Banana compositing is skipped entirely — Kling handles person consistency natively.
+- **Root cause: robotic/awful movement**: Generic prompt templates ("Smooth steadicam through the space") gave Kling nothing specific. Fix: Added `ROOM_CAMERA_FLOW` lookup with temporal flow descriptions per room type (beginning → middle → end). Each prompt now describes how the shot evolves. Example: "Camera begins at the entrance, slowly tracks along the countertop revealing the workspace, then settles on the island or window view."
+- **Root cause: wall clipping**: Insufficient spatial constraints. Fix: Strengthened `SPATIAL_NEGATIVE` with "wall penetration, object clipping, camera clipping, phasing through objects". Added separate `KLING_PROPERTY_NEGATIVE` (bans all people) and `KLING_ELEMENTS_NEGATIVE` (protects identity). Added "ONE ROOM PER CLIP" rule and "SPATIAL INTEGRITY" rule to prompt-generator system prompt.
+- **Root cause: tour teleportation**: AI-generated tour sequence could skip between rooms that aren't connected. Fix: Added `validateTourAdjacency()` in floorplan-analyzer.ts — cross-checks `suggested_tour_sequence` against `connects_to` adjacency data. Logs warnings for teleportation. Also added `validateRoomCount()` to catch hallucinated rooms (analysis claims more rooms than listing data supports).
+- **Kling 3.0 model research (Feb 2026)**: Kling 3.0 is latest (no 3.5/4.0 exists). Supports: kling_elements (2-4 reference images per person), duration 3-15s (Kie API still only "5" or "10"), multi_prompt (up to 6 shots), native audio (5 languages). Model IDs: "kling-3.0/video" and "kling-3.0" are interchangeable on Kie.ai.
+- **Floorplan analysis research**: Gemini 3 Pro "Agentic Vision" can crop/zoom floor plan sections for 5-10% accuracy boost. Best practice: adjacency graph → walkthrough path (Hamiltonian). Post-processing should validate sequence against adjacency. Photo-to-room AI matching should be primary (not fallback). Room count sanity check catches hallucinated rooms.
+- **Prompt engineering research**: Use cinematic vocabulary (slow dolly, steadicam glide, gentle push-in). Describe temporal flow (beginning → middle → end). One room per clip. Never describe person actions when person is in start frame. Keep negative under 500 chars. "Subject + Action + Environment + Style + Camera" formula.
+- **Property-only clips now use room-specific prompts**: `buildPropertyOnlyKlingPrompt` uses `ROOM_CAMERA_FLOW[roomKey]` for per-room camera direction instead of generic template.
+
+---
+
 ## 2026-02-16
 
 ### Instruction Hierarchy + Alignment Audit (Session 2)
@@ -138,13 +228,13 @@
 ## 2026-02-15
 
 - **Floorplan in listing photos**: When user skips floorplan upload, pipeline now scans scraped listing photos with Gemini vision to detect a floorplan/blueprint. If found, uses it for analyzeFloorplan; else uses default tour + property photos. `detectFloorplanInPhotos()` in gemini.ts.
-- **Image/room mismatch, invented stairs, invented furniture, extra people**: (1) **Stairs**: Default sequences and floorplan included Stairs for 4+ bed homes; single-story ranches got invented stairs. Fix: `isSingleStory(listing)` parses description/amenities/reso_facts for "ranch", "1 story", etc.; `getDefaultSequence` and `buildTourSequence` filter out Stairs when single-story. Floorplan prompt: "Add Stairs ONLY if floorplan CLEARLY shows multiple floors." (2) **Photo–room mismatch**: Heuristic used index (pool=last, foyer=second). Fix: `matchPhotosToRoomsWithVision` (Gemini) when USE_AI_PHOTO_MATCH≠false; assigns best photo per room by content. (3) **Invented furniture**: Kling was inferring from listing (e.g. 70s) and adding period furniture. Fix: KLING_REALTOR_NEGATIVE + "invented furniture, added furnishings, staged furniture, remodeled room"; buildRealtorOnlyKlingPrompt: "CRITICAL: Preserve the EXACT room, furniture, decor. Do NOT add, remove, or change furnishings." (4) **Extra people**: Strengthened negative: "bystander, stranger, family member, guest, crowd, multiple people." @see apps/worker/VIDEO_QUALITY_AUDIT.md
-- **Video "extra low quality" (all recent runs)**: Root cause: **Kling Standard = 720p output**. Pipeline used `mode: "std"` then upscaled to 1080p → blur. Fix: (1) Kling `mode: "pro"` (1080p native). Env `KIE_KLING_MODE=std` to revert if Kie 500. (2) Nano Banana `resolution: "4K"` (was 2K) for sharper composites. Env `NANO_BANANA_RESOLUTION=2K` to revert. (3) FFmpeg preset `medium` (was `fast`). @see apps/worker/VIDEO_QUALITY_AUDIT.md
+- **Image/room mismatch, invented stairs, invented furniture, extra people**: (1) **Stairs**: Default sequences and floorplan included Stairs for 4+ bed homes; single-story ranches got invented stairs. Fix: `isSingleStory(listing)` parses description/amenities/reso_facts for "ranch", "1 story", etc.; `getDefaultSequence` and `buildTourSequence` filter out Stairs when single-story. Floorplan prompt: "Add Stairs ONLY if floorplan CLEARLY shows multiple floors." (2) **Photo–room mismatch**: Heuristic used index (pool=last, foyer=second). Fix: `matchPhotosToRoomsWithVision` (Gemini) when USE_AI_PHOTO_MATCH≠false; assigns best photo per room by content. (3) **Invented furniture**: Kling was inferring from listing (e.g. 70s) and adding period furniture. Fix: KLING_REALTOR_NEGATIVE + "invented furniture, added furnishings, staged furniture, remodeled room"; buildRealtorOnlyKlingPrompt: "CRITICAL: Preserve the EXACT room, furniture, decor. Do NOT add, remove, or change furnishings." (4) **Extra people**: Strengthened negative: "bystander, stranger, family member, guest, crowd, multiple people." See kie.ts for buildRealtorOnlyKlingPrompt
+- **Video "extra low quality" (all recent runs)**: Root cause: **Kling Standard = 720p output**. Pipeline used `mode: "std"` then upscaled to 1080p → blur. Fix: (1) Kling `mode: "pro"` (1080p native). Env `KIE_KLING_MODE=std` to revert if Kie 500. (2) Nano Banana `resolution: "4K"` (was 2K) for sharper composites. Env `NANO_BANANA_RESOLUTION=2K` to revert. (3) FFmpeg preset `medium` (was `fast`). See kie.ts for buildRealtorOnlyKlingPrompt
 - **Worker status overwritten by retry**: Job `deb73ec3` had `master_video_url` populated but `status` remained `generating_clips`. Root cause: Run 1 completed successfully (UPDATE set status=complete); BullMQ retried (e.g. throw after UPDATE, process kill); Run 2 called `updateJobStatus(jobId, "generating_clips", 26)` which overwrote status/progress but NOT master_video_url. Fix: (1) Idempotent start: if `master_video_url` exists, sync status to complete and return. (2) `updateJobStatus` never overwrites when `status='complete' AND master_video_url IS NOT NULL`.
 - **Methodology consolidation**: Multiple working methods (B.L.A.S.T., agent behavior, work-method) had conflicting guidance—B.L.A.S.T. "HALT" vs agent "one output." Created METHODOLOGY.md as single SSOT: B.L.A.S.T. for new projects (phase gates), Agent Behavior for routine tasks (one final output). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior rules to reference METHODOLOGY.md. No more conflicts.
 - **Full video + regen workflow**: Generate FULL video first. Quality issues (cartoon, style drift) can appear in any scene (2, 3, 4+). To fix bad clips only: `JOB_ID=xxx CLIP_NUMBERS=2,3 npx tsx tools/regen-clips.ts`. MAX_CLIPS=1 is DEBUG ONLY—never for quality validation.
 - **Smoke "stuck"**: Job can sit behind others in BullMQ queue. Run `npx tsx tools/smoke-preflight.ts --drain` first to clear waiting jobs + ensure credits. Worker must have MAX_CLIPS=1 for fast (1-clip) smoke.
-- **Video quality regression (realtor robotic, zero listing focus)**: Adding "Person moves FORWARD through the space" to `buildRealtorOnlyKlingPrompt` caused Kling to produce robotic straight-line motion—realtor "going straight", "looking for something", no room engagement. Fix: remove "Person moves FORWARD"; add room-as-star and production guidance ("The [room] is the focus. Reveal the space... Natural real estate tour. Cinematic."). Keep KLING_REALTOR_NEGATIVE. Add talking/lips to neg. @see apps/worker/VIDEO_QUALITY_AUDIT.md
+- **Video quality regression (realtor robotic, zero listing focus)**: Adding "Person moves FORWARD through the space" to `buildRealtorOnlyKlingPrompt` caused Kling to produce robotic straight-line motion—realtor "going straight", "looking for something", no room engagement. Fix: remove "Person moves FORWARD"; add room-as-star and production guidance ("The [room] is the focus. Reveal the space... Natural real estate tour. Cinematic."). Keep KLING_REALTOR_NEGATIVE. Add talking/lips to neg. See kie.ts for buildRealtorOnlyKlingPrompt
 - **Kie.ai Kling 422 (multi_shots)**: Kie returned 422 "multi_shots cannot be empty" when we omitted the field. Fix: add `multi_shots: false` to Kling input.
 - **Kie.ai Kling 500 (our fault)**: We passed Zillow/source URLs to Kie when ensurePublicUrl failed. Kie cannot fetch those (blocked, auth-required) → 500. Fix: (1) ensurePublicUrl returns null on fetch/upload failure, never original URL. (2) Never pad additionalPublic with original photos. (3) config.r2.publicUrl fallback to r2.dev when unset. (4) kie.ts: isPublicFetchableUrl guard—reject Zillow/non-http URLs before API call. (5) Throw UnrecoverableError when zero usable photos.
 - **Agent "stuck" / silent wait**: User had to ask "are you stuck?" because agent ran long commands without progress. Never run one command >3 min without intermediate output. Rule: bounded iterations, report between chunks, explicit timeouts. Never say "I'm stuck"—hit timeout, report, try next approach. See agent-behavior.mdc.

@@ -17,7 +17,7 @@ import {
     X,
     Image as ImageIcon
 } from 'lucide-react';
-import { Client, Testimonial } from '@/types/firestore';
+import { Client, Testimonial } from '@/types/legacy-types';
 import { toast } from 'sonner';
 
 export default function ClientManagement() {

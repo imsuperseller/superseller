@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button-enhanced';
 import { Input } from '@/components/ui/input-enhanced';
 import { Textarea } from '@/components/ui/textarea-enhanced';
-import { FormField, ServiceInstance } from '@/types/firestore';
+import { FormField, ServiceInstance } from '@/types/legacy-types';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, Loader2 } from 'lucide-react';
 

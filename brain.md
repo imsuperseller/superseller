@@ -34,7 +34,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
 - **n8n** (RackNerd): Backup/reference only. Use when Antigravity cannot do the task.
-- **Kie.ai**: Creative AI (Veo, Kling, Suno, Runway) — credit-based APIs.
+- **Kie.ai**: Creative AI (Kling 3.0, Suno, Nano Banana) — credit-based APIs. Veo and FAL are deprecated.
 - **Stripe**: Payments, subscriptions, credit ledger.
 - **PostgreSQL + Redis**: App backends and marketplace products.
 - **Aitable.ai**: Internal dashboards and syncs only (not production app DB).
@@ -136,7 +136,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | **Automation** | Antigravity (RackNerd) | Primary workflow execution |
 | **Automation (backup)** | n8n (RackNerd) | Use only when Antigravity cannot |
 | **Payments** | Stripe | Credits, subscriptions, token ledger |
-| **Creative AI** | Kie.ai | Video (Veo, Kling), audio (Suno), Runway |
+| **Creative AI** | Kie.ai | Video (Kling 3.0), audio (Suno), compositing (Nano Banana) |
 | **App database** | PostgreSQL + Redis | All marketplace apps and app backends |
 | **Internal dashboards** | Aitable.ai | Syncs, config, reference data |
 | **Frontend** | Next.js, Tailwind, shadcn/ui | Rensto design system |

@@ -39,6 +39,82 @@ function isZillowUrl(input: string): boolean {
 }
 
 /**
+ * Extract photos from all known Zillow Apify response formats.
+ * Zillow data comes in many shapes: raw.photos (simple URLs), raw.responsivePhotos
+ * (nested mixedSources), raw.hugePhotos, raw.big, raw.mediumImageLink, etc.
+ */
+function extractZillowPhotos(raw: any, maxPhotos: number): string[] {
+    const seen = new Set<string>();
+    const urls: string[] = [];
+
+    const addUrl = (u: string) => {
+        if (u && typeof u === "string" && u.startsWith("http") && !seen.has(u)) {
+            seen.add(u);
+            urls.push(u);
+        }
+    };
+
+    // 1. raw.photos — simple array of URL strings (most common)
+    if (Array.isArray(raw.photos)) {
+        for (const p of raw.photos.flat()) {
+            if (typeof p === "string") addUrl(p);
+            else if (p?.url) addUrl(p.url);
+        }
+    }
+
+    // 2. raw.responsivePhotos — Zillow's responsive format with mixedSources
+    if (Array.isArray(raw.responsivePhotos)) {
+        for (const photo of raw.responsivePhotos) {
+            if (!photo) continue;
+            // Direct URL
+            if (typeof photo === "string") { addUrl(photo); continue; }
+            if (photo.url) { addUrl(photo.url); continue; }
+            // Nested: mixedSources.jpeg[] or mixedSources.webp[]
+            const sources = photo.mixedSources || photo.sources;
+            if (sources) {
+                const jpegList = sources.jpeg || sources.jpg || [];
+                const webpList = sources.webp || [];
+                // Pick largest JPEG, fallback to largest webp
+                const best = [...jpegList, ...webpList]
+                    .filter((s: any) => s?.url)
+                    .sort((a: any, b: any) => (b.width || 0) - (a.width || 0))[0];
+                if (best?.url) addUrl(best.url);
+            }
+        }
+    }
+
+    // 3. raw.hugePhotos — large photo URLs
+    if (Array.isArray(raw.hugePhotos)) {
+        for (const p of raw.hugePhotos) {
+            if (typeof p === "string") addUrl(p);
+            else if (p?.url) addUrl(p.url);
+        }
+    }
+
+    // 4. raw.big — another photo array format
+    if (Array.isArray(raw.big)) {
+        for (const p of raw.big) {
+            if (typeof p === "string") addUrl(p);
+            else if (p?.url) addUrl(p.url);
+        }
+    }
+
+    // 5. raw.mediumImageLink / raw.hiResImageLink — single hero image
+    if (raw.hiResImageLink) addUrl(raw.hiResImageLink);
+    if (raw.mediumImageLink) addUrl(raw.mediumImageLink);
+
+    // 6. raw.originalPhotos
+    if (Array.isArray(raw.originalPhotos)) {
+        for (const p of raw.originalPhotos) {
+            if (typeof p === "string") addUrl(p);
+            else if (p?.url) addUrl(p.url);
+        }
+    }
+
+    return urls.slice(0, maxPhotos);
+}
+
+/**
  * Scrape Zillow listing by address OR Zillow URL.
  */
 export async function scrapeZillowListing(
@@ -79,6 +155,10 @@ export async function scrapeZillowListing(
             rawUrl && rawUrl.startsWith("http") ? rawUrl : rawUrl && rawUrl.startsWith("/") ? `${base}${rawUrl}` : undefined;
         zillowUrl = zillowUrl || (isUrl ? trimmed : undefined) || (slug ? `${base}/homedetails/${slug}/${raw.zpid}_zpid/` : undefined);
 
+        // Extract photos from all known Zillow response formats
+        const photos = extractZillowPhotos(raw, maxPhotos);
+        logger.info({ msg: "Zillow photos extracted", count: photos.length, sources: { photos: !!raw.photos, responsivePhotos: !!raw.responsivePhotos, hugePhotos: !!raw.hugePhotos, mediumImageLink: !!raw.mediumImageLink } });
+
         // Map Deep Data
         return {
             address,
@@ -90,12 +170,7 @@ export async function scrapeZillowListing(
             bathrooms: raw.bathrooms,
             sqft: raw.livingArea,
             description: raw.description,
-            photos: (raw.photos || raw.responsivePhotos || [])
-                .flat()
-                .filter(Boolean)
-                .map((p: any) => (typeof p === "string" ? p : p?.url))
-                .filter((u: any): u is string => typeof u === "string" && u.startsWith("http"))
-                .slice(0, maxPhotos),
+            photos,
             property_type: raw.homeType,
             mls_number: raw.mlsid || raw.mlsId,
             zillow_url: zillowUrl,

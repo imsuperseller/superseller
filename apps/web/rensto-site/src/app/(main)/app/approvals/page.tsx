@@ -15,7 +15,7 @@ import {
   Eye,
   Terminal
 } from 'lucide-react';
-import { ApprovalRequest } from '@/types/firestore';
+import { ApprovalRequest } from '@/types/legacy-types';
 import { Input } from '@/components/ui/input-enhanced';
 
 export default function ApprovalsPage() {

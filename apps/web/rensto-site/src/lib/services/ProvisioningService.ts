@@ -212,7 +212,7 @@ export class ProvisioningService {
     static async provisionCredits(params: {
         email: string;
         amount: number;
-        type: 'topup' | 'grant';
+        type: 'credit_topup' | 'credit_grant';
         stripeSessionId?: string;
     }) {
         const userId = await this.getOrCreateUser(params.email);

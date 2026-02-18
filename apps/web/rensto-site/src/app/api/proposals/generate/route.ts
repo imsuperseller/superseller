@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       service: 'firebase',
       action: 'proposal_generated',
       status: 'success',
-      details: { proposalId: finalProposal.id, client: clientInfo.company, firestoreId: savedProposal.recordId },
+      details: { proposalId: finalProposal.id, client: clientInfo.company, recordId: savedProposal.recordId },
     });
 
     return NextResponse.json({
@@ -273,6 +273,6 @@ export async function GET() {
       POST: '/api/proposals/generate - Generate AI-powered proposal',
       GET: '/api/proposals/generate - Get API information',
     },
-    features: ['AI-powered proposal generation', 'Automatic section creation', 'Dynamic pricing calculation', 'Template selection', 'PostgreSQL + Firestore storage'],
+    features: ['AI-powered proposal generation', 'Automatic section creation', 'Dynamic pricing calculation', 'Template selection', 'PostgreSQL storage'],
   });
 }

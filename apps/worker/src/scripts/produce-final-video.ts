@@ -1,6 +1,6 @@
 import { analyzeFloorplan, buildTourSequence } from "../services/floorplan-analyzer";
 import { generateClipPrompts } from "../services/prompt-generator";
-import { createVeoTask, waitForTask, createSunoTask } from "../services/kie";
+import { createKlingTask, waitForTask, createSunoTask } from "../services/kie";
 import { normalizeClip, stitchClips, addMusicOverlay, generateVariants, extractLastFrame } from "../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../services/r2";
 import { logger } from "../utils/logger";
@@ -49,16 +49,15 @@ async function produceFinalVideo() {
             const p = prompts[i];
             console.log(`[Clip ${i + 1}/${prompts.length}] ${p.from_room} -> ${p.to_room}`);
 
-            const taskId = await createVeoTask({
+            const taskId = await createKlingTask({
                 prompt: p.prompt,
                 image_url: lastFrameUrl!,
-                model: "veo3_fast",
                 duration: 5,
                 negative_prompt: p.negative_prompt
             });
 
-            const status = await waitForTask(taskId);
-            if (!status.result?.video_url) throw new Error("Veo generation result missing URL");
+            const status = await waitForTask(taskId, "kling");
+            if (!status.result?.video_url) throw new Error("Kling generation result missing URL");
 
             const videoPath = join(workDir, `clip_${i + 1}.mp4`);
             const response = await fetch(status.result.video_url);

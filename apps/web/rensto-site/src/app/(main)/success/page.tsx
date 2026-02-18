@@ -13,7 +13,7 @@ interface SuccessPageProps {
 // This would ideally fetch from API/Firestore based on searchParams.product_id
 // For now, we use a mock schema if product_id is present
 import { ConfigurationForm } from '@/components/fulfillment/ConfigurationForm';
-import { FormField } from '@/types/firestore';
+import { FormField } from '@/types/legacy-types';
 
 // Product-specific configuration schemas
 // Each product has its own set of questions the user must answer for implementation

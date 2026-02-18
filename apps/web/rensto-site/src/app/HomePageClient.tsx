@@ -53,7 +53,7 @@ import { Footer } from '@/components/Footer';
 import { QualificationQuiz } from '@/components/marketing/QualificationQuiz';
 import { ComparisonTable } from '@/components/marketing/ComparisonTable';
 import { PricingTokens } from '@/components/marketing/PricingTokens';
-import { Client, Testimonial } from '@/types/firestore';
+import { Client, Testimonial } from '@/types/legacy-types';
 import * as framer from 'framer-motion';
 const { motion } = framer;
 import { env } from '@/lib/env';

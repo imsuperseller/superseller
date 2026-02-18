@@ -11,16 +11,8 @@ const headers = {
     "Accept": "application/json",
 };
 
-export interface KieVeoRequest {
-    prompt: string;
-    image_url: string;
-    last_frame?: string;
-    model?: "veo3_fast" | "veo3";
-    duration?: number;
-    aspect_ratio?: "16:9" | "9:16";
-    generate_audio?: boolean;
-    negative_prompt?: string;
-}
+// Veo is DEPRECATED (Feb 2026). Kling 3.0 is the only approved video model for Rensto.
+// KieVeoRequest and createVeoTask removed. See findings.md 2026-02-17.
 
 export interface KieTaskResponse {
     task_id: string;
@@ -33,40 +25,13 @@ export interface KieTaskResponse {
     error?: string;
 }
 
-export async function createVeoTask(request: KieVeoRequest): Promise<string> {
-    const imageUrls = request.last_frame
-        ? [request.image_url, request.last_frame]
-        : [request.image_url];
-    const body = {
-        model: request.model || "veo3",
-        generationType: request.last_frame ? "FIRST_AND_LAST_FRAMES_2_VIDEO" : "FIRST_AND_LAST_FRAMES_2_VIDEO",
-        prompt: request.prompt,
-        imageUrls,
-        aspect_ratio: request.aspect_ratio || "16:9",
-        generate_audio: request.generate_audio ?? false,
-        negative_prompt: request.negative_prompt,
-    };
-
-    const url = `${KIE_BASE}/v1/veo/generate`;
-    logger.info({ msg: "kie.ai Veo task creating", url, model: body.model });
-
-    const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Kie.ai failed (${response.status}): ${errText}`);
-    }
-
-    const data = await response.json();
-    if (data.code !== 200 && data.code !== 0) {
-        throw new Error(`Kie.ai API error (code ${data.code}): ${data.msg}`);
-    }
-
-    return data.data.taskId;
+export interface KlingElement {
+    /** Referenced as @name in prompt text */
+    name: string;
+    /** Description of the element (e.g. "Professional real estate agent in business attire") */
+    description: string;
+    /** 2-4 reference images of this element (JPG/PNG, max 10MB each) */
+    element_input_urls: string[];
 }
 
 export interface KieKlingRequest {
@@ -76,6 +41,8 @@ export interface KieKlingRequest {
     negative_prompt?: string; // Exclude: talking, lips moving, etc.
     /** When true: start frame already has realtor (Nano composite). Add duplicate-figure negative. */
     realtor_in_frame?: boolean;
+    /** Kling 3.0 Elements: native character reference. Replaces Nano Banana compositing for person consistency. */
+    kling_elements?: KlingElement[];
     mode?: "std" | "pro";
     aspect_ratio?: "16:9" | "9:16" | "1:1";
     model?: string; // kling-3.0/video only (no Kling 2.6)
@@ -99,21 +66,79 @@ const IDENTITY_NEGATIVE = "different person, different face, wrong person, impos
 /** When start frame already has realtor (Nano composite): reject duplicate/double figure. */
 const DUPLICATE_FIGURE_NEGATIVE = "duplicate person, two people, double figure, two identical figures, ghost figure, extra person, clone, second copy";
 
-/** Spatial: reject impossible movement (walking through furniture, walls). */
-const SPATIAL_NEGATIVE = "person walking through walls, person walking through furniture, floating person, person clipping through objects, impossible movement, person gliding, walking through sofa, walking through table";
+/** Spatial: reject impossible movement (walking through furniture, walls, clipping). */
+const SPATIAL_NEGATIVE = "person walking through walls, person walking through furniture, floating person, person clipping through objects, impossible movement, person gliding, walking through sofa, walking through table, wall penetration, object clipping, camera clipping, phasing through objects";
 
-/** Short negative for Kling (Kie max ~500 chars). Reject: cartoon, duplicates, style drift, weird motion. */
+/** Short negative for Kling (Kie max ~500 chars). Reject: cartoon, duplicates, style drift, weird motion, talking, extra people, invented furniture, spatial violations. */
 const KLING_REALTOR_NEGATIVE =
-    "cartoon, anime, illustration, stylized, CGI, video game, duplicate person, two people, double figure, clone, extra person, walking in circles, pacing in place, circular motion, barefoot, period costume, different century, vintage furniture, low quality, blurry, distorted, morphing";
+    "cartoon, anime, CGI, duplicate person, two people, double figure, clone, extra person, bystander, crowd, multiple people, invented furniture, added furnishings, changed decor, low quality, blurry, distorted, morphing, talking, mouth moving, lips moving, wall penetration, object clipping, floating person";
 
-/** When realtor already in frame: minimal prompt—camera + room only. NO person action description (triggers double figure). */
+/** Negative for property-only clips (no person). Stricter: ban all people. */
+const KLING_PROPERTY_NEGATIVE =
+    "cartoon, anime, CGI, people, person, human, figure, hand, face, pet, animal, low quality, blurry, distorted, morphing, invented furniture, added furnishings, changed decor, wall penetration, object clipping, floating objects";
+
+/** Negative for kling_elements clips. Person is referenced via @element, so we protect identity. */
+const KLING_ELEMENTS_NEGATIVE =
+    "cartoon, anime, CGI, duplicate person, two people, clone, extra person, crowd, multiple people, different face, wrong person, invented furniture, changed decor, low quality, blurry, morphing, talking, mouth moving, wall penetration, object clipping";
+
+/** Room-specific camera directions for temporal flow. Each describes beginning → middle → end of the shot. */
+const ROOM_CAMERA_FLOW: Record<string, string> = {
+    kitchen: "Camera begins at the entrance, slowly tracks along the countertop revealing the workspace, then settles on the island or window view.",
+    living: "Camera enters wide, gently dollies forward revealing the full room depth, then settles on the main window or fireplace.",
+    dining: "Camera sweeps in from the entry point, reveals the table and overhead fixture, then settles on the room's best feature.",
+    bedroom: "Camera enters gently, pans to reveal the full room, then settles on the window letting in natural light.",
+    master_bedroom: "Camera enters slowly, sweeps across the full suite showing its scale, then settles toward the window or en-suite entry.",
+    bathroom: "Camera pushes in gently from the doorway, showcases the vanity and fixtures, then pulls back slightly.",
+    master_bathroom: "Camera sweeps in, captures the tub and shower area, then settles on the dual vanity.",
+    foyer: "Camera pushes through the front door, reveals the entry, then looks toward the main living area beyond.",
+    hallway: "Camera glides smoothly down the corridor, framing the destination room at the end.",
+    outdoor: "Camera exits through the door onto the patio, then slowly reveals the full yard or landscape.",
+    pool: "Camera glides gently along the deck, reveals the pool and water, then settles on a wide view of the entire pool area.",
+    backyard: "Camera moves out onto the patio, reveals the lawn and landscaping, then settles on the widest view.",
+    stairs: "Camera ascends at handrail height following the stair geometry upward, settling at the top landing.",
+    office: "Camera enters and reveals the workspace, then settles on the window and built-in features.",
+};
+
+/** Property-only prompt: when NO person is in the frame (no Nano Banana composite). Pure cinematic room reveal — no people references. */
+export function buildPropertyOnlyKlingPrompt(clip: { clip_number: number; from_room?: string; to_room?: string }): string {
+    const toRoom = (clip.to_room || "room").replace(/_/g, " ");
+    const roomKey = (clip.to_room || "").toLowerCase().replace(/\s+/g, "_").replace(/master_/, "master_").replace(/bedroom_\d+/, "bedroom").replace(/bathroom_\d+/, "bathroom");
+    const isOpening = clip.clip_number === 1;
+
+    if (isOpening) {
+        return "Slow dolly forward along the pathway toward the front door. Ground level, steady eye-height camera. Camera begins at the street, glides along the walkway, then settles on the front door. Photorealistic. Preserve exact architecture and landscaping. Camera stays on walkway. No aerial, no drone. No people, empty property.";
+    }
+
+    const flow = ROOM_CAMERA_FLOW[roomKey] || ROOM_CAMERA_FLOW[roomKey.split("_")[0]] || `Camera enters the ${toRoom}, glides through the space revealing key features, then settles on the room's highlight.`;
+    return `Steadicam real estate tour. ${flow} Steady eye-height camera. Camera stays in walkable space, never passes through walls or furniture. The ${toRoom} is the star. CRITICAL: Preserve the EXACT room, furniture, decor, and style shown in the image. No people, empty property.`;
+}
+
+/** When realtor already in frame: camera + room focus. NO person action description (triggers double figure). NO "Person moves FORWARD" (causes robotic straight motion). @see VIDEO_QUALITY_AUDIT.md */
 export function buildRealtorOnlyKlingPrompt(clip: { clip_number: number; from_room?: string; to_room?: string }): string {
     const toRoom = (clip.to_room || "room").replace(/_/g, " ");
+    const roomKey = (clip.to_room || "").toLowerCase().replace(/\s+/g, "_").replace(/master_/, "master_").replace(/bedroom_\d+/, "bedroom").replace(/bathroom_\d+/, "bathroom");
     const isOpening = clip.clip_number === 1;
-    const camera = isOpening
-        ? "Smooth forward dolly along the path toward the door. Ground level, eye height."
-        : "Smooth steadicam forward dolly through the space. Natural real estate tour pace.";
-    return `The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. Person moves FORWARD through the space—no circular pacing, no walking in place. Respect furniture and walls. Photorealistic. Preserve the exact room, furniture, and style shown in the image. ${camera} ${toRoom} in view. Lips closed, no speaking, silent walkthrough.`;
+
+    if (isOpening) {
+        return "The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. Slow dolly forward along the pathway toward the front door. Ground level, eye height. The front approach in view. Photorealistic. Preserve exact architecture. Lips closed, no speaking, silent walkthrough.";
+    }
+
+    const flow = ROOM_CAMERA_FLOW[roomKey] || ROOM_CAMERA_FLOW[roomKey.split("_")[0]] || `Camera enters the ${toRoom}, glides through revealing features, then settles on the highlight.`;
+    return `The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only. Respect furniture and walls. ${flow} The ${toRoom} is the focus. Natural real estate tour. Cinematic. CRITICAL: Preserve the EXACT room, furniture, decor, and style shown in the image. Do NOT add, remove, or change any furnishings. Lips closed, no speaking, silent walkthrough.`;
+}
+
+/** Kling Elements prompt: when using kling_elements for native character reference (no Nano composite). Reference @realtor in prompt. */
+export function buildElementsKlingPrompt(clip: { clip_number: number; from_room?: string; to_room?: string }): string {
+    const toRoom = (clip.to_room || "room").replace(/_/g, " ");
+    const roomKey = (clip.to_room || "").toLowerCase().replace(/\s+/g, "_").replace(/master_/, "master_").replace(/bedroom_\d+/, "bedroom").replace(/bathroom_\d+/, "bathroom");
+    const isOpening = clip.clip_number === 1;
+
+    if (isOpening) {
+        return "A real estate agent @realtor walks naturally along the pathway toward the front door. Ground level, steady eye-height camera. Slow dolly forward following the agent. Single person only. Photorealistic. Preserve exact architecture and landscaping. Camera stays on the walkway. No aerial, no drone. Lips closed, silent.";
+    }
+
+    const flow = ROOM_CAMERA_FLOW[roomKey] || ROOM_CAMERA_FLOW[roomKey.split("_")[0]] || `Camera enters the ${toRoom}, glides through revealing features, then settles on the highlight.`;
+    return `@realtor stands in the ${toRoom}, gesturing naturally toward key features. ${flow} The ${toRoom} is the star. Steady eye-height camera. Camera stays in walkable space, never passes through walls or furniture. Single person only. Photorealistic. CRITICAL: Preserve the EXACT room, furniture, decor, and style shown in the image. Lips closed, silent.`;
 }
 
 function isPublicFetchableUrl(url: string): boolean {
@@ -141,8 +166,15 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     const durationSec = typeof rawDur === "string" ? parseInt(rawDur, 10) : Math.round(Number(rawDur));
     const duration = durationSec >= 10 ? "10" : "5"; // Kie enum: only "5" | "10"
 
-    // Keep negative under 500 chars. When realtor: reject cartoon, duplicates, style drift, weird motion.
-    const negPrompt = request.realtor_in_frame ? KLING_REALTOR_NEGATIVE : (request.negative_prompt?.slice(0, 500) || undefined);
+    // Keep negative under 500 chars. Select appropriate negative based on clip type.
+    let negPrompt: string | undefined;
+    if (request.kling_elements?.length) {
+        negPrompt = KLING_ELEMENTS_NEGATIVE;
+    } else if (request.realtor_in_frame) {
+        negPrompt = KLING_REALTOR_NEGATIVE;
+    } else {
+        negPrompt = KLING_PROPERTY_NEGATIVE;
+    }
     const input: Record<string, unknown> = {
         prompt: request.prompt,
         image_urls: imageUrls,
@@ -152,6 +184,9 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
         multi_shots: false, // Kie 422: "multi_shots cannot be empty" when omitted
         ...(negPrompt ? { negative_prompt: negPrompt } : {}),
         ...(request.last_frame ? {} : { aspect_ratio: request.aspect_ratio || "16:9" }),
+        // Kling 3.0 Elements: native character reference for person consistency across clips.
+        // Upload 2-4 reference images of the realtor; reference with @element_name in prompt.
+        ...(request.kling_elements?.length ? { kling_elements: request.kling_elements } : {}),
     };
     const body = { model: request.model || "kling-3.0/video", input };
 
@@ -172,17 +207,16 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     const data = await response.json();
     if (data.code !== 200 && data.code !== 0) {
         const extra = data.data ? ` data=${JSON.stringify(data.data).slice(0, 200)}` : "";
-        logger.error({ msg: "Kie Kling API error", code: data.code, msg: data.msg, extra });
+        logger.error({ msg: "Kie Kling API error", code: data.code, detail: data.msg, extra });
         throw new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
     }
 
     return data.data.taskId;
 }
 
-export async function getTaskStatus(taskId: string, type: "veo" | "suno" | "kling" = "veo"): Promise<KieTaskResponse> {
+export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kling"): Promise<KieTaskResponse> {
     let endpoint = "";
-    if (type === "veo") endpoint = "veo/record-info";
-    else if (type === "suno") endpoint = "generate/record-info";
+    if (type === "suno") endpoint = "generate/record-info";
     else if (type === "kling") endpoint = "jobs/recordInfo";
 
     const url = `${KIE_BASE}/v1/${endpoint}?taskId=${taskId}`;
@@ -209,7 +243,6 @@ export async function getTaskStatus(taskId: string, type: "veo" | "suno" | "klin
     let result = undefined;
     if (status === "completed") {
         const res = statusData.response || statusData.resultJson;
-        // Veo 3.1 may return resultUrls at top level (JSON string)
         const rawResultUrls = statusData.resultUrls || (res && (typeof res === 'string' ? res : (res as any)?.resultUrls));
         let videoUrl: string | undefined;
         let audioUrl: string | undefined;
@@ -257,7 +290,7 @@ export async function getTaskStatus(taskId: string, type: "veo" | "suno" | "klin
 
 export async function waitForTask(
     taskId: string,
-    type: "veo" | "suno" | "kling" = "veo",
+    type: "suno" | "kling" = "kling",
     timeoutMs: number = 900000,
     pollIntervalMs: number = 10000
 ): Promise<KieTaskResponse> {

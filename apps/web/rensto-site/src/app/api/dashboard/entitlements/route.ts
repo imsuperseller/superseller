@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
  * GET /api/dashboard/entitlements?token=xxx
  * Returns user entitlements for dashboard rendering
  *
- * [MIGRATION] Phase 1: Reads from Postgres first, Firestore fallback.
+ * Reads from Postgres (Firestore fully retired Feb 2026).
  */
 export async function GET(request: NextRequest) {
     try {

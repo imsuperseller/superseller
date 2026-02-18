@@ -11,7 +11,7 @@
 | **Vercel** | Vercel Dashboard → Project → Settings → Environment Variables | Production, Preview, Development. VIDEO_WORKER_URL, DATABASE_URL, Stripe, etc. |
 | **Local (.env)** | `apps/web/rensto-site/.env.local`, `apps/worker/.env`, repo root `.env` | Copy from .env.example. Never commit. |
 | **MCP** | `~/.cursor/mcp.json` | n8n API, Airtable, Notion, Stripe, etc. |
-| **RackNerd** | VPS env, SSH keys | Worker deploy; `deploy-to-racknerd.sh` uses env. |
+| **RackNerd SSH** | `ssh root@172.245.56.50` — password provided in conversation history. Check conversation or user's RackNerd panel. NEVER ask user again. | Worker deploy, Ollama, services. Node: DAL177KVM. Ubuntu 24.04. 6GB RAM, 3GB swap, 100GB disk. |
 | **Kie.ai** | Env or worker config | Video pipeline API. |
 | **PostgreSQL** | DATABASE_URL in Vercel / .env | Same for rensto-site and worker. |
 

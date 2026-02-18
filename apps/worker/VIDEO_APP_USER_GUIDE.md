@@ -4,6 +4,18 @@
 
 ---
 
+## 0. Fix Only Bad Scenes (DEFAULT — Do Not Rerun Whole Pipeline)
+
+**When a video has issues in only some scenes, fix ONLY those scenes. Do NOT retry the whole job.**
+
+- **In-app**: Go to `https://rensto.com/video` (or `http://localhost:3002/video`) → click **View** on a completed job → scroll to "Fix only bad scenes" → select only the bad scenes (e.g. Scene 3: Living Room) → Regenerate selected.
+- **CLI**: `cd apps/worker && JOB_ID={jobId} CLIP_NUMBERS=2,3 npx tsx tools/regen-clips.ts` (replace 2,3 with actual scene numbers).
+- **List clips**: `cd apps/worker && JOB_ID={jobId} npx tsx tools/list-clips-for-regen.ts` — shows Scene 1, 2, 3... with `to_room` so you know which to fix.
+
+**Full retry** (`retry-fresh`) clears everything and re-runs the whole pipeline. Use only when the opening is wrong or most clips are bad. Saves credits and time to fix only what's broken.
+
+---
+
 ## 1. Where to Go & What to Do
 
 ### Local development (recommended for testing)
@@ -22,14 +34,10 @@
    - You are redirected to `/video/{jobId}`
    - Polls every 3 seconds; shows progress, clips, and final video
 
-### Production (rensto.com) — **BLOCKED until ready**
+### Production (rensto.com)
 
-- `/video/*` pages return **404** on production (middleware block).
-- `/api/video/jobs/from-zillow` returns **503** on production unless `VIDEO_CREATE_ENABLED=true` is set.
-
-**Until launch**: Work on localhost only. When ready to go live:
-1. Set `VIDEO_CREATE_ENABLED=true` on Vercel
-2. Remove or relax the middleware block in `src/middleware.ts`
+- **Video create is enabled.** Ensure `VIDEO_WORKER_URL` is set in Vercel (e.g. `http://172.245.56.50:3002` for RackNerd).
+- Without VIDEO_WORKER_URL: "Video worker not configured."
 
 ---
 

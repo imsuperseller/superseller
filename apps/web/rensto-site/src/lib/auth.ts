@@ -8,6 +8,9 @@ import prisma from '@/lib/prisma';
 export const AUTH_COOKIE_NAME = 'rensto_client_session';
 export const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
+/** Centralized admin emails list. Import this instead of duplicating the fallback. */
+export const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
+
 /**
  * Verify the current session from the auth cookie.
  * Returns user identity, role, and entitlements.
@@ -39,7 +42,6 @@ export async function verifySession(): Promise<{
         }
 
         const email = sessionData.email.toLowerCase();
-        const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
         const pgUser = await prisma.user.findUnique({ where: { email } });
 
         if (pgUser) {

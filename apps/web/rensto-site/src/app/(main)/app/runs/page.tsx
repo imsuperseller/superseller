@@ -18,7 +18,7 @@ import {
   Download,
   Terminal
 } from 'lucide-react';
-import { UsageLog } from '@/types/firestore';
+import { UsageLog } from '@/types/legacy-types';
 
 export default function RunsPage() {
   const [searchTerm, setSearchTerm] = useState('');

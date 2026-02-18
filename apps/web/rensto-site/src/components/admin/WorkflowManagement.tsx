@@ -22,7 +22,7 @@ interface Workflow {
   needsUpdate?: boolean;
 }
 
-import { Template } from '@/types/firestore';
+import { Template } from '@/types/legacy-types';
 
 interface WorkflowManagementProps {
   products?: any[];

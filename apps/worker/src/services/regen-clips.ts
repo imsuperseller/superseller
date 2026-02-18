@@ -73,7 +73,7 @@ export async function runRegenClips(
             ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
             realtor_in_frame: includeRealtor,
             negative_prompt: (clip as any).negative_prompt,
-            mode: "std", // Match pipeline; "pro" can trigger Kie 500
+            mode: config.video.klingMode, // pro=1080p; std=720p
             aspect_ratio: "16:9",
             model: "kling-3.0/video",
             duration: clip.duration_seconds ?? config.video.defaultClipDuration,

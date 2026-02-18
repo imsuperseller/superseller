@@ -1,0 +1,188 @@
+---
+name: ui-design-workflow
+description: >-
+  Operational bridge between external UI generation tools (v0, Stitch, screenshot-to-code)
+  and Rensto's branded React/Next.js codebase. Use when converting external UI designs
+  into Rensto-branded components, extracting UI from screenshots/URLs, or generating
+  new pages from prompts via v0/Stitch. Complements ui-ux-pro-max (design intelligence)
+  with execution workflows. Not for backend logic, video pipeline, or database work.
+  Example: "Take this v0 component and rebrand it for Rensto".
+---
+
+# UI Design Workflow — External UI to Rensto-Branded Code
+
+## Critical
+- **Always rebrand before committing** — generic shadcn/Tailwind must use `rensto-*` tokens
+- **v0.dev is primary tool** for React/Next.js generation (beta API, shadcn/ui, design system support)
+- **Google Stitch is secondary** — good for visual prototyping (350 free/month), outputs HTML/CSS not React
+- **Run `rebrand-component.ts`** on all externally generated code before integration
+- **ui-ux-pro-max provides design intelligence** — this skill provides execution pipelines
+
+## Architecture
+
+```
+External Sources                    Rensto Pipeline
+┌──────────────┐
+│  v0.dev      │─── React/shadcn ──→ ┌─────────────────┐    ┌──────────────┐
+│  Stitch      │─── HTML/CSS ──────→ │ rebrand-component│───→│ Rensto-branded│
+│  Screenshot  │─── Image ─────────→ │ .ts (auto-token  │    │ .tsx component│
+│  URL Clone   │─── HTML ──────────→ │  replacement)    │    │ in codebase   │
+└──────────────┘                     └─────────────────┘    └──────────────┘
+                                           │
+                                     globals.css tokens
+                                     (brand-token-map.md)
+```
+
+## Workflows
+
+### Workflow 1: v0 + Claude Code (Primary — Recommended)
+
+Best for: New pages, complex components, dashboard sections, forms.
+
+**Steps:**
+1. Generate design system context with `ui-ux-pro-max`:
+   ```bash
+   python3 .claude/skills/ui-ux-pro-max/scripts/search.py "saas dark dashboard" --design-system -p "Rensto"
+   ```
+2. Craft a v0 prompt incorporating Rensto brand:
+   ```
+   Create a [component] using shadcn/ui and Tailwind CSS.
+   Dark theme: background #110d28, cards #1a153f, surfaces #17123a.
+   Primary accent: cyan #5ffbfd. Secondary accent: blue #1eaef7.
+   CTA buttons: red #fe3d51 with glow effect.
+   Text: #fffff3 primary, #b0bec5 secondary, #94a3b8 muted.
+   Use Inter font. Rounded corners (0.5rem). Subtle glow shadows.
+   ```
+3. Copy generated React/TSX code from v0
+4. Run rebrand tool: `npx tsx tools/rebrand-component.ts <file.tsx>`
+5. Integrate into codebase, verify with dev server
+
+**v0 API (Beta):** Programmatic generation available at `v0.dev/docs/api/platform/overview`.
+Supports custom Tailwind config and Shadcn Registry for design token injection.
+
+### Workflow 2: Screenshot to Component (Quick Conversion)
+
+Best for: Cloning existing UI you saw somewhere, reference designs, competitor analysis.
+
+**Steps:**
+1. Take screenshot of target UI
+2. Feed screenshot to Claude Code: "Convert this screenshot to a React/Tailwind component"
+3. Claude generates component matching the visual structure
+4. Run rebrand tool to replace generic colors with Rensto tokens
+5. Polish: add brand animations (`rensto-animate-glow`, `rensto-animate-shimmer`)
+
+**Alternative tools:**
+- **AIUI.me** (aiui.me) — Screenshot to code, free
+- **Emergent.sh** — Full-stack, analyzes spacing/hierarchy from screenshots
+- **screenshot-to-code** (github.com/abi/screenshot-to-code) — Open source
+
+### Workflow 3: Google Stitch (Visual Prototyping)
+
+Best for: Exploring multiple layout ideas quickly, early-stage wireframing, Figma handoff.
+
+**Steps:**
+1. Go to stitch.withgoogle.com
+2. Prompt with Rensto context:
+   ```
+   Design a [page type] for a SaaS platform.
+   Dark purple background (#110d28). Neon cyan accents (#5ffbfd).
+   Cards on #1a153f. Red CTAs (#fe3d51). Modern, tech-forward.
+   ```
+3. **Standard Mode**: 350 gen/month, 10-20s, Figma export available
+4. **Experimental Mode**: 50 gen/month, Gemini 3, higher quality, no Figma export
+5. Export HTML/CSS code (read-only editor, copy/paste)
+6. Convert HTML to React: Claude Code does this in one step
+7. Run rebrand tool on the converted component
+
+**MCP Integration (optional):**
+Install `@_davideast/stitch-mcp` for Claude Code integration:
+- `get_screen_code` — Retrieves screen HTML
+- `get_screen_image` — Screenshot as base64
+- `build_site` — Maps screens to Astro routes
+- Auto token refresh, Vite dev server
+
+**Limitations:**
+- No official API yet (high-priority on Google's roadmap)
+- No native design system import (prompt-based branding only)
+- Generic layouts, weak accessibility, multi-screen consistency unreliable beyond 2-3
+- HTML/CSS output, not React — requires conversion step
+
+### Workflow 4: URL/HTML Extraction (Clone & Rebrand)
+
+Best for: Specific sections from live websites you want to adapt.
+
+**Steps:**
+1. Target a live page URL
+2. Use Claude Code to fetch and extract the relevant HTML section
+3. Convert to React/Tailwind component
+4. Run rebrand tool to apply Rensto tokens
+5. Remove any external dependencies, replace with local equivalents
+
+### Workflow 5: Component Library Adaptation
+
+Best for: Data-heavy pages, standard UI patterns, admin panels.
+
+**Steps:**
+1. Browse component libraries:
+   - **shadcn/ui** (ui.shadcn.com) — Our base library
+   - **Aceternity UI** (ui.aceternity.com) — Animated, modern effects
+   - **Magic UI** (magicui.design) — Animated React components
+2. Copy the component code
+3. Run rebrand tool
+4. Customize content and behavior
+
+## Rensto Brand Token Quick Reference
+
+See `references/brand-token-map.md` for the complete mapping table.
+
+### Colors
+| Token | Hex | Use |
+|-------|-----|-----|
+| `--rensto-red` | `#fe3d51` | CTAs, primary actions, alerts |
+| `--rensto-orange` | `#bf5700` | Secondary actions, warnings |
+| `--rensto-blue` | `#1eaef7` | Links, info, secondary accent |
+| `--rensto-cyan` | `#5ffbfd` | Highlights, neon effects, emphasis |
+
+### Backgrounds
+| Token | Hex | Use |
+|-------|-----|-----|
+| `--rensto-bg-primary` | `#110d28` | Page background |
+| `--rensto-bg-secondary` | `#1a162f` | Panels, surfaces |
+| `--rensto-bg-card` | `#1a153f` | Cards |
+| `--rensto-bg-surface` | `#17123a` | Elevated surfaces |
+
+### Text
+| Token | Hex | Use |
+|-------|-----|-----|
+| `--rensto-text-primary` | `#fffff3` | Headings, body |
+| `--rensto-text-secondary` | `#b0bec5` | Descriptions |
+| `--rensto-text-muted` | `#94a3b8` | Captions, hints |
+| `--rensto-text-accent` | `#5ffbfd` | Highlighted text |
+
+### Ready-Made Classes (globals.css)
+- Cards: `.rensto-card`, `.rensto-card-neon`, `.rensto-card-gradient`
+- Inputs: `.rensto-input` (with focus glow)
+- Badges: `.rensto-badge-success`, `-warning`, `-error`, `-info`, `-neon`
+- Glows: `.rensto-glow-primary`, `-secondary`, `-accent`, `-neon`
+- Gradients: `.rensto-gradient-primary`, `-secondary`, `-brand`, `-neon`
+- Animations: `.rensto-animate-glow`, `-pulse`, `-shimmer`, `-fadeIn`
+
+## Tool Comparison Matrix
+
+| Tool | Output | React? | Design System? | API? | Best For |
+|------|--------|--------|---------------|------|----------|
+| **v0.dev** | React+shadcn | Yes | Shadcn Registry + Tailwind config | Beta | Production components |
+| **Google Stitch** | HTML/CSS/Tailwind | Partial | Prompt-based only | Not yet | Visual prototyping |
+| **Emergent.sh** | React/Next.js | Yes | Built-in | Yes | Full-stack apps |
+| **Bolt.new** | React/multi-fw | Yes | Limited | No | Quick full-page apps |
+| **Screenshot+Claude** | React/Tailwind | Yes | Manual | N/A | Cloning existing UI |
+| **Aceternity/Magic UI** | React | Yes | Via CSS vars | N/A | Animated components |
+
+## References
+
+| File | Purpose |
+|------|---------|
+| `references/brand-token-map.md` | Complete Tailwind → Rensto token mapping |
+| `globals.css` | Authoritative brand tokens, animations, components |
+| `ui-ux-pro-max/SKILL.md` | Design intelligence (styles, palettes, fonts) |
+| `tailwind.config.ts` | Tailwind theme extensions |

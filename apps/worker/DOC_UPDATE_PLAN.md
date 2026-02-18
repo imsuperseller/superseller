@@ -4,6 +4,8 @@
 **Last sync**: Feb 2026  
 **Trigger**: After major feature work (e.g. video pipeline, selective regen, new APIs).
 
+**Status**: Executed Feb 2026. Grep for PIPELINE_SPEC|TOURREEL_STATUS_AND_FIXES: all refs are explanatory (migrated/deleted); no broken links.
+
 ---
 
 ## 1. SSOT Hierarchy (What Wins When Docs Conflict)
@@ -98,7 +100,7 @@
 
 ## 6. Handover / Stray File Audit
 
-Before handover: See root `AUDIT_STRAY_AND_LEARNING.md` — stray files, learning docs (progress.md, findings.md = "never repeat"), broken refs.
+Before handover: Check findings.md (doc hygiene), progress.md, broken refs. Stray/learning audit archived.
 
 ---
 

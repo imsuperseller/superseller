@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth';
-
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com').split(',').map(e => e.trim().toLowerCase());
+import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE, ADMIN_EMAILS } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
     try {

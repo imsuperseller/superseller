@@ -11,6 +11,7 @@ import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, gen
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
+import type { KlingElement } from "../../services/kie";
 import { deriveHeroFeatures } from "../../services/hero-features";
 import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
 import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
@@ -115,13 +116,13 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 try {
                     const analysis = await analyzeFloorplan(listing.floorplan_url, listing);
                     await query("UPDATE listings SET floorplan_analysis = $1 WHERE id = $2", [JSON.stringify(analysis), listingId]);
-                    tourRooms = buildTourSequence(analysis);
+                    tourRooms = buildTourSequence(analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
                     await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
                 } catch (err: any) {
                     logger.warn({ msg: "Floorplan analysis failed, proceeding without it", error: err.message });
                 }
             } else if (listing.floorplan_analysis && tourRooms.length === 0) {
-                tourRooms = buildTourSequence(listing.floorplan_analysis);
+                tourRooms = buildTourSequence(listing.floorplan_analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
             }
 
             // 2b. Default tour when no floorplan (Zillow listings)
@@ -181,6 +182,23 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
             const forceNoRealtor = (process.env.FORCE_NO_REALTOR ?? "").toLowerCase();
             let includeRealtor = forceNoRealtor !== "1" && forceNoRealtor !== "true" && !!avatarPublic;
+
+            // Kling Elements: native character reference (replaces Nano Banana when enabled).
+            // Set USE_KLING_ELEMENTS=1 to enable. Requires avatar_url as the reference image.
+            // When enabled, realtor appears via @realtor prompt reference — no composite needed.
+            const useKlingElements = (process.env.USE_KLING_ELEMENTS ?? "").toLowerCase() === "1"
+                || (process.env.USE_KLING_ELEMENTS ?? "").toLowerCase() === "true";
+            let realtorElements: KlingElement[] | undefined;
+            if (useKlingElements && includeRealtor && avatarPublic) {
+                // Kling 3.0 Elements requires 2-4 reference images per element.
+                // When only 1 avatar available, duplicate the URL to satisfy the minimum.
+                realtorElements = [{
+                    name: "realtor",
+                    description: "Professional real estate agent showing the property. The only person in the scene.",
+                    element_input_urls: [avatarPublic, avatarPublic],
+                }];
+                logger.info({ msg: "Using Kling Elements for realtor reference", avatarUrl: avatarPublic });
+            }
 
             // Enrich property context with deep data
             const prompts = await generateClipPrompts(tourRooms, {
@@ -333,8 +351,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 photoAssignments[idx]?.photoUrl ?? null;
 
             const exteriorBeforeNano = lastFrameUrl;
-            // Progress during Nano Banana: 20→35% so user sees movement (phase can take 5–15 min)
-            const nanoTotal = 1 + clips.length;
+            // Track per-clip composite status: true = Nano Banana composite in start frame
+            const clipHasComposite: boolean[] = new Array(clips.length).fill(false);
+
+            // Nano Banana: Only composite opening (clip 1) and closing (last clip).
+            // Interior clips use property-only camera moves (no person in frame).
+            // This saves credits and avoids "realtor in every room" artifacts.
+            const nanoTargetClips = [0, clips.length - 1]; // opening + closing indices
+            const nanoTotal = nanoTargetClips.length + 1;
             let nanoDone = 0;
             const updateNanoProgress = () => {
                 nanoDone++;
@@ -342,15 +366,16 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 updateJobStatus(jobId, "generating_clips", Math.min(pct, 34));
             };
 
-            if (includeRealtor && avatarPublic) {
-                try {
-                    // Pre-generate ALL Nano Banana composites (opening + every room). Same avatar = same realtor.
-                    if (lastFrameUrl) {
+            if (includeRealtor && avatarPublic && !realtorElements) {
+                // Opening composite (clip 1): realtor on pathway approaching door
+                // Skip when using kling_elements — Kling handles person natively via @realtor reference
+                if (lastFrameUrl) {
+                    try {
                         const taskId = await createNanoBananaTask({
                             prompt: NANO_BANANA_OPENING_PROMPT,
                             image_input: [avatarPublic, lastFrameUrl],
                             aspect_ratio: "16:9",
-                            resolution: config.video.nanoBananaResolution, // 4K = sharper input for Kling
+                            resolution: config.video.nanoBananaResolution,
                             output_format: "png",
                         });
                         await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
@@ -358,51 +383,100 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         const { image_url } = await waitForNanoBananaTask(taskId);
                         frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
                         lastFrameUrl = frameUrls[0];
+                        clipHasComposite[0] = true;
                         updateNanoProgress();
-                    } else {
-                        frameUrls[0] = null;
+                    } catch (nanoErr: any) {
+                        logger.warn({ msg: "Nano Banana opening failed, clip 1 will be property-only", error: nanoErr.message });
+                        frameUrls[0] = lastFrameUrl; // fallback to exterior
                     }
-                    for (let i = 0; i < clips.length; i++) {
-                        const clip = clips[i];
-                        const roomPhoto = getPhotoForRoom((clip as any).to_room, i) || lastFrameUrl;
-                        if (!roomPhoto) {
-                            frameUrls[i + 1] = null;
-                            continue;
-                        }
-                        const roomPrompt = getNanoBananaRoomPrompt((clip as any).to_room || "Living", heroResult.hasPool, heroResult);
-                        const taskId = await createNanoBananaTask({
-                            prompt: roomPrompt,
-                            image_input: [avatarPublic, roomPhoto],
-                            aspect_ratio: "16:9",
-                            resolution: config.video.nanoBananaResolution,
-                            output_format: "png",
-                        });
-                        await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: i + 1 });
+                } else {
+                    frameUrls[0] = null;
+                }
 
-                        const { image_url } = await waitForNanoBananaTask(taskId);
-                        frameUrls[i + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${i + 1}`);
-                        updateNanoProgress();
+                // Closing composite (last clip): realtor in backyard/pool/finale room
+                const lastIdx = clips.length - 1;
+                if (lastIdx > 0) {
+                    try {
+                        const lastClip = clips[lastIdx];
+                        const roomPhoto = getPhotoForRoom((lastClip as any).to_room, lastIdx) || lastFrameUrl;
+                        if (roomPhoto) {
+                            const roomPrompt = getNanoBananaRoomPrompt((lastClip as any).to_room || "Backyard", heroResult.hasPool, heroResult);
+                            const taskId = await createNanoBananaTask({
+                                prompt: roomPrompt,
+                                image_input: [avatarPublic, roomPhoto],
+                                aspect_ratio: "16:9",
+                                resolution: config.video.nanoBananaResolution,
+                                output_format: "png",
+                            });
+                            await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: lastIdx + 1 });
+
+                            const { image_url } = await waitForNanoBananaTask(taskId);
+                            frameUrls[lastIdx + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${lastIdx + 1}`);
+                            updateNanoProgress();
+                            // Note: clipHasComposite[lastIdx] is set later when this frame becomes the start frame
+                        }
+                    } catch (nanoErr: any) {
+                        logger.warn({ msg: "Nano Banana closing failed, last clip will be property-only", error: nanoErr.message });
                     }
-                } catch (nanoErr: any) {
-                    logger.warn({ msg: "Nano Banana failed, falling back to property-only (no realtor)", error: nanoErr.message });
+                }
+
+                // If opening composite failed, don't include realtor at all
+                if (!clipHasComposite[0]) {
+                    logger.warn({ msg: "Opening composite failed, disabling realtor for entire video" });
                     includeRealtor = false;
                     lastFrameUrl = exteriorBeforeNano;
-                    frameUrls[0] = lastFrameUrl;
                 }
             }
-            if (!includeRealtor || frameUrls.length === 0) {
+            if (realtorElements) {
+                // Kling Elements mode: no composites needed, use property photos as start frames
+                frameUrls[0] = lastFrameUrl;
+            } else if (!includeRealtor || !frameUrls[0]) {
                 frameUrls[0] = lastFrameUrl;
             }
 
             for (const clip of clips) {
                 const clipIdx = clip.clip_number - 1;
-                // Start: Use EXTRACTED last frame from previous clip for true frame continuity (no visible cut).
-                // Kling doesn't output the exact last_frame we pass—it interpolates—so Nano end frames cause a mismatch.
-                // Only clip 1 uses Nano/exterior; clips 2+ use the actual last frame from the previous video.
-                const startFrame = clipIdx === 0
-                    ? (frameUrls[0] ?? lastFrameUrl)
-                    : lastFrameUrl;
-                const endFrame = includeRealtor ? (frameUrls[clipIdx + 1] ?? null) : null;
+                const isLastClip = clipIdx === clips.length - 1;
+
+                // ── Resume support: skip already-completed clips ──
+                if (clip.status === "complete" && clip.video_url) {
+                    logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number, videoUrl: clip.video_url });
+                    const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
+                    const dlResp = await fetch(clip.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                    if (!dlResp.ok) throw new Error(`Failed to download completed clip ${clip.clip_number}: HTTP ${dlResp.status}`);
+                    writeFileSync(videoPath, Buffer.from(await dlResp.arrayBuffer()));
+
+                    const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
+                    await extractLastFrame(videoPath, lastFramePath);
+                    boundaryFramePaths.push(lastFramePath);
+                    lastFrameUrl = clip.end_frame_url || await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
+
+                    const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
+                    await normalizeClip(videoPath, normalizedPath, {
+                        width: config.video.outputWidth,
+                        height: config.video.outputHeight,
+                    });
+                    clipFiles.push(normalizedPath);
+
+                    const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
+                    await updateJobStatus(jobId, "generating_clips", progress);
+                    continue;
+                }
+
+                // Start frame selection:
+                // - Clip 1: Nano Banana opening composite (realtor on pathway)
+                // - Clips 2 to N-1: extracted last frame from previous clip (seamless continuity)
+                // - Last clip: Nano Banana closing composite if available (realtor in finale), else extracted last frame
+                let startFrame: string | null;
+                if (clipIdx === 0) {
+                    startFrame = frameUrls[0] ?? lastFrameUrl;
+                } else if (isLastClip && frameUrls[clipIdx + 1]) {
+                    // Closing clip: use Nano Banana composite (realtor in backyard/pool)
+                    startFrame = frameUrls[clipIdx + 1]!;
+                    clipHasComposite[clipIdx] = true;
+                } else {
+                    startFrame = lastFrameUrl;
+                }
 
                 if (!startFrame) {
                     throw new Error(`Missing start frame for clip ${clip.clip_number}. Ensure listing has exterior_photo_url or realtor opening frame.`);
@@ -412,19 +486,34 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                 let result: { video: { url: string } } | null = null;
                 let modelUsed: string | null = null;
-                const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt } = await import("../../services/kie");
-                // When realtor in frame (Nano composite): do NOT use clip.prompt—it describes realtor actions and triggers Kling to add a second figure.
-                // Use minimal camera+room-only prompt. No person action description.
-                const klingPrompt = includeRealtor
-                    ? buildRealtorOnlyKlingPrompt(clip)
-                    : clip.prompt;
+                const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
+
+                // Per-clip prompt selection: 3 modes
+                // 1. kling_elements mode: use @realtor reference prompt (no Nano composite needed)
+                // 2. Nano composite mode: use camera-only prompt (person already in start frame)
+                // 3. Property-only mode: use property prompt (no person references)
+                const thisClipHasComposite = clipHasComposite[clipIdx];
+                let klingPrompt: string;
+                let clipElements: KlingElement[] | undefined;
+
+                if (realtorElements && includeRealtor) {
+                    // Kling Elements mode: native character reference across ALL clips
+                    klingPrompt = buildElementsKlingPrompt(clip);
+                    clipElements = realtorElements;
+                } else if (thisClipHasComposite) {
+                    // Nano Banana composite mode: person is in the start frame
+                    klingPrompt = buildRealtorOnlyKlingPrompt(clip);
+                } else {
+                    // Property-only: no person in frame
+                    klingPrompt = buildPropertyOnlyKlingPrompt(clip);
+                }
 
                 // Kling 3.0 ONLY. No Veo fallback. Per TOURREEL_REALTOR_HANDOFF_SPEC.
-                // Single image only (no last_frame) — matches working 4555169. Two-frame was causing Kie 500.
                 const taskId = await createKlingTask({
                     prompt: klingPrompt,
                     image_url: startFrame,
-                    realtor_in_frame: includeRealtor,
+                    realtor_in_frame: thisClipHasComposite,
+                    kling_elements: clipElements,
                     negative_prompt: (clip as any).negative_prompt,
                     mode: config.video.klingMode, // pro=1080p native; std=720p (causes blur when upscaled)
                     aspect_ratio: "16:9",

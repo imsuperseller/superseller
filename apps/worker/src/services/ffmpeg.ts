@@ -34,7 +34,7 @@ export async function normalizeClip(
         "-vf", `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
         "-r", String(fps),
         "-c:v", "libx264",
-        "-preset", "fast",
+        "-preset", "medium", // balanced quality/speed; "fast" trades quality for speed
         "-crf", "18",
         "-an",
         "-movflags", "+faststart",
@@ -271,26 +271,27 @@ export async function generateVariants(
     const portrait = join(outputDir, "portrait.mp4");
     const thumbnail = join(outputDir, "thumb.jpg");
 
+    // Use -threads 2 and -preset veryfast to prevent OOM on low-memory VPS (5.8G RAM)
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
         "-vf", "crop=ih*9/16:ih:(iw-ih*9/16)/2:0,scale=1080:1920",
-        "-c:v", "libx264", "-crf", "20", "-c:a", "copy",
+        "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", vertical,
-    ], { timeout: 120000 });
+    ], { timeout: 300000 });
 
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
         "-vf", "crop=ih:ih:(iw-ih)/2:0,scale=1080:1080",
-        "-c:v", "libx264", "-crf", "20", "-c:a", "copy",
+        "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", square,
-    ], { timeout: 120000 });
+    ], { timeout: 300000 });
 
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
         "-vf", "crop=ih*4/5:ih:(iw-ih*4/5)/2:0,scale=1080:1350",
-        "-c:v", "libx264", "-crf", "20", "-c:a", "copy",
+        "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", portrait,
-    ], { timeout: 120000 });
+    ], { timeout: 300000 });
 
     await execFileAsync("ffmpeg", [
         "-i", masterPath,

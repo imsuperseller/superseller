@@ -23,7 +23,24 @@
 | **docs/** | Documentation: **docs/frameworks/**, **docs/templates/tourreel/**, **docs/n8n/N8N_WORKFLOWS_CATALOG.md**, **docs/NOTEBOOKLM_INDEX.md** |
 | **security/** | Security policies, credential rotation |
 | **.cursor/** | Agent rules, context, MCP status |
-| **.claude/skills/** | Agent skills (n8n, Tax4Us, workflow generator) |
+| **.claude/skills/** | Agent skills (antigravity, database, rag-pgvector, stripe-credits, tourreel-pipeline, ui-design-workflow, ui-ux-pro-max) |
+
+---
+
+---
+
+## Monitoring & Observability Layer
+
+| Path | Purpose |
+|------|---------|
+| `src/lib/monitoring/service-registry.ts` | Central config for 10 monitored services |
+| `src/lib/monitoring/health-checker.ts` | Concurrent health checks, DB persistence, uptime calc |
+| `src/lib/monitoring/alert-engine.ts` | Alert rules evaluation, cooldown, email/audit notifications |
+| `src/lib/monitoring/expense-tracker.ts` | API cost tracking, anomaly detection |
+| `src/components/admin/SystemMonitor.tsx` | Admin UI (Services, Alerts, Expenses views) |
+| `src/app/api/admin/monitoring/route.ts` | Health check API |
+| `src/app/api/admin/alerts/route.ts` | Alert management API |
+| DB: `service_health`, `alert_rules`, `alert_history`, `api_expenses` | 4 monitoring tables |
 
 ---
 

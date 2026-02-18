@@ -23,6 +23,9 @@ When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If 
 | **Bibles** | `docs/INFRA_SSOT.md`, `docs/PRODUCT_BIBLE.md` — infrastructure and product facts needed for builds and deploys |
 | **Code comments** | Inline docs for complex logic |
 | **Schema files** | Prisma, Drizzle — truth for data shape |
+| **Monitoring** | Service registry, health checks, alerts, expense tracking (`src/lib/monitoring/`) |
+| **Agent skills** | `.claude/skills/` — operational intelligence (9 skills) |
+| **Tools** | `tools/rebrand-component.ts` — automated rebranding for external UI |
 | **Config files** | `package.json`, `tsconfig`, `next.config` |
 
 ---

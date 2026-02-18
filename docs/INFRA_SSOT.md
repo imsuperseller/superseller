@@ -18,6 +18,7 @@
 | **LLM** | Prompt Gen / Intelligence | **Gemini Flash (Primary)** | ✅ Active |
 | **Video AI** | Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
 | **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook | ✅ Integrated |
+| **Embeddings** | Vector embeddings for RAG | **Ollama** (nomic-embed-text, RackNerd) | ✅ Active |
 
 ---
 
@@ -85,6 +86,50 @@ npm audit --audit-level=high
 1. **Environment Variables**: `NEXT_PUBLIC_*` vars have fallbacks; `POSTGRES_PASSWORD` must be ≥16 chars.
 2. **Security**: No exposed ports in production; HTTPS mandatory via Cloudflare.
 3. **Data Consistency**: Timezone: `America/Chicago` globally.
+
+---
+
+## 5b. Monitoring & Observability
+
+### Admin Monitoring Dashboard
+- **Location**: `rensto.com/admin` → "System Monitor" tab
+- **API**: `GET/POST /api/admin/monitoring`, `GET/POST /api/admin/alerts`
+
+### Service Registry (10 monitored services)
+| Service | Category | Health Check | Alert Threshold |
+|---------|----------|-------------|-----------------|
+| PostgreSQL | infrastructure | `SELECT 1` via Prisma | 2 failures / 15min cooldown |
+| Worker (RackNerd) | infrastructure | HTTP `172.245.56.50:3002/api/health` | 2 failures / 15min cooldown |
+| Vercel | infrastructure | HTTP `rensto.com/api/health` | 3 failures / 30min cooldown |
+| Ollama | infrastructure | HTTP `172.245.56.50:11434/api/tags` | 3 failures / 30min cooldown |
+| Kie.ai | api | HTTP `api.klingai.com/v1/models` | 2 failures / 15min cooldown |
+| Gemini | api | Generative AI ping | 3 failures / 30min cooldown |
+| Resend | api | HTTP `api.resend.com/domains` | 3 failures / 60min cooldown |
+| Stripe | api | HTTP `api.stripe.com/v1/balance` | 2 failures / 15min cooldown |
+| Prisma Migrations | database | Migration status check | 1 failure / 60min cooldown |
+| n8n | backup | HTTP `172.245.56.50:5678/healthz` | 5 failures / 120min cooldown |
+
+### Expense Tracking
+Known API rates: Kling Pro $0.10/clip, Kling Std $0.03/clip, Suno $0.02/music, Gemini Flash $0.001/prompt, Resend $0.001/email.
+Anomaly detection: daily spend > 2x rolling 7-day average.
+
+### Ollama (Embedding Service)
+- **Host**: `172.245.56.50:11434` (RackNerd VPS, CPU-only)
+- **Model**: `nomic-embed-text` (768-dim vectors, 8192-token context)
+- **Config**: Systemd override at `/etc/systemd/system/ollama.service.d/override.conf`
+  - `OLLAMA_KEEP_ALIVE=0` (immediate unload after request — mandatory for 6GB server)
+  - `OLLAMA_MAX_LOADED_MODELS=1`, `NUM_PARALLEL=1`, `FLASH_ATTENTION=1`
+  - `HOST=0.0.0.0` (accessible from all interfaces)
+- **RAM usage**: ~500MB-1.2GB when active, 0 when idle (KEEP_ALIVE=0)
+- **Verify**: `curl http://172.245.56.50:11434/api/tags`
+
+### DB Tables (Monitoring)
+| Table | Purpose |
+|-------|---------|
+| `service_health` | Health check results (indexed: service_id, category, checked_at) |
+| `alert_rules` | Alert rule definitions with cooldown and channels |
+| `alert_history` | Fired alerts with resolution tracking |
+| `api_expenses` | Per-call API cost tracking (indexed: service, job_id, created_at) |
 
 ---
 

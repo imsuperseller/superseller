@@ -1,0 +1,87 @@
+---
+name: stripe-credits
+description: >
+  Stripe integration and credit-based billing for Rensto SaaS.
+  Covers credit ledger, subscriptions ($299/$699/$1499), payment webhooks,
+  usage tracking, and provisioning. Use for any billing, credits, or Stripe work.
+autoTrigger:
+  - "credits"
+  - "stripe"
+  - "billing"
+  - "payment"
+  - "subscription"
+negativeTrigger:
+  - "video pipeline"
+  - "UI design"
+  - "n8n"
+---
+
+# Stripe Credits Management
+
+## When to Use
+Use when working on billing, credits, subscriptions, payment webhooks, or usage tracking. Not for video pipeline, UI/UX design, or n8n workflows.
+
+## Critical Rules
+1. **Credits are the universal currency.** All SaaS products consume credits. Never bypass the credit check.
+2. **50 credits per TourReel video, 10 per regen clip.** These are canonical costs. Do not change without updating PRODUCT_BIBLE.md.
+3. **Stripe webhook is the source of truth for payments.** Never trust client-side payment confirmation.
+4. **UnrecoverableError for insufficient credits.** BullMQ must NOT retry when credits are insufficient (prevents double-charging Kie.ai).
+
+## Architecture
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `apps/web/rensto-site/src/lib/credits.ts` | Credit balance, deduction, top-up logic (web) |
+| `apps/worker/src/services/credits.ts` | Worker-side credit checks before Kie.ai calls |
+| `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (provisioning) |
+| `apps/web/rensto-site/src/lib/services/ProvisioningService.ts` | Subscription → credit grant logic |
+| `apps/web/rensto-site/src/app/api/video/subscribe/route.ts` | Subscription checkout creation |
+| `apps/web/rensto-site/src/app/api/video/credits/route.ts` | Credit balance endpoint |
+| `apps/web/rensto-site/src/app/api/video/usage/route.ts` | Usage history endpoint |
+
+### Database Tables
+- **UsageEvent** (Prisma): `id, userId, type (event_type), amount, jobId, createdAt` — Types: debit, refund, topup, grant, reset
+- **users** (Drizzle): `credits_balance, tier, monthly_limit` — Worker reads this for gating
+- **Subscription** (Prisma): `userEmail, stripeSubscriptionId, currentPeriodStart, currentPeriodEnd`
+- **Payment** (Prisma): `userId, amount, status, flowType, stripeSessionId`
+
+### Subscription Tiers (Canonical)
+| Plan | Price | Credits | Stripe Product |
+|------|-------|---------|----------------|
+| Starter | $299/mo | 500 | STRIPE_STARTER_PRICE_ID |
+| Pro | $699/mo | 1,500 | STRIPE_PRO_PRICE_ID |
+| Enterprise | $1,499/mo | 4,000 | STRIPE_ENTERPRISE_PRICE_ID |
+
+## Common Patterns
+
+### Check + Deduct Credits (Worker)
+```typescript
+import { checkCredits, deductCredits } from '../services/credits';
+import { UnrecoverableError } from 'bullmq';
+
+const balance = await checkCredits(userId);
+if (balance < COST) {
+  throw new UnrecoverableError('Insufficient Credits');
+}
+await deductCredits(userId, COST, jobId);
+```
+
+### Stripe Webhook Flow
+```
+Stripe checkout.session.completed
+  → Verify signature (STRIPE_WEBHOOK_SECRET)
+  → Extract metadata (userId, plan, credits)
+  → ProvisioningService.provisionSubscription()
+  → Grant credits to user
+  → Create UsageEvent (type: 'grant')
+```
+
+## Troubleshooting
+Common Stripe webhook issues: verify `STRIPE_WEBHOOK_SECRET` matches, check event types in route handler, ensure idempotency via `checkout.session.id`. See `findings.md` for past issues.
+
+## References
+- PRODUCT_BIBLE.md § SaaS Billing — Canonical pricing
+- NotebookLM 719854ee — Subscription tiers and pricing
+- `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` — Webhook handler
+- `apps/web/rensto-site/src/lib/credits.ts` — Credit balance logic

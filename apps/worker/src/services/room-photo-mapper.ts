@@ -12,6 +12,8 @@ export interface RoomPhotoInput {
     additionalPhotos: string[];
     /** From deriveHeroFeatures. Affects pool/backyard photo selection. */
     heroResult: HeroFeaturesResult;
+    /** Optional AI vision override: clipIndex -> photoIndex into usePhotos. When set, use instead of heuristic. */
+    visionOverride?: Map<number, number>;
 }
 
 export interface ClipPhotoAssignment {
@@ -24,9 +26,13 @@ export interface ClipPhotoAssignment {
 }
 
 /**
- * usePhotos: primary pool for room assignment. Prefer additional when present, else exterior.
+ * usePhotos: primary pool for room assignment. When visionOverride: use [exterior, ...additional] so AI indices match.
+ * Otherwise: additional when present, else [exterior].
  */
-function buildUsePhotos(exteriorUrl: string | null, additionalPhotos: string[]): string[] {
+function buildUsePhotos(exteriorUrl: string | null, additionalPhotos: string[], hasVisionOverride?: boolean): string[] {
+    if (hasVisionOverride && exteriorUrl) {
+        return [exteriorUrl, ...additionalPhotos];
+    }
     if (additionalPhotos.length > 0) return additionalPhotos;
     return exteriorUrl ? [exteriorUrl] : [];
 }
@@ -39,8 +45,8 @@ export function assignPhotosToClips(
     clips: { clip_number: number; to_room: string }[],
     input: RoomPhotoInput
 ): ClipPhotoAssignment[] {
-    const { exteriorUrl, additionalPhotos, heroResult } = input;
-    const usePhotos = buildUsePhotos(exteriorUrl, additionalPhotos);
+    const { exteriorUrl, additionalPhotos, heroResult, visionOverride } = input;
+    const usePhotos = buildUsePhotos(exteriorUrl, additionalPhotos, !!visionOverride);
 
     if (usePhotos.length === 0) {
         return clips.map((c) => ({
@@ -63,24 +69,29 @@ export function assignPhotosToClips(
         let source: "exterior" | "additional" | "fallback" = "additional";
         let photoIndex: number;
 
-        const poolOrBackyard = r.includes("pool") || r.includes("backyard") || r.includes("patio") || r.includes("deck");
-        if (poolOrBackyard && heroResult.hasPool && usePhotos.length > 2) {
-            photoIndex = usePhotos.length - 1;
-            photoUrl = usePhotos[photoIndex] ?? usePhotos[photoIndex - 1] ?? usePhotos[0];
-        } else if ((r.includes("exterior") || r.includes("front")) && r.includes("door")) {
-            photoUrl = usePhotos[0] || exteriorUrl || usePhotos[0];
-            photoIndex = 0;
-            source = exteriorUrl && photoUrl === exteriorUrl ? "exterior" : "additional";
-        } else if (r.includes("exterior") && !r.includes("front")) {
-            photoUrl = exteriorUrl || usePhotos[0];
-            photoIndex = 0;
-            source = exteriorUrl ? "exterior" : "additional";
-        } else if (r.includes("foyer") || r.includes("entry")) {
-            photoIndex = Math.min(1, usePhotos.length - 1);
+        if (visionOverride?.has(i)) {
+            photoIndex = Math.min(Math.max(0, visionOverride.get(i)!), usePhotos.length - 1);
             photoUrl = usePhotos[photoIndex] || usePhotos[0];
         } else {
-            photoIndex = Math.min(i, usePhotos.length - 1);
-            photoUrl = usePhotos[photoIndex] || usePhotos[0];
+            const poolOrBackyard = r.includes("pool") || r.includes("backyard") || r.includes("patio") || r.includes("deck");
+            if (poolOrBackyard && heroResult.hasPool && usePhotos.length > 2) {
+                photoIndex = usePhotos.length - 1;
+                photoUrl = usePhotos[photoIndex] ?? usePhotos[photoIndex - 1] ?? usePhotos[0];
+            } else if ((r.includes("exterior") || r.includes("front")) && r.includes("door")) {
+                photoUrl = usePhotos[0] || exteriorUrl || usePhotos[0];
+                photoIndex = 0;
+                source = exteriorUrl && photoUrl === exteriorUrl ? "exterior" : "additional";
+            } else if (r.includes("exterior") && !r.includes("front")) {
+                photoUrl = exteriorUrl || usePhotos[0];
+                photoIndex = 0;
+                source = exteriorUrl ? "exterior" : "additional";
+            } else if (r.includes("foyer") || r.includes("entry")) {
+                photoIndex = Math.min(1, usePhotos.length - 1);
+                photoUrl = usePhotos[photoIndex] || usePhotos[0];
+            } else {
+                photoIndex = Math.min(i, usePhotos.length - 1);
+                photoUrl = usePhotos[photoIndex] || usePhotos[0];
+            }
         }
 
         assignments.push({

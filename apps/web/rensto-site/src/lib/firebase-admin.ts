@@ -72,5 +72,5 @@ export function getFirestoreAdmin(): never {
 export const COLLECTIONS = {} as Record<string, string>;
 
 // Re-export types (no Firestore runtime)
-export * from '@/types/firestore';
+export * from '@/types/legacy-types';
 export * from '@/types/entitlements';

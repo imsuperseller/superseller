@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-e
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Progress } from '@/components/ui/progress';
-import { Template } from '@/types/firestore';
+import { Template } from '@/types/legacy-types';
 import { Activity, Shield, Terminal, RefreshCw, Zap, Cpu } from 'lucide-react';
 
 interface AgentStatus {

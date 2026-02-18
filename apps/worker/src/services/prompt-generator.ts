@@ -199,11 +199,14 @@ THE REALTOR AS HOST:
 - SILENT: The realtor NEVER speaks. Lips closed at all times. No mouth movement, no talking. Gesturing only. Silent walkthrough.
 
 CINEMATIC RULES:
-1. CAMERA MOVEMENT: specify ONE primary movement (forward dolly, tracking, push-in, pan, door-push).
+1. CAMERA MOVEMENT: specify ONE primary movement per clip (slow dolly forward, steadicam glide, gentle push-in, lateral tracking, slow pan). Use CINEMATIC vocabulary—not generic words like "moves" or "goes."
 2. CAMERA HEIGHT: Stable eye level (5ft)—the buyer's perspective. Ground level. NEVER aerial, drone, or wide shot from above.
-3. CONTINUITY: Frame-chain continuity. The END frame of Clip N IS the START frame of Clip N+1. One continuous walk—no cuts, no transitions between scenes. The realtor walks seamlessly from room to room; each clip continues exactly where the previous ended.
-4. SPATIAL LOGIC: Hero moments (pool, kitchen, fireplace, view, master suite). When pointing them out, the realtor faces the guest (camera).
-5. POOL SAFETY: For pool/backyard clips: realtor STANDS on the deck or patio, well back from the pool edge. Faces the guest and gestures toward the pool. NEVER walks toward the water. Safe distance at all times.
+3. TEMPORAL FLOW: Every prompt must describe how the shot EVOLVES — beginning, middle, end. Example: "Camera begins with a wide view of the kitchen, slowly dollies forward revealing the marble island, then settles on the window view."
+4. CONTINUITY: Frame-chain continuity. The END frame of Clip N IS the START frame of Clip N+1. One continuous walk—no cuts. Each clip continues exactly where the previous ended.
+5. ONE ROOM PER CLIP: Each clip shows ONE room. Never ask the camera to move between rooms within a single clip. Room transitions happen at cut points.
+6. SPATIAL LOGIC: Hero moments (pool, kitchen, fireplace, view, master suite). When pointing them out, the realtor faces the guest (camera).
+7. POOL SAFETY: For pool/backyard clips: realtor STANDS on the deck or patio, well back from the pool edge. Faces the guest and gestures toward the pool. NEVER walks toward the water. Safe distance at all times.
+8. SPATIAL INTEGRITY: NEVER describe movement through walls, doors, or furniture. The camera stays in walkable space. "Preserve exact architecture" in every prompt.
 
 CRITICAL - OPENING CLIP (Exterior → Front Door, always Clip 1):
 - The realtor starts ON the pathway or walkway to the house, walking TOWARD the front door (approach walk). The buyer (camera) follows. NOT realtor standing at the door—realtor is on the path, approaching.

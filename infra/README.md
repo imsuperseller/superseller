@@ -4,7 +4,7 @@
 
 **Current Size:** ~330M (260M node_modules, 70M source code)
 
-**Last Audit:** February 2026 | **Workflow JSONs:** Loose workflow variants moved to `archive/workflow-variants/`. Canonical production workflow: **`unified_marketplace_master_production.json`** at infra root. Generated/exported JSONs: **`workflow-artifacts/`** (gitignored). **n8n scripts:** **`n8n-scripts/`** (canonical push/validate); one-off scripts in `n8n-scripts/archive/`.
+**Last Audit:** February 2026 | **Workflow JSONs:** Canonical production workflow: **`unified_marketplace_master_production.json`** at infra root. Generated/exported JSONs: **`workflow-artifacts/`** (gitignored). **n8n scripts:** **`n8n-scripts/`** (canonical push/validate); one-off scripts in `n8n-scripts/archive/`.
 
 ---
 
@@ -44,7 +44,7 @@ infra/
 | **webflow-mcp-server** | 48M | infra/mcp-servers/webflow-mcp-server/ | Webflow CMS (⚠️ Webflow retired; legacy only) |
 | **make-mcp-server** | 31M | infra/mcp-servers/make-mcp-server/ | Make.com workflow automation |
 | **typeform-mcp-server** | 22M | infra/mcp-servers/typeform-mcp-server/ | Typeform forms & responses |
-| **quickbooks-mcp-server** | 7.6M | infra/mcp-servers/quickbooks-mcp-server/ | QuickBooks financial data |
+| **quickbooks-online-mcp-server** | Node.js | infra/mcp-servers/quickbooks-online-mcp-server/ | QuickBooks Online (canonical). quickbooks-mcp-server = legacy Java, disabled. |
 | **tidycal-mcp-server** | 7.4M | infra/mcp-servers/tidycal-mcp-server/ | TidyCal scheduling |
 
 **Total Local**: ~132M (includes node_modules)

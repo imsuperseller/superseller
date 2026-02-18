@@ -8,15 +8,18 @@
 
 ## 🎨 Design System & Visual Tokens
 
-### Core Design Tokens
+### Core Design Tokens — "Spotlight Dark Mode"
 These tokens are the canonical source for all Rensto web applications (Next.js/React).
+Verified against `apps/web/rensto-site/src/app/globals.css` and NotebookLM 286f3e4a + 719854ee.
 ```css
---background: #0B1318
---card: #111827
---text: #E5E7EB
---muted: #94A3B8
---accent1: #2F6A92
---accent2: #FF6536
+--rensto-bg-primary: #110d28
+--rensto-bg-secondary: #1a1145
+--rensto-text: #E5E7EB
+--rensto-muted: #94A3B8
+--rensto-red: #fe3d51          /* Primary brand red */
+--rensto-orange: #bf5700       /* Secondary orange */
+--rensto-blue: #1eaef7         /* Accent blue */
+--rensto-cyan: #5ffbfd         /* Accent cyan */
 --border: rgba(255,255,255,0.08)
 --radius: 1rem
 --shadow: 0 10px 30px rgba(0,0,0,0.25)
@@ -56,15 +59,22 @@ All products must align with one of these tactical pillars:
 
 ## 3. SaaS Billing & Credit Logic (Postgres-Driven)
 
-Products operate on a **Usage-Based Credit** system or **Tiered Subscriptions**.
+Products operate on a **Credit-Based Subscription** system. Credits are the universal currency.
 
-| Plan | Agent Limit | Run Limit | Storage | Purpose |
+| Plan | Price | Credits | Tier Name | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| **Starter** | 2 | 100/mo | 5GB | SMB / Solo |
-| **Growth** | 10 | 1,000/mo | 50GB | Established Business |
-| **Scale** | Unlimited | 5,000/mo | 500GB| Enterprise / High-Volume |
+| **Starter** | $299/mo | 500 | Starter | SMB / Solo |
+| **Pro** | $699/mo | 1,500 | Growing Crew | Established Business |
+| **Enterprise** | $1,499/mo | 4,000 | Local Empire | High-Volume / Agency |
 
-*Self-serving top-ups allow users to buy additional Credits for specific agent runs.*
+### Per-Product Credit Costs
+| Product | Credits per Unit |
+| :--- | :--- |
+| **TourReel** (video) | 50 credits/video |
+| **TourReel** (regen clip) | 10 credits/scene |
+| **FB Autoposter** | Credits per listing activation |
+
+*Self-serving top-ups allow users to buy additional Credits. Stripe checkout handles subscriptions via `/api/video/subscribe`.*
 
 ---
 
@@ -100,4 +110,4 @@ Products operate on a **Usage-Based Credit** system or **Tiered Subscriptions**.
 4. Active → Retention (Lifecycle) ❌ Not built
 
 ### Admin Portal
-admin.rensto.com. Next.js, Tailwind. Demo: admin@rensto.com / admin123. Needs redesign for 4 service types.
+admin.rensto.com. Next.js, Tailwind, shadcn/ui. Auth: magic-link for ADMIN_EMAILS (service@rensto.com, admin@rensto.com). 14 tabs including dashboard, CRM, treasury, analytics, AI agents, support queue, launch control.

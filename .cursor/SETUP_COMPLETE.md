@@ -57,8 +57,8 @@ This allows you to:
 **Status**: Not configured - file never existed in backup
 
 **Options if needed later**:
-1. **Python-based MCP** (MCP certified)
-   - Repo: https://github.com/nikhilgy/quickbooks-mcp-server
+1. **QuickBooks Online MCP** (canonical)
+   - infra/mcp-servers/quickbooks-online-mcp-server/ (Node.js)
    - Requirements: Python 3.12.6 ✅, uv ✅ (both installed)
    - Setup needed: REFRESH_TOKEN, COMPANY_ID, ENV
 

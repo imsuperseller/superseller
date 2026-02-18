@@ -63,7 +63,7 @@ export async function POST(req: Request) {
                         provisioning = await ProvisioningService.provisionCredits({
                             email: customerEmail,
                             amount: creditAmount,
-                            type: 'topup',
+                            type: 'credit_topup',
                             stripeSessionId: session.id,
                         });
                         await emails.invoiceReceipt(
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
                         10
                     );
                     if (creditsPerCycle > 0) {
-                        await CreditService.addCredits(sub.userId, creditsPerCycle, 'reset', {
+                        await CreditService.addCredits(sub.userId, creditsPerCycle, 'credit_reset', {
                             stripeInvoiceId: invoice.id,
                             stripeSubscriptionId: subscriptionId,
                             billingReason: invoice.billing_reason || 'subscription_cycle',

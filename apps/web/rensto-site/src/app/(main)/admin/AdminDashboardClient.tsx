@@ -43,10 +43,11 @@ import VaultManagement from '@/components/admin/VaultManagement';
 import TreasuryManagement from '@/components/admin/TreasuryManagement';
 import TerryAssistant from '@/components/admin/TerryAssistant';
 import EcosystemMap from '@/components/admin/EcosystemMap';
+import SystemMonitor from '@/components/admin/SystemMonitor';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
-import { Template } from '@/types/firestore';
+import { Template } from '@/types/legacy-types';
 import { SupportCase } from '@/types/support';
 import { NoiseTexture } from '@/components/ui/premium/NoiseTexture';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
@@ -321,6 +322,7 @@ export default function AdminDashboardClient({
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
                                 { id: 'landing', label: 'Landing Content', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
+                                { id: 'monitor', label: 'System Monitor', icon: Activity },
                                 { id: 'vault', label: 'Vault & Infra', icon: ShieldCheck },
                                 { id: 'treasury', label: 'Treasury', icon: DollarSign },
                                 { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -605,6 +607,9 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'launch' && (
                             <LaunchControlCenter />
+                        )}
+                        {activeTab === 'monitor' && (
+                            <SystemMonitor />
                         )}
                         {activeTab === 'vault' && (
                             <VaultManagement />

@@ -1169,6 +1169,85 @@ model Audit {
   @@index([createdAt])
 }
 
+/// Service health check results (monitoring system)
+model ServiceHealth {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  serviceId String   @map("service_id")
+  name      String
+  category  String   // infrastructure, api, database, backup
+  status    String   // healthy, degraded, down, unknown
+  latencyMs Int?     @map("latency_ms")
+  message   String?
+  details   Json?
+
+  checkedAt DateTime @default(now()) @map("checked_at")
+
+  @@index([serviceId])
+  @@index([category])
+  @@index([checkedAt])
+  @@map("service_health")
+}
+
+/// Alert rules for monitoring thresholds
+model AlertRule {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  serviceId      String   @map("service_id")
+  condition      String   // service_down, latency_high, error_rate_high, spending_spike
+  threshold      Float
+  cooldownMinutes Int     @default(30) @map("cooldown_minutes")
+  channels       Json     // string[] — email, audit_log
+  enabled        Boolean  @default(true)
+
+  lastFiredAt    DateTime? @map("last_fired_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([serviceId])
+  @@index([enabled])
+  @@map("alert_rules")
+}
+
+/// Alert history log (fired alerts)
+model AlertHistory {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ruleId      String?  @db.Uuid @map("rule_id")
+  serviceId   String   @map("service_id")
+  severity    String   // critical, warning, info
+  condition   String
+  message     String
+  resolved    Boolean  @default(false)
+  resolvedAt  DateTime? @map("resolved_at")
+  details     Json?
+
+  firedAt     DateTime @default(now()) @map("fired_at")
+
+  @@index([serviceId])
+  @@index([severity])
+  @@index([resolved])
+  @@index([firedAt])
+  @@map("alert_history")
+}
+
+/// API expense tracking per external call
+model ApiExpense {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  service       String   // kie, gemini, resend, r2_storage, stripe_fees, ollama
+  operation     String   // e.g. kling_clip, suno_music, gemini_flash, send_email
+  estimatedCost Float    @map("estimated_cost") // USD
+  currency      String   @default("USD")
+  jobId         String?  @db.Uuid @map("job_id")
+  userId        String?  @db.Uuid @map("user_id")
+  metadata      Json?
+
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([service])
+  @@index([jobId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("api_expenses")
+}
+
 /// Pre-launch task management
 model LaunchTask {
   id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

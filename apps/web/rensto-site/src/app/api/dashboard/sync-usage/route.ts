@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * SECURE DATA BRIDGE
- * Allows n8n to push real execution metrics into Postgres (and Firestore backup)
+ * Allows n8n to push real execution metrics into Postgres
  * for the Client Dashboard.
  */
 export async function POST(request: Request) {

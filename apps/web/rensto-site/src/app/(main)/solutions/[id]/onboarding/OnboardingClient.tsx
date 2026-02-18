@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FormField } from '@/types/firestore';
+import { FormField } from '@/types/legacy-types';
 import {
     ArrowLeft,
     Send,

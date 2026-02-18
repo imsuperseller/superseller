@@ -6,6 +6,171 @@
 
 ---
 
+## 2026-02-17 — Post-Change Cross-Reference Audit (Session 4 cont.)
+
+### Full Audit After Massive Changes (DONE)
+
+Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues found, 0 breaking. All fixed.**
+
+**Code fixes applied:**
+- `ClientDashboardClient.tsx`: "Submit Issue to n8n Resolver" → "Contact Support" (was a mailto:support@rensto.com anyway)
+- `sync-usage/route.ts`: Removed "(and Firestore backup)" from comment
+- `entitlements/route.ts`: "[MIGRATION] Phase 1: Firestore fallback" → "Firestore fully retired Feb 2026"
+- `proposals/generate/route.ts`: `firestoreId` → `recordId`, removed "Firestore storage" from features array
+
+**Doc updates applied:**
+- `INFRA_SSOT.md`: Added §5b Monitoring & Observability (service registry table, expense tracking rates, Ollama connection details, 4 monitoring DB tables)
+- `REPO_MAP.md`: Added monitoring path, tools path, skills path (9 skills)
+- `ARCHITECTURE.md`: Added Monitoring & Observability Layer section (8 paths), fixed skills list from "n8n, Tax4Us, workflow generator" to actual current skills
+- `DECISIONS.md`: Added §9 n8n Paradigm, §10 Monitoring Strategy, §11 UI Design Workflow
+- `CODEBASE_VS_NOTEBOOKLM.md`: Added monitoring, agent skills, tools to "What Belongs in Codebase" table
+
+**Skill ghost references fixed (15 broken → 0):**
+- `tourreel-pipeline`: Replaced `references/prompting-rules.md`, `troubleshooting.md`, `kling-api-patterns.md`, `scene-management.md` with actual file paths
+- `database-management`: Replaced `references/schema-sync.md`, `migration-patterns.md` with inline content + real file paths
+- `stripe-credits`: Replaced `references/webhook-patterns.md`, `credit-calculation.md` with inline content + real file paths
+- `antigravity-automation`: Replaced `references/migration-from-n8n.md` with inline content + real file paths
+- `rag-pgvector`: Replaced 5 ghost references with INFRA_SSOT.md, findings.md, DECISIONS.md
+
+**Firestore types rename:**
+- `src/types/firestore.ts` → `src/types/legacy-types.ts` with deprecation header
+- All 12 imports updated across admin, fulfillment, marketplace, home page components
+- `firebase-admin.ts` re-export updated
+
+**Residue files cleaned (10 deleted):**
+- `CONFLICT_AUDIT.md` — key port/process content merged to findings.md
+- `CODEBASE_AUDIT.md` — content already in REPO_MAP.md
+- `.claude/skills/AUDIT_REPORT.md` — key skills findings merged to findings.md
+- `apps/worker/SESSION_AUDIT.md` — content already in findings.md
+- `apps/worker/VIDEO_QUALITY_AUDIT.md` — content already in findings.md
+- `11.txt`, `13.txt`, `16.txt`, `4.txt`, `6.txt` — scratch files (Tax4Us, API docs)
+
+**Verification results:**
+- n8n="backup only" — ✅ consistent across ALL 11 docs (zero contradictions)
+- Monitoring infrastructure — ✅ correctly integrated (imports, Prisma schema, tab wiring, email template)
+- Tailwind config — ✅ has all rensto brand color extensions
+- Skills list — ✅ updated from stale "n8n, Tax4Us, workflow generator" to current 8 active skills
+
+---
+
+## 2026-02-17 — Admin Monitoring Dashboard + n8n Paradigm Fix (Session 4 cont.)
+
+### Admin Monitoring Dashboard (DONE)
+
+**New files created:**
+- `src/lib/monitoring/service-registry.ts` — Central config for 10 monitored services (PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, Stripe, Prisma migrations, n8n-as-backup)
+- `src/lib/monitoring/health-checker.ts` — Concurrent health checks, DB persistence, uptime calculation, history
+- `src/lib/monitoring/alert-engine.ts` — Alert rules evaluation, cooldown, email/audit notifications, auto-resolve on recovery, default rules seeding
+- `src/lib/monitoring/expense-tracker.ts` — API cost tracking (Kie, Gemini, Resend, R2, Stripe fees), daily/trend/customer breakdowns, anomaly detection (2x 7-day avg)
+- `src/components/admin/SystemMonitor.tsx` — Full admin UI with 3 views (Services grid, Alerts, Expenses)
+- `src/app/api/admin/monitoring/route.ts` — GET (cached status) + POST (run checks, seed rules)
+- `src/app/api/admin/alerts/route.ts` — GET (active/history/rules) + POST (resolve, toggle, create)
+
+**DB tables created (via SQL):**
+- `service_health` — Health check results with indexes on service_id, category, checked_at
+- `alert_rules` — Alert rule definitions with cooldown and channels
+- `alert_history` — Fired alerts with resolution tracking
+- `api_expenses` — Per-call API cost tracking
+
+**Modified files:**
+- `AdminDashboardClient.tsx` — Added "System Monitor" tab (15th tab, between Ecosystem and Vault)
+- `email.ts` — Added `system-alert` template + `emails.systemAlert()` convenience function
+- `prisma/schema.prisma` — Added ServiceHealth, AlertRule, AlertHistory, ApiExpense models
+
+### UI Design Workflow Skill + Rebrand Tool (DONE)
+
+**New files created:**
+- `.claude/skills/ui-design-workflow/SKILL.md` — 5 workflows: v0+Claude (primary), screenshot-to-component, Google Stitch (visual prototyping), URL/HTML extraction, component library adaptation. Tool comparison matrix, brand token quick reference, ready-made CSS classes.
+- `.claude/skills/ui-design-workflow/references/brand-token-map.md` — Complete Tailwind→Rensto token mapping (backgrounds, accents, text, borders, gradients, shadows, animations, component classes)
+- `tools/rebrand-component.ts` — Automated rebranding tool. Replaces generic Tailwind/shadcn classes with rensto-* CSS variables. Handles: dark backgrounds (9 patterns → rensto-bg-*), accent colors (red/blue/cyan/orange with hover variants), text (white/gray-300/400/500 → rensto-text-*), borders, rings, placeholders, and inline hex values (#111827 etc. → CSS vars). Supports --dry-run and --output flags.
+
+**Google Stitch research complete:**
+- No official API yet (on Google's roadmap, high priority)
+- `@_davideast/stitch-mcp` provides MCP bridge (get_screen_code, build_site, serve, auto token refresh)
+- Outputs HTML/CSS not React — v0.dev is better for production React/Next.js
+- v0.dev has beta API, Shadcn Registry support, custom Tailwind config
+- Stitch best for: visual prototyping (350 free gen/month), Figma handoff
+- Emergent.sh worth watching — full-stack, design system support, screenshot analysis
+
+### n8n Paradigm Fix (DONE)
+- `rag-pgvector` skill updated: Removed n8n as primary RAG path, added Antigravity-first pattern, n8n marked as prototyping-only
+- n8n categorized as "backup" in service registry (highest failure tolerance: 5 consecutive, 120min cooldown)
+- NotebookLM compliance sources pushed to fc048ba8 (n8n=reference patterns) and 12c80d7d (Antigravity+RAG capabilities)
+
+---
+
+## 2026-02-17 — Ollama Installation on RackNerd (Session 4 cont.)
+
+### Ollama Embedding Service (DONE)
+- **Installed**: Ollama v0.16.2 on RackNerd VPS (172.245.56.50), CPU-only mode
+- **Model**: nomic-embed-text (274MB download, 768-dim vectors, 8192-token context)
+- **Memory-constrained config**: Systemd override at `/etc/systemd/system/ollama.service.d/override.conf`
+  - OLLAMA_KEEP_ALIVE=0 (immediate unload after request)
+  - OLLAMA_MAX_LOADED_MODELS=1, NUM_PARALLEL=1, FLASH_ATTENTION=1
+  - HOST=0.0.0.0 (accessible from all interfaces, port 11434)
+- **Verified**: Embedding test returned 15,199 bytes with valid 768-dim vector
+- **KEEP_ALIVE=0 confirmed**: `ollama ps` shows empty models list after 5s wait — model unloads immediately
+- **No disruption to existing services**: All Docker containers (postgres, redis, n8n, waha, browserless, video-merge) and PM2 processes (tourreel-worker, saas-engine, video-merge-service, webhook-server) still running
+- **Server resources post-install**: RAM 2.6GB/5.8GB (model unloaded), Disk 53GB/96GB (59%)
+
+### RAG Stack Next Steps (NOT YET STARTED)
+- Enable pgvector extension on existing PostgreSQL
+- Create documents table with HNSW indexing
+- Wire n8n PGVector + Embeddings Ollama nodes
+- Set up LiteLLM proxy (optional)
+- Multi-tenant document store architecture
+
+---
+
+## 2026-02-17 — Full-Stack Conflict & Completeness Audit (Session 4)
+
+### Audit Scope
+24+ dimension audit: codebase vs notebooks, design, UI/UX, blueprints, frameworks, pricing, content, product structure, credentials, instructions, database, routing, security, skills, legal, tooling synergy.
+
+### Fixes Applied (8/10 complete)
+1. **PRODUCT_BIBLE.md**: Design tokens updated (#110d28 palette), pricing updated ($299/$699/$1,499 credits), TourReel 50 credits/video, admin demo password removed
+2. **brain.md**: Veo removed from Core Stack + Technical Stack
+3. **Agent-behavior files**: Verified in sync (diff = frontmatter only)
+4. **kie.ts**: Veo interface, function, type references removed. Defaults changed to "kling"
+5. **NotebookLM**: 3 compliance sources pushed (fc048ba8, 3e820274, 8a655666)
+6. **ADMIN_EMAILS**: Centralized export from auth.ts; send/verify routes import it
+7. **3 P1 skills created**: stripe-credits, database-management, antigravity-automation
+8. **Skill template**: Created .claude/skills/skill-template/ scaffold
+
+### Remaining (2/10)
+9. BFG Repo-Cleaner for git history credentials — requires user approval for destructive action
+10. Cookie consent banner — tracked for future implementation
+
+### Admin Monitoring Dashboard Blueprint
+Written in task_plan.md. 4 phases:
+- Phase 1: Service connectivity monitor (MCP, APIs, DB, skills)
+- Phase 2: Alert system with auto-documentation
+- Phase 3: API usage/expense tracking + anomaly detection
+- Phase 4: Customer-facing expense dashboard enhancements
+
+Awaiting approval before implementation.
+
+---
+
+## 2026-02-17 — Video Quality Overhaul (Session 3)
+
+### Research Phase (DONE)
+- 4 parallel research agents: AI real estate video best practices, pipeline prompt audit, Kie.ai models (Feb 2026), floorplan analysis techniques
+- Key discovery: Kling 3.0 `kling_elements` — native character reference via 2-4 images + @name syntax
+- Key discovery: Room-specific temporal flow prompts dramatically improve movement quality
+- Key discovery: Adjacency validation prevents tour "teleportation" between disconnected rooms
+
+### Code Changes (DONE — deployed to RackNerd)
+1. **kie.ts**: Added `KlingElement` interface, `kling_elements` in API calls, `buildElementsKlingPrompt()`, `ROOM_CAMERA_FLOW` lookup, room-specific temporal flow in `buildPropertyOnlyKlingPrompt` and `buildRealtorOnlyKlingPrompt`, separate negatives (`KLING_PROPERTY_NEGATIVE`, `KLING_ELEMENTS_NEGATIVE`), stronger spatial negatives
+2. **video-pipeline.worker.ts**: Wired `kling_elements` support (opt-in via `USE_KLING_ELEMENTS=1`). When enabled, skips Nano Banana compositing — Kling handles person natively. Falls back to Nano Banana when disabled.
+3. **floorplan-analyzer.ts**: Added `validateTourAdjacency()` (cross-checks sequence vs connects_to), `validateRoomCount()` (sanity check vs listing data). `buildTourSequence` now accepts listing data for validation.
+4. **prompt-generator.ts**: Added TEMPORAL FLOW, ONE ROOM PER CLIP, SPATIAL INTEGRITY rules to system prompt. Cinematic vocabulary guidance.
+
+### Test Video
+- Job `581ad719`: 425 Beard Dr, Cedar Hill TX (4bed/2bath, 1740sqft). Default mode (Nano Banana, not kling_elements). Generating...
+
+---
+
 ## 2026-02-16 — Instruction Hierarchy + Alignment Audit (Session 2)
 
 ### Codebase Fixes (DONE)

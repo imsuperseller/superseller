@@ -43,6 +43,12 @@ Opening often shows the worst duplication. Use a shorter, environment-focused pr
 2. **video-pipeline.worker.ts**: Kling prompt for realtor mode now starts with "The person is ALREADY in the frame. Animate their natural movement only. Do NOT add any new people or figures. Single person only."
 3. **Fix v2 (Feb 2026)**: `clip.prompt` was STILL included—it describes realtor actions and triggers Kling to add a second figure. **Removed clip.prompt entirely** when realtor in frame. New `buildRealtorOnlyKlingPrompt(clip)` in kie.ts uses minimal camera+room-only text: "Smooth dolly... [toRoom] in view. Single person only." No person action description. Used in video-pipeline.worker and regen-clips.
 
+## Balance (Feb 2026)
+
+**Do not over-minimize.** The fix removed clip.prompt to prevent double figure—correct. But a subsequent change added "Person moves FORWARD through the space" to reduce circular motion; that caused worse behavior: robotic straight-line walking, zero listing focus. Rule: focus on camera + room + production; never describe person actions; never add motion directives that produce robotic output. See VIDEO_QUALITY_AUDIT.md.
+
+---
+
 ## References
 
 - `apps/worker/src/services/kie.ts` — `createKlingTask`, `IDENTITY_NEGATIVE`, `DUPLICATE_FIGURE_NEGATIVE`

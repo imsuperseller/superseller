@@ -34,7 +34,7 @@ function extractPhotoUrl(p: unknown): string | null {
 
 async function main() {
     const { queryOne } = await import("../src/db/client");
-    const { getDefaultSequence, buildTourSequenceFromRoomNames } = await import(
+        const { getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } = await import(
         "../src/services/floorplan-analyzer"
     );
     const heroModule = await import("../src/services/hero-features");
@@ -84,7 +84,8 @@ async function main() {
         const propType = (listing.property_type || "house").toLowerCase().replace(/\s+/g, "_");
         const beds = Math.max(1, Number(listing.bedrooms) || 3);
         const baths = Math.max(1, Number(listing.bathrooms) || 2);
-        const roomNames = getDefaultSequence(propType, beds, baths, heroResult.hasPool);
+        const singleStory = isSingleStory(listing);
+        const roomNames = getDefaultSequence(propType, beds, baths, heroResult.hasPool, singleStory);
         tourRooms = buildTourSequenceFromRoomNames(roomNames);
     }
     console.log("\n2. TOUR SEQUENCE (free)");

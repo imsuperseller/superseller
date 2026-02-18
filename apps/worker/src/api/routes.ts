@@ -243,7 +243,7 @@ const regenSchema = z.object({
     clipNumbers: z.array(z.number().int().min(1)).min(1).max(20),
 });
 apiRouter.post("/jobs/:id/regenerate", async (req: Request, res: Response) => {
-    const jobId = req.params.id;
+    const jobId = req.params.id as string;
     const parsed = regenSchema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
 
@@ -262,7 +262,7 @@ apiRouter.post("/jobs/:id/regenerate", async (req: Request, res: Response) => {
     // TODO: Add regen-clip-queue for async processing. For MVP, run inline.
     try {
         const { runRegenClips } = await import("../services/regen-clips");
-        const result = await runRegenClips(jobId, parsed.data.clipNumbers);
+        const result = await runRegenClips(jobId, parsed.data.clipNumbers as number[]);
         return res.json({ success: true, master_video_url: result.masterUrl });
     } catch (err: any) {
         logger.error({ msg: "Regenerate clips failed", jobId, error: err.message });
