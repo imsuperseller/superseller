@@ -40,8 +40,8 @@ const translations = {
       {
         icon: MapPin,
         title: 'Location',
-        value: 'Plano, TX',
-        link: 'https://maps.google.com/?q=Plano,TX',
+        value: 'Torrance, CA',
+        link: 'https://maps.google.com/?q=444+Alaska+Avenue+Torrance+CA+90503',
         description: 'Serving clients nationwide'
       },
       {

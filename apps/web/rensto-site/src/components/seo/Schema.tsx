@@ -49,16 +49,16 @@ export const localBusinessSchema = {
     telephone: '+1-234-567-890',
     address: {
         '@type': 'PostalAddress',
-        'streetAddress': '123 Automation Way',
-        'addressLocality': 'San Francisco',
+        'streetAddress': '444 Alaska Avenue',
+        'addressLocality': 'Torrance',
         'addressRegion': 'CA',
-        'postalCode': '94103',
+        'postalCode': '90503',
         'addressCountry': 'US'
     },
     geo: {
         '@type': 'GeoCoordinates',
-        'latitude': 37.7749,
-        'longitude': -122.4194
+        'latitude': 33.8358,
+        'longitude': -118.3406
     },
     openingHoursSpecification: {
         '@type': 'OpeningHoursSpecification',
