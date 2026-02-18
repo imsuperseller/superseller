@@ -11,7 +11,7 @@
 | Service | Role | Provider | Status |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | rensto.com (App/Admin/Site) | Vercel (Next.js) | ✅ Active |
-| **Database** | Primary Transactional DB | **PostgreSQL** (RackNerd) | ✅ Active |
+| **Database** | Primary Transactional DB + RAG | **PostgreSQL + pgvector 0.8.1** (RackNerd) | ✅ Active |
 | **Cache/Queue**| BullMQ / Temporary Data | **Redis** (RackNerd) | ✅ Active |
 | **Storage** | Video Exports / Product Media | **Cloudflare R2** | ✅ Active |
 | **Server/Worker**| Long-running video/bot tasks | **RackNerd VPS** | ✅ Active |

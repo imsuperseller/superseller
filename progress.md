@@ -113,12 +113,20 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 - **No disruption to existing services**: All Docker containers (postgres, redis, n8n, waha, browserless, video-merge) and PM2 processes (tourreel-worker, saas-engine, video-merge-service, webhook-server) still running
 - **Server resources post-install**: RAM 2.6GB/5.8GB (model unloaded), Disk 53GB/96GB (59%)
 
-### RAG Stack Next Steps (NOT YET STARTED)
-- Enable pgvector extension on existing PostgreSQL
-- Create documents table with HNSW indexing
-- Wire n8n PGVector + Embeddings Ollama nodes
+### pgvector + Documents Table (DONE — 2026-02-18)
+- **Docker image swapped**: `postgres:16` → `pgvector/pgvector:pg16` in `/opt/databases/docker-compose.yml`. Drop-in replacement, data preserved via named volume.
+- **pgvector 0.8.1 enabled**: `CREATE EXTENSION vector` on `app_db`. Collation mismatch fixed.
+- **`documents` table created** with: `id SERIAL`, `tenant_id TEXT`, `source TEXT`, `title TEXT`, `content TEXT`, `embedding vector(768)`, `metadata JSONB`, `content_tsv tsvector` (auto-generated full-text), `created_at`, `updated_at`.
+- **5 indexes**: PK, HNSW (m=12, ef_construction=64, cosine), GIN (full-text), tenant_id, source.
+- **End-to-end verified**: Ollama embed → INSERT → cosine similarity query → correct result (0.47 similarity). Full-text hybrid search also working.
+- **No disruption**: Worker health OK, all services running, RAM 2.8GB/5.8GB.
+- **SSH key auth set up**: Passwordless SSH from local machine to RackNerd. Password backed up in `.env`.
+
+### RAG Stack Next Steps
+- Wire Antigravity embedding pipeline (chunk → Ollama embed → INSERT via worker)
+- Build retrieval API route (query → embed → pgvector search → LiteLLM generation)
 - Set up LiteLLM proxy (optional)
-- Multi-tenant document store architecture
+- Multi-tenant document ingestion for client knowledge bases
 
 ---
 
