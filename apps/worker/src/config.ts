@@ -42,6 +42,11 @@ export const config = {
 
 
 
+    ollama: {
+        url: optional("OLLAMA_URL", "http://localhost:11434"),
+        model: optional("OLLAMA_EMBED_MODEL", "nomic-embed-text"),
+    },
+
     kie: {
         apiKey: required("KIE_API_KEY"),
         baseUrl: "https://api.kie.ai",

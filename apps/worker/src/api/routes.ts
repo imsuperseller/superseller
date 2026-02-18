@@ -290,5 +290,94 @@ apiRouter.post("/jobs/:id/retry-fresh", async (req: Request, res: Response) => {
     return res.json({ success: true, message: "Job reset and re-queued" });
 });
 
+// ─── RAG: INGEST ───
+const ingestSchema = z.object({
+    tenantId: z.string().min(1),
+    source: z.string().min(1),
+    title: z.string().optional(),
+    content: z.string().min(1),
+    metadata: z.record(z.string(), z.unknown()).optional(),
+    chunkSize: z.number().int().min(50).max(2000).optional(),
+    chunkOverlap: z.number().int().min(0).max(500).optional(),
+});
+apiRouter.post("/rag/ingest", async (req: Request, res: Response) => {
+    try {
+        const parsed = ingestSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const { ingestDocument } = await import("../services/rag");
+        const result = await ingestDocument(
+            parsed.data.tenantId,
+            parsed.data.source,
+            parsed.data.title ?? null,
+            parsed.data.content,
+            parsed.data.metadata,
+            { chunkSize: parsed.data.chunkSize, chunkOverlap: parsed.data.chunkOverlap },
+        );
+        res.status(201).json(result);
+    } catch (err: any) {
+        logger.error({ msg: "RAG ingest failed", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── RAG: SEARCH ───
+const searchSchema = z.object({
+    tenantId: z.string().min(1),
+    query: z.string().min(1),
+    limit: z.number().int().min(1).max(20).optional(),
+    hybrid: z.boolean().optional(),
+});
+apiRouter.post("/rag/search", async (req: Request, res: Response) => {
+    try {
+        const parsed = searchSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const { search, hybridSearch } = await import("../services/rag");
+        const limit = parsed.data.limit ?? 5;
+
+        const results = parsed.data.hybrid
+            ? await hybridSearch(parsed.data.tenantId, parsed.data.query, limit)
+            : await search(parsed.data.tenantId, parsed.data.query, limit);
+
+        res.json({ results, count: results.length });
+    } catch (err: any) {
+        logger.error({ msg: "RAG search failed", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── RAG: LIST DOCUMENTS ───
+apiRouter.get("/rag/documents", async (req: Request, res: Response) => {
+    const tenantId = req.query.tenantId as string;
+    if (!tenantId) return res.status(400).json({ error: "tenantId required" });
+
+    const { listDocuments } = await import("../services/rag");
+    const source = (req.query.source as string) || undefined;
+    const docs = await listDocuments(tenantId, source);
+    res.json({ documents: docs, count: docs.length });
+});
+
+// ─── RAG: DELETE ───
+apiRouter.delete("/rag/documents/:id", async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+
+    const { deleteDocument } = await import("../services/rag");
+    const deleted = await deleteDocument(id);
+    if (!deleted) return res.status(404).json({ error: "Document not found" });
+    res.json({ success: true });
+});
+
+apiRouter.delete("/rag/documents", async (req: Request, res: Response) => {
+    const tenantId = req.query.tenantId as string;
+    const source = req.query.source as string;
+    if (!tenantId || !source) return res.status(400).json({ error: "tenantId and source required" });
+
+    const { deleteBySource } = await import("../services/rag");
+    const count = await deleteBySource(tenantId, source);
+    res.json({ success: true, deleted: count });
+});
+
 // ─── HEALTH ───
 apiRouter.get("/health", (req, res) => res.json({ status: "ok" }));

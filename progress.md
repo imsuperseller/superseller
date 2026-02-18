@@ -122,11 +122,23 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 - **No disruption**: Worker health OK, all services running, RAM 2.8GB/5.8GB.
 - **SSH key auth set up**: Passwordless SSH from local machine to RackNerd. Password backed up in `.env`.
 
+### RAG Embedding Pipeline + API (DONE — 2026-02-18)
+- **`src/services/rag.ts`**: Full RAG service — `embed()`, `chunkText()`, `ingestDocument()`, `search()`, `hybridSearch()`, `listDocuments()`, `deleteDocument()`, `deleteBySource()`
+- **Chunking**: Recursive splitter with paragraph/sentence/word boundary detection. Default 400 tokens, 12% overlap.
+- **5 API routes** added to worker:
+  - `POST /api/rag/ingest` — chunk → embed via Ollama → INSERT into pgvector
+  - `POST /api/rag/search` — vector search (cosine) or hybrid (vector + full-text, 0.7/0.3 weight)
+  - `GET /api/rag/documents?tenantId=X` — list documents
+  - `DELETE /api/rag/documents/:id` — delete single
+  - `DELETE /api/rag/documents?tenantId=X&source=Y` — delete by source
+- **Config**: `OLLAMA_URL` and `OLLAMA_EMBED_MODEL` in worker `.env`
+- **Deployed to RackNerd**: All 5 endpoints verified live. Ingest → search round-trip returns 0.69 similarity.
+- **Multi-tenant ready**: `tenant_id` field isolates documents per client.
+
 ### RAG Stack Next Steps
-- Wire Antigravity embedding pipeline (chunk → Ollama embed → INSERT via worker)
-- Build retrieval API route (query → embed → pgvector search → LiteLLM generation)
-- Set up LiteLLM proxy (optional)
-- Multi-tenant document ingestion for client knowledge bases
+- LiteLLM proxy (optional — for model-agnostic generation)
+- Ingest client knowledge bases (use ingest API with real content)
+- Build generation endpoint (search → context → LLM answer)
 
 ---
 
