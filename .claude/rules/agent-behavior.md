@@ -39,6 +39,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - Short status updates or step lists for the user
 - **Handoff / manual instructions** when you have access. If you have credentials (SSH, VPS, build env, API keys), USE THEM. Do not say "deploy via your usual process" or "run X when ready" -- do the deploy, run the command.
 - **"Start the app" / "Open this URL" / "Deploy"** -- Never. You start the app, you run the command, you deploy. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).
+- **Use workaround tools when the proper tool fails due to auth.** If NotebookLM says "auth expired", run `notebooklm-mcp-auth` via Bash -- do NOT switch to WebSearch or other workarounds. Tools are chosen for a reason (access control, context, capabilities). Switching tools bypasses that reason.
+- **Ignore authentication failures.** When a tool returns "authentication expired" or "credentials invalid", stop immediately and fix the auth. Run the auth command (e.g., `notebooklm-mcp-auth`, `gh auth login`). Do not try workarounds or alternative tools.
 - Stop at first failure -- fix and retry
 - Ask when access was already given
 - Say "run X" when you can run it yourself
@@ -52,6 +54,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 
 - **Execute.** Run commands, scripts, SSH. Don't instruct -- do.
 - **Use access.** Passwords, keys, tokens -- when given, USE them.
+- **Fix authentication immediately.** When a tool returns "authentication expired" or similar, run the auth command yourself via Bash (e.g., `notebooklm-mcp-auth`, `gh auth login --web`). Do NOT ask the user to run it. Do NOT use workaround tools.
+- **Use the right tool for the job.** If a task requires NotebookLM (research, notebooks), use NotebookLM -- not WebSearch. If it requires WebSearch (current events), use WebSearch. Tools have specific purposes and access controls. Respect that.
 - **Execute programmatic actions instead of instructing the user.** Restart dev server, run builds, clear caches, run tests -- do them when needed. Never say "run X" or "restart the server" when you can run the command yourself.
 - **Deploy yourself when you have access.** Build locally if server build fails; rsync/scp the artifact; restart the service. Do not end with "deploy via your usual process."
 - **Iterate.** If it fails, fix it, retry. Don't stop until it works or you've exhausted options.
@@ -86,6 +90,25 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Don't create a new .md for every task.** Update brain, CLAUDE, findings, progress, DECISIONS. Prefer main docs over one-off audit/fix files.
 - **Merge residue.** One-off audits (NOTEBOOKLM_AUDIT, CONFLICT_AUDIT output, etc.) -> merge key points to findings/progress. Do not create new archive folders; prefer merging into canonical docs.
 - **When searching:** Prefer main docs (brain, CLAUDE, findings, DECISIONS, METHODOLOGY, CONFLICT_AUDIT). Archived residue can mislead if treated as current.
+
+## Generation Cost Tracking (MANDATORY)
+
+- **Every API generation MUST log its cost.** No exceptions, every session, forever.
+- **In automated pipeline** (video-pipeline.worker.ts): Call `trackExpense()` after each Kling/Suno/Nano/Gemini API call.
+- **In manual/ad-hoc sessions**: Add a cost table to the session's progress entry in `progress.md` before closing.
+- **Rate table**: See `INFRA_SSOT.md` §5b or `.claude/skills/tourreel-pipeline/SKILL.md`.
+- **Format**: `| Operation | Count | Unit Cost | Total |` with session total row.
+
+---
+
+## Product-Thinking Mindset (ALWAYS)
+
+Every experiment, test, bug fix, or creative exploration is a potential product feature. When trying something new (new API capability, creative prompt technique, workflow optimization), always ask:
+1. **Could this become a feature?** If a technique works (e.g., Kling Elements character reference, furniture-from-sky animation, AI room detection without floorplan), document it as a potential product offering.
+2. **Which product does it fit?** TourReel, Winner Studio, AgentForge, FrontDesk — map the discovery to an existing product or note it as a new product seed.
+3. **Log it immediately.** Add to findings.md or PRODUCT_BIBLE.md under "Feature Discovery" so it doesn't get lost in session noise.
+
+**Never just solve the task at hand — always think about what the solution means for the product roadmap.**
 
 ---
 
