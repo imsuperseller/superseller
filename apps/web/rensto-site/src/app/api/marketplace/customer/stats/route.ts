@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { CreditService } from '@/lib/credits';
 
 /**
  * GET /api/marketplace/customer/stats
@@ -69,6 +70,9 @@ export async function GET(request: NextRequest) {
 
     const activeProducts = customer.products.filter(p => p.status === 'ACTIVE').length;
 
+    // Get unified credits balance from Entitlement.creditsBalance (not MarketplaceCustomer.credits)
+    const creditsBalance = await CreditService.getBalance(session.userId);
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -78,7 +82,7 @@ export async function GET(request: NextRequest) {
         postsToday,
         postsThisWeek,
         postsThisMonth,
-        credits: customer.credits,
+        credits: creditsBalance, // Changed from customer.credits to unified balance
         subscription: customer.subscription,
         businessName: customer.businessName,
         status: customer.status,
