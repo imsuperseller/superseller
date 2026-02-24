@@ -166,7 +166,6 @@ User raised critical question: **"When do we test each agent to ensure it's full
    - When `status='posted'`: Update post, mark as successful, no refund
    - When `status='failed'`: Refund 25 credits, update post status to 'failed'
    - TODO: Add API key authentication before bot integration
-   - TODO: Add notification system (email when posted/failed)
 
 3. ✅ Updated `/api/marketplace/customer/stats` (GET) — show unified credits:
    - Changed from `customer.credits` (deprecated) to `CreditService.getBalance(userId)`
@@ -180,8 +179,34 @@ User raised critical question: **"When do we test each agent to ensure it's full
 
 **Gap closed**: Market now integrated with unified credit system (same 25-credit cost as website claims)
 
+### Market Notification System — COMPLETE
+
+**Task**: Add email notifications when marketplace listings post or fail
+
+**Implementation** (Commit: `3c6e1cb`):
+1. ✅ Extended `apps/web/rensto-site/src/lib/email.ts` with 2 new templates:
+   - `'marketplace-posted'`: Success email ("Your Listing is Live! 🎉")
+     - Includes: product name, price, location, Facebook URL
+     - CTA: "View Listing on Facebook" button
+     - Encourages prompt responses to inquiries
+   - `'marketplace-failed'`: Error email ("Listing Issue ⚠️ — Credits Refunded")
+     - Includes: error message (sanitized), refund confirmation (25 credits)
+     - CTA: "Try Creating a New Listing" button
+     - Support contact info
+
+2. ✅ Integrated into `/api/marketplace/webhook/refund`:
+   - Fetch user email from User table
+   - Call `emails.marketplacePosted()` when status='posted'
+   - Call `emails.marketplaceFailed()` when status='failed'
+   - Non-blocking (failures logged, don't block webhook)
+
+**Email format**: Professional HTML matching Rensto branding (dark theme, cyan accents)
+
+**Pattern**: Mirrors Forge NotificationService (Resend API, HTML templates)
+
+**Gap closed**: Customers now get email notifications for marketplace listing status (previously zero visibility)
+
 **Remaining Market tasks**:
-- Add notification system (email when listing posted/failed)
 - Update webhook-server.js on RackNerd to call refund webhook
 - Add API key authentication to webhook endpoint
 - Verify posting success rate and deduplication
