@@ -389,7 +389,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             resolution: config.video.nanoBananaResolution,
                             output_format: "png",
                         });
-                        await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
+                        // Credit deduction removed - 50 credits charged upfront by web app
+                        // await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
 
                         const { image_url } = await waitForNanoBananaTask(taskId);
                         frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
@@ -419,7 +420,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                                 resolution: config.video.nanoBananaResolution,
                                 output_format: "png",
                             });
-                            await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: lastIdx + 1 });
+                            // Credit deduction removed - 50 credits charged upfront by web app
+                            // await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: lastIdx + 1 });
 
                             const { image_url } = await waitForNanoBananaTask(taskId);
                             frameUrls[lastIdx + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${lastIdx + 1}`);
@@ -463,7 +465,10 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     lastFrameUrl = clip.end_frame_url || await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                     const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                    await normalizeClip(videoPath, normalizedPath);
+                    await normalizeClip(videoPath, normalizedPath, {
+                        width: config.video.outputWidth,
+                        height: config.video.outputHeight,
+                    });
                     clipFiles.push(normalizedPath);
 
                     const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
@@ -534,7 +539,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     to_room: (clip as any).to_room,
                 });
 
-                await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
+                // Credit deduction removed - 50 credits charged upfront by web app
+                // await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
                 await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
                 const status = await waitForTask(taskId, "kling");
                 if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
@@ -597,8 +603,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         model: "V3_5",
                     });
 
-                    // Deduct for Suno music generation
-                    await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
+                    // Credit deduction removed - 50 credits charged upfront by web app
+                    // await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
 
                     const status = await waitForTask(taskId, "suno");
                     musicUrl = (status as any).result?.audio_url || null;
