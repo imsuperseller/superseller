@@ -7,7 +7,7 @@ import { logger } from "../../utils/logger";
 import { scrapeZillowListing } from "../../services/apify";
 import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } from "../../services/floorplan-analyzer";
 import { generateClipPrompts } from "../../services/prompt-generator";
-import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, type TextOverlaySpec } from "../../services/ffmpeg";
+import { normalizeClip, stitchClips, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, type TextOverlaySpec } from "../../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
@@ -108,7 +108,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             const detectedUrl = publicUrls[fpIdx];
                             await query("UPDATE listings SET floorplan_url = $1 WHERE id = $2", [detectedUrl, listingId]);
                             (listing as any).floorplan_url = detectedUrl;
-                            logger.info({ msg: "Floorplan auto-detected from listing photos", index: fpIdx });
+                            // CRITICAL: Remove the floorplan image from the source photo pool
+                            // so it never gets assigned as a clip start frame
+                            const origPhotoUrl = toCheck[fpIdx];
+                            if (origPhotoUrl) {
+                                const photoIdx = flatPhotos.indexOf(origPhotoUrl);
+                                if (photoIdx >= 0) flatPhotos.splice(photoIdx, 1);
+                            }
+                            logger.info({ msg: "Floorplan auto-detected and removed from photo pool", index: fpIdx });
                         }
                     }
                 }
@@ -275,6 +282,15 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             } else if (rawPhotos && typeof rawPhotos === "object") {
                 const urls = (rawPhotos as any).urls || (rawPhotos as any).photos || (rawPhotos as any).photos_urls;
                 additionalPhotos = Array.isArray(urls) ? urls.map(extractPhotoUrl).filter((u: any): u is string => u !== null) : [];
+            }
+            // Exclude floorplan image from the photo pool (prevent it from appearing as a clip start frame)
+            if (listing.floorplan_url) {
+                const fpUrl = listing.floorplan_url;
+                const beforeCount = additionalPhotos.length;
+                additionalPhotos = additionalPhotos.filter((u) => u !== fpUrl);
+                if (additionalPhotos.length < beforeCount) {
+                    logger.info({ msg: "Removed floorplan from photo pool", removed: beforeCount - additionalPhotos.length });
+                }
             }
             logger.info({ msg: "Photo extraction", additionalPhotosCount: additionalPhotos.length, hasExterior: !!listing.exterior_photo_url });
 
@@ -451,6 +467,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 frameUrls[0] = lastFrameUrl;
             }
 
+            // Track actual measured clip durations for precise text overlay timing
+            const actualClipDurations: Map<number, number> = new Map();
+
             // PARALLEL MODE with SENTINEL: Launch 1st clip as credit probe, then remaining in parallel
             // Prevents 10+ wasted API calls when credits are exhausted
             const PARALLEL_MODE = process.env.PARALLEL_CLIPS !== "false"; // Default ON
@@ -460,6 +479,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
 
                 // Helper: prepare a single clip for Kling task creation
+                // Now includes endFrame (next clip's photo) for Kling start+end frame continuity
                 function prepareClip(clip: any) {
                     const clipIdx = clip.clip_number - 1;
                     const isLastClip = clipIdx === clips.length - 1;
@@ -476,6 +496,17 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                     if (!startFrame) throw new Error(`Missing start frame for clip ${clip.clip_number}`);
 
+                    // End frame = the NEXT clip's room photo (for Kling start+end frame continuity)
+                    // This tells Kling to morph toward the next room, creating seamless transitions
+                    let endFrame: string | null = null;
+                    if (!isLastClip) {
+                        const nextClipIdx = clipIdx + 1;
+                        const nextClip = clips[nextClipIdx];
+                        if (nextClip) {
+                            endFrame = getPhotoForRoom((nextClip as any).to_room, nextClipIdx) || null;
+                        }
+                    }
+
                     const thisClipHasComposite = clipHasComposite[clipIdx];
                     let klingPrompt: string;
                     let clipElements: KlingElement[] | undefined;
@@ -490,16 +521,19 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         klingPrompt = buildPropertyOnlyKlingPrompt(clip);
                     }
 
-                    return { startFrame, klingPrompt, clipElements, thisClipHasComposite };
+                    return { startFrame, endFrame, klingPrompt, clipElements, thisClipHasComposite };
                 }
 
                 async function createClipTask(clip: any) {
-                    const { startFrame, klingPrompt, clipElements, thisClipHasComposite } = prepareClip(clip);
+                    const { startFrame, endFrame, klingPrompt, clipElements, thisClipHasComposite } = prepareClip(clip);
                     await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
 
                     const taskId = await withRetry(() => createKlingTask({
                         prompt: klingPrompt,
                         image_url: startFrame,
+                        // End frame = next room's photo → Kling morphs toward it for seamless transitions
+                        // When last_frame is set, aspect_ratio is omitted (Kling constraint in kie.ts)
+                        last_frame: endFrame || undefined,
                         realtor_in_frame: thisClipHasComposite,
                         kling_elements: clipElements,
                         negative_prompt: (clip as any).negative_prompt,
@@ -593,15 +627,23 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     return { clip, videoPath, videoUrl: status.result.video_url };
                 }));
 
-                // Post-process: normalize and prepare for stitching
+                // Post-process: normalize to EXPLICIT 1920x1080 and prepare for stitching
+                // (Kling native res varies per clip — force uniform 16:9 to prevent aspect ratio issues)
                 for (const { clip, videoPath } of clipResults) {
                     const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
                     await extractLastFrame(videoPath, lastFramePath);
                     boundaryFramePaths.push(lastFramePath);
 
                     const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                    await normalizeClip(videoPath, normalizedPath);
+                    await normalizeClip(videoPath, normalizedPath, {
+                        width: config.video.outputWidth,
+                        height: config.video.outputHeight,
+                    });
                     clipFiles.push(normalizedPath);
+
+                    // Measure ACTUAL duration (Kling may return different length than requested)
+                    const measuredDur = await getVideoDuration(normalizedPath);
+                    actualClipDurations.set(clip.clip_number, measuredDur);
                 }
 
                 logger.info({ msg: "All clips generated in parallel", count: clipResults.length });
@@ -631,6 +673,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             height: config.video.outputHeight,
                         });
                         clipFiles.push(normalizedPath);
+                        const measuredDur = await getVideoDuration(normalizedPath);
+                        actualClipDurations.set(clip.clip_number, measuredDur);
 
                         const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
                         await updateJobStatus(jobId, "generating_clips", progress);
@@ -705,12 +749,17 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     lastFrameUrl = await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                     const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                    await normalizeClip(videoPath, normalizedPath);
+                    await normalizeClip(videoPath, normalizedPath, {
+                        width: config.video.outputWidth,
+                        height: config.video.outputHeight,
+                    });
                     clipFiles.push(normalizedPath);
+                    const measuredDur = await getVideoDuration(normalizedPath);
+                    actualClipDurations.set(clip.clip_number, measuredDur);
 
                     await query(
                         "UPDATE clips SET status = 'complete', video_url = $1, end_frame_url = $2, duration_seconds = $3 WHERE id = $4",
-                        [result.video.url, lastFrameUrl, clip.duration_seconds, clip.id]
+                        [result.video.url, lastFrameUrl, measuredDur, clip.id]
                     );
 
                     const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
@@ -718,7 +767,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
 
-            // 6. Stitching (seamless concat, no xfade transitions)
+            // 6. Stitching — seamless concat with boundary frames
+            // Kling end frames ensure each clip morphs toward the next room's photo,
+            // so hard cuts are seamless. Boundary frames provide frame-perfect continuity.
             await updateJobStatus(jobId, "stitching", 75);
             const outputName = "master_silent.mp4";
             const masterSilentPath = join(workDir, outputName);
@@ -797,13 +848,15 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             await addMusicOverlay(masterSilentPath, musicPath, masterPath);
 
             // 7b. Text Overlays — property address, room labels, CTA
+            // Use ACTUAL measured durations (not DB values) for precise timing
             const masterWithOverlaysPath = join(workDir, "master_with_overlays.mp4");
             const overlaySpecs: TextOverlaySpec[] = [];
             let cumSec = 0;
             for (let i = 0; i < clips.length; i++) {
                 const c = clips[i] as any;
                 const start = cumSec;
-                const dur = parseFloat(c.duration_seconds) || config.video.defaultClipDuration;
+                // Use measured duration from actual clip video when available, fallback to DB
+                const dur = actualClipDurations?.get(c.clip_number) || parseFloat(c.duration_seconds) || config.video.defaultClipDuration;
                 cumSec += dur;
                 const isOpening = i === 0;
                 const isClosing = i === clips.length - 1 && clips.length > 1;
@@ -814,7 +867,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         overlaySpecs.push({
                             text: String(listing.address),
                             startSeconds: start + 0.5,
-                            durationSeconds: Math.min(dur - 1, 4),
+                            durationSeconds: Math.min(dur - 1, 5),
                             position: "bottom",
                             fontSize: "large",
                             fadeInSeconds: 0.7,
@@ -830,7 +883,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             overlaySpecs.push({
                                 text: priceText,
                                 startSeconds: start + 1,
-                                durationSeconds: Math.min(dur - 1.5, 3.5),
+                                durationSeconds: Math.min(dur - 1.5, 4.5),
                                 position: "top",
                                 fontSize: "xlarge",
                                 fadeInSeconds: 0.7,
@@ -839,41 +892,46 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         }
                     }
                 } else if (isClosing) {
-                    // CTA on closing clip (center)
-                    overlaySpecs.push({
-                        text: "Schedule Your Tour Today",
-                        startSeconds: start + 1,
-                        durationSeconds: Math.min(dur - 1.5, 3.5),
-                        position: "center",
-                        fontSize: "xlarge",
-                        fadeInSeconds: 0.8,
-                        fadeOutSeconds: 0.8,
-                    });
-                    // Room label (bottom, smaller)
+                    // Room label FIRST (bottom, appears early)
                     const roomName = c.to_room;
                     if (roomName && roomName !== "Exterior") {
                         overlaySpecs.push({
                             text: roomName,
                             startSeconds: start + 0.3,
-                            durationSeconds: 2.5,
+                            durationSeconds: Math.min(dur * 0.4, 2.5),
                             position: "bottom",
                             fontSize: "medium",
                             fadeInSeconds: 0.5,
                             fadeOutSeconds: 0.5,
                         });
                     }
+                    // CTA on closing clip — ensure at LEAST 4s visible, start early enough
+                    const ctaStart = start + Math.max(dur * 0.15, 0.5);
+                    const ctaDuration = Math.max(dur - 1.5, 4);
+                    overlaySpecs.push({
+                        text: "Schedule Your Tour Today",
+                        startSeconds: ctaStart,
+                        durationSeconds: ctaDuration,
+                        position: "center",
+                        fontSize: "xlarge",
+                        fadeInSeconds: 0.8,
+                        fadeOutSeconds: 1.0,
+                    });
                 } else {
-                    // Middle clips: room label
+                    // Middle clips: room label — alternate position for visual variety
                     const roomName = c.to_room || "";
                     if (roomName) {
+                        // Hero rooms get larger text; alternate between bottom-left style positions
+                        const roomType = roomName.toLowerCase();
+                        const isHero = roomType.includes("kitchen") || roomType.includes("primary") || roomType.includes("master") || roomType.includes("living");
                         overlaySpecs.push({
                             text: roomName,
-                            startSeconds: start + 0.3,
-                            durationSeconds: 2.5,
+                            startSeconds: start + 0.5,
+                            durationSeconds: Math.min(dur * 0.5, 3),
                             position: "bottom",
-                            fontSize: "medium",
+                            fontSize: isHero ? "large" : "medium",
                             fadeInSeconds: 0.5,
-                            fadeOutSeconds: 0.5,
+                            fadeOutSeconds: 0.7,
                         });
                     }
                 }
