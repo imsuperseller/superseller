@@ -116,6 +116,28 @@ User raised critical question: **"When do we test each agent to ensure it's full
 - Quality benchmarking vs competitors
 - Credit accuracy verification
 - Performance metrics documentation
+
+### Spoke Discovery — RESOLVED
+
+**Task**: Investigate Spoke agent status and make go/no-go decision
+
+**Discovery** (Feb 23 PM):
+- ❌ **Spoke does NOT exist** as Rensto SaaS agent
+- ✅ **Winner Studio exists** (studio.rensto.com) — single-tenant for Yossi only
+- ⚠️ **Marketing claimed "live"** in crew.ts (fraud risk)
+
+**Fix applied**:
+1. ✅ Changed crew.ts: `status: 'live'` → `'coming-soon'`
+2. ✅ Created [SPOKE_DISCOVERY_DECISION.md](SPOKE_DISCOVERY_DECISION.md) — documents two paths forward
+3. ✅ Build verified: `npm run build` passed
+
+**Decision recommended**: Keep as "coming-soon", focus on Market/Forge audit
+- Building Spoke = 1-2 weeks work (auth refactor, multi-tenant, credit system)
+- Delays Week 4 launch
+- Better to launch with 2 solid agents (Forge, Market) than 3 half-built
+- Winner Studio already serves this use case for custom clients
+
+**Gap closed**: Removed fraud risk (customers can no longer try to order non-existent Spoke videos)
 - **Spoke** (Spokesperson): Live, needs audit ⚠️
 - **Market** (Marketplace): Just added, needs full integration + audit ❌
 - **FrontDesk** (Voice AI): Coming soon, not wired to credits ❌
