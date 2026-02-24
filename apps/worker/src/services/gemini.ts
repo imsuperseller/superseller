@@ -3,7 +3,7 @@ import { logger } from "../utils/logger";
 import axios from "axios";
 import { withRetry } from "../utils/retry";
 
-const KIE_BASE = "https://api.kie.ai/api";
+const KIE_BASE = "https://api.kie.ai";
 
 // State-of-the-Art 2026 Models (Gemini 3 Series via Kie AI)
 // Kie.ai only proxies gemini-3-flash (not 2.5-flash), use for both vision and text

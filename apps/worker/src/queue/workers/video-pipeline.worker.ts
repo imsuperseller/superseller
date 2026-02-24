@@ -861,7 +861,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
     },
     {
         connection: redisConnection,
-        concurrency: 1, // CRITICAL: Only 1 job at a time per VPS
+        concurrency: 2, // Allow 2 concurrent jobs (RackNerd has 3.2GB free RAM, 5 cores)
     }
 );
 

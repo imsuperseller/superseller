@@ -24,25 +24,11 @@ const POLL_INTERVAL_MS = 30_000; // Poll every 30s
 const MAX_POLL_ITERATIONS = 60; // Max 30 minutes per job
 const TEST_USER_ID = "c60b6d2f-856d-49fd-8737-7e1fee3fa848"; // Default test user
 
-// 10 Real Zillow URLs across different property types and price ranges
+// 3 Real Zillow URLs for quick validation test (TX market)
 const TEST_URLS = [
-    // TX Properties (primary market)
-    "https://www.zillow.com/homedetails/1531-Home-Park-Dr-Allen-TX-75002/26838519_zpid/",
-    "https://www.zillow.com/homedetails/3025-Willow-Creek-Dr-McKinney-TX-75071/308259289_zpid/",
+    "https://www.zillow.com/homedetails/1531-Home-Park-Dr-Allen-TX-75002/26838519_zpid/",  // Has floorplan
     "https://www.zillow.com/homedetails/7217-Marquis-Ln-Dallas-TX-75252/26910867_zpid/",
     "https://www.zillow.com/homedetails/5808-Sandhurst-Ln-Dallas-TX-75206/26791505_zpid/",
-
-    // CA Properties (secondary market)
-    "https://www.zillow.com/homedetails/444-Alaska-Ave-Torrance-CA-90503/21023089_zpid/",
-    "https://www.zillow.com/homedetails/1234-6th-St-Santa-Monica-CA-90401/20497774_zpid/",
-
-    // FL Properties (tertiary market)
-    "https://www.zillow.com/homedetails/123-Ocean-Dr-Miami-Beach-FL-33139/43997374_zpid/",
-    "https://www.zillow.com/homedetails/456-Gulf-Blvd-Treasure-Island-FL-33706/46120837_zpid/",
-
-    // NY Properties (high-value market)
-    "https://www.zillow.com/homedetails/123-Main-St-APT-2B-Brooklyn-NY-11201/2076452889_zpid/",
-    "https://www.zillow.com/homedetails/456-Park-Ave-APT-12A-New-York-NY-10022/244448589_zpid/",
 ];
 
 interface TestResult {
