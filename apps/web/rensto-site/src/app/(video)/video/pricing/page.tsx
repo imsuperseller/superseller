@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
 const PLANS = [
     {
         name: "Starter",
-        price: 299,
+        price: 79,
         period: "/mo",
-        videos: 10,
+        videos: 5,
         credits: 500,
         priceEnvKey: "starter",
         features: [
-            "10 video tours per month",
+            "5 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
@@ -25,13 +25,13 @@ const PLANS = [
     },
     {
         name: "Pro",
-        price: 699,
+        price: 149,
         period: "/mo",
-        videos: 30,
+        videos: 15,
         credits: 1500,
         priceEnvKey: "pro",
         features: [
-            "30 video tours per month",
+            "15 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
@@ -43,14 +43,14 @@ const PLANS = [
         popular: true,
     },
     {
-        name: "Enterprise",
-        price: 1499,
+        name: "Team",
+        price: 299,
         period: "/mo",
-        videos: 80,
+        videos: 50,
         credits: 4000,
         priceEnvKey: "team",
         features: [
-            "80 video tours per month",
+            "50 video tours per month",
             "All formats (16:9, 9:16, 1:1, 4:5)",
             "AI realtor placement",
             "Music overlay",
@@ -59,7 +59,7 @@ const PLANS = [
             "Text overlays",
             "Team access",
         ],
-        cta: "Scale with Enterprise",
+        cta: "Scale with Team",
         popular: false,
     },
 ];

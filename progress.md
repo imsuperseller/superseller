@@ -6,6 +6,50 @@
 
 ---
 
+## 2026-02-24: Canonical Pricing Fix + Kie.ai Capability Audit + Yaron V3 Resume + Sync Protocol
+
+### What was done
+
+**Canonical Pricing Fix (20 files)**:
+- Replaced all $299/$699/$1499 references with canonical $79/$149/$299 across entire codebase
+- Renamed "Enterprise" tier to "Team" everywhere
+- Fixed video counts: Starter 5, Pro 15, Team 50
+- Updated: pricing.ts, Schema.tsx, pricing page, layout.tsx, homepage, footer, CrewHero, CrewMemberDetail, ROIComparison, NichePage, contact page, video pricing page, 3 skill files, 4 docs files
+- Source of truth: B.L.A.S.T. notebook (5811a372)
+
+**Kie.ai Capability Gap Analysis**:
+- Audited ALL Kie.ai endpoints available vs. used in codebase
+- Currently using: Kling 3.0, Nano Banana, Suno V5, Gemini 3 Flash, avatar-pro, infinitalk, ElevenLabs TTS
+- NOT using: Sora 2 Pro, Sora 2 Characters (character consistency!), Seedream 4.5 (editing), ElevenLabs isolation/STT/dialogue, Suno personas, Gemini 3 Pro, structured JSON output, native 4K, multi-shot, ambient audio, Kling Elements
+- Top 5 quick wins identified: (1) Kling Elements for realtor consistency, (2) multi-shot + ambient audio flags, (3) Gemini 3 Pro for prompts, (4) Seedream for room editing, (5) ElevenLabs isolation for Winner Studio
+
+**Yaron V3 Job**:
+- Resume endpoint working — POST /api/jobs/:id/resume returns correct response
+- Job resumed: 4 clips kept (recovered from Kie.ai), 10 clips reset to pending
+- Failed again with Kie.ai 402 "Credits insufficient" — top-up may not have processed yet
+- Will retry when credits available
+
+**End-of-Session Sync Protocol Created**:
+- MEMORY.md: Full 8-step sync checklist with trigger map
+- DECISIONS.md: §15 (sync protocol mandate) + §16 (canonical pricing mandate)
+- Agent-behavior.md already has NotebookLM sync rules from earlier this session
+
+### Files modified
+- 20 files for pricing fix (see pricing agent summary above)
+- `DECISIONS.md` (§15 sync protocol, §16 canonical pricing)
+- `MEMORY.md` (auto-memory: full sync protocol + Kie.ai capabilities + niche strategy + pricing)
+
+### Costs this session
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| Kling 3.0 (clip generation attempts) | 10 | $0.03-0.10 | ~$0.30-1.00 (failed — 402) |
+| Gemini 3 Flash (analysis) | ~5 | $0.001 | $0.005 |
+| **Session total** | | | ~$0.31-1.01 |
+
+Note: Kling clips failed before generation started (402), so actual cost may be $0.
+
+---
+
 ## 2026-02-24: Repo Cleanup + R2 Public Access + Health Check Fix
 
 ### What was done

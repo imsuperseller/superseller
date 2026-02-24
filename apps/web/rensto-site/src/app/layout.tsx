@@ -11,7 +11,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: 'Rensto | Your AI Crew for Business',
-  description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
+  description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
   keywords: ['AI business automation', 'AI video production', 'AI receptionist', 'AI lead generation', 'small business AI', 'realtor video'],
   authors: [{ name: 'Rensto Team' }],
   creator: 'Rensto',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Rensto | Your AI Crew for Business',
-    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
+    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
     url: 'https://rensto.com',
     siteName: 'Rensto',
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Rensto | Your AI Crew for Business',
-    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
+    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
     images: ['/opengraph-image.png'],
     creator: '@rensto',
   },

@@ -102,7 +102,7 @@ export function CrewHero() {
             Meet your AI crew. Six autonomous agents that produce videos, answer
             calls, generate leads, create content, and run your knowledge base
             &mdash; starting at{' '}
-            <span className="text-white font-black">$299/mo</span>.
+            <span className="text-white font-black">$79/mo</span>.
           </motion.p>
 
           {/* CTAs — slide up with spring */}

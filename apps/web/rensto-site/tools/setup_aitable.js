@@ -2,7 +2,7 @@
  * tools/setup_aitable.js
  * 
  * Purpose: 
- * 1. Connect to the 'Rensto' Space (spc4tjiuDMjfY).
+ * 1. Connect to the 'Rensto' Space (spc63cnXLdMYc).
  * 2. Check if 'Rensto Leads' datasheet exists.
  * 3. If not, create it with the correct schema.
  * 4. Output the Datasheet ID for .env.local
@@ -29,7 +29,7 @@ if (fs.existsSync(envPath)) {
 
 const TOKEN = process.env.AITABLE_API_TOKEN;
 console.log(`🔑 Final TOKEN: ${TOKEN ? 'FOUND' : 'NOT FOUND'}`);
-const SPACE_ID = 'spc4tjiuDMjfY'; // 'Rensto' Space
+const SPACE_ID = 'spc63cnXLdMYc'; // 'Rensto' Space (new, no account limits)
 
 if (!TOKEN) {
     console.error('❌ AITABLE_API_TOKEN not found.');

@@ -46,7 +46,7 @@ export function NichePage({ niche }: NichePageProps) {
               Business?
             </h2>
             <p className="text-xl text-[var(--rensto-text-secondary)] max-w-lg mx-auto">
-              Start with $299/mo. Your AI crew handles the busy work so you can
+              Start with $79/mo. Your AI crew handles the busy work so you can
               focus on growing.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

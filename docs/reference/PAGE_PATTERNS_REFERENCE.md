@@ -70,7 +70,7 @@ API_URL: 'https://api.rensto.com/api/stripe/checkout'
 - H-02: Comparison table (vs traditional lead gen)
 - H-03: Lead sources (4 channels: LinkedIn, GMaps, Facebook, scraping)
 - H-04: Try before you buy (free sample offer)
-- H-05: Pricing tiers (Starter $299, Professional $599 ⭐, Enterprise $1,499)
+- H-05: Pricing tiers (Starter $79, Pro $149 ⭐, Team $299)
 - H-06: CRM integration logos (6 major CRMs + 525+ apps)
 - H-07: Case studies (3 detailed with ROI: 18x, 3x, 35%)
 - H-08: FAQ accordion (6 questions)
@@ -82,7 +82,7 @@ API_URL: 'https://api.rensto.com/api/stripe/checkout'
 data-flow-type="subscription"
 data-subscription-type="lead-gen"
 data-tier="starter" | "professional" | "enterprise"
-data-price="299" | "599" | "1499"
+data-price="79" | "149" | "299"
 ```
 
 **Why Perfect**:
@@ -214,7 +214,7 @@ function filterIndustry(category) {
 - H-02: Pricing Cards (4 cards in grid)
   - **Marketplace**: $79/mo (simplified from $29-$3,500+ range) → "Browse Templates"
   - **Custom Solutions**: $3,500+ ⭐ Most Popular → "Book Consultation"
-  - **Lead Generation**: $299/mo → "Start Generating"
+  - **Lead Generation**: $79/mo → "Start Generating"
   - **Ready Solutions**: $890+ → "View Solutions"
 - H-03: FAQ Section (8 questions)
   - Payment methods
@@ -569,7 +569,7 @@ button.textContent = originalText;
 
 **Clear Progression**:
 - Marketplace: $29 → $97 → $197 → $797 → $1,997 → $3,500+
-- Subscriptions: $299 → $599 ⭐ → $1,499
+- Subscriptions: $79 → $149 ⭐ → $299
 - Custom Solutions: $297 → $1,997 ⭐ → $3,500-$8,000+
 - Ready Solutions: $890 → $2,990 ⭐ → +$797
 

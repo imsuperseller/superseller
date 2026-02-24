@@ -6,6 +6,7 @@ import { apiRouter } from "./api/routes";
 import { videoPipelineWorker } from "./queue/workers/video-pipeline.worker";
 import { initWorkers } from "./queue/workers/video-pipeline.worker";
 import { frontdeskPollerWorker, initFrontDeskPoller } from "./queue/workers/frontdesk-poller.worker";
+import { setupBullBoard } from "./bull-board";
 
 async function bootstrap() {
     logger.info("🚀 Starting TourReel Worker Service...");
@@ -21,16 +22,21 @@ async function bootstrap() {
     // 2. Routes
     app.use("/api", apiRouter);
 
-    // 3. Initialize BullMQ Workers
+    // 3. Bull Board UI (basic-auth protected)
+    const bullBoard = setupBullBoard();
+    app.use("/admin/queues", bullBoard.basicAuth, bullBoard.router);
+
+    // 4. Initialize BullMQ Workers
     await initWorkers();
     await initFrontDeskPoller();
     logger.info("✅ Workers initialized (Concurrency: 1)");
 
-    // 4. Start Server
+    // 5. Start Server
     const port = process.env.PORT || 3002;
     app.listen(port, () => {
         logger.info(`✨ API Server listening on port ${port}`);
         logger.info(`🔗 Health Check: http://localhost:${port}/api/health`);
+        logger.info(`📊 Bull Board: http://localhost:${port}/admin/queues`);
     });
 
     // Handle termination

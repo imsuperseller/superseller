@@ -298,6 +298,46 @@ apiRouter.post("/jobs/:id/retry-fresh", async (req: Request, res: Response) => {
     return res.json({ success: true, message: "Job reset and re-queued" });
 });
 
+// ─── RESUME JOB (keep completed clips, re-generate stuck/pending) ───
+apiRouter.post("/jobs/:id/resume", async (req: Request, res: Response) => {
+    const jobId = req.params.id;
+    const job = await queryOne("SELECT * FROM video_jobs WHERE id = $1", [jobId]);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    if (job.status === "complete" && job.master_video_url) {
+        return res.status(400).json({ error: "Job already complete" });
+    }
+
+    // Reset stuck/generating clips back to pending (keep completed ones)
+    const resetResult = await query(
+        "UPDATE clips SET status = 'pending', external_task_id = NULL WHERE video_job_id = $1 AND status != 'complete' RETURNING id",
+        [jobId]
+    );
+    const completedClips = await query(
+        "SELECT id FROM clips WHERE video_job_id = $1 AND status = 'complete'",
+        [jobId]
+    );
+
+    await query(
+        "UPDATE video_jobs SET status = 'pending', error_message = NULL, progress_percent = 0, current_step = NULL WHERE id = $1",
+        [jobId]
+    );
+
+    await videoPipelineQueue.add("video-pipeline", {
+        jobId,
+        listingId: job.listing_id,
+        userId: job.user_id,
+    });
+
+    logger.info({ msg: "Resume enqueued", jobId, resetClips: resetResult.length, keptClips: completedClips.length });
+    return res.json({
+        success: true,
+        message: `Job resumed: ${completedClips.length} clips kept, ${resetResult.length} clips reset to pending`,
+        keptClips: completedClips.length,
+        resetClips: resetResult.length,
+    });
+});
+
 // ─── RAG: INGEST ───
 const ingestSchema = z.object({
     tenantId: z.string().min(1),

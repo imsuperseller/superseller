@@ -81,8 +81,8 @@ async function listNodes(spaceId, parentNodeId = '') {
 async function main() {
     const spaces = await listSpaces();
 
-    // Check Rensto Space (spc4tjiuDMjfY) folder (fodW7MSY6fdLz) directly
-    await listNodes('spc4tjiuDMjfY', 'fodW7MSY6fdLz');
+    // Check Rensto Space (spc63cnXLdMYc) folder (fodW7MSY6fdLz) directly
+    await listNodes('spc63cnXLdMYc', 'fodW7MSY6fdLz');
 }
 
 main();

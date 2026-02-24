@@ -63,9 +63,9 @@ The all-in cost per video depends heavily on the generation tier and retry rate:
 | **Total COGS per video** | **$9.31** | **$34.50** |
 **Realistic middle estimate using Veo 3.1 Fast: ~$15–20 per video.** This means a $99/month plan with 15 videos has COGS of $225–300 — **unprofitable at Standard tier**. The solution: **use Fast tier as the default engine** (COGS drops to ~$120–150 for 15 videos at $8–10 each) and offer Standard/1080p as a premium upsell. Alternatively, price the base plan at $149/month.
 Recommended pricing tiers based on market positioning between free AI experiments and $300+ traditional video:
-- **Starter**: $49/month — 5 videos (strong margin at Fast tier)
-- **Professional**: $149/month — 15 videos + social format exports
-- **Team/Brokerage**: $299/month — 50 videos + priority processing + branding
+- **Starter**: $79/month — 5 videos, 500 credits
+- **Pro**: $149/month — 15 videos, 1,500 credits + social format exports
+- **Team**: $299/month — 50 videos, 4,000 credits + priority processing + branding
 - **Pay-per-video**: $29–39 for occasional users
 Third-party providers like kie.ai ($0.40/video for Veo Fast) could cut generation costs by **50–75%**, dramatically improving unit economics. Validate their reliability before production dependence.
 ---

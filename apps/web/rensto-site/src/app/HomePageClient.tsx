@@ -261,7 +261,7 @@ export default function HomePageClient() {
                 <span style={{ color: 'var(--rensto-accent-cyan)' }}>The Crew</span>?
               </h2>
               <p className="text-xl text-[var(--rensto-text-secondary)] max-w-lg mx-auto">
-                Start with $299/mo. Use credits on any combination of AI agents.
+                Start with $79/mo. Use credits on any combination of AI agents.
                 Cancel anytime.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

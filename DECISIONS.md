@@ -193,6 +193,41 @@
 
 ---
 
-## 15. DEFERRED
+## 15. END-OF-SESSION SYNC PROTOCOL (Feb 24, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Mandate** | "After every time we talk... is there a thing that each and every time is updating things all across so everything is synced?" |
+| **Problem** | No automated sync exists. Rules say to sync but agent fails to follow. User caught NotebookLM, pricing, and niche drift. |
+| **Solution** | Mandatory end-of-session sync protocol in auto-memory (MEMORY.md) — checked at conversation start, executed at conversation end. |
+
+**Protocol** (see `MEMORY.md` for full checklist):
+1. progress.md — what was done
+2. findings.md — root causes / discoveries
+3. DECISIONS.md — user decisions
+4. NotebookLM notebooks — push to every touched product's notebook
+5. PRODUCT_STATUS.md — if status changed
+6. MEMORY.md — if new patterns/preferences
+7. Skills — if capabilities changed
+8. brain.md / CLAUDE.md — if architecture changed
+
+**Trigger map**: Code change → progress + notebook + status. Bug fix → progress + findings + notebook. User decision → DECISIONS + notebook. Brainstorm/insight → findings + notebook + memory. Pricing → PRODUCT_BIBLE + skills + B.L.A.S.T. notebook.
+
+**Non-negotiable**: This runs EVERY session. Not "when I remember." EVERY time.
+
+---
+
+## 16. CANONICAL PRICING — NEVER DEVIATE (Feb 24, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Mandate** | "Every time you come up with a different pricing model when we work on something instead of knowing there is a center" |
+| **Canonical Pricing** | Starter $79/mo (5 videos, 500 credits), Pro $149/mo (15 videos, 1500 credits), Team $299/mo (50 videos, 4000 credits), Pay-per-video $29-39 |
+| **Source** | B.L.A.S.T. notebook (5811a372) |
+| **Fixed in** | 20 files across codebase (Feb 24, 2026) — replaced all $299/$699/$1499 references |
+
+---
+
+## 17. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.

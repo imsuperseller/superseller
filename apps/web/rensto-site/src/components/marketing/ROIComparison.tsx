@@ -120,7 +120,7 @@ export function ROIComparison() {
                 listing videos/mo saves ~$5,000 compared to a video studio.
               </p>
               <p className="text-sm font-black" style={{ color: 'var(--rensto-accent-cyan)' }}>
-                Rensto Starter: $299/mo
+                Rensto Starter: $79/mo
               </p>
             </div>
           </div>

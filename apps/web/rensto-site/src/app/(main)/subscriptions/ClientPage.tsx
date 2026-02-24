@@ -123,7 +123,7 @@ export default function SubscriptionsPage() {
     { id: 'low', name: 'Low Volume', leads: '10-50/month', price: 199, description: 'Perfect for small businesses getting started' },
     { id: 'medium', name: 'Medium Volume', leads: '50-200/month', price: 499, description: 'Ideal for growing businesses', popular: true },
     { id: 'high', name: 'High Volume', leads: '200-500/month', price: 999, description: 'For established businesses with high demand' },
-    { id: 'enterprise', name: 'Enterprise', leads: '500+/month', price: 1999, description: 'Custom solutions for large organizations' }
+    { id: 'team', name: 'Team', leads: '500+/month', price: 1999, description: 'Custom solutions for large organizations' }
   ];
 
   const crmIntegrations = [
@@ -911,7 +911,7 @@ export default function SubscriptionsPage() {
                     {[
                       { id: 'starter', name: 'Starter', data: '1 Data Source', price: 1497, features: ['Internal Knowledge Base', 'Basic Data Sync', 'Process Logic Mapping', 'Standard Support'] },
                       { id: 'pro', name: 'Growth', data: 'Multi-Source', price: 2997, popular: true, features: ['Automated CRM Sync', 'Advanced Decision Logic', 'Team Member Context', 'Priority Engineering'] },
-                      { id: 'enterprise', name: 'Enterprise', data: 'Full Org Sync', price: 4997, features: ['White-label Internal Tool', 'Custom Workflow Sync', 'Dedicated Knowledge Engineer', '24/7 Priority Support'] }
+                      { id: 'team', name: 'Team', data: 'Full Org Sync', price: 4997, features: ['White-label Internal Tool', 'Custom Workflow Sync', 'Dedicated Knowledge Engineer', '24/7 Priority Support'] }
                     ].map((tier) => (
                       <div
                         key={tier.id}
@@ -977,7 +977,7 @@ export default function SubscriptionsPage() {
                     {[
                       { id: 'basic', name: 'Starter', assets: '10 assets/month', price: 997, features: ['Content Ideation Logic', 'AI Video Generation', 'Social Media Copywriting', 'Weekly Growth Plan'] },
                       { id: 'professional', name: 'Pro', assets: '50 assets/month', price: 1997, popular: true, features: ['Advanced Video Pipeline', 'Multi-Channel Distribution', 'Custom Brand Voices', 'Topic Authority Analysis', 'Priority Production'] },
-                      { id: 'enterprise', name: 'Scale', assets: 'Unlimited', price: 3997, features: ['Full Content Agency Box', 'White-label Production', 'Custom AI Model Training', 'Dedicated Creative Lead', 'Unlimited Revisions'] }
+                      { id: 'team', name: 'Scale', assets: 'Unlimited', price: 3997, features: ['Full Content Agency Box', 'White-label Production', 'Custom AI Model Training', 'Dedicated Creative Lead', 'Unlimited Revisions'] }
                     ].map((tier) => (
                       <div
                         key={tier.id}

@@ -5,18 +5,20 @@ export interface AITableRecord<T> {
     fields: T;
 }
 
-// ── Rensto Aitable Datasheet IDs (space: spc4tjiuDMjfY) ──────────
+// ── Rensto Aitable Datasheet IDs (space: spc63cnXLdMYc — new, no account limits) ──
 export const AITABLE_DATASHEETS = {
-    EXPENSES: 'dstHnMVPAdtXESlJSX',
-    LLM_REGISTRY: 'dstsCAPquhDDaHTbnL',   // created 2026-02-19
-    LEADS: 'dstbftVH9AdzDKcu70',
-    CLIENTS: 'dst1zXPh3cf72vKpmR',
-    CAMPAIGNS: 'dstt7Keh14AkVXF0Vl',
-    KNOWLEDGE: 'dstxq3xnpvu7XY37bT',
-    MASTER_REGISTRY: 'dstwsqbXSmK5wYMmeQ',
-    MASTER_PRODUCTS: 'dstr7Y928QP9X6miB2',
-    PAYMENTS: 'dstjnQPSkUBffmb5gM',
-    SOLUTIONS: 'dstBYSsqrzrdrFJ1wP',
+    LEADS: 'dsthicczfBtNP1wExr',
+    CLIENTS: 'dstavaagcBYjfQnm3r',
+    MASTER_REGISTRY: 'dstdwxrAsGJnSBkRou',
+    KNOWLEDGE: 'dstebTxZgGAvVGCy65',
+    TESTIMONIALS: 'dstnTTZXrulEhrK4gu',
+    PAYMENTS: 'dstXGK4ZzossA7szAY',
+    SOLUTIONS: 'dstq3e6VV26RlSidQq',
+    CAMPAIGNS: 'dstlAXkKKThUb593cu',
+    // TODO: Create these in new space when needed
+    EXPENSES: '',       // was dstHnMVPAdtXESlJSX in old space
+    LLM_REGISTRY: '',   // was dstsCAPquhDDaHTbnL in old space
+    MASTER_PRODUCTS: '', // was dstr7Y928QP9X6miB2 in old space
 } as const;
 
 type DatasheetId = typeof AITABLE_DATASHEETS[keyof typeof AITABLE_DATASHEETS];

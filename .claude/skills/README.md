@@ -7,7 +7,7 @@
 | **tourreel-pipeline** | TourReel video pipeline: Kling 3.0, FFmpeg, scene management, troubleshooting | "video pipeline", "TourReel", "Kling", "clip generation" |
 | **ui-ux-pro-max** | UI/UX design intelligence: 50+ styles, 97 palettes, 57 fonts, 9 stacks | "landing page", "dashboard", "color palette", "design" |
 | **rag-pgvector** | RAG stack: pgvector + Ollama + LiteLLM for 6GB VPS | "pgvector", "RAG", "vector search", "embeddings", "Ollama" |
-| **stripe-credits** | Credits billing, subscriptions ($299/$699/$1499), Stripe webhooks, usage tracking | "credits", "stripe", "billing", "payment", "subscription" |
+| **stripe-credits** | Credits billing, subscriptions ($79/$149/$299), Stripe webhooks, usage tracking | "credits", "stripe", "billing", "payment", "subscription" |
 | **database-management** | Prisma + Drizzle dual-ORM, schema sync, migrations, shared PostgreSQL | "database", "schema", "migration", "Prisma", "Drizzle" |
 | **antigravity-automation** | Primary automation engine, n8n backup patterns, NotebookLM/Stitch integration | "Antigravity", "automation", "workflow orchestration" |
 

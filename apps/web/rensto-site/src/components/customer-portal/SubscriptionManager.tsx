@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 interface SubscriptionData {
-  planType: 'basic' | 'professional' | 'enterprise';
+  planType: 'basic' | 'professional' | 'team';
   status: 'active' | 'canceled' | 'past_due' | 'incomplete' | 'incomplete_expired' | 'trialing' | 'unpaid';
   currentPeriodStart: string;
   currentPeriodEnd: string;
@@ -49,7 +49,7 @@ interface UsageData {
 interface SubscriptionManagerProps {
   subscription: SubscriptionData;
   usage: UsageData;
-  onUpgrade: (planType: 'professional' | 'enterprise') => void;
+  onUpgrade: (planType: 'professional' | 'team') => void;
   onDowngrade: (planType: 'basic' | 'professional') => void;
   onCancel: () => void;
 }
@@ -63,26 +63,26 @@ export default function SubscriptionManager({
 }: SubscriptionManagerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'professional' | 'enterprise'>('professional');
+  const [selectedPlan, setSelectedPlan] = useState<'professional' | 'team'>('professional');
 
   const plans = {
     basic: {
       name: 'Basic Plan',
-      price: '$97',
+      price: '$79',
       description: 'Perfect for small businesses getting started with automation',
-      features: ['100 interactions/month', '5 templates', '1 user', '1,000 API calls', '1GB storage', '3 integrations', 'Email support']
+      features: ['500 credits/month', '5 templates', '1 user', '1,000 API calls', '1GB storage', '3 integrations', 'Email support']
     },
     professional: {
       name: 'Professional Plan',
-      price: '$197',
+      price: '$149',
       description: 'Advanced features for growing businesses',
-      features: ['500 interactions/month', '20 templates', '5 users', '5,000 API calls', '10GB storage', '10 integrations', 'AI features', 'Analytics', 'Priority support']
+      features: ['1,500 credits/month', '20 templates', '5 users', '5,000 API calls', '10GB storage', '10 integrations', 'AI features', 'Analytics', 'Priority support']
     },
-    enterprise: {
-      name: 'Enterprise Plan',
-      price: '$497',
-      description: 'Complete solution for large organizations',
-      features: ['Unlimited interactions', 'Unlimited templates', 'Unlimited users', 'Unlimited API calls', 'Unlimited storage', 'Unlimited integrations', 'White-label', 'Custom integrations', 'Dedicated support']
+    team: {
+      name: 'Team Plan',
+      price: '$299',
+      description: 'Complete solution for teams and growing organizations',
+      features: ['4,000 credits/month', 'Unlimited templates', 'Unlimited users', 'Unlimited API calls', 'Unlimited storage', 'Unlimited integrations', 'White-label', 'Custom integrations', 'Dedicated support']
     }
   };
 
@@ -111,7 +111,7 @@ export default function SubscriptionManager({
     }
   };
 
-  const handleUpgrade = async (planType: 'professional' | 'enterprise') => {
+  const handleUpgrade = async (planType: 'professional' | 'team') => {
     setIsLoading(true);
     try {
       await onUpgrade(planType);
@@ -175,7 +175,7 @@ export default function SubscriptionManager({
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              {subscription.planType !== 'enterprise' && (
+              {subscription.planType !== 'team' && (
                 <Button 
                   onClick={() => setShowUpgradeModal(true)}
                   className="w-full"
@@ -188,7 +188,7 @@ export default function SubscriptionManager({
               {subscription.planType !== 'basic' && (
                 <Button 
                   variant="outline" 
-                  onClick={() => handleDowngrade(subscription.planType === 'enterprise' ? 'professional' : 'basic')}
+                  onClick={() => handleDowngrade(subscription.planType === 'team' ? 'professional' : 'basic')}
                   disabled={isLoading}
                 >
                   Downgrade
@@ -333,7 +333,7 @@ export default function SubscriptionManager({
                   className={`cursor-pointer transition-all ${
                     selectedPlan === key ? 'ring-2 ring-primary' : 'hover:shadow-md'
                   }`}
-                  onClick={() => setSelectedPlan(key as 'professional' | 'enterprise')}
+                  onClick={() => setSelectedPlan(key as 'professional' | 'team')}
                 >
                   <CardContent className="p-4">
                     <h3 className="text-lg font-semibold">{plan.name}</h3>

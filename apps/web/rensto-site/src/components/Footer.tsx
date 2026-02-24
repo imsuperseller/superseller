@@ -109,7 +109,7 @@ export function Footer() {
             </div>
             <p className="text-[var(--rensto-text-secondary)] mb-4 max-w-md leading-relaxed">
               Six AI agents that produce videos, answer calls, generate leads,
-              and run your business — starting at $299/mo.
+              and run your business — starting at $79/mo.
             </p>
             <div className="flex space-x-4">
               {navigation.social.map((item) => (

@@ -140,6 +140,35 @@ Before deleting or archiving docs, ask:
 
 ---
 
+## NotebookLM Sync (MANDATORY)
+
+NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agent = wrong decisions.
+
+### On Conversation Start
+1. **Query B.L.A.S.T. notebook (5811a372)** for agent behavior and completion rules — especially after context compression or long conversations.
+2. **Check notebook freshness** — if the last task made code changes to a product, verify the corresponding notebook has been updated. If not, update it before proceeding.
+
+### On Task Completion
+3. **Push updates to relevant notebooks** — if you changed TourReel code, update Zillow-to-Video (0baf5f36). If you changed infra, update Automation & Core Infra (fc048ba8). If you changed FB Bot, update Social Media & Lead Gen (cb99e6aa). No exceptions.
+4. **If notebook is at 50/50 sources** — identify the least relevant source and ask the user before deleting to make room.
+5. **Never leave "pending upload" items** — if an update doc was prepared (e.g., `docs/notebooklm-updates/`), push it in the same session. Do not defer to "next time."
+
+### Notebook-to-Product Map
+| Product Changed | Notebook to Update |
+|-----------------|-------------------|
+| TourReel / video pipeline | 0baf5f36 (Zillow-to-Video) |
+| Winner Studio | e109bcb2 (Mivnim/Yossi) |
+| FB Bot | cb99e6aa (Social Media & Lead Gen) |
+| Infrastructure / deploy | fc048ba8 (Automation & Core Infra) |
+| Kie.ai usage / models | 3e820274 (KIE.AI) |
+| WhatsApp / WAHA | 0789acdb (WAHA Pro) |
+| Website / rensto.com | 719854ee (Rensto Website) |
+| Agent behavior / methodology | 5811a372 (B.L.A.S.T.) |
+
+**Violation history (Feb 24, 2026):** TourReel update doc prepared Feb 23 but never pushed to notebook. User had to ask "are you in touch with the notebooks?" to discover the gap. This must never happen again.
+
+---
+
 ## When in Doubt
 
 About to send instructions when you could execute? **Stop.** Do the work. Work until it works.

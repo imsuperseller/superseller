@@ -2,7 +2,7 @@
 name: stripe-credits
 description: >
   Stripe integration and credit-based billing for Rensto SaaS.
-  Covers credit ledger, subscriptions ($299/$699/$1499), payment webhooks,
+  Covers credit ledger, subscriptions ($79/$149/$299), payment webhooks,
   usage tracking, and provisioning. Use for any billing, credits, or Stripe work.
 autoTrigger:
   - "credits"
@@ -47,11 +47,11 @@ Use when working on billing, credits, subscriptions, payment webhooks, or usage 
 - **Payment** (Prisma): `userId, amount, status, flowType, stripeSessionId`
 
 ### Subscription Tiers (Canonical)
-| Plan | Price | Credits | Stripe Product |
-|------|-------|---------|----------------|
-| Starter | $299/mo | 500 | STRIPE_STARTER_PRICE_ID |
-| Pro | $699/mo | 1,500 | STRIPE_PRO_PRICE_ID |
-| Enterprise | $1,499/mo | 4,000 | STRIPE_ENTERPRISE_PRICE_ID |
+| Plan | Price | Videos | Credits | Stripe Product |
+|------|-------|--------|---------|----------------|
+| Starter | $79/mo | 5 | 500 | STRIPE_STARTER_PRICE_ID |
+| Pro | $149/mo | 15 | 1,500 | STRIPE_PRO_PRICE_ID |
+| Team | $299/mo | 50 | 4,000 | STRIPE_TEAM_PRICE_ID |
 
 ## Common Patterns
 

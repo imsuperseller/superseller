@@ -114,13 +114,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
 
-            // 2. Floorplan Analysis (REQUIRED — fail if no floorplan from upload or auto-detection)
-            if (!listing.floorplan_url) {
-                await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2",
-                    ["Floorplan required: no floorplan uploaded and none detected in listing photos. Please provide a floorplan image.", jobId]);
-                throw new UnrecoverableError("Floorplan required: no floorplan uploaded and none detected in listing photos");
-            }
-
+            // 2. Floorplan Analysis (optional — falls through to default tour sequence if absent)
             let tourRooms: TourRoom[] = listing.tour_sequence || [];
             if (listing.floorplan_url && !listing.floorplan_analysis) {
                 const analysis = await analyzeFloorplan(listing.floorplan_url, listing);
@@ -457,130 +451,226 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 frameUrls[0] = lastFrameUrl;
             }
 
-            for (const clip of clips) {
-                const clipIdx = clip.clip_number - 1;
-                const isLastClip = clipIdx === clips.length - 1;
+            // PARALLEL MODE: Generate all clips simultaneously (20x faster)
+            // Trade-off: Uses listing photos as start frames instead of seamless end-frame transitions
+            const PARALLEL_MODE = process.env.PARALLEL_CLIPS !== "false"; // Default ON
 
-                // ── Resume support: skip already-completed clips ──
-                if (clip.status === "complete" && clip.video_url) {
-                    logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number, videoUrl: clip.video_url });
+            if (PARALLEL_MODE) {
+                logger.info({ msg: "PARALLEL clip generation enabled", clipCount: clips.length });
+                const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
+
+                // Create all Kling tasks in parallel
+                const clipTasks = await Promise.all(clips.map(async (clip) => {
+                    const clipIdx = clip.clip_number - 1;
+                    const isLastClip = clipIdx === clips.length - 1;
+
+                    // Resume: skip completed clips
+                    if (clip.status === "complete" && clip.video_url) {
+                        logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number });
+                        return { clip, taskId: null, alreadyComplete: true };
+                    }
+
+                    // Start frame: use listing photos (not previous clip's end frame)
+                    let startFrame: string | null;
+                    if (clipIdx === 0) {
+                        startFrame = frameUrls[0] ?? lastFrameUrl;
+                    } else if (isLastClip && frameUrls[clipIdx + 1]) {
+                        startFrame = frameUrls[clipIdx + 1]!;
+                        clipHasComposite[clipIdx] = true;
+                    } else {
+                        // Use listing photo for this room (parallel mode: independent frames)
+                        startFrame = getPhotoForRoom((clip as any).to_room, clipIdx) || lastFrameUrl;
+                    }
+
+                    if (!startFrame) throw new Error(`Missing start frame for clip ${clip.clip_number}`);
+
+                    await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
+
+                    const thisClipHasComposite = clipHasComposite[clipIdx];
+                    let klingPrompt: string;
+                    let clipElements: KlingElement[] | undefined;
+
+                    if (realtorElements && includeRealtor) {
+                        const storedPrompt = ((clip as any).prompt || "").trim();
+                        klingPrompt = storedPrompt.includes("@realtor") ? storedPrompt : buildElementsKlingPrompt(clip);
+                        clipElements = realtorElements;
+                    } else if (thisClipHasComposite) {
+                        klingPrompt = buildRealtorOnlyKlingPrompt(clip);
+                    } else {
+                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
+                    }
+
+                    const taskId = await withRetry(() => createKlingTask({
+                        prompt: klingPrompt,
+                        image_url: startFrame,
+                        realtor_in_frame: thisClipHasComposite,
+                        kling_elements: clipElements,
+                        negative_prompt: (clip as any).negative_prompt,
+                        mode: config.video.klingMode,
+                        aspect_ratio: "16:9",
+                        model: "kling-3.0/video",
+                        duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
+                        to_room: (clip as any).to_room,
+                    }), { label: `createKlingTask clip ${clip.clip_number}` });
+
+                    await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
+                    logger.info({ msg: "Kling task created (parallel)", clip: clip.clip_number, taskId });
+                    return { clip, taskId, alreadyComplete: false };
+                }));
+
+                // Wait for all tasks to complete in parallel
+                logger.info({ msg: "Waiting for all clips to complete in parallel..." });
+                const clipResults = await Promise.all(clipTasks.map(async ({ clip, taskId, alreadyComplete }) => {
+                    if (alreadyComplete) {
+                        const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
+                        const dlResp = await fetch(clip.video_url!, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                        if (!dlResp.ok) throw new Error(`Failed to download completed clip ${clip.clip_number}: HTTP ${dlResp.status}`);
+                        writeFileSync(videoPath, Buffer.from(await dlResp.arrayBuffer()));
+                        return { clip, videoPath, videoUrl: clip.video_url! };
+                    }
+
+                    const status = await waitForTask(taskId!, "kling");
+                    if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
+
+                    const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
+                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number } });
+                    logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number });
+
                     const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
-                    const dlResp = await fetch(clip.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
-                    if (!dlResp.ok) throw new Error(`Failed to download completed clip ${clip.clip_number}: HTTP ${dlResp.status}`);
-                    writeFileSync(videoPath, Buffer.from(await dlResp.arrayBuffer()));
+                    const response = await fetch(status.result.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                    writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
+
+                    await query(
+                        "UPDATE clips SET status = 'complete', video_url = $1, duration_seconds = $2 WHERE id = $3",
+                        [status.result.video_url, clip.duration_seconds, clip.id]
+                    );
+
+                    return { clip, videoPath, videoUrl: status.result.video_url };
+                }));
+
+                // Post-process: normalize and prepare for stitching
+                for (const { clip, videoPath } of clipResults) {
+                    const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
+                    await extractLastFrame(videoPath, lastFramePath);
+                    boundaryFramePaths.push(lastFramePath);
+
+                    const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
+                    await normalizeClip(videoPath, normalizedPath);
+                    clipFiles.push(normalizedPath);
+                }
+
+                logger.info({ msg: "All clips generated in parallel", count: clipResults.length });
+
+            } else {
+                // SEQUENTIAL MODE (original): Seamless transitions but slow
+                logger.info({ msg: "SEQUENTIAL clip generation (set PARALLEL_CLIPS=false)", clipCount: clips.length });
+                for (const clip of clips) {
+                    const clipIdx = clip.clip_number - 1;
+                    const isLastClip = clipIdx === clips.length - 1;
+
+                    if (clip.status === "complete" && clip.video_url) {
+                        logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number, videoUrl: clip.video_url });
+                        const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
+                        const dlResp = await fetch(clip.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                        if (!dlResp.ok) throw new Error(`Failed to download completed clip ${clip.clip_number}: HTTP ${dlResp.status}`);
+                        writeFileSync(videoPath, Buffer.from(await dlResp.arrayBuffer()));
+
+                        const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
+                        await extractLastFrame(videoPath, lastFramePath);
+                        boundaryFramePaths.push(lastFramePath);
+                        lastFrameUrl = clip.end_frame_url || await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
+
+                        const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
+                        await normalizeClip(videoPath, normalizedPath, {
+                            width: config.video.outputWidth,
+                            height: config.video.outputHeight,
+                        });
+                        clipFiles.push(normalizedPath);
+
+                        const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
+                        await updateJobStatus(jobId, "generating_clips", progress);
+                        continue;
+                    }
+
+                    let startFrame: string | null;
+                    if (clipIdx === 0) {
+                        startFrame = frameUrls[0] ?? lastFrameUrl;
+                    } else if (isLastClip && frameUrls[clipIdx + 1]) {
+                        startFrame = frameUrls[clipIdx + 1]!;
+                        clipHasComposite[clipIdx] = true;
+                    } else {
+                        startFrame = lastFrameUrl;
+                    }
+
+                    if (!startFrame) {
+                        throw new Error(`Missing start frame for clip ${clip.clip_number}. Ensure listing has exterior_photo_url or realtor opening frame.`);
+                    }
+
+                    await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
+
+                    let result: { video: { url: string } } | null = null;
+                    let modelUsed: string | null = null;
+                    const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
+
+                    const thisClipHasComposite = clipHasComposite[clipIdx];
+                    let klingPrompt: string;
+                    let clipElements: KlingElement[] | undefined;
+
+                    if (realtorElements && includeRealtor) {
+                        const storedPrompt = ((clip as any).prompt || "").trim();
+                        klingPrompt = storedPrompt.includes("@realtor")
+                            ? storedPrompt
+                            : buildElementsKlingPrompt(clip);
+                        clipElements = realtorElements;
+                    } else if (thisClipHasComposite) {
+                        klingPrompt = buildRealtorOnlyKlingPrompt(clip);
+                    } else {
+                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
+                    }
+
+                    const taskId = await withRetry(() => createKlingTask({
+                        prompt: klingPrompt,
+                        image_url: startFrame,
+                        realtor_in_frame: thisClipHasComposite,
+                        kling_elements: clipElements,
+                        negative_prompt: (clip as any).negative_prompt,
+                        mode: config.video.klingMode,
+                        aspect_ratio: "16:9",
+                        model: "kling-3.0/video",
+                        duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
+                        to_room: (clip as any).to_room,
+                    }), { label: `createKlingTask clip ${clip.clip_number}` });
+
+                    await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
+                    const status = await waitForTask(taskId, "kling");
+                    if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
+                    result = { video: { url: status.result.video_url } };
+                    modelUsed = "kling-3.0/video";
+                    const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
+                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number, model: modelUsed } });
+                    logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
+
+                    const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
+                    const response = await fetch(result.video.url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                    writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
 
                     const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
                     await extractLastFrame(videoPath, lastFramePath);
                     boundaryFramePaths.push(lastFramePath);
-                    lastFrameUrl = clip.end_frame_url || await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
+                    lastFrameUrl = await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                     const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                    await normalizeClip(videoPath, normalizedPath, {
-                        width: config.video.outputWidth,
-                        height: config.video.outputHeight,
-                    });
+                    await normalizeClip(videoPath, normalizedPath);
                     clipFiles.push(normalizedPath);
+
+                    await query(
+                        "UPDATE clips SET status = 'complete', video_url = $1, end_frame_url = $2, duration_seconds = $3 WHERE id = $4",
+                        [result.video.url, lastFrameUrl, clip.duration_seconds, clip.id]
+                    );
 
                     const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
                     await updateJobStatus(jobId, "generating_clips", progress);
-                    continue;
                 }
-
-                // Start frame selection:
-                // - Clip 1: Nano Banana opening composite (realtor on pathway)
-                // - Clips 2 to N-1: extracted last frame from previous clip (seamless continuity)
-                // - Last clip: Nano Banana closing composite if available (realtor in finale), else extracted last frame
-                let startFrame: string | null;
-                if (clipIdx === 0) {
-                    startFrame = frameUrls[0] ?? lastFrameUrl;
-                } else if (isLastClip && frameUrls[clipIdx + 1]) {
-                    // Closing clip: use Nano Banana composite (realtor in backyard/pool)
-                    startFrame = frameUrls[clipIdx + 1]!;
-                    clipHasComposite[clipIdx] = true;
-                } else {
-                    startFrame = lastFrameUrl;
-                }
-
-                if (!startFrame) {
-                    throw new Error(`Missing start frame for clip ${clip.clip_number}. Ensure listing has exterior_photo_url or realtor opening frame.`);
-                }
-
-                await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
-
-                let result: { video: { url: string } } | null = null;
-                let modelUsed: string | null = null;
-                const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
-
-                // Per-clip prompt selection: 3 modes
-                // 1. kling_elements mode: use @realtor reference prompt (no Nano composite needed)
-                // 2. Nano composite mode: use camera-only prompt (person already in start frame)
-                // 3. Property-only mode: use property prompt (no person references)
-                const thisClipHasComposite = clipHasComposite[clipIdx];
-                let klingPrompt: string;
-                let clipElements: KlingElement[] | undefined;
-
-                if (realtorElements && includeRealtor) {
-                    // Kling Elements mode: use pre-seeded custom prompt if it references @realtor,
-                    // otherwise fall back to template. Enables custom per-clip creative direction.
-                    const storedPrompt = ((clip as any).prompt || "").trim();
-                    klingPrompt = storedPrompt.includes("@realtor")
-                        ? storedPrompt
-                        : buildElementsKlingPrompt(clip);
-                    clipElements = realtorElements;
-                } else if (thisClipHasComposite) {
-                    // Nano Banana composite mode: person is in the start frame
-                    klingPrompt = buildRealtorOnlyKlingPrompt(clip);
-                } else {
-                    // Property-only: no person in frame
-                    klingPrompt = buildPropertyOnlyKlingPrompt(clip);
-                }
-
-                // Kling 3.0 ONLY. No Veo fallback. Per TOURREEL_REALTOR_HANDOFF_SPEC.
-                const taskId = await withRetry(() => createKlingTask({
-                    prompt: klingPrompt,
-                    image_url: startFrame,
-                    realtor_in_frame: thisClipHasComposite,
-                    kling_elements: clipElements,
-                    negative_prompt: (clip as any).negative_prompt,
-                    mode: config.video.klingMode,
-                    aspect_ratio: "16:9",
-                    model: "kling-3.0/video",
-                    duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
-                    to_room: (clip as any).to_room,
-                }), { label: `createKlingTask clip ${clip.clip_number}` });
-
-                // Credit deduction removed - 50 credits charged upfront by web app
-                // await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
-                await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
-                const status = await waitForTask(taskId, "kling");
-                if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
-                result = { video: { url: status.result.video_url } };
-                modelUsed = "kling-3.0/video";
-                const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
-                await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number, model: modelUsed } });
-                logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
-
-                const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
-                const response = await fetch(result.video.url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
-                writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
-
-                // ALWAYS extract last frame from video for next clip's start. Same frame at cut = no visible transition.
-                const lastFramePath = join(workDir, `clip_${clip.clip_number}_last.jpg`);
-                await extractLastFrame(videoPath, lastFramePath);
-                boundaryFramePaths.push(lastFramePath);
-                lastFrameUrl = await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
-
-                const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                await normalizeClip(videoPath, normalizedPath);
-                clipFiles.push(normalizedPath);
-
-                await query(
-                    "UPDATE clips SET status = 'complete', video_url = $1, end_frame_url = $2, duration_seconds = $3 WHERE id = $4",
-                    [result.video.url, lastFrameUrl, clip.duration_seconds, clip.id]
-                );
-
-                const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
-                await updateJobStatus(jobId, "generating_clips", progress);
             }
 
             // 6. Stitching (seamless concat, no xfade transitions)

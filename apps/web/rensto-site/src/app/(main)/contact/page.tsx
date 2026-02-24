@@ -16,7 +16,7 @@ import { NoiseTexture, GlowContainer } from '@/components/ui/premium';
 const translations = {
   en: {
     heroTitle: <>Talk To <br /><span className="text-cyan-400">The Crew</span></>,
-    heroText: "Ready to hire your AI team? Tell us about your business and we'll show you which agents fit your workflow — starting at $299/mo.",
+    heroText: "Ready to hire your AI team? Tell us about your business and we'll show you which agents fit your workflow — starting at $79/mo.",
     briefTitle: "Get Started",
     briefText: "Tell us about your business and we'll match you with the right crew.",
     voiceTitle: "Instant Voice Support",
@@ -63,7 +63,7 @@ const translations = {
       },
       {
         question: 'What if I need changes after deployment?',
-        answer: 'We include 30 days of post-deployment support. For ongoing needs, our Starter plan at $299/month gives you 500 credits across all six AI agents.'
+        answer: 'We include 30 days of post-deployment support. For ongoing needs, our Starter plan at $79/month gives you 500 credits across all six AI agents.'
       },
       {
         question: 'Can you integrate with my existing systems?',

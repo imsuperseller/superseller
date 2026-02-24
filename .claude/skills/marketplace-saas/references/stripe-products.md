@@ -2,22 +2,26 @@
 
 Created: February 23, 2026
 
-## Live Products
+> **DEPRECATED**: Standalone FB Bot pricing ($99/$299/$999) is superseded by the unified SaaS credit-based model.
+> Canonical pricing: Starter $79/mo (500 credits), Pro $149/mo (1,500 credits), Team $299/mo (4,000 credits).
+> See `.claude/skills/stripe-credits/SKILL.md` for current tiers.
 
-### Starter Tier
+## Archived Products (DEPRECATED — Do Not Use for New Customers)
+
+### Starter Tier (DEPRECATED)
 - **Product ID**: `prod_U2EFmrdU4xFlTK`
 - **Price ID**: `price_1T49maDE8rt1dEs1yoVGzIfL`
-- **Amount**: $99/mo
+- **Amount**: $99/mo (DEPRECATED)
 - **Features**:
   - 100 posts per month
   - 1 product
   - Email support
   - Basic analytics
 
-### Pro Tier
+### Pro Tier (DEPRECATED)
 - **Product ID**: `prod_U2EFxjzvGOvDsy`
 - **Price ID**: `price_1T49maDE8rt1dEs1ysQsHB9U`
-- **Amount**: $299/mo
+- **Amount**: $299/mo (DEPRECATED)
 - **Features**:
   - 500 posts per month
   - Unlimited products
@@ -25,10 +29,10 @@ Created: February 23, 2026
   - Advanced analytics
   - Custom scheduling
 
-### Enterprise Tier
+### Enterprise Tier (DEPRECATED)
 - **Product ID**: `prod_U2EFS8dpDfqjVB`
 - **Price ID**: `price_1T49mbDE8rt1dEs1Z3eQ8aid`
-- **Amount**: $999/mo
+- **Amount**: $999/mo (DEPRECATED)
 - **Features**:
   - Unlimited posts
   - Unlimited products

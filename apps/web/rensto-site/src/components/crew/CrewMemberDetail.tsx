@@ -201,7 +201,7 @@ export function CrewMemberDetail({ member }: CrewMemberDetailProps) {
         </h2>
         <p className="text-[var(--rensto-text-secondary)]">
           {member.name} is included in every plan. Start with Starter at
-          $299/mo.
+          $79/mo.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/pricing">

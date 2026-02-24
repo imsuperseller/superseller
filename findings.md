@@ -8,6 +8,35 @@
 
 ## 2026-02-24
 
+### Sync Drift — Root Cause and Prevention
+
+**Problem**: Agent (me) keeps losing context between sessions — inventing wrong pricing ($299/$699/$1499 instead of $79/$149/$299), forgetting multi-niche strategy, not utilizing full Kie.ai capabilities, not syncing notebooks.
+
+**Root causes**:
+1. No automated end-of-session sync — relied on agent "remembering" which fails after context compression
+2. Canonical data (pricing, niches, capabilities) lived only in NotebookLM — not queryable without explicit action
+3. Auto-memory (MEMORY.md) was created mid-session but empty on prior sessions
+4. Skills referenced wrong pricing because they were never updated when canonical pricing was established
+
+**Prevention**:
+- End-of-session sync protocol in MEMORY.md (8-step checklist, mandatory every session)
+- Canonical pricing, niche list, and Kie.ai capabilities now stored in MEMORY.md (loaded every conversation)
+- DECISIONS.md §15 records sync protocol as user mandate
+- DECISIONS.md §16 records canonical pricing as user mandate — never deviate
+
+### Kie.ai Capability Underutilization
+
+**Discovery**: Only using ~40% of available Kie.ai capabilities. Key unused features:
+- **Sora 2 Characters**: Character consistency across clips — would solve the realtor-across-14-clips problem WITHOUT Nano Banana compositing
+- **Kling Elements**: Native character reference — skip Nano Banana entirely, use Kling's own identity preservation
+- **Kling Multi-Shot + Ambient Audio**: Env flags exist (USE_MULTI_SHOT, KLING_SOUND) but are disabled by default
+- **Seedream 4.5**: Image EDITING (not just generation) — could clean up messy rooms before video generation
+- **ElevenLabs Isolation**: Clean up noisy audio for Winner Studio lip-sync
+- **Gemini 3 Pro**: Better reasoning for clip prompts (currently using Flash)
+- **Structured JSON output**: Enforce JSON schema on Gemini responses instead of parsing unstructured text
+
+**Impact**: Each unused capability maps to a quality improvement or cost reduction across products.
+
 ### Repo Cleanup Findings
 
 **Git-tracked junk discovered**: The repo audit agent initially flagged `.env` files with production secrets — investigation confirmed these were NOT tracked (`.gitignore` catches them). Actual tracked junk:

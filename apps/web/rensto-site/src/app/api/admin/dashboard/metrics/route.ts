@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
         breakdown: {
           starter: Math.floor(totalRevenue * 0.3 / 100),
           professional: Math.floor(totalRevenue * 0.5 / 100),
-          enterprise: Math.floor(totalRevenue * 0.2 / 100),
+          team: Math.floor(totalRevenue * 0.2 / 100),
         },
       },
       customers: {

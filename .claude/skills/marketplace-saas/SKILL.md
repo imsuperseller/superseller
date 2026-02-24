@@ -133,7 +133,7 @@ setInterval(async () => {
 
 ### Phase 3: Billing (Week 3)
 **Stripe Integration** (reuse TourReel credit system):
-- Subscription tiers: Starter ($99/mo), Pro ($299/mo), Enterprise ($999/mo)
+- Subscription tiers: DEPRECATED standalone pricing. Uses unified SaaS tiers: Starter ($79/mo), Pro ($149/mo), Team ($299/mo)
 - Post limits: 100/500/unlimited per month
 - Credit-based: $0.30-$0.50 per post (includes Kie.ai generation)
 

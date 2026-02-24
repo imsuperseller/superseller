@@ -101,9 +101,9 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 
 | Plan | Price | Credits | Tier Name | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| **Starter** | $299/mo | 500 | Starter | SMB / Solo |
-| **Pro** | $699/mo | 1,500 | Growing Crew | Established Business |
-| **Enterprise** | $1,499/mo | 4,000 | Local Empire | High-Volume / Agency |
+| **Starter** | $79/mo | 500 | 5 videos | SMB / Solo |
+| **Pro** | $149/mo | 1,500 | 15 videos | Established Business |
+| **Team** | $299/mo | 4,000 | 50 videos | High-Volume / Agency |
 
 ### Per-Product Credit Costs
 | Product | Credits per Unit |
@@ -137,7 +137,7 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 |------|-------|--------|
 | **Marketplace** | $29-$3,500+ | Stripe LIVE |
 | **Ready Solutions** | $890-$2,990+ | Stripe LIVE |
-| **Subscriptions** | $299-$1,499/mo | Stripe LIVE |
+| **Subscriptions** | $79-$299/mo | Stripe LIVE |
 | **Custom Solutions** | $3,500-$8,000+ | Stripe LIVE |
 | **Content AI** | $297-$1,997/mo | In development |
 
