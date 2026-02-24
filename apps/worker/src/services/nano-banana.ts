@@ -6,6 +6,7 @@
 
 import { config } from "../config";
 import { logger } from "../utils/logger";
+import { withRetry } from "../utils/retry";
 
 const KIE_BASE = "https://api.kie.ai/api";
 const KIE_KEY = config.kie.apiKey;
@@ -43,35 +44,43 @@ export async function createNanoBananaTask(request: NanoBananaRequest): Promise<
     const url = `${KIE_BASE}/v1/jobs/createTask`;
     logger.info({ msg: "Nano Banana Pro task creating", url, promptLen: request.prompt.length, refImages: request.image_input?.length || 0 });
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60000); // 60s; Kie can be slow under load
+    return await withRetry(
+        async () => {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 60000); // 60s; Kie can be slow under load
 
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers,
-            body: JSON.stringify(body),
-            signal: controller.signal,
-        });
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify(body),
+                    signal: controller.signal,
+                });
 
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Nano Banana Pro failed (${response.status}): ${errText}`);
-        }
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`Nano Banana Pro failed (${response.status}): ${errText}`);
+                }
 
-        const data = await response.json();
-        if (data.code !== 200 && data.code !== 0) {
-            throw new Error(`Nano Banana Pro API error (code ${data.code}): ${data.msg}`);
-        }
+                const data = await response.json();
+                if (data.code !== 200 && data.code !== 0) {
+                    const err: any = new Error(`Nano Banana Pro API error (code ${data.code}): ${data.msg}`);
+                    // Preserve Kie.ai error code for retry detection
+                    err.status = data.code;
+                    throw err;
+                }
 
-        if (!data.data?.taskId) {
-            throw new Error(`Nano Banana Pro failed to return taskId: ${JSON.stringify(data)}`);
-        }
+                if (!data.data?.taskId) {
+                    throw new Error(`Nano Banana Pro failed to return taskId: ${JSON.stringify(data)}`);
+                }
 
-        return data.data.taskId;
-    } finally {
-        clearTimeout(timeout);
-    }
+                return data.data.taskId;
+            } finally {
+                clearTimeout(timeout);
+            }
+        },
+        { label: "createNanoBananaTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
 }
 
 export async function getNanoBananaTaskStatus(taskId: string): Promise<{ status: "pending" | "processing" | "completed" | "failed"; image_url?: string; error?: string }> {

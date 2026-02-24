@@ -28,45 +28,55 @@ export async function geminiChatCompletion(
         content: Array.isArray(m.content) ? m.content : [{ type: "text", text: m.content }]
     }));
 
-    try {
-        const response = await axios.post(
-            `${config.kie.baseUrl}/${model}/v1/chat/completions`,
-            {
-                messages: mappedMessages,
-                stream: false,
-                include_thoughts: true,
-                reasoning_effort: options?.reasoning_effort ?? "high",
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
-                },
-                timeout: 60_000,
+    return await withRetry(
+        async () => {
+            try {
+                const response = await axios.post(
+                    `${config.kie.baseUrl}/${model}/v1/chat/completions`,
+                    {
+                        messages: mappedMessages,
+                        stream: false,
+                        include_thoughts: true,
+                        reasoning_effort: options?.reasoning_effort ?? "high",
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        timeout: 60_000,
+                    }
+                );
+
+                if (!response.data || !response.data.choices) {
+                    logger.error({ msg: "Kie AI returned unexpected structure", data: response.data });
+                    const err: any = new Error(`Invalid response from Kie AI (choices missing). Raw data: ${JSON.stringify(response.data)}`);
+                    // Preserve Kie.ai error code for retry detection
+                    if (response.data?.code) {
+                        err.status = response.data.code;
+                    }
+                    throw err;
+                }
+
+                const choice = response.data.choices[0];
+                const content = choice.message?.content || choice.delta?.content || "";
+
+                return {
+                    content,
+                    cost: response.data.credits_consumed || 0
+                };
+            } catch (err: any) {
+                const errorData = err.response?.data || err.message;
+                logger.error({
+                    msg: "Kie AI Chat Completion failed",
+                    error: errorData,
+                    model
+                });
+                throw new Error(`Kie AI failed: ${JSON.stringify(errorData)}`);
             }
-        );
-
-        if (!response.data || !response.data.choices) {
-            logger.error({ msg: "Kie AI returned unexpected structure", data: response.data });
-            throw new Error(`Invalid response from Kie AI (choices missing). Raw data: ${JSON.stringify(response.data)}`);
-        }
-
-        const choice = response.data.choices[0];
-        const content = choice.message?.content || choice.delta?.content || "";
-
-        return {
-            content,
-            cost: response.data.credits_consumed || 0
-        };
-    } catch (err: any) {
-        const errorData = err.response?.data || err.message;
-        logger.error({
-            msg: "Kie AI Chat Completion failed",
-            error: errorData,
-            model
-        });
-        throw new Error(`Kie AI failed: ${JSON.stringify(errorData)}`);
-    }
+        },
+        { label: `geminiChatCompletion(${model})`, maxAttempts: 2, initialDelayMs: 1000 }
+    );
 }
 
 export async function geminiVisionAnalysis(
@@ -76,51 +86,61 @@ export async function geminiVisionAnalysis(
     const apiKey = config.kie.apiKey;
     const model = DEFAULT_VISION_MODEL.replace("google/", "");
 
-    try {
-        const response = await axios.post(
-            `${config.kie.baseUrl}/${model}/v1/chat/completions`,
-            {
-                messages: [
+    return await withRetry(
+        async () => {
+            try {
+                const response = await axios.post(
+                    `${config.kie.baseUrl}/${model}/v1/chat/completions`,
                     {
-                        role: "user",
-                        content: [
-                            { type: "text", text: prompt },
-                            { type: "image_url", image_url: { url: imageUrl } }
-                        ]
+                        messages: [
+                            {
+                                role: "user",
+                                content: [
+                                    { type: "text", text: prompt },
+                                    { type: "image_url", image_url: { url: imageUrl } }
+                                ]
+                            }
+                        ],
+                        stream: false,
+                        include_thoughts: true,
+                        reasoning_effort: "high"  // Max reasoning for vision analysis
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        timeout: 60_000,
                     }
-                ],
-                stream: false,
-                include_thoughts: true,
-                reasoning_effort: "high"  // Max reasoning for vision analysis
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
-                },
-                timeout: 60_000,
+                );
+
+                if (!response.data || !response.data.choices || !response.data.choices.length) {
+                    logger.error({ msg: "Kie AI Vision returned unexpected structure", data: response.data });
+                    const err: any = new Error(`Invalid response from Kie AI Vision (choices missing). Raw: ${JSON.stringify(response.data)}`);
+                    // Preserve Kie.ai error code for retry detection
+                    if (response.data?.code) {
+                        err.status = response.data.code;
+                    }
+                    throw err;
+                }
+
+                const choice = response.data.choices[0];
+                const content = choice.message?.content || choice.delta?.content || "";
+
+                return {
+                    content,
+                    cost: response.data.credits_consumed || 0
+                };
+            } catch (err: any) {
+                logger.error({
+                    msg: "Kie AI Vision Analysis failed",
+                    error: err.response?.data || err.message
+                });
+                throw new Error(`Kie AI Vision failed: ${err.message}`);
             }
-        );
-
-        if (!response.data || !response.data.choices || !response.data.choices.length) {
-            logger.error({ msg: "Kie AI Vision returned unexpected structure", data: response.data });
-            throw new Error(`Invalid response from Kie AI Vision (choices missing). Raw: ${JSON.stringify(response.data)}`);
-        }
-
-        const choice = response.data.choices[0];
-        const content = choice.message?.content || choice.delta?.content || "";
-
-        return {
-            content,
-            cost: response.data.credits_consumed || 0
-        };
-    } catch (err: any) {
-        logger.error({
-            msg: "Kie AI Vision Analysis failed",
-            error: err.response?.data || err.message
-        });
-        throw new Error(`Kie AI Vision failed: ${err.message}`);
-    }
+        },
+        { label: "geminiVisionAnalysis", maxAttempts: 2, initialDelayMs: 1000 }
+    );
 }
 
 async function fetchImageData(url: string): Promise<string> {

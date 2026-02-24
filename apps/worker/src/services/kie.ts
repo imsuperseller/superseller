@@ -249,7 +249,10 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
             if (data.code !== 200 && data.code !== 0) {
                 const extra = data.data ? ` data=${JSON.stringify(data.data).slice(0, 200)}` : "";
                 logger.error({ msg: "Kie Kling API error", code: data.code, detail: data.msg, extra });
-                throw new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
+                const err: any = new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
+                // Preserve Kie.ai error code for retry detection
+                err.status = data.code;
+                throw err;
             }
 
             return data.data.taskId;
@@ -406,7 +409,10 @@ export async function createSunoTask(request: KieSunoRequest): Promise<string> {
 
             const data = await response.json();
             if (data.code !== 200 && data.code !== 0) {
-                throw new Error(`Kie.ai Suno API error (code ${data.code}): ${data.msg}`);
+                const err: any = new Error(`Kie.ai Suno API error (code ${data.code}): ${data.msg}`);
+                // Preserve Kie.ai error code for retry detection
+                err.status = data.code;
+                throw err;
             }
 
             if (!data.data?.taskId) {

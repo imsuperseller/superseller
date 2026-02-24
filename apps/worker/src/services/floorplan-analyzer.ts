@@ -82,33 +82,84 @@ export async function analyzeFloorplan(
 
     logger.info({ msg: "Analyzing floorplan", url: floorplanUrl });
 
-    const { content, cost } = await visionAnalysis(floorplanUrl, prompt);
-
     try {
-        let jsonStr = content.trim();
-        if (jsonStr.startsWith("```")) {
-            jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
+        const { content, cost } = await visionAnalysis(floorplanUrl, prompt);
+
+        try {
+            let jsonStr = content.trim();
+            if (jsonStr.startsWith("```")) {
+                jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
+            }
+
+            const analysis: FloorplanAnalysis = JSON.parse(jsonStr);
+
+            if (analysis.confidence_score < 0.5) {
+                logger.warn({ msg: "Floorplan analysis confidence low", score: analysis.confidence_score });
+                // We'll still return it but flag in logs
+            }
+
+            logger.info({
+                msg: "Floorplan analysis complete",
+                rooms: analysis.total_rooms,
+                floors: analysis.floors,
+                confidence: analysis.confidence_score,
+            });
+
+            return analysis;
+        } catch (err) {
+            logger.error({ msg: "Failed to parse floorplan analysis", content: content.substring(0, 500) });
+            throw new Error("Floorplan analysis returned invalid JSON");
         }
-
-        const analysis: FloorplanAnalysis = JSON.parse(jsonStr);
-
-        if (analysis.confidence_score < 0.5) {
-            logger.warn({ msg: "Floorplan analysis confidence low", score: analysis.confidence_score });
-            // We'll still return it but flag in logs
-        }
-
-        logger.info({
-            msg: "Floorplan analysis complete",
-            rooms: analysis.total_rooms,
-            floors: analysis.floors,
-            confidence: analysis.confidence_score,
+    } catch (visionError: any) {
+        // Fallback to default sequence when Gemini Vision fails (e.g., Kie.ai outage)
+        logger.warn({
+            msg: "Gemini Vision failed, using default tour sequence as fallback",
+            error: visionError.message,
+            listing: { propertyType: listing?.property_type, beds: listing?.bedrooms, baths: listing?.bathrooms }
         });
 
-        return analysis;
-    } catch (err) {
-        logger.error({ msg: "Failed to parse floorplan analysis", content: content.substring(0, 500) });
-        throw new Error("Floorplan analysis returned invalid JSON");
+        const propertyType = listing?.property_type || "house";
+        const bedrooms = listing?.bedrooms || 3;
+        const bathrooms = listing?.bathrooms || 2;
+        const sequence = getDefaultSequence(propertyType, bedrooms, bathrooms, false, false);
+
+        return {
+            rooms: sequence.map((name, idx) => ({
+                name,
+                type: inferRoomType(name),
+                approximate_position: { x: 0.5, y: 0.5 },
+                approximate_size: "medium",
+                connects_to: [],
+                notable_features: [],
+                floor: 1
+            })),
+            suggested_tour_sequence: sequence,
+            total_rooms: sequence.length,
+            property_type: propertyType,
+            floors: sequence.some(r => r.toLowerCase().includes("stair")) ? 2 : 1,
+            special_features: [],
+            confidence_score: 0.3 // Low confidence since fallback
+        };
     }
+}
+
+function inferRoomType(name: string): string {
+    const n = name.toLowerCase();
+    if (n.includes("living")) return "living";
+    if (n.includes("kitchen")) return "kitchen";
+    if (n.includes("bedroom") || n.includes("master")) return "bedroom";
+    if (n.includes("bathroom") || n.includes("bath")) return "bathroom";
+    if (n.includes("dining")) return "dining";
+    if (n.includes("exterior") || n.includes("front")) return "exterior";
+    if (n.includes("pool")) return "pool";
+    if (n.includes("backyard") || n.includes("patio") || n.includes("deck")) return "outdoor";
+    if (n.includes("foyer") || n.includes("entry") || n.includes("hallway")) return "hallway";
+    if (n.includes("garage")) return "garage";
+    if (n.includes("office") || n.includes("study")) return "office";
+    if (n.includes("family")) return "family";
+    if (n.includes("laundry")) return "laundry";
+    if (n.includes("stair")) return "stairs";
+    return "other";
 }
 
 function buildPropertyContext(listing?: any): string {
