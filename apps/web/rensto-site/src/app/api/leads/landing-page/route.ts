@@ -32,9 +32,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (!landingPage) {
-      console.error("Landing page not found for slug:", slug, "— checking without active filter");
-      const anyPage = await prisma.landingPage.findFirst({ where: { slug } });
-      console.error("Without active filter:", anyPage ? `found (active=${anyPage.active})` : "still not found");
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
 
