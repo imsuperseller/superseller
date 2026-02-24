@@ -18,7 +18,9 @@ export type EmailTemplate =
   | 'support-ticket'
   | 'invoice-receipt'
   | 'retention-reengagement'
-  | 'system-alert';
+  | 'system-alert'
+  | 'marketplace-posted'
+  | 'marketplace-failed';
 
 interface SendEmailOptions {
   to: string;
@@ -37,6 +39,8 @@ const SUBJECTS: Record<EmailTemplate, string> = {
   'invoice-receipt': '🧾 Your Rensto Receipt',
   'retention-reengagement': '👋 We Miss You at Rensto',
   'system-alert': '🔴 System Alert — Rensto Monitoring',
+  'marketplace-posted': '🎉 Your Marketplace Listing is Live!',
+  'marketplace-failed': '⚠️ Marketplace Listing Issue — Credits Refunded',
 };
 
 // Generate HTML for each template
@@ -293,6 +297,96 @@ function generateEmailHtml(template: EmailTemplate, data: Record<string, any>): 
         </div>
       `;
 
+    case 'marketplace-posted':
+      return `
+        <div style="${baseStyles}">
+          <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+            <img src="https://rensto.com/rensto-logo.webp" alt="Rensto" width="120" style="margin-bottom: 24px;" />
+            <h1 style="color: #00d4ff; font-size: 28px; margin-bottom: 16px;">Your Listing is Live! 🎉</h1>
+            <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
+              Great news! Your marketplace listing for <strong>${data.productName}</strong> has been successfully posted.
+            </p>
+            <div style="${cardStyle}">
+              <h3 style="color: #00d4ff; margin-top: 0;">Listing Details</h3>
+              <p style="color: #cbd5e1;">Product: <strong>${data.productName}</strong></p>
+              ${data.price ? `<p style="color: #cbd5e1;">Price: <strong>$${data.price}</strong></p>` : ''}
+              ${data.location ? `<p style="color: #cbd5e1;">Location: <strong>${data.location}</strong></p>` : ''}
+              <p style="color: #cbd5e1;">Status: <strong style="color: #22c55e;">Live</strong></p>
+            </div>
+            ${data.facebookUrl ? `
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${data.facebookUrl}" style="${buttonStyle}">View Listing on Facebook</a>
+              </div>
+            ` : ''}
+            <div style="${cardStyle}">
+              <h3 style="color: #00d4ff; margin-top: 0;">What's Next?</h3>
+              <ul style="color: #cbd5e1; line-height: 1.8;">
+                <li>Your listing is now visible to potential customers</li>
+                <li>Respond promptly to inquiries for best results</li>
+                <li>Track performance in your dashboard</li>
+              </ul>
+            </div>
+            <p style="font-size: 14px; color: #64748b; margin-top: 40px;">
+              Questions about your listing? Reply to this email or visit <a href="https://rensto.com/contact" style="color: #00d4ff;">rensto.com/contact</a>
+            </p>
+          </div>
+        </div>
+      `;
+
+    case 'marketplace-failed':
+      const errorCardStyle = `
+        background: rgba(254, 61, 81, 0.1);
+        border: 1px solid rgba(254, 61, 81, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 20px 0;
+      `;
+
+      const successCardStyle = `
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 20px 0;
+      `;
+
+      return `
+        <div style="${baseStyles}">
+          <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+            <img src="https://rensto.com/rensto-logo.webp" alt="Rensto" width="120" style="margin-bottom: 24px;" />
+            <h1 style="color: #fe3d51; font-size: 28px; margin-bottom: 16px;">Listing Issue ⚠️</h1>
+            <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
+              We encountered an issue while posting your marketplace listing for <strong>${data.productName}</strong>.
+            </p>
+            <div style="${errorCardStyle}">
+              <h3 style="color: #fe3d51; margin-top: 0;">What Happened</h3>
+              <p style="color: #cbd5e1; font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; overflow-wrap: break-word;">
+                ${data.error || 'Failed to post listing to marketplace'}
+              </p>
+            </div>
+            <div style="${successCardStyle}">
+              <h3 style="color: #22c55e; margin-top: 0;">✅ Credits Automatically Refunded</h3>
+              <p style="color: #cbd5e1;">
+                We've refunded <strong style="color: #22c55e;">${data.creditsRefunded || 25} credits</strong> to your account.
+                No charge for failed listings — ever.
+              </p>
+            </div>
+            <div style="${cardStyle}">
+              <h3 style="color: #00d4ff; margin-top: 0;">What's Next?</h3>
+              <ul style="color: #cbd5e1; line-height: 1.8;">
+                <li>Our team has been automatically notified</li>
+                <li>You can try creating a new listing</li>
+                <li>If the issue persists, we'll reach out within 24 hours</li>
+              </ul>
+            </div>
+            <a href="https://rensto.com/dashboard/marketplace" style="${buttonStyle}">Try Creating a New Listing</a>
+            <p style="font-size: 14px; color: #64748b; margin-top: 40px;">
+              Need immediate help? Email us at support@rensto.com and we'll prioritize your request.
+            </p>
+          </div>
+        </div>
+      `;
+
     default:
       return `<p>Email template not found.</p>`;
   }
@@ -357,4 +451,10 @@ export const emails = {
 
   systemAlert: (to: string, serviceId: string, severity: 'critical' | 'warning', condition: string, message: string) =>
     sendEmail({ to, template: 'system-alert', data: { serviceId, severity, condition, message } }),
+
+  marketplacePosted: (to: string, productName: string, price?: number, location?: string, facebookUrl?: string) =>
+    sendEmail({ to, template: 'marketplace-posted', data: { productName, price, location, facebookUrl } }),
+
+  marketplaceFailed: (to: string, productName: string, error: string, creditsRefunded: number) =>
+    sendEmail({ to, template: 'marketplace-failed', data: { productName, error, creditsRefunded } }),
 };

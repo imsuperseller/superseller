@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { CreditService } from '@/lib/credits';
 import { logger } from '@/lib/logger';
+import { emails } from '@/lib/email';
 
 /**
  * POST /api/marketplace/webhook/refund
@@ -81,6 +82,31 @@ export async function POST(request: NextRequest) {
         facebookUrl,
       });
 
+      // Get user email for notification
+      const user = await prisma.user.findUnique({
+        where: { id: post.customer.userId },
+        select: { email: true },
+      });
+
+      // Send success notification
+      if (user?.email) {
+        try {
+          await emails.marketplacePosted(
+            user.email,
+            post.product.name,
+            post.price || undefined,
+            post.location || undefined,
+            facebookUrl || undefined
+          );
+        } catch (emailErr: any) {
+          logger.error('Failed to send marketplace posted email', {
+            postId,
+            userId: post.customer.userId,
+            error: emailErr.message,
+          });
+        }
+      }
+
       return NextResponse.json({
         success: true,
         message: 'Listing marked as posted',
@@ -114,14 +140,29 @@ export async function POST(request: NextRequest) {
         error,
       });
 
-      // TODO: Send notification to customer (email/WhatsApp)
-      // await NotificationService.notifyMarketplaceFailed({
-      //   userId: post.customer.userId,
-      //   postId,
-      //   productName: post.product.name,
-      //   error,
-      //   creditsRefunded: LISTING_COST,
-      // });
+      // Get user email for notification
+      const user = await prisma.user.findUnique({
+        where: { id: post.customer.userId },
+        select: { email: true },
+      });
+
+      // Send failure notification
+      if (user?.email) {
+        try {
+          await emails.marketplaceFailed(
+            user.email,
+            post.product.name,
+            error || 'Failed to post listing',
+            LISTING_COST
+          );
+        } catch (emailErr: any) {
+          logger.error('Failed to send marketplace failed email', {
+            postId,
+            userId: post.customer.userId,
+            error: emailErr.message,
+          });
+        }
+      }
 
       return NextResponse.json({
         success: true,
