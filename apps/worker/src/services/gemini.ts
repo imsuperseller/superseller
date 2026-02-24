@@ -27,8 +27,9 @@ export async function geminiChatCompletion(
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/${model}/v1/chat/completions`,
+            `${config.kie.baseUrl}/api/v1/chat/completions`,
             {
+                model,
                 messages: mappedMessages,
                 stream: false,
                 include_thoughts: true,
@@ -73,8 +74,9 @@ export async function geminiVisionAnalysis(
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
+            `${config.kie.baseUrl}/api/v1/chat/completions`,
             {
+                model: DEFAULT_VISION_MODEL.replace("google/", ""),
                 messages: [
                     {
                         role: "user",
