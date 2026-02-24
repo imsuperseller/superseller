@@ -138,8 +138,59 @@ User raised critical question: **"When do we test each agent to ensure it's full
 - Winner Studio already serves this use case for custom clients
 
 **Gap closed**: Removed fraud risk (customers can no longer try to order non-existent Spoke videos)
-- **Spoke** (Spokesperson): Live, needs audit ⚠️
-- **Market** (Marketplace): Just added, needs full integration + audit ❌
+
+### Market Credit Integration — COMPLETE
+
+**Task**: Wire Market (FB Marketplace Bot) to unified credit system
+
+**Problem**:
+- MarketplaceCustomer had separate `credits` field (not integrated with Entitlement.creditsBalance)
+- Website claimed "Market costs 25 credits" but no credit system integration
+- No pre-check, deduction, or refund logic
+- Would lead to billing fraud or customer complaints
+
+**Architecture discovery** (Feb 23 PM):
+- Read Prisma schema: MarketplaceCustomer.credits (line 1627) vs Entitlement.creditsBalance (line 1400)
+- Read CreditService (web) — getBalance(), deductCredits(), refundCredits()
+- Read marketplace API routes — products/posts/stats/sync
+- Current UAD/MissParty: Standalone bot (no SaaS integration yet)
+
+**Implementation** (Commit: `b7c6d12`):
+1. ✅ Created `/api/marketplace/customer/posts` (POST) — listing generation with credit integration:
+   - Pre-check: `CreditService.checkBalance(userId)` >= 25
+   - Deduct: `CreditService.deductCredits(userId, 25, 'marketplace_listing', postId)`
+   - Create: `MarketplacePost` with status 'queued'
+   - Return: 402 if insufficient credits
+
+2. ✅ Created `/api/marketplace/webhook/refund` (POST) — bot status updates:
+   - When `status='posted'`: Update post, mark as successful, no refund
+   - When `status='failed'`: Refund 25 credits, update post status to 'failed'
+   - TODO: Add API key authentication before bot integration
+   - TODO: Add notification system (email when posted/failed)
+
+3. ✅ Updated `/api/marketplace/customer/stats` (GET) — show unified credits:
+   - Changed from `customer.credits` (deprecated) to `CreditService.getBalance(userId)`
+   - Customers now see unified credit balance across all 7 agents
+
+**Credit breakdown** (25 credits total):
+- 5 credits: AI copy generation (Gemini)
+- 15 credits: 3 images @ 5 credits each (Kie.ai)
+- 2 credits: Phone overlay (ImageMagick)
+- 3 credits: Automation + scheduling
+
+**Gap closed**: Market now integrated with unified credit system (same 25-credit cost as website claims)
+
+**Remaining Market tasks**:
+- Add notification system (email when listing posted/failed)
+- Update webhook-server.js on RackNerd to call refund webhook
+- Add API key authentication to webhook endpoint
+- Verify posting success rate and deduplication
+
+### Agent Production Status
+
+- **Forge** (Video): Credit system ✅, Notifications ✅, Quality benchmarks ❌, Performance metrics ❌
+- **Spoke** (Spokesperson): Doesn't exist (Winner Studio is separate) — status changed to 'coming-soon'
+- **Market** (Marketplace): Credit system ✅, Refund webhook ✅, Notifications ❌, Bot integration ❌
 - **FrontDesk** (Voice AI): Coming soon, not wired to credits ❌
 - **Scout** (Lead Hunter): Coming soon, not built ❌
 - **Buzz** (Content Creator): Coming soon, not built ❌
