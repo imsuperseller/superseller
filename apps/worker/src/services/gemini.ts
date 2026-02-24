@@ -1,6 +1,7 @@
 import { config } from "../config";
 import { logger } from "../utils/logger";
 import axios from "axios";
+import { withRetry } from "../utils/retry";
 // State-of-the-Art 2026 Models (Gemini 3 Series via Kie AI)
 // Vision: gemini-3-flash (15% better accuracy, better multimodal reasoning than 2.5-flash)
 // Text: gemini-2.5-flash (sufficient for text generation, cheaper)
@@ -40,7 +41,8 @@ export async function geminiChatCompletion(
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`
-                }
+                },
+                timeout: 60_000,
             }
         );
 
@@ -95,7 +97,8 @@ export async function geminiVisionAnalysis(
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${apiKey}`
-                }
+                },
+                timeout: 60_000,
             }
         );
 
@@ -126,7 +129,7 @@ async function fetchImageData(url: string): Promise<string> {
         const fs = await import("fs");
         return fs.readFileSync(url).toString("base64");
     }
-    const response = await axios.get(url, { responseType: "arraybuffer" });
+    const response = await axios.get(url, { responseType: "arraybuffer", timeout: 30_000 });
     return Buffer.from(response.data, "binary").toString("base64");
 }
 
@@ -170,6 +173,7 @@ When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the 
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${config.kie.apiKey}`,
                 },
+                timeout: 30_000,
             }
         );
 
@@ -205,7 +209,7 @@ Reply with ONLY a single integer (0, 1, 2, ... or -1).`,
         const response = await axios.post(
             `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
-            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` } }
+            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` }, timeout: 30_000 }
         );
         const text = (response.data?.choices?.[0]?.message?.content || "").trim();
         const match = text.match(/-?\d+/);
@@ -248,7 +252,7 @@ Rules: Exterior/Front Door → photo of front of house, pathway, or door. Kitche
         const response = await axios.post(
             `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
-            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` } }
+            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` }, timeout: 30_000 }
         );
         const text = (response.data?.choices?.[0]?.message?.content || "").trim();
         const jsonMatch = text.match(/\[[\d,\s]+\]/);

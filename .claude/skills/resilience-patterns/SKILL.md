@@ -52,40 +52,35 @@ negativeTrigger:
 | Ollama | RAG | No embeddings |
 | GoLogin | FB Bot | No browser profiles |
 
-## Pattern 1: Exponential Backoff with Jitter
+## Pattern 1: Exponential Backoff with Jitter (IMPLEMENTED)
+
+**Canonical implementation: `apps/worker/src/utils/retry.ts`**
 
 ```typescript
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: {
-    maxRetries?: number;      // default: 3
-    baseDelayMs?: number;     // default: 1000
-    maxDelayMs?: number;      // default: 30000
-    retryableErrors?: number[]; // HTTP codes to retry (429, 500, 502, 503, 504)
-  }
-): Promise<T> {
-  const { maxRetries = 3, baseDelayMs = 1000, maxDelayMs = 30000 } = options;
+import { withRetry } from "../../utils/retry";
 
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === maxRetries) throw error;
-      if (!isRetryable(error, options.retryableErrors)) throw error;
+// Usage in video pipeline:
+const taskId = await withRetry(
+  () => createKlingTask(request),
+  { label: "createKlingTask clip 3" }
+);
 
-      const delay = Math.min(
-        baseDelayMs * Math.pow(2, attempt) + Math.random() * 1000, // jitter
-        maxDelayMs
-      );
-      await sleep(delay);
-    }
-  }
-  throw new Error('Unreachable');
-}
+// Options:
+// maxAttempts: 3 (default)
+// initialDelayMs: 2000 (default, doubles each retry)
+// maxDelayMs: 30000 (cap)
+// label: string for logging
 
-// Retryable: 429 (rate limit), 500, 502, 503, 504
-// NOT retryable: 400, 401, 402, 403, 404, 422
+// Auto-detects transient errors:
+// - TimeoutError, AbortError, ECONNRESET, ECONNREFUSED, ETIMEDOUT
+// - HTTP 429, 500, 502, 503
+// - "rate limit" in message
+// Does NOT retry 4xx client errors (except 429)
 ```
+
+**Currently wired into:**
+- `createKlingTask()` — each clip generation in video-pipeline.worker.ts
+- `createSunoTask()` — music generation in video-pipeline.worker.ts
 
 ## Pattern 2: Circuit Breaker
 

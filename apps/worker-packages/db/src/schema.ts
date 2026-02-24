@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, numeric, integer, jsonb, boolean, pgEnum, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, numeric, integer, jsonb, boolean, pgEnum, uniqueIndex, index, primaryKey, doublePrecision } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Enums
@@ -35,7 +35,7 @@ export const tenantUsers = pgTable("tenant_users", {
     userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     role: text("role").notNull().default("user"),
 }, (table) => ({
-    pk: index("tenant_users_pk").on(table.tenantId, table.userId),
+    pk: primaryKey({ columns: [table.tenantId, table.userId] }),
 }));
 
 // Tables
@@ -92,8 +92,9 @@ export const stripeCustomers = pgTable("stripe_customers", {
 });
 
 export const entitlementsTable = pgTable("entitlements", {
-    userId: uuid("user_id").primaryKey().references(() => users.id),
-    creditsBalance: numeric("credits_balance").notNull().default("0"),
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull().unique().references(() => users.id),
+    creditsBalance: integer("credits_balance").notNull().default(0),
     plan: text("plan").notNull().default("starter"), // starter | pro | team
     status: text("status").notNull().default("active"), // active | past_due | canceled
     resetAt: timestamp("reset_at", { withTimezone: true }),
@@ -184,13 +185,19 @@ export const assetsRelations = relations(assets, ({ one }) => ({
 export const usageEvents = pgTable("usage_events", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull().references(() => users.id),
-    jobId: uuid("job_id").references(() => jobs.id),
-    type: text("type").notNull(), // credit_debit | credit_refund | apify_run | kie_generate | stitch | upload
-    amount: numeric("amount").notNull().default("0"),
-    meta: jsonb("meta").default({}),
+    jobId: uuid("job_id"),
+    type: text("event_type").notNull(), // debit | refund | topup | grant | reset
+    amount: integer("credits_used").default(0), // Positive for topup/refund, negative for debit
+    modelId: text("model_id"), // FK into LlmModelConfig
+    costUsd: doublePrecision("cost_usd"), // actual cost in USD
+    tokensUsed: integer("tokens_used"), // total tokens (input + output)
+    metadata: jsonb("metadata"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({
     userIdIdx: index("idx_usage_events_user").on(table.userId),
+    typeIdx: index("idx_usage_events_type").on(table.type),
+    modelIdIdx: index("idx_usage_events_model").on(table.modelId),
+    createdAtIdx: index("idx_usage_events_created").on(table.createdAt),
 }));
 
 export const systemSettings = pgTable("system_settings", {

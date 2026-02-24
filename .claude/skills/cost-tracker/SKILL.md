@@ -33,7 +33,8 @@ negativeTrigger:
 ## Critical
 - **MANDATORY per CLAUDE.md** — Every API generation MUST log its cost. No exceptions, every session, forever.
 - **`trackExpense()` is the canonical function** — call after each Kling/Suno/Nano/Gemini/Resend API call.
-- **Currently NOT being called in worker** — this is a known gap that must be fixed.
+- **Worker-side tracker implemented** at `apps/worker/src/services/expense-tracker.ts` (raw SQL, non-blocking).
+- **Wired into video-pipeline.worker.ts** — tracks Gemini (floorplan, prompts, vision), Nano Banana (opening/closing), Kling (per-clip), Suno (music), R2 (final uploads).
 - **Session cost tables** must be added to `progress.md` before closing any session.
 - **Anomaly detection** flags days where spend >2x the rolling 7-day average.
 
@@ -62,9 +63,11 @@ negativeTrigger:
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` | Core expense tracking service (191 lines) |
+| `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` | Web-side expense tracking (Prisma, 191 lines) |
+| `apps/worker/src/services/expense-tracker.ts` | Worker-side expense tracking (raw SQL, non-blocking) |
 | `apps/web/rensto-site/prisma/schema.prisma` | ApiExpense model definition |
-| `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Where trackExpense() MUST be added |
+| `apps/worker/src/queue/workers/video-pipeline.worker.ts` | trackExpense() wired into all API calls |
+| `apps/worker/src/utils/retry.ts` | withRetry() — exponential backoff for external APIs |
 | `apps/studio/src/lib/pipeline.ts` | Studio pipeline — needs cost tracking |
 
 ## trackExpense() API

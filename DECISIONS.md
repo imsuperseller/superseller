@@ -132,6 +132,66 @@
 
 ---
 
-## 12. DEFERRED
+## 12. TOURREEL QUALITY-FIRST PIVOT (Feb 23, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Strategic priority** | Quality and consistency over creative effects |
+| **Trade-off** | Drop furniture-from-sky (Nano Banana) to focus on realtor consistency + room accuracy |
+| **Tolerance for hallucination** | ZERO. "We cannot lose quality. We cannot risk it to generate things." |
+| **Speed vs quality** | "I don't mind losing time. I cannot afford losing quality." |
+
+**Key Requirements:**
+1. **Realtor consistency** - Same face across all 14 clips (top priority)
+2. **Room accuracy** - Rooms look like actual photos (no invented features)
+3. **Tour matches blueprint** - Follow actual floorplan data, not hardcoded assumptions
+4. **No hallucination** - Only describe features that exist in property data + photos
+
+**Implementation Changes:**
+- ✅ Upgraded vision to gemini-3-flash (15% better accuracy)
+- ✅ Room-specific negative prompts (prevent wrong furniture placement)
+- ✅ Dynamic prompts (pool detection, conditional features)
+- ⏳ Avatar quality validation (4-6 photos, face verification)
+- ⏳ Pre-flight photo analysis (Gemini 3 Flash feature detection)
+- ❌ Nano Banana furniture effects (PAUSED until realtor consistency solved)
+
+---
+
+## 13. MODEL TRACKING SYSTEM (Feb 23, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Mandate** | "I cannot afford u not being fully updated on kie.ai/market and all llm's and models without exception" |
+| **Solution** | Build AI Model Observatory - automated tracking of all models across providers |
+| **Scope** | Kie.ai, Google, OpenAI, Anthropic, others |
+| **Storage** | Database tables: `ai_models`, `model_recommendations` |
+| **Updates** | Daily automated scraping + alerts on new releases |
+| **Integration** | Required check before every model selection decision |
+
+**Deliverable:** See `tools/model-observatory/README.md`
+
+**Research Requirement:** "always research latest techniques and features llm's and models has to offer"
+
+---
+
+## 14. DOCUMENTATION CONSOLIDATION AUDIT (Feb 23, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Mandate** | "go over where we store (notebookslm, aitable.ai etc.) things so all updated and no conflicts and no contradictions etc." |
+| **Scope** | NotebookLM (36 notebooks), Aitable.ai, codebase docs |
+| **Action** | Audit for conflicts, outdated data, contradictions |
+| **Authority** | DECISIONS.md > Deployed code > Codebase docs > NotebookLM > Aitable.ai |
+
+**Action Items:**
+- [ ] Audit TourReel notebook (0baf5f36) for furniture-from-sky references → update to quality-first approach
+- [ ] Update all model references (2.5-flash → 3-flash)
+- [ ] Check Aitable.ai for outdated TourReel process data
+- [ ] Sync TOURREEL_GAP_ANALYSIS findings to NotebookLM
+- [ ] Remove contradictions between sources
+
+---
+
+## 15. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.

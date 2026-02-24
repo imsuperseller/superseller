@@ -1,5 +1,6 @@
 import { config } from "../config";
 import { logger } from "../utils/logger";
+import { withRetry } from "../utils/retry";
 
 const KIE_BASE = "https://api.kie.ai/api";
 const KIE_KEY = config.kie.apiKey;
@@ -230,25 +231,31 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     const url = `${KIE_BASE}/v1/jobs/createTask`;
     logger.info({ msg: "kie.ai Kling task creating", url, model: body.model, duration, inputKeys: Object.keys(input) });
 
-    const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body)
-    });
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
 
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Kie.ai Kling failed (${response.status}): ${errText}`);
-    }
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Kie.ai Kling failed (${response.status}): ${errText}`);
+            }
 
-    const data = await response.json();
-    if (data.code !== 200 && data.code !== 0) {
-        const extra = data.data ? ` data=${JSON.stringify(data.data).slice(0, 200)}` : "";
-        logger.error({ msg: "Kie Kling API error", code: data.code, detail: data.msg, extra });
-        throw new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
-    }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                const extra = data.data ? ` data=${JSON.stringify(data.data).slice(0, 200)}` : "";
+                logger.error({ msg: "Kie Kling API error", code: data.code, detail: data.msg, extra });
+                throw new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
+            }
 
-    return data.data.taskId;
+            return data.data.taskId;
+        },
+        { label: "createKlingTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
 }
 
 export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kling"): Promise<KieTaskResponse> {
@@ -257,72 +264,78 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
     else if (type === "kling") endpoint = "jobs/recordInfo";
 
     const url = `${KIE_BASE}/v1/${endpoint}?taskId=${taskId}`;
-    const response = await fetch(url, { headers });
 
-    if (!response.ok) {
-        throw new Error(`Kie.ai status failed (${response.status})`);
-    }
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, { headers, signal: AbortSignal.timeout(15_000) });
 
-    const data = await response.json();
-    const statusData = data.data;
-
-    if (!statusData) {
-        return { task_id: taskId, status: "pending" };
-    }
-
-    // Kie.ai states: SUCCESS/success/completed, PROCESSING/waiting, FAIL/FAILED/fail
-    let status: KieTaskResponse["status"] = "processing";
-    const state = (statusData.state || statusData.status || "").toUpperCase();
-
-    if (statusData.successFlag === 1 || state === "SUCCESS" || state === "COMPLETED") status = "completed";
-    else if (statusData.successFlag === -1 || state === "FAIL" || state === "FAILED") status = "failed";
-
-    let result = undefined;
-    if (status === "completed") {
-        const res = statusData.response || statusData.resultJson;
-        const rawResultUrls = statusData.resultUrls || (res && (typeof res === 'string' ? res : (res as any)?.resultUrls));
-        let videoUrl: string | undefined;
-        let audioUrl: string | undefined;
-
-        if (rawResultUrls) {
-            try {
-                const urls = typeof rawResultUrls === 'string' ? JSON.parse(rawResultUrls) : rawResultUrls;
-                const first = Array.isArray(urls) ? urls[0] : urls;
-                videoUrl = typeof first === 'string' ? first : (first?.url ?? first?.videoUrl ?? first?.resultUrl);
-            } catch (_) {
-                videoUrl = undefined;
+            if (!response.ok) {
+                throw new Error(`Kie.ai status failed (${response.status})`);
             }
-        }
 
-        if (!videoUrl && res) {
-            try {
-                const parsedRes = typeof res === 'string' ? JSON.parse(res) : res;
-                videoUrl = parsedRes.videoUrl ||
-                    parsedRes.url ||
-                    (Array.isArray(parsedRes.resultUrls) ? parsedRes.resultUrls[0] : undefined) ||
-                    (parsedRes.data && (parsedRes.data[0]?.videoUrl || parsedRes.data[0]?.url || parsedRes.data[0]?.resultUrl));
-                audioUrl = parsedRes.audioUrl ||
-                    (parsedRes.data && (parsedRes.data[0]?.audioUrl || parsedRes.data[0]?.musicUrl || parsedRes.data.find((item: any) => item.type === "audio" || item.type === "music")?.url));
-            } catch (e) {
-                logger.warn({ msg: "Failed to parse Kie.ai response", response: res });
+            const data = await response.json();
+            const statusData = data.data;
+
+            if (!statusData) {
+                return { task_id: taskId, status: "pending" };
             }
-        }
 
-        // Ensure video_url is a string (Kling can return {url: "..."} or array of objects)
-        const videoUrlStr = typeof videoUrl === "string" ? videoUrl
-            : (videoUrl && typeof videoUrl === "object" && (videoUrl as any).url) ? (videoUrl as any).url
-            : undefined;
-        if (videoUrlStr || audioUrl) {
-            result = { video_url: videoUrlStr, audio_url: audioUrl, duration: 8 };
-        }
-    }
+            // Kie.ai states: SUCCESS/success/completed, PROCESSING/waiting, FAIL/FAILED/fail
+            let status: KieTaskResponse["status"] = "processing";
+            const state = (statusData.state || statusData.status || "").toUpperCase();
 
-    return {
-        task_id: taskId,
-        status: status,
-        result: result,
-        error: statusData.failMsg || statusData.errorMessage || statusData.errorCode
-    };
+            if (statusData.successFlag === 1 || state === "SUCCESS" || state === "COMPLETED") status = "completed";
+            else if (statusData.successFlag === -1 || state === "FAIL" || state === "FAILED") status = "failed";
+
+            let result = undefined;
+            if (status === "completed") {
+                const res = statusData.response || statusData.resultJson;
+                const rawResultUrls = statusData.resultUrls || (res && (typeof res === 'string' ? res : (res as any)?.resultUrls));
+                let videoUrl: string | undefined;
+                let audioUrl: string | undefined;
+
+                if (rawResultUrls) {
+                    try {
+                        const urls = typeof rawResultUrls === 'string' ? JSON.parse(rawResultUrls) : rawResultUrls;
+                        const first = Array.isArray(urls) ? urls[0] : urls;
+                        videoUrl = typeof first === 'string' ? first : (first?.url ?? first?.videoUrl ?? first?.resultUrl);
+                    } catch (_) {
+                        videoUrl = undefined;
+                    }
+                }
+
+                if (!videoUrl && res) {
+                    try {
+                        const parsedRes = typeof res === 'string' ? JSON.parse(res) : res;
+                        videoUrl = parsedRes.videoUrl ||
+                            parsedRes.url ||
+                            (Array.isArray(parsedRes.resultUrls) ? parsedRes.resultUrls[0] : undefined) ||
+                            (parsedRes.data && (parsedRes.data[0]?.videoUrl || parsedRes.data[0]?.url || parsedRes.data[0]?.resultUrl));
+                        audioUrl = parsedRes.audioUrl ||
+                            (parsedRes.data && (parsedRes.data[0]?.audioUrl || parsedRes.data[0]?.musicUrl || parsedRes.data.find((item: any) => item.type === "audio" || item.type === "music")?.url));
+                    } catch (e) {
+                        logger.warn({ msg: "Failed to parse Kie.ai response", response: res });
+                    }
+                }
+
+                // Ensure video_url is a string (Kling can return {url: "..."} or array of objects)
+                const videoUrlStr = typeof videoUrl === "string" ? videoUrl
+                    : (videoUrl && typeof videoUrl === "object" && (videoUrl as any).url) ? (videoUrl as any).url
+                    : undefined;
+                if (videoUrlStr || audioUrl) {
+                    result = { video_url: videoUrlStr, audio_url: audioUrl, duration: 8 };
+                }
+            }
+
+            return {
+                task_id: taskId,
+                status: status,
+                result: result,
+                error: statusData.failMsg || statusData.errorMessage || statusData.errorCode
+            };
+        },
+        { label: `getTaskStatus(${type})`, maxAttempts: 3, initialDelayMs: 2000 }
+    );
 }
 
 export async function waitForTask(
@@ -377,25 +390,31 @@ export async function createSunoTask(request: KieSunoRequest): Promise<string> {
     const url = `${KIE_BASE}/v1/generate`;
     logger.info({ msg: "kie.ai Suno task creating", url, model: body.model });
 
-    const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body)
-    });
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
 
-    if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Kie.ai Suno failed (${response.status}): ${errText}`);
-    }
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Kie.ai Suno failed (${response.status}): ${errText}`);
+            }
 
-    const data = await response.json();
-    if (data.code !== 200 && data.code !== 0) {
-        throw new Error(`Kie.ai Suno API error (code ${data.code}): ${data.msg}`);
-    }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Kie.ai Suno API error (code ${data.code}): ${data.msg}`);
+            }
 
-    if (!data.data?.taskId) {
-        throw new Error(`Kie.ai Suno failed to return taskId: ${JSON.stringify(data)}`);
-    }
+            if (!data.data?.taskId) {
+                throw new Error(`Kie.ai Suno failed to return taskId: ${JSON.stringify(data)}`);
+            }
 
-    return data.data.taskId;
+            return data.data.taskId;
+        },
+        { label: "createSunoTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
 }

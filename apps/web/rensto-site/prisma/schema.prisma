@@ -1723,3 +1723,82 @@ model MarketplacePost {
   @@index([createdAt])
   @@map("marketplace_posts")
 }
+
+// ==========================================
+// GROUP: AI MODEL OBSERVATORY
+// Automated tracking of all AI models across providers
+// @see tools/model-observatory/README.md
+// ==========================================
+
+/// AI model registry - tracks all models from Kie.ai, Google, OpenAI, Anthropic, etc.
+model AIModel {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider        String   // 'kie.ai', 'google', 'openai', 'anthropic'
+  modelName       String   // 'gemini-3-flash', 'gpt-4o', 'claude-opus-4'
+  modelId         String   // Canonical ID for API calls
+  version         String?  // '1.0', '2.5', '3.0'
+  releaseDate     DateTime?
+
+  capabilities    Json     // {vision: true, reasoning: 'high', context_window: 1000000}
+  pricing         Json     // {input_per_1m: 0.15, output_per_1m: 0.90}
+  benchmarks      Json?    // {arc_agi: 77.1, mmlu: 85.3, ...}
+
+  kieEndpoint     String?  // For Kie.ai models: 'gemini-3-flash/v1/chat/completions'
+  status          String   @default("active") // 'active', 'deprecated', 'beta'
+
+  discoveredAt    DateTime @default(now())
+  lastChecked     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  recommendations AIModelRecommendation[] @relation("RecommendedModel")
+  fallbacks       AIModelRecommendation[] @relation("FallbackModel")
+  decisions       AIModelDecision[]
+
+  @@unique([provider, modelName, version])
+  @@index([provider])
+  @@index([status])
+  @@index([releaseDate])
+  @@map("ai_models")
+}
+
+/// Model recommendations per use case
+model AIModelRecommendation {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  useCase             String   // 'vision_analysis', 'text_generation', 'reasoning'
+  recommendedModelId  String   @db.Uuid
+  fallbackModelId     String?  @db.Uuid
+
+  reasoning           String   @db.Text // Why this model was chosen
+  costPer1kTokens     Float?   // Calculated cost
+  performanceScore    Float?   // 0-100 score
+
+  updatedAt           DateTime @updatedAt
+  createdAt           DateTime @default(now())
+
+  recommendedModel    AIModel  @relation("RecommendedModel", fields: [recommendedModelId], references: [id], onDelete: Cascade)
+  fallbackModel       AIModel? @relation("FallbackModel", fields: [fallbackModelId], references: [id], onDelete: SetNull)
+
+  @@unique([useCase])
+  @@index([useCase])
+  @@map("ai_model_recommendations")
+}
+
+/// Log of AI model selection decisions
+model AIModelDecision {
+  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  useCase                 String   // Where this model is used
+  chosenModelId           String   @db.Uuid
+  alternativesConsidered  String[] // Array of model IDs considered
+  reasoning               String   @db.Text
+
+  createdAt               DateTime @default(now())
+  createdBy               String?  @db.Uuid // User or agent who made decision
+
+  chosenModel             AIModel  @relation(fields: [chosenModelId], references: [id], onDelete: Cascade)
+
+  @@index([useCase])
+  @@index([chosenModelId])
+  @@index([createdAt])
+  @@map("ai_model_decisions")
+}

@@ -17,6 +17,8 @@ import { assignPhotosToClips, validateClipPhotoAssignments } from "../../service
 import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
 import { CreditManager } from "../../services/credits";
 import { NotificationService } from "../../services/notification";
+import { trackExpense } from "../../services/expense-tracker";
+import { withRetry } from "../../utils/retry";
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { config } from "../../config";
@@ -101,6 +103,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     }
                     if (publicUrls.length >= 2) {
                         const fpIdx = await detectFloorplanInPhotos(publicUrls);
+                        await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
                         if (fpIdx != null) {
                             const detectedUrl = publicUrls[fpIdx];
                             await query("UPDATE listings SET floorplan_url = $1 WHERE id = $2", [detectedUrl, listingId]);
@@ -121,6 +124,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             let tourRooms: TourRoom[] = listing.tour_sequence || [];
             if (listing.floorplan_url && !listing.floorplan_analysis) {
                 const analysis = await analyzeFloorplan(listing.floorplan_url, listing);
+                await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId, metadata: { step: "analyzeFloorplan" } });
                 await query("UPDATE listings SET floorplan_analysis = $1 WHERE id = $2", [JSON.stringify(analysis), listingId]);
                 tourRooms = buildTourSequence(analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
                 await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
@@ -219,6 +223,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     amenities: listing.floorplan_analysis?.rooms?.map((r: any) => r.name) || [],
                     heroFeatures: heroResult.heroFeatures,
                 });
+
+                await trackExpense({ service: "gemini", operation: "flash_prompt", jobId, userId, metadata: { step: "generateClipPrompts", roomCount: tourRooms.length } });
 
                 if (prompts.length === 0) {
                     throw new UnrecoverableError("No clip prompts generated. Ensure listing has a valid tour sequence."); // No retry—data/logic issue
@@ -320,6 +326,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             if (openingCandidates.length >= 1) {
                 try {
                     const bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
+                    await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
                     lastFrameUrl = openingCandidates[bestIdx];
                     if (bestIdx > 0) logger.info({ msg: "Using non-first photo for opening (front-of-house)", index: bestIdx });
                 } catch (e) {
@@ -345,6 +352,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             // Photo–room alignment: AI vision by default; set USE_AI_PHOTO_MATCH=false for heuristic only
             const allPhotosForMatch = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
             const visionMap = await matchPhotosToRoomsWithVision(allPhotosForMatch, clips.map((c) => (c as any).to_room || ""));
+            if (visionMap) await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
             const photoAssignments = assignPhotosToClips(clips, {
                 exteriorUrl: exteriorPublic,
                 additionalPhotos: additionalPublic,
@@ -393,6 +401,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         // await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
 
                         const { image_url } = await waitForNanoBananaTask(taskId);
+                        await trackExpense({ service: "kie", operation: "nano_banana", jobId, userId, metadata: { step: "opening_composite" } });
                         frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
                         lastFrameUrl = frameUrls[0];
                         clipHasComposite[0] = true;
@@ -424,6 +433,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             // await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: lastIdx + 1 });
 
                             const { image_url } = await waitForNanoBananaTask(taskId);
+                            await trackExpense({ service: "kie", operation: "nano_banana", jobId, userId, metadata: { step: "closing_composite", clipIdx: lastIdx } });
                             frameUrls[lastIdx + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${lastIdx + 1}`);
                             updateNanoProgress();
                             // Note: clipHasComposite[lastIdx] is set later when this frame becomes the start frame
@@ -526,7 +536,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
 
                 // Kling 3.0 ONLY. No Veo fallback. Per TOURREEL_REALTOR_HANDOFF_SPEC.
-                const taskId = await createKlingTask({
+                const taskId = await withRetry(() => createKlingTask({
                     prompt: klingPrompt,
                     image_url: startFrame,
                     realtor_in_frame: thisClipHasComposite,
@@ -537,7 +547,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     model: "kling-3.0/video",
                     duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
                     to_room: (clip as any).to_room,
-                });
+                }), { label: `createKlingTask clip ${clip.clip_number}` });
 
                 // Credit deduction removed - 50 credits charged upfront by web app
                 // await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
@@ -546,6 +556,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
                 result = { video: { url: status.result.video_url } };
                 modelUsed = "kling-3.0/video";
+                const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
+                await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number, model: modelUsed } });
                 logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
 
                 const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
@@ -597,11 +609,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 try {
                     logger.info({ msg: "Generating fresh music via Kie Suno (primary path)", style: listing.music_style });
                     const { createSunoTask, waitForTask } = await import("../../services/kie");
-                    const taskId = await createSunoTask({
+                    const taskId = await withRetry(() => createSunoTask({
                         prompt: `Cinematic real estate background music, ${listing.music_style || "elegant modern"}, high-end production quality, no vocals, instrumental only`,
                         instrumental: true,
                         model: "V3_5",
-                    });
+                    }), { label: "createSunoTask" });
 
                     // Credit deduction removed - 50 credits charged upfront by web app
                     // await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
@@ -610,6 +622,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     musicUrl = (status as any).result?.audio_url || null;
 
                     if (musicUrl) {
+                        await trackExpense({ service: "kie", operation: "suno_music", jobId, userId, metadata: { step: "music_generation" } });
                         logger.info({ msg: "Suno music generated successfully", taskId });
                     }
                 } catch (err: any) {
@@ -742,6 +755,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const squareUrl = await uploadToR2(variants.square, buildR2Key(userId, jobId, "square.mp4"));
             const portraitUrl = await uploadToR2(variants.portrait, buildR2Key(userId, jobId, "portrait.mp4"));
             const thumbUrl = await uploadToR2(variants.thumbnail, buildR2Key(userId, jobId, "thumb.jpg"));
+            await trackExpense({ service: "r2", operation: "upload", jobId, userId, estimatedCost: 0.0005, metadata: { files: 5, step: "final_upload" } });
 
             // 9. Production-readiness verification
             const masterDuration = await getVideoDuration(masterForExport);

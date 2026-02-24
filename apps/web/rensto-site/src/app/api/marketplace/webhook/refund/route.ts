@@ -23,11 +23,12 @@ export async function POST(request: NextRequest) {
   const LISTING_COST = 25; // Market agent cost (must match posts/route.ts)
 
   try {
-    // TODO: Add API key authentication
-    // const authHeader = request.headers.get('authorization');
-    // if (authHeader !== `Bearer ${process.env.MARKETPLACE_WEBHOOK_SECRET}`) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
+    // API key authentication
+    const authHeader = request.headers.get('authorization');
+    if (!process.env.MARKETPLACE_WEBHOOK_SECRET || authHeader !== `Bearer ${process.env.MARKETPLACE_WEBHOOK_SECRET}`) {
+      logger.warn('Marketplace webhook: unauthorized request', { hasAuth: !!authHeader, hasSecret: !!process.env.MARKETPLACE_WEBHOOK_SECRET });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const body = await request.json();
     const { postId, status, error, facebookUrl } = body;
