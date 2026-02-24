@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,9 +19,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    // Find the landing page
+    // Find the landing page + owner email for fallback notification
     const landingPage = await prisma.landingPage.findUnique({
       where: { slug, active: true },
+      include: { user: { select: { email: true, name: true } } },
     });
 
     if (!landingPage) {
@@ -53,12 +55,10 @@ export async function POST(req: NextRequest) {
       data: { submissions: { increment: 1 } },
     });
 
-    // WhatsApp notification (fire-and-forget)
-    if (landingPage.whatsappNumber) {
-      sendWhatsAppNotification(landingPage, { name, phone, email }).catch(
-        (err) => console.error("WhatsApp notification failed:", err)
-      );
-    }
+    // Notify page owner (fire-and-forget): WAHA WhatsApp first, Resend email fallback
+    notifyPageOwner(landingPage, { name, phone, email }).catch(
+      (err) => console.error("Lead notification failed:", err)
+    );
 
     return NextResponse.json({ ok: true, leadId: lead.id }, { status: 201 });
   } catch (err) {
@@ -70,23 +70,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function sendWhatsAppNotification(
-  page: { whatsappNumber: string | null; businessName: string; slug: string },
+async function notifyPageOwner(
+  page: {
+    whatsappNumber: string | null;
+    email: string | null;
+    businessName: string;
+    slug: string;
+    user: { email: string; name: string | null } | null;
+  },
   lead: { name: string; phone: string; email: string }
 ) {
-  // Simple WhatsApp Cloud API notification to the page owner
-  // Uses the WhatsApp Business API if configured, otherwise logs
-  const waToken = process.env.WHATSAPP_TOKEN;
-  const waPhoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-
-  if (!waToken || !waPhoneId || !page.whatsappNumber) {
-    console.log(
-      `[Lead Notification] New lead for ${page.businessName} (${page.slug}):`,
-      `${lead.name} | ${lead.phone} | ${lead.email}`
-    );
-    return;
-  }
-
   const message = [
     `*ליד חדש מדף הנחיתה* (${page.slug})`,
     ``,
@@ -97,20 +90,61 @@ async function sendWhatsAppNotification(
     `_${new Date().toLocaleString("he-IL", { timeZone: "Asia/Jerusalem" })}_`,
   ].join("\n");
 
-  await fetch(
-    `https://graph.facebook.com/v19.0/${waPhoneId}/messages`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${waToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: page.whatsappNumber,
-        type: "text",
-        text: { body: message },
-      }),
+  let whatsappSent = false;
+
+  // 1. Try WAHA WhatsApp (self-hosted, on RackNerd)
+  const wahaUrl = process.env.WAHA_BASE_URL;
+  const wahaKey = process.env.WAHA_API_KEY;
+  const wahaSession = process.env.WAHA_SESSION || "rensto-whatsapp";
+
+  if (wahaUrl && wahaKey && page.whatsappNumber) {
+    try {
+      // Normalize phone to chatId: strip non-digits, append @c.us
+      let chatId = page.whatsappNumber.replace(/[^0-9]/g, "");
+      if (!chatId.includes("@")) chatId = chatId + "@c.us";
+
+      const res = await fetch(`${wahaUrl}/api/sendText`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Api-Key": wahaKey },
+        body: JSON.stringify({ chatId, text: message, session: wahaSession }),
+        signal: AbortSignal.timeout(10_000),
+      });
+
+      if (res.ok) {
+        whatsappSent = true;
+        console.log(`[Lead Notification] WhatsApp sent to ${chatId} for ${page.slug}`);
+      } else {
+        console.warn(`[Lead Notification] WAHA returned ${res.status} for ${page.slug}`);
+      }
+    } catch (err) {
+      console.warn(`[Lead Notification] WAHA failed for ${page.slug}:`, err instanceof Error ? err.message : err);
     }
-  );
+  }
+
+  // 2. Resend email fallback (always send — page owner should get email too)
+  const ownerEmail = page.email || page.user?.email;
+  if (ownerEmail) {
+    try {
+      await sendEmail({
+        to: ownerEmail,
+        template: "system-alert" as any,
+        data: {
+          severity: "warning",
+          serviceName: `דף נחיתה: ${page.businessName}`,
+          condition: "ליד חדש",
+          message: `שם: ${lead.name}\nטלפון: ${lead.phone}\nאימייל: ${lead.email}`,
+        },
+      });
+      console.log(`[Lead Notification] Email sent to ${ownerEmail} for ${page.slug}`);
+    } catch (err) {
+      console.warn(`[Lead Notification] Email failed for ${page.slug}:`, err instanceof Error ? err.message : err);
+    }
+  }
+
+  if (!whatsappSent && !ownerEmail) {
+    console.log(
+      `[Lead Notification] No delivery channel for ${page.businessName} (${page.slug}):`,
+      `${lead.name} | ${lead.phone} | ${lead.email}`
+    );
+  }
 }
