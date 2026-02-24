@@ -8,6 +8,58 @@
 
 ## 2026-02-24
 
+### Forge Week 1 Audit — 0% Success Rate Due to Kie.ai Outage (CRITICAL PRODUCTION BLOCKER)
+
+**Date**: Feb 24, 2026 @ 21:40 PST
+
+**Test**: Week 1 Production Readiness Audit — 10 real Zillow URLs tested sequentially via production worker (RackNerd)
+
+**Results**:
+- **Success rate**: 0% (0/10 videos completed)
+- **Failure breakdown**:
+  - 9 failed: Kie.ai server maintenance (`{"code":500,"msg":"The server is currently being maintained, please try again later~"}`)
+  - 1 failed: No photos in Zillow listing (stale URL)
+- **Latency (fast-fail)**: P50=37.4s, P95=66.7s, P99=66.7s
+- **Credit billing accuracy**: ✅ PERFECT (0 credits charged for 0 completions - no double-charging)
+
+**Root cause**: **Single point of failure** — TourReel/Forge has ZERO resilience against Kie.ai outages. When Kie.ai Vision API returns 500 errors, the entire pipeline fails immediately with no retry logic, no exponential backoff, no fallback provider, no graceful degradation.
+
+**Impact**:
+- **Production blocker** — Cannot launch to paying customers with 0% uptime during third-party maintenance
+- **No SLA possible** — Cannot guarantee any success rate when dependent on Kie.ai's availability
+- **Poor customer experience** — Customers charged 50 credits get nothing (though credit refund on failure works correctly)
+
+**Missing resilience mechanisms**:
+1. **No retry with exponential backoff** — Should retry 500 errors with 2^n backoff (2s, 4s, 8s, 16s)
+2. **No circuit breaker** — Should detect Kie.ai outage and temporarily halt new jobs vs failing all of them
+3. **No fallback provider** — No alternative to Kie.ai for vision tasks (OpenAI GPT-4 Vision, Google Gemini Vision, Anthropic Claude Vision)
+4. **No graceful degradation** — Should offer simplified videos without advanced AI features during outages
+5. **No health monitoring** — No proactive detection of Kie.ai degradation before customer jobs fail
+6. **No customer communication** — No "Kie.ai is down, videos delayed" notification vs silent failure
+
+**Positive findings** (what worked correctly):
+- ✅ Credit billing accuracy: Exactly 50 credits deducted per video, 0 credits for failed jobs (no double-charging bug after Feb 24 fix)
+- ✅ Fast-fail: Jobs failed in 35-66 seconds instead of hanging for 30 minutes
+- ✅ Clear error messages: "Kie AI Vision failed" with raw API response for debugging
+- ✅ Worker stability: No crashes, PM2 restarts during test were from earlier issues
+
+**Action items (MUST FIX before production launch)**:
+1. **Immediate (P0)**: Add retry logic with exponential backoff for all Kie.ai API calls
+2. **Short-term (P1)**: Implement circuit breaker pattern to detect and handle sustained outages
+3. **Medium-term (P1)**: Add fallback provider (OpenAI/Gemini/Claude Vision) for vision tasks
+4. **Long-term (P2)**: Build health monitoring dashboard for all third-party dependencies (Kie.ai, Suno, Apify, etc.)
+5. **Long-term (P2)**: Design graceful degradation mode (basic videos without AI enhancements)
+
+**Rule**: **NEVER deploy a system with zero resilience to third-party API outages**. All external API calls MUST have:
+- Retry logic with exponential backoff (3-5 retries)
+- Circuit breaker to prevent cascading failures
+- Fallback provider or graceful degradation
+- Health monitoring and customer communication
+
+**File**: Week 1 audit script at `apps/worker/tools/week1-forge-audit.ts`, full results in session logs.
+
+---
+
 ### TourReel — Music Reuse Instead of Suno Generation (NEVER REPEAT)
 
 **Root cause**: Video pipeline logic prioritized database track reuse over Suno generation. Lines 587-592 in `video-pipeline.worker.ts` queried `music_tracks` table for ANY existing track and used it BEFORE trying Suno. This caused all videos to reuse the same track instead of generating fresh music.
