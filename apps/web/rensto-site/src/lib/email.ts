@@ -20,7 +20,8 @@ export type EmailTemplate =
   | 'retention-reengagement'
   | 'system-alert'
   | 'marketplace-posted'
-  | 'marketplace-failed';
+  | 'marketplace-failed'
+  | 'new-lead';
 
 interface SendEmailOptions {
   to: string;
@@ -41,6 +42,7 @@ const SUBJECTS: Record<EmailTemplate, string> = {
   'system-alert': '🔴 System Alert — Rensto Monitoring',
   'marketplace-posted': '🎉 Your Marketplace Listing is Live!',
   'marketplace-failed': '⚠️ Marketplace Listing Issue — Credits Refunded',
+  'new-lead': '🔔 ליד חדש מדף הנחיתה',
 };
 
 // Generate HTML for each template
@@ -387,6 +389,42 @@ function generateEmailHtml(template: EmailTemplate, data: Record<string, any>): 
         </div>
       `;
 
+    case 'new-lead':
+      return `
+        <div style="${baseStyles}">
+          <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;" dir="rtl">
+            <h1 style="color: #22c55e; font-size: 28px; margin-bottom: 16px;">ליד חדש מדף הנחיתה!</h1>
+            <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
+              מישהו השאיר פרטים בדף <strong>${data.pageName || 'הנחיתה שלך'}</strong>
+            </p>
+            <div style="${cardStyle}">
+              <table style="width: 100%; color: #cbd5e1;">
+                <tr>
+                  <td style="padding: 8px 0; color: #94a3b8;">שם</td>
+                  <td style="padding: 8px 0; text-align: left; font-weight: bold;">${data.leadName || ''}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #94a3b8;">טלפון</td>
+                  <td style="padding: 8px 0; text-align: left;"><a href="tel:${data.leadPhone || ''}" style="color: #00d4ff;">${data.leadPhone || ''}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #94a3b8;">אימייל</td>
+                  <td style="padding: 8px 0; text-align: left;"><a href="mailto:${data.leadEmail || ''}" style="color: #00d4ff;">${data.leadEmail || ''}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #94a3b8;">זמן</td>
+                  <td style="padding: 8px 0; text-align: left;">${new Date().toLocaleString("he-IL", { timeZone: "Asia/Jerusalem" })}</td>
+                </tr>
+              </table>
+            </div>
+            <p style="font-size: 14px; color: #22c55e; font-weight: bold;">צור קשר עם הליד בהקדם לסגירה מוצלחת!</p>
+            <p style="font-size: 12px; color: #64748b; margin-top: 40px;">
+              הודעה זו נשלחה מ-Rensto — מערכת האוטומציה שלך
+            </p>
+          </div>
+        </div>
+      `;
+
     default:
       return `<p>Email template not found.</p>`;
   }
@@ -457,4 +495,7 @@ export const emails = {
 
   marketplaceFailed: (to: string, productName: string, error: string, creditsRefunded: number) =>
     sendEmail({ to, template: 'marketplace-failed', data: { productName, error, creditsRefunded } }),
+
+  newLead: (to: string, pageName: string, leadName: string, leadPhone: string, leadEmail: string) =>
+    sendEmail({ to, template: 'new-lead', data: { pageName, leadName, leadPhone, leadEmail } }),
 };

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { emails } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -125,16 +125,7 @@ async function notifyPageOwner(
   const ownerEmail = page.email || page.user?.email;
   if (ownerEmail) {
     try {
-      await sendEmail({
-        to: ownerEmail,
-        template: "system-alert" as any,
-        data: {
-          severity: "warning",
-          serviceName: `דף נחיתה: ${page.businessName}`,
-          condition: "ליד חדש",
-          message: `שם: ${lead.name}\nטלפון: ${lead.phone}\nאימייל: ${lead.email}`,
-        },
-      });
+      await emails.newLead(ownerEmail, page.businessName, lead.name, lead.phone, lead.email);
       console.log(`[Lead Notification] Email sent to ${ownerEmail} for ${page.slug}`);
     } catch (err) {
       console.warn(`[Lead Notification] Email failed for ${page.slug}:`, err instanceof Error ? err.message : err);
