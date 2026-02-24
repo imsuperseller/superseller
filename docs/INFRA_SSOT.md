@@ -37,9 +37,11 @@
     *   `GOOGLE_GENERATIVE_AI_API_KEY` (Gemini)
     *   `ANTHROPIC_API_KEY` (Dummy for local proxy; Real for n8n)
 *   **WhatsApp (WAHA)**:
-    *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (rensto-site) — same server: `http://172.245.56.50:3000`
+    *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (rensto-site) / `config.shared.wahaUrl` (FB Bot) — same server: `http://172.245.56.50:3000`
     *   `WAHA_API_KEY` — Bearer token for WAHA Pro
     *   `WAHA_SESSION` — Session name (default: rensto-whatsapp)
+    *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `rensto-whatsapp` (future website chatbot with knowledge base)
+    *   **Dashboard**: `http://172.245.56.50:3000/dashboard`
 *   **LightRAG**: `LIGHTRAG_BASE_URL` (referenced in admin health-check)
 *   **Finance**:
     *   `STRIPE_SECRET_KEY`
@@ -49,9 +51,16 @@
 
 ## 3. Storage Protocol (Cloudflare R2)
 
+*   **Account ID**: `46a5b8a6516f86865992dbdfdb3cd77b`
 *   **Public Access**: All videos destined for the frontend **MUST** use the R2 Public URL.
 *   **Retention**: Temporary processing frames in `/tmp/` must be purged after 24 hours.
 *   **Naming Convention**: `/{clientId}/{jobId}/{filename}`
+
+### R2 Buckets
+| Bucket | Location | Public URL | Used By |
+|--------|----------|------------|---------|
+| `zillow-to-video-finals` | WNAM | `https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev` | TourReel video exports |
+| `winner-video-studio` | ENAM | `https://pub-ac6c152d1390490f95184e78af932739.r2.dev` | Winner Studio video exports |
 
 ---
 

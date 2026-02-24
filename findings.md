@@ -8,6 +8,21 @@
 
 ## 2026-02-24
 
+### Repo Cleanup Findings
+
+**Git-tracked junk discovered**: The repo audit agent initially flagged `.env` files with production secrets — investigation confirmed these were NOT tracked (`.gitignore` catches them). Actual tracked junk:
+- 249 gologin-tmp browser cache/profile files (Chrome profile data, cookies, SQLite DBs)
+- Legacy `winner-video-automator-v1.0/` (superseded by `apps/worker/` + `apps/studio/`)
+- Legacy `social app/` (superseded by SocialHub spec in `.claude/skills/socialhub/`)
+- Root `PXL_20230316_112507103_Original.jpg` (personal photo, no purpose)
+- `api-backup/` and `org-backup/` (old routes, 73 files total)
+
+**Root cause**: Files were committed before `.gitignore` patterns were added. `.gitignore` only prevents NEW additions; already-tracked files persist until `git rm --cached`.
+
+**Phantom health-check URLs**: Admin health-check route (`/api/admin/health-check`) had `market.rensto.com` and `gateway.rensto.com` — neither domain exists. These were aspirational/placeholder URLs that never got cleaned up. Replaced with actual RackNerd services (Worker, FB Bot, Ollama).
+
+**R2 public access gap**: `winner-video-studio` bucket had public access disabled, meaning Winner Studio videos were not publicly accessible via r2.dev domain. Now enabled.
+
 ### Full System Alignment Audit — 12 CRITICAL + 8 MEDIUM Fixed
 
 **Date**: Feb 24, 2026

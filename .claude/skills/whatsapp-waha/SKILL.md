@@ -33,6 +33,7 @@ negativeTrigger:
 - **WAHA is the WhatsApp HTTP API** — not the official Meta Business API. It runs its own session.
 - **Chat ID format**: `{phoneWithCountryCode}@c.us` (e.g., `972501234567@c.us`). Never include `+` or dashes.
 - **Session must be alive** — check `isSessionAlive()` before critical sends. Session name: `WAHA_SESSION` env var.
+- **Two sessions**: `internalBoss` (business notifications/approvals to owner — functions like Slack for the business) and `rensto-whatsapp` (future website chatbot with full knowledge base — big project, not yet started).
 - **All sends are best-effort** — catch errors, log, return null. Never fail a pipeline because WhatsApp is down.
 - **WAHA is used by all products** — Studio (`WAHA_URL`), Lead Pages (`WAHA_BASE_URL`), FB Bot (`config.shared.wahaUrl`). Env var names differ per app.
 - **OTP TTL is 5 minutes**, max 3 attempts. Stored in Redis key `otp:{phone}`.

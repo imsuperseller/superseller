@@ -6,6 +6,27 @@
 
 ---
 
+## 2026-02-24: Repo Cleanup + R2 Public Access + Health Check Fix
+
+### What was done
+- **R2 public access enabled**: `winner-video-studio` bucket now has public r2.dev access at `https://pub-ac6c152d1390490f95184e78af932739.r2.dev/`. `zillow-to-video-finals` was already enabled.
+- **Repo security cleanup**: Removed 249 gologin-tmp browser cache files, legacy `winner-video-automator-v1.0/` (13 files), `social app/` (3 files), root photo, `infra/.n8n-auth.env`, `api-backup/` (66 files), `org-backup/` (7 files) from git tracking. Updated `.gitignore`.
+- **Phantom health-check URLs fixed**: Removed `market.rensto.com` and `gateway.rensto.com` (don't exist) from admin health-check route. Replaced with actual services: Worker, FB Bot, Ollama.
+- **WAHA sessions documented**: `internalBoss` (business notifications/approvals to owner) and `rensto-whatsapp` (future website chatbot) added to INFRA_SSOT and whatsapp-waha SKILL.
+- **R2 bucket table added to INFRA_SSOT**: Both buckets with locations, public URLs, and usage.
+- **Studio R2_PUBLIC_URL default set**: `apps/studio/src/lib/env.ts` now defaults to the correct public URL instead of empty string.
+
+### Files modified
+- `.gitignore` (added cleanup patterns for gologin-tmp, legacy dirs, api-backup, org-backup)
+- `docs/INFRA_SSOT.md` (R2 bucket table, WAHA sessions, dashboard URL)
+- `.claude/skills/whatsapp-waha/SKILL.md` (WAHA session purposes)
+- `.claude/skills/winner-studio/SKILL.md` (R2_PUBLIC_URL env var)
+- `apps/web/rensto-site/src/app/api/admin/health-check/route.ts` (replaced phantom URLs with real services)
+- `apps/studio/src/lib/env.ts` (R2_PUBLIC_URL default)
+- `apps/studio/.env.example` (R2_PUBLIC_URL value)
+
+---
+
 ## 2026-02-24: Full System Alignment Audit + Fixes
 
 ### What was done

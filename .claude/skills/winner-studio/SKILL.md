@@ -140,6 +140,7 @@ PENDING → SCRIPT_PROCESSING → [AUDIO_ISOLATING] → VIDEO_GENERATING → DEL
 | `WAHA_API_KEY` | Yes | WAHA auth |
 | `RESEND_API_KEY` | Yes | Email magic links |
 | `R2_BUCKET_NAME` | No | Default: winner-video-studio |
+| `R2_PUBLIC_URL` | No | Default: `https://pub-ac6c152d1390490f95184e78af932739.r2.dev` |
 | `WAHA_SESSION` | No | Default: rensto-whatsapp |
 | `CALLBACK_BASE_URL` | No | Kie.ai callback URL base |
 | `INTERNAL_SECRET` | No | Internal API auth |

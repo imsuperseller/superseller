@@ -23,7 +23,7 @@ function loadEnv() {
     R2_ACCESS_KEY_ID: required("R2_ACCESS_KEY_ID"),
     R2_SECRET_ACCESS_KEY: required("R2_SECRET_ACCESS_KEY"),
     R2_BUCKET_NAME: optional("R2_BUCKET_NAME", "winner-video-studio"),
-    R2_PUBLIC_URL: optional("R2_PUBLIC_URL", ""),
+    R2_PUBLIC_URL: optional("R2_PUBLIC_URL", "https://pub-ac6c152d1390490f95184e78af932739.r2.dev"),
 
     // kie.ai
     KIE_API_KEY: required("KIE_API_KEY"),

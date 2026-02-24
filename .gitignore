@@ -406,3 +406,25 @@ docs/vault/FINANCIAL_VAULT.md
 *-leads/
 customer-content/
 customer-*/
+
+# ============================================
+# 🧹 REPO CLEANUP (Feb 2026)
+# ============================================
+
+# GoLogin browser profile cache (runtime data, never commit)
+**/gologin-tmp/
+**/gologin-profile*/
+
+# Legacy/archived projects (superseded by apps/ monorepo)
+winner-video-automator-v1.0/
+social app/
+
+# Root-level stray files
+PXL_*.jpg
+
+# n8n auth env (contains server paths)
+infra/.n8n-auth.env
+
+# API backup directories (old routes kept for reference but not tracked)
+**/api-backup/
+**/org-backup/
