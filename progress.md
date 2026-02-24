@@ -6,6 +6,118 @@
 
 ---
 
+## 2026-02-23 (PM): Market Integration + Agent Production Readiness Audit
+
+### Context
+FB Marketplace Bot SaaS integration. Original plan: 4-week Hybrid MVP (Option C). User approved integrating Market as 7th crew member using credit-based model ($299/$699/$1499) instead of standalone pricing ($99/$299/$999).
+
+### Phase 1 Complete: Code Deployed
+
+**Code Changes** (Commit: `dabba98`):
+- ✅ Added Market to crew.ts (25 credits/listing, live status)
+- ✅ Added ShoppingBag icon to CrewIcon component
+- ✅ Updated pricing.ts credit examples (all 3 tiers include Market)
+- ✅ Added Market to niches.ts (contractors, auto-repair, home-services)
+- ✅ Updated all "6 agents" → "7 specialized agents" across frontend
+- ✅ Updated metadata (crew, pricing, homepage pages)
+- ✅ Build passed (12.5s), deployed to rensto.com
+- ✅ Pushed to GitHub (triggered Vercel auto-deploy)
+
+**Files Modified**: 10 core files
+**Deployment**: Live at https://rensto.com/crew (Market visible)
+
+### Critical User Insight: Production Readiness Gap
+
+User raised critical question: **"When do we test each agent to ensure it's fully functioning, optimized, and delivers zero complaints from paying customers?"**
+
+**The Gap**:
+- We built pricing, marketing, UI — but haven't verified production readiness
+- Customers paying $299/mo expect flawless experience
+- Missing: error handling, notifications, quality benchmarks, prompt optimization, edge case testing, SLAs
+
+**Response**: Created [AGENT_PRODUCTION_READINESS_AUDIT.md](AGENT_PRODUCTION_READINESS_AUDIT.md)
+
+**Comprehensive checklist** for all 7 agents:
+1. Functional testing (happy path + edge cases)
+2. Error handling & recovery (graceful failures, retry logic, refunds)
+3. Notifications & UX (WhatsApp, email, status tracking)
+4. Prompt optimization & quality (benchmarked vs. competitors)
+5. Performance & scalability (P95 latency, rate limits, cost tracking)
+6. Billing & credit accuracy (100% accuracy, no overcharging)
+7. Security & data privacy (isolation, PII handling, GDPR)
+
+**Agent Status Inventory**:
+- **Forge** (Video): Live, needs audit ⚠️
+- **Spoke** (Spokesperson): Live, needs audit ⚠️
+- **Market** (Marketplace): Just added, needs full integration + audit ❌
+- **FrontDesk** (Voice AI): Coming soon, not wired to credits ❌
+- **Scout** (Lead Hunter): Coming soon, not built ❌
+- **Buzz** (Content Creator): Coming soon, not built ❌
+- **Cortex** (Analyst): RAG tested, not wired to credits ⚠️
+
+### Revised Roadmap (4 Weeks)
+
+**Week 1**: Agent Production Readiness Audit (Forge, Spoke, Market)
+- End-to-end testing with real inputs
+- Edge case + API failure scenarios
+- Quality benchmarking vs. competitors (Opus Clip, Descript, D-ID)
+- Performance measurement (P50, P95, P99 latency)
+- Pass/Fail scorecard (blocks customer launch if fail)
+
+**Week 2**: Fix Gaps + Backend Integration
+- Wire all agents to User.credits (deduction + automatic refund on failure)
+- Add error handling + customer notifications (WhatsApp, email)
+- Optimize prompts based on quality tests
+- Document SLAs (e.g., "Forge: 95% videos complete in <5 min")
+
+**Week 3**: Beta Testing
+- Invite 3-5 beta customers (UAD, MissParty, + 3 new)
+- Monitor 7 days: failure rate, complaint volume, NPS score
+- Iterate based on feedback
+
+**Week 4**: Public Launch
+- Open $299/$699/$1499 subscriptions to public
+- Remove "coming soon" badges from audited agents
+- Monitor first 100 customers: churn rate, support tickets, credit usage
+
+### What's Missing (Bird's Eye View)
+
+Identified 8 systemic gaps beyond agent-specific testing:
+1. **Unified dashboard** - real-time status for all agents in one place
+2. **Notification system** - WhatsApp ✅, email/SMS ❌
+3. **Quality assurance loop** - customer ratings (1-5 stars) feed back to prompt optimization
+4. **Usage analytics** - "You've used 320/500 credits this month"
+5. **Admin tools** - manual task retry, customer impersonation for support
+6. **Documentation** - help docs (/docs/forge), video tutorials, API docs
+7. **SLA commitments** - documented expected turnaround times per agent
+8. **Model version tracking** - rollback capability if new model version degrades quality
+
+### Success Metrics (Target)
+| Metric | Target |
+|--------|--------|
+| Agent uptime | 99.5% |
+| NPS score | 9/10 |
+| Refund rate | <2% |
+| Support tickets | <0.5 tickets/customer/month |
+| Credit accuracy | 100% |
+| API cost margin | 40%+ |
+
+### Remaining Work
+
+**Immediate** (pending user decision):
+- Option A: Continue with backend integration (Phases 2-4) but defer customer launch until audit passes
+- Option B: Pause integration, execute audit first, then resume
+- Option C: Parallel tracks (integration + audit simultaneously)
+
+**Deferred** (Week 2+):
+- Archive 3 Stripe products (prod_U2EFmrdU4xFlTK, prod_U2EFxjzvGOvDsy, prod_U2EFS8dpDfqjVB)
+- Update all documentation (PRODUCT_BIBLE, BUSINESS_COVERAGE_INDEX, skills, platform docs)
+- Sync NotebookLM source documents (Notebooks #6, #8)
+- Wire marketplace portal to User.credits
+- Database schema changes (remove MarketplaceCustomer.subscription field)
+
+---
+
 ## 2026-02-23 — FB Marketplace Bot V2: Full Rebuild & Deploy
 
 ### V2 Rewrite (Major)
