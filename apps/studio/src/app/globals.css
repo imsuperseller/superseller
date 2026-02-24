@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Rubik:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --winner-primary: #3A388E;
+  --winner-accent: #B6E3D4;
+  --winner-bg: #0c0c0e;
+  --winner-card: #16161a;
+  --winner-text: #e2e8f0;
+  --winner-muted: #6b7280;
+}
+
+body {
+  background-color: var(--winner-bg);
+  color: var(--winner-text);
+  font-family: 'Heebo', sans-serif;
+  direction: rtl;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Rubik', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--winner-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Drag-drop zone */
+.drop-zone {
+  border: 2px dashed rgba(182, 227, 212, 0.3);
+  transition: all 0.2s ease;
+}
+.drop-zone:hover,
+.drop-zone.active {
+  border-color: var(--winner-accent);
+  background: rgba(182, 227, 212, 0.05);
+}
+
+/* Stage animations */
+@keyframes stage-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.stage-active {
+  animation: stage-pulse 1.5s ease-in-out infinite;
+}

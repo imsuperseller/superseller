@@ -150,7 +150,17 @@ async function getSecretaryData(clientId: string) {
             prisma.voiceCallLog.findMany({
                 where: { userId: clientId },
                 orderBy: { createdAt: 'desc' },
-                take: 20,
+                take: 50,
+                select: {
+                    id: true,
+                    callerPhone: true,
+                    callerName: true,
+                    duration: true,
+                    outcome: true,
+                    summary: true,
+                    startedAt: true,
+                    createdAt: true,
+                },
             }),
             prisma.secretaryConfig.findFirst({ where: { clientId } }),
             prisma.appointmentBooking.findMany({
@@ -161,8 +171,16 @@ async function getSecretaryData(clientId: string) {
         ]);
         const configData = config as any;
         return {
-            callLogs: callLogs.map((c) => ({ id: c.id, ...c, data: c.data })),
-            whatsappThreads: [], // WhatsAppMessage joins through instance - add if needed
+            callLogs: callLogs.map((c) => ({
+                id: c.id,
+                caller: c.callerName || 'Unknown Caller',
+                callerPhone: c.callerPhone || '',
+                duration: c.duration || 0,
+                outcome: (c.outcome as 'answered' | 'voicemail' | 'missed' | 'transferred') || 'answered',
+                timestamp: (c.startedAt || c.createdAt).toISOString(),
+                summary: c.summary || undefined,
+            })),
+            whatsappThreads: [],
             bookings: bookings.map((b) => ({
                 id: b.id,
                 ...b,
@@ -173,7 +191,7 @@ async function getSecretaryData(clientId: string) {
                       agentName: configData.agentName,
                       voiceId: configData.voiceId,
                       greeting: configData.greeting,
-                      availability: { enabled: true, hours: '24/7' },
+                      availability: (configData.availability as { enabled: boolean; hours: string }) || { enabled: true, hours: '24/7' },
                       whatsappEnabled: configData.whatsappEnabled ?? false,
                       calendarEnabled: configData.calendarEnabled ?? false,
                       transferNumber: configData.transferNumber ?? '',

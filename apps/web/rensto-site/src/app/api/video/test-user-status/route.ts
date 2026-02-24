@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
 
 const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || !session.clientId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (!WORKER_URL) {
         return NextResponse.json({ hasAvatar: false, error: "Worker not configured" }, { status: 200 });
     }

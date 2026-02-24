@@ -50,10 +50,13 @@ All products must align with one of these tactical pillars:
 *   **Source of Truth**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` + NotebookLM 0baf5f36.
 
 ### 🤖 Facebook Marketplace Autoposter
-*   **Target**: High-volume marketplace sellers.
-*   **Logic**: `platforms/marketplace/saas-engine/`
-*   **Stack**: Puppeteer + GoLogin + Anti-detection stealth logic.
+*   **Target**: High-volume marketplace sellers (UAD Garage Doors, Miss Party Rentals).
+*   **Logic**: `fb marketplace lister/deploy-package/` (canonical), server at `/opt/fb-marketplace-bot/`
+*   **Stack**: GoLogin SDK + Puppeteer 19 + ImageMagick phone overlays + PostgreSQL (`fb_listings`).
+*   **Features**: AI-generated city-specific copy (Kie.ai Gemini 2.5 Flash), image variation pool (Kie.ai Seedream 4.5 Edit), DFW location rotation (30/20 cities), Telnyx phone rotation, dynamic phone overlay, price jitter (±10%), schedule randomization (±15min), per-profile cookies, cookie health monitoring, PM2 automated scheduler (60-min cycles).
+*   **Lead Pipeline**: Telnyx Voice AI → Claude Sonnet analysis → Workiz CRM (UAD), email (MissParty). **DORMANT** — n8n workflows active but 0 executions, Telnyx routing unverified.
 *   **Usage**: Credits per listing activation.
+*   **Status**: LIVE — both customers posting as of Feb 20, 2026.
 
 ---
 

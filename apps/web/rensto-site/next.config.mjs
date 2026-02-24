@@ -38,9 +38,65 @@ const nextConfig = {
   // Legacy route redirects
   async redirects() {
     return [
+      // Legacy → new routes
       {
         source: '/solutions',
-        destination: '/niches',
+        destination: '/crew',
+        permanent: true,
+      },
+      {
+        source: '/niches',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/niches/hvac',
+        destination: '/home-services',
+        permanent: true,
+      },
+      {
+        source: '/niches/plumbing',
+        destination: '/home-services',
+        permanent: true,
+      },
+      {
+        source: '/niches/locksmith',
+        destination: '/locksmiths',
+        permanent: true,
+      },
+      {
+        source: '/niches/realtor',
+        destination: '/realtors',
+        permanent: true,
+      },
+      {
+        source: '/niches/restaurant',
+        destination: '/restaurants',
+        permanent: true,
+      },
+      {
+        source: '/niches/:path*',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/offers',
+        destination: '/pricing',
+        permanent: true,
+      },
+      {
+        source: '/process',
+        destination: '/crew',
+        permanent: true,
+      },
+      {
+        source: '/products/:path*',
+        destination: '/crew',
+        permanent: true,
+      },
+      {
+        source: '/custom',
+        destination: '/pricing',
         permanent: true,
       },
       {
@@ -55,10 +111,9 @@ const nextConfig = {
       },
       {
         source: '/lead-generator.html',
-        destination: '/subscriptions',
+        destination: '/pricing',
         permanent: true,
       },
-
       {
         source: '/control/:path*',
         destination: '/admin/:path*',
@@ -69,19 +124,41 @@ const nextConfig = {
         destination: '/admin',
         permanent: true,
       },
-      // /video is now the dashboard (My Videos). No redirect needed.
     ];
   },
 
 
-  // Cache headers for optimal CDN and browser caching
+  // Security + cache headers
   async headers() {
     return [
       {
-        // HTML pages - Optimized for Edge caching with stale-while-revalidate
-        // Moved to top so more specific rules (like API) can override
+        // Security headers — apply to ALL routes
         source: '/:path*',
         headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
           {
             key: 'Cache-Control',
             value: 'public, s-maxage=3600, stale-while-revalidate=31536000, max-age=60',

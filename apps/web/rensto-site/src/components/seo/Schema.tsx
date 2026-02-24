@@ -27,6 +27,7 @@ export const organizationSchema = {
     name: 'Rensto',
     url: 'https://rensto.com',
     logo: 'https://rensto.com/rensto-logo.webp',
+    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
     sameAs: [
         'https://twitter.com/rensto',
         'https://www.linkedin.com/company/rensto-llc',
@@ -35,88 +36,47 @@ export const organizationSchema = {
     ],
     contactPoint: {
         '@type': 'ContactPoint',
-        'telephone': '+1-234-567-890', // Placeholder
         'contactType': 'customer service',
         'email': 'hello@rensto.com'
-    }
-};
-
-export const localBusinessSchema = {
-    name: 'Rensto AI Automation',
-    image: 'https://rensto.com/rensto-logo.webp',
-    '@id': 'https://rensto.com',
-    url: 'https://rensto.com',
-    telephone: '+1-234-567-890',
-    address: {
-        '@type': 'PostalAddress',
-        'streetAddress': '444 Alaska Avenue',
-        'addressLocality': 'Torrance',
-        'addressCountry': 'US'
-    },
-    geo: {
-        '@type': 'GeoCoordinates',
-        'latitude': 33.8358,
-        'longitude': -118.3406
-    },
-    openingHoursSpecification: {
-        '@type': 'OpeningHoursSpecification',
-        'dayOfWeek': [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday'
-        ],
-        'opens': '09:00',
-        'closes': '18:00'
     }
 };
 
 export const websiteSchema = {
     name: 'Rensto',
     url: 'https://rensto.com',
-    potentialAction: {
-        '@type': 'SearchAction',
-        'target': 'https://rensto.com/marketplace?q={search_term_string}',
-        'query-input': 'required name=search_term_string'
-    },
-    // AEO: Speakable schema for Voice AI (Gemini Live / Siri / Alexa)
-    speakable: {
-        '@type': 'SpeakableSpecification',
-        cssSelector: ['.hero-title', '.hero-description', '.service-tagline']
-    }
+    description: 'Your AI Crew for Business — six specialized agents starting at $299/mo.',
 };
 
 export const serviceSchemas = {
     starter: {
-        name: 'Starter Care Plan',
-        description: 'Monthly automation monitoring and support. 5 hours monthly.',
+        name: 'Starter Plan — 500 Credits',
+        description: 'AI crew access with 500 monthly credits. Use on any combination of video production, AI receptionist, lead generation, social content, and knowledge queries.',
         provider: { '@type': 'Organization', name: 'Rensto' },
         offers: {
             '@type': 'Offer',
-            price: '497.00',
+            price: '299.00',
             priceCurrency: 'USD',
             availability: 'https://schema.org/InStock'
         }
     },
-    growth: {
-        name: 'Growth Care Plan',
-        description: 'Advanced automation optimization and priority support. 15 hours monthly.',
+    pro: {
+        name: 'Pro Plan — 1,500 Credits',
+        description: 'AI crew access with 1,500 monthly credits. Best for growing businesses that need daily video, calls, and content.',
         provider: { '@type': 'Organization', name: 'Rensto' },
         offers: {
             '@type': 'Offer',
-            price: '997.00',
+            price: '699.00',
             priceCurrency: 'USD',
             availability: 'https://schema.org/InStock'
         }
     },
-    scale: {
-        name: 'Scale Care Plan',
-        description: 'Enterprise-grade automation engineering and strategic planning. 40 hours monthly.',
+    enterprise: {
+        name: 'Enterprise Plan — 4,000 Credits',
+        description: 'AI crew access with 4,000 monthly credits. Full-scale automation for teams and agencies.',
         provider: { '@type': 'Organization', name: 'Rensto' },
         offers: {
             '@type': 'Offer',
-            price: '2497.00',
+            price: '1499.00',
             priceCurrency: 'USD',
             availability: 'https://schema.org/InStock'
         }

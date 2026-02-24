@@ -8,9 +8,11 @@ async function verifyFFmpeg() {
     logger.info("🔍 Verifying FFmpeg...");
 
     try {
+        const { stdout: pathOut } = await execAsync("which ffmpeg");
+        logger.info("✅ FFmpeg Path: " + pathOut.trim());
         const { stdout } = await execAsync("ffmpeg -version");
         const version = stdout.split("\n")[0];
-        logger.info("✅ FFmpeg: " + version);
+        logger.info("✅ FFmpeg Version: " + version);
 
         const { stdout: ffprobeOut } = await execAsync("ffprobe -version");
         const ffprobeVersion = ffprobeOut.split("\n")[0];

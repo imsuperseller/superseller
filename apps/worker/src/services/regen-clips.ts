@@ -19,6 +19,7 @@ import {
     extractLastFrame,
     getVideoDuration,
     normalizeClip,
+    type TextOverlaySpec,
 } from "./ffmpeg";
 import { uploadToR2, buildR2Key } from "./r2";
 import { createKlingTask, waitForTask } from "./kie";
@@ -73,10 +74,11 @@ export async function runRegenClips(
             ...(includeRealtor && endFrame ? { last_frame: endFrame } : {}),
             realtor_in_frame: includeRealtor,
             negative_prompt: (clip as any).negative_prompt,
-            mode: config.video.klingMode, // pro=1080p; std=720p
+            mode: config.video.klingMode,
             aspect_ratio: "16:9",
             model: "kling-3.0/video",
             duration: clip.duration_seconds ?? config.video.defaultClipDuration,
+            to_room: (clip as any).to_room,
         });
         await CreditManager.deductCredits(userId, 10, "kling_video_regen", jobId, {
             taskId,
@@ -162,15 +164,83 @@ export async function runRegenClips(
     const masterPath = join(workDir, "master.mp4");
     await addMusicOverlay(masterSilentPath, musicPath, masterPath);
 
-    // 5. Overlays (stub)
+    // 5. Text Overlays — property address, room labels, CTA
     const masterWithOverlaysPath = join(workDir, "master_with_overlays.mp4");
+    const overlaySpecs: TextOverlaySpec[] = [];
     let cumSec = 0;
-    const overlaySpecs = clips.map((c: any) => {
+    for (let i = 0; i < clips.length; i++) {
+        const c = clips[i] as any;
         const start = cumSec;
         const dur = c.duration_seconds ?? config.video.defaultClipDuration;
         cumSec += dur;
-        return { text: c.to_room || "Room", startSeconds: start, durationSeconds: 2, position: "bottom" as const };
-    });
+        const isOpening = i === 0;
+        const isClosing = i === clips.length - 1 && clips.length > 1;
+
+        if (isOpening) {
+            if (listing.address) {
+                overlaySpecs.push({
+                    text: String(listing.address),
+                    startSeconds: start + 0.5,
+                    durationSeconds: Math.min(dur - 1, 4),
+                    position: "bottom",
+                    fontSize: "large",
+                    fadeInSeconds: 0.7,
+                    fadeOutSeconds: 0.7,
+                });
+            }
+            if (listing.price != null) {
+                const raw = String(listing.price).trim();
+                const priceText = raw.startsWith("$") ? raw
+                    : `$${parseInt(raw.replace(/[^0-9]/g, ""), 10).toLocaleString("en-US")}`;
+                if (priceText && priceText !== "$NaN") {
+                    overlaySpecs.push({
+                        text: priceText,
+                        startSeconds: start + 1,
+                        durationSeconds: Math.min(dur - 1.5, 3.5),
+                        position: "top",
+                        fontSize: "xlarge",
+                        fadeInSeconds: 0.7,
+                        fadeOutSeconds: 0.7,
+                    });
+                }
+            }
+        } else if (isClosing) {
+            overlaySpecs.push({
+                text: "Schedule Your Tour Today",
+                startSeconds: start + 1,
+                durationSeconds: Math.min(dur - 1.5, 3.5),
+                position: "center",
+                fontSize: "xlarge",
+                fadeInSeconds: 0.8,
+                fadeOutSeconds: 0.8,
+            });
+            const roomName = c.to_room;
+            if (roomName && roomName !== "Exterior") {
+                overlaySpecs.push({
+                    text: roomName,
+                    startSeconds: start + 0.3,
+                    durationSeconds: 2.5,
+                    position: "bottom",
+                    fontSize: "medium",
+                    fadeInSeconds: 0.5,
+                    fadeOutSeconds: 0.5,
+                });
+            }
+        } else {
+            const roomName = c.to_room || "";
+            if (roomName) {
+                overlaySpecs.push({
+                    text: roomName,
+                    startSeconds: start + 0.3,
+                    durationSeconds: 2.5,
+                    position: "bottom",
+                    fontSize: "medium",
+                    fadeInSeconds: 0.5,
+                    fadeOutSeconds: 0.5,
+                });
+            }
+        }
+    }
     await addTextOverlays(masterPath, masterWithOverlaysPath, overlaySpecs);
     const masterForExport = overlaySpecs.length > 0 ? masterWithOverlaysPath : masterPath;
 

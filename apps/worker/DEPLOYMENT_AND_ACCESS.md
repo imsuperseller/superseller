@@ -12,12 +12,18 @@
 - **rensto.com** = Next.js marketing site + dashboard. Deployed by Vercel from `apps/web/rensto-site/`. Auto-deploys on push to `main` when Vercel is linked to `imsuperseller/rensto`.
 - **Video pipeline** = Node.js worker in `apps/worker/`. Does NOT deploy to Vercel. Must be run on a server with Redis, Postgres, R2, Kie API, etc.
 
-## 3. Where to See the Pushed Work
+### What runs on Racknerd (The "Backstage")
+When we deploy the video worker to RackNerd via the `deploy-to-racknerd.sh` script, it manages two critical system level configurations:
 
-### GitHub (code)
+1. **PM2 (`tourreel-worker`)**: PM2 is a process manager for Node.js. It ensures your `video-pipeline.worker.ts` script runs endlessly in the background. If the server crashes and reboots, PM2 automatically restarts the worker. It guarantees 100% uptime for job processing on port `3002`.
+2. **FFmpeg Auto-Updater Cron Job**: At exactly midnight every day, Linux runs `apps/worker/tools/update-ffmpeg.sh`. This pulls the newest `ffmpeg` and `ffprobe` static binaries from the internet. This ensures Kling 3.0's state-of-the-art compression codecs (like AV1) never panic your local server due to outdated binaries.
+
+### Where to See the Pushed Work
+
+#### GitHub (code)
 - **Repo**: https://github.com/imsuperseller/rensto
 - **Latest commit**: `4555169` — Zillow-to-video pipeline changes
-- **Changed paths**: `apps/worker/*`, `brain.md`, `docs/technical/ENV_VARS.md`
+- **Changed paths**: `apps/worker/*`, `brain.md`, `CLAUDE.md`, NotebookLM
 - **Not changed**: `apps/web/rensto-site/*` — rensto.com is unchanged
 
 ### Vercel (rensto.com)

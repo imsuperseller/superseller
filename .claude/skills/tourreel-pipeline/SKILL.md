@@ -7,6 +7,30 @@ description: >-
   Kie.ai, Kling, clip generation, or video worker code. Not for UI/UX design, n8n workflows,
   WhatsApp bots, or non-video backend code.
   Example: "Fix the double realtor bug in the video pipeline".
+autoTrigger:
+  - "TourReel"
+  - "video pipeline"
+  - "Kling"
+  - "Kie.ai"
+  - "clip generation"
+  - "FFmpeg"
+  - "real estate video"
+  - "listing video"
+  - "Zillow scrape"
+  - "floorplan"
+  - "video worker"
+  - "Nano Banana"
+  - "Suno"
+negativeTrigger:
+  - "UI design"
+  - "n8n"
+  - "WhatsApp"
+  - "schema migration"
+  - "stripe"
+  - "billing"
+  - "agentforge"
+  - "landing page"
+  - "FB Marketplace"
 ---
 
 # TourReel Video Pipeline
@@ -39,8 +63,8 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 | 4 | pending | 15-20% | Insert clip records into DB |
 | 5a | generating_clips | 20% | Upload listing photos to R2 (Kling can't fetch Zillow URLs) |
 | 5b-c | generating_clips | 20-34% | Nano Banana composites (realtor + photo) |
-| 6 | generating_clips | 20-70% | Kling 3.0 clip generation + polling (10s intervals, 15min timeout) |
-| 7-9 | stitching/adding_music | 75-90% | FFmpeg concat → music overlay → text overlays (stub) |
+| 6 | generating_clips | 20-70% | Kling 3.0 clip generation (hero rooms 10s, others 5s) + room-specific negatives + polling (10s intervals, 15min timeout) |
+| 7-9 | stitching/adding_music | 75-90% | FFmpeg concat → music overlay → text overlays (address, room labels, price, CTA with fade) |
 | 10-12 | exporting | 90-100% | Generate variants (vertical/square/portrait/thumb) → upload → complete |
 
 ### Key Files
@@ -70,12 +94,6 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 | POST | `/api/jobs/:id/retry-fresh` | Reset and re-queue job |
 | GET | `/api/health` | Worker health check |
 
-### Three Prompt Modes
-
-1. **Property-Only** — no realtor, empty rooms, cinematic camera
-2. **Realtor-in-Frame** — Nano Banana composite as start frame, minimal prompt (no person actions)
-3. **Kling Elements** — native `@realtor` reference (no Nano composite needed)
-
 ### Environment Overrides
 
 | Variable | Effect |
@@ -85,6 +103,9 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 | `USE_AI_PHOTO_MATCH=false` | Disable vision-based photo matching |
 | `KIE_KLING_MODE=std` | Override to 720p (for Kie 500 recovery) |
 | `NANO_BANANA_RESOLUTION=2K` | Lower composite resolution |
+| `USE_MULTI_SHOT=1` | Enable Kling 3.0 multi-shot (cinematic cuts within one clip) |
+| `KLING_SOUND=1` | Enable Kling native ambient audio (footsteps, doors) |
+| `KIE_WEBHOOK_URL=https://...` | Kling callBackUrl — webhook on clip completion |
 
 ### When Debugging
 
@@ -95,10 +116,52 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 5. Check worker health: `curl -s http://172.245.56.50:3002/api/health`
 6. Worker logs: `ssh root@172.245.56.50 "pm2 logs tourreel-worker --lines 100"`
 
-### When Modifying Prompts
+### Generation Cost Tracking (MANDATORY)
 
-Key rules:
-- One primary camera movement per clip
-- Eye-level POV (5ft)
-- Room-specific camera flows are hardcoded in `kie.ts`
-- Negative prompts are composited from multiple layers (silent + identity + duplicate + spatial + room-specific)
+**Every API generation MUST log its cost.** This is persistent across sessions.
+
+#### Known Rates (Feb 2026)
+
+| Service | Operation | Cost | Notes |
+|---------|-----------|------|-------|
+| Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
+| Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
+| Kie.ai | Suno music | $0.02 | Per track |
+| Kie.ai | Nano Banana composite | $0.05 | Realtor + photo merge |
+| Kie.ai | ElevenLabs TTS (turbo-2-5) | $0.02 | Per generation |
+| Kie.ai | ElevenLabs TTS (multilingual-v2) | $0.02 | Per generation |
+| FakeYou | TTS (any model) | $0.00 | Free, no API key |
+| Gemini | Flash prompt | $0.001 | Per call |
+| Gemini | Flash vision | $0.002 | Per image analysis |
+| R2 | Upload | $0.0001 | Per operation |
+| R2 | Storage | $0.015/GB/mo | Monthly |
+| Ollama | Embeddings | $0.00 | Self-hosted |
+
+#### How to Log Costs
+
+**In automated pipeline** (video-pipeline.worker.ts): Use `trackExpense()` from `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts`. Call after each Kling/Suno/Nano/Gemini API call.
+
+**In manual/ad-hoc sessions** (like Purim video): Log costs in the session's progress entry in `progress.md` with a cost table:
+```
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| Kling 3.0 Pro (transitions) | 3 | $0.10 | $0.30 |
+| FakeYou Trump TTS | 8 | $0.00 | $0.00 |
+| ElevenLabs TTS | 5 | $0.02 | $0.10 |
+| **Session Total** | | | **$0.40** |
+```
+
+#### Database Infrastructure (Ready)
+- `api_expenses` table (Prisma: `ApiExpense` model) — per-call cost logging
+- `LlmModelConfig` table — model registry with per-1M-token costs
+- `UsageEvent.costUsd` — credit deductions with cost attribution
+- `expense-tracker.ts` — `trackExpense()`, `getDailyExpenses()`, `getExpenseTrend()`, `detectAnomalies()`
+
+### Deep API Reference (Level 2 — loaded on demand)
+
+For detailed API patterns, prompt modes, TTS, transitions, and prompt engineering rules:
+- `references/api-deep-reference.md` — Kling 3.0 API, FakeYou TTS, ElevenLabs, transitions, prompt modes
+- `references/kling-api-patterns.md` — API constraints, prompt patterns
+- `references/prompting-rules.md` — Cinematic prompt engineering
+- `references/scene-management.md` — Room sequencing, transitions
+- `references/troubleshooting.md` — Known issues, root causes

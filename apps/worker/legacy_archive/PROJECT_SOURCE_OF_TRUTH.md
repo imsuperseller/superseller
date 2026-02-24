@@ -76,4 +76,4 @@ Visible transitions are unacceptable for a "walkthrough" feel.
 5.  **[ ] End-to-End Production Run**: Execute a full job from scratch and verify against the **Bible** specs.
 
 ---
-**Status: Phase 1–4 implemented (Feb 2026).** Prompt generator: realtor persona + hero features. Hero system: every property gets top-3 hero focus (pool, kitchen island, fireplace, view, master suite). FFmpeg: concat demuxer. Nano Banana: approach walk, hero room prompts. Video gen: Kie Kling 3.0 only. Text overlays: stub. See NotebookLM 0baf5f36 (Zillow-to-Video).
+**Status: Phase 1–4 implemented (Feb 2026).** Prompt generator: realtor persona + hero features. Hero system: every property gets top-3 hero focus (pool, kitchen island, fireplace, view, master suite). FFmpeg: dynamic resolution support (native AI formats), concat demuxer stitching, and *drawtext* marketing overlays implemented. Nano Banana: approach walk, hero room prompts. Video gen: Kie Kling 3.0 only. See NotebookLM 0baf5f36 (Zillow-to-Video).

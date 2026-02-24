@@ -131,10 +131,10 @@ export default function SecretaryTab({
                     </div>
                     <Lock className="w-16 h-16 mx-auto mb-4 text-gray-500" />
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        {SERVICE_DISPLAY_NAMES.voice}
+                        {SERVICE_DISPLAY_NAMES['autonomous-secretary']}
                     </h2>
                     <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                        {SERVICE_DESCRIPTIONS.voice}
+                        {SERVICE_DESCRIPTIONS['autonomous-secretary']}
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 mb-6">
                         {[

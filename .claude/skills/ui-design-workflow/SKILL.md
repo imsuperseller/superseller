@@ -7,6 +7,22 @@ description: >-
   new pages from prompts via v0/Stitch. Complements ui-ux-pro-max (design intelligence)
   with execution workflows. Not for backend logic, video pipeline, or database work.
   Example: "Take this v0 component and rebrand it for Rensto".
+autoTrigger:
+  - "v0"
+  - "Stitch"
+  - "screenshot to code"
+  - "rebrand component"
+  - "external UI"
+  - "convert design"
+  - "UI generation"
+  - "clone UI"
+negativeTrigger:
+  - "video pipeline"
+  - "database"
+  - "n8n"
+  - "stripe"
+  - "backend API"
+  - "schema"
 ---
 
 # UI Design Workflow — External UI to Rensto-Branded Code

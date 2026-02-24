@@ -205,19 +205,21 @@ npm run dev              # http://localhost:3000
 
 ### **systemd/** (12K)
 
-**Purpose**: systemd service configurations for Linux services
+**Purpose**: systemd service configurations for secure tunneling (Cloudflared).
 
 **Contents**:
-- Service unit files for n8n, databases, etc.
+- `cloudflared.service` - Main Cloudflare Tunnel
+- `cloudflared-n8n-oauth2.service` - OAuth2 Tunnel for n8n
 - Used on RackNerd VPS (172.245.56.50)
 
 **Usage**:
 ```bash
 # On VPS
-sudo cp infra/systemd/n8n.service /etc/systemd/system/
-sudo systemctl enable n8n
-sudo systemctl start n8n
+sudo cp infra/systemd/cloudflared.service /etc/systemd/system/
+sudo systemctl enable cloudflared
+sudo systemctl start cloudflared
 ```
+*(Note: n8n, Postgres, and Redis are managed via Docker-compose at /opt/ on the server, not via systemd in this directory).*
 
 ### **design-tools/** (12K)
 

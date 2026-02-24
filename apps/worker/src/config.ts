@@ -51,12 +51,19 @@ export const config = {
         apiKey: required("KIE_API_KEY"),
         baseUrl: "https://api.kie.ai",
         webhookUrl: process.env.KIE_WEBHOOK_URL || "",
-        defaultModel: "gemini-3-pro",
-        fallbackModel: "gemini-3-flash",
+        defaultModel: "gemini-2.5-flash",
+        fallbackModel: "gemini-2.5-flash",
     },
 
     google: {
         apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || "",
+    },
+
+    telnyx: {
+        apiKey: process.env.TELNYX_API_KEY || "",
+        baseUrl: "https://api.telnyx.com/v2",
+        pollIntervalMinutes: parseInt(optional("FRONTDESK_POLL_INTERVAL_MINUTES", "15")),
+        creditsPerCall: parseInt(optional("FRONTDESK_CREDITS_PER_CALL", "5")),
     },
 
 

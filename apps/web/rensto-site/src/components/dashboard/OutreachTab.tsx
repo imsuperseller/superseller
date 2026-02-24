@@ -86,10 +86,10 @@ export default function OutreachTab({ campaigns, isLocked, onUpgradeClick }: Out
                     </div>
                     <Lock className="w-16 h-16 mx-auto mb-4 text-gray-500" />
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        {SERVICE_DISPLAY_NAMES.outreach}
+                        {SERVICE_DISPLAY_NAMES['lead-machine']}
                     </h2>
                     <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                        {SERVICE_DESCRIPTIONS.outreach}
+                        {SERVICE_DESCRIPTIONS['lead-machine']}
                     </p>
                     <Button
                         onClick={onUpgradeClick}

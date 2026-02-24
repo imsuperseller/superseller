@@ -4,20 +4,24 @@ import './globals.css';
 
 const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-outfit',
   display: 'optional', // Prevents font-load reflow flash (swap causes visible jump)
 });
 
 export const metadata: Metadata = {
-  title: 'Rensto | AI-Powered Business Automation Platform',
-  description: 'Scale your business with autonomous AI agents and intelligent workflow automation. Transform operations with Rensto.',
-  keywords: ['business automation', 'AI agents', 'workflow automation', 'digital transformation'],
+  title: 'Rensto | Your AI Crew for Business',
+  description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
+  keywords: ['AI business automation', 'AI video production', 'AI receptionist', 'AI lead generation', 'small business AI', 'realtor video'],
   authors: [{ name: 'Rensto Team' }],
   creator: 'Rensto',
   publisher: 'Rensto',
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
     shortcut: '/favicon.ico',
     apple: '/rensto-logo.png',
   },
@@ -31,8 +35,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Rensto | AI-Powered Business Automation Platform',
-    description: 'Scale your business with autonomous AI agents and intelligent workflow automation.',
+    title: 'Rensto | Your AI Crew for Business',
+    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
     url: 'https://rensto.com',
     siteName: 'Rensto',
     images: [
@@ -40,7 +44,7 @@ export const metadata: Metadata = {
         url: '/opengraph-image.png',
         width: 1200,
         height: 630,
-        alt: 'Rensto Business Automation Platform',
+        alt: 'Rensto — Your AI Crew for Business',
       },
     ],
     locale: 'en_US',
@@ -48,8 +52,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rensto | AI-Powered Business Automation Platform',
-    description: 'Scale your business with autonomous AI agents and intelligent workflow automation.',
+    title: 'Rensto | Your AI Crew for Business',
+    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $299/mo.',
     images: ['/opengraph-image.png'],
     creator: '@rensto',
   },
@@ -64,11 +68,8 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
-  },
+  // verification: Add real codes when Search Console is set up
+  // verification: { google: 'REAL_CODE_HERE' },
 };
 
 export const viewport: Viewport = {

@@ -194,6 +194,48 @@ export const SERVICE_REGISTRY: MonitoredService[] = [
     },
   },
 
+  // --- Data Sync ---
+  {
+    id: 'aitable',
+    name: 'Aitable.ai Sync',
+    category: 'api',
+    alertThreshold: { latencyMs: 10000, consecutiveFailures: 3 },
+    healthCheck: async () => {
+      const start = Date.now();
+      const token = process.env.AITABLE_API_TOKEN || process.env.AITABLE_API_KEY;
+      if (!token) return { status: 'unknown', latencyMs: 0, message: 'AITABLE_API_TOKEN not set' };
+      try {
+        // Check API connectivity + count unsynced leads
+        const [apiRes, unsyncedResult] = await Promise.all([
+          fetch('https://aitable.ai/fusion/v1/spaces', {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: AbortSignal.timeout(8000),
+          }),
+          prisma.lead.count({ where: { syncedToAITable: false } }),
+        ]);
+        const latencyMs = Date.now() - start;
+        if (!apiRes.ok) {
+          return { status: 'degraded', latencyMs, message: `Aitable API: HTTP ${apiRes.status}` };
+        }
+        if (unsyncedResult > 50) {
+          return {
+            status: 'degraded',
+            latencyMs,
+            message: `${unsyncedResult} leads pending sync to Aitable`,
+            details: { unsyncedLeads: unsyncedResult },
+          };
+        }
+        return {
+          status: 'healthy',
+          latencyMs,
+          details: { unsyncedLeads: unsyncedResult },
+        };
+      } catch (err: any) {
+        return { status: 'down', latencyMs: Date.now() - start, message: err.message };
+      }
+    },
+  },
+
   // --- Backup (n8n is backup only, NOT primary) ---
   {
     id: 'n8n',

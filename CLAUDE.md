@@ -6,10 +6,10 @@
 
 > [!IMPORTANT]
 > **Key References**:
-> 1. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
-> 2. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
-> 3. **History/Lessons**: [`docs/REMOVAL_LOG.md`](docs/REMOVAL_LOG.md) — Archive of failures and pivots.
-> 4. **Video Pipeline Spec**: NotebookLM 0baf5f36 (Zillow-to-Video) — TourReel technical truth.
+> 1. **Master Index**: [`docs/BUSINESS_COVERAGE_INDEX.md`](docs/BUSINESS_COVERAGE_INDEX.md) — Unified mapping of all business matters to SoTs.
+> 2. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
+> 3. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
+> 4. **Notebook Hub**: Brain 5811a372 (B.L.A.S.T.), 0baf5f36 (TourReel), 12724368 (Changelog).
 
 > [!NOTE]
 > **Database Stack**: 
@@ -22,6 +22,17 @@
 > - **n8n** is for storage/prototyping ONLY. Antigravity is primary automation.
 > - **Firestore/Airtable.com** are retired. **PostgreSQL** is the only transactional DB truth.
 > - **Webflow/BMAD** are retired. The system is 100% programmatic.
+
+> [!CAUTION]
+> **Content Extraction Rule (NEVER invent content)**:
+> When building customer-facing pages/content, ALWAYS extract from existing strategy docs — NEVER invent.
+> 1. Search for customer docs (e.g., `yoram-leads/`, customer strategy files)
+> 2. READ every doc fully — not skim
+> 3. Extract verbatim — copy from docs, don't paraphrase or fabricate
+> 4. If content doesn't exist in docs, **leave it empty** — never fabricate testimonials, case studies, quotes
+> 5. If docs say "we don't have this yet" → OMIT the section
+> 6. Cite source in seed scripts (which doc, which section)
+> **Violation history**: Fabricated testimonials for Yoram's landing page despite docs saying "אין במה להשתמש". See `findings.md`.
 
 ---
 
@@ -53,12 +64,12 @@
 | Layer | Stack |
 |-------|-------|
 | **Web** | Next.js 14+ (rensto-site), Vercel |
-| **Worker** | Node.js, BullMQ, FFmpeg, Kie.ai Kling 3.0, R2 |
+| **Worker** | Node.js, BullMQ, FFmpeg (Auto-updated), Kie.ai (Kling 3.0 & Nano Banana), R2 |
 | **RAG** | Ollama nomic-embed-text (768-dim) + pgvector 0.8.1 HNSW |
 | **Automation** | Antigravity (primary), n8n (backup) |
 | **Database** | PostgreSQL + pgvector (Prisma + Drizzle), Redis |
 
-**Key paths**: `apps/web/rensto-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`.
+**Key paths**: `apps/web/rensto-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`, `fb marketplace lister/deploy-package/`.
 
 ---
 
@@ -82,7 +93,13 @@
 | TourReel Spec | NotebookLM 0baf5f36 |
 | Prisma Schema | `apps/web/rensto-site/prisma/schema.prisma` |
 | Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |
+| **Data Dictionary** | `docs/DATA_DICTIONARY.md` — where every entity lives, sync rules, mismatches |
+| **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
 | Credits Logic | `apps/web/rensto-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
+| **Cost Tracking** | `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
+| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.02, Nano $0.05, Gemini $0.001 — see tourreel-pipeline SKILL.md |
+| FB Bot Config | `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
+| FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
 
 ### Credentials
 API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
@@ -118,11 +135,11 @@ cd apps/worker
 npm run dev              # tsx watch src/index.ts (local port 3001)
 npm run build            # tsc
 ```
-**Deploy to RackNerd**:
+### Worker (RackNerd)
 ```bash
-ssh root@172.245.56.50
-cd /opt/tourreel-worker && git pull && cd apps/worker && npm run build && pm2 restart tourreel-worker
+./apps/worker/deploy-to-racknerd.sh
 ```
+*(Handles rsync, npm install, PM2 restarts, and installs the daily FFmpeg update cron job automatically).*
 Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.245.56.50:/opt/tourreel-worker/apps/worker/`
 
 ### Health Checks
@@ -130,6 +147,7 @@ Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.24
 curl -s https://rensto.com/api/health          # Web
 curl -s http://172.245.56.50:3002/api/health   # Worker
 curl -s http://172.245.56.50:11434/api/tags    # Ollama
+curl -s http://172.245.56.50:8082/health       # FB Marketplace Bot
 ```
 
 ---

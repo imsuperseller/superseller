@@ -10,6 +10,7 @@ interface Testimonial {
     company: string;
     rating: number;
     result: string;
+    avatar?: string | null;
 }
 
 // Fallback testimonials (same as API fallback)
@@ -165,6 +166,13 @@ export function TestimonialSection() {
 
                             {/* Author info */}
                             <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
+                                {current.avatar && (
+                                    <img
+                                        src={current.avatar}
+                                        alt={current.author}
+                                        className="w-14 h-14 rounded-full object-cover border-2 border-white/10"
+                                    />
+                                )}
                                 <div className="text-center md:text-left">
                                     <div className="font-bold text-lg" style={{ color: 'var(--rensto-text-primary)' }}>
                                         {current.author}

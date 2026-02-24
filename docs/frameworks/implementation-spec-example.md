@@ -3,7 +3,7 @@
 **Date:** February 10, 2026
 **Purpose:** Complete implementation reference for AI coding agents (Claude Code, Antigravity, Cursor). Every file path, every dependency, every API contract, every function signature. Build exactly this.
 
-> **⚠️ EXAMPLE TEMPLATE**: This is the framework example based on TourReel v1. References to fal.ai, Clerk, and OpenRouter are outdated. Current stack: **Kie.ai Kling 3.0**, **Resend magic-link**, **Gemini Flash**, **Ollama + pgvector**. See `apps/worker/src/services/` for live implementation.
+> **Current Stack (Feb 2026)**: **Kie.ai Kling 3.0** (video), **Resend magic-link** (auth), **Gemini Flash** (LLM), **Ollama + pgvector** (RAG). See `apps/worker/src/services/` for live implementation.
 ---
 ## TABLE OF CONTENTS
 1. [Project Overview](#1-project-overview)
@@ -37,7 +37,7 @@
 - Redis (job queue)
 - FFmpeg (video processing)
 **External APIs:**
-- fal.ai — Kling 3.0 video generation (primary)
+- Kie.ai — Kling 3.0 video generation (primary)
 - kie.ai — Veo 3.1 video generation (backup) + Suno V5 music
 - OpenRouter — GPT-4o / Gemini 2.5 Pro for floorplan analysis
 - Clerk — Authentication
@@ -221,7 +221,7 @@ tourreel-worker/
 │ │ └── events.ts # Queue event handlers (logging, notifications)
 │ │
 │ ├── services/
-│ │ ├── fal.ts # fal.ai Kling 3.0 API client
+│ │ ├── kie.ts # Kie.ai Kling 3.0 API client
 │ │ ├── kie.ts # kie.ai Veo 3.1 + Suno API client
 │ │ ├── openrouter.ts # OpenRouter LLM client
 │ │ ├── r2.ts # Cloudflare R2 upload/download
@@ -241,7 +241,7 @@ tourreel-worker/
 │ │
 │ └── types/
 │ ├── index.ts # All TypeScript interfaces
-│ ├── fal.ts # fal.ai response types
+│ ├── kie.ts # Kie.ai response types
 │ ├── kie.ts # kie.ai response types
 │ └── db.ts # Database row types
 │
@@ -331,7 +331,7 @@ tourreel-worker/
 "pg": "^8.13.0",
 "bullmq": "^5.25.0",
 "ioredis": "^5.4.0",
-"@fal-ai/client": "^1.2.0",
+"kie.ai SDK (raw fetch)": "^1.2.0",
 "@aws-sdk/client-s3": "^3.700.0",
 "@clerk/backend": "^1.17.0",
 "stripe": "^17.4.0",
@@ -360,7 +360,7 @@ tourreel-worker/
 **Why these specific packages:**
 - `pg` over Prisma/Drizzle: Direct SQL on self-hosted Postgres, no ORM overhead, the agent needs to write explicit queries
 - `bullmq` over `bull`: BullMQ is the maintained successor, TypeScript native
-- `@fal-ai/client`: Official fal.ai SDK with queue/subscribe pattern
+- `kie.ai SDK (raw fetch)`: Official Kie.ai SDK with queue/subscribe pattern
 - No fal SDK exists for kie.ai — use raw `fetch` calls
 - `swr` on frontend for data fetching + polling (simpler than react-query for this)
 - `@dnd-kit` for drag-and-drop room reordering (more accessible than react-beautiful-dnd)
@@ -405,10 +405,7 @@ DB_PASSWORD=YOUR_STRONG_PASSWORD
 REDIS_URL=redis://127.0.0.1:6379
 # OR with password:
 # REDIS_URL=redis://:YOUR_REDIS_PASSWORD@127.0.0.1:6379
-# ─── fal.ai (Kling 3.0) ───
-FAL_KEY=fal_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-FAL_WEBHOOK_SECRET=whsec_xxxxx # Optional: webhook signature verification
-# ─── kie.ai (Veo 3.1 + Suno) ───
+# ─── Kie.ai (Kling 3.0 + Suno) ───
 KIE_API_KEY=kie_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 KIE_WEBHOOK_URL=https://api.tourreel.com/api/webhooks/kie
 # ─── OpenRouter (LLM) ───
@@ -474,7 +471,7 @@ PHASE 2: EXTERNAL SERVICE CLIENTS (Week 3)
 Step 2.1 → tourreel-worker: Create src/services/r2.ts
 Step 2.2 → tourreel-worker: Create src/services/clerk.ts
 Step 2.3 → tourreel-worker: Create src/services/openrouter.ts
-Step 2.4 → tourreel-worker: Create src/services/fal.ts
+Step 2.4 → tourreel-worker: Create src/services/kie.ts
 Step 2.5 → tourreel-worker: Create src/services/kie.ts
 Step 2.6 → tourreel-worker: Create src/services/stripe.ts
 Step 2.7 → tourreel-worker: Test each service individually
@@ -863,10 +860,6 @@ url: required("DATABASE_URL"),
 redis: {
 url: optional("REDIS_URL", "redis://127.0.0.1:6379"),
 },
-fal: {
-key: required("FAL_KEY"),
-webhookSecret: process.env.FAL_WEBHOOK_SECRET,
-},
 kie: {
 apiKey: required("KIE_API_KEY"),
 webhookUrl: process.env.KIE_WEBHOOK_URL,
@@ -1159,7 +1152,7 @@ prompt: string;
 start_frame_url: string | null;
 end_frame_url: string | null;
 model_used: string | null;
-provider: "fal" | "kie" | null;
+provider: "kie" | null;
 external_task_id: string | null;
 status: ClipStatus;
 video_url: string | null;
@@ -1274,7 +1267,7 @@ clip_number: number;
 video_url: string;
 duration_seconds: number;
 model_used: string;
-provider: "fal" | "kie";
+provider: "kie";
 api_cost: number;
 generation_time_seconds: number;
 external_task_id: string;
@@ -1385,25 +1378,24 @@ formats: ["master", "vertical", "square", "portrait", "thumbnail"],
 ```
 ---
 ## 8. External API Contracts
-### 8A. fal.ai — Kling 3.0 (Primary Video Generation)
-**SDK:** `@fal-ai/client`
-**Docs:** https://fal.ai/models/fal-ai/kling-video/o3/pro/image-to-video/api
+### 8A. Kie.ai — Kling 3.0 (Primary Video Generation)
+**SDK:** `kie.ai SDK (raw fetch)`
+**Docs:** https://Kie.ai/models/kie-ai/kling-video/o3/pro/image-to-video/api
 #### Kling 3.0 Image-to-Video with Start + End Frame
 ```typescript
-// src/services/fal.ts
-import { fal } from "@fal-ai/client";
+// src/services/kie.ts
 import { config } from "../config";
 import { logger } from "../utils/logger";
-fal.config({ credentials: config.fal.key });
+const KIE_API_KEY = config.kie.apiKey;
 // ─── MODEL IDS ───
 const MODELS = {
-kling_3_standard_i2v: "fal-ai/kling-video/v3/standard/image-to-video",
-kling_3_pro_i2v: "fal-ai/kling-video/o3/pro/image-to-video",
-kling_3_standard_t2v: "fal-ai/kling-video/v3/standard/text-to-video",
-kling_3_pro_t2v: "fal-ai/kling-video/o3/pro/text-to-video",
+kling_3_standard_i2v: "kie-ai/kling-video/v3/standard/image-to-video",
+kling_3_pro_i2v: "kie-ai/kling-video/o3/pro/image-to-video",
+kling_3_standard_t2v: "kie-ai/kling-video/v3/standard/text-to-video",
+kling_3_pro_t2v: "kie-ai/kling-video/o3/pro/text-to-video",
 } as const;
 // ─── REQUEST INTERFACE ───
-export interface FalKlingRequest {
+export interface KieKlingRequest {
 prompt: string;
 image_url: string; // Start frame
 tail_image_url?: string; // End frame (for continuity chain)
@@ -1418,7 +1410,7 @@ reference_image_urls?: string[]; // Additional angles
 }>;
 }
 // ─── RESPONSE INTERFACE ───
-export interface FalKlingResponse {
+export interface KieKlingResponse {
 video: {
 url: string; // Direct URL to generated video
 content_type: string; // "video/mp4"
@@ -1432,19 +1424,19 @@ inference: number; // Seconds to generate
 }
 // ─── GENERATE CLIP ───
 export async function generateClipFal(
-request: FalKlingRequest,
+request: KieKlingRequest,
 options?: { maxRetries?: number; timeout?: number }
 ): Promise {
 const model = MODELS.kling_3_standard_i2v;
 const startTime = Date.now();
 logger.info({
-msg: "fal.ai clip generation started",
+msg: "Kie.ai clip generation started",
 model,
 hasEndFrame: !!request.tail_image_url,
 duration: request.duration,
 });
 try {
-const result = await fal.subscribe(model, {
+const result = await kieClient.createTask(model, {
 input: {
 prompt: request.prompt,
 image_url: request.image_url,
@@ -1459,24 +1451,24 @@ negative_prompt: request.negative_prompt || "blurry, distorted, low quality, wat
 logs: true,
 onQueueUpdate: (update) => {
 if (update.status === "IN_PROGRESS") {
-logger.debug(`fal.ai progress: ${update.logs?.[update.logs.length - 1]?.message || "processing"}`);
+logger.debug(`Kie.ai progress: ${update.logs?.[update.logs.length - 1]?.message || "processing"}`);
 }
 },
-}) as FalKlingResponse;
+}) as KieKlingResponse;
 const elapsed = (Date.now() - startTime) / 1000;
 logger.info({
-msg: "fal.ai clip generation complete",
+msg: "Kie.ai clip generation complete",
 elapsed: `${elapsed.toFixed(1)}s`,
 videoUrl: result.video.url,
 });
 return result;
 } catch (err: any) {
-logger.error({ msg: "fal.ai generation failed", error: err.message });
+logger.error({ msg: "Kie.ai generation failed", error: err.message });
 throw err;
 }
 }
 // ─── COST CALCULATION ───
-export function calculateFalCost(
+export function calculateKieCost(
 durationSeconds: number,
 model: string,
 audio: boolean
@@ -2656,7 +2648,7 @@ fi
 1. **BullMQ concurrency = 1** — The RackNerd VPS has 6GB RAM. FFmpeg stitching uses 2-4GB. NEVER set worker concurrency above 1 for the video pipeline. Clip generation (API calls only) can run at concurrency 3.
 2. **Always clean up temp files** — Every job creates ~750MB in /tmp. If cleanup fails, disk fills in ~130 jobs. ALWAYS wrap FFmpeg operations in try/finally that calls cleanupTempFiles.
 3. **Frame chain extraction** — After each clip generates, extract the last frame using `extractLastFrame()` and upload it to R2. This becomes the `start_frame_url` for the next clip. This is the core continuity mechanism.
-4. **fal.ai uses subscribe pattern** — The `fal.subscribe()` call blocks until complete. For kie.ai, you must poll `getVeoTaskStatus()` in a loop. These are fundamentally different async patterns.
+4. **Kie.ai uses callback pattern** — Submit task via `createKlingTask()`, receive completion via `/api/webhooks/kie` callback. Poll `getTaskStatus()` as fallback.
 5. **No raw SQL string concatenation** — Always use parameterized queries ($1, $2). The `query()` and `queryOne()` helpers enforce this.
 6. **Clerk JWT verification on every request** — The auth middleware extracts `userId` from the JWT and attaches it to `req.userId`. All database queries MUST filter by `user_id` to prevent data leaks.
 7. **R2 keys must include userId** — File structure: `{userId}/{jobId}/filename.mp4`. This enables future per-user cleanup and access control.
@@ -2668,20 +2660,19 @@ fi
 Run this BEFORE building the full app. If this fails, the product concept doesn't work.
 ### `scripts/poc-validate.ts`
 ```typescript
-// Run: FAL_KEY=xxx KIE_API_KEY=xxx tsx scripts/poc-validate.ts
-import { fal } from "@fal-ai/client";
+// Run: KIE_API_KEY=xxx tsx scripts/poc-validate.ts
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 const execFileAsync = promisify(execFile);
 const POC_DIR = "/tmp/tourreel-poc";
+const KIE_API_KEY = process.env.KIE_API_KEY!;
 async function main() {
-fal.config({ credentials: process.env.FAL_KEY! });
 if (!existsSync(POC_DIR)) mkdirSync(POC_DIR, { recursive: true });
 console.log("═══ TOURREEL PROOF OF CONCEPT ═══\n");
 // Step 1: Generate clip 1 (exterior → door) from a test image
 console.log("Step 1: Generating clip 1 with Kling 3.0...");
-const clip1 = await fal.subscribe("fal-ai/kling-video/v3/standard/image-to-video", {
+const clip1 = await createKlingTask({
 input: {
 prompt: "Smooth cinematic dolly shot approaching a modern house. Camera glides along the walkway toward the front door. Warm golden hour lighting. Professional real estate cinematography.",
 image_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1280", // Modern house

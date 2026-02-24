@@ -73,8 +73,16 @@ npx drizzle-kit migrate
 3. Run migration
 4. Test both apps: `next build` (web) + `npx tsx src/index.ts` (worker)
 
-## Troubleshooting
-Known mismatches: emailVerified (Boolean vs timestamp), role (enum vs text), UsageEvent.type/event_type. See `findings.md` for root causes.
+## Error-Cause-Fix
+
+| Error | Probable Cause | Remediation |
+|-------|---------------|-------------|
+| `Column "emailVerified" expected Boolean, got timestamp` | Prisma defines `Boolean`, Drizzle defines `timestamp`. Both map to same DB column. | Use `timestamp` in Drizzle (DB source of truth). Prisma coerces at runtime. Don't change the DB column type. |
+| `Column "event_type" does not exist` (web) | Prisma model uses `type`, DB column is `event_type`. Missing `@map("event_type")`. | Add `@map("event_type")` to the `type` field in Prisma's `UsageEvent` model. |
+| `Role 'ADMIN' is not a valid enum value` | Prisma uses `enum UserRole`, Drizzle uses `text()`. Value casing can differ. | Standardize on lowercase in DB. Use `@map` / `.default()` to normalize. |
+| `relation "users" does not exist` after migration | Prisma migration ran but table name mapping differs from Drizzle expectations. | Check `@@map("users")` in Prisma. Run `npx tsx tools/schema-sentinel.ts --strict` to detect. |
+| Build fails on worker after Prisma schema change | Drizzle schema wasn't updated for shared table changes. | Update `apps/worker-packages/db/src/schema.ts`, then `cd apps/worker && npm run build`. |
+| `Unique constraint failed on (userId, type)` | UsageEvent dedup: same event type + userId in same second. | Add `jobId` to the unique constraint or use `upsert` instead of `create`. |
 
 ## References
 - CLAUDE.md § Database Stack — Architecture overview

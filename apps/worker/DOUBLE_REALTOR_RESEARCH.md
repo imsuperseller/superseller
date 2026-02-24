@@ -12,7 +12,7 @@
 ## Research Findings
 
 - **Kie.ai Kling 3.0**: Supports image-to-video with `image_urls`. Prompt describes the scene; the model can add or animate content.
-- **Fal.ai Kling Motion Control**: When the person is already in the image, the prompt should focus on **environment and style**, not the action—otherwise the model may invent motion by adding elements.
+- **Kling Motion Control**: When the person is already in the image, the prompt should focus on **environment and style**, not the action—otherwise the model may invent motion by adding elements.
 - **Kling "Subject Reference"**: Can lock onto protagonists in the frame; duplication may occur when the prompt also describes a person, causing the model to render an additional figure.
 
 ## Fix Strategy
@@ -55,4 +55,3 @@ Opening often shows the worst duplication. Use a shorter, environment-focused pr
 - `apps/worker/src/queue/workers/video-pipeline.worker.ts` — Kling prompt construction
 - `apps/worker/src/services/prompt-generator.ts` — Base clip prompts
 - Kie.ai Kling 3.0: https://kie.ai/kling-3-0
-- Fal Kling Motion Control: https://fal.ai/learn/devs/kling-video-2-6-motion-control-prompt-guide

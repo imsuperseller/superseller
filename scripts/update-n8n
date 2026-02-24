@@ -149,7 +149,7 @@ if [ "$DRY_RUN" = true ]; then
 fi
 
 # Execute the update
-SSH_PASS="y0JEu4uI0hAQ606Mfr"
+SSH_PASS="${RACKNERD_SSH_PASSWORD:?Set RACKNERD_SSH_PASSWORD env var}"
 SSHPASS_CMD="/opt/homebrew/bin/sshpass -p $SSH_PASS"
 
 print_status "📤 Uploading update script to server..."

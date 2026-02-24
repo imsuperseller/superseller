@@ -24,5 +24,5 @@
 - **Frontend**: Next.js, Tailwind, shadcn/ui
 - **Database**: PostgreSQL + Redis
 - **Payments**: Stripe (credits, subscriptions)
-- **Creative AI**: Kie.ai Kling 3.0 (fal.ai deprecated Feb 2026)
+- **Creative AI**: Kie.ai Kling 3.0
 - **Deployment**: Vercel (frontend), RackNerd (workers)

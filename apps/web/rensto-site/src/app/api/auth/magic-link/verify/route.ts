@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE, ADMIN_EMAILS } from '@/lib/auth';
+import { AUTH_COOKIE_NAME, COOKIE_MAX_AGE, ADMIN_EMAILS, encryptSession } from '@/lib/auth';
+import { emails } from '@/lib/email';
 
 export async function GET(request: NextRequest) {
     try {
@@ -27,10 +28,25 @@ export async function GET(request: NextRequest) {
 
         await prisma.magicLinkToken.update({ where: { id: token }, data: { used: true } });
 
+        // Check if this is the user's first login (for welcome email)
+        const existingUser = await prisma.user.findUnique({
+            where: { id: pgToken.clientId },
+            select: { lastLoginAt: true, name: true, businessName: true },
+        });
+        const isFirstLogin = !existingUser?.lastLoginAt;
+
         await prisma.user.update({
             where: { id: pgToken.clientId },
             data: { lastLoginAt: new Date() },
         }).catch(() => {});
+
+        // Send welcome email on first login (fire-and-forget)
+        if (isFirstLogin) {
+            const displayName = existingUser?.name || existingUser?.businessName || undefined;
+            emails.welcome(pgToken.email, displayName).catch((err) =>
+                console.error('[welcome-email] Failed:', err)
+            );
+        }
 
         const sessionData = {
             email: pgToken.email,
@@ -38,7 +54,7 @@ export async function GET(request: NextRequest) {
             authenticatedAt: Date.now(),
         };
 
-        const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString('base64');
+        const sessionToken = encryptSession(sessionData);
 
         const isAdmin = ADMIN_EMAILS.includes(pgToken.email.toLowerCase());
         const isProd = process.env.NODE_ENV === 'production';

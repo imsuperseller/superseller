@@ -5,6 +5,7 @@ import { logger } from "./utils/logger";
 import { apiRouter } from "./api/routes";
 import { videoPipelineWorker } from "./queue/workers/video-pipeline.worker";
 import { initWorkers } from "./queue/workers/video-pipeline.worker";
+import { frontdeskPollerWorker, initFrontDeskPoller } from "./queue/workers/frontdesk-poller.worker";
 
 async function bootstrap() {
     logger.info("🚀 Starting TourReel Worker Service...");
@@ -22,6 +23,7 @@ async function bootstrap() {
 
     // 3. Initialize BullMQ Workers
     await initWorkers();
+    await initFrontDeskPoller();
     logger.info("✅ Workers initialized (Concurrency: 1)");
 
     // 4. Start Server
@@ -35,6 +37,7 @@ async function bootstrap() {
     process.on("SIGTERM", async () => {
         logger.info("Shutting down...");
         await videoPipelineWorker.close();
+        await frontdeskPollerWorker.close();
         process.exit(0);
     });
 }

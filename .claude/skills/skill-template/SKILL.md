@@ -38,10 +38,20 @@ Use this skill when working on [domain]. Not for [excluded domains].
 // Example code
 ```
 
-## Troubleshooting
-See `references/troubleshooting.md` for known issues and fixes.
+## Error-Cause-Fix
+
+| Error | Probable Cause | Remediation |
+|-------|---------------|-------------|
+| [Error message or symptom] | [Root cause] | [Step-by-step fix] |
+| [Error message or symptom] | [Root cause] | [Step-by-step fix] |
+| [Error message or symptom] | [Root cause] | [Step-by-step fix] |
 
 ## References
+
+### Level 2 (loaded on demand)
+- `references/[deep-topic].md` — [Implementation patterns, code examples, schemas]
+
+### Other
 - `references/[topic].md` — [Description]
 - NotebookLM [ID] — [What it covers]
 - Codebase: `path/to/source/of/truth`

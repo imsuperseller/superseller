@@ -17,10 +17,10 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Rensto-specific variants
-        renstoPrimary: "bg-gradient-to-r from-rensto-red to-rensto-orange text-white shadow-rensto-glow-primary hover:shadow-rensto-glow-primary/80 transition-all duration-300 hover:scale-105",
-        renstoSecondary: "bg-gradient-to-r from-rensto-blue to-rensto-cyan text-white shadow-rensto-glow-secondary hover:shadow-rensto-glow-secondary/80 transition-all duration-300 hover:scale-105",
-        renstoNeon: "bg-transparent border-2 border-rensto-cyan text-rensto-cyan shadow-rensto-glow-accent hover:bg-rensto-cyan/10 transition-all duration-300 hover:scale-105",
+        // Rensto 3D premium variants
+        renstoPrimary: "rensto-btn-3d-primary bg-gradient-to-r from-rensto-red to-rensto-orange text-white",
+        renstoSecondary: "rensto-btn-3d-primary bg-gradient-to-r from-rensto-blue to-rensto-cyan text-white",
+        renstoNeon: "rensto-btn-3d-neon bg-transparent border-2 border-rensto-cyan text-rensto-cyan",
         renstoGhost: "bg-transparent text-rensto-text-secondary hover:bg-rensto-bg-secondary hover:text-rensto-text-primary transition-all duration-300",
       },
       size: {

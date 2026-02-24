@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, numeric, integer, jsonb, pgEnum, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, numeric, integer, jsonb, boolean, pgEnum, uniqueIndex, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Enums
@@ -56,7 +56,8 @@ export const users = pgTable("users", {
     // Account Status
     status: text("status").notNull().default("active"),
     role: text("role").notNull().default("USER"),
-    emailVerified: timestamp("email_verified", { withTimezone: true }),
+    // Aligned with Prisma: Boolean? — DB column is `boolean`, not timestamp
+    emailVerified: boolean("email_verified"),
 
     // Service Access & Entitlements
     activeServices: jsonb("active_services"),

@@ -1,0 +1,9 @@
+
+{
+  "name": "Winner Video Automator v1.0",
+  "description": "A high-performance cinematic video generation pipeline for the Mivnim Group, leveraging Gemini and Veo AI for total winner-tier media production.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

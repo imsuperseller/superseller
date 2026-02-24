@@ -298,6 +298,8 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
             const roomType = inferRoomType(toRoom);
             const roomAddition = roomType ? ROOM_NEGATIVE_ADDITIONS[roomType] : "";
             const fullBaseNegative = roomAddition ? `${baseNegative}, ${roomAddition}` : baseNegative;
+            // Hero rooms get 10s for cinematic impact (Kling 3.0 supports "5" or "10")
+            const isHeroClip = ["pool", "kitchen", "master_bedroom", "master_bathroom"].includes(roomType) || index === 0;
             return {
                 clip_number: clip.clip_number || index + 1,
                 from_room: fromRoom,
@@ -305,7 +307,7 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
                 prompt,
                 start_frame_url: null,
                 end_frame_url: null,
-                duration_seconds: clip.duration_seconds ?? config.video.defaultClipDuration,
+                duration_seconds: isHeroClip ? 10 : (clip.duration_seconds ?? config.video.defaultClipDuration),
                 negative_prompt: clip.negative_prompt
                     ? `${clip.negative_prompt}, ${fullBaseNegative}`
                     : fullBaseNegative

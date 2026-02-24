@@ -129,6 +129,14 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
             error: "Realtor photo required. Upload via the form or run: cd apps/worker && npx tsx tools/set-test-user-avatar.ts [path/to/photo.png]",
         });
 
+        // Floorplan is required — either uploaded directly or auto-detected from listing photos later in the pipeline.
+        // If not provided here, the pipeline will attempt to detect it from listing photos.
+        // If neither source yields a floorplan, the job will fail with a clear error.
+        const hasFloorplanUpload = !!(floorplanBase64 || floorplanPath);
+        if (!hasFloorplanUpload) {
+            logger.info({ msg: "No floorplan uploaded — pipeline will attempt auto-detection from listing photos" });
+        }
+
         const scraped = await scrapeZillowListing(addressOrUrl, 30);
         if (!scraped.photos?.length) return res.status(400).json({ error: "No photos found for listing" });
 

@@ -53,8 +53,7 @@ When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If 
 | **0baf5f36** | Zillow-to-Video — pipeline spec, create page, agent handoff, verification |
 | **286f3e4a** | Stitch — design system, assets |
 | **3e820274** | Kie.ai — API docs |
-| **12c80d7d** | Antigravity — automation engine |
-| **fc048ba8** | n8n workflows |
+| **fc048ba8** | Master: Automation & Core Infra — Antigravity, n8n, automation workflows |
 | **719854ee** | rensto website — main site, business model, subscription tiers |
 | **b906e69f** | Claude Code — Claude Code mastery, agentic workflows, tooling |
 | **f0747c8b** | prd template — **LEGACY** (different product version, do not use for current TourReel) |

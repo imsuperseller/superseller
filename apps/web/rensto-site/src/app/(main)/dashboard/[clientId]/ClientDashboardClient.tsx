@@ -956,6 +956,18 @@ export default function ClientDashboardClient({
                                     {usageData?.billing.currency === 'USD' ? '$' : ''}{usageData?.billing.estimatedCost || 0}
                                 </div>
                                 <p className="text-xs text-gray-500 mt-2">Next invoice: {usageData?.billing.nextInvoiceDate}</p>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const res = await fetch('/api/billing/portal', { method: 'POST' });
+                                            const data = await res.json();
+                                            if (data.url) window.location.href = data.url;
+                                        } catch {}
+                                    }}
+                                    className="mt-3 text-xs text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors"
+                                >
+                                    Manage Billing
+                                </button>
                             </div>
                         </div>
 

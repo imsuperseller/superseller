@@ -25,16 +25,38 @@ export async function normalizeClip(
     outputPath: string,
     options?: { width?: number; height?: number; fps?: number }
 ): Promise<void> {
-    const width = options?.width || 1920;
-    const height = options?.height || 1080;
+    let width = options?.width;
+    let height = options?.height;
     const fps = options?.fps || 24;
+
+    // If width/height not explicitly requested, detect native Kling 3.0 resolution
+    if (!width || !height) {
+        const { stdout } = await execFileAsync("ffprobe", [
+            "-v", "error", "-select_streams", "v:0",
+            "-show_entries", "stream=width,height", "-of", "csv=s=x:p=0",
+            inputPath
+        ]);
+        const [origW, origH] = stdout.trim().split("x").map(Number);
+        if (origW && origH) {
+            width = origW;
+            height = origH;
+            logger.debug({ msg: "Detected native Kling 3.0 resolution", width, height });
+        } else {
+            width = 1920;
+            height = 1080;
+        }
+    }
+
+    // Ensure dimensions are even (libx264 requirement)
+    const evenW = Math.ceil(width / 2) * 2;
+    const evenH = Math.ceil(height / 2) * 2;
 
     await execFileAsync("ffmpeg", [
         "-i", inputPath,
-        "-vf", `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
+        "-vf", `scale=${evenW}:${evenH}:force_original_aspect_ratio=decrease,pad=${evenW}:${evenH}:(ow-iw)/2:(oh-ih)/2:black`,
         "-r", String(fps),
         "-c:v", "libx264",
-        "-preset", "medium", // balanced quality/speed; "fast" trades quality for speed
+        "-preset", "medium",
         "-crf", "18",
         "-an",
         "-movflags", "+faststart",
@@ -42,7 +64,7 @@ export async function normalizeClip(
         outputPath,
     ], { timeout: 120000 });
 
-    logger.debug({ msg: "Clip normalized", input: inputPath, output: outputPath });
+    logger.debug({ msg: "Clip normalized", input: inputPath, output: outputPath, width: evenW, height: evenH });
 }
 
 // ─── STITCH CLIPS WITH CONCAT (SEAMLESS, NO TRANSITIONS) ───
@@ -103,11 +125,11 @@ export async function stitchClipsConcat(
         ], { timeout: 300000 });
         try {
             for (let i = 1; i < clipPaths.length; i++) {
-                try { unlinkSync(join(outDir, `_boundary_${i}.mp4`)); } catch (_) {}
-                try { unlinkSync(join(outDir, `_clip${i}_trim.mp4`)); } catch (_) {}
+                try { unlinkSync(join(outDir, `_boundary_${i}.mp4`)); } catch (_) { }
+                try { unlinkSync(join(outDir, `_clip${i}_trim.mp4`)); } catch (_) { }
             }
-        } catch (_) {}
-        try { unlinkSync(listPath); } catch (_) {}
+        } catch (_) { }
+        try { unlinkSync(listPath); } catch (_) { }
     } else {
         const listPath = outputPath.replace(/\.(mp4|mkv)$/i, "_list.txt");
         const listContent = clipPaths.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join("\n");
@@ -117,7 +139,7 @@ export async function stitchClipsConcat(
             "-y", "-f", "concat", "-safe", "0", "-i", listPath,
             "-c", "copy", "-movflags", "+faststart", outputPath,
         ], { timeout: 300000 });
-        try { unlinkSync(listPath); } catch (_) {}
+        try { unlinkSync(listPath); } catch (_) { }
     }
 
     const duration = await getVideoDuration(outputPath);
@@ -229,36 +251,92 @@ export async function addMusicOverlay(
     logger.info({ msg: "Music overlay complete", output: outputPath });
 }
 
-// ─── ADD TEXT OVERLAYS (STUB) ───
+// ─── ADD TEXT OVERLAYS ───
 /**
- * Placeholder for AI-generated text overlays (room labels, hero moments, property details).
- * Per NotebookLM: overlays should align to music beats for rhythm-based editing.
- * Currently a no-op pass-through — implement with drawtext filter or Remotion when ready.
- * @see https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c
+ * Marketing-layer text overlays aligned to music beats.
+ * Uses FFmpeg drawtext dynamically based on provided specs.
  */
 export interface TextOverlaySpec {
     text: string;
     startSeconds: number;
     durationSeconds: number;
     position?: "top" | "center" | "bottom";
+    fontSize?: "small" | "medium" | "large" | "xlarge";
+    fadeInSeconds?: number;
+    fadeOutSeconds?: number;
 }
 
 export async function addTextOverlays(
     inputPath: string,
     outputPath: string,
-    _overlays: TextOverlaySpec[] = []
+    overlays: TextOverlaySpec[] = []
 ): Promise<void> {
-    // STUB: No overlays implemented yet. Pass-through copy.
-    if (_overlays.length === 0) {
+    if (overlays.length === 0) {
         const { copyFileSync } = await import("fs");
         copyFileSync(inputPath, outputPath);
-        logger.debug({ msg: "Text overlays stub: pass-through (no overlays)", input: inputPath });
+        logger.debug({ msg: "Text overlays skip (no overlays provided)", input: inputPath });
         return;
     }
-    // TODO: Implement with ffmpeg drawtext or Remotion. Align to music beats.
-    const { copyFileSync } = await import("fs");
-    copyFileSync(inputPath, outputPath);
-    logger.debug({ msg: "Text overlays stub: pass-through (overlays not yet implemented)", count: _overlays.length });
+
+    // System font detection (Ubuntu/Debian). Falls back to FFmpeg default.
+    const fontCandidates = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+    ];
+    const fontFile = fontCandidates.find((f) => existsSync(f));
+
+    const FONT_SIZES: Record<string, string> = {
+        small: "(h/30)",
+        medium: "(h/22)",
+        large: "(h/16)",
+        xlarge: "(h/12)",
+    };
+
+    // Build drawtext filter chain
+    const drawtextFilters = overlays.map((overlay) => {
+        const start = overlay.startSeconds;
+        const end = start + overlay.durationSeconds;
+        const fadeIn = overlay.fadeInSeconds ?? 0.5;
+        const fadeOut = overlay.fadeOutSeconds ?? 0.5;
+
+        const sanitizedText = overlay.text
+            .replace(/'/g, "\\\\\\'")
+            .replace(/:/g, "\\:")
+            .replace(/,/g, "\\,");
+
+        const fontSize = FONT_SIZES[overlay.fontSize ?? "medium"] || FONT_SIZES.medium;
+
+        let yPos = "(h-text_h)/2";
+        if (overlay.position === "bottom") yPos = "h-(h/8)-text_h";
+        if (overlay.position === "top") yPos = "h/8";
+
+        const fontParam = fontFile ? `:fontfile='${fontFile}'` : "";
+
+        // Alpha expression for smooth fade in/out
+        let alphaExpr = "";
+        if (fadeIn > 0 || fadeOut > 0) {
+            const fi = Math.max(fadeIn, 0.001);
+            const fo = Math.max(fadeOut, 0.001);
+            alphaExpr = `:alpha='if(lt(t-${start}\\,${fi})\\,(t-${start})/${fi}\\,if(gt(t-(${end}-${fo})\\,0)\\,(${end}-t)/${fo}\\,1))'`;
+        }
+
+        return `drawtext=text='${sanitizedText}'${fontParam}:fontcolor=white:fontsize=${fontSize}:box=1:boxcolor=black@0.5:boxborderw=18:x=(w-text_w)/2:y=${yPos}:enable='between(t\\,${start}\\,${end})'${alphaExpr}`;
+    }).join(",");
+
+    await execFileAsync("ffmpeg", [
+        "-i", inputPath,
+        "-vf", drawtextFilters,
+        "-c:v", "libx264",
+        "-preset", "medium",
+        "-crf", "18",
+        "-c:a", "copy",
+        "-movflags", "+faststart",
+        "-y",
+        outputPath,
+    ], { timeout: 180000 });
+
+    logger.info({ msg: "Applied text overlays", count: overlays.length, output: outputPath });
 }
 
 // ─── GENERATE FORMAT VARIANTS ───

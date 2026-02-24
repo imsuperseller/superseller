@@ -9,10 +9,12 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { clientId, config } = body;
+        const { config } = body;
+        // Use session.clientId — never trust clientId from request body
+        const clientId = session.clientId!;
 
-        if (!clientId || !config) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        if (!config) {
+            return NextResponse.json({ error: 'Missing config' }, { status: 400 });
         }
         const configId = `sec_${clientId}`;
         await dbDashboard.upsertSecretaryConfig(configId, {

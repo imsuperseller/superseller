@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import * as dbDashboard from '@/lib/db/dashboard';
 
 export async function GET(req: Request) {
+    const session = await verifySession();
+    if (!session.isValid || !session.clientId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const webhookId = searchParams.get('webhookId');
     const phone = searchParams.get('phone');
@@ -22,6 +28,10 @@ export async function GET(req: Request) {
         // Note: sessionId lookup not yet implemented in DAL (no whatsappSessionId column in schema)
 
         if (config) {
+            // Non-admins can only look up their own config
+            if (session.role !== 'admin' && config.clientId !== session.clientId) {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
             return NextResponse.json({
                 found: true,
                 clientId: config.clientId,

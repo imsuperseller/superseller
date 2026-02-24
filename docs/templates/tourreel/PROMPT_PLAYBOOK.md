@@ -3,7 +3,7 @@
 **Date:** February 10, 2026
 **Purpose:** Every prompt used in the TourReel pipeline — exact text, variable slots, expected outputs, failure modes, and tuning notes. This is the creative engine of the product. The quality of these prompts directly determines the quality of every video we generate.
 
-> **⚠️ STALE REFERENCES**: References to "fal.ai" below should be read as **Kie.ai Kling 3.0** (the current provider). Prompt structures and creative guidelines remain accurate.
+> **Video Provider**: Kie.ai Kling 3.0 is the only video generation provider. Prompt structures and creative guidelines below are accurate.
 ---
 ## TABLE OF CONTENTS
 1. [Prompt Architecture Overview](#1-prompt-architecture-overview)
@@ -35,7 +35,7 @@ Model: Gemini 2.5 Pro / GPT-4o
 Stage 3: VIDEO CLIP GENERATION (Kling 3.0 / Veo 3.1)
 Input: Per-clip prompt + start frame + end frame
 Output: 5-8 second video clip
-Model: Kling 3.0 via fal.ai (primary) / Veo 3.1 via kie.ai (backup)
+Model: Kling 3.0 via Kie.ai
 Stage 4: MUSIC GENERATION (Suno V5)
 Input: Style prompt + duration target
 Output: Instrumental background track
@@ -557,7 +557,7 @@ Negative prompts are critical for preventing common AI video artifacts.
 blurry, out of focus, distorted, warped, low quality, low resolution, overexposed, underexposed, dark, moody, grain, noise, artifact, glitch, flickering, strobing, watermark, text overlay, logo, brand name, subtitle, caption, letterbox, black bars, fish-eye lens, extreme wide angle, dutch angle, shaky camera, handheld shake, motion blur, duplicate frames, temporal inconsistency, morphing walls, melting objects, floating furniture, impossible geometry, non-euclidean space, people, person, human figure, hand, finger, face, pet, animal, dog, cat, bird, cartoon, anime, illustration, painting, sketch, CGI obvious, video game, render artifact, plastic looking, uncanny valley, horror, scary, dark shadows, dramatic lighting, colored lighting, neon, psychedelic
 ```
 ### 8B. Model-Specific Negative Prompt Extensions
-**For Kling 3.0 (fal.ai):**
+**For Kling 3.0 (Kie.ai):**
 ```
 {{UNIVERSAL_NEGATIVE}}, sudden scene change, abrupt cut, inconsistent wall color between frames, door appearing or disappearing, window changing shape, floor material changing mid-shot, ceiling height shifting
 ```
@@ -963,7 +963,7 @@ Return ONLY valid JSON.
 | Doorways generate wrong | Complex geometry confuses model | Use "the camera passes through an open archway" instead of "through a door" |
 | Furniture floating or impossible | AI geometry failure | Add to negative: "physically impossible, floating objects, hovering" |
 ### 13B. Model-Specific Tuning Notes
-**Kling 3.0 (fal.ai):**
+**Kling 3.0 (Kie.ai):**
 - `cfg_scale`: Start at 0.5. Increase to 0.7 if prompt adherence is low. Decrease to 0.3 if results are over-stylized.
 - Best at: Smooth camera movements, consistent lighting, architectural spaces
 - Struggles with: Reflective surfaces (mirrors, polished marble), windows with exterior views, staircase geometry

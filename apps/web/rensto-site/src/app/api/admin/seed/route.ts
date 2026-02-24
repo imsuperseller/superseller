@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 // Template seed data (moved from previous Firestore-only implementation)
 const SEED_TEMPLATES = [
@@ -15,6 +16,11 @@ const SEED_TEMPLATES = [
 ];
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         let seededCount = 0;
 

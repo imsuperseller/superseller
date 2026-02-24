@@ -21,4 +21,8 @@ sshpass -p "$PASS" rsync -avz --delete \
   "$REPO_ROOT/apps/worker/" "root@$HOST:$REMOTE_DIR/apps/worker/"
 
 sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no root@$HOST "cd $REMOTE_DIR/apps/worker && npm install --production && pm2 restart tourreel-worker --update-env"
+
+echo "Configuring FFmpeg Auto-Updater Cron Job..."
+sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no root@$HOST "chmod +x $REMOTE_DIR/apps/worker/tools/update-ffmpeg.sh && (crontab -l | grep -v 'update-ffmpeg.sh' ; echo '0 0 * * * $REMOTE_DIR/apps/worker/tools/update-ffmpeg.sh >> /var/log/ffmpeg-update.log 2>&1') | crontab -"
+
 echo "Done. Verify: curl -s http://$HOST:3002/api/health"

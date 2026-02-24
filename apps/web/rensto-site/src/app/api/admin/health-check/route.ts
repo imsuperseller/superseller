@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 
 export async function GET() {
+    const session = await verifySession();
+    if (!session.isValid || session.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const services = [
         { name: 'n8n', url: 'https://n8n.rensto.com/api/v1/healthz' },
         { name: 'WAHA', url: `${process.env.WAHA_BASE_URL}/api/health` },

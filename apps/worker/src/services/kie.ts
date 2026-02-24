@@ -48,6 +48,8 @@ export interface KieKlingRequest {
     model?: string; // kling-3.0/video only (no Kling 2.6)
     /** Clip duration in seconds. Default: config.video.defaultClipDuration (5). */
     duration?: number;
+    /** Target room name — used for room-specific negative prompt additions */
+    to_room?: string;
 }
 
 /** Generate clip via Kie Kling (sync: create + poll until done). */
@@ -141,6 +143,31 @@ export function buildElementsKlingPrompt(clip: { clip_number: number; from_room?
     return `@realtor stands in the ${toRoom}, gesturing naturally toward key features. ${flow} The ${toRoom} is the star. Steady eye-height camera. Camera stays in walkable space, never passes through walls or furniture. Single person only. Photorealistic. CRITICAL: Preserve the EXACT room, furniture, decor, and style shown in the image. Lips closed, silent.`;
 }
 
+/** Room-specific negative additions. Appended to base Kling negative when room name is provided. */
+const ROOM_NEGATIVES: Record<string, string> = {
+    kitchen: "dirty dishes, messy counters, open cabinets, food, cooking, steam",
+    bathroom: "toilet seat up, dirty towels, soap scum, water stains, shower running",
+    master_bathroom: "toilet seat up, dirty towels, soap scum, water stains, shower running",
+    bedroom: "unmade bed, messy clothes, personal items scattered",
+    master_bedroom: "unmade bed, messy clothes, personal items scattered",
+    outdoor: "rain, cloudy sky, dead plants, brown lawn, trash",
+    pool: "rain, cloudy sky, dead plants, brown lawn, trash",
+    backyard: "rain, cloudy sky, dead plants, brown lawn, trash",
+};
+
+function inferRoomKey(roomName: string): string {
+    const lower = roomName.toLowerCase();
+    if (lower.includes("kitchen")) return "kitchen";
+    if (lower.includes("master bath") || lower.includes("primary bath")) return "master_bathroom";
+    if (lower.includes("bath") || lower.includes("powder")) return "bathroom";
+    if (lower.includes("master bed") || lower.includes("primary bed")) return "master_bedroom";
+    if (lower.includes("bed")) return "bedroom";
+    if (lower.includes("pool")) return "pool";
+    if (lower.includes("backyard") || lower.includes("patio") || lower.includes("deck")) return "backyard";
+    if (lower.includes("outdoor") || lower.includes("exterior")) return "outdoor";
+    return "";
+}
+
 function isPublicFetchableUrl(url: string): boolean {
     if (!url || !url.startsWith("http")) return false;
     if (url.includes("zillow") || url.includes("zillowstatic")) return false;
@@ -175,20 +202,30 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     } else {
         negPrompt = KLING_PROPERTY_NEGATIVE;
     }
+    // Append room-specific negatives (kitchen: dirty dishes, bathroom: toilet, etc.)
+    if (request.to_room && negPrompt) {
+        const roomKey = inferRoomKey(request.to_room);
+        const roomNeg = ROOM_NEGATIVES[roomKey];
+        if (roomNeg && (negPrompt.length + roomNeg.length + 2) <= 500) {
+            negPrompt = `${negPrompt}, ${roomNeg}`;
+        }
+    }
     const input: Record<string, unknown> = {
         prompt: request.prompt,
         image_urls: imageUrls,
-        sound: false,
+        sound: process.env.KLING_SOUND === "1", // Native ambient audio (footsteps, doors). Mix under Suno in FFmpeg.
         duration,
         mode: request.mode || "pro",
-        multi_shots: false, // Kie 422: "multi_shots cannot be empty" when omitted
+        multi_shots: process.env.USE_MULTI_SHOT === "1", // Multi-shot cinematic storytelling within one clip
         ...(negPrompt ? { negative_prompt: negPrompt } : {}),
         ...(request.last_frame ? {} : { aspect_ratio: request.aspect_ratio || "16:9" }),
-        // Kling 3.0 Elements: native character reference for person consistency across clips.
-        // Upload 2-4 reference images of the realtor; reference with @element_name in prompt.
         ...(request.kling_elements?.length ? { kling_elements: request.kling_elements } : {}),
     };
-    const body = { model: request.model || "kling-3.0/video", input };
+    const body = {
+        model: request.model || "kling-3.0/video",
+        input,
+        ...(config.kie.webhookUrl ? { callBackUrl: config.kie.webhookUrl } : {}),
+    };
 
     const url = `${KIE_BASE}/v1/jobs/createTask`;
     logger.info({ msg: "kie.ai Kling task creating", url, model: body.model, duration, inputKeys: Object.keys(input) });
@@ -291,7 +328,7 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
 export async function waitForTask(
     taskId: string,
     type: "suno" | "kling" = "kling",
-    timeoutMs: number = 900000,
+    timeoutMs: number = 1500000, // 25 min — Kling Pro 10s clips can take 17+ min
     pollIntervalMs: number = 10000
 ): Promise<KieTaskResponse> {
     const start = Date.now();

@@ -17,7 +17,7 @@
 | **Server/Worker**| Long-running video/bot tasks | **RackNerd VPS** | ✅ Active |
 | **LLM** | Prompt Gen / Intelligence | **Gemini Flash (Primary)** | ✅ Active |
 | **Video AI** | Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
-| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook | ✅ Integrated |
+| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook | ⚠️ WAHA active, Telnyx DORMANT (0 n8n executions) |
 | **Embeddings** | Vector embeddings for RAG | **Ollama** (nomic-embed-text, RackNerd) | ✅ Active |
 
 ---
@@ -51,7 +51,7 @@
 
 ## 4. The "Wasted Time" Log (Lessons Learned)
 
-1.  **FAL vs Kie**: Using `fal.ai` for video was a major waste of time due to quality inconsistency. We now standardize on **Kie Kling 3.0**.
+1.  **Video Provider**: We standardize on **Kie.ai Kling 3.0** exclusively. No other video generation provider.
 2.  **Firestore Performance**: Firestore was deprecated due to lack of complex relational capabilities for SaaS reporting. **PostgreSQL** is the only DB truth.
 3.  **Relative R2 Paths**: Prepending `/` to R2 keys instead of using the full public URL broke Kie.ai's fetching logic. **Always use R2_PUBLIC_URL**.
 4.  **n8n in Production**: Attempting to scale heavy video processing in n8n resulted in OOM errors. **All heavy lifting must be programmatic (apps/worker)**.
@@ -109,9 +109,26 @@ npm audit --audit-level=high
 | Prisma Migrations | database | Migration status check | 1 failure / 60min cooldown |
 | n8n | backup | HTTP `172.245.56.50:5678/healthz` | 5 failures / 120min cooldown |
 
-### Expense Tracking
-Known API rates: Kling Pro $0.10/clip, Kling Std $0.03/clip, Suno $0.02/music, Gemini Flash $0.001/prompt, Resend $0.001/email.
-Anomaly detection: daily spend > 2x rolling 7-day average.
+### Expense Tracking (MANDATORY — all sessions)
+**Rule**: Every API generation logs cost. Pipeline via `trackExpense()`. Manual sessions via cost table in `progress.md`.
+
+| Service | Operation | Cost | Notes |
+|---------|-----------|------|-------|
+| Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
+| Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
+| Kie.ai | Suno music | $0.02 | Per track |
+| Kie.ai | Nano Banana composite | $0.05 | Realtor + photo |
+| Kie.ai | ElevenLabs TTS | $0.02 | Per generation |
+| FakeYou | TTS (any model) | $0.00 | Free |
+| Gemini | Flash prompt | $0.001 | Per call |
+| Gemini | Flash vision | $0.002 | Per image |
+| Resend | Email | $0.001 | Per send |
+| R2 | Upload | $0.0001 | Per operation |
+| R2 | Storage | $0.015/GB/mo | Monthly |
+| Ollama | Embeddings | $0.00 | Self-hosted |
+
+**Service**: `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts`
+**Anomaly detection**: daily spend > 2x rolling 7-day average.
 
 ### Ollama (Embedding Service)
 - **Host**: `172.245.56.50:11434` (RackNerd VPS, CPU-only)
@@ -136,7 +153,8 @@ Anomaly detection: daily spend > 2x rolling 7-day average.
 ## 6. 🛠️ Deployment Mapping
 
 *   **Next.js App**: Managed via Vercel GitHub integration.
-*   **Video Worker**: Manual/Scripted deployment to RackNerd. (Path: `/root/rensto-worker`)
+*   **Video Worker**: Manual/Scripted deployment to RackNerd. (Path: `/opt/tourreel-worker`)
+*   **FB Marketplace Bot**: PM2 managed at `/opt/fb-marketplace-bot/`. 4 processes: `webhook-server` (port 8082), `fb-scheduler`, `image-pool`, `cookie-monitor`.
 *   **n8n**: Docker-compose managed on RackNerd (Port 5678).
 
 ---

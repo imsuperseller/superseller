@@ -1,13 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 
+/**
+ * Public health check: returns basic status without auth.
+ * Admin health check: returns detailed subsystem status with auth.
+ * Use ?detail=true with admin auth for full diagnostics.
+ */
 export async function GET(request: NextRequest) {
+    const wantsDetail = request.nextUrl.searchParams.get('detail') === 'true';
+
+    // Public health probe — no auth required
+    if (!wantsDetail) {
+        return NextResponse.json({
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+        });
+    }
+
+    // Detailed health check — admin only
     try {
-        // Simple security: check for a secret token or just let it be public-but-obscure for now
-        // Pros can add a secret header check here later
+        const session = await verifySession();
+        if (!session.isValid || session.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
         const results = await auditAgent.runFullHealthCheck();
-
         const isHealthy = Object.values(results.services).every((s: any) => s.status === 'healthy');
 
         return NextResponse.json({
@@ -15,7 +33,7 @@ export async function GET(request: NextRequest) {
             healthy: isHealthy,
             ...results
         }, {
-            status: isHealthy ? 200 : 503 // Service Unavailable if any core service is down
+            status: isHealthy ? 200 : 503
         });
 
     } catch (error: any) {

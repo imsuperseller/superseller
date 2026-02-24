@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -10,8 +11,18 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
     const filterTag = searchParams.get('tag');
-    const includeDrafts = searchParams.has('includeDrafts');
-    const includeInternal = searchParams.has('includeInternal');
+
+    // includeDrafts and includeInternal require admin auth — never expose to public
+    let includeDrafts = false;
+    let includeInternal = false;
+    if (searchParams.has('includeDrafts') || searchParams.has('includeInternal')) {
+      const session = await verifySession();
+      if (session.isValid && session.role === 'admin') {
+        includeDrafts = searchParams.has('includeDrafts');
+        includeInternal = searchParams.has('includeInternal');
+      }
+      // Silently ignore for non-admins — no error, just don't include
+    }
     let templates: any[];
 
     try {

@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
-import nicheEngineData from '@/data/niche_engine.json';
+import { CREW_MEMBERS } from '@/data/crew';
+import { NICHES } from '@/data/niches';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://rensto.com';
@@ -8,21 +9,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Core static routes
   const staticRoutes = [
     { url: '', priority: 1, changeFrequency: 'daily' },
-    { url: '/whatsapp', priority: 1, changeFrequency: 'daily' },
-    { url: '/solutions', priority: 1, changeFrequency: 'daily' },
-    { url: '/marketplace', priority: 0.9, changeFrequency: 'weekly' },
-    { url: '/dashboard', priority: 0.9, changeFrequency: 'weekly' },
-    { url: '/admin', priority: 0.8, changeFrequency: 'weekly' },
-    { url: '/process', priority: 0.7, changeFrequency: 'monthly' },
+    { url: '/crew', priority: 0.9, changeFrequency: 'weekly' },
+    { url: '/pricing', priority: 0.9, changeFrequency: 'weekly' },
     { url: '/contact', priority: 0.7, changeFrequency: 'monthly' },
     { url: '/legal/privacy', priority: 0.3, changeFrequency: 'yearly' },
     { url: '/legal/terms', priority: 0.3, changeFrequency: 'yearly' },
   ].map((route) => ({
     url: `${baseUrl}${route.url}`,
     lastModified,
-    changeFrequency: route.changeFrequency as any,
+    changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[0]['changeFrequency'],
     priority: route.priority,
   }));
 
-  return [...staticRoutes];
+  // Crew member detail pages
+  const crewRoutes = CREW_MEMBERS.map((member) => ({
+    url: `${baseUrl}/crew/${member.slug}`,
+    lastModified,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
+  // Niche pages
+  const nicheRoutes = NICHES.map((niche) => ({
+    url: `${baseUrl}/${niche.slug}`,
+    lastModified,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...crewRoutes, ...nicheRoutes];
 }

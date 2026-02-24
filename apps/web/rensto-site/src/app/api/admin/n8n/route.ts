@@ -126,6 +126,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: 'Target version required' }, { status: 400 });
     }
 
+    // Sanitize targetVersion — must be a valid semver (e.g. "1.72.1"), reject shell injection
+    const semverRegex = /^\d+\.\d+\.\d+$/;
+    if (!semverRegex.test(targetVersion)) {
+        return NextResponse.json({ success: false, error: 'Invalid version format. Expected semver (e.g. 1.72.1)' }, { status: 400 });
+    }
+
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
         start(controller) {

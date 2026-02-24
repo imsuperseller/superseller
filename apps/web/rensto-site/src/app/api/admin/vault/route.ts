@@ -19,7 +19,13 @@ export async function GET(req: NextRequest) {
             orderBy: { key: 'asc' },
         });
 
-        return NextResponse.json(items);
+        // Mask sensitive values — show only first 8 chars + "***"
+        const masked = items.map((item: any) => ({
+            ...item,
+            value: item.value ? `${String(item.value).slice(0, 8)}***` : null,
+        }));
+
+        return NextResponse.json(masked);
     } catch (error) {
         console.error('Error fetching vault items:', error);
         return NextResponse.json({ error: 'Failed to fetch vault items' }, { status: 500 });

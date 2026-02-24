@@ -50,18 +50,20 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | **B.L.A.S.T. canonical** — Project Template, Agentic Brand Identity, Antigravity Integration, System Blueprint, Skill Engineering, Error Handling. ALL Rensto work (website, infrastructure, products) MUST follow this notebook. Use `notebooklm_notebook_query` to align. |
 | 2 | [3e820274-6839-4921-aa83-ad003dd2fb93](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | **KIE.AI** — API docs, models, usage |
 | 3 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video production instructions** — 12 sources. Canonical for pipeline (Nano Banana Pro + Kling 3, no FAL/Veo). |
-| 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **N8n workflows** — Workflow catalog, grouping |
+| 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **Master: Automation & Core Infra** — Antigravity, n8n, automation workflows |
 | 5 | [286f3e4a-a3a2-40ab-9c45-d198e91b27f4](https://notebooklm.google.com/notebook/286f3e4a-a3a2-40ab-9c45-d198e91b27f4) | **Google Stitch** — Stitch API, assets |
-| 6 | [12c80d7d-9baa-4b86-a6b0-b434f41aba37](https://notebooklm.google.com/notebook/12c80d7d-9baa-4b86-a6b0-b434f41aba37) | **Antigravity** — Automation engine |
-| 7 | [f360003f-eebb-4085-a141-72fe7909c6db](https://notebooklm.google.com/notebook/f360003f-eebb-4085-a141-72fe7909c6db) | **n8n rensto** — Rensto n8n instance |
-| 8 | [719854ee-b94e-4555-9b2b-48ae136335b8](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **rensto website** — Site content |
-| 9 | [e1acc83c-978f-4601-b98a-d4c4b4b9ff50](https://notebooklm.google.com/notebook/e1acc83c-978f-4601-b98a-d4c4b4b9ff50) | **Resources** — Reference materials |
-| 10 | [743744d5-2c3e-4070-a2fe-20db34506789](https://notebooklm.google.com/notebook/743744d5-2c3e-4070-a2fe-20db34506789) | **Marketplace Listing Engine** — Listing configs |
-| 11 | [98b120fa-bc5e-466a-a8d2-7a609c044283](https://notebooklm.google.com/notebook/98b120fa-bc5e-466a-a8d2-7a609c044283) | **aitable.ai** — Dashboards, syncs |
-| 12 | [0789acdb-2485-43ec-9b4a-6dc227fcaead](https://notebooklm.google.com/notebook/0789acdb-2485-43ec-9b4a-6dc227fcaead) | **WAHA Pro** — WhatsApp API |
-| 13 | [f54f121b-97b1-45b2-8a05-156d1c8ad3f7](https://notebooklm.google.com/notebook/f54f121b-97b1-45b2-8a05-156d1c8ad3f7) | **Apify** — Scraping, actors |
-| 14 | [b906e69f-...](https://notebooklm.google.com/notebook/b906e69f) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling |
-| 15 | [6bb5f16d-...](https://notebooklm.google.com/notebook/6bb5f16d) | **Kling 3.0** — Cinematic prompt engineering, Video API |
+| 6 | [719854ee-b94e-4555-9b2b-48ae136335b8](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **rensto website** — Site content |
+| 7 | [e1acc83c-978f-4601-b98a-d4c4b4b9ff50](https://notebooklm.google.com/notebook/e1acc83c-978f-4601-b98a-d4c4b4b9ff50) | **Resources** — Reference materials |
+| 8 | [cb99e6aa-967f-40d4-9580-c02b3250bc78](https://notebooklm.google.com/notebook/cb99e6aa-967f-40d4-9580-c02b3250bc78) | **Master: Social Media, Lead Gen & Marketing** — Social Media, FB Marketplace, Profiles |
+| 9 | [98b120fa-bc5e-466a-a8d2-7a609c044283](https://notebooklm.google.com/notebook/98b120fa-bc5e-466a-a8d2-7a609c044283) | **aitable.ai** — Dashboards, syncs |
+| 10 | [0789acdb-2485-43ec-9b4a-6dc227fcaead](https://notebooklm.google.com/notebook/0789acdb-2485-43ec-9b4a-6dc227fcaead) | **WAHA Pro** — WhatsApp API |
+| 11 | [f54f121b-97b1-45b2-8a05-156d1c8ad3f7](https://notebooklm.google.com/notebook/f54f121b-97b1-45b2-8a05-156d1c8ad3f7) | **Apify** — Scraping, actors |
+| 12 | [b906e69f-...](https://notebooklm.google.com/notebook/b906e69f) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling |
+| 13 | [6bb5f16d-...](https://notebooklm.google.com/notebook/6bb5f16d) | **Kling 3.0** — Cinematic prompt engineering, Video API |
+| 14 | [8df32896-d93b-4a32-961f-40c6fa3ccf7a](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | **Market Intelligence** — Competitor research, pricing trends |
+| 15 | [7630d154-341b-40a7-9a10-6f9e1f3ddc7d](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | **Legal & Compliance** — TOS, GDPR, domain ownership |
+| 16 | [12724368-e4af-488c-a8a3-ce04da043d60](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | **Product Changelog** — Feature releases, migration notes |
+| 17 | [02c3946b-c69b-423b-b188-9b79ecdd1629](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | **AI Cost & Performance** — LLM benchmarks, cost budgets |
 
 *Map notebook IDs to purpose in `docs/NOTEBOOKLM_INDEX.md`. Use `source_get_content` to extract key modules as Markdown to save tokens.*
 
@@ -197,6 +199,7 @@ Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprin
 | TourReel app template | docs/templates/tourreel/ |
 | NotebookLM index | docs/NOTEBOOKLM_INDEX.md |
 | n8n workflow catalog | docs/n8n/N8N_WORKFLOWS_CATALOG.md |
+| Business coverage index (all tracked elements, SoT map, dashboard mapping) | docs/BUSINESS_COVERAGE_INDEX.md |
 
 ---
 

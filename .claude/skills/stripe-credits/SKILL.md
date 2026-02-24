@@ -77,8 +77,16 @@ Stripe checkout.session.completed
   → Create UsageEvent (type: 'grant')
 ```
 
-## Troubleshooting
-Common Stripe webhook issues: verify `STRIPE_WEBHOOK_SECRET` matches, check event types in route handler, ensure idempotency via `checkout.session.id`. See `findings.md` for past issues.
+## Error-Cause-Fix
+
+| Error | Probable Cause | Remediation |
+|-------|---------------|-------------|
+| Webhook returns 400 `Signature verification failed` | `STRIPE_WEBHOOK_SECRET` mismatch between Stripe dashboard and Vercel/worker env. | Compare `whsec_...` in Stripe Dashboard → Webhooks with Vercel env var. Update + redeploy. |
+| Credits not granted after successful payment | Webhook event type not handled. Only `checkout.session.completed` triggers provisioning. | Check route handler processes the correct event type. Verify ProvisioningService is called. |
+| Double credit grant | Webhook replayed (Stripe retries on 5xx). Missing idempotency check. | Use `checkout.session.id` as idempotency key. Check if Payment record already exists before granting. |
+| `UnrecoverableError: Insufficient Credits` | User's credit balance < job cost. BullMQ correctly stops retry. | Expected behavior. User must purchase more credits or upgrade plan. |
+| Credit balance shows 0 but user paid | `credits_balance` in Drizzle (worker) not synced with Prisma UsageEvent ledger. | Recalculate: `SELECT SUM(amount) FROM usage_events WHERE "userId" = ?`. Update `users.credits_balance`. |
+| Checkout session creates but redirect fails | `success_url` or `cancel_url` misconfigured in checkout creation route. | Check `/api/video/subscribe` or `/api/checkout` for correct URLs. Must include `{CHECKOUT_SESSION_ID}`. |
 
 ## References
 - PRODUCT_BIBLE.md § SaaS Billing — Canonical pricing

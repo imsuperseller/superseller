@@ -1,0 +1,374 @@
+// ================================================================
+// AgentForge - Prisma Schema
+// ================================================================
+// Database: PostgreSQL (Supabase / Neon / Local)
+// ORM: Prisma
+// Version: 1.0
+//
+// Usage:
+//   npx prisma generate      → Generate client
+//   npx prisma db push        → Push to DB (development)
+//   npx prisma migrate dev    → Create migration (production)
+//   npx prisma studio         → Open database GUI
+//
+// Reference: docs/TechArch-v1.docx Section 7
+// ================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Optional: for Supabase connection pooling
+}
+
+// ================================================================
+// ENUMS
+// ================================================================
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum ProjectStatus {
+  CREATED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PipelineRunStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum StageStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+enum ServiceType {
+  website
+  landing
+  webapp
+  redesign
+  ecommerce_store
+  dashboard
+  portfolio_site
+  blog
+}
+
+enum BusinessType {
+  ecommerce
+  saas
+  agency
+  restaurant
+  healthcare
+  realestate
+  fitness
+  education
+  finance
+  nonprofit
+  local
+  portfolio
+  other
+}
+
+enum DeliverableType {
+  research_report
+  design_spec
+  market_research
+  architecture_doc
+  code_package
+  client_proposal
+}
+
+enum DeliverableFormat {
+  markdown
+  pdf
+  zip
+  json
+}
+
+// ================================================================
+// USERS
+// ================================================================
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  role           UserRole  @default(USER)
+  hashedPassword String?   // Null for OAuth-only users
+  avatarUrl      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  projects Project[]
+  clients  Client[]
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+// ================================================================
+// NEXTAUTH.JS MODELS
+// ================================================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ================================================================
+// CLIENTS
+// ================================================================
+
+model Client {
+  id           String    @id @default(cuid())
+  userId       String
+  name         String    // Contact person name
+  businessName String
+  businessType BusinessType
+  email        String?
+  phone        String?
+  website      String?
+  notes        String?   @db.Text
+  metadata     Json?     // Extensible fields
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // Soft delete
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@index([userId, createdAt(sort: Desc)], name: "idx_clients_user")
+  @@index([businessType], name: "idx_clients_type")
+  @@map("clients")
+}
+
+// ================================================================
+// PROJECTS
+// ================================================================
+
+model Project {
+  id              String        @id @default(cuid())
+  userId          String
+  clientId        String?
+  name            String        // Display name (auto-generated from businessName + serviceType)
+  serviceType     ServiceType
+  status          ProjectStatus @default(CREATED)
+  intakeData      Json          // Complete intake form submission
+  currentStage    String?       // Currently executing stage ID
+  totalTokensUsed Int           @default(0)
+  estimatedCost   Float         @default(0)
+  completedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?     // Soft delete
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client       Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  pipelineRuns PipelineRun[]
+  deliverables Deliverable[]
+
+  @@index([userId, createdAt(sort: Desc)], name: "idx_projects_user")
+  @@index([status, createdAt(sort: Desc)], name: "idx_projects_status")
+  @@index([clientId], name: "idx_projects_client")
+  @@map("projects")
+}
+
+// ================================================================
+// PIPELINE RUNS
+// ================================================================
+
+model PipelineRun {
+  id             String            @id @default(cuid())
+  projectId      String
+  status         PipelineRunStatus @default(RUNNING)
+  startedAt      DateTime          @default(now())
+  completedAt    DateTime?
+  currentStage   String?           // Stage ID currently executing
+  startFromStage String?           // Restart point (null = full run)
+  error          String?           @db.Text
+  totalTokens    Int               @default(0)
+  totalCost      Float             @default(0)
+  metadata       Json?             // Run-level metadata (trigger source, etc.)
+
+  // Relations
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stageResults StageResult[]
+
+  @@index([projectId, startedAt(sort: Desc)], name: "idx_runs_project")
+  @@index([status], name: "idx_runs_status")
+  @@map("pipeline_runs")
+}
+
+// ================================================================
+// STAGE RESULTS
+// ================================================================
+
+model StageResult {
+  id            String      @id @default(cuid())
+  runId         String
+  stageId       String      // discovery, design_analysis, market_research, architecture, code_generation, deliverables
+  stageOrder    Int         // 1-6 execution order
+  status        StageStatus @default(PENDING)
+  output        String?     @db.Text // Full stage output (markdown)
+  outputJson    Json?       // Parsed structured data if available
+  inputTokens   Int         @default(0)
+  outputTokens  Int         @default(0)
+  durationMs    Int         @default(0)
+  promptVersion String?     // Version of prompt template used
+  retryCount    Int         @default(0)
+  error         String?     @db.Text
+  startedAt     DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+
+  // Relations
+  run PipelineRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, stageId], name: "unique_run_stage")
+  @@index([runId, stageOrder], name: "idx_results_run_order")
+  @@index([stageId, status], name: "idx_results_stage_status")
+  @@map("stage_results")
+}
+
+// ================================================================
+// DELIVERABLES
+// ================================================================
+
+model Deliverable {
+  id          String           @id @default(cuid())
+  projectId   String
+  type        DeliverableType
+  format      DeliverableFormat
+  title       String           // Human-readable title
+  content     String?          @db.Text // Inline content for markdown/text deliverables
+  fileUrl     String?          // R2/S3 URL for file deliverables (Phase 2)
+  fileSize    Int?             // File size in bytes
+  metadata    Json?            // Type-specific metadata (page count, file count, etc.)
+  generatedAt DateTime         @default(now())
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], name: "idx_deliverables_project")
+  @@index([type], name: "idx_deliverables_type")
+  @@map("deliverables")
+}
+
+// ================================================================
+// PROMPT TEMPLATES
+// ================================================================
+
+model PromptTemplate {
+  id           String   @id @default(cuid())
+  stageId      String   // Stage this prompt belongs to
+  version      String   // Semantic version (1.0, 1.1, 2.0, etc.)
+  isActive     Boolean  @default(true)
+  name         String   // Human-readable name (e.g., "Business Discovery v1.2")
+  description  String?  // What this version changed
+  systemPrompt String   @db.Text
+  userTemplate String   @db.Text // Template with {{variable}} placeholders
+  model        String   @default("claude-sonnet-4-20250514")
+  temperature  Float    @default(0.3)
+  maxTokens    Int      @default(4000)
+  tools        Json     @default("[]") // Array of tool configs
+  metadata     Json?    // Notes, test results, performance metrics
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([stageId, version], name: "unique_stage_version")
+  @@index([stageId, isActive], name: "idx_prompts_active")
+  @@map("prompt_templates")
+}
+
+// ================================================================
+// API USAGE TRACKING
+// ================================================================
+
+model ApiUsageLog {
+  id           String   @id @default(cuid())
+  userId       String
+  projectId    String?
+  runId        String?
+  stageId      String?
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  cost         Float    // Calculated cost based on model pricing
+  durationMs   Int
+  success      Boolean
+  error        String?
+  createdAt    DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)], name: "idx_usage_user")
+  @@index([projectId], name: "idx_usage_project")
+  @@index([createdAt(sort: Desc)], name: "idx_usage_date")
+  @@map("api_usage_logs")
+}
+
+// ================================================================
+// APP SETTINGS (Key-Value Store)
+// ================================================================
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String   // Setting key (e.g., "default_model", "notifications_enabled")
+  value     String   @db.Text // JSON-encoded value
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, key], name: "unique_user_setting")
+  @@map("app_settings")
+}

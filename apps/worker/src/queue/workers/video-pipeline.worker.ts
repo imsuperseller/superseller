@@ -7,7 +7,7 @@ import { logger } from "../../utils/logger";
 import { scrapeZillowListing } from "../../services/apify";
 import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } from "../../services/floorplan-analyzer";
 import { generateClipPrompts } from "../../services/prompt-generator";
-import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration } from "../../services/ffmpeg";
+import { normalizeClip, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, type TextOverlaySpec } from "../../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
@@ -73,7 +73,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         const p = JSON.parse(raw);
                         const arr = Array.isArray(p) ? p : (p?.urls || p?.photos || []);
                         flatPhotos.push(...arr.map(extractPhotoUrl).filter((u: any): u is string => !!u));
-                    } catch (_) {}
+                    } catch (_) { }
                 }
                 if (flatPhotos.length >= 2) {
                     const PHOTO_FETCH_MS = 30_000;
@@ -110,17 +110,19 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
 
-            // 2. Floorplan Analysis (if exists)
+            // 2. Floorplan Analysis (REQUIRED — fail if no floorplan from upload or auto-detection)
+            if (!listing.floorplan_url) {
+                await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2",
+                    ["Floorplan required: no floorplan uploaded and none detected in listing photos. Please provide a floorplan image.", jobId]);
+                throw new UnrecoverableError("Floorplan required: no floorplan uploaded and none detected in listing photos");
+            }
+
             let tourRooms: TourRoom[] = listing.tour_sequence || [];
             if (listing.floorplan_url && !listing.floorplan_analysis) {
-                try {
-                    const analysis = await analyzeFloorplan(listing.floorplan_url, listing);
-                    await query("UPDATE listings SET floorplan_analysis = $1 WHERE id = $2", [JSON.stringify(analysis), listingId]);
-                    tourRooms = buildTourSequence(analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
-                    await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
-                } catch (err: any) {
-                    logger.warn({ msg: "Floorplan analysis failed, proceeding without it", error: err.message });
-                }
+                const analysis = await analyzeFloorplan(listing.floorplan_url, listing);
+                await query("UPDATE listings SET floorplan_analysis = $1 WHERE id = $2", [JSON.stringify(analysis), listingId]);
+                tourRooms = buildTourSequence(analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
+                await query("UPDATE video_jobs SET tour_sequence = $1 WHERE id = $2", [JSON.stringify(tourRooms), jobId]);
             } else if (listing.floorplan_analysis && tourRooms.length === 0) {
                 tourRooms = buildTourSequence(listing.floorplan_analysis, { bedrooms: listing.bedrooms, bathrooms: listing.bathrooms });
             }
@@ -152,19 +154,23 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 logger.info({ msg: "Capped tour to max clips", maxClips });
             }
 
-            // 3. Generate Prompts (realtor-centric when user has avatar)
-            await updateJobStatus(jobId, "generating_prompts", 15);
+            // 3. Check if resuming (clips already exist) — skip prompt generation if so
+            const existingClips = await query("SELECT 1 FROM clips WHERE video_job_id = $1 LIMIT 1", [jobId]);
+            const isResume = existingClips.length > 0;
+
+            // 3b. Generate Prompts (skip if resuming with existing clips)
+            await updateJobStatus(jobId, isResume ? "generating_clips" : "generating_prompts", 15);
             const user = await queryOne("SELECT avatar_url FROM users WHERE id = $1", [userId]);
             const avatarUrlRaw = user?.avatar_url;
             let avatarPublic: string | null = null;
             if (avatarUrlRaw && avatarUrlRaw.startsWith("http")) {
                 try {
-            const FETCH_TIMEOUT_MS = 30_000;
-            const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
-                if (!url || !url.startsWith("http")) return null;
-                if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
-                try {
-                    const resp = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+                    const FETCH_TIMEOUT_MS = 30_000;
+                    const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
+                        if (!url || !url.startsWith("http")) return null;
+                        if (url.includes(config.r2.publicUrl || "r2.dev")) return url;
+                        try {
+                            const resp = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
                             if (!resp.ok) return null;
                             const ext = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] || "jpg";
                             const localPath = join(workDir, `_fetch_${label}.${ext}`);
@@ -200,26 +206,30 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 logger.info({ msg: "Using Kling Elements for realtor reference", avatarUrl: avatarPublic });
             }
 
-            // Enrich property context with deep data
-            const prompts = await generateClipPrompts(tourRooms, {
-                property_type: listing.property_type,
-                description: listing.description || listing.address,
-                style: listing.music_style,
-                includeRealtor,
-                resoFacts: listing.floorplan_analysis?.property_characteristics || {},
-                amenities: listing.floorplan_analysis?.rooms?.map((r: any) => r.name) || [],
-                heroFeatures: heroResult.heroFeatures,
-            });
+            // Enrich property context with deep data (skip if resuming)
+            let trimmedPrompts: any[] = [];
+            if (!isResume) {
+                const prompts = await generateClipPrompts(tourRooms, {
+                    property_type: listing.property_type,
+                    description: listing.description || listing.address,
+                    style: listing.music_style,
+                    includeRealtor,
+                    resoFacts: listing.floorplan_analysis?.property_characteristics || {},
+                    amenities: listing.floorplan_analysis?.rooms?.map((r: any) => r.name) || [],
+                    heroFeatures: heroResult.heroFeatures,
+                });
 
-            if (prompts.length === 0) {
-                throw new UnrecoverableError("No clip prompts generated. Ensure listing has a valid tour sequence."); // No retry—data/logic issue
+                if (prompts.length === 0) {
+                    throw new UnrecoverableError("No clip prompts generated. Ensure listing has a valid tour sequence."); // No retry—data/logic issue
+                }
+                // Trim prompts to maxClips—LLM may return extra; Nano/Kling cost scales with clip count
+                trimmedPrompts = prompts.slice(0, maxClips).map((p, i) => ({ ...p, clip_number: i + 1 }));
+            } else {
+                logger.info({ msg: "Resume detected — skipping prompt generation, using existing clips", jobId });
             }
-            // Trim prompts to maxClips—LLM may return extra; Nano/Kling cost scales with clip count
-            const trimmedPrompts = prompts.slice(0, maxClips).map((p, i) => ({ ...p, clip_number: i + 1 }));
 
-            // 4. Create Clip Records (skip if retry - clips already exist)
-            const existingClips = await query("SELECT 1 FROM clips WHERE video_job_id = $1 LIMIT 1", [jobId]);
-            if (existingClips.length === 0) {
+            // 4. Create Clip Records (skip if resuming)
+            if (!isResume) {
                 await transaction(async (client) => {
                     for (const p of trimmedPrompts) {
                         const promptText = (p.prompt && String(p.prompt).trim()) || `Cinematic property tour clip.`;
@@ -452,10 +462,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     lastFrameUrl = clip.end_frame_url || await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                     const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                    await normalizeClip(videoPath, normalizedPath, {
-                        width: config.video.outputWidth,
-                        height: config.video.outputHeight,
-                    });
+                    await normalizeClip(videoPath, normalizedPath);
                     clipFiles.push(normalizedPath);
 
                     const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
@@ -497,8 +504,12 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 let clipElements: KlingElement[] | undefined;
 
                 if (realtorElements && includeRealtor) {
-                    // Kling Elements mode: native character reference across ALL clips
-                    klingPrompt = buildElementsKlingPrompt(clip);
+                    // Kling Elements mode: use pre-seeded custom prompt if it references @realtor,
+                    // otherwise fall back to template. Enables custom per-clip creative direction.
+                    const storedPrompt = ((clip as any).prompt || "").trim();
+                    klingPrompt = storedPrompt.includes("@realtor")
+                        ? storedPrompt
+                        : buildElementsKlingPrompt(clip);
                     clipElements = realtorElements;
                 } else if (thisClipHasComposite) {
                     // Nano Banana composite mode: person is in the start frame
@@ -515,10 +526,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     realtor_in_frame: thisClipHasComposite,
                     kling_elements: clipElements,
                     negative_prompt: (clip as any).negative_prompt,
-                    mode: config.video.klingMode, // pro=1080p native; std=720p (causes blur when upscaled)
+                    mode: config.video.klingMode,
                     aspect_ratio: "16:9",
                     model: "kling-3.0/video",
                     duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
+                    to_room: (clip as any).to_room,
                 });
 
                 await CreditManager.deductCredits(userId, 10, "kling_video", jobId, { taskId, clipIdx: clip.clip_number });
@@ -540,10 +552,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 lastFrameUrl = await uploadToR2(lastFramePath, buildR2Key(userId, jobId, `frames/clip_${clip.clip_number}_end.jpg`));
 
                 const normalizedPath = join(workDir, `clip_${clip.clip_number}_norm.mp4`);
-                await normalizeClip(videoPath, normalizedPath, {
-                    width: config.video.outputWidth,
-                    height: config.video.outputHeight,
-                });
+                await normalizeClip(videoPath, normalizedPath);
                 clipFiles.push(normalizedPath);
 
                 await query(
@@ -614,22 +623,89 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const masterPath = join(workDir, "master.mp4");
             await addMusicOverlay(masterSilentPath, musicPath, masterPath);
 
-            // 7b. Text Overlays (stub — pass-through until implemented)
+            // 7b. Text Overlays — property address, room labels, CTA
             const masterWithOverlaysPath = join(workDir, "master_with_overlays.mp4");
+            const overlaySpecs: TextOverlaySpec[] = [];
             let cumSec = 0;
-            const overlaySpecs = clips.map((c) => {
+            for (let i = 0; i < clips.length; i++) {
+                const c = clips[i] as any;
                 const start = cumSec;
-                const dur = (c as any).duration_seconds ?? config.video.defaultClipDuration;
+                const dur = c.duration_seconds ?? config.video.defaultClipDuration;
                 cumSec += dur;
-                return {
-                    text: (c as any).to_room || "Room",
-                    startSeconds: start,
-                    durationSeconds: 2,
-                    position: "bottom" as const,
-                };
-            });
+                const isOpening = i === 0;
+                const isClosing = i === clips.length - 1 && clips.length > 1;
+
+                if (isOpening) {
+                    // Property address (bottom)
+                    if (listing.address) {
+                        overlaySpecs.push({
+                            text: String(listing.address),
+                            startSeconds: start + 0.5,
+                            durationSeconds: Math.min(dur - 1, 4),
+                            position: "bottom",
+                            fontSize: "large",
+                            fadeInSeconds: 0.7,
+                            fadeOutSeconds: 0.7,
+                        });
+                    }
+                    // Price (top)
+                    if (listing.price != null) {
+                        const raw = String(listing.price).trim();
+                        const priceText = raw.startsWith("$") ? raw
+                            : `$${parseInt(raw.replace(/[^0-9]/g, ""), 10).toLocaleString("en-US")}`;
+                        if (priceText && priceText !== "$NaN") {
+                            overlaySpecs.push({
+                                text: priceText,
+                                startSeconds: start + 1,
+                                durationSeconds: Math.min(dur - 1.5, 3.5),
+                                position: "top",
+                                fontSize: "xlarge",
+                                fadeInSeconds: 0.7,
+                                fadeOutSeconds: 0.7,
+                            });
+                        }
+                    }
+                } else if (isClosing) {
+                    // CTA on closing clip (center)
+                    overlaySpecs.push({
+                        text: "Schedule Your Tour Today",
+                        startSeconds: start + 1,
+                        durationSeconds: Math.min(dur - 1.5, 3.5),
+                        position: "center",
+                        fontSize: "xlarge",
+                        fadeInSeconds: 0.8,
+                        fadeOutSeconds: 0.8,
+                    });
+                    // Room label (bottom, smaller)
+                    const roomName = c.to_room;
+                    if (roomName && roomName !== "Exterior") {
+                        overlaySpecs.push({
+                            text: roomName,
+                            startSeconds: start + 0.3,
+                            durationSeconds: 2.5,
+                            position: "bottom",
+                            fontSize: "medium",
+                            fadeInSeconds: 0.5,
+                            fadeOutSeconds: 0.5,
+                        });
+                    }
+                } else {
+                    // Middle clips: room label
+                    const roomName = c.to_room || "";
+                    if (roomName) {
+                        overlaySpecs.push({
+                            text: roomName,
+                            startSeconds: start + 0.3,
+                            durationSeconds: 2.5,
+                            position: "bottom",
+                            fontSize: "medium",
+                            fadeInSeconds: 0.5,
+                            fadeOutSeconds: 0.5,
+                        });
+                    }
+                }
+            }
             await addTextOverlays(masterPath, masterWithOverlaysPath, overlaySpecs);
-            // Use overlay output for variants (when implemented); for now stub copies masterPath
             const masterForExport = overlaySpecs.length > 0 ? masterWithOverlaysPath : masterPath;
 
             // 8. Generate Variants & Upload

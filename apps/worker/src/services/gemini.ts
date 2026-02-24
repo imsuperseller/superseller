@@ -2,8 +2,8 @@ import { config } from "../config";
 import { logger } from "../utils/logger";
 import axios from "axios";
 // State-of-the-Art 2026 Models (Gemini 3.0 Series via Kie AI)
-const DEFAULT_TEXT_MODEL = "google/gemini-3-pro";
-const DEFAULT_VISION_MODEL = "google/gemini-3-pro";
+const DEFAULT_TEXT_MODEL = "google/gemini-2.5-flash";
+const DEFAULT_VISION_MODEL = "google/gemini-2.5-flash";
 
 export async function geminiChatCompletion(
     messages: any[],
@@ -73,7 +73,7 @@ export async function geminiVisionAnalysis(
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-3-pro/v1/chat/completions`,
+            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             {
                 messages: [
                     {
@@ -155,7 +155,7 @@ When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the 
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-3-pro/v1/chat/completions`,
+            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             {
                 messages: [{ role: "user", content }],
                 stream: false,
@@ -200,7 +200,7 @@ Reply with ONLY a single integer (0, 1, 2, ... or -1).`,
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-3-pro/v1/chat/completions`,
+            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
             { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` } }
         );
@@ -243,7 +243,7 @@ Rules: Exterior/Front Door → photo of front of house, pathway, or door. Kitche
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-3-pro/v1/chat/completions`,
+            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
             { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` } }
         );

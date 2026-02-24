@@ -48,8 +48,10 @@ Client-specific implementations and deliverables.
 
 | Workflow | Client / Project |
 |----------|------------------|
-| AI Garage Door Lead Analysis Workflow | UAD Garage Doors |
-| Automated Facebook Marketplace Listing Generator | UAD, Miss Party (shared engine) |
+| AI Garage Door Lead Analysis Workflow (U6EZ2iLQ4zCGg31H) | UAD Garage Doors — ACTIVE, 5 triggers, emails to service@rensto.com |
+| Miss Party Lead Analysis Workflow (9gfvZo9sB4b3pMWQ) | Miss Party — ACTIVE, 5 triggers (recreated Feb 22, old ID U6LqmzNwiKTkd0gM deleted) |
+| Telnyx Voice AI "Hope" | Rensto sales agent — NOT for customer calls (0 executions) |
+| Automated Facebook Marketplace Listing Generator | UAD, Miss Party — SUPERSEDED by content-generator.js |
 | Samson Core Automated Hebrew and English Content Pipeline | Samson |
 | SAMSON-WEB: AI-Driven Competitor Analysis and Landing Page Builder | Samson |
 | Golden Art Photography WhatsApp AI Workflow | Golden Art |
@@ -75,6 +77,6 @@ B2B and nurture workflows (may be internal or productized).
 
 ---
 
-## Cross-reference: n8n rensto (Platform)
+## Cross-reference: Master Automation
 
-For **how** to build n8n workflows (patterns, MCP, skills, B.L.A.S.T.), use the **n8n rensto** notebook: [n8n rensto](https://notebooklm.google.com/notebook/f360003f-eebb-4085-a141-72fe7909c6db)
+For **how** to build n8n workflows (patterns, MCP, skills, B.L.A.S.T.) and Antigravity automation, use the **Master: Automation & Core Infra** notebook: [Master: Automation & Core Infra](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529)

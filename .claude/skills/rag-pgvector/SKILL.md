@@ -6,6 +6,23 @@ description: >-
   Ollama configuration, or multi-tenant document stores. Not for video pipeline work, UI design,
   or general database migrations unrelated to vector search.
   Example: "Set up pgvector with HNSW indexing for client document RAG".
+autoTrigger:
+  - "RAG"
+  - "pgvector"
+  - "vector search"
+  - "embedding"
+  - "Ollama"
+  - "LiteLLM"
+  - "document store"
+  - "semantic search"
+  - "HNSW"
+  - "hybrid search"
+negativeTrigger:
+  - "video pipeline"
+  - "UI design"
+  - "n8n"
+  - "stripe"
+  - "schema migration"
 ---
 
 # RAG + pgvector Stack

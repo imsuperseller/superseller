@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifySession } from '@/lib/auth';
 import { auditAgent } from '@/lib/agents/ServiceAuditAgent';
 import * as dbAdmin from '@/lib/db/admin';
 export async function GET(request: NextRequest) {
     try {
+        const session = await verifySession();
+        if (!session.isValid || session.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 

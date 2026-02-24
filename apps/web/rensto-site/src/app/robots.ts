@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/legal/privacy-policy', '/api/'],
+      disallow: ['/api/', '/app/', '/admin/', '/video/'],
     },
     sitemap: 'https://rensto.com/sitemap.xml',
   };

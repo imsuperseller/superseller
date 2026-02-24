@@ -12,6 +12,7 @@
 | rensto.com, www.rensto.com, admin.rensto.com | **rensto-site** | `apps/web/rensto-site` | **No** — manual deploy |
 | api.rensto.com | **api-rensto-site** | `apps/web/rensto-site` | **Yes** — Git push → deploy |
 | rensto.vercel.app | **rensto** | `apps/web/rensto-site` | No |
+| studio.rensto.com (pending DNS) | **studio** | `apps/studio` | **No** — manual `vercel --prod` |
 
 **Note**: `admin.rensto.com` is served by rensto-site. Middleware rewrites requests to `/admin/*`. The stale `rensto-admin` project was removed Feb 2026.
 
