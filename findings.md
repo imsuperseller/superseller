@@ -6,6 +6,79 @@
 
 ---
 
+## 2026-02-24
+
+### TourReel — Music Reuse Instead of Suno Generation (NEVER REPEAT)
+
+**Root cause**: Video pipeline logic prioritized database track reuse over Suno generation. Lines 587-592 in `video-pipeline.worker.ts` queried `music_tracks` table for ANY existing track and used it BEFORE trying Suno. This caused all videos to reuse the same track instead of generating fresh music.
+
+**Original (WRONG) logic:**
+1. If `music_track_id` set → use that track
+2. Else query database for least-used track → **USE IT** (stopped here)
+3. Only if database empty → generate via Suno
+
+**Fix**: Reversed priority so Suno is PRIMARY, database is fallback:
+1. If `music_track_id` explicitly set → use that track (user's choice)
+2. **Else generate fresh via Suno (PRIMARY PATH)**
+3. Only if Suno fails or credits exhausted → fall back to database tracks
+4. Final fallback: SoundHelix public domain track
+
+**Rule**: Music generation MUST use Suno for every new video unless `music_track_id` is explicitly set. Database tracks are fallback for failures only, never primary.
+
+**Deploy**: Fixed in video-pipeline.worker.ts lines 576-616, deployed Feb 24, 2026.
+
+---
+
+### TourReel — FFmpeg drawtext Filter Missing (NEVER REPEAT)
+
+**Root cause**: FFmpeg static build from johnvansickle.com (version 7.0.2) was missing the `drawtext` filter despite claiming `--enable-libfreetype` in configuration. The daily auto-update cron (`tools/update-ffmpeg.sh`) installed this broken build on Feb 24 at midnight, causing text overlay failures.
+
+**Symptom**: Assembly phase failed with `[AVFilterGraph] No such filter: 'drawtext'` after successfully stitching all clips.
+
+**Fix**: Switched from johnvansickle static build to Ubuntu package repository FFmpeg (version 6.1.1) which includes full codec support:
+```bash
+# Renamed static build to .bak
+mv /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg.static.bak
+mv /usr/local/bin/ffprobe /usr/local/bin/ffprobe.static.bak
+
+# Now using /usr/bin/ffmpeg (Ubuntu 6.1.1) with drawtext support
+```
+
+**Root cause analysis**: Johnvansickle static builds may be compiled without certain filters to reduce binary size. The auto-updater script blindly pulls the latest "release" build without validating filter availability.
+
+**Rule**: Prefer Ubuntu package repo FFmpeg over static builds for production. If using static builds, validate critical filters (`ffmpeg -filters | grep drawtext`) after installation.
+
+**Deploy**: Fixed on RackNerd Feb 24, 2026. Disabled daily auto-update cron until static build issue resolved.
+
+---
+
+### TourReel — Timestamp Bug in Text Overlays (NEVER REPEAT)
+
+**Root cause**: PostgreSQL `numeric` type fields (`duration_seconds`) are returned as **strings** by node-postgres, not numbers. When the pipeline accumulated timestamps with `cumSec += dur` (line 634), if `dur` was a string, JavaScript performed string concatenation instead of arithmetic addition.
+
+**Example failure:**
+```javascript
+let cumSec = 0;
+const dur = "10";  // String from Postgres
+cumSec += dur;     // "010" (string concat!)
+cumSec += "5";     // "0105" (more concat)
+cumSec + 0.3;      // "01050.3" → malformed timestamp in FFmpeg filter
+```
+
+**FFmpeg error**: `enable='between(t\,010.005.005.000.3\,...)'` (garbage timestamps)
+
+**Fix**: Parse `duration_seconds` as float before accumulation:
+```typescript
+const dur = parseFloat(c.duration_seconds) || config.video.defaultClipDuration;
+cumSec += dur;  // Now arithmetic addition
+```
+
+**Rule**: ALWAYS parse numeric fields from Postgres before arithmetic operations. Never assume node-postgres returns numbers for `numeric`/`decimal` types.
+
+**Deploy**: Fixed in video-pipeline.worker.ts line 621, deployed Feb 24, 2026.
+
+---
+
 ## 2026-02-23
 
 ### FB Marketplace Bot — Empty Queue / No Postings for 3 Days (NEVER REPEAT)

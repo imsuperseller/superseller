@@ -573,46 +573,64 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 boundaryFramePaths: boundaryFramePaths.length >= clipFiles.length - 1 ? boundaryFramePaths : undefined,
             });
 
-            // 7. Add Music (Strictly Kie Suno)
+            // 7. Add Music (Suno as PRIMARY, database fallback only on failure)
             await updateJobStatus(jobId, "adding_music", 85);
             let musicUrl: string | null = null;
 
+            // Path 1: Explicit track selection (user's choice via music_track_id)
             if (listing.music_track_id) {
                 const track = await queryOne("SELECT r2_url FROM music_tracks WHERE id = $1", [listing.music_track_id]);
-                if (track) musicUrl = track.r2_url;
+                if (track) {
+                    musicUrl = track.r2_url;
+                    logger.info({ msg: "Using pre-selected music track", trackId: listing.music_track_id });
+                }
             }
 
+            // Path 2: PRIMARY — Generate fresh music via Suno for each video (unless explicitly selected above)
             if (!musicUrl) {
                 try {
-                    const bestTrack = await queryOne(
-                        "SELECT r2_url FROM music_tracks WHERE is_active = true ORDER BY play_count ASC LIMIT 1",
-                        []
-                    );
-                    if (bestTrack?.r2_url) musicUrl = bestTrack.r2_url;
-                } catch (_) { }
-            }
-
-            // Fallback: Generate custom music via Kie Suno if still missing
-            if (!musicUrl) {
-                try {
-                    logger.info({ msg: "Generating custom music via Kie Suno", style: listing.music_style });
+                    logger.info({ msg: "Generating fresh music via Kie Suno (primary path)", style: listing.music_style });
                     const { createSunoTask, waitForTask } = await import("../../services/kie");
                     const taskId = await createSunoTask({
-                        prompt: `Cinematic real estate background music, ${listing.music_style || "modern luxury lounge"}, high-end production, no vocals`,
+                        prompt: `Cinematic real estate background music, ${listing.music_style || "elegant modern"}, high-end production quality, no vocals, instrumental only`,
                         instrumental: true,
                         model: "V3_5",
                     });
 
-                    // Deduct for Suno music
+                    // Deduct for Suno music generation
                     await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
 
                     const status = await waitForTask(taskId, "suno");
                     musicUrl = (status as any).result?.audio_url || null;
+
+                    if (musicUrl) {
+                        logger.info({ msg: "Suno music generated successfully", taskId });
+                    }
                 } catch (err: any) {
-                    logger.warn({ msg: "Kie Suno failed, using SoundHelix fallback", error: err.message });
-                    musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                    logger.error({ msg: "Kie Suno generation failed (primary path), falling back to database", error: err.message });
                 }
-                if (!musicUrl) musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+            }
+
+            // Path 3: Database fallback (only if Suno fails or credits exhausted)
+            if (!musicUrl) {
+                try {
+                    const fallbackTrack = await queryOne(
+                        "SELECT r2_url FROM music_tracks WHERE is_active = true ORDER BY play_count ASC LIMIT 1",
+                        []
+                    );
+                    if (fallbackTrack?.r2_url) {
+                        musicUrl = fallbackTrack.r2_url;
+                        logger.warn({ msg: "Using database track as fallback (Suno unavailable)" });
+                    }
+                } catch (_) {
+                    logger.warn({ msg: "Database track fallback also failed" });
+                }
+            }
+
+            // Path 4: Final fallback (public domain track)
+            if (!musicUrl) {
+                musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                logger.warn({ msg: "Using SoundHelix public domain track (all generation paths failed)" });
             }
 
             if (!musicUrl) throw new Error("Could not acquire or generate music via Kie AI.");
