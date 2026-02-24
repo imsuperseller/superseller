@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the landing page + owner email for fallback notification
-    const landingPage = await prisma.landingPage.findUnique({
+    const landingPage = await prisma.landingPage.findFirst({
       where: { slug, active: true },
       include: { user: { select: { email: true, name: true } } },
     });
