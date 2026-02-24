@@ -206,6 +206,48 @@ User raised critical question: **"When do we test each agent to ensure it's full
 
 **Gap closed**: Customers now get email notifications for marketplace listing status (previously zero visibility)
 
+### Forge Credit Billing Fix — CRITICAL BUG FIXED
+
+**Task**: Verify credit deduction accuracy (discovered 86-206% overcharging bug)
+
+**Discovery** (Feb 23 PM):
+- Specification: Forge costs **50 credits per video** (crew.ts:36, PRODUCT_BIBLE.md:76)
+- Web app: Deducts 50 credits upfront ✅ (from-zillow/route.ts:89)
+- Worker: **ALSO deducted credits per-API-call** ❌ (video-pipeline.worker.ts)
+  - Nano Banana opening: 2 credits
+  - Nano Banana per room: 2 credits each
+  - Kling video per clip: 10 credits each
+  - Suno music: 5 credits
+- **Total charge**: 50 (upfront) + 19-100+ (per-API) = **69-150+ credits**
+
+**Example overcharges**:
+| Listing Size | Promised | Actual | Overcharge |
+|--------------|----------|--------|------------|
+| 3-room | 50 | 93 | +86% |
+| 5-room | 50 | 117 | +134% |
+| 8-room | 50 | 153 | +206% |
+
+**Customer impact**:
+- Would lead to immediate "I was promised 50 credits" complaints
+- Billing fraud risk (charging 2-3× promised amount)
+- **Blocks public launch** until fixed
+
+**Fix** (Commit: `c314b9d`):
+1. ✅ Removed all 4 per-API-call deductions from video-pipeline.worker.ts:
+   - Line 392: Nano opening (commented out)
+   - Line 423: Nano per room (commented out)
+   - Line 542: Kling video (commented out)
+   - Line 607: Suno music (commented out)
+2. ✅ Verified refund logic: On failure, refunds full 50 credits ✅
+3. ✅ Deployed to RackNerd: PM2 restart successful, worker healthy
+
+**Billing now correct**:
+- All jobs: **Exactly 50 credits** (regardless of complexity)
+- Failed jobs: Full 50-credit refund
+- Matches Market pattern (fixed 25 credits per listing)
+
+**Gap closed**: Forge now charges exactly 50 credits as promised (no more overcharging)
+
 **Remaining Market tasks**:
 - Update webhook-server.js on RackNerd to call refund webhook
 - Add API key authentication to webhook endpoint
