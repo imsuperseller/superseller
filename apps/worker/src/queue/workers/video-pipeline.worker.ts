@@ -16,6 +16,7 @@ import { deriveHeroFeatures } from "../../services/hero-features";
 import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
 import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
 import { CreditManager } from "../../services/credits";
+import { NotificationService } from "../../services/notification";
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { config } from "../../config";
@@ -746,22 +747,65 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             logger.info({ msg: "Video pipeline complete", jobId });
 
+            // 11. Notify customer (email)
+            try {
+                const userRow = await queryOne("SELECT email FROM users WHERE id = $1", [userId]);
+                if (userRow?.email) {
+                    await NotificationService.notifyVideoComplete({
+                        userId,
+                        jobId,
+                        userEmail: userRow.email,
+                        listingAddress: listing.address,
+                        masterVideoUrl: masterUrl,
+                        verticalVideoUrl: verticalUrl,
+                        squareVideoUrl: squareUrl,
+                        portraitVideoUrl: portraitUrl,
+                        durationSeconds: masterDuration,
+                    });
+                } else {
+                    logger.warn({ msg: "User email not found, skipping notification", userId, jobId });
+                }
+            } catch (notifErr: any) {
+                // Don't fail the job if notification fails
+                logger.error({ msg: "Failed to send completion notification", jobId, error: notifErr.message });
+            }
+
         } catch (err: any) {
             logger.error({ msg: "Video pipeline failed", jobId, error: err.message });
 
             // Refund strategy: calculate what was spent on THIS job and refund
+            let refundAmount = 0;
             try {
                 const spent = await queryOne(
                     "SELECT ABS(SUM(amount)) as total FROM usage_events WHERE job_id = $1 AND type = 'debit'",
                     [jobId]
                 );
-                const refundAmount = Number(spent?.total || 0);
+                refundAmount = Number(spent?.total || 0);
                 if (refundAmount > 0) {
                     await CreditManager.refundCredits(userId, refundAmount, jobId, `Job failed: ${err.message}`);
                     logger.info({ msg: "Automatic refund processed", jobId, userId, refundAmount });
                 }
             } catch (refundErr: any) {
                 logger.error({ msg: "Failed to process automatic refund", jobId, error: refundErr.message });
+            }
+
+            // Notify customer about failure (email)
+            try {
+                const userRow = await queryOne("SELECT email FROM users WHERE id = $1", [userId]);
+                const listingRow = await queryOne("SELECT address FROM listings WHERE id = $1", [listingId]);
+                if (userRow?.email) {
+                    await NotificationService.notifyVideoFailed({
+                        userId,
+                        jobId,
+                        userEmail: userRow.email,
+                        listingAddress: listingRow?.address,
+                        errorMessage: err.message,
+                        creditsRefunded: refundAmount,
+                    });
+                }
+            } catch (notifErr: any) {
+                // Don't mask the original error if notification fails
+                logger.error({ msg: "Failed to send failure notification", jobId, error: notifErr.message });
             }
 
             await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [err.message, jobId]);

@@ -85,6 +85,37 @@ User raised critical question: **"When do we test each agent to ensure it's full
 **Why NOT Option C (Defer)**: Would lead to launch → complaints → emergency fixes → refunds → reputation damage
 
 **Next action**: Execute Week 1 Agent Audit (Forge first)
+
+### Week 1 Execution: Forge Notification System — COMPLETE
+
+**Task**: Add customer notification system (email on job complete/fail)
+
+**Implementation** (Feb 23 PM):
+1. ✅ Created `apps/worker/src/services/notification.ts`:
+   - `NotificationService` class with email notifications via Resend
+   - `notifyVideoComplete()` — sends 4-format download links to customer
+   - `notifyVideoFailed()` — sends error details + credits refunded message
+   - Professional HTML email templates (Rensto-branded, dark theme)
+
+2. ✅ Integrated into `video-pipeline.worker.ts`:
+   - Line 747: Call `notifyVideoComplete()` after job completion
+   - Line 788: Call `notifyVideoFailed()` after error handling + refund
+   - Queries user email from `users` table
+   - Failures don't block job completion (logged only)
+
+3. ✅ Email templates include:
+   - **Complete**: Property address, duration, 4 download buttons (16:9, 9:16, 1:1, 4:5), usage guide
+   - **Failed**: Error message (sanitized), credits refunded amount, "Try Again" button, support contact
+
+4. ✅ Build verified: `npm run build` passed
+
+**Gap closed**: Customers now get notified when videos complete or fail (previously zero notifications)
+
+**Remaining Forge tasks**:
+- End-to-end testing with 10 Zillow URLs
+- Quality benchmarking vs competitors
+- Credit accuracy verification
+- Performance metrics documentation
 - **Spoke** (Spokesperson): Live, needs audit ⚠️
 - **Market** (Marketplace): Just added, needs full integration + audit ❌
 - **FrontDesk** (Voice AI): Coming soon, not wired to credits ❌
