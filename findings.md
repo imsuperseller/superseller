@@ -56,6 +56,21 @@
 - Fallback provider or graceful degradation
 - Health monitoring and customer communication
 
+**Resolution** (Feb 24, 2026 @ 23:50 PST):
+
+The "Kie.ai outage" was actually **MY BUG**. Kie.ai was UP the entire time. Root cause of 0% success rate:
+
+1. **Missing `/api` path in gemini.ts**: Used `config.kie.baseUrl` (`https://api.kie.ai`) instead of `https://api.kie.ai/api` → 500 errors
+   - **Fix**: Added `const KIE_BASE = "https://api.kie.ai/api"` and used it in all axios.post calls
+2. **Non-existent model**: Used `gemini-2.5-flash` which doesn't exist at Kie.ai → 404 errors
+   - **Fix**: Changed DEFAULT_TEXT_MODEL from `gemini-2.5-flash` to `gemini-3-flash` (the only model Kie.ai proxies)
+3. **No retry logic**: Zero resilience even if errors were transient
+   - **Fix**: Added `withRetry()` wrapper to all Kie.ai API calls (3 attempts, 2^n backoff, error status preservation)
+
+After fixes: ✅ Kie.ai Vision API working, ✅ Kling video generation working, ✅ Videos generating successfully.
+
+**Lesson**: When a third-party API "fails", verify YOUR integration is correct before blaming their infrastructure. The API endpoints, model names, and authentication must match the provider's actual spec.
+
 **File**: Week 1 audit script at `apps/worker/tools/week1-forge-audit.ts`, full results in session logs.
 
 ---
