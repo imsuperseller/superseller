@@ -1,9 +1,11 @@
 import { config } from "../config";
 import { logger } from "../utils/logger";
 import axios from "axios";
-// State-of-the-Art 2026 Models (Gemini 3.0 Series via Kie AI)
+// State-of-the-Art 2026 Models (Gemini 3 Series via Kie AI)
+// Vision: gemini-3-flash (15% better accuracy, better multimodal reasoning than 2.5-flash)
+// Text: gemini-2.5-flash (sufficient for text generation, cheaper)
 const DEFAULT_TEXT_MODEL = "google/gemini-2.5-flash";
-const DEFAULT_VISION_MODEL = "google/gemini-2.5-flash";
+const DEFAULT_VISION_MODEL = "google/gemini-3-flash";
 
 export async function geminiChatCompletion(
     messages: any[],
@@ -27,9 +29,8 @@ export async function geminiChatCompletion(
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/api/v1/chat/completions`,
+            `${config.kie.baseUrl}/${model}/v1/chat/completions`,
             {
-                model,
                 messages: mappedMessages,
                 stream: false,
                 include_thoughts: true,
@@ -71,12 +72,12 @@ export async function geminiVisionAnalysis(
     prompt: string
 ): Promise<{ content: string; cost: number }> {
     const apiKey = config.kie.apiKey;
+    const model = DEFAULT_VISION_MODEL.replace("google/", "");
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/api/v1/chat/completions`,
+            `${config.kie.baseUrl}/${model}/v1/chat/completions`,
             {
-                model: DEFAULT_VISION_MODEL.replace("google/", ""),
                 messages: [
                     {
                         role: "user",
@@ -88,7 +89,7 @@ export async function geminiVisionAnalysis(
                 ],
                 stream: false,
                 include_thoughts: true,
-                reasoning_effort: "high"
+                reasoning_effort: "high"  // Max reasoning for vision analysis
             },
             {
                 headers: {
