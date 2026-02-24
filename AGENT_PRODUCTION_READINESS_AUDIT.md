@@ -276,11 +276,27 @@ We've built pricing ($299/$699/$1499), added Market as the 7th crew member, and 
 
 ---
 
-## Rollout Strategy
+## Rollout Strategy — APPROVED (Feb 23, 2026)
 
-### Phase 0: Audit Live Agents (Week 1)
+**Decision**: Option A — Sequential Audit-First approach approved after codebase research.
+
+**Research findings** (Feb 23):
+- Only **Forge** has credit system integration (pre-check, deduction, refund)
+- **Spoke** does NOT exist as standalone agent (only realtor composite in TourReel)
+- **Market** is standalone bot (96% feature complete) but NOT wired to credit system
+- **Zero notification system** across all agents (customers never notified when jobs complete/fail)
+- **Zero quality benchmarking** (no rating system, no output quality tracking)
+- **Marketing claims mismatch**: Website says "7 agents live" but only Forge is in SaaS billing
+
+**Critical blockers for accepting paying customers**:
+1. No customer notifications → "Where's my video?" complaints
+2. Market not in credit system → broken billing (website says 25 credits, code charges 0)
+3. Spoke marketed but doesn't exist → potential fraud claims
+4. No quality/SLA tracking → can't defend against "bad quality" complaints
+
+### Phase 0: Audit Live Agents (Week 1) — IN PROGRESS
 1. **Forge** (Video Producer) - Full production readiness audit
-2. **Spoke** (Spokesperson) - Full production readiness audit
+2. **Spoke** (Spokesperson) - Discovery: agent doesn't exist, decision needed
 3. **Market** (Marketplace Automation) - Full production readiness audit
 
 **Deliverable**: Pass/Fail scorecard for each agent. Any agent that fails blocks customer launch.

@@ -630,7 +630,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             for (let i = 0; i < clips.length; i++) {
                 const c = clips[i] as any;
                 const start = cumSec;
-                const dur = c.duration_seconds ?? config.video.defaultClipDuration;
+                const dur = parseFloat(c.duration_seconds) || config.video.defaultClipDuration;
                 cumSec += dur;
                 const isOpening = i === 0;
                 const isClosing = i === clips.length - 1 && clips.length > 1;

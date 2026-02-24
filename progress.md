@@ -48,6 +48,43 @@ User raised critical question: **"When do we test each agent to ensure it's full
 
 **Agent Status Inventory**:
 - **Forge** (Video): Live, needs audit ⚠️
+
+### Roadmap Decision: Option A (Sequential Audit-First) — APPROVED
+
+**Research conducted** (Feb 23 PM):
+- Read video-pipeline.worker.ts (798 lines) — Forge implementation analysis
+- Read credits.ts (worker + web) — credit system verification
+- Read PRODUCT_STATUS.md — product status validation
+- Grep searches: notifications, refunds, agent implementations
+- Worker health check on RackNerd (172.245.56.50:3002) — ✅ OK
+
+**Critical findings**:
+1. **Only Forge has credit integration**: Pre-check ✅, Deduction ✅, Refund ✅, Notifications ❌, Quality tracking ❌
+2. **Spoke doesn't exist**: Not a standalone agent, only realtor composite in TourReel
+3. **Market is standalone**: Bot works (96% UAD, 94% MissParty) but NO credit system integration
+4. **Zero notification system**: No email/WhatsApp to customers when jobs complete/fail (only logs)
+5. **Zero quality benchmarking**: No rating system, no competitor comparison, no SLA tracking
+6. **Marketing vs reality mismatch**:
+   - Website: "7 specialized agents, Market is live"
+   - Reality: Only Forge in credit system; Market standalone; Spoke non-existent
+
+**Risk analysis**:
+- Accepting paying customers NOW → immediate complaints:
+  - "I created a video 2 hours ago, where is it?" (no notifications)
+  - Market billing broken (website says 25 credits, code charges 0)
+  - "I ordered Spoke video but agent doesn't exist" (fraud potential)
+  - "Bad quality, want refund" (no benchmarks to defend against)
+
+**Decision**: Option A (Sequential Audit-First) — ONLY viable path
+- Week 1: Audit Forge, Spoke discovery, Market assessment
+- Week 2: Fix critical gaps (notifications, credit wiring, quality tracking)
+- Week 3: Beta testing (3-5 customers, 7-day monitoring, NPS target 9/10)
+- Week 4: Public launch (confident in zero-complaint delivery)
+
+**Why NOT Option B (Parallel)**: Can't build backend integration when foundations unverified
+**Why NOT Option C (Defer)**: Would lead to launch → complaints → emergency fixes → refunds → reputation damage
+
+**Next action**: Execute Week 1 Agent Audit (Forge first)
 - **Spoke** (Spokesperson): Live, needs audit ⚠️
 - **Market** (Marketplace): Just added, needs full integration + audit ❌
 - **FrontDesk** (Voice AI): Coming soon, not wired to credits ❌
