@@ -20,12 +20,21 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the landing page + owner email for fallback notification
-    const landingPage = await prisma.landingPage.findFirst({
-      where: { slug, active: true },
-      include: { user: { select: { email: true, name: true } } },
-    });
+    let landingPage;
+    try {
+      landingPage = await prisma.landingPage.findFirst({
+        where: { slug, active: true },
+        include: { user: { select: { email: true, name: true } } },
+      });
+    } catch (dbErr: any) {
+      console.error("Landing page query error:", dbErr.message, dbErr.code);
+      return NextResponse.json({ error: "Database error" }, { status: 500 });
+    }
 
     if (!landingPage) {
+      console.error("Landing page not found for slug:", slug, "— checking without active filter");
+      const anyPage = await prisma.landingPage.findFirst({ where: { slug } });
+      console.error("Without active filter:", anyPage ? `found (active=${anyPage.active})` : "still not found");
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
 
