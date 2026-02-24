@@ -58,6 +58,41 @@ All products must align with one of these tactical pillars:
 *   **Usage**: Credits per listing activation.
 *   **Status**: LIVE — both customers posting as of Feb 20, 2026.
 
+### 🏆 Winner Video Studio (AI Avatar Videos)
+*   **Target**: Local businesses (first customer: Mivnim/Yossi — construction).
+*   **Logic**: `apps/studio/` (standalone Next.js app)
+*   **Architecture**: Audio upload → Gemini Brain (5-in-1: script, prompt, model router, music, quality) → Kie.ai (`avatar-pro` primary, `kling-3.0/video` fallback) → R2 storage → WhatsApp delivery via WAHA.
+*   **Credit Cost**: 50 credits/video (same as TourReel).
+*   **Status**: LIVE — pipeline verified Feb 19, 2026. `studio.rensto.com`.
+*   **Source of Truth**: `PRODUCT_STATUS.md` §1, `.claude/skills/winner-studio/SKILL.md`.
+
+### 📄 Lead Landing Pages
+*   **Target**: Any Rensto customer needing a branded lead capture page.
+*   **Logic**: `apps/web/rensto-site/src/app/lp/[slug]/` (SSR + client component)
+*   **Architecture**: Dynamic `/lp/[slug]` → Prisma lookup → branded page (colors, logo, font, RTL/LTR) → lead form → `POST /api/leads/landing-page` → Lead record + WhatsApp (WAHA) + email (Resend) notifications.
+*   **Status**: Infrastructure COMPLETE. Customer implementations in separate repos.
+*   **Source of Truth**: `PRODUCT_STATUS.md` §4, `.claude/skills/lead-pages/SKILL.md`.
+
+### 📞 FrontDesk Voice AI (Telnyx)
+*   **Target**: Businesses needing AI receptionist / phone answering.
+*   **Logic**: `apps/worker/src/services/telnyx.ts`, `apps/worker/src/queue/workers/frontdesk-poller.worker.ts`
+*   **Architecture**: Telnyx AI Assistant (`meta-llama/Llama-3.3-70B-Instruct`) → KokoroTTS voice → call transfer to owner → conversation polling (BullMQ) → VoiceCallLog DB.
+*   **Status**: Partial — voice assistant working, eSignatures not started.
+*   **Source of Truth**: `.claude/skills/frontdesk-voice/SKILL.md`.
+
+### 🔬 AgentForge (Internal Research Tool)
+*   **Target**: Internal use only — powers Rensto's own development workflow.
+*   **Logic**: `agentforge/` (spec only, code not started)
+*   **Architecture**: Multi-stage AI research pipeline (business discovery → design analysis → market research → deliverable packaging).
+*   **Status**: Spec only. Decision: keep internal, not customer-facing.
+
+### 📱 SocialHub (Multi-Platform Social Media Management)
+*   **Target**: All existing customers + new market.
+*   **Logic**: `social app/` (spec only — 7 detailed docs)
+*   **Architecture**: AI content creation (Claude + Kie.ai) → WhatsApp approval → 6-platform publishing → analytics → competitive intelligence.
+*   **Status**: Spec COMPLETE, code NOT STARTED. Phase 2 product.
+*   **Source of Truth**: `PRODUCT_STATUS.md` §7, `.claude/skills/socialhub/SKILL.md`.
+
 ---
 
 ## 3. SaaS Billing & Credit Logic (Postgres-Driven)

@@ -6,6 +6,41 @@
 
 ---
 
+## 2026-02-24: Full System Alignment Audit + Fixes
+
+### What was done
+- **6-area system audit**: Skills (25), canonical docs, NotebookLM (36 notebooks), DB schema, infrastructure refs, product status
+- **12 CRITICAL issues found and fixed** — see findings.md for full table
+- **8 MEDIUM issues fixed** — monitoring service counts, n8n role across 6 files, WAHA env var documentation
+- **Created `CONFLICT_AUDIT.md`** — executable checklist referenced in METHODOLOGY.md and brain.md (was missing)
+- **Added 5 missing products to PRODUCT_BIBLE.md** — Winner Studio, Lead Pages, FrontDesk, AgentForge, SocialHub
+- **Fixed n8n contradiction in 6 files** — "backup only" → "backup for new automation; existing production workflows still run"
+- **Fixed Telnyx DORMANT status** — actually active (FB Bot lead pipeline + FrontDesk)
+- **Documented WAHA env var naming** — per-app names (`WAHA_URL`, `WAHA_BASE_URL`, `config.shared.wahaUrl`) in whatsapp-waha SKILL + INFRA_SSOT
+- **Documented `LIGHTRAG_BASE_URL`** — was undocumented but used in health-check route
+- **Fixed monitoring service count** — was claiming 16, actually 11
+
+### Files modified
+- `CONFLICT_AUDIT.md` (created)
+- `CLAUDE.md` (n8n role, data flow)
+- `brain.md` (n8n role)
+- `DECISIONS.md` (Vercel deploy clarified as aspirational, n8n role nuanced)
+- `docs/INFRA_SSOT.md` (Telnyx status, WAHA env vars, LightRAG, service count, n8n role)
+- `docs/PRODUCT_BIBLE.md` (5 products added)
+- `.claude/skills/whatsapp-waha/SKILL.md` (unified WAHA, removed stale Graph API refs)
+- `.claude/skills/antigravity-automation/SKILL.md` (n8n role)
+- `.claude/skills/monitoring-alerts/SKILL.md` (service count 16→11)
+- `findings.md` (audit findings table)
+
+### Where we are
+- **Zero known CRITICAL contradictions** across codebase docs
+- All 7 products documented consistently in CLAUDE.md §5, PRODUCT_STATUS.md, and PRODUCT_BIBLE.md
+- n8n role consistent across all files (backup for new, existing production runs)
+- WAHA env var naming documented (by design — different per app)
+- `CONFLICT_AUDIT.md` now exists as an executable checklist for future audits
+
+---
+
 ## 2026-02-23 (Late PM): TourReel Quality-First Pivot + NotebookLM Documentation Audit
 
 ### Context

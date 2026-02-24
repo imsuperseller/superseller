@@ -2,7 +2,7 @@
 name: monitoring-alerts
 description: >-
   Production monitoring, health checks, alerting, and system observability for Rensto.
-  Covers 16 monitored services, alert rules with cooldowns, health check persistence,
+  Covers 11 monitored services, alert rules with cooldowns, health check persistence,
   uptime tracking, and the System Monitor admin tab. Use when working on health checks,
   alerts, service monitoring, uptime, system status, or the monitoring admin UI.
   Not for expense tracking (see cost-tracker), video pipeline, or UI design.
@@ -31,7 +31,7 @@ negativeTrigger:
 # Monitoring & Alerting
 
 ## Critical
-- **16 services monitored** across 3 categories: infrastructure (4), APIs (6), database (1), backup (1).
+- **11 services monitored** across 3 categories: infrastructure (4), APIs (6), database (1). See tables below for exact list.
 - **Alert cooldowns are per-rule** — don't fire the same alert within its cooldown period.
 - **Auto-resolve**: When a service recovers, alerts are automatically resolved.
 - **Health check results persist** to `service_health` table — used for uptime calculations.
@@ -41,7 +41,7 @@ negativeTrigger:
 ## Architecture
 
 ```
-Service Registry (16 services)
+Service Registry (11 services)
         ↓
 Health Checker (concurrent checks, 5s timeout per service)
         ↓
@@ -56,7 +56,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` | 16 service definitions with check functions (256 lines) |
+| `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` | 11 service definitions with check functions (256 lines) |
 | `apps/web/rensto-site/src/lib/monitoring/health-checker.ts` | Health check runner, persistence, uptime calc (183 lines) |
 | `apps/web/rensto-site/src/lib/monitoring/alert-engine.ts` | Alert evaluation, cooldowns, firing, auto-resolve (247 lines) |
 | `apps/web/rensto-site/src/app/api/health/check/route.ts` | Public + admin health endpoint |
@@ -65,7 +65,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 | `apps/web/rensto-site/src/app/api/admin/alerts/route.ts` | Alert configuration API |
 | `apps/web/rensto-site/src/components/admin/SystemMonitoring.tsx` | System Monitor admin tab (158+ lines) |
 
-## Monitored Services (16)
+## Monitored Services (11)
 
 ### Infrastructure (4)
 | Service | Check | Threshold | Failures to Alert |

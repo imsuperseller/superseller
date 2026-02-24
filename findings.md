@@ -8,6 +8,33 @@
 
 ## 2026-02-24
 
+### Full System Alignment Audit — 12 CRITICAL + 8 MEDIUM Fixed
+
+**Date**: Feb 24, 2026
+
+**Audit scope**: 6 areas — 25 skills, canonical docs, NotebookLM (36 notebooks), DB schema (Prisma vs DB vs Drizzle), infrastructure references, product status consistency.
+
+**Root causes found and fixed**:
+
+| # | Issue | Root Cause | Fix |
+|---|-------|-----------|-----|
+| 1 | `CONFLICT_AUDIT.md` missing | Referenced in METHODOLOGY.md + brain.md but never created | Created with executable checklist |
+| 2 | Vercel deploy contradiction | DECISIONS §2 was aspirational but docs stated it as current | Clarified "aspirational" in DECISIONS, current reality in VERCEL_PROJECT_MAP |
+| 3 | n8n "backup only" everywhere | FB Bot lead pipeline runs production n8n workflows | Updated 6 files: CLAUDE.md, brain.md, DECISIONS.md, INFRA_SSOT.md, antigravity-automation SKILL |
+| 4 | Telnyx "DORMANT" in INFRA_SSOT | FB Bot lead pipeline uses Telnyx actively | Fixed to "active" |
+| 5 | PRODUCT_BIBLE missing 5 products | Only had TourReel + FB Bot | Added Winner Studio, Lead Pages, FrontDesk, AgentForge, SocialHub |
+| 6 | WAHA env var naming undocumented | `WAHA_URL` (Studio) vs `WAHA_BASE_URL` (rensto-site) vs `config.shared.wahaUrl` (FB Bot) | Documented per-app naming in whatsapp-waha SKILL + INFRA_SSOT |
+| 7 | `LIGHTRAG_BASE_URL` undocumented | Used in health-check route but not in any docs | Added to INFRA_SSOT §1 + §2 |
+| 8 | Monitoring claims "16 services" | Only 11 actually defined in service registry | Corrected to 11 in monitoring-alerts SKILL + INFRA_SSOT |
+| 9 | CLAUDE.md §5 missing 5/7 products | Only 3-line status summary | Full 7-product table added |
+| 10 | Lead Pages SKILL: stale Meta WhatsApp API | Was switched to WAHA but skill still referenced Facebook Graph API | Fixed to WAHA |
+| 11 | whatsapp-waha SKILL: "two different APIs" | Lead Pages was migrated to WAHA in previous session | Unified to single WAHA reference with per-app env var naming |
+| 12 | 42 Prisma tables missing id defaults | `gen_random_uuid()::text` not set in DB | Fixed via SQL ALTER TABLE (previous session) |
+
+**Prevention**: Run `CONFLICT_AUDIT.md` checklist after major refactors. Schema Sentinel (`npx tsx tools/schema-sentinel.ts`) for drift detection.
+
+---
+
 ### Forge Week 1 Audit — 0% Success Rate (CRITICAL: Root Cause = Wrong API Endpoint)
 
 **Date**: Feb 24, 2026 @ 21:40 PST (initial), updated @ 23:20 PST (root cause identified)

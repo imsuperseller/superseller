@@ -21,7 +21,7 @@ negativeTrigger:
 Use when working on automation workflows, Antigravity engine, n8n backup patterns, or integrating NotebookLM/Stitch with automation. Not for video pipeline (use tourreel-pipeline), UI design, or billing logic.
 
 ## Critical Rules
-1. **Antigravity is PRIMARY.** n8n is backup/prototyping ONLY. Per brain.md Tier 1.
+1. **Antigravity is PRIMARY for new automation.** n8n runs existing production workflows (FB Bot lead pipeline) but all new automation must be programmatic. Per brain.md Tier 1.
 2. **All new automation must be programmatic** (Node.js/TypeScript). Do NOT create n8n workflows for production features.
 3. **n8n is acceptable for**: quick prototyping, storage, customer instance delivery (Tax4Us, Shelly).
 4. **NotebookLM + Stitch MCP are connected to Antigravity.** Use `notebooklm-mcp` tools to query knowledge.
@@ -32,7 +32,7 @@ Use when working on automation workflows, Antigravity engine, n8n backup pattern
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | Antigravity Engine | RackNerd VPS (172.245.56.50) | Primary automation runtime |
-| n8n Instance | https://n8n.rensto.com (port 5678) | Backup/reference only |
+| n8n Instance | https://n8n.rensto.com (port 5678) | Backup for new automation; existing production workflows still run |
 | NotebookLM MCP | `notebooklm-mcp` tools | Knowledge retrieval for automation |
 | Stitch MCP | NotebookLM 286f3e4a | Design assets + Gemini integration |
 | BullMQ | Redis-backed job queues | Async task processing |

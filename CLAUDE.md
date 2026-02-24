@@ -19,7 +19,7 @@
 
 > [!WARNING]
 > **Pivots & Deprecations**:
-> - **n8n** is for storage/prototyping ONLY. Antigravity is primary automation.
+> - **n8n** is backup for NEW automation. Antigravity is primary. Existing production n8n workflows (FB Bot lead pipeline) still run.
 > - **Firestore/Airtable.com** are retired. **PostgreSQL** is the only transactional DB truth.
 > - **Webflow/BMAD** are retired. The system is 100% programmatic.
 
@@ -52,7 +52,7 @@
 
 ## 2. Architecture (Brief)
 
-**Data Flow**: PostgreSQL + Redis (primary) → Antigravity (operational) → n8n (backup only).
+**Data Flow**: PostgreSQL + Redis (primary) → Antigravity (operational) → n8n (existing production workflows + backup for new).
 
 **Store in PostgreSQL**: Service instances, customers, payments, leads, fulfillment.  
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
@@ -109,9 +109,19 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 
 ## 5. Implementation Status (Feb 2026)
 
-**✅ Done**: Firestore→Postgres migration, Stripe checkout (19 pages), credits schema, worker gating, Phase 2 credit-based SaaS.  
-**⚠️ Partial**: Customer journey automation, admin redesign.  
-**❌ Not done**: Customer portals, lifecycle automation, Voice AI / eSignatures refactor.
+> **Canonical product status**: See `PRODUCT_STATUS.md` for detailed per-product status, feature matrices, and priority order.
+
+| Product | Status | Notes |
+|---------|--------|-------|
+| **TourReel** | ✅ Live | 25+ videos generated, full pipeline working |
+| **Winner Studio** | ✅ Live | Customer deployed (Mivnim/Yossi), avatar-pro + fallback |
+| **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting, 96%/94% feature complete |
+| **Lead Landing Pages** | ✅ Complete | `/lp/[slug]` infrastructure done, WAHA + email notifications |
+| **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant working, eSignatures not started |
+| **AgentForge** | ⚠️ Spec only | Internal tool decision made, code not started |
+| **SocialHub** | ⏳ Phase 2 | Spec complete (7 docs), code not started |
+
+**Infrastructure ✅ Done**: Firestore→Postgres migration, Stripe checkout (19 pages), credits schema, worker gating, Phase 2 credit-based SaaS.
 
 ---
 

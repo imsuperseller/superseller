@@ -33,7 +33,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
-- **n8n** (RackNerd): Backup/reference only. Use when Antigravity cannot do the task.
+- **n8n** (RackNerd): Backup for new automation. Existing production workflows (FB Bot lead pipeline) still run on n8n.
 - **Kie.ai**: Creative AI (Kling 3.0, Suno, Nano Banana) — credit-based APIs. Veo and FAL are deprecated.
 - **Stripe**: Payments, subscriptions, credit ledger.
 - **PostgreSQL + Redis**: App backends and marketplace products.

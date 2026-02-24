@@ -17,8 +17,9 @@
 | **Server/Worker**| Long-running video/bot tasks | **RackNerd VPS** | ✅ Active |
 | **LLM** | Prompt Gen / Intelligence | **Gemini Flash (Primary)** | ✅ Active |
 | **Video AI** | Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
-| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook | ⚠️ WAHA active, Telnyx DORMANT (0 n8n executions) |
+| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook / Resend | ⚠️ WAHA active (sessions need periodic QR re-scan), Telnyx active (FB Bot lead pipeline + FrontDesk) |
 | **Embeddings** | Vector embeddings for RAG | **Ollama** (nomic-embed-text, RackNerd) | ✅ Active |
+| **LightRAG** | Graph-based RAG retrieval | RackNerd (env: `LIGHTRAG_BASE_URL`) | ⚠️ Referenced in health-check but undocumented |
 
 ---
 
@@ -35,6 +36,11 @@
     *   `KIE_API_KEY` (Video/Music/Image)
     *   `GOOGLE_GENERATIVE_AI_API_KEY` (Gemini)
     *   `ANTHROPIC_API_KEY` (Dummy for local proxy; Real for n8n)
+*   **WhatsApp (WAHA)**:
+    *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (rensto-site) — same server: `http://172.245.56.50:3000`
+    *   `WAHA_API_KEY` — Bearer token for WAHA Pro
+    *   `WAHA_SESSION` — Session name (default: rensto-whatsapp)
+*   **LightRAG**: `LIGHTRAG_BASE_URL` (referenced in admin health-check)
 *   **Finance**:
     *   `STRIPE_SECRET_KEY`
     *   `STRIPE_WEBHOOK_SECRET`
@@ -95,7 +101,7 @@ npm audit --audit-level=high
 - **Location**: `rensto.com/admin` → "System Monitor" tab
 - **API**: `GET/POST /api/admin/monitoring`, `GET/POST /api/admin/alerts`
 
-### Service Registry (10 monitored services)
+### Service Registry (11 monitored services)
 | Service | Category | Health Check | Alert Threshold |
 |---------|----------|-------------|-----------------|
 | PostgreSQL | infrastructure | `SELECT 1` via Prisma | 2 failures / 15min cooldown |
@@ -170,7 +176,7 @@ npm audit --audit-level=high
 
 ### n8n
 - **URL**: https://n8n.rensto.com (172.245.56.50:5678)
-- **Role**: Backup/reference only. Antigravity is primary automation.
+- **Role**: Backup for new automation. Antigravity is primary. Existing production workflows (FB Bot lead pipeline: UAD + MissParty) still run on n8n.
 - **Customer instances**: Tax4Us Cloud, Shelly Cloud
 - **Access**: MCP tools only. Direct API forbidden.
 

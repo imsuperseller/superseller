@@ -34,7 +34,7 @@ negativeTrigger:
 - **Chat ID format**: `{phoneWithCountryCode}@c.us` (e.g., `972501234567@c.us`). Never include `+` or dashes.
 - **Session must be alive** — check `isSessionAlive()` before critical sends. Session name: `WAHA_SESSION` env var.
 - **All sends are best-effort** — catch errors, log, return null. Never fail a pipeline because WhatsApp is down.
-- **Two WhatsApp APIs in the codebase**: WAHA (Studio) and Facebook Graph API (Lead Pages). Don't mix them.
+- **WAHA is used by all products** — Studio (`WAHA_URL`), Lead Pages (`WAHA_BASE_URL`), FB Bot (`config.shared.wahaUrl`). Env var names differ per app.
 - **OTP TTL is 5 minutes**, max 3 attempts. Stored in Redis key `otp:{phone}`.
 
 ## Architecture
@@ -45,9 +45,9 @@ WAHA Pro Server (self-hosted or cloud)
 apps/studio/src/lib/waha.ts (124 lines)
     ↓
 Three consumers:
-  1. Winner Studio → video delivery + error notifications
-  2. Lead Pages → lead capture notifications (via Graph API, not WAHA)
-  3. FB Bot → session alerts (via n8n, separate integration)
+  1. Winner Studio → video delivery + error notifications (env: WAHA_URL)
+  2. Lead Pages → lead capture notifications (env: WAHA_BASE_URL)
+  3. FB Bot → session alerts + post notifications (env: config.shared.wahaUrl)
 ```
 
 ## Key Files
@@ -57,7 +57,7 @@ Three consumers:
 | `apps/studio/src/lib/waha.ts` | WAHA client — sendText, sendVideo, sendFile, isSessionAlive (124 lines) |
 | `apps/studio/src/lib/auth.ts` | WhatsApp OTP auth flow (173 lines) |
 | `apps/studio/src/app/api/auth/whatsapp-otp/route.ts` | OTP send endpoint (25 lines) |
-| `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` | Lead WhatsApp notification (Facebook Graph API) |
+| `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` | Lead WhatsApp notification (WAHA, env: WAHA_BASE_URL) |
 | `apps/web/rensto-site/src/app/(main)/whatsapp/WhatsAppClient.tsx` | WhatsApp AI Agent product page (680 lines) |
 
 ## WAHA API Functions
@@ -106,27 +106,19 @@ Three consumers:
    → On failure: decrement attempts or return error
 ```
 
-## Lead Pages WhatsApp (Different API!)
-
-Lead Pages uses **Facebook Graph API** (not WAHA):
-
-```typescript
-// Endpoint: https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_NUMBER_ID}/messages
-// Auth: Bearer {WHATSAPP_TOKEN}
-// Payload: { messaging_product: "whatsapp", to: phone, type: "text", text: { body } }
-```
-
-**Env vars**: `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
-
 ## Environment Variables
+
+All products use WAHA Pro. Env var names differ by app (historical reasons, not yet unified):
 
 | Variable | Used By | Purpose |
 |----------|---------|---------|
-| `WAHA_URL` | Studio | WAHA server base URL |
-| `WAHA_API_KEY` | Studio | WAHA Bearer token |
-| `WAHA_SESSION` | Studio | Session name (default: rensto-whatsapp) |
-| `WHATSAPP_TOKEN` | Lead Pages | Facebook Graph API token |
-| `WHATSAPP_PHONE_NUMBER_ID` | Lead Pages | Facebook phone number ID |
+| `WAHA_URL` | Studio (`apps/studio`) | WAHA server base URL |
+| `WAHA_BASE_URL` | rensto-site (`apps/web/rensto-site`) | WAHA server base URL (lead pages, health check) |
+| `WAHA_API_KEY` | Studio, rensto-site | WAHA Bearer token |
+| `WAHA_SESSION` | Studio, rensto-site | Session name (default: rensto-whatsapp) |
+| `config.shared.wahaUrl` | FB Bot (`fb marketplace lister/`) | WAHA server URL (read from bot-config.json) |
+
+**Note**: `WAHA_URL` and `WAHA_BASE_URL` point to the same server (`http://172.245.56.50:3000`). The naming differs per app but the value is identical.
 
 ## Usage by Product
 

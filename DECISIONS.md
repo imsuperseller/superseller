@@ -21,9 +21,10 @@
 
 | Decision | Answer |
 |----------|--------|
-| **Unify deploy** | One project with rensto.com + api.rensto.com, single deploy on push. Fewer configs, no manual deploys. |
+| **Unify deploy** | Aspirational: One project with rensto.com + api.rensto.com, single deploy on push. |
 
-**Action**: Add rensto.com and www.rensto.com to api-rensto-site. Remove from rensto-site. Merge env vars. Document steps in EXECUTION_PLAN.
+**Current reality (Feb 2026)**: NOT yet unified. Two separate Vercel projects remain. `git push` deploys api.rensto.com (auto). rensto.com requires manual `vercel --prod`. See `VERCEL_PROJECT_MAP.md` for current state.
+**Action (deferred)**: Add rensto.com and www.rensto.com to api-rensto-site. Remove from rensto-site. Merge env vars.
 
 ---
 
@@ -104,8 +105,8 @@
 
 | Decision | Answer |
 |----------|--------|
-| **n8n role** | Backup/reference ONLY. Antigravity is primary automation. |
-| **n8n workflows** | Reference patterns for productizing into self-service SaaS apps. Not production systems. |
+| **n8n role** | Backup for NEW automation. Antigravity is primary for new workflows. |
+| **n8n workflows** | Existing production workflows (FB Bot lead pipeline: UAD + MissParty) still run on n8n. New automation goes to Antigravity. |
 | **Service monitoring** | n8n categorized as "backup" with highest failure tolerance (5 consecutive, 120min cooldown). |
 
 ---
