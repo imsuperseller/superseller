@@ -1,42 +1,42 @@
-# 🚀 Facebook Marketplace Lister & Lead Engine (Audited)
+# Facebook Marketplace Lister & Lead Engine
 
-This folder contains the authoritative, productized version of the **Facebook Marketplace Listing Bot** and the **Lead Processing Machine**, specifically isolated for **UAD Garage Doors** and **Miss Party**.
+This folder contains **legacy architecture docs and n8n workflow exports** for the Facebook Marketplace Listing Bot. The canonical production code has moved to `fb marketplace lister/deploy-package/`.
 
 > [!IMPORTANT]
-> This is NOT the general Rensto credit-based SaaS marketplace. The broader marketplace (TourReel template, docs/templates/tourreel/) is in apps/web/rensto-site. This folder is dedicated solely to the **Facebook Marketplace Lister** product (UAD, Miss Party).
+> **Production code**: `fb marketplace lister/deploy-package/` → deploys to `/opt/fb-marketplace-bot/` on RackNerd (172.245.56.50).
+> This `platforms/marketplace/` directory is kept for reference (n8n workflows, client data CSVs, comparison docs) but is NOT the active codebase.
 
-## 📁 Directory Structure
+## Current System (Feb 2026)
 
-```text
-platforms/marketplace/
-├── PLATFORM_BIBLE.md      # 📖 Master manual & environment setup
-├── PRD.md                 # 🎯 Technical specifications for the FB Lister
-├── README.md              # This guide
-├── saas-engine/           # 📦 Modular SaaS Orchestrator (FB Autoposter)
-│   ├── index.js           # Multi-tenant job poller
-│   ├── .env               # Local environment configuration
-│   └── lib/               # engine.js & firebase.js libraries
-├── workflows/             # 🔄 Audited n8n Orchestrations
-│   ├── master-orchestrator.json     # Central Hub for FB Jobs
-│   ├── full-complex-marketplace.json # FB Lister Logic (UAD/MissParty)
-│   ├── lead-analysis-supervisor.json # Voice AI Lead Analyzer from listings
-│   └── uad-bot-interface.json       # UAD-specific feedback API
-├── data/                  # 📊 Client & Product Data
-│   ├── client-profiles.json # UAD/MissParty business logic (payouts, testimonials)
-│   ├── product-definitions.json # FB Lister product specs
-│   ├── missparty.csv      # Bounce House listing content
-│   └── uad.csv            # Garage Door listing content
-└── scripts/               # 🛠️ Maintenance Utilities
-    ├── seed-configs.ts    # Initial setup for FB configurations in Firestore
-    ├── test-marketplace-apis.js # Checks FB bot health
-    └── generate_v5.py     # Python generator for FB Lister workflows
-```
+| Component | Location | Status |
+|-----------|----------|--------|
+| **Bot code** | `fb marketplace lister/deploy-package/` | LIVE |
+| **Server** | `/opt/fb-marketplace-bot/` on 172.245.56.50 | LIVE (PM2) |
+| **Database** | PostgreSQL `fb_listings` in `app_db` | LIVE |
+| **Webhook server** | Port 8082 (dynamic overlay + job serving) | LIVE |
+| **Lead analysis** | n8n workflows (Telnyx → Claude → CRM) | DORMANT (0 executions) |
+| **n8n listing gen** | Workflow `8Ay9qG9GgOfrMUzXiC5KJ` | Legacy (webhooks broken) |
+| **saas-engine/** | This directory | DEPRECATED |
+| **Firestore configs** | `scripts/seed-configs.ts` | RETIRED |
 
-## ⚙️ Core Solution Focus
+## What's Still Useful Here
 
-1.  **Facebook Automation (`saas-engine/`)**: The posting bot that uses GoLogin and Puppeteer to list products on Facebook Marketplace for multiple clients.
-2.  **Lead Routing (`workflows/`)**: n8n workflows that catch inquiries from Facebook and route them to AI agents (like SARAH for Miss Party or the Voice AI bridge for UAD).
-3.  **Client Isolation**: Every file here is strictly related to the "Lister" product. No general Rensto applet selling logic is present.
+- `data/uad.csv`, `data/missparty.csv` — Listing content templates
+- `data/client-profiles.json` — Business logic (payouts, testimonials)
+- `workflows/uad-lead-analysis.json` — Telnyx lead pipeline (active in n8n, 0 executions)
+- `workflows/miss-party-audio-leads.json` — MissParty lead routing (active in n8n, 0 executions)
+- `docs/comparisons/` — UAD vs MissParty business/logistics comparison
+- `scripts/generate_v5.py` — V5 dynamic content pipeline design (SUPERSEDED by `content-generator.js` + `image-pool.js`)
+- `config/bot-config.json` — Old config (outdated, canonical is in `fb marketplace lister/deploy-package/`)
+
+## Customers
+
+1. **UAD Garage Doors (David Szender)** — Garage door sales, 4 Telnyx numbers, Workiz CRM, 30 DFW cities
+2. **Miss Party (Michal Kacher Szender)** — Bounce house rentals, 1 phone number, WhatsApp, 20 DFW cities
+
+## For Full Details
+
+See `platforms/marketplace/PLATFORM_BIBLE.md` and `PRODUCT_STATUS.md` section 2.
 
 ---
-*Purified and Verified for Standalone Product Work on January 28, 2026*
+*Updated: 2026-02-20. Legacy directory — canonical code at `fb marketplace lister/deploy-package/`.*

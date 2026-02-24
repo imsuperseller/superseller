@@ -6,6 +6,750 @@
 
 ---
 
+## 2026-02-23
+
+### FB Marketplace Bot — Empty Queue / No Postings for 3 Days (NEVER REPEAT)
+
+**Root cause**: The `fb_listings` table had zero queued rows. The initial `setup-test-data.js` was a one-time seed that created ~4 listings. Once all were posted (Feb 20), the queue ran permanently dry. The scheduler continued cycling every ~60 min but the bot exited in 1 second each time ("No jobs available").
+
+**Fix**:
+1. **Immediate**: Seeded 10 queued listings per client via SQL.
+2. **Permanent**: Added auto-replenishment to `webhook-server.js`:
+   - `PRODUCT_TEMPLATES` object with base listing data for UAD and MissParty
+   - `replenishQueue(clientId)` — checks if < 5 queued, creates batch of 10
+   - Runs on startup + every 30 min via `setInterval`
+   - Queue will never run dry again
+
+**Also fixed**:
+- **Xvfb display mismatch**: Xvfb was running on `:99` but GoLogin/Orbita expects `:100`. Started Xvfb on `:100`, added to crontab for boot persistence.
+- **Scheduler DISPLAY env**: `spawn()` in scheduler.js wasn't passing `DISPLAY` to child processes. Added `env: { ...process.env, DISPLAY: ':100' }`.
+
+**Key FB bot facts (V2 — Feb 23 rewrite)**:
+- Bot config: `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server)
+- DB: `fb_listings` table in `app_db` on RackNerd (same Postgres as worker), `config_data` JSONB column for dedup
+- Webhook server V2: port 8082, unique config generation, Kie.ai images, non-blocking replenishment
+- Scheduler V2: 20min cycles, 6am-10pm CST, postLimit (5 UAD, 3 MissParty), cooldownMinutes (15 UAD, 30 MissParty)
+- GoLogin profiles: UAD `694b5e53fcacf3fe4b4ff79c`, MissParty `6949a854f4994b150d430f37`
+- UAD: 2,520+ unique configs (5 collections × 7 sizes × 2 designs × 9 colors × 4 constructions), size-based pricing
+- MissParty: $75 FIXED (no jitter!), 6 scenarios, "$1/mile delivery available. Free pickup."
+- Images: 3 unique Kie.ai-generated images per listing, phone overlay on ALL 3 (not just image 1)
+- Kie.ai API: Seedream 4.5 Edit (image-to-image) + Flux 2 Pro (text-to-image fallback), Kling 3.0 (video)
+
+### FB Bot V2 — MissParty $80 Price Bug (NEVER REPEAT)
+
+**Root cause**: V1 webhook-server.js applied ±10% price jitter to ALL products including MissParty. `$75 × (0.9 + Math.random() × 0.2)` → range $67.50-$82.50, rounded to nearest $5 = possible $70/$75/$80/$85. MissParty was posting at **$80** instead of $75.
+
+**Fix (V2)**: MissParty price is set from `MISSPARTY_PRICE = 75` constant with zero jitter. UAD uses size-based pricing from the matrix. Price is set at config generation time, not at serve time.
+
+**Rule**: MissParty price is ALWAYS $75. Never apply random jitter to MissParty pricing.
+
+### FB Bot V2 — Phone Overlay Only on Image 1 (NEVER REPEAT)
+
+**Root cause**: V1 only applied ImageMagick phone overlay to image 1 (the "main" image). Images 2-3 came from a static pool that may have had a different or no phone number.
+
+**Fix (V2)**: `image-generator.js` applies `applyPhoneOverlay()` to ALL 3 generated images. Every image the customer sees has the correct phone number.
+
+### FB Bot V2 — Same Product Every Post (NEVER REPEAT)
+
+**Root cause**: V1 used `PRODUCT_TEMPLATES` — a static object with one product per client. Every UAD post was "16x7 Classic Steel $2500". Every MissParty post was the same bounce house.
+
+**Fix (V2)**: `product-configs.js` generates unique configs from 2,520+ UAD combos and 6 MissParty scenarios. Dedup checks `fb_listings.unique_hash` to avoid repeats. `config_data` JSONB stores full config for analytics.
+
+### Telnyx AI Assistant — Voice Silence Bug (NEVER REPEAT)
+
+**Root cause**: `Telnyx.NaturalHD.Ava` voice causes silent failure. Calls connect, conversations are created in the API, but the AI produces zero audio output. Channel 2 (AI) RMS = 0.4 (silence). No error is thrown — it fails completely silently.
+
+**Fix**: Use `Telnyx.KokoroTTS.af_heart` instead. KokoroTTS works immediately — greeting delivered, transcription works, LLM responds, tool calls work.
+
+**Also fixed**:
+- `api_key_ref: "rensto"` in voice_settings was pointing to a non-existent key reference. Must be empty string `""` for Telnyx-native voices.
+- Phone number was connected to old Call Control App (webhook to n8n). Switched to TeXML App (`2860769989730764458`) that routes to the AI assistant.
+- Transfer tool requires `from` parameter in the config, otherwise returns 422 "from parameter required".
+- Hangup tool makes LLM too aggressive — removed it. Let callers hang up naturally.
+- `+972522422274` is Yoram's number, NOT Shai's. Shai's number: `+14695885133`.
+
+**Key Telnyx AI facts**:
+- Conversations endpoint: `/ai/conversations` (flat, NOT nested under assistants)
+- Conversations list ALL conversations across all assistants — filter by `metadata.assistant_id` client-side
+- `number_of_messages` counts user messages only; `last_message_at` includes assistant messages
+- Outbound calls: `POST /v2/texml/ai_calls/<texml_app_id>` with `{From, To, AIAssistantId}`
+- Outbound to Israel requires adding "IL" to outbound voice profile whitelist
+- Available models include: Llama-3.3-70B-Instruct, Qwen3-235B-A22B, Claude models, GPT models
+
+### Purim Video Production — API Findings (NEVER REPEAT)
+
+**FakeYou TTS**:
+- Tacotron2 garbles text >8 words. MUST chunk into 5-8 word phrases, generate separately, stitch with FFmpeg.
+- CDN: `cdn-2.fakeyou.com` only. `storage.googleapis.com` and `cdn.fakeyou.com` both 403.
+- Best Trump voice: `weight_x6r5w2tsxgcrrsgweva6dkrqj` (Trump Angry). Casual/Standard/V3 all worse.
+- JSON escape: Use temp files (`/tmp/fy*.json`) with `@` syntax. Exclamation marks break inline JSON.
+
+**Kling 3.0 API (via Kie.ai)**:
+- Model name: `kling-3.0/video` — NOT `kling-3.0`, `kling-3.0/standard`, `kling-3.0/pro`.
+- Required boolean params: `multi_shots`, `sound` — omitting either returns 422.
+- First/last frame transitions: `image_urls: ["first_frame.jpg", "last_frame.jpg"]` generates morph video.
+- Duration must be string `"5"` or `"10"` — not number.
+- API response: `state` field (not `status`), URLs in `resultJson.resultUrls[]` array.
+
+**Kling 3.0 Transition Best Practices (researched from 15+ sources)**:
+- **Use actual scene frames**: Last frame of clip A + first frame of clip B as start/end frames. NOT a generic reference image.
+- **Prompt = camera path only**: "Smooth steadicam follows..." — DO NOT describe the scene or transition details. Model infers the morph.
+- **Pro mode + 5s**: Pro has better motion fidelity. 5s = sweet spot (less hallucination than 10s).
+- **Color/tone match**: Both frames must share similar lighting and color palette. Mismatched lighting = visible seams.
+- **Negative prompt**: "morphing, flickering, wall penetration, floating person, teleportation, camera shake, glitch, distorted face, extra limbs"
+- **No double transitions**: Kling clip IS the transition. Hard cut to/from it. Do NOT add xfade on top.
+- **Multi-shot mode incompatible with end frame**: Only use single-scene mode for first/last frame.
+- **Guiding objects**: Keep one consistent focal element visible in both frames to anchor the model's motion path.
+
+**Kling 3.0 Elements (Character Reference)**:
+- S4 (lawyer/tutu) succeeded on first attempt. S2 (developer/superman) timed out 2x (30+ min). S6 (Trump) instant "internal error" — content filter detects public figures in reference images.
+- Elements work best with generic/non-famous characters. Public figure images trigger content filters.
+- Even without Elements, using a public figure's image as `image_urls` start frame triggers "internal error" on Kie.ai.
+- Cost: Failed Elements tasks still consume credits ($0.10/attempt).
+
+**RVC Voice Conversion (NEVER REPEAT — working solution)**:
+- FakeYou Tacotron2 scrambles word order for ALL Trump models (architectural limitation, unfixable).
+- Solution: Edge TTS (perfect word accuracy) → RVC voice conversion (Trump timbre).
+- Stack: Python 3.10 venv (`/opt/rvc-env/`) + PyTorch CPU + `infer-rvc-python` + `faiss-cpu==1.7.3` + `numpy<2`.
+- Model: `Donald-Trump_e135_s6480.pth` from HuggingFace (`Coolwowsocoolwow/Donald-Trump`).
+- `torch.load` monkey-patch needed: PyTorch 2.10 defaults `weights_only=True`, fairseq needs `False`.
+- `faiss-cpu==1.7.3` requires `numpy<2` (compiled against NumPy 1.x API).
+- `infer-rvc-python` requires `pip<24.1` (omegaconf metadata issue).
+- CPU inference: ~1:1 real-time (5.6s audio → ~5s processing on RackNerd).
+- HuggingFace `sail-rvc/*` models require auth. `Coolwowsocoolwow/*` models are public.
+
+**ElevenLabs via Kie.ai**:
+- Working: `elevenlabs/text-to-speech-turbo-2-5`, `elevenlabs/text-to-speech-multilingual-v2`
+- Broken: `elevenlabs/text-to-dialogue-v3` (500 errors consistently)
+- Voice quality: User reported all ElevenLabs voices sounded "female/same" — likely voice_id issue or model limitation.
+
+**FFmpeg Assembly**:
+- Must use `-nostdin` flag to prevent interactive prompts in automated scripts.
+- Heredoc scripts: Avoid Unicode chars (──, arrows) — bash interprets them as commands.
+- Node.js in heredoc: `(async()=>{` causes bash syntax error. Use separate commands or temp files.
+- xfade offset formula: `offset = cumulative_duration - xfade_duration` (not cumulative alone).
+
+### Generation Cost Tracking — MANDATORY (NEVER REPEAT)
+
+**Rule**: Every API generation logs cost. In automated pipeline via `trackExpense()`. In manual sessions via cost table in `progress.md`.
+
+**Infrastructure ready**: `api_expenses` table + `expense-tracker.ts` with `trackExpense()`, `getDailyExpenses()`, `getExpenseTrend()`, `detectAnomalies()`. See tourreel-pipeline SKILL.md for full rate table.
+
+**Purim Video Cumulative Costs (Feb 22-23, 2026)**:
+
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| Kling 3.0 Pro (V9-V10 transitions) | 6 | $0.10 | $0.60 |
+| Kling 3.0 Pro Elements (V13 S2/S4/S6) | 8 | $0.10 | $0.80 |
+| FakeYou Trump TTS | ~20 | $0.00 | $0.00 |
+| ElevenLabs TTS (via Kie.ai) | 5 | $0.02 | $0.10 |
+| Edge TTS + RVC conversion | 4 | $0.00 | $0.00 |
+| R2 uploads (videos + assets) | ~45 | $0.0001 | $0.005 |
+| **Cumulative Total** | | | **$1.50** |
+
+### Platform Audit — Feb 23, 2026 (55 checks: Infrastructure + Business + Website)
+
+**Method**: 6-phase audit — local code review, HTTP endpoint checks, SSH/RackNerd, database queries, external service checks, performance. 42 checks passed, 5 CRITICAL, 10 IMPORTANT, 5 NICE-TO-HAVE.
+
+#### CRITICAL (fix immediately)
+
+1. **CORS wildcard on all API routes** — `vercel.json:9-14`: `Access-Control-Allow-Origin: *` on `/api/(.*)`. Any website can make cross-origin requests to all API endpoints, including authenticated ones. Session cookies with `SameSite=Lax` mitigate CSRF for state-changing requests, but GET routes leak data.
+   - **Fix**: Replace `*` with `https://rensto.com, https://admin.rensto.com`. Add `Access-Control-Allow-Credentials: true`.
+
+2. **68% video pipeline failure rate** — DB query: 60 failed / 88 total jobs (31.8% completion). Avg duration 1174 minutes (~19.6 hours). No api_expenses logged in 30 days (trackExpense() NOT being called).
+   - **Fix**: Query failed job error patterns. Top causes likely: Kie.ai timeouts, credit insufficiency, photo URL failures. Fix root causes and add trackExpense() calls to worker pipeline.
+
+3. **~60 TypeScript errors silently ignored** — `next.config.mjs:34-36`: `ignoreBuildErrors: true`. Errors include: 6 missing modules (`rensto-card`, `rensto-progress`, `rensto-status`, `react-bits`, `rensto-logo`, `rensto-styles`), wrong Stripe API version (`2024-04-10` vs `2025-08-27.basil`), broken GSAP types, missing `@/hooks/useAnalytics`, broken Badge/Button variant types (`renstoInfo`, `renstoDanger` not in variant union).
+   - **Fix**: Delete dead components referencing missing modules. Update Stripe API version. Fix variant types. Goal: `tsc --noEmit` clean, then remove `ignoreBuildErrors`.
+
+4. **No custom error pages** — Zero `error.tsx`, `not-found.tsx`, or `loading.tsx` files in entire `apps/web/rensto-site/src/app/`. Users see raw Next.js error pages.
+   - **Fix**: Create `app/error.tsx` (global error boundary), `app/not-found.tsx` (branded 404), `app/(main)/loading.tsx` (loading skeleton).
+
+5. **Expense tracking not running** — `api_expenses` table has zero rows for last 30 days. `trackExpense()` exists in code but is not being called by the worker during Kling/Suno/Gemini API calls. Cost visibility is zero.
+   - **Fix**: Add `trackExpense()` calls after every external API call in `video-pipeline.worker.ts`. Verify with a test job.
+
+#### IMPORTANT (fix this week)
+
+6. **CSP contains retired Firebase domains** — `vercel.json:30`: `firebasestorage.googleapis.com` in `img-src`, `firebaseio.com` in `connect-src`. Firestore fully retired Feb 2026. Unnecessary attack surface.
+   - **Fix**: Remove both domains from CSP. Test that no pages break (they shouldn't — Firebase client SDK was removed).
+
+7. **X-Frame-Options conflict** — `next.config.mjs:139` sets `DENY`, `vercel.json:34` sets `SAMEORIGIN`. Vercel headers override Next.js headers. Live response: `SAMEORIGIN`. Misaligned intent.
+   - **Fix**: Align both to `DENY` (no legitimate iframe use). Or remove from `next.config.mjs` since `vercel.json` wins.
+
+8. **WCAG 1.4.4 violation — userScalable: false** — `layout.tsx:83`: `userScalable: false` and `maximumScale: 1`. Blocks pinch-to-zoom on mobile. Accessibility violation that fails WCAG 2.1 Level AA.
+   - **Fix**: Remove `userScalable: false` and `maximumScale: 1` from viewport config.
+
+9. **Worker health endpoint is NO-OP** — `curl http://172.245.56.50:3002/api/health` returns `{"status":"ok"}` without checking Redis, BullMQ queue depth, disk space, or FFmpeg availability.
+   - **Fix**: Add real checks: Redis PING, BullMQ waiting/failed counts, disk % used, FFmpeg version. Return `degraded` or `unhealthy` with details.
+
+10. **8 dead database tables with 0 rows** — AdminConversation (0), OptimizerAudit (0), Requirement (0), WhatsAppMessage (0), N8nAgentMemory (0), Analytics (0), plus WhatsAppInstance (1), BusinessNiche (2). Dead Prisma models referenced in 7 source files.
+    - **Fix**: Create Prisma migration to drop empty tables. Remove dead model references from `legacy-types.ts`, `admin.ts`, `marketplace.ts`. Keep BusinessNiche (2 rows) if still needed.
+
+11. **Disk at 75%** — RackNerd: 68G/96G used (75%). Approaching 80% threshold.
+    - **Fix**: Clean `/tmp` video artifacts, old FFmpeg downloads, stale Docker images. Add disk check to worker health endpoint.
+
+12. **FFmpeg version outdated** — `ffmpeg version 7.0.2-static` (2024 build). Auto-update cron should keep this current.
+    - **Fix**: Verify cron job is running (`crontab -l`). Run `./apps/worker/tools/update-ffmpeg.sh` manually.
+
+13. **tourreel-worker has 7 restarts** — PM2 shows `restart_time: 7` while all other 4 processes have 0. Indicates crash loops.
+    - **Fix**: Check PM2 logs: `pm2 logs tourreel-worker --err --lines 100`. Investigate OOM, unhandled rejections, or BullMQ connection issues.
+
+14. **Google Search Console not verified** — `layout.tsx:71-72`: `verification: { google: 'REAL_CODE_HERE' }` is commented out. Zero search visibility data.
+    - **Fix**: Set up Search Console, get verification code, uncomment and set.
+
+15. **8 stale MagicLinkTokens** — 8 expired tokens in DB. Minor cleanup.
+    - **Fix**: `DELETE FROM "MagicLinkToken" WHERE "expiresAt" < NOW()`. Add periodic cleanup (cron or on-login).
+
+#### NICE-TO-HAVE (backlog)
+
+16. **Schema drift (7 warnings)** — Schema Sentinel: Drizzle has columns not in Prisma (`role`, `active_services`, `entitlements`, `stripe_customer_id`, `preferences` on users; `meta` on usage_events; `created_at` on tenants). 0 type mismatches.
+    - **Fix**: Add corresponding fields to Prisma schema or document intentional divergence.
+
+17. **Email DNS — no DKIM for Resend** — SPF present (`v=spf1 include:_spf.protection.outlook.com -all`) but only covers Outlook. No DKIM record for Resend transactional emails. Deliverability risk.
+    - **Fix**: Add Resend DKIM records to DNS. Add Resend to SPF include.
+
+18. **Only 1 active user in 30 days** — 46 registered, 46 verified, 1 active recently. Only 3 entitlements exist (e2e test: 1436 credits, service@rensto.com: 57, test-gating: 15). Business metric — early stage.
+
+19. **Only 1 subscription** — 1 active subscription, 3 total payments, 0 with unknown userId (linkage clean).
+
+20. **Dead code in components** — `BusinessIntelligence.tsx` imports missing `@/lib/business-intelligence`. `CustomerAgentSystem.tsx`, `IntelligentOnboardingAgent.tsx` import missing `rensto-progress`, `rensto-status`. `alert.tsx` imports missing `react-bits`. These should be deleted or fixed as part of the TypeScript cleanup (Finding #3).
+
+#### HEALTHY (no action needed)
+
+| Check | Result |
+|-------|--------|
+| Web health (`/api/health/check`) | `{"status":"ok"}` |
+| Ollama | Online, `nomic-embed-text` loaded |
+| n8n | 200 |
+| FB Bot | Online, all image pools full (6/slot), 2 products active |
+| PM2 processes | 5/5 online (webhook-server, fb-scheduler, tourreel-worker, image-pool, cookie-monitor) |
+| SSL cert | Valid until Apr 29, 2026 (65+ days) |
+| HSTS | Present: `max-age=63072000; includeSubDomains; preload` |
+| Favicon | 200, `image/x-icon` |
+| OG image | 200, `image/png`, 1200x630 |
+| Landing pages (`/lp/yoram`) | 200 |
+| Legacy redirects | All 7 paths resolve correctly (200 after follow) |
+| Schema types | 0 mismatches (Schema Sentinel) |
+| Stuck jobs | 0 currently |
+| Payment linkage | 3/3 linked, 0 unknown userId |
+| Lead sources | 5 distinct (Rensto AI Agent: 5, whatsapp, linkedin, google_maps, manual) |
+| Session encryption | AES-256-GCM implemented (`auth.ts`), falls back to base64 if `SESSION_SECRET` unset |
+| Redis | Running (in Docker container, used by BullMQ + worker) |
+
+### Business Operations Audit — Feb 23, 2026 (Deep Verification)
+
+**Context**: Follow-up to infrastructure audit above. Verifies actual business logic end-to-end: Are products doing their job? Are leads flowing? Is money being wasted?
+
+#### CRITICAL — FB Marketplace Bot
+
+1. **Bot exits in ~1 second on 90% of cycles** — cycles 30-38 show both UAD and MissParty exiting with code 0 in ~1s. Only cycle 39 ran 36s (UAD) and 42s (MissParty). Likely GoLogin profile/Facebook session failures.
+   - Evidence: `pm2 logs fb-scheduler` — 9/10 cycles complete in <2s per product
+   - Only 5/24 listings posted (21% success rate). 19 remain queued.
+   - **Fix**: Re-authenticate both Facebook accounts via `interactive_login.js` + noVNC
+
+2. **Gemini API returning 403** — AI copy generation fails intermittently. Webhook falls back to static DB copy.
+   - Evidence: `webhook-server-error-0.log` — `[UAD] Gemini HTTP 403` and `Kie/Gemini returned empty response`
+   - **Fix**: Check Gemini API key validity, quotas, and billing
+
+3. **Webhook rotation IS working** — City rotation (Dallas→Fort Worth→Arlington, 30 cities for UAD, 20 for MissParty), phone rotation (4 phones for UAD, 1 for MissParty), AI copy, and image overlays all confirmed working at webhook level.
+   - Evidence: `pm2 logs webhook-server` — `[UAD] Phone rotation: +1-972-628-3587 (2/4)`, `Location rotation: Fort Worth, TX (2/30)`
+   - DB still shows "Dallas, Texas" because rotation is applied dynamically at request time, not at queue creation
+
+4. **Bot config validated** — `bot-config.json` has correct GoLogin profiles, webhook URLs (localhost:8082), phone arrays, location arrays, stealth levels, post limits for both UAD and MissParty.
+
+#### CRITICAL — UAD → Workiz Pipeline BROKEN
+
+1. **Workiz API credentials INVALID** — n8n workflow `U6EZ2iLQ4zCGg31H` ("UAD Garage Doors Facebook Marketplace Audio Lead Analysis") sends leads to Workiz but gets `401 Invalid API credentials`.
+   - Evidence: Execution #154072 → Workiz Create Lead node → `{"error": true, "code": 401, "msg": "Invalid API credentials"}`
+   - API key: `api_uj4t1r0msb2ciq8xkzcm3aw13yjxomd8`, auth secret: `sec_2588677273239269210546263`
+   - **Result**: ZERO leads reaching Workiz. Pipeline has been silently failing.
+   - **Fix**: Get fresh Workiz API credentials from UAD account and update n8n workflow
+
+2. **Claude analysis returns ALL UNKNOWN** — The "Analyze and Categorize Audio" node returns all fields as UNKNOWN (name, phone, address, sentiment, priority, category).
+   - Evidence: Execution #154072 → `confidenceScore: 0`, all fields UNKNOWN
+   - Root cause: Likely insufficient conversation context being passed to Claude, or the conversations have no real content (short/missed calls)
+   - **Fix**: Review Claude prompt in n8n, ensure conversation insights and transcript are being forwarded
+
+3. **Outlook email notification fails** — "No binary data exists on item!" when trying to attach audio file.
+   - Evidence: `Send via Outlook1` node fails because `audioFile` binary property doesn't exist
+   - Sends to `service@rensto.com` via Microsoft Outlook OAuth2
+   - **Fix**: Make audio attachment optional (some conversations won't have recordings)
+
+4. **n8n workflow IS running** — 10 recent successful executions (every 15 min, all today). Recent successes are because there are no NEW conversations to process — the workflow polls, finds nothing new, exits cleanly. Errors only occur when it finds conversations to process.
+
+#### CRITICAL — Telnyx Voice AI (Rensto FrontDesk)
+
+1. **18/19 calls classified as "missed"** — Only 1 answered call (Shai's test). 18 others have `number_of_messages=0` and `last_message_at=null`.
+   - Evidence: `SELECT outcome, COUNT(*) FROM "VoiceCallLog"` → missed: 18, answered: 1
+   - Root cause: `determineOutcome()` in `frontdesk-poller.worker.ts:193-198` checks only user message count. Robot/spam calls that connect but never speak are classified as missed.
+
+2. **95 credits charged for missed calls** — ALL 19 calls charged 5 credits each, including the 18 missed calls. 90 credits wasted.
+   - Evidence: `creditsToCharge = config.telnyx.creditsPerCall` (always 5, line 126)
+   - **Fix**: Add `if (outcome === 'missed') creditsToCharge = 0;` before credit deduction
+
+3. **callerPhone null for 18/19 calls** — `meta.telnyx_end_user_target` and `meta.from` are both empty for most conversations.
+   - Evidence: `SELECT "callerPhone", COUNT(*) FROM "VoiceCallLog"` → null: 18, phone: 1
+   - Root cause: Telnyx metadata may not be populated for short/dropped calls. Robot calls via SIP (like `gencredMq3w...@sip.telnyx.com`) have SIP URIs, not phone numbers.
+   - **Fix**: Parse SIP caller info as fallback, or fetch from messages endpoint
+
+4. **Duration always 0** — `frontdesk-poller.worker.ts:145` hardcodes `duration: 0` with comment "not available from conversation object"
+   - **Fix**: Calculate from `created_at` to `last_message_at`, or fetch from call records API
+
+5. **Summary/sentiment null for all** — Insights API may be failing silently or not available for short calls
+   - **Fix**: Only request insights for conversations with `number_of_messages > 0`
+
+6. **UAD/MissParty NOT polled by worker** — Worker only polls Rensto's own assistant (1 SecretaryConfig with telnyxAssistantId). UAD/MissParty are on separate Telnyx account, handled by n8n.
+   - Evidence: `SELECT COUNT(*) FROM "SecretaryConfig" WHERE "telnyxAssistantId" IS NOT NULL` → 1
+
+#### Documentation Conflicts (from background audit)
+
+1. **INFRA_SSOT.md says Telnyx "DORMANT"** — Actually ACTIVE for UAD/MissParty (n8n workflows firing every 15 min). **STALE — needs update.**
+2. **brain.md + DECISIONS.md say n8n is "backup only"** — But UAD/MissParty lead pipeline runs production n8n workflows. **CONFLICT — needs clarification.**
+3. **CLAUDE_CODE_WORKFLOW.md referenced but doesn't exist** — Dead reference in CLAUDE.md line 47.
+4. **NotebookLM 18, 19, 20 deprecated/empty** — Still listed in NOTEBOOKLM_INDEX.md.
+
+#### Admin Dashboard Gaps (from background audit)
+
+**Overall coverage: ~25% of critical data visible to admin. 75% invisible.**
+
+| Data | In DB | Admin Sees | Coverage |
+|------|-------|-----------|----------|
+| Video Jobs | 88 (60 failed) | Nothing | 0% |
+| Leads | 9 from 5 sources | Nothing | 0% |
+| Voice Calls | 19 logs | Nothing | 0% |
+| Credit Balance | 3 users | Nothing | 0% |
+| Usage Events | Multiple | Nothing | 0% |
+| FB Bot Status | Active (PM2) | Nothing | 0% |
+| Services | 14 monitored | Full health view | 100% |
+| Clients | 46 users | CRUD view | 100% |
+| Financials | Subscriptions | Hardcoded expenses | 30% |
+
+**5 broken admin components**: BusinessIntelligence.tsx (missing module), CustomerAgentSystem.tsx (dead imports), IntelligentOnboardingAgent.tsx (dead imports), Alert.tsx (missing `react-bits`), EcosystemMap.tsx (references Firestore comments).
+
+#### EMAIL — NOT YET VERIFIED
+
+Emails observed across systems:
+- **service@rensto.com** — n8n Outlook recipient for UAD lead analysis emails
+- **admin@rensto.com** — in ADMIN_EMAILS array (`auth.ts:14`)
+- **uad.garage.doors@gmail.com** — UAD Facebook account (`bot-config.json:18`)
+- **michalkacher2006@gmail.com** — MissParty Facebook account (`bot-config.json:96`)
+- **Rensto Microsoft Outlook OAuth2** — n8n credential `EA2Fl9QT5h2HZoo9` used to send emails
+
+**Need user confirmation**: Which emails should be configured where? Are there missing email routes?
+
+---
+
+## 2026-02-20
+
+### CRITICAL: RackNerd Firewall Was INACTIVE — Redis & Postgres Exposed
+
+**What happened**: `ufw status verbose` returned "Status: inactive". Docker port mappings for Redis (6379) and Postgres (5432) were bound to 0.0.0.0 — fully accessible from the public internet. Any attacker could have connected to the database or Redis cache directly.
+
+**Root cause**: Firewall was never enabled after initial VPS setup. Docker's `-p` flag binds to all interfaces by default. Without UFW, nothing blocks external access.
+
+**Fix**: Enabled UFW with explicit allow rules for only necessary ports (22, 80, 443, 3002, 8080, 8082, 11434). Redis and Postgres ports are now blocked from external access.
+
+**Never repeat**: After any Docker compose change that exposes ports, verify `ufw status` shows those ports are NOT in the allow list (unless intentionally public). Add to deploy checklist.
+
+### CRITICAL: Hardcoded VPS Password in 6 Tracked Scripts
+
+**What happened**: The RackNerd root password `y0JEu4uI0hAQ606Mfr` was hardcoded in 6 shell scripts that ARE tracked by git (deploy scripts, update-n8n). If pushed to a public repo, full server access.
+
+**Fix**: Replaced all hardcoded passwords with `${VPS_PASSWORD:?Set VPS_PASSWORD env var}` — scripts now fail-fast if env var is missing instead of containing credentials.
+
+**Never repeat**: NEVER hardcode passwords/tokens in scripts. Always use env var references. The `:?` syntax ensures the script fails with a clear error if the var is unset.
+
+### SSH Command Injection in /api/admin/n8n
+
+**What happened**: The `targetVersion` parameter from POST body was interpolated directly into an SSH command: `bash /opt/n8n/rensto-n8n-upgrade.sh ${targetVersion}`. An attacker with admin access could inject arbitrary shell commands.
+
+**Fix**: Added semver regex validation (`/^\d+\.\d+\.\d+$/`) before the spawn call. Invalid formats return 400.
+
+**Never repeat**: NEVER interpolate user input into shell commands. Always validate/sanitize first. Prefer allowlists over denylists.
+
+### CRITICAL: Content Invention Pattern — Root Cause and Safeguard
+
+**What happened**: When building Yoram's landing page, I invented fake testimonials ("משפחת כהן, חיפה", "דוד ל., נשר" with fabricated savings amounts), wrote oversimplified 3-step process, and skipped the 85% duplicate insurance statistic — despite all of this being carefully documented in `yoram-leads/` strategy docs. The Blueprint Q&A explicitly says "אין במה להשתמש כרגע" (no real case studies available), yet I fabricated them.
+
+**Root cause**: I treat existing strategy/content docs as "background reference" instead of "source material to extract from." For engineering tasks I carefully read code before modifying. For content tasks I generate from general knowledge instead of extracting from existing docs. The agent-behavior "just execute" reflex compounds this — rushing to produce output rather than carefully pulling from existing work.
+
+**This is a recurring pattern** — same failure as LinkedIn prompts (using wrong API fields instead of reading the reference), same failure as skipping existing docs to invent from scratch.
+
+**MANDATORY SAFEGUARD — Content Extraction Checklist**:
+Before seeding or generating ANY customer-facing content, ALWAYS:
+1. **Search for existing content docs** in the customer's directory (e.g., `yoram-leads/`)
+2. **Read every strategy/content doc** — not skim, READ
+3. **Extract verbatim content** — copy from docs, don't paraphrase or invent
+4. **If content doesn't exist in docs, leave it empty** — never fabricate testimonials, case studies, or quotes
+5. **Cross-reference**: does the doc say "we don't have this yet"? If so, OMIT the section entirely.
+6. **Cite the source** in seed scripts — which doc, which section, which question number
+
+**What was fixed**:
+- Removed fabricated testimonials (empty array until Yoram provides real ones)
+- Replaced 3 generic steps with the actual 5-step process from Content Strategy post #10
+- Added 85% duplicate insurance statistic to hero subheadline (THE key conversion message from Israeli Insurance Strategy)
+- Added differentiators section from Blueprint Q&A (questions 16-18)
+- Updated compliance footer with license number placeholder (regulatory requirement)
+- Added 4th credential "הוזלה עד 50%" from Optimization doc
+- Seed script now has source citations for every content block
+
+---
+
+### FB Marketplace Bot — V5 Dynamic Content Pipeline Wired
+
+**What**: Every FB Marketplace listing now gets unique AI-generated copy per city via **Kie.ai Gemini 2.5 Flash** (OpenAI-compatible API). The original V5 pipeline used Claude Sonnet via n8n pre-generation; the new approach generates on-the-fly in webhook-server when serving a job. (Note: initially tried direct Gemini keys — all blacklisted — then Claude Haiku — then switched to Kie.ai per user direction.)
+
+**Key decisions**:
+- **Kie.ai Gemini 2.5 Flash**: Uses the Kie.ai proxy (`https://api.kie.ai/gemini-2.5-flash/v1/chat/completions`) with OpenAI-compatible format. Same `KIE_API_KEY` the worker uses for video generation — no extra key needed. 0.02 credits/call. API docs in NotebookLM 3e820274.
+- **On-the-fly over pre-generation**: V5 n8n workflow pre-generated content for each city. New approach generates at job-serve time → no stale content, every listing truly unique, no batch pipeline to maintain.
+- **Prompt per product**: UAD gets professional/technical tone, MissParty gets fun/party tone. Both mention the rotated city naturally and embed the rotated phone number.
+
+**Image variation pool** (Phase 2):
+- Kie.ai Seedream 4.5 Edit (`POST https://api.kie.ai/api/v1/jobs/createTask`, model `seedream/4.5-edit`) for subtle image variations.
+- Async: returns `taskId`, poll `GET https://api.kie.ai/api/v1/jobs/recordInfo?taskId=...`, ~17s per image.
+- Pre-generation pool approach: too slow for on-the-fly (~17s), so `image-pool-worker.js` runs as PM2 job, keeps 6 variations per image, refills every 30 min.
+- Webhook randomly picks from pool per posting. Falls back to static images if pool empty.
+- Pool stored at `/var/www/garage-door-images/variations/` — served by nginx at `:8080/variations/`.
+
+**Never repeat**:
+- All Google API keys committed to a git repo will be auto-flagged and blacklisted. Store API keys in server `.env` only, never in tracked files.
+- Always check NotebookLM 3e820274 (KIE.AI) before using external APIs directly — Kie.ai proxies many models (Gemini, Sora, Veo, etc.) under a single key.
+- Image generation via Kie.ai is async (~17s) — never do it inline in a webhook response. Pre-generate and serve from pool.
+
+---
+
+### FB Marketplace Bot — DEFINITIVE FIX (Session Disconnection Solved)
+
+**TL;DR**: The fix was reverting `facebook-bot-final.js` to match the working V13 `master-bot.js` GoLogin config and session flow. MissParty listing posted successfully on 2026-02-20 — first success after weeks of session failures.
+
+**The working V13 approach (from `platforms/marketplace/engine/facebook-bot.js` and `master-bot.js`):**
+
+| Config | Working V13 | Broken Version | Impact |
+|--------|------------|----------------|--------|
+| `tmpdir` | Default `/tmp` | Custom `gologin-tmp` | Custom dir broke GoLogin SDK cookie path resolution |
+| `executablePath` | Not set (auto-detect) | Hardcoded | SDK auto-finds the browser correctly |
+| `--display=:100` | YES | Missing | Without X11 display, Chrome renders blank pages on headless VPS |
+| `writeCookiesFromServer` | Not set | `false` | Setting it explicitly caused `ERR_INVALID_ARG_TYPE` in cookie manager |
+| Page creation | `browser.newPage()` (fresh) | `pages[0]` (stale restore) | Restored pages had stale session context causing "new device" detection |
+| Cookie source | `cookies.json` → `page.setCookie(...spread)` + locale | GoLogin API → complex fallback | Simple cookies.json injection is reliable; GoLogin API was returning empty/partial |
+| Session verify | Navigate to `/me` | Check for login form | `/me` redirect is definitive (profile URL = logged in, login URL = not) |
+| Cleanup | Always `GL.stopLocal({ posting: false })` | Conditional `GL.stop()` | Never upload to S3 — prevents corrupting cloud profile |
+| Locale | Force `en_US` cookie | Not set | Prevents Finnish/Hebrew UI which breaks English selectors |
+| Fonts dir | Pre-create `/tmp/gologin_profile_{id}/fonts/` | Not created | Prevents ENOENT crash during GoLogin startup |
+| Image upload | Simple `imageInput.uploadFile(...imgPaths)` | Complex fileChooser + React event dispatch | The simple approach works; complexity adds fragility |
+| Login selectors | `#email`, `#pass`, `button[name="login"]` | React setter `HTMLInputElement.prototype.value` | Both work, but `#email`/`#pass` + `page.type()` is proven |
+
+**The real breakthrough — the "See more on Facebook" modal:**
+When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 2FA!) instead of a full login page. The `refresh-session.js` script fills the password and clicks "Log In" — no 2FA required because the GoLogin profile preserved enough device fingerprint state.
+
+**Session maintenance pattern (prevents future disconnections):**
+1. After EVERY successful posting, save cookies to cookies.json AND GoLogin API
+2. Run the bot regularly (at least weekly) to keep cookies fresh
+3. If cookies go stale (>2 weeks idle), run `refresh-session.js` — fills the modal password, no 2FA
+
+**Webhook-server SQL bug (42P08):**
+- `$1` parameter type ambiguity → explicit casts `$1::varchar`, `$2::text`, `$3::text`, `$4::int`
+
+**CRITICAL: Facebook Marketplace Category Validation (discovered 2026-02-20):**
+- The marketplace form has a Category dropdown that MUST match an exact Facebook category name
+- Typing a non-matching term (e.g., "party rentals", "garage doors") returns ZERO dropdown options
+- When no category is selected, clicking "Next" triggers `Input Category is invalid.` error — form silently stays on details page
+- The error appears in `[role="alert"]` elements but is NOT visually obvious
+- **Valid category names confirmed**: "Inflatable Bouncers" (Outdoor Toys), "Miscellaneous" (catch-all), "Toys", "Home", "Garden", "Furniture", "Tools", "Baby"
+- **To find valid categories**: type search terms in the Category input and check `ul[role="listbox"] li` for dropdown results
+- **MissParty uses**: "Inflatable Bouncers" | **UAD uses**: "Miscellaneous"
+
+**CRITICAL: Per-profile cookie files:**
+- Each GoLogin profile needs its OWN cookie file: `cookies_{product.id}.json`
+- A single shared `cookies.json` causes MissParty cookies to load into UAD's session (wrong Facebook account)
+- The GoLogin profile itself stores cookies internally, but cookies.json injection provides backup/override
+
+**Never repeat checklist for GoLogin + Facebook:**
+1. Use default tmpdir (`/tmp`) — NOT a custom directory
+2. Add `--display=:100` to extra_params (X11 display for headless VPS)
+3. Add `--password-store=basic` to extra_params (Linux encryption fix)
+4. Use `browser.newPage()` — NEVER `pages[0]`
+5. Inject cookies from per-profile `cookies_{id}.json` with `page.setCookie(...spread)` + force locale `en_US`
+6. Verify session via `/me` redirect
+7. Always use `GL.stopLocal({ posting: false })` — NEVER `GL.stop()`
+8. Save cookies to per-profile file after every successful run
+9. Pre-create fonts dir at `/tmp/gologin_profile_{id}/fonts/`
+10. Clean stale locks before starting: `rm -f /tmp/gologin_profile_*/Singleton*`
+11. Use EXACT Facebook category names (probe dropdown with test script first)
+12. Check `[role="alert"]` for validation errors after clicking Next — don't assume no DOM change means success
+
+**n8n webhook issue (unresolved):**
+- Workflow `8Ay9qG9GgOfrMUzXiC5KJ` ("FB Marketplace Listing Generator") shows active but webhooks aren't registered
+- Toggling + n8n restart didn't help
+- Workaround: local webhook-server at `localhost:8082` provides jobs successfully
+
+**DFW Location Rotation (2026-02-20):**
+- CRITICAL: Every posting MUST use a DIFFERENT DFW city — never default to "Dallas" every time
+- UAD: 30 DFW cities covering all quadrants (Dallas, Fort Worth, Arlington, Plano, Frisco, McKinney, Grand Prairie, Irving, Garland, Mesquite, Carrollton, Richardson, Denton, Allen, Mansfield, Keller, Grapevine, Cedar Hill, Rockwall, Rowlett, DeSoto, Southlake, Wylie, Burleson, Midlothian, Weatherford, Forney, Little Elm, Saginaw, Waxahachie)
+- MissParty: 20 DFW cities focused on populated suburbs (Dallas, Richardson, Garland, Irving, Plano, Frisco, McKinney, Allen, Carrollton, Grand Prairie, Mesquite, Rowlett, Wylie, DeSoto, Cedar Hill, Arlington, Rockwall, Addison, Murphy, Sachse)
+- Initial implementation lazily used 4-6 cities from old configs — expanded to full DFW metro (200+ city area, we cover the most populated)
+- Source: `bot-config.json` `locations` array (canonical), also in `fb_client_configs` table
+- Rotation implemented in `webhook-server.js` — `getNextLocation(clientId)` cycles sequentially through array
+- The bot's existing code converts `, TX` → `, Texas` for Facebook dropdown matching
+- Location typed character-by-character (100ms delay) → ArrowDown → Enter to select from dropdown
+- Verified working: 3 consecutive calls returned Fort Worth, Plano, Arlington
+- **~~Gap~~**: ~~Content was STATIC~~ → **FIXED Feb 20**: AI copy via Kie.ai Gemini 2.5 Flash (`content-generator.js`), image variations via Kie.ai Seedream 4.5 Edit (`image-pool.js`), price jitter ±10%
+
+**Dynamic Phone Overlay on Images (2026-02-20):**
+- Webhook-server now generates per-job phone overlay using ImageMagick when serving a job
+- Uses `generate-overlay-images.js` module with `generateOverlayImage(productId, phone, index, outputPath)`
+- Per-product subtitles: UAD → "Free Estimates • Licensed & Insured", MissParty → "24hr Rentals • Dallas TX"
+- Original clean images backed up at `/var/www/garage-door-images/originals/`
+- Dynamic overlay saved to `img_{product}_0_overlay.jpg` — URL returned in webhook response
+- Phone rotation confirmed working: UAD's second post used phone index 1 (+1-972-628-3587)
+- ImageMagick note: use composite approach (`-size 1024x100 xc:"rgba(0,0,0,178)"`) not fx expressions (broken in IM6 Ubuntu)
+
+**Telnyx / Voice AI / Lead Pipeline — FIXED (2026-02-22):**
+
+**Architecture (discovered Feb 22):** The Telnyx numbers are connected to **Telnyx AI Assistants** — fully autonomous voice agents that handle calls natively on Telnyx (not via n8n webhooks). Two separate Telnyx accounts:
+- **UAD/MissParty account** (`KEY019B52B283A906F6B2150BD499B7BD99`): 5 numbers (4 UAD + 1 MissParty)
+- **Rensto account** (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`): 1 number (Voice AI "Hope")
+
+**Telnyx AI Assistants:**
+- **UAD "Sarah"** (`assistant-5515bf13`): Qwen3-235B, Deepgram Nova-2, Telnyx.NaturalHD.Esther voice. Greets callers, collects lead info, books garage door appointments, explains $49 trip charge. 4 numbers routed to it.
+- **MissParty "Sarah"** (`assistant-f1708158`): Qwen3-235B, Deepgram Flux, Telnyx.NaturalHD.Astra voice. Handles bounce house rentals, $75 flat + $1/mile delivery. Has `deliveryCalculator` webhook tool. 1 number.
+- Both have telephony+messaging enabled, recording enabled, Krisp noise suppression.
+
+**Pipeline flow:** Telnyx AI Assistant answers call → full conversation → stores transcript/insights → n8n Schedule Trigger (15 min) polls Telnyx Conversation API → Claude Sonnet 4.5 analysis → Workiz CRM (UAD) / Email (MissParty)
+
+**Critical bugs found and fixed (Feb 22):**
+1. **UAD webhook URL was WRONG** — `dynamic_variables_webhook_url` pointed to `tax4usllc.app.n8n.cloud` (external n8n cloud) instead of `n8n.rensto.com`. Fixed via Telnyx API PATCH.
+2. **Both n8n workflows had stale trigger registration** — marked "active: true" but `activeVersionId: null`, `triggerCount: 0`. Schedule triggers never fired. Fixed by deactivate/reactivate cycle.
+3. **MissParty workflow was corrupted** — couldn't be activated at all (`activeVersionId: null` permanently). Fixed by deleting and recreating from saved JSON. New ID: `9gfvZo9sB4b3pMWQ` (old: `U6LqmzNwiKTkd0gM`).
+4. **Claude prompt didn't receive caller metadata** — The `Get Insights` node replaces the data, losing the caller phone from conversation metadata. Fixed prompt to reference `$('Get Many Conversations1').item.json.metadata`.
+5. **Structure Analysis Output too strict** — Required `customerPhoneNumber`, `customerAddress`, `bookingOutcome` — removed all required fields.
+6. **Flatten node referenced non-existent node** — `$('Workflow Configuration1')` doesn't execute in Schedule path. Fixed audioFileName to use safe expression.
+7. **Copy Binary node crashed** — Referenced `Workflow Configuration1` for audio file. Fixed with try/catch.
+8. **Outlook node crashed on missing attachment** — Removed audio file attachment requirement (not available in Schedule path).
+9. **UAD messaging disabled** — 4 UAD phone numbers had `messaging_profile_id: null`. Fixed via Telnyx API.
+10. **MissParty stuck execution** — Execution 135731 was permanently "new" status. Deleted via n8n API.
+
+**Current status (Feb 22):**
+- ✅ UAD workflow (U6EZ2iLQ4zCGg31H): Active, 5 triggers, Schedule firing every 15 min
+- ✅ MissParty workflow (9gfvZo9sB4b3pMWQ): Active, 5 triggers, Schedule firing every 15 min
+- ✅ Email notifications: Working — service@rensto.com receiving lead emails
+- ✅ 3 historical UAD conversations found (1 real lead from +14695885133 on Jan 20, 2 test calls from Jan 2)
+- ✅ Workiz CRM: FIXED — `auth_secret` must go INSIDE the JSON body (not URL, not headers). PascalCase field names (`FirstName`, `LastName`, `Phone`, `Email`, `Address`, `JobType`, `JobSource`). Discovery: Pipedream SDK source code revealed the pattern. 401 was caused by missing `auth_secret` in body + Workiz server rejects `Content-Type: application/json` without it.
+- ⚠️ Caller phone extraction: Insight summaries don't always contain the caller number — metadata merging works partially. Real incoming calls will have phone from Telnyx metadata.
+- ✅ Conversation deduplication: FIXED (Feb 23) — "Filter New Conversations" Code node added to both workflows. Uses `$getWorkflowStaticData('global')` to track processed conversation IDs. Old conversations filtered out → 0 items → pipeline stops. Verified: execution #154094 completed in 0.4s (vs 20s) with 0 items passing the filter. No more spam emails.
+
+**3. Voice AI "Hope"** (MqMYMeA9U9PEX1cH) — 13 nodes, active, **0 executions**:
+- This is a **Rensto sales agent**, NOT for customer calls (talks about Automation Audit $499, Sprint Planning $1,500)
+- Uses GPT-4o + ElevenLabs voice via Telnyx
+- On separate Rensto Telnyx account, NOT relevant for UAD/MissParty
+
+**Workiz API auth pattern (NEVER FORGET):**
+- Base URL: `https://api.workiz.com/api/v1/{api_token}/`
+- GET: token in URL only, no secret needed
+- POST: token in URL + `auth_secret` field INSIDE the JSON body (mandatory)
+- Fields are PascalCase: `FirstName`, `LastName`, `Phone`, `Email`, `Address`, `City`, `State`, `PostalCode`, `Company`, `JobType`, `JobSource`
+- `Phone` or `Email` required (at least one). Empty string rejected — omit field or don't call.
+- `JobSource` must match existing Workiz values. "OTHER" always works.
+- Source: Pipedream PHP SDK `_authData()` method — `auth_secret` injected into every request payload
+
+**Remaining gaps:**
+- No PostgreSQL lead storage — leads in n8n/Workiz/email only
+- Conversation metadata (caller phone) partially reaches Claude — works better when callers give details to Sarah
+
+---
+
+### FB Marketplace Bot — Earlier session findings (SUPERSEDED)
+
+*The section above ("DEFINITIVE FIX") supersedes all earlier findings. Key points preserved:*
+
+- **GoLogin SDK ERR_INVALID_ARG_TYPE**: Non-fatal when using default tmpdir. SDK logs the error but starts successfully. Caused by `writeCookiesFromServer` not being needed with default tmpdir.
+- **"Continue as" page**: Not an issue with V13 config — fresh `browser.newPage()` + cookies.json injection bypasses this entirely.
+- **n8n Data Table → PostgreSQL bridge**: Still doesn't exist. Bot reads from local webhook-server at `localhost:8082`.
+- Core files: `facebook-bot-final.js`, `webhook-server.js`, `generate-overlay-images.js`, `scheduler.js`, `bot-config.json`, `cookies_{id}.json`.
+- 58 files → 21 core files → 25 core files (added content-generator.js, image-pool.js, image-pool-worker.js, cookie-monitor.js).
+
+---
+
+### Kling 3.0 API Underutilized — 5 Capabilities Left on Table (FIXED)
+- **Root cause**: Kling 3.0 API upgraded with multi-shot, native audio, 10s duration, and callbackUrl. Our code still sent `sound: false`, `multi_shots: false`, `duration: "5"` for all clips, and ignored room-specific negatives (kie.ts overwrote request.negative_prompt with its own short list).
+- **Impact**: All clips were 5s (hero rooms like pool cramped). Kitchen clips could have "dirty dishes" artifacts. No ambient audio. No webhook efficiency.
+- **Fix**: (1) Hero rooms now 10s via prompt-generator override. (2) Room negatives appended in kie.ts via `to_room` field + `inferRoomKey()`. (3) `sound`/`multi_shots` toggled by env vars. (4) `callBackUrl` sent when configured.
+- **Never repeat**: When a provider API upgrades, audit the full parameter surface. Check our wrapper (`kie.ts`) against the latest API docs — don't assume the wrapper is up to date.
+
+### Text Overlays Were Stub in Both Pipeline Paths (FIXED)
+- **Root cause**: `addTextOverlays` in ffmpeg.ts worked mechanically (drawtext filter), but the overlay specs passed from both `video-pipeline.worker.ts` and `regen-clips.ts` only sent room names with 2s display, no fade, default tiny font. No address, price, or CTA.
+- **Impact**: Videos had no property branding. Room labels appeared/disappeared abruptly. No call-to-action for viewers.
+- **Fix**: Enhanced `TextOverlaySpec` with `fontSize`, `fadeInSeconds`, `fadeOutSeconds`. Overlay builder now generates: opening address+price, per-clip room labels with fade, closing CTA. System font detection for Ubuntu. Applied to BOTH `video-pipeline.worker.ts` AND `regen-clips.ts`.
+- **Never repeat**: When changing the overlay builder in the main pipeline, always mirror the change in `regen-clips.ts`. Both paths must produce identical marketing layers.
+
+### Data Architecture: No Data Dictionary Existed (FIXED)
+- **Root cause**: 50+ Postgres tables, 10 Aitable datasheets, Redis, R2, Firebase Storage — but no single doc mapping where each business entity lives.
+- **Impact**: Engineers had to read 3-5 files to answer "where is Lead data?" Sync scripts existed but weren't scheduled. No automated detection of schema drift between Prisma and Drizzle.
+- **Fix**: Created `docs/DATA_DICTIONARY.md`, `tools/schema-sentinel.ts`, Aitable health check in service registry, and `/api/cron/sync-aitable` with Vercel Cron (every 15 min).
+- **Never repeat**: When adding a new table or external store, update `docs/DATA_DICTIONARY.md` immediately.
+
+### Prisma/Drizzle emailVerified Type Mismatch (FIXED)
+- **Root cause**: Drizzle schema defined `emailVerified` as `timestamp` but Prisma defines it as `Boolean?`. The actual DB column is `boolean` (created by Prisma).
+- **Impact**: Drizzle would misinterpret the column value. Worker code likely never reads this field, so no runtime bug observed, but it's a ticking bomb.
+- **Fix**: Changed Drizzle to `boolean("email_verified")`. Schema Sentinel now validates this automatically.
+- **Never repeat**: Run `npx tsx tools/schema-sentinel.ts` before any schema change PR. Add `--strict` in CI to fail builds on mismatches.
+
+### DB CHECK Constraints Silently Kill Callback Processing (NEVER REPEAT)
+
+**`event_type` CHECK constraint blocks new event types:**
+- `winner_generation_events.event_type` has a CHECK constraint limiting allowed values.
+- Inserting a new event type (e.g. `model_fallback`) throws a DB constraint violation.
+- When this happens inside a callback handler, the error propagates and silently aborts ALL remaining logic (fallback task creation, model switching, etc.).
+- The callback handler's try-catch logs the error but returns `{ ok: false }` — no retry from kie.ai.
+- **Never repeat**: Before adding new event types, CHECK the DB constraint. Run `\d winner_generation_events` to see allowed values. Add new types via `ALTER TABLE ... DROP CONSTRAINT ... ADD CONSTRAINT`.
+- **Fix applied**: Added `model_fallback` to the CHECK constraint.
+
+**Avatar model fallback pattern:**
+- When avatar models fail → immediately fall back to `kling-3.0/video` (no lip-sync but at least produces video).
+- Don't waste retries on known-broken services. The fallback should be immediate, not after 3 failures.
+- Check `data.model` from callback to determine what ACTUALLY failed (not `gen.recommended_model` which is what Gemini chose).
+
+---
+
+## 2026-02-19
+
+### Winner Video Studio Pipeline Fixes — Session 2 Root Causes (NEVER REPEAT)
+
+**kling/ai-avatar-pro rejects `mode` parameter (CRITICAL):**
+- Avatar-pro only accepts 3 input params: `image_url`, `audio_url`, `prompt`.
+- Sending extra `mode: "std"` causes silent 500 "internal error, please try again later."
+- `kling-3.0/video` DOES accept `mode`, `duration`, `aspect_ratio`, `sound`, `multi_shots`.
+- `infinitalk/from-audio` accepts `image_url`, `audio_url`, `prompt`, `resolution`, `seed`.
+- **Never repeat**: Before using a kie.ai model, check its exact input schema at `https://docs.kie.ai/market/{model}.md`. Don't assume parameters transfer between models.
+- **Source**: https://docs.kie.ai/market/kling/ai-avatar-pro.md
+
+**Presigned R2 URLs rejected by kie.ai (CRITICAL):**
+- Presigned URLs have query params (`X-Amz-Algorithm=...`) that confuse kie.ai's file type detection.
+- Error: "audio_url file type not supported" (500).
+- Fix: Use file proxy (`/api/files/{key}`) which serves clean URLs with correct Content-Type headers.
+- **Never repeat**: For external APIs that download files, always use clean URLs without query params. File proxy is preferred over presigned URLs.
+
+**Vercel `after()` doesn't execute on Hobby plan:**
+- `after()` from `next/server` returns response immediately but the background work never runs on Hobby plan.
+- Fix: Use `waitUntil` from `@vercel/functions` to keep function alive, plus fire-and-forget `fetch()` to a separate `/api/generate/process` endpoint that gets its own 60s timeout.
+- **Never repeat**: Don't rely on `after()` on Vercel Hobby. Use `waitUntil` + separate endpoint pattern.
+
+**WAV files sent as application/octet-stream by curl:**
+- curl `-F` doesn't auto-detect WAV MIME type — sends `application/octet-stream`.
+- Fix: Added `inferAudioType()` that checks file extension when browser MIME is generic.
+- **Never repeat**: Always implement MIME type fallback via file extension for upload endpoints that accept files from CLI tools.
+
+**Kie.ai avatar models outage (Feb 19, 2026):**
+- All 3 talking-head models fail with CostTime: 0-1 and 500 error.
+- Confirmed with: direct API calls, fully public URLs (Unsplash + university WAV), no query params.
+- `kling-3.0/video` works fine (all successful generations used it).
+- This is a kie.ai service issue, not our code.
+- **Action**: Add fallback to `kling-3.0/video` when avatar models fail. Consider alternative providers (PiAPI, Runware, WaveSpeed).
+
+---
+
+### Winner Video Studio E2E Testing — Root Causes (NEVER REPEAT)
+
+**Vercel env vars with trailing newlines (CRITICAL):**
+- Using `echo "value" | vercel env add NAME production` adds `\n` at the end of the value.
+- R2 S3 client fails with `"Invalid character in header content [\"authorization\"]"` because credentials have `\n`.
+- Fix: Always use `printf "value" | vercel env add NAME production --force` (no trailing newline).
+- **Never repeat**: When setting Vercel env vars via CLI, ALWAYS use `printf` instead of `echo`.
+
+**WAHA sendFile vs sendVideo (CRITICAL):**
+- `sendFile` (WAHA `/api/sendFile`) sends media as a WhatsApp document — recipient sees PDF icon, file is unplayable.
+- `sendVideo` (WAHA `/api/sendVideo`) sends as a playable video with thumbnail in WhatsApp chat.
+- Endpoint: `POST /api/sendVideo` with body `{ chatId, file: { url, mimetype: "video/mp4" }, caption, session }`.
+- **Never repeat**: For video delivery via WAHA, ALWAYS use `sendVideo`, never `sendFile`. `sendFile` is for documents only (PDF, Word, etc.).
+
+**Phone normalization for WhatsApp auth:**
+- User enters `4695885133`, `phoneToChatId()` normalizes to `14695885133@c.us`, DB stores `+14695885133`.
+- If lookup only checks the raw input, it misses the existing user → creates duplicate.
+- Fix: Look up with both normalized (`+14695885133`) and raw input in WHERE clause.
+- **Never repeat**: Always normalize phone numbers to E.164 format (`+{countryCode}{number}`) before DB operations. Search with both raw and normalized forms.
+
+**Vercel Hobby plan maxDuration config:**
+- `export const maxDuration = 60` in route files is unreliable on Hobby plan.
+- Specific route paths in `vercel.json` `functions` config also intermittent.
+- Fix: Use glob pattern in vercel.json: `"src/app/api/**/*.ts": { "maxDuration": 60 }`.
+- **Never repeat**: For Vercel Hobby, always use glob pattern in vercel.json for function timeout config. Don't rely on in-file exports alone.
+
+**R2 bucket not publicly accessible:**
+- Bucket `winner-video-studio` returns 401 on direct URL access (`pub-winner.r2.dev`).
+- WAHA tries to download from R2 URL → gets error HTML → sends as empty file.
+- Fix: Use kie.ai CDN URL (`video_result_url`) for immediate delivery. R2 for long-term storage.
+- **Never repeat**: Before using R2 URLs for external service delivery, verify bucket has public access enabled. Use source CDN URLs when available.
+
+**downloadToR2 argument order:**
+- `uploadFromUrl(sourceUrl, r2Key)` was backwards — should be `uploadFromUrl(r2Key, sourceUrl)` (key first, URL second).
+- This caused the pipeline to fail silently at the DELIVERING stage.
+- **Never repeat**: When calling R2/S3 upload functions, the key/path is always the first argument, source URL is second. Check function signature before calling.
+
+**winner_generation_costs table schema:**
+- Code tried to INSERT `model, kie_credits_used, processing_time_ms` — table actually has `gemini_credits, isolation_credits, video_credits, suno_credits`.
+- Fix: Use correct column names, upsert based on pipeline stage (`isolation_credits` for AUDIO_ISOLATING, `video_credits` for VIDEO_GENERATING).
+- **Never repeat**: Always check actual DB table schema before writing INSERT/UPDATE queries. Don't assume column names from spec docs.
+
+**sendFile returning null but whatsapp_delivered=true:**
+- `sendFile` returns `null` on error (doesn't throw), but pipeline code continued to mark `whatsapp_delivered = true`.
+- Fix: Check `if (msgId)` before updating the delivered flag in DB.
+- **Never repeat**: When a function returns null on failure instead of throwing, always check the return value before proceeding with dependent operations.
+
+---
+
+## 2026-02-19
+
+### FB Marketplace Bot — Quick Reference (READ THIS FIRST)
+
+**Why this exists**: Every session, the agent wastes time rediscovering the same files and conflicts. This section is the single source of truth. Read it BEFORE touching the FB bot.
+
+**Key Files on Server (`/opt/fb-marketplace-bot/`)** (21 files after Feb 20 cleanup):
+| File | Role | Notes |
+|------|------|-------|
+| `facebook-bot-final.js` | **Main bot** — posting to FB Marketplace | Upload guard patched (Feb 20). GoLogin API → cookies.json fallback |
+| `interactive_login.js` | **PROVEN login script** — React value setter, 2FA polling | Always run this for login. Uses `domcontentloaded`, Enter key submit |
+| `master-bot.js` | **Legacy bot** — simpler, but proven (created cookies.json Jan 22-23) | Backup only |
+| `webhook-server.js` | Serves jobs from PostgreSQL `fb_listings` on port 8082 | PM2 managed |
+| `bot-config.json` | Config — GoLogin token, FB creds, phone rotation | `shared.gologinToken`, `products[0]=UAD`, `products[1]=MissParty` |
+| `cookies.json` | Cookie file (Jan 23) — c_user+xs present but SERVER-SIDE INVALIDATED | Device cookies (datr, sb, fr) still useful |
+| `preflight.js` | Pre-run checks | GoLogin, proxy, screenshots dir |
+| `check_cookies.js` / `check_profile.js` / `check_marketplace_access.js` | Diagnostic tools | Non-destructive |
+
+**Cookie Pipeline (Order of priority)**:
+1. GoLogin API (`GL.getCookies()`) — facebook-bot-final.js checks this first
+2. cookies.json fallback — if API is empty (added 2026-02-19 patch)
+3. S3 profile cookies — encrypted, often can't decrypt cross-platform (Mac→Linux)
+4. Direct login — LAST RESORT, triggers 2FA notification to client
+
+**GoLogin Token**: ALWAYS read from `bot-config.json` → `shared.gologinToken`. NEVER hardcode from conversation context. See CREDENTIAL_REFERENCE.md.
+
+**GoLogin API**:
+- GET `/browser/{profileId}` — read profile
+- PUT `/browser/{profileId}` — update (requires ALL fields: GET first, modify, PUT back)
+- GET `/browser/{profileId}/cookies` — read cookies
+- POST `/browser/{profileId}/cookies` — upload cookies
+- No PATCH support → 404
+
+**Proxy**: `geo.floppydata.com:10080` with `VtQPhDQtDugSO8av/Lekbt1ZQ7x4oCOVa`. NEVER change it. It's part of the fingerprint.
+
+**Profiles**:
+- UAD: `694b5e53fcacf3fe4b4ff79c` — c_user=732694166... in GoLogin API
+- MissParty: `6949a854f4994b150d430f37` — c_user=100013632011177 (from cookies.json, uploaded to API 2026-02-19)
+
+**n8n Workflows (status varies)**:
+- `8Ay9qG9GgOfrMUzXiC5KJ` — **FB Marketplace Listing Generator**: SUPERSEDED by `content-generator.js` + `image-pool.js`. n8n webhooks broken.
+- `U6EZ2iLQ4zCGg31H` — **UAD Lead Analysis**: Telnyx → Claude → Workiz API + Email. Active but **0 executions ever**.
+- `U6LqmzNwiKTkd0gM` — **Miss Party Lead Analysis**: Telnyx → Claude → Email. Active but **1 stuck execution, never completed**.
+- `MqMYMeA9U9PEX1cH` — **Telnyx Voice AI "Hope"**: Rensto sales agent, NOT for customer calls. **0 executions ever**.
+
+**DB Table**: `fb_listings` in `app_db` (PostgreSQL). Webhook server reads from here.
+
+**Rate Limits**: MAX 2-3 GoLogin login attempts per day. Each attempt sends notification to client. NEVER do rapid trial-and-error with login scripts.
+
+**Local codebase**: `fb marketplace lister/deploy-package/` has the same files. Sync with server via `rsync` or `scp`.
+
+---
+
 ## 2026-02-18
 
 ### Codebase Audit — Stale References Cleanup (DONE)
@@ -21,6 +765,110 @@
 - **CLAUDE.md missing build/deploy commands**: Added full section 6 with web/worker commands, deploy runbook, health checks.
 
 **Never repeat**: When a provider is deprecated (fal.ai→Kie.ai, Firestore→Postgres, Clerk→Resend), grep the entire codebase for stale references. Templates and admin UI labels are easy to miss.
+
+### FB Marketplace Bot — Root Causes Found
+
+**GoLogin cookie encryption mismatch (CRITICAL):**
+- GoLogin desktop app on Mac encrypts cookies using macOS Keychain. When profile syncs to S3 and downloads on Linux server, Chromium uses `--password-store=basic` with a different encryption key. Cookies in SQLite `encrypted_value` column can't be decrypted.
+- Fix: Fetch cookies from GoLogin API in cleartext via `GL.getCookies(profileId)`, inject via `page.setCookie()`. Bypasses Chromium encryption entirely.
+- **Never repeat**: When using GoLogin SDK on a different OS than where the profile was created, always inject cookies from the GoLogin API rather than relying on the profile's SQLite cookie store.
+
+**Puppeteer 2.1.1 `uploadFile()` "Failed to fetch" bug:**
+- Puppeteer 2.1.1's `uploadFile()` uses an internal `fetch()` call that's blocked by GoLogin's `--host-resolver-rules="MAP * 0.0.0.0"` (DNS leak prevention).
+- CDP `page._client` + `DOM.setFileInputFiles` sets files but Facebook React handlers fail ("Oops - Something went wrong").
+- `waitForFileChooser().accept()` also uses internal `fetch()` in Puppeteer 2.x.
+- Fix: Upgrade puppeteer-core to 19.11.1 (`npm install puppeteer-core@19`). v19 uses `DOM.setFileInputFiles` natively and `waitForFileChooser` works properly.
+- **Never repeat**: GoLogin SDK ships with Puppeteer 2.x. Always upgrade to puppeteer-core@19+ for file upload to work with GoLogin's DNS blocking.
+
+**Facebook image upload size limit through proxy:**
+- 1.9MB PNG images fail with "Oops - Something went wrong" error dialog when uploaded through the FloppyData residential proxy.
+- 132KB JPEG images upload successfully (photoMatch=1 in diagnostic).
+- Fix: Use ImageMagick `convert -resize 1200x1200> -quality 85 -strip` to optimize before upload.
+- **Never repeat**: Always optimize images to <200KB JPEG before uploading through residential proxies. Large files may timeout or be throttled.
+
+**Facebook Marketplace rate limiting:**
+- ~15 rapid GoLogin sessions in 2 hours triggers "Sorry, something went wrong" on ALL Facebook pages.
+- The block is on the browser fingerprint/session pattern, not the proxy IP (curl through proxy returns 200).
+- Initially only marketplace pages are blocked, then expands to all Facebook pages.
+- Cooldown: likely 1-6 hours. Don't hammer during testing.
+- **Never repeat**: Limit testing to 3-5 sessions per hour max. Use a 5-minute minimum gap between bot runs. In production, 30-minute intervals should be safe.
+
+**Missing `facebook_url` column in `fb_listings`:**
+- Status update endpoint returned 500 (PostgreSQL error 42703 = undefined column).
+- Fix: `ALTER TABLE fb_listings ADD COLUMN facebook_url text;`
+- **Never repeat**: When adding new webhook endpoints that reference columns, verify the column exists in the DB schema first.
+
+**GoLogin browser crash (ECONNREFUSED):**
+- Root cause: 3 conflicting Chromium flags in `extra_params` — `--no-proxy-server` (overrides GoLogin proxy), `--single-process` (crashes on Linux), `--no-zygote` (tied to single-process). Fix: removed all 3.
+- Additional: `DISPLAY` env var wasn't set on headless server. Chromium needs Xvfb. Fix: `DISPLAY=:100` (existing Xvfb instance on server).
+- **Never repeat**: When using GoLogin SDK on a headless Linux server, always set `DISPLAY=:100` and never pass `--no-proxy-server` or `--single-process` in extra_params.
+
+**GoLogin proxy:**
+- `geo.floppydata.com:10080` with auth (VtQPhDQtDugSO8av / Lekbt1ZQ7x4oCOVa) — intermittent. Rotates IPs.
+- Proxy has 3.3GB bandwidth. Recent IPs: 70.114.107.211, 184.92.253.193, 172.108.160.74.
+- GoLogin's internal proxy check uses a 13s timeout and fails intermittently. Just retry.
+
+**GoLogin `GL.stop()` overwrites S3 profile (CRITICAL):**
+- Every call to `GL.stop()` uploads the current local profile back to S3, including the Chromium cookie DB.
+- When the bot runs with a broken session (no c_user/xs), `GL.stop()` overwrites the S3 profile with the broken cookies.
+- This destroyed the valid session cookies that the user manually set up via GoLogin desktop on Mac.
+- Fix: Set `uploadCookiesToServer: false` in ALL failure paths before `GL.stop()`. Only set `true` when c_user + xs are verified.
+- **Never repeat**: Always guard `uploadCookiesToServer` based on session validity. NEVER let a failed run upload its profile back to S3.
+
+**Facebook React login page — selector changes:**
+- Facebook's new login page (`/login/`) uses React with dynamic IDs (`_r_2_`, `_r_5_`).
+- Old selectors `#email`, `#pass`, `button[name="login"]` NO LONGER WORK.
+- Working selectors: `input[name="email"]`, `input[name="pass"]`, `input[type="submit"]`.
+- React controlled components ignore direct DOM value changes. Must use: `Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, value)` followed by `el.dispatchEvent(new Event('input', {bubbles: true}))`.
+- For submit: `page.evaluate(() => el.click())` creates untrusted events that React ignores. Use `page.keyboard.press('Enter')` on the focused password field instead.
+- **Never repeat**: Use `input[name=...]` selectors and React-compatible value setters for Facebook forms.
+
+**GoLogin API cookies vs S3 profile cookies — TWO SEPARATE STORES:**
+- `GL.getCookies(profileId)` reads from GoLogin's API cookie store.
+- The S3 profile contains a Chromium SQLite cookie DB (encrypted).
+- The Mac GoLogin desktop app updates S3 but NOT the API cookie store for httpOnly cookies (c_user, xs).
+- On Linux, the S3 profile's Mac-encrypted cookies can't be decrypted.
+- Result: After Mac login, neither API nor S3 profile have usable session cookies on Linux.
+- Fix: Must log in directly from the Linux server to create Linux-encrypted cookies, then save to API via `postCookies`.
+- **Never repeat**: For cross-platform GoLogin, always establish sessions from the target platform.
+
+**Facebook 2FA checkpoint on new device/IP:**
+- Facebook requires 2FA when logging in from a new device/IP (even with correct credentials).
+- First attempt: "Check your notifications" (push notification to Mac/iPhone/Instagram).
+- Second attempt: "Check your text messages" (SMS code to phone ending in 50).
+- The checkpoint page has a gear icon for alternative methods.
+- Solution: noVNC at `http://172.245.56.50:6080/vnc.html` — user can see and interact with the browser remotely.
+- **Never repeat**: Always have noVNC ready for interactive 2FA. Use `interactive_login.js` which waits 10 min for approval.
+
+**UAD Facebook account email:**
+- Config had `uad.garage.doors@gmail.com` — Facebook says "email not connected to any account".
+- Changed to `service@rensto.com` for testing. David's actual Facebook email needs to be confirmed.
+- **Never repeat**: Check proxy connectivity (`curl -x http://proxy:port ...`) before assuming browser issues.
+
+**GoLogin API — Token and Update Errors (Feb 2026):**
+- Used a hardcoded JWT token from conversation context (exp: 2025-04-25, EXPIRED) instead of reading the live token from `bot-config.json`. CREDENTIAL_REFERENCE.md explicitly says `GOLOGIN_TOKEN` lives at `fb marketplace lister/deploy-package/bot-config.json`. On server: `/opt/fb-marketplace-bot/bot-config.json`.
+- Tried `PATCH /browser/{profileId}` — GoLogin API doesn't support PATCH, only GET and PUT → 404.
+- Tried `PUT /browser/{profileId}` with only proxy field — API validation requires ALL fields (name, browserType, os, navigator) → error.
+- Correct approach: GET full profile → modify only the proxy field → PUT entire profile back.
+- **Never repeat**: (1) ALWAYS read GoLogin token from `bot-config.json`, never hardcode. (2) GoLogin profile update = GET full profile + modify + PUT all fields. No PATCH. (3) Follow CREDENTIAL_REFERENCE.md for all credential locations.
+
+**GoLogin proxy change broke profile (Feb 2026):**
+- Changed MissParty proxy from `geo.floppydata.com:10080` to `"mode": "none"` via API during login debugging.
+- This broke GoLogin launch because `--host-resolver-rules` maps all DNS to 0.0.0.0 except the proxy host. With no proxy, ALL connections fail.
+- Then changed to `"mode": "gologin"` (built-in residential) — Facebook returned "Sorry, something went wrong" (different IP fingerprint from established session).
+- Fix: Restored original proxy `geo.floppydata.com:10080` with original credentials.
+- **Never repeat**: Do NOT change GoLogin proxy settings during debugging. The proxy is part of the fingerprint. Changing it triggers Facebook security checks and can invalidate the session.
+
+**Facebook rate limiting from rapid GoLogin sessions (Feb 2026):**
+- Ran ~15+ GoLogin sessions in 2 hours trying different login scripts.
+- Facebook triggered "Sorry, something went wrong" on ALL pages (not just marketplace).
+- Each failed login attempt sent a notification to Michal (the client), damaging the client relationship.
+- **Never repeat**: (1) MAX 2-3 GoLogin login attempts per day. (2) If login fails, STOP and investigate — don't try more scripts. (3) Always check existing cookies first before attempting re-login. (4) The cookies.json at `/opt/fb-marketplace-bot/cookies.json` may already have valid session cookies.
+
+**Webhook server type mismatch (42P08):**
+- PostgreSQL `$1` used in both `SET status = $1` (varchar) and `CASE WHEN $1 = 'posted'` (text). Conflicting type inference.
+- Fix: Explicit `$1::varchar` cast in both positions.
+- **Never repeat**: Always use explicit type casts in PostgreSQL when a parameter is used in multiple contexts.
 
 ---
 
@@ -149,6 +997,13 @@
 - **Fix**: Run `notebooklm-mcp-auth` CLI (opens Chrome, auto-detects login, extracts cookies). If that fails, user can paste cookies manually via `save_auth_tokens` tool.
 - **After re-auth**: Must call `refresh_auth` tool OR the MCP server picks up new tokens on next call.
 - **Session ID format**: `251165511850668720` (from Feb 2026 re-auth).
+
+### NotebookLM 50-Source Limit (NEVER REPEAT)
+
+- NotebookLM has a hard limit of **50 sources per notebook**. `notebook_add_text` silently fails when at 50.
+- Social Media notebook (cb99e6aa) was at 50/50. Had to delete an irrelevant source first.
+- **Before adding**: Check source count. If at 50, delete lowest-value source first.
+- **Error message**: Generic "Failed to add text source" — no mention of the limit.
 
 ### Remaining Technical Debt
 
@@ -305,3 +1160,35 @@ Historical findings: `infra/archive/findings.md`
 ---
 
 *Add new entries above with date.*
+
+---
+
+## 2026-02-24 - FB Marketplace Multi-Customer Architecture Lessons
+
+**Root Cause: Function Parameter Mismatches**
+- **Issue**: V2 webhook-server called V1 helper functions with wrong parameters
+- **generateUniqueUadConfig**: Expects `(pool)` as parameter, NOT config object. Must be awaited (async).
+- **generateListingCopy**: Expects `(clientId, job, city, phone)` - 4 separate params, not spread object
+- **generateListingImages**: Expects `(clientId, config, phoneNumber)` and returns `{imageUrl, imageUrl2, imageUrl3, videoUrl}`, NOT `{imageUrls, videoUrl}`
+- **Prevention**: When adapting existing code, READ the actual function signatures first instead of assuming based on names
+
+**Zod Validation Issues with Complex Objects**
+- Zod `z.record()` had validation failures with simple JSON objects that parsed fine
+- Simplified to basic JSON.parse() validation instead of strict Zod schemas
+- Lesson: For config files, basic structure validation is often enough; strict typing can cause friction
+
+**Config Loader Pattern Success**
+- File-based multi-tenancy works well for MVP (no schema migration required)
+- `customers/<customerId>/config.json` structure allows easy onboarding without DB changes
+- Dynamic loading via ConfigLoader enables customer isolation without code changes
+
+**Multi-Customer Bot Adapter Pattern**
+- bot-adapter.js successfully bridges V1 bot with V2 customer configs
+- Temporarily swaps bot-config.json during execution to maintain V1 bot compatibility
+- Allows gradual migration: multi-customer backend + single-tenant bot
+
+**Never Repeat**:
+1. Always check function signatures before calling legacy code from new code
+2. Ensure `await` is present for async functions (pool.query calls)
+3. Test parameter order and structure - spread operators can hide mismatches
+4. Verify return value structure - destructuring wrong keys causes silent failures
