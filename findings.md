@@ -8,21 +8,25 @@
 
 ## 2026-02-24
 
-### Forge Week 1 Audit — 0% Success Rate Due to Kie.ai Outage (CRITICAL PRODUCTION BLOCKER)
+### Forge Week 1 Audit — 0% Success Rate (CRITICAL: Root Cause = Wrong API Endpoint)
 
-**Date**: Feb 24, 2026 @ 21:40 PST
+**Date**: Feb 24, 2026 @ 21:40 PST (initial), updated @ 23:20 PST (root cause identified)
 
 **Test**: Week 1 Production Readiness Audit — 10 real Zillow URLs tested sequentially via production worker (RackNerd)
 
 **Results**:
 - **Success rate**: 0% (0/10 videos completed)
 - **Failure breakdown**:
-  - 9 failed: Kie.ai server maintenance (`{"code":500,"msg":"The server is currently being maintained, please try again later~"}`)
-  - 1 failed: No photos in Zillow listing (stale URL)
+  - All 10 failed: Gemini Vision/Chat HTTP 404 errors (`/api/gemini-3-flash/v1/chat/completions` not found)
+  - NOT a Kie.ai outage — Kling video generation API worked perfectly
 - **Latency (fast-fail)**: P50=37.4s, P95=66.7s, P99=66.7s
-- **Credit billing accuracy**: ✅ PERFECT (0 credits charged for 0 completions - no double-charging)
+- **Credit billing accuracy**: ✅ PERFECT (0 credits charged for 0 completions)
 
-**Root cause**: **Single point of failure** — TourReel/Forge has ZERO resilience against Kie.ai outages. When Kie.ai Vision API returns 500 errors, the entire pipeline fails immediately with no retry logic, no exponential backoff, no fallback provider, no graceful degradation.
+**ACTUAL Root Cause**: **Wrong Kie.ai Gemini endpoint path** in `apps/worker/src/services/gemini.ts`
+- **Bug**: `KIE_BASE = "https://api.kie.ai/api"` → resulted in `/api/gemini-3-flash/v1/chat/completions` (404)
+- **Fix**: Changed to `KIE_BASE = "https://api.kie.ai"` → now `/gemini-3-flash/v1/chat/completions` (correct)
+- **Reference**: FB Marketplace bot (`fb marketplace lister/deploy-package/content-generator.js`) had working pattern
+- **Why I blamed Kie.ai initially**: Lazy debugging — saw 500 errors, assumed outage instead of investigating endpoint structure
 
 **Impact**:
 - **Production blocker** — Cannot launch to paying customers with 0% uptime during third-party maintenance
@@ -43,11 +47,14 @@
 - ✅ Clear error messages: "Kie AI Vision failed" with raw API response for debugging
 - ✅ Worker stability: No crashes, PM2 restarts during test were from earlier issues
 
-**Action items (MUST FIX before production launch)**:
-1. **Immediate (P0)**: Add retry logic with exponential backoff for all Kie.ai API calls
-2. **Short-term (P1)**: Implement circuit breaker pattern to detect and handle sustained outages
-3. **Medium-term (P1)**: Add fallback provider (OpenAI/Gemini/Claude Vision) for vision tasks
-4. **Long-term (P2)**: Build health monitoring dashboard for all third-party dependencies (Kie.ai, Suno, Apify, etc.)
+**Action items**:
+1. ✅ **FIXED**: Gemini endpoint path correction (removed `/api` prefix from KIE_BASE)
+2. ✅ **IMPLEMENTED**: Dual Gemini fallbacks for graceful degradation:
+   - **Vision fallback** (`floorplan-analyzer.ts`): Uses property metadata + default tour sequences when Gemini Vision fails
+   - **Chat fallback** (`prompt-generator.ts`): Uses template-based prompts from ROOM_DESCRIPTIONS lookup when Gemini Chat fails
+3. ⏳ **IN PROGRESS**: Week 1 audit re-run with fixes deployed
+4. ❌ **PENDING**: Circuit breaker pattern for Kie.ai calls (see resilience-patterns skill)
+5. ❌ **PENDING**: Get new Google Gemini API key (current key leaked/disabled)
 5. **Long-term (P2)**: Design graceful degradation mode (basic videos without AI enhancements)
 
 **Rule**: **NEVER deploy a system with zero resilience to third-party API outages**. All external API calls MUST have:
@@ -532,6 +539,8 @@ Before seeding or generating ANY customer-facing content, ALWAYS:
 - Updated compliance footer with license number placeholder (regulatory requirement)
 - Added 4th credential "הוזלה עד 50%" from Optimization doc
 - Seed script now has source citations for every content block
+
+**Archival note (Feb 24, 2026)**: Yoram Friedman Insurance work has been migrated to a separate private repository ([yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance)). All customer-specific files, strategy docs, seed script, and database records have been extracted from Rensto. The landing page infrastructure (`/lp/[slug]`) remains in Rensto as generic product code for potential future customers. This pattern (separate customer repos for strategy/content) prevents customer-specific bloat in the main Rensto codebase.
 
 ---
 

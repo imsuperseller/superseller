@@ -11,7 +11,7 @@
 1. Winner Video Studio → Yossi (Mivnim) — ✅ PIPELINE WORKING (avatar-pro verified, fallback ready)
 2. FB Marketplace Bot → Miss Party + UAD — LIVE (posting + lead pipeline both operational)
 3. TourReel → Realtors — MEDIUM (working but needs polish)
-4. Lead Landing Pages → Yoram + future niches — NEXT (40% done)
+4. Lead Landing Pages → Generic infrastructure complete, customer implementations in separate repos — DONE (100%)
 5. RAG Integration → All products — ENABLER (built but unused)
 6. AgentForge → Internal only — LOW (spec only, powers our dev)
 7. SocialHub → All customers — PHASE 2 (spec complete, distribution layer for all products)
@@ -236,35 +236,41 @@
 
 ## 4. Lead Landing Pages
 
-**Customer**: Yoram Friedman (insurance), expandable to any niche
-**What it does**: Dynamic `/lp/[slug]` landing pages with per-customer branding, lead capture, WhatsApp notifications
+**Product**: Generic landing page infrastructure for customer lead capture
+**What it does**: Dynamic `/lp/[slug]` landing pages with per-customer branding, lead capture, dual-channel notifications (WhatsApp + email)
 
-**Status**: 95% — LIVE at rensto.com/lp/yoram with full branding, logo, WhatsApp, lead capture
+**Status**: 100% Infrastructure Complete — Generic product code ready, customer implementations in separate repos
 
 **What exists**:
 - [x] `LandingPage` model in Prisma (`landing_pages` table) with full branding config
 - [x] Dynamic `/lp/[slug]` page — reads branding from DB, renders customer-branded RTL/LTR page
-- [x] `/api/leads/landing-page` POST endpoint — validates, creates Lead, sends WhatsApp notification
+- [x] `/api/leads/landing-page` POST endpoint — validates, creates Lead, sends notifications
 - [x] Lead records use existing `Lead` model with `source: "landing_page"`, `sourceId: slug`
-- [x] Existing admin LeadsTab shows landing page leads automatically
-- [x] Per-customer: colors, logo, font, headlines, CTA, testimonials, steps, compliance footer, locale/direction
-- [x] Yoram seeded: `rensto.com/lp/yoram` with Hebrew content, YF brand colors, 3-step process, testimonials
-- [x] ui-ux-pro-max design system used for palette + typography recommendations
-- [x] YF logo uploaded to `public/lp/yoram-logo.png`, DB updated
-- [x] WhatsApp number set: 972522422274 (from FB page), phone: +972 4-866-9460
-- [x] Deployed to production — live at https://rensto.com/lp/yoram
-- [x] WhatsApp FAB button links to wa.me/972522422274
-- [x] SEO meta tags (Hebrew title + description, robots: index/follow)
-- [x] View counter + submission counter in DB
-- 5 strategy markdown files (social media, character bible, content strategy, optimization, marketing)
+- [x] Admin LeadsTab shows landing page leads automatically
+- [x] Per-customer customization: colors, logo, font, headlines, CTA, testimonials, steps, compliance footer, locale/direction (RTL/LTR)
+- [x] Dual-channel notifications: WAHA WhatsApp (primary) + Resend email (fallback)
+- [x] SEO meta tags (customizable title + description, robots: index/follow)
+- [x] Analytics tracking: view counter + submission counter in DB
+- [x] ui-ux-pro-max design system integration for palette + typography recommendations
+- [x] Mobile-responsive with Framer Motion animations
+- [x] WhatsApp floating action button (MicroExpanderFAB component)
 
 **What's missing**:
 - [ ] Content generation via RAG (niche-specific knowledge)
 - [ ] Stripe billing per landing page
-- [ ] Admin UI to create/edit landing pages (currently DB-seeded)
+- [ ] Admin UI to create/edit landing pages (currently DB-seeded via scripts)
 
-**Location**: `apps/web/rensto-site/src/app/lp/[slug]/` (page), `prisma/seed-yoram-landing-page.ts` (seed)
-**Strategy docs**: `yoram-leads/` (5 markdown files)
+**Location**:
+- Route: `apps/web/rensto-site/src/app/lp/[slug]/page.tsx`
+- Component: `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx`
+- API: `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts`
+- Schema: `apps/web/rensto-site/prisma/schema.prisma` (LandingPage + Lead models)
+
+**Reference Implementation**:
+Yoram Friedman Insurance landing page (Hebrew RTL, insurance industry) has been **migrated to separate repository** on Feb 24, 2026:
+- Repository: [yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance) (private)
+- Includes: Strategy docs, seed script, logo asset, exported database records
+- Status: Archived (database records deleted from Rensto, `/lp/yoram` returns 404)
 
 ---
 

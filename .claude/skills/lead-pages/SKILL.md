@@ -3,22 +3,21 @@ name: lead-pages
 description: >-
   Dynamic lead landing pages for Rensto customers. Covers /lp/[slug] pages with
   per-customer branding (colors, logo, font, RTL/LTR), lead capture forms,
-  WhatsApp notifications, seed scripts, and content extraction governance.
+  WhatsApp/email notifications, seed scripts, and content extraction governance.
   Use when working on landing pages, lead capture, /lp/ routes, customer branding,
-  Yoram, or lead page content. Not for TourReel, video pipeline, admin dashboard,
+  or lead page content. Not for TourReel, video pipeline, admin dashboard,
   or general website pages.
-  Example: "Add a new landing page for a dental client" or "Fix RTL layout on Yoram's page".
+  Example: "Add a new landing page for a dental client" or "Fix RTL layout on customer landing page".
 autoTrigger:
   - "landing page"
   - "lead page"
   - "/lp/"
   - "lead capture"
-  - "Yoram"
   - "customer branding"
-  - "seed-yoram"
   - "lead form"
   - "RTL"
   - "LandingPage model"
+  - "lead pages"
 negativeTrigger:
   - "TourReel"
   - "video pipeline"
@@ -32,7 +31,8 @@ negativeTrigger:
 # Lead Landing Pages
 
 ## Critical
-- **NEVER invent content** — Extract verbatim from customer strategy docs. If content doesn't exist in docs, leave the section EMPTY. Cite source in seed scripts. Violation history: fabricated testimonials for Yoram despite docs saying "ain bema lehishtamesh".
+- **NEVER invent content** — Extract verbatim from customer strategy docs. If content doesn't exist in docs, leave the section EMPTY. Cite source in seed scripts. Violation history: fabricated testimonials despite docs explicitly saying content didn't exist (see findings.md).
+- **Customer implementations in separate repos** — Customer-specific strategy docs, seed scripts, and assets live in dedicated repositories (e.g., yoramnfridman1/yoram-friedman-insurance). Generic landing page infrastructure remains in Rensto.
 - **RTL/LTR is per-page** — `page.direction` controls all layout, animations, text alignment, and FAB positioning. Test both directions.
 - **Seed scripts are the canonical data source** — Landing page data is upserted via Prisma seed scripts, not admin UI (admin UI not built yet).
 - **WhatsApp notifications are best-effort** — Use Facebook Graph API v19.0 with `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID`. Log and continue if credentials missing.
@@ -57,7 +57,7 @@ Browser → /lp/[slug] (SSR) → Prisma lookup → LandingPageClient.tsx (734 li
 | `apps/web/rensto-site/src/app/lp/[slug]/page.tsx` | Server component — Prisma lookup, SEO metadata, view counter (42 lines) |
 | `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx` | Client render — hero, form, steps, testimonials, differentiators, credentials, footer, WhatsApp FAB (734 lines) |
 | `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` | Lead capture API — validation, Lead creation, WhatsApp notification (116 lines) |
-| `apps/web/rensto-site/prisma/seed-yoram-landing-page.ts` | Yoram seed — content extracted from strategy docs with source citations (178 lines) |
+| `apps/web/rensto-site/prisma/seed-*.ts` | Customer seed scripts — content extracted from strategy docs with source citations (archived to customer repos) |
 | `apps/web/rensto-site/src/lib/db/leads.ts` | Lead data access — queries, filters, sync flags (96 lines) |
 | `apps/web/rensto-site/src/components/lp/MicroExpanderFAB.tsx` | WhatsApp floating button — expands on hover, directional (100 lines) |
 | `apps/web/rensto-site/prisma/schema.prisma` | LandingPage + Lead models |
@@ -122,7 +122,7 @@ style={{ backgroundColor: page.ctaColor }}       // CTA button
 ## Content Extraction Rule (MANDATORY)
 
 When creating a new landing page:
-1. **Search** for customer docs (e.g., `yoram-leads/`, customer strategy files)
+1. **Search** for customer docs in separate customer repository (strategy files, brand guidelines)
 2. **READ** every doc fully — not skim
 3. **Extract verbatim** — copy from docs, don't paraphrase or fabricate
 4. **If content doesn't exist** in docs → **leave it empty** (empty array or null)
@@ -131,12 +131,14 @@ When creating a new landing page:
 
 ## Creating a New Landing Page
 
-1. Create strategy docs in `{customer}-leads/` directory
-2. Create seed script: `prisma/seed-{customer}-landing-page.ts`
+**Note**: Customer-specific implementations are now maintained in separate repositories (e.g., yoramnfridman1/yoram-friedman-insurance).
+
+1. Create separate customer repository with strategy docs
+2. Create seed script: `prisma/seed-{customer}-landing-page.ts` in customer repo
 3. Extract content from docs (cite sources)
-4. Run: `npx tsx prisma/seed-{customer}-landing-page.ts`
+4. Run seed script against Rensto database (if hosting on Rensto platform)
 5. Test: visit `/lp/{slug}` — verify branding, RTL/LTR, form submission
-6. Verify WhatsApp notification delivery
+6. Verify WhatsApp/email notification delivery
 
 ## Error-Cause-Fix
 
@@ -151,8 +153,12 @@ When creating a new landing page:
 
 ## References
 
-- NotebookLM 6a4eb203 — Yoram Friedman leads, strategy docs
 - NotebookLM 719854ee — Rensto website content
-- Content rule: `CLAUDE.md` lines 26-35
-- Customer docs: `yoram-leads/` directory (7 markdown files)
-- Logo asset: `public/lp/yoram-logo.png`
+- Content extraction rule: `CLAUDE.md` §Content Extraction Rule
+- PRODUCT_STATUS.md §4 — Landing page product status
+- findings.md — Content Invention Pattern (root cause, safeguards)
+
+**Archived reference implementation**:
+- Yoram Friedman Insurance (Hebrew RTL, insurance industry) — migrated to [yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance) (private)
+- Includes: Strategy docs, seed script, logo asset, exported database records
+- NotebookLM 6a4eb203 — Yoram Friedman leads, strategy docs (archived)

@@ -401,3 +401,8 @@ infra/rensto-svc.json
 docs/vault/FINANCIAL_VAULT.md
 **/service-account*.json
 **/*-svc.json
+
+# Customer-specific content (keep in separate repos)
+*-leads/
+customer-content/
+customer-*/

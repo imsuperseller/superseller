@@ -26,13 +26,14 @@
 > [!CAUTION]
 > **Content Extraction Rule (NEVER invent content)**:
 > When building customer-facing pages/content, ALWAYS extract from existing strategy docs — NEVER invent.
-> 1. Search for customer docs (e.g., `yoram-leads/`, customer strategy files)
+> 1. Search for customer docs (e.g., `customer-leads/`, strategy files in separate repos)
 > 2. READ every doc fully — not skim
 > 3. Extract verbatim — copy from docs, don't paraphrase or fabricate
 > 4. If content doesn't exist in docs, **leave it empty** — never fabricate testimonials, case studies, quotes
 > 5. If docs say "we don't have this yet" → OMIT the section
 > 6. Cite source in seed scripts (which doc, which section)
-> **Violation history**: Fabricated testimonials for Yoram's landing page despite docs saying "אין במה להשתמש". See `findings.md`.
+> **Violation history**: Past violations include fabricated testimonials despite docs explicitly stating content didn't exist. See `findings.md` for full history and prevention checklist.
+> **Note**: Customer-specific content (e.g., Yoram Friedman Insurance) has been migrated to separate private repositories for independent management.
 
 ---
 
