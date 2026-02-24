@@ -459,6 +459,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 logger.info({ msg: "PARALLEL clip generation enabled", clipCount: clips.length });
                 const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
 
+                // Circuit breaker: if ANY clip gets 402 (credits exhausted), skip remaining clips immediately
+                let creditExhausted = false;
+
                 // Create all Kling tasks in parallel
                 const clipTasks = await Promise.all(clips.map(async (clip) => {
                     const clipIdx = clip.clip_number - 1;
@@ -500,22 +503,37 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         klingPrompt = buildPropertyOnlyKlingPrompt(clip);
                     }
 
-                    const taskId = await withRetry(() => createKlingTask({
-                        prompt: klingPrompt,
-                        image_url: startFrame,
-                        realtor_in_frame: thisClipHasComposite,
-                        kling_elements: clipElements,
-                        negative_prompt: (clip as any).negative_prompt,
-                        mode: config.video.klingMode,
-                        aspect_ratio: "16:9",
-                        model: "kling-3.0/video",
-                        duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
-                        to_room: (clip as any).to_room,
-                    }), { label: `createKlingTask clip ${clip.clip_number}` });
+                    // Circuit breaker: skip if another clip already hit 402
+                    if (creditExhausted) {
+                        logger.warn({ msg: "Skipping clip — credits exhausted (circuit breaker)", clip: clip.clip_number });
+                        return { clip, taskId: null, alreadyComplete: false, skipped: true };
+                    }
+
+                    let taskId: string;
+                    try {
+                        taskId = await withRetry(() => createKlingTask({
+                            prompt: klingPrompt,
+                            image_url: startFrame,
+                            realtor_in_frame: thisClipHasComposite,
+                            kling_elements: clipElements,
+                            negative_prompt: (clip as any).negative_prompt,
+                            mode: config.video.klingMode,
+                            aspect_ratio: "16:9",
+                            model: "kling-3.0/video",
+                            duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
+                            to_room: (clip as any).to_room,
+                        }), { label: `createKlingTask clip ${clip.clip_number}` });
+                    } catch (clipErr: any) {
+                        if (clipErr.creditExhausted || clipErr.message?.includes("402")) {
+                            creditExhausted = true;
+                            logger.error({ msg: "Credits exhausted — circuit breaker tripped", clip: clip.clip_number });
+                        }
+                        throw clipErr;
+                    }
 
                     await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
                     logger.info({ msg: "Kling task created (parallel)", clip: clip.clip_number, taskId });
-                    return { clip, taskId, alreadyComplete: false };
+                    return { clip, taskId, alreadyComplete: false, skipped: false };
                 }));
 
                 // Wait for all tasks to complete in parallel
@@ -937,6 +955,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
 
             await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [err.message, jobId]);
+
+            // Circuit breaker: 402 = credits exhausted. Don't waste BullMQ retries — won't fix itself.
+            if (err.creditExhausted || err.message?.includes("code 402") || err.message?.includes("Credits insufficient")) {
+                throw new UnrecoverableError(`Credits exhausted: ${err.message}`);
+            }
             throw err;
         } finally {
             // 11. Cleanup — remove job temp dir to avoid residue

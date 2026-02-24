@@ -15,10 +15,9 @@ export const AITABLE_DATASHEETS = {
     PAYMENTS: 'dstXGK4ZzossA7szAY',
     SOLUTIONS: 'dstq3e6VV26RlSidQq',
     CAMPAIGNS: 'dstlAXkKKThUb593cu',
-    // TODO: Create these in new space when needed
-    EXPENSES: '',       // was dstHnMVPAdtXESlJSX in old space
-    LLM_REGISTRY: '',   // was dstsCAPquhDDaHTbnL in old space
-    MASTER_PRODUCTS: '', // was dstr7Y928QP9X6miB2 in old space
+    EXPENSES: 'dstKpsKWUVg6ACgmL5',
+    LLM_REGISTRY: 'dstTp0hahiF5glUV51',
+    MASTER_PRODUCTS: 'dst0Chj9T437s5FcgD',
 } as const;
 
 type DatasheetId = typeof AITABLE_DATASHEETS[keyof typeof AITABLE_DATASHEETS];

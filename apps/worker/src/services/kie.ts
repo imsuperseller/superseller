@@ -252,6 +252,8 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
                 const err: any = new Error(`Kie.ai Kling API error (code ${data.code}): ${data.msg}`);
                 // Preserve Kie.ai error code for retry detection
                 err.status = data.code;
+                // 402 = credits exhausted — mark for circuit breaker (no retry, no parallel spam)
+                if (data.code === 402) err.creditExhausted = true;
                 throw err;
             }
 
