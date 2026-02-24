@@ -33,19 +33,19 @@ enum BillingInterval {
 
 /// Multi-tenant business account.
 model Tenant {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name           String
-  slug           String   @unique
-  status         String   @default("active") // active, paused, closed
-  
-  plan           Json?    // PlanSchema shape
-  settings       Json?    // { timezone, dateFormat, branding }
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name   String
+  slug   String @unique
+  status String @default("active") // active, paused, closed
 
-  users          TenantUser[]
-  
+  plan     Json? // PlanSchema shape
+  settings Json? // { timezone, dateFormat, branding }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users TenantUser[]
+
   @@index([slug])
   @@index([status])
 }
@@ -55,10 +55,10 @@ model TenantUser {
   tenantId String @db.Uuid
   userId   String @db.Uuid
   role     String @default("user") // owner, admin, user, viewer
-  
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([tenantId, userId])
 }
 
@@ -118,8 +118,8 @@ model User {
   lastLoginAt DateTime?
 
   // ---- Relations ----
-  tenants        TenantUser[]
-  
+  tenants TenantUser[]
+
   // NextAuth (future use)
   accounts Account[]
   sessions Session[]
@@ -150,6 +150,9 @@ model User {
   solutionInstances    SolutionInstance[]
   voiceCallLogs        VoiceCallLog[]
   outreachCampaigns    OutreachCampaign[]
+  notifications        Notification[]
+  landingPages         LandingPage[]
+  MarketplaceCustomer  MarketplaceCustomer?
 
   @@index([email])
   @@index([stripeCustomerId])
@@ -278,7 +281,7 @@ model Payment {
   productId        String?
   tier             String?
   platform         String  @default("rensto-web")
-  metadata         Json?   // Flexible metadata for any extra info
+  metadata         Json? // Flexible metadata for any extra info
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -337,12 +340,12 @@ model Download {
 
 /// Active service instances (marketplace installs, Core 7, etc.)
 model ServiceInstance {
-  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  clientId    String @db.Uuid
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId    String  @db.Uuid
   clientEmail String
   productId   String?
   productName String?
-  status      String @default("pending_setup") // pending_setup,configuring,provisioning,active,suspended,cancelled
+  status      String  @default("pending_setup") // pending_setup,configuring,provisioning,active,suspended,cancelled
   type        String? // marketplace_implementation, etc.
 
   configuration Json? // User answers to config schema
@@ -394,7 +397,7 @@ model Subscription {
   whatsappInstanceId String? @db.Uuid
 
   // Care Plan-specific
-  carePlanTier               String?
+  carePlanTier                String?
   carePlanDeliverablesSummary Json? // monthly summary snapshot
 
   // Lead Gen-specific
@@ -520,7 +523,7 @@ model Template {
   // Deployment & Hebrew translations
   deploymentSteps    Json?
   name_he            String?
-  description_he     String?  @db.Text
+  description_he     String? @db.Text
   outcomeHeadline_he String?
   features_he        Json?
 
@@ -562,8 +565,8 @@ model Template {
   maintenanceCost           Float?
   maintenanceExplanation    String?
   maintenanceExplanation_he String?
-  aiPromptScript            String? @db.Text
-  soraVideoPrompt           String? @db.Text
+  aiPromptScript            String?  @db.Text
+  soraVideoPrompt           String?  @db.Text
   guarantee                 String?
   guarantee_he              String?
   isTargetTier              Boolean?
@@ -599,8 +602,8 @@ model CustomizationRequest {
   id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   templateId    String
   customerEmail String?
-  parameters    Json?   // Customization parameters from modal
-  data          Json?   // Full request payload (legacy compat)
+  parameters    Json? // Customization parameters from modal
+  data          Json? // Full request payload (legacy compat)
   status        String  @default("pending")
 
   createdAt DateTime @default(now())
@@ -624,14 +627,14 @@ model Solution {
 
   pricing Json? // { builder, bundle, maintenance }
 
-  features           Json? // string[]
-  tools              Json? // string[]
-  video              String?
-  image              String?
-  tags               Json? // string[]
-  rating             Float   @default(0)
-  downloads          Int     @default(0)
-  partner            String?
+  features              Json? // string[]
+  tools                 Json? // string[]
+  video                 String?
+  image                 String?
+  tags                  Json? // string[]
+  rating                Float   @default(0)
+  downloads             Int     @default(0)
+  partner               String?
   technicalRequirements Json? // FormField[]
   workflowTemplateId    String?
 
@@ -651,7 +654,7 @@ model SolutionInstance {
   model  String @default("builder") // builder, bundle
   status String @default("pending_setup") // pending_setup,provisioning,active,error,maintenance
 
-  configuration Json?
+  configuration  Json?
   technicalPulse Json? // { responseTime, stabilityScore, lastUpdateAt }
   deploymentLog  Json? // Array<{ step, message, timestamp }>
 
@@ -660,7 +663,7 @@ model SolutionInstance {
 
   lastRunAt  DateTime?
   lastStatus String? // success, error
-  errorCount Int     @default(0)
+  errorCount Int       @default(0)
 
   provisionedAt DateTime?
   createdAt     DateTime  @default(now())
@@ -805,16 +808,16 @@ model Lead {
   source   String // whatsapp, linkedin, google_maps, facebook, apify, manual, qualification_quiz
   sourceId String?
 
-  userId             String @db.Uuid
+  userId             String  @db.Uuid
   subscriptionId     String? @db.Uuid
   whatsappInstanceId String? @db.Uuid
 
   // Contact info
-  name    String?
-  company String?
-  email   String?
-  phone   String?
-  website String?
+  name     String?
+  company  String?
+  email    String?
+  phone    String?
+  website  String?
   location Json? // { city, state, country, zipCode }
 
   // Speed-to-Lead
@@ -878,12 +881,12 @@ model LeadRequest {
 
 /// Email / LinkedIn / multi-channel outreach campaigns
 model OutreachCampaign {
-  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String  @db.Uuid
-  name   String?
-  type   String? // email, linkedin, etc.
-  status String  @default("draft")
-  data   Json? // Campaign details
+  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId  String  @db.Uuid
+  name    String?
+  type    String? // email, linkedin, etc.
+  status  String  @default("draft")
+  data    Json? // Campaign details
   metrics Json? // Campaign performance
 
   createdAt DateTime @default(now())
@@ -896,8 +899,8 @@ model OutreachCampaign {
 
 /// Monthly response-time analytics per user
 model ResponseTimeMetrics {
-  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId             String @db.Uuid
+  id                 String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String  @db.Uuid
   whatsappInstanceId String? @db.Uuid
   subscriptionId     String? @db.Uuid
 
@@ -930,14 +933,14 @@ model ResponseTimeMetrics {
 
 /// Agent execution logs (n8n runs, AI calls, etc.)
 model UsageLog {
-  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  clientId String @db.Uuid
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId String  @db.Uuid
   userId   String? @db.Uuid // alias for clientId (used by billing queries)
   agentId  String  @default("system") // matches ServiceManifest.id
   status   String  @default("completed") // completed, failed, running
 
   serviceType String? // General AI, Lead Machine, WhatsApp, etc.
-  tokenCount  Int?    // total tokens consumed (simple counter)
+  tokenCount  Int? // total tokens consumed (simple counter)
 
   startedAt   DateTime  @default(now())
   completedAt DateTime?
@@ -945,7 +948,7 @@ model UsageLog {
 
   model  String? // gpt-4-turbo, etc.
   tokens Json? // { input, output, total }
-  cost   Float  @default(0) // cents
+  cost   Float   @default(0) // cents
 
   output   String? @db.Text
   metadata Json?
@@ -964,13 +967,13 @@ model UsageLog {
 
 /// Blog posts and social content
 model ContentPost {
-  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String  @db.Uuid
-  title  String?
-  content String? @db.Text
-  type   String? // blog, social, etc.
-  status String  @default("draft")
-  slug   String?
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String  @db.Uuid
+  title    String?
+  content  String? @db.Text
+  type     String? // blog, social, etc.
+  status   String  @default("draft")
+  slug     String?
   platform String? // blog, linkedin, twitter, etc.
 
   metadata Json?
@@ -999,7 +1002,7 @@ model IndexedDocument {
   size     String?
   metadata Json?
 
-  indexedAt  DateTime?
+  indexedAt DateTime?
   createdAt DateTime  @default(now())
 
   user User @relation(fields: [clientId], references: [id], onDelete: Cascade)
@@ -1022,6 +1025,10 @@ model SecretaryConfig {
   transferNumber String?
   n8nWebhookId   String?
 
+  // Telnyx AI Assistant integration
+  telnyxAssistantId   String? // Telnyx AI Assistant ID (e.g. "ast_xxx")
+  telnyxPhoneNumberId String? // Telnyx Phone Number ID assigned to assistant
+
   whatsappEnabled Boolean @default(false)
   calendarEnabled Boolean @default(false)
   calendarLink    String?
@@ -1036,20 +1043,47 @@ model SecretaryConfig {
   @@index([clientId])
   @@index([phoneNumber])
   @@index([n8nWebhookId])
+  @@index([telnyxAssistantId])
 }
 
-/// Voice call log entries
+/// Voice call log entries (populated by FrontDesk poller from Telnyx conversations)
 model VoiceCallLog {
   id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId String @db.Uuid
-  data   Json // Full call log payload
 
-  createdAt DateTime @default(now())
+  // Telnyx conversation reference
+  telnyxConversationId String? @unique
+  telnyxAssistantId    String?
+
+  // Caller info
+  callerPhone String?
+  callerName  String?
+
+  // Call metadata
+  direction String? // "inbound" | "outbound"
+  duration  Int     @default(0) // seconds
+  outcome   String  @default("answered") // "answered" | "missed" | "voicemail" | "transferred"
+  summary   String? @db.Text // AI-generated call summary
+  sentiment String? // "positive" | "neutral" | "negative"
+
+  // Lead capture
+  leadCaptured Boolean @default(false)
+
+  // Credits
+  creditsCharged Int @default(0)
+
+  // Full raw payload from Telnyx
+  data Json?
+
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
+  @@index([telnyxAssistantId])
 }
 
 // ==========================================
@@ -1171,12 +1205,12 @@ model Audit {
 
 /// Service health check results (monitoring system)
 model ServiceHealth {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  serviceId String   @map("service_id")
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  serviceId String  @map("service_id")
   name      String
-  category  String   // infrastructure, api, database, backup
-  status    String   // healthy, degraded, down, unknown
-  latencyMs Int?     @map("latency_ms")
+  category  String // infrastructure, api, database, backup
+  status    String // healthy, degraded, down, unknown
+  latencyMs Int?    @map("latency_ms")
   message   String?
   details   Json?
 
@@ -1190,17 +1224,17 @@ model ServiceHealth {
 
 /// Alert rules for monitoring thresholds
 model AlertRule {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  serviceId      String   @map("service_id")
-  condition      String   // service_down, latency_high, error_rate_high, spending_spike
-  threshold      Float
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  serviceId       String  @map("service_id")
+  condition       String // service_down, latency_high, error_rate_high, spending_spike
+  threshold       Float
   cooldownMinutes Int     @default(30) @map("cooldown_minutes")
-  channels       Json     // string[] — email, audit_log
-  enabled        Boolean  @default(true)
+  channels        Json // string[] — email, audit_log
+  enabled         Boolean @default(true)
 
-  lastFiredAt    DateTime? @map("last_fired_at")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
+  lastFiredAt DateTime? @map("last_fired_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@index([serviceId])
   @@index([enabled])
@@ -1209,17 +1243,17 @@ model AlertRule {
 
 /// Alert history log (fired alerts)
 model AlertHistory {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ruleId      String?  @db.Uuid @map("rule_id")
-  serviceId   String   @map("service_id")
-  severity    String   // critical, warning, info
-  condition   String
-  message     String
-  resolved    Boolean  @default(false)
-  resolvedAt  DateTime? @map("resolved_at")
-  details     Json?
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ruleId     String?   @map("rule_id") @db.Uuid
+  serviceId  String    @map("service_id")
+  severity   String // critical, warning, info
+  condition  String
+  message    String
+  resolved   Boolean   @default(false)
+  resolvedAt DateTime? @map("resolved_at")
+  details    Json?
 
-  firedAt     DateTime @default(now()) @map("fired_at")
+  firedAt DateTime @default(now()) @map("fired_at")
 
   @@index([serviceId])
   @@index([severity])
@@ -1230,16 +1264,16 @@ model AlertHistory {
 
 /// API expense tracking per external call
 model ApiExpense {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  service       String   // kie, gemini, resend, r2_storage, stripe_fees, ollama
-  operation     String   // e.g. kling_clip, suno_music, gemini_flash, send_email
-  estimatedCost Float    @map("estimated_cost") // USD
-  currency      String   @default("USD")
-  jobId         String?  @db.Uuid @map("job_id")
-  userId        String?  @db.Uuid @map("user_id")
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  service       String // kie, gemini, resend, r2_storage, stripe_fees, ollama
+  operation     String // e.g. kling_clip, suno_music, gemini_flash, send_email
+  estimatedCost Float   @map("estimated_cost") // USD
+  currency      String  @default("USD")
+  jobId         String? @map("job_id") @db.Uuid
+  userId        String? @map("user_id") @db.Uuid
   metadata      Json?
 
-  createdAt     DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([service])
   @@index([jobId])
@@ -1362,7 +1396,7 @@ model N8nAgentMemory {
 /// SSOT: Aligned with Drizzle entitlementsTable and CreditService
 model Entitlement {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId         String    @unique @db.Uuid @map("user_id")
+  userId         String    @unique @map("user_id") @db.Uuid
   creditsBalance Int       @default(0) @map("credits_balance") // unit-based (e.g. 1000 = 1000 credits)
   plan           String    @default("starter")
   status         String    @default("active")
@@ -1377,19 +1411,25 @@ model Entitlement {
 /// Precise usage events for auditing and billing
 /// SSOT: Aligned with Drizzle usageEvents and CreditService
 model UsageEvent {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId    String   @db.Uuid @map("user_id")
-  type      String   @map("event_type") // debit, refund, topup, grant, reset
-  amount    Int?     @map("credits_used") // Positive for topup/refund, negative for debit
-  jobId     String?  @db.Uuid @map("job_id")
-  metadata  Json?
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String  @map("user_id") @db.Uuid
+  type       String  @map("event_type") // debit, refund, topup, grant, reset
+  amount     Int?    @map("credits_used") // Positive for topup/refund, negative for debit
+  jobId      String? @map("job_id") @db.Uuid
+  // AI cost tracking
+  modelId    String? @map("model_id") // FK into LlmModelConfig.id
+  costUsd    Float?  @map("cost_usd") // actual cost charged to this event in USD
+  tokensUsed Int?    @map("tokens_used") // total tokens (input + output)
+  metadata   Json?
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  llmModel LlmModelConfig? @relation(fields: [modelId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([type])
+  @@index([modelId])
   @@index([createdAt])
   @@map("usage_events")
 }
@@ -1444,4 +1484,242 @@ model VaultItem {
 
   @@unique([category, key])
   @@index([category])
+}
+
+// ==========================================
+// GROUP 9: NOTIFICATIONS & AI MODEL REGISTRY
+// ==========================================
+
+/// Customer-facing notification model (in-app, WhatsApp, email)
+model Notification {
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+
+  type      String // info, warning, success, error, action_required
+  channel   String  @default("in_app") // in_app, whatsapp, email, push
+  title     String
+  body      String  @db.Text
+  actionUrl String? @map("action_url")
+  metadata  Json?
+
+  read   Boolean   @default(false)
+  readAt DateTime? @map("read_at")
+
+  // Delivery tracking
+  deliveredAt   DateTime? @map("delivered_at")
+  deliveryError String?   @map("delivery_error") @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiresAt DateTime? @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([channel])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+/// LLM model registry — tracks which models are in use, costs per token, and where they're deployed
+model LlmModelConfig {
+  id          String  @id // e.g. "gpt-4o", "claude-3-5-sonnet", "gemini-2.0-flash"
+  provider    String // openai, anthropic, google, ollama, kie
+  displayName String  @map("display_name")
+  usedIn      Json    @map("used_in") // string[] — e.g. ["whatsapp-agent", "lead-scoring"]
+  isActive    Boolean @default(true) @map("is_active")
+
+  // Cost per 1M tokens (USD) — set to 0 for local Ollama models
+  inputCostPer1M  Float @default(0) @map("input_cost_per_1m")
+  outputCostPer1M Float @default(0) @map("output_cost_per_1m")
+
+  // Capability flags
+  supportsVision Boolean @default(false) @map("supports_vision")
+  supportsTools  Boolean @default(true) @map("supports_tools")
+  contextWindowK Int?    @map("context_window_k") // context window in K tokens
+
+  notes      String?   @db.Text
+  lastSeenAt DateTime? @map("last_seen_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Reverse relation to usage events
+  usageEvents UsageEvent[]
+
+  @@index([provider])
+  @@index([isActive])
+  @@map("llm_model_configs")
+}
+
+// ==========================================
+// GROUP 10: LANDING PAGES (Lead Gen)
+// ==========================================
+
+/// Customer-branded landing pages for lead generation. One template, per-customer branding.
+/// Each page lives at /lp/[slug]. Leads from submissions are stored in the Lead model
+/// with source="landing_page" and sourceId=slug.
+model LandingPage {
+  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String  @db.Uuid // Customer who owns this page (e.g., Yoram)
+  slug   String  @unique // URL path: /lp/yoram
+  active Boolean @default(true)
+
+  // Business identity
+  businessName   String // "יורם פרידמן סוכנות לביטוח"
+  businessNameEn String? // "Yoram Friedman Insurance"
+  tagline        String? // "בדיקה חינם. הוזלה אמיתית. שקט למשפחה."
+  logoUrl        String? // R2 URL
+
+  // Brand colors (extracted from customer logo/identity)
+  primaryColor String @default("#1e3a8a") // Main brand color
+  accentColor  String @default("#2563eb") // Links / secondary
+  ctaColor     String @default("#f97316") // CTA button (contrast)
+
+  // Hero section content
+  heroHeadline    String // Main headline (Hebrew or English)
+  heroSubheadline String? // Supporting text
+  ctaText         String // Button label
+
+  // Contact channels
+  whatsappNumber String? // International format: "972501234567"
+  phone          String?
+  email          String?
+
+  // Locale / layout
+  direction  String @default("rtl") // rtl | ltr
+  locale     String @default("he") // he | en | ar
+  fontFamily String @default("Heebo") // Google Font family name
+
+  // Structured page sections (testimonials, steps, features, compliance footer)
+  sections Json?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Analytics counters (incremented server-side)
+  views       Int @default(0)
+  submissions Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([slug])
+  @@index([userId])
+  @@index([active])
+  @@map("landing_pages")
+}
+
+// ==========================================
+// GROUP 11: FB MARKETPLACE BOT SAAS
+// ==========================================
+
+/// Marketplace customer profile (1 per user, manages multiple products)
+model MarketplaceCustomer {
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String @unique @db.Uuid // FK to User.id
+  businessName String
+
+  subscription String @default("TRIAL") // TRIAL, STARTER, PRO, ENTERPRISE
+  credits      Int    @default(100) // Free trial credits
+  status       String @default("ACTIVE") // ACTIVE, PAUSED, DELETED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products MarketplaceProduct[]
+  sessions FacebookSession[]
+  posts    MarketplacePost[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("marketplace_customers")
+}
+
+/// FB Marketplace product (UAD doors, bounce houses, etc.)
+model MarketplaceProduct {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId  String @db.Uuid
+  productType String // DOORS, BOUNCE_HOUSES, FURNITURE
+
+  name     String
+  status   String @default("ACTIVE") // ACTIVE, PAUSED, DELETED
+  config   Json // Product-specific config (collections, sizes, colors, scenarios, etc.)
+  pricing  Json // { basePrice, variationPercent, markup, sizeModifiers }
+  schedule Json? // { operatingHours, postLimit, cooldownMinutes }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  posts    MarketplacePost[]
+  sessions FacebookSession[]
+
+  @@index([customerId])
+  @@index([status])
+  @@map("marketplace_products")
+}
+
+/// GoLogin/Facebook session per product
+model FacebookSession {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String @db.Uuid
+  productId  String @db.Uuid
+
+  profileId String // GoLogin profile ID
+  cookies   String @db.Text // Encrypted session cookies
+  status    String @default("ACTIVE") // ACTIVE, EXPIRED, DISCONNECTED
+
+  lastUsed  DateTime?
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product  MarketplaceProduct  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, productId])
+  @@index([customerId])
+  @@index([productId])
+  @@index([status])
+  @@map("facebook_sessions")
+}
+
+/// FB Marketplace post record
+model MarketplacePost {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String @db.Uuid
+  productId  String @db.Uuid
+
+  status String @default("queued") // queued, posted, failed, deleted
+
+  // Facebook post data
+  facebookUrl        String?
+  configData         Json? // { collection, size, color, scenario, etc. }
+  imageUrl           String?
+  imageUrl2          String?
+  imageUrl3          String?
+  videoUrl           String?
+  listingTitle       String? @db.Text
+  listingDescription String? @db.Text
+  price              Float?
+  location           String?
+  phoneNumber        String?
+
+  createdAt DateTime  @default(now())
+  postedAt  DateTime?
+
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product  MarketplaceProduct  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([productId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("marketplace_posts")
 }
