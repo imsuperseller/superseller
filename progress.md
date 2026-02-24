@@ -6,6 +6,51 @@
 
 ---
 
+## 2026-02-24 (cont.): Git Push + Bull Board Deploy + Stripe Live Prices + Aitable Migration + Validation Sweep
+
+### What was done
+
+**Git commit & push** (75b4dce): 39 files committed, pushed to origin/main. Triggers api.rensto.com auto-deploy.
+
+**Bull Board deployed to RackNerd**:
+- Merged from worktree to main
+- Installed @bull-board/api + @bull-board/express
+- Compiled on server, PM2 restarted
+- Live at http://172.245.56.50:3002/admin/queues (basic auth: admin/BULL_BOARD_PASSWORD)
+- Registers 3 queues: video-pipeline, clip-generation, frontdesk-poller
+
+**Stripe Live Prices Created** (on prod_TzK97uUeFwgdWZ):
+- Starter $79/mo: price_1T4S0IDE8rt1dEs13S3CfWsh
+- Pro $149/mo: price_1T4S0IDE8rt1dEs1AVcTKlA7
+- Team $299/mo: price_1T4S0IDE8rt1dEs1WMjkzN3S
+- Old prices ($299/$699/$1499) deactivated
+- Vercel env vars updated (STRIPE_STARTER_PRICE_ID, PRO, TEAM) for production + preview
+- Deployed to Vercel production (`vercel --prod`)
+
+**Aitable Space Migration** (spc4tjiuDMjfY → spc63cnXLdMYc):
+- Updated 3 code files with new space ID
+- Created 8 datasheets in new space via setup_aitable.js
+- Updated AITableService.ts with all new datasheet IDs
+- 3 datasheets still TODO: EXPENSES, LLM_REGISTRY, MASTER_PRODUCTS
+
+**Kling Elements + Ambient Audio enabled on RackNerd**:
+- USE_KLING_ELEMENTS=1 (native character reference, replaces Nano Banana compositing)
+- KLING_SOUND=1 (footsteps/door ambient audio)
+
+**Validation sweep**:
+- Build clean (117 pages, no errors)
+- Fixed 6 secondary files still using 'enterprise' (SubscriptionManager, ClientPage, metrics route)
+- Subscribe route verified (correct tiers, credits, price env vars)
+- rensto.com meta tags confirmed "$79/mo"
+
+### Pending
+- Yaron V3 blocked on Kie.ai credits (402) — job ec300cd2
+- api.rensto.com auto-deploying from git push (should show $79 shortly)
+- 3 Aitable datasheets TODO (EXPENSES, LLM_REGISTRY, MASTER_PRODUCTS)
+- Vercel AITABLE_SPACE_ID env var needs updating to spc63cnXLdMYc
+
+---
+
 ## 2026-02-24: Canonical Pricing Fix + Kie.ai Capability Audit + Yaron V3 Resume + Sync Protocol
 
 ### What was done
