@@ -96,7 +96,7 @@ notebooklm-mcp-auth
 ### Customer-Specific (3)
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
-| 6a4eb203 | Yoram Friedman Leads | 10 | Insurance landing page strategy |
+| 6a4eb203 | (Archived — external client) | 10 | Insurance landing page strategy (not part of Rensto) |
 | b42dabb0 | AC & C HVAC | 2 | HVAC client pitch |
 | e419bca1 | Israeli Expatriates Dallas | 1 | Community forum reference |
 

@@ -32,10 +32,10 @@ negativeTrigger:
 
 ## Critical
 - **NEVER invent content** — Extract verbatim from customer strategy docs. If content doesn't exist in docs, leave the section EMPTY. Cite source in seed scripts. Violation history: fabricated testimonials despite docs explicitly saying content didn't exist (see findings.md).
-- **Customer implementations in separate repos** — Customer-specific strategy docs, seed scripts, and assets live in dedicated repositories (e.g., yoramnfridman1/yoram-friedman-insurance). Generic landing page infrastructure remains in Rensto.
+- **Customer implementations in separate repos** — Customer-specific strategy docs, seed scripts, and assets live in dedicated private repositories. Generic landing page infrastructure remains in Rensto.
 - **RTL/LTR is per-page** — `page.direction` controls all layout, animations, text alignment, and FAB positioning. Test both directions.
 - **Seed scripts are the canonical data source** — Landing page data is upserted via Prisma seed scripts, not admin UI (admin UI not built yet).
-- **WhatsApp notifications are best-effort** — Use Facebook Graph API v19.0 with `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID`. Log and continue if credentials missing.
+- **WhatsApp notifications are best-effort** — Uses WAHA Pro (self-hosted on RackNerd) with `WAHA_BASE_URL` + `WAHA_API_KEY` + `WAHA_SESSION`. Resend email as fallback. Log and continue if delivery fails.
 - **Lead API is public (no auth)** — Validate all inputs server-side. Rate limiting not yet implemented.
 
 ## Architecture
@@ -131,7 +131,7 @@ When creating a new landing page:
 
 ## Creating a New Landing Page
 
-**Note**: Customer-specific implementations are now maintained in separate repositories (e.g., yoramnfridman1/yoram-friedman-insurance).
+**Note**: Customer-specific implementations are maintained in separate private repositories, not in Rensto.
 
 1. Create separate customer repository with strategy docs
 2. Create seed script: `prisma/seed-{customer}-landing-page.ts` in customer repo
@@ -158,7 +158,4 @@ When creating a new landing page:
 - PRODUCT_STATUS.md §4 — Landing page product status
 - findings.md — Content Invention Pattern (root cause, safeguards)
 
-**Archived reference implementation**:
-- Yoram Friedman Insurance (Hebrew RTL, insurance industry) — migrated to [yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance) (private)
-- Includes: Strategy docs, seed script, logo asset, exported database records
-- NotebookLM 6a4eb203 — Yoram Friedman leads, strategy docs (archived)
+**Reference**: The `/lp/[slug]` system has been used in production for a Hebrew RTL insurance landing page (external client project, not part of Rensto).

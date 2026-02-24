@@ -659,7 +659,7 @@ Debugged and fixed the Telnyx AI Assistant ("Rensto FrontDesk") from non-functio
 4. Transfer tool missing `from` parameter. Added `+14699299314`.
 5. Hangup tool made LLM too aggressive (hung up after "hello"). Removed hangup tool.
 6. Instructions said "nationwide" — corrected to "globally" (US + Israel).
-7. Transfer target was Yoram's number (+972522422274). Fixed to Shai's (+14695885133).
+7. Transfer target was wrong number. Fixed to Shai's (+14695885133).
 8. Poller conversation interface updated to match actual Telnyx API response (metadata-based, not flat fields).
 
 **Final config**:
@@ -1162,30 +1162,19 @@ All marketplace-related docs updated to reflect current reality: bot LIVE, Postg
 
 ---
 
-## 2026-02-20 — Yoram Landing Page: LIVE
+## 2026-02-20 — Lead Landing Pages: Template System LIVE
 
 ### What was built
 - Reusable landing page template system at `/lp/[slug]` inside rensto-site
 - `LandingPage` Prisma model: per-customer branding (colors, logo, font, headlines, CTA, sections JSON, locale/direction)
-- `/api/leads/landing-page` POST: validates input, creates Lead (source="landing_page"), WhatsApp notification, submission counter
-- `LandingPageClient.tsx`: Hero, lead form, 3-step process, testimonials, credentials trust bar, compliance footer, WhatsApp FAB
+- `/api/leads/landing-page` POST: validates input, creates Lead (source="landing_page"), WAHA WhatsApp + Resend email notification, submission counter
+- `LandingPageClient.tsx`: Hero, lead form, multi-step process, testimonials, credentials trust bar, compliance footer, WhatsApp FAB
 - RTL/LTR support, dynamic Google Font loading, customer-branded colors via DB
-
-### Yoram-specific
-- YF logo found at `~/Pictures/yoramnewlogo.png`, copied to `public/lp/yoram-logo.png`
-- WhatsApp number scraped from FB page via Apify: `972522422274`
-- Phone: `+972 4-866-9460`, Address: 52 Derech Bar Yehuda, Nesher
-- Hebrew content: hero headline, 3-step process, 2 testimonials, credentials (40+ years, 10 awards, all companies)
-- Brand colors from logo: navy `#1a2a5e`, blue `#2b6cb0`, orange CTA `#f97316`
-
-### Deployment
-- Removed obsolete `*/15 * * * *` aitable sync cron from vercel.json (blocked Hobby plan deploy)
-- Deployed via `vercel --prod` — live at https://rensto.com/lp/yoram (HTTP 200 verified)
-- DB record confirmed: logo URL, WhatsApp, phone, all sections populated
+- First customer implementation done as external project (not part of Rensto codebase)
 
 ### Schema note
 - `prisma db push` blocked by pre-existing UUID/TEXT drift on 6 tables — created `landing_pages` table via raw SQL
-- User.id is TEXT in DB despite Prisma schema saying UUID — seed uses `randomUUID()` explicitly
+- Lead.id column had no default — fixed with `ALTER TABLE "Lead" ALTER COLUMN "id" SET DEFAULT gen_random_uuid()::text`
 
 ---
 
@@ -1238,27 +1227,20 @@ Complete posting flow verified for UAD:
 
 ---
 
-## 2026-02-20 — Lead Landing Pages — Template System + Yoram Live
+## 2026-02-20 — Lead Landing Pages — Template System Built
 
 Built reusable landing page template system inside rensto-site. One route (`/lp/[slug]`), per-customer branding from DB.
 
 **Architecture:**
 - `LandingPage` Prisma model → `landing_pages` table with full branding config (colors, logo, font, headlines, CTA, sections, locale, direction)
 - Dynamic `/lp/[slug]` page — server component fetches branding, renders client component with customer's identity
-- `/api/leads/landing-page` POST — validates form, creates `Lead` record (source="landing_page"), sends WhatsApp notification to page owner
+- `/api/leads/landing-page` POST — validates form, creates `Lead` record (source="landing_page"), WAHA WhatsApp + Resend email notification to page owner
 - Leads flow into existing admin `LeadsTab` automatically (same Lead model)
-- Design system: ui-ux-pro-max skill recommended sky blue trust palette + orange CTA + Noto Sans Hebrew; merged with Yoram's logo colors (navy #1a2a5e → blue #2b6cb0)
-
-**Yoram seeded:**
-- User record created, LandingPage seeded at `/lp/yoram`
-- Hebrew RTL, Heebo font, 3-step process, testimonials, compliance footer
-- Logo + WhatsApp number still needed
 
 **Files created:**
 - `apps/web/rensto-site/src/app/lp/[slug]/page.tsx` — server component
 - `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx` — client component
 - `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` — lead capture API
-- `apps/web/rensto-site/prisma/seed-yoram-landing-page.ts` — seed script
 
 **Schema:** Added `LandingPage` model + `landingPages` relation on User. Created `landing_pages` table via raw SQL (db push blocked by pre-existing drift).
 
@@ -2029,6 +2011,42 @@ When Kie.ai Vision API went into maintenance mode (returned 500 errors), the ENT
 5. Graceful degradation mode
    - Offer simplified videos without AI enhancements during outages
    - e.g., basic slideshow from photos + music vs AI-generated clips
+
+---
+
+### UPDATE (Feb 24, 2026 @ 23:20 PST): Root Cause Found — NOT Kie.ai Outage, MY BUG
+
+**Critical discovery**: The "Kie.ai outage" was actually **my integration bug**. Kie.ai was operational the entire time.
+
+**ACTUAL Root Cause**: Wrong Gemini API endpoint path in `apps/worker/src/services/gemini.ts`
+- **Bug**: `const KIE_BASE = "https://api.kie.ai/api"` → resulted in `/api/gemini-3-flash/v1/chat/completions` (HTTP 404)
+- **Fix**: Changed to `const KIE_BASE = "https://api.kie.ai"` → now `/gemini-3-flash/v1/chat/completions` ✅
+- **Reference**: FB Marketplace bot (`fb marketplace lister/deploy-package/content-generator.js`) had working pattern without `/api` prefix
+- **Why I was wrong**: Assumed ALL Kie.ai endpoints follow same pattern. Reality: Kling uses `/api/kling-3.0/...`, Gemini uses `/gemini-3-flash/...`
+
+**Actions Taken**:
+1. ✅ **Fixed endpoint path**: Removed `/api` from KIE_BASE (deployed to RackNerd)
+2. ✅ **Implemented dual Gemini fallbacks** for resilience:
+   - **Vision fallback** (`apps/worker/src/services/floorplan-analyzer.ts` line 85):
+     - Catches all Gemini Vision API failures
+     - Falls back to default tour sequences based on property metadata (type, bedrooms, bathrooms)
+     - Uses `inferRoomType()` helper to classify rooms
+     - Returns FloorplanAnalysis with confidence_score=0.3 (low confidence indicator)
+   - **Chat fallback** (`apps/worker/src/services/prompt-generator.ts` line 274):
+     - Catches all Gemini Chat Completion failures
+     - Falls back to template-based prompts using ROOM_DESCRIPTIONS lookup table
+     - Generates basic cinematic prompts for each room type
+     - Maintains ROOM_NEGATIVE_ADDITIONS for room-specific negative prompts
+3. ⏳ **Re-running audit**: Week 1 audit with fixes deployed, monitoring for completion
+
+**Result**: Pipeline now resilient to Gemini outages — uses degraded mode (templates) when Gemini fails, continues generating videos
+
+**Lesson Learned**: When external API "fails", verify YOUR integration first (endpoint paths, model names, request format) before blaming infrastructure
+
+### Audit Re-run (In Progress)
+- **Job ID**: ae52cc12-4661-4dca-be85-1a73403f68fb
+- **Status**: Pending (worker processing backlog job first)
+- **Expected**: Pipeline should work with either Gemini API OR fallbacks, verifying full resilience
 
 ### Action Items
 

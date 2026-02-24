@@ -41,7 +41,7 @@ negativeTrigger:
 5. **Conversations endpoint is flat** — `/ai/conversations` NOT `/ai/assistants/{id}/conversations`. Filter by `metadata.assistant_id` client-side.
 6. **Phone number must be connected to TeXML App** — NOT Call Control App. Connection ID `2860769989730764458`.
 7. **Outbound to Israel** — requires "IL" in outbound voice profile whitelist (profile `2860763204303193542`).
-8. **Shai's number is `+14695885133`** — NOT `+972522422274` (that's Yoram's).
+8. **Shai's number is `+14695885133`** — do not confuse with other numbers.
 
 ## Architecture
 

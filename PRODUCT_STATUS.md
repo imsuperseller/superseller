@@ -266,11 +266,7 @@
 - API: `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts`
 - Schema: `apps/web/rensto-site/prisma/schema.prisma` (LandingPage + Lead models)
 
-**Reference Implementation**:
-Yoram Friedman Insurance landing page (Hebrew RTL, insurance industry) has been **migrated to separate repository** on Feb 24, 2026:
-- Repository: [yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance) (private)
-- Includes: Strategy docs, seed script, logo asset, exported database records
-- Status: Archived (database records deleted from Rensto, `/lp/yoram` returns 404)
+**Note**: Customer-specific landing page implementations (strategy docs, seed scripts, assets) live in their own private repositories — not in Rensto. The generic `/lp/[slug]` infrastructure is the Rensto product.
 
 ---
 

@@ -33,7 +33,7 @@
 > 5. If docs say "we don't have this yet" → OMIT the section
 > 6. Cite source in seed scripts (which doc, which section)
 > **Violation history**: Past violations include fabricated testimonials despite docs explicitly stating content didn't exist. See `findings.md` for full history and prevention checklist.
-> **Note**: Customer-specific content (e.g., Yoram Friedman Insurance) has been migrated to separate private repositories for independent management.
+> **Note**: Customer-specific content lives in separate private repositories, not in the Rensto codebase.
 
 ---
 

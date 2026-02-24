@@ -1561,13 +1561,13 @@ model LlmModelConfig {
 /// with source="landing_page" and sourceId=slug.
 model LandingPage {
   id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String  @db.Uuid // Customer who owns this page (e.g., Yoram)
-  slug   String  @unique // URL path: /lp/yoram
+  userId String  @db.Uuid // Customer who owns this page
+  slug   String  @unique // URL path: /lp/{customer-slug}
   active Boolean @default(true)
 
   // Business identity
-  businessName   String // "יורם פרידמן סוכנות לביטוח"
-  businessNameEn String? // "Yoram Friedman Insurance"
+  businessName   String // Customer business name
+  businessNameEn String? // English business name
   tagline        String? // "בדיקה חינם. הוזלה אמיתית. שקט למשפחה."
   logoUrl        String? // R2 URL
 

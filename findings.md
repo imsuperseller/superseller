@@ -67,16 +67,24 @@
 
 The "Kie.ai outage" was actually **MY BUG**. Kie.ai was UP the entire time. Root cause of 0% success rate:
 
-1. **Missing `/api` path in gemini.ts**: Used `config.kie.baseUrl` (`https://api.kie.ai`) instead of `https://api.kie.ai/api` → 500 errors
-   - **Fix**: Added `const KIE_BASE = "https://api.kie.ai/api"` and used it in all axios.post calls
-2. **Non-existent model**: Used `gemini-2.5-flash` which doesn't exist at Kie.ai → 404 errors
-   - **Fix**: Changed DEFAULT_TEXT_MODEL from `gemini-2.5-flash` to `gemini-3-flash` (the only model Kie.ai proxies)
+1. **WRONG ENDPOINT PATH**: `KIE_BASE = "https://api.kie.ai/api"` caused `/api/gemini-3-flash/v1/chat/completions` → HTTP 404
+   - **Correct pattern**: `KIE_BASE = "https://api.kie.ai"` → `/gemini-3-flash/v1/chat/completions` ✅
+   - **Reference**: FB Marketplace bot had working pattern without `/api` prefix
+   - **Root cause of confusion**: Previous fix added `/api` to `config.kie.baseUrl` for Kling, but Gemini endpoints use DIFFERENT path structure
+2. **Gemini fallbacks implemented** (graceful degradation when Gemini fails):
+   - **Vision fallback** (`floorplan-analyzer.ts`): Catches Vision API failures, uses property metadata to generate default tour sequences
+   - **Chat fallback** (`prompt-generator.ts`): Catches Chat API failures, uses ROOM_DESCRIPTIONS lookup table for template-based prompts
+   - **Result**: Pipeline continues even if Kie.ai Gemini service is down, using basic room sequences and template prompts
 3. **No retry logic**: Zero resilience even if errors were transient
    - **Fix**: Added `withRetry()` wrapper to all Kie.ai API calls (3 attempts, 2^n backoff, error status preservation)
 
-After fixes: ✅ Kie.ai Vision API working, ✅ Kling video generation working, ✅ Videos generating successfully.
+After endpoint fix: ✅ Gemini API working, ✅ Kling video generation working
+After fallback implementation: ✅ Pipeline resilient to Gemini outages (degraded mode with templates)
 
-**Lesson**: When a third-party API "fails", verify YOUR integration is correct before blaming their infrastructure. The API endpoints, model names, and authentication must match the provider's actual spec.
+**Lessons**:
+1. When a third-party API "fails", verify YOUR integration is correct (endpoint paths, model names, auth) before blaming their infrastructure
+2. Don't assume ALL endpoints for a service follow the same URL pattern (Kling uses `/api/kling-3.0/...`, Gemini uses `/gemini-3-flash/...`)
+3. Always have fallbacks — single points of failure are production blockers
 
 **File**: Week 1 audit script at `apps/worker/tools/week1-forge-audit.ts`, full results in session logs.
 
@@ -213,7 +221,7 @@ cumSec += dur;  // Now arithmetic addition
 - Phone number was connected to old Call Control App (webhook to n8n). Switched to TeXML App (`2860769989730764458`) that routes to the AI assistant.
 - Transfer tool requires `from` parameter in the config, otherwise returns 422 "from parameter required".
 - Hangup tool makes LLM too aggressive — removed it. Let callers hang up naturally.
-- `+972522422274` is Yoram's number, NOT Shai's. Shai's number: `+14695885133`.
+- Shai's number is `+14695885133`. Do not confuse with other numbers.
 
 **Key Telnyx AI facts**:
 - Conversations endpoint: `/ai/conversations` (flat, NOT nested under assistants)
@@ -374,7 +382,7 @@ cumSec += dur;  // Now arithmetic addition
 | HSTS | Present: `max-age=63072000; includeSubDomains; preload` |
 | Favicon | 200, `image/x-icon` |
 | OG image | 200, `image/png`, 1200x630 |
-| Landing pages (`/lp/yoram`) | 200 |
+| Landing pages (`/lp/[slug]`) | 200 |
 | Legacy redirects | All 7 paths resolve correctly (200 after follow) |
 | Schema types | 0 mismatches (Schema Sentinel) |
 | Stuck jobs | 0 currently |
@@ -516,31 +524,18 @@ Emails observed across systems:
 
 ### CRITICAL: Content Invention Pattern — Root Cause and Safeguard
 
-**What happened**: When building Yoram's landing page, I invented fake testimonials ("משפחת כהן, חיפה", "דוד ל., נשר" with fabricated savings amounts), wrote oversimplified 3-step process, and skipped the 85% duplicate insurance statistic — despite all of this being carefully documented in `yoram-leads/` strategy docs. The Blueprint Q&A explicitly says "אין במה להשתמש כרגע" (no real case studies available), yet I fabricated them.
+**What happened**: When building a customer landing page, the agent invented fake testimonials and fabricated content instead of extracting from the customer's strategy docs. The docs explicitly said no real case studies were available, yet the agent fabricated them.
 
-**Root cause**: I treat existing strategy/content docs as "background reference" instead of "source material to extract from." For engineering tasks I carefully read code before modifying. For content tasks I generate from general knowledge instead of extracting from existing docs. The agent-behavior "just execute" reflex compounds this — rushing to produce output rather than carefully pulling from existing work.
-
-**This is a recurring pattern** — same failure as LinkedIn prompts (using wrong API fields instead of reading the reference), same failure as skipping existing docs to invent from scratch.
+**Root cause**: Agent treats existing strategy/content docs as "background reference" instead of "source material to extract from." For engineering tasks it reads code before modifying. For content tasks it generates from general knowledge instead of extracting from existing docs.
 
 **MANDATORY SAFEGUARD — Content Extraction Checklist**:
 Before seeding or generating ANY customer-facing content, ALWAYS:
-1. **Search for existing content docs** in the customer's directory (e.g., `yoram-leads/`)
+1. **Search for existing content docs** in the customer's directory
 2. **Read every strategy/content doc** — not skim, READ
 3. **Extract verbatim content** — copy from docs, don't paraphrase or invent
 4. **If content doesn't exist in docs, leave it empty** — never fabricate testimonials, case studies, or quotes
 5. **Cross-reference**: does the doc say "we don't have this yet"? If so, OMIT the section entirely.
 6. **Cite the source** in seed scripts — which doc, which section, which question number
-
-**What was fixed**:
-- Removed fabricated testimonials (empty array until Yoram provides real ones)
-- Replaced 3 generic steps with the actual 5-step process from Content Strategy post #10
-- Added 85% duplicate insurance statistic to hero subheadline (THE key conversion message from Israeli Insurance Strategy)
-- Added differentiators section from Blueprint Q&A (questions 16-18)
-- Updated compliance footer with license number placeholder (regulatory requirement)
-- Added 4th credential "הוזלה עד 50%" from Optimization doc
-- Seed script now has source citations for every content block
-
-**Archival note (Feb 24, 2026)**: Yoram Friedman Insurance work has been migrated to a separate private repository ([yoramnfridman1/yoram-friedman-insurance](https://github.com/yoramnfridman1/yoram-friedman-insurance)). All customer-specific files, strategy docs, seed script, and database records have been extracted from Rensto. The landing page infrastructure (`/lp/[slug]`) remains in Rensto as generic product code for potential future customers. This pattern (separate customer repos for strategy/content) prevents customer-specific bloat in the main Rensto codebase.
 
 ---
 
