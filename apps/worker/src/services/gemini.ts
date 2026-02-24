@@ -2,10 +2,12 @@ import { config } from "../config";
 import { logger } from "../utils/logger";
 import axios from "axios";
 import { withRetry } from "../utils/retry";
+
+const KIE_BASE = "https://api.kie.ai/api";
+
 // State-of-the-Art 2026 Models (Gemini 3 Series via Kie AI)
-// Vision: gemini-3-flash (15% better accuracy, better multimodal reasoning than 2.5-flash)
-// Text: gemini-2.5-flash (sufficient for text generation, cheaper)
-const DEFAULT_TEXT_MODEL = "google/gemini-2.5-flash";
+// Kie.ai only proxies gemini-3-flash (not 2.5-flash), use for both vision and text
+const DEFAULT_TEXT_MODEL = "google/gemini-3-flash";
 const DEFAULT_VISION_MODEL = "google/gemini-3-flash";
 
 export async function geminiChatCompletion(
@@ -32,7 +34,7 @@ export async function geminiChatCompletion(
         async () => {
             try {
                 const response = await axios.post(
-                    `${config.kie.baseUrl}/${model}/v1/chat/completions`,
+                    `${KIE_BASE}/${model}/v1/chat/completions`,
                     {
                         messages: mappedMessages,
                         stream: false,
@@ -90,7 +92,7 @@ export async function geminiVisionAnalysis(
         async () => {
             try {
                 const response = await axios.post(
-                    `${config.kie.baseUrl}/${model}/v1/chat/completions`,
+                    `${KIE_BASE}/${model}/v1/chat/completions`,
                     {
                         messages: [
                             {
@@ -181,7 +183,7 @@ When in doubt, prefer index 0 (exterior) if it has no pool. Reply with ONLY the 
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
+            `${KIE_BASE}/gemini-3-flash/v1/chat/completions`,
             {
                 messages: [{ role: "user", content }],
                 stream: false,
@@ -227,7 +229,7 @@ Reply with ONLY a single integer (0, 1, 2, ... or -1).`,
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
+            `${KIE_BASE}/gemini-3-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
             { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` }, timeout: 30_000 }
         );
@@ -270,7 +272,7 @@ Rules: Exterior/Front Door → photo of front of house, pathway, or door. Kitche
 
     try {
         const response = await axios.post(
-            `${config.kie.baseUrl}/gemini-2.5-flash/v1/chat/completions`,
+            `${KIE_BASE}/gemini-3-flash/v1/chat/completions`,
             { messages: [{ role: "user", content }], stream: false, include_thoughts: false, reasoning_effort: "low" },
             { headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.kie.apiKey}` }, timeout: 30_000 }
         );

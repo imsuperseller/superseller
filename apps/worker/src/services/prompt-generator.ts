@@ -271,32 +271,33 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
 
     logger.info({ msg: "Generating cinematic clip prompts", clips: tourSequence.length, includeRealtor });
 
-    const { content } = await chatCompletion(
-        [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userMessage },
-        ],
-        {
-            temperature: 0.4,
-            max_tokens: 8192,
-        }
-    );
-
     try {
-        let jsonStr = content.trim();
-        if (jsonStr.startsWith("```")) {
-            jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
-        }
+        const { content } = await chatCompletion(
+            [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userMessage },
+            ],
+            {
+                temperature: 0.4,
+                max_tokens: 8192,
+            }
+        );
 
-        let parsed = JSON.parse(jsonStr);
-        const clips: any[] = Array.isArray(parsed) ? parsed : (parsed.clips || parsed.prompts || []);
+        try {
+            let jsonStr = content.trim();
+            if (jsonStr.startsWith("```")) {
+                jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
+            }
 
-        return clips.map((clip, index) => {
-            const fromRoom = clip.from_room || tourSequence[index]?.from || "Exterior";
-            const toRoom = clip.to_room || tourSequence[index]?.to || "Living Room";
-            const prompt = (clip.prompt && String(clip.prompt).trim()) || `Cinematic forward dolly from ${fromRoom} into ${toRoom}. Natural light, professional real estate tour. Smooth tracking shot at eye level.`;
-            const roomType = inferRoomType(toRoom);
-            const roomAddition = roomType ? ROOM_NEGATIVE_ADDITIONS[roomType] : "";
+            let parsed = JSON.parse(jsonStr);
+            const clips: any[] = Array.isArray(parsed) ? parsed : (parsed.clips || parsed.prompts || []);
+
+            return clips.map((clip, index) => {
+                const fromRoom = clip.from_room || tourSequence[index]?.from || "Exterior";
+                const toRoom = clip.to_room || tourSequence[index]?.to || "Living Room";
+                const prompt = (clip.prompt && String(clip.prompt).trim()) || `Cinematic forward dolly from ${fromRoom} into ${toRoom}. Natural light, professional real estate tour. Smooth tracking shot at eye level.`;
+                const roomType = inferRoomType(toRoom);
+                const roomAddition = roomType ? ROOM_NEGATIVE_ADDITIONS[roomType] : "";
             const fullBaseNegative = roomAddition ? `${baseNegative}, ${roomAddition}` : baseNegative;
             // Hero rooms get 10s for cinematic impact (Kling 3.0 supports "5" or "10")
             const isHeroClip = ["pool", "kitchen", "master_bedroom", "master_bathroom"].includes(roomType) || index === 0;
@@ -313,8 +314,48 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
                     : fullBaseNegative
             };
         });
-    } catch (err: any) {
-        logger.warn({ msg: "Prompt parse error", error: err?.message, contentPreview: content?.substring(0, 200) });
-        throw new Error(`Cinematic prompt generation failed: ${err?.message || "invalid JSON"}`);
+        } catch (err: any) {
+            logger.warn({ msg: "Prompt parse error", error: err?.message, contentPreview: content?.substring(0, 200) });
+            throw new Error(`Cinematic prompt generation failed: ${err?.message || "invalid JSON"}`);
+        }
+    } catch (chatError: any) {
+        // Fallback to template-based prompts when Gemini fails (e.g., Kie.ai outage)
+        logger.warn({
+            msg: "Gemini Chat Completion failed, using template-based prompts as fallback",
+            error: chatError.message,
+            clips: tourSequence.length
+        });
+
+        return tourSequence.map((t, index) => {
+            const fromRoom = t.from;
+            const toRoom = t.to;
+            const roomType = inferRoomType(toRoom);
+            const roomDesc = ROOM_DESCRIPTIONS[roomType] || ROOM_DESCRIPTIONS["living"];
+
+            // Generate basic cinematic prompt from room description
+            let prompt = `Cinematic ${roomDesc.camera_focus || "smooth forward dolly"}. ${roomDesc.lighting_note || "Natural light"}. Professional real estate tour showcasing ${toRoom}. ${roomDesc.material_hints || "Modern finishes"}. Eye-level tracking shot, smooth movement.`;
+
+            // Special handling for first clip (approach)
+            if (index === 0 && fromRoom.toLowerCase().includes("exterior")) {
+                prompt = includeRealtor
+                    ? "The person from the reference photo walks along the pathway toward the front door. Ground-level tracking shot following from behind. Welcoming approach to the home. Natural daylight, professional real estate tour."
+                    : "Smooth forward dolly from the street view toward the front entrance. Welcoming curb appeal. Natural daylight, professional real estate tour. Eye-level perspective.";
+            }
+
+            const roomAddition = roomType ? ROOM_NEGATIVE_ADDITIONS[roomType] : "";
+            const fullBaseNegative = roomAddition ? `${baseNegative}, ${roomAddition}` : baseNegative;
+            const isHeroClip = ["pool", "kitchen", "master_bedroom", "master_bathroom"].includes(roomType) || index === 0;
+
+            return {
+                clip_number: index + 1,
+                from_room: fromRoom,
+                to_room: toRoom,
+                prompt,
+                start_frame_url: null,
+                end_frame_url: null,
+                duration_seconds: isHeroClip ? 10 : config.video.defaultClipDuration,
+                negative_prompt: fullBaseNegative
+            };
+        });
     }
 }
