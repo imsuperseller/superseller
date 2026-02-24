@@ -53,6 +53,31 @@ export interface KieKlingRequest {
     to_room?: string;
 }
 
+/**
+ * Probe Kie.ai to check if API key is valid and credits are available.
+ * Makes a minimal getTaskStatus call with a dummy ID —
+ * if the API responds (even with "not found"), the key is valid and credits aren't blocked.
+ * If 402: credits exhausted. If network error: API unreachable.
+ */
+export async function probeKieCredits(): Promise<{ ok: boolean; error?: string }> {
+    try {
+        const response = await fetch(`${KIE_BASE}/v1/jobs/recordInfo?taskId=probe-credit-check`, {
+            headers,
+            signal: AbortSignal.timeout(10_000),
+        });
+        // Any response (including 404 "task not found") means the API is reachable and key is valid
+        if (response.ok) return { ok: true };
+        const data = await response.json().catch(() => ({}));
+        if ((data as any).code === 402) {
+            return { ok: false, error: "Credits exhausted on Kie.ai" };
+        }
+        // Other errors (404 = task not found) mean the API is working
+        return { ok: true };
+    } catch (err: any) {
+        return { ok: false, error: `Kie.ai unreachable: ${err.message}` };
+    }
+}
+
 /** Generate clip via Kie Kling (sync: create + poll until done). */
 export async function generateClipKie(request: KieKlingRequest): Promise<{ video: { url: string } }> {
     const taskId = await createKlingTask(request);

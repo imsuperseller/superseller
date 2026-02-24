@@ -308,6 +308,17 @@ apiRouter.post("/jobs/:id/resume", async (req: Request, res: Response) => {
         return res.status(400).json({ error: "Job already complete" });
     }
 
+    // Pre-flight: probe Kie.ai credits before queuing (avoids wasted BullMQ cycles)
+    try {
+        const { probeKieCredits } = await import("../services/kie");
+        const probe = await probeKieCredits();
+        if (!probe.ok) {
+            return res.status(402).json({ error: probe.error || "Kie.ai credits insufficient — top up before resuming" });
+        }
+    } catch (probeErr: any) {
+        logger.warn({ msg: "Kie.ai probe failed, proceeding anyway", error: probeErr.message });
+    }
+
     // Reset stuck/generating clips back to pending (keep completed ones)
     const resetResult = await query(
         "UPDATE clips SET status = 'pending', external_task_id = NULL WHERE video_job_id = $1 AND status != 'complete' RETURNING id",

@@ -451,29 +451,19 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 frameUrls[0] = lastFrameUrl;
             }
 
-            // PARALLEL MODE: Generate all clips simultaneously (20x faster)
-            // Trade-off: Uses listing photos as start frames instead of seamless end-frame transitions
+            // PARALLEL MODE with SENTINEL: Launch 1st clip as credit probe, then remaining in parallel
+            // Prevents 10+ wasted API calls when credits are exhausted
             const PARALLEL_MODE = process.env.PARALLEL_CLIPS !== "false"; // Default ON
 
             if (PARALLEL_MODE) {
-                logger.info({ msg: "PARALLEL clip generation enabled", clipCount: clips.length });
+                logger.info({ msg: "PARALLEL clip generation enabled (sentinel+batch)", clipCount: clips.length });
                 const { createKlingTask, waitForTask, buildRealtorOnlyKlingPrompt, buildPropertyOnlyKlingPrompt, buildElementsKlingPrompt } = await import("../../services/kie");
 
-                // Circuit breaker: if ANY clip gets 402 (credits exhausted), skip remaining clips immediately
-                let creditExhausted = false;
-
-                // Create all Kling tasks in parallel
-                const clipTasks = await Promise.all(clips.map(async (clip) => {
+                // Helper: prepare a single clip for Kling task creation
+                function prepareClip(clip: any) {
                     const clipIdx = clip.clip_number - 1;
                     const isLastClip = clipIdx === clips.length - 1;
 
-                    // Resume: skip completed clips
-                    if (clip.status === "complete" && clip.video_url) {
-                        logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number });
-                        return { clip, taskId: null, alreadyComplete: true };
-                    }
-
-                    // Start frame: use listing photos (not previous clip's end frame)
                     let startFrame: string | null;
                     if (clipIdx === 0) {
                         startFrame = frameUrls[0] ?? lastFrameUrl;
@@ -481,13 +471,10 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         startFrame = frameUrls[clipIdx + 1]!;
                         clipHasComposite[clipIdx] = true;
                     } else {
-                        // Use listing photo for this room (parallel mode: independent frames)
                         startFrame = getPhotoForRoom((clip as any).to_room, clipIdx) || lastFrameUrl;
                     }
 
                     if (!startFrame) throw new Error(`Missing start frame for clip ${clip.clip_number}`);
-
-                    await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
 
                     const thisClipHasComposite = clipHasComposite[clipIdx];
                     let klingPrompt: string;
@@ -503,38 +490,78 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         klingPrompt = buildPropertyOnlyKlingPrompt(clip);
                     }
 
-                    // Circuit breaker: skip if another clip already hit 402
-                    if (creditExhausted) {
-                        logger.warn({ msg: "Skipping clip — credits exhausted (circuit breaker)", clip: clip.clip_number });
-                        return { clip, taskId: null, alreadyComplete: false, skipped: true };
-                    }
+                    return { startFrame, klingPrompt, clipElements, thisClipHasComposite };
+                }
 
-                    let taskId: string;
-                    try {
-                        taskId = await withRetry(() => createKlingTask({
-                            prompt: klingPrompt,
-                            image_url: startFrame,
-                            realtor_in_frame: thisClipHasComposite,
-                            kling_elements: clipElements,
-                            negative_prompt: (clip as any).negative_prompt,
-                            mode: config.video.klingMode,
-                            aspect_ratio: "16:9",
-                            model: "kling-3.0/video",
-                            duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
-                            to_room: (clip as any).to_room,
-                        }), { label: `createKlingTask clip ${clip.clip_number}` });
-                    } catch (clipErr: any) {
-                        if (clipErr.creditExhausted || clipErr.message?.includes("402")) {
-                            creditExhausted = true;
-                            logger.error({ msg: "Credits exhausted — circuit breaker tripped", clip: clip.clip_number });
-                        }
-                        throw clipErr;
-                    }
+                async function createClipTask(clip: any) {
+                    const { startFrame, klingPrompt, clipElements, thisClipHasComposite } = prepareClip(clip);
+                    await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
+
+                    const taskId = await withRetry(() => createKlingTask({
+                        prompt: klingPrompt,
+                        image_url: startFrame,
+                        realtor_in_frame: thisClipHasComposite,
+                        kling_elements: clipElements,
+                        negative_prompt: (clip as any).negative_prompt,
+                        mode: config.video.klingMode,
+                        aspect_ratio: "16:9",
+                        model: "kling-3.0/video",
+                        duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
+                        to_room: (clip as any).to_room,
+                    }), { label: `createKlingTask clip ${clip.clip_number}` });
 
                     await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
-                    logger.info({ msg: "Kling task created (parallel)", clip: clip.clip_number, taskId });
+                    logger.info({ msg: "Kling task created", clip: clip.clip_number, taskId });
                     return { clip, taskId, alreadyComplete: false, skipped: false };
-                }));
+                }
+
+                // Separate completed clips from pending
+                const completedClips = clips.filter((c: any) => c.status === "complete" && c.video_url);
+                const pendingClips = clips.filter((c: any) => !(c.status === "complete" && c.video_url));
+
+                const clipTasks: Array<{ clip: any; taskId: string | null; alreadyComplete: boolean; skipped?: boolean }> = [];
+
+                // Add completed clips as-is
+                for (const clip of completedClips) {
+                    logger.info({ msg: "Skipping completed clip (resume)", clip: clip.clip_number });
+                    clipTasks.push({ clip, taskId: null, alreadyComplete: true });
+                }
+
+                if (pendingClips.length > 0) {
+                    // SENTINEL: Launch first pending clip ALONE as a credit probe
+                    const sentinel = pendingClips[0];
+                    logger.info({ msg: "Sentinel clip — probing Kie.ai credits", clip: sentinel.clip_number });
+                    try {
+                        const sentinelResult = await createClipTask(sentinel);
+                        clipTasks.push(sentinelResult);
+                        logger.info({ msg: "Sentinel clip succeeded — launching remaining clips in parallel", remaining: pendingClips.length - 1 });
+                    } catch (sentinelErr: any) {
+                        if (sentinelErr.creditExhausted || sentinelErr.message?.includes("402")) {
+                            logger.error({ msg: "Sentinel clip failed — Kie.ai credits exhausted. Aborting job (0 wasted calls).", clip: sentinel.clip_number });
+                            throw sentinelErr; // Caught by outer catch → UnrecoverableError
+                        }
+                        throw sentinelErr; // Other errors: let pipeline handle normally
+                    }
+
+                    // BATCH: Launch remaining clips in parallel (sentinel proved credits work)
+                    const remainingClips = pendingClips.slice(1);
+                    if (remainingClips.length > 0) {
+                        const batchResults = await Promise.all(remainingClips.map(async (clip: any) => {
+                            try {
+                                return await createClipTask(clip);
+                            } catch (clipErr: any) {
+                                if (clipErr.creditExhausted || clipErr.message?.includes("402")) {
+                                    logger.error({ msg: "Credits exhausted mid-batch", clip: clip.clip_number });
+                                }
+                                throw clipErr;
+                            }
+                        }));
+                        clipTasks.push(...batchResults);
+                    }
+                }
+
+                // Sort by clip_number to maintain order
+                clipTasks.sort((a, b) => a.clip.clip_number - b.clip.clip_number);
 
                 // Wait for all tasks to complete in parallel
                 logger.info({ msg: "Waiting for all clips to complete in parallel..." });
