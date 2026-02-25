@@ -1,0 +1,34 @@
+[
+  {
+    "startTime": 1770187776310,
+    "executionIndex": 12,
+    "source": [
+      {
+        "previousNode": "\u2702\ufe0f Split Shots",
+        "previousNodeOutput": 1
+      }
+    ],
+    "hints": [],
+    "executionTime": 354,
+    "executionStatus": "success",
+    "data": {
+      "main": [
+        [
+          {
+            "json": {
+              "code": 200,
+              "msg": "success",
+              "data": {
+                "taskId": "9ca85d0133611803e94959eee8746298"
+              }
+            },
+            "pairedItem": {
+              "item": 0
+            }
+          }
+        ],
+        []
+      ]
+    }
+  }
+]

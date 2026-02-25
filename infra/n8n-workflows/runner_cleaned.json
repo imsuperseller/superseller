@@ -1,0 +1,301 @@
+{
+  "name": "SUB-001-TaskRunner",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "506a3a84-83a8-4626-83c1-1a68ec086de4",
+      "name": "Execute Workflow Trigger",
+      "position": [
+        112,
+        184
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"prompt\": \"{{ $json.prompt_subject }}. {{ $json.prompt_lighting }}. {{ $json.prompt_camera }}. {{ $json.prompt_effect }}\", \"imageUrls\": [\"{{ $json.imageUrl }}\"], \"model\": \"veo3_fast\", \"generationType\": \"FIRST_AND_LAST_FRAMES_2_VIDEO\" }",
+        "options": {}
+      },
+      "id": "kie_submission",
+      "name": "KieAiSubmission (POST)",
+      "position": [
+        336,
+        184
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kRI7Q7bdV9tEVPNp",
+          "name": "Kie.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "poll_wait",
+      "name": "SUB-001-PollWait (10s)",
+      "position": [
+        560,
+        184
+      ],
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "webhookId": "5c249529-1eb5-4cc4-9998-c41f8d4d0069"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/veo/get-1080p-video",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "poll_status",
+      "name": "PollStatus (POST)",
+      "position": [
+        784,
+        112
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kRI7Q7bdV9tEVPNp",
+          "name": "Kie.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "success_check",
+              "leftValue": "={{ $json.data?.successFlag || 0 }}",
+              "operator": {
+                "operation": "equals",
+                "type": "number"
+              },
+              "rightValue": 1
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "check_ready",
+      "name": "CheckReady (If)",
+      "position": [
+        1008,
+        184
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "jsCode": "const executionId = $input.item.json.executionId;\nconst shotOrder = $input.item.json.shotOrder;\nconst videoUrl = $json.data?.response?.resultUrls?.[0];\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData[executionId]) { staticData[executionId] = { videoUrls: [] }; }\nif (!staticData[executionId].videoUrls) { staticData[executionId].videoUrls = []; }\nstaticData[executionId].videoUrls.push({ order: shotOrder, url: videoUrl, timestamp: Date.now() });\nreturn { videoUrl, shotOrder, status: 'success' };"
+      },
+      "id": "success_code",
+      "name": "ResponseFormat (Code) (Success)",
+      "position": [
+        1456,
+        184
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "79e48d3f-09b9-410d-8561-3b9cbedbafd6",
+              "name": "videoUrl",
+              "value": "={{ $json.data.response.resultUrls[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "2bfc7894-dac3-435d-b4cf-fc7f4210f80a",
+              "name": "shotOrder",
+              "value": "={{ $node[\"Execute Workflow Trigger\"].json.shotOrder }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1232,
+        184
+      ],
+      "id": "83ef6ef6-e393-4850-bc92-747dda4f9fdd",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "\"CheckReady (If)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "ResponseFormat (Code) (Success)",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"Execute Workflow Trigger\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "KieAiSubmission (POST)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"KieAiSubmission (POST)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"PollStatus (POST)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "CheckReady (If)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"SUB-001-PollWait (10s)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "PollStatus (POST)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "CheckReady (If)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "KieAiSubmission (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KieAiSubmission (POST)": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SUB-001-PollWait (10s)": {
+      "main": [
+        [
+          {
+            "node": "PollStatus (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PollStatus (POST)": {
+      "main": [
+        [
+          {
+            "node": "CheckReady (If)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "ResponseFormat (Code) (Success)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {}
+}

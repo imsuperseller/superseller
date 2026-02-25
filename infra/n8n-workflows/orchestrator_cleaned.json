@@ -1,0 +1,516 @@
+{
+  "name": "VIDEO-REALESTATE-001: Real Estate Video Tour Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Real Estate Video Tour Generator",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Floor Plan Image",
+              "fieldType": "file",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Property Source",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Zillow URL"
+                  },
+                  {
+                    "option": "Property Address"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Zillow URL",
+              "placeholder": "https://www.zillow.com/homedetails/..."
+            },
+            {
+              "fieldLabel": "Property Address",
+              "placeholder": "123 Main St, City, State 12345"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "your@email.com",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "form_trigger",
+      "name": "FormTrigger",
+      "position": [
+        256,
+        480
+      ],
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "webhookId": "70d58a2f-671f-4589-b073-2abf20af54d7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "check_zillow_or_address",
+              "leftValue": "={{ $json['Property Source'] === 'Zillow URL' ? $json['Zillow URL'] : $json['Property Address'] }}",
+              "operator": {
+                "operation": "notEmpty",
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          }
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "validate_input",
+      "name": "ValidateInput",
+      "position": [
+        480,
+        464
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const propertySource = $input.item.json['Property Source'];\nconst zillowUrl = $input.item.json['Zillow URL'];\nconst address = $input.item.json['Property Address'];\nconst floorPlan = $input.item.json['Floor Plan Image'];\nconst email = $input.item.json['Email'];\n\nlet apifyInput = {};\n\nif (propertySource === 'Zillow URL' && zillowUrl) {\n  apifyInput = {\n    startUrls: [{ url: zillowUrl }],\n    maxImages: 10,\n    maxCrawledPlacesPerSearch: 1\n  };\n} else if (propertySource === 'Property Address' && address) {\n  apifyInput = {\n    searchStringsArray: [address],\n    maxCrawledPlacesPerSearch: 1,\n    maxImages: 10\n  };\n}\n\nconst executionId = $execution.id;\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData[executionId]) { staticData[executionId] = {}; }\nstaticData[executionId].email = email;\nstaticData[executionId].address = address || zillowUrl || 'Property';\n\nreturn [{\n  apifyInput,\n  floorPlan,\n  email,\n  executionId\n}];"
+      },
+      "id": "prepare_apify_input",
+      "name": "PrepareApifyInput",
+      "position": [
+        704,
+        480
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ENK9p4RZHg0iVso52"
+        },
+        "customBody": "={{ JSON.stringify($json.apifyInput) }}"
+      },
+      "id": "ea253691-f310-4847-88d9-9740d76f5394",
+      "name": "ApifyZillowScraper",
+      "position": [
+        992,
+        480
+      ],
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "credentials": {
+        "apifyApi": {
+          "id": "lJiKppXwpskAZIOW",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-2.5-flash-preview-09-2025"
+        },
+        "text": "## IDENTITY\nYou are a Senior Cinematic Architect and High-End Real Estate Marketing Lead. You possess an expert-level understanding of architectural space, flow, and visual storytelling.\n## MISSION\nConduct a high-fidelity analysis of the provided floor plan image (binary). Your goal is to identify unique architectural features and translate them into a technical cinematic roadmap for a production team.\n## CORE FOCUS\n1. THE FLOW: Primary movement from entrance through public zones.\n2. FOCUS POINTS: Structural hooks (fireplaces, islands, vaulting).\n3. LIGHTING DYNAMICS: Infer natural light orientation for optimal shoot times.\n4. CINEMATIC PRIORITY: Rank spaces based on emotional impact.\n## TASK\nAnalyze the attached floor plan binary. Identify the layout, rooms, and architectural features.\n## OUTPUT CONSTRAINTS\n- Return ONLY a strictly valid JSON object.\n- No prose, preamble, or conversational filler.\n- Do not include any text outside the JSON block.\n## REQUIRED JSON SCHEMA\n{\n  \"property_summary\": {\n    \"style\": \"Modern/Traditional/Open\",\n    \"visual_key_feature\": \"Main architectural focal point\"\n  },\n  \"cinematic_rooms\": [\n    {\n      \"name\": \"Professional Room Name\",\n      \"priority\": \"High (Showcase) / Medium / Low\",\n      \"key_features\": [\"item1\", \"item2\"],\n      \"lighting_mood\": \"string\",\n      \"camera_movement\": \"string\"\n    }\n  ]\n}",
+        "inputType": "binary",
+        "binaryPropertyName": "Floor_Plan_Image",
+        "options": {
+          "maxOutputTokens": 2048
+        }
+      },
+      "id": "365bba91-b1af-4c93-a358-f4b2443b426f",
+      "name": "GeminiFloorPlanAnalysis",
+      "position": [
+        928,
+        288
+      ],
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6UgFlgar0aCiXKdm",
+          "name": "Google Gemini(PaLM) Api superseller"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-opus-4-5-20251101"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "## ROLE\nYou are a Professional Real Estate Cinematographer and n8n Workflow Architect.\n## INPUT DATA\n1. FLOOR PLAN ANALYSIS: {{ $('GeminiFloorPlanAnalysis').item.json.content.parts[0].text }}\n2. AVAILABLE PROPERTY IMAGES: {{ $('Select Property Images').item.json.imageUrls }}\n## OBJECTIVE\nGenerate a professional cinematic shot list for a luxury real estate tour video (Kie.ai output).\n## CINEMATIC DIRECTIVES (MANDATORY)\n- **INTERIOR MOVEMENTS**: Use ONLY \"Slow dolly in\" or \"Push-in\" for transits. Use \"Fixed lens, locked off camera\" for main living areas (Anchors). **NEVER use \"Pan\" or \"Orbit\" for interiors.**\n- **EXTERIOR MOVEMENTS**: Use \"Drone shot slowly descending\" or \"Tracking shot toward entrance\".\n- **LIGHTING**: Use \"Natural window light streaming through\" or \"Soft diffused daylight\" for rooms.\n- **NEGATIVES**: No people, humans, figures, pedestrians, blur, flickering, distortion, warping, morphing.\n## OUTPUT FORMAT\nReturn ONLY a valid JSON object.\n## SCHEMA\n{\n  \"shots\": [\n    {\n      \"prompt_subject\": \"Detailed subject\",\n      \"prompt_lighting\": \"Specific formula\",\n      \"prompt_camera\": \"Specific formula\",\n      \"prompt_effect\": \"Visual quality\",\n      \"negative_prompt\": \"Mandatory negative string\",\n      \"imageUrl\": \"Best match image URL\"\n    }\n  ]\n}\n## CONSTRAINTS\n- Create exactly 6 shots."
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 8000
+        }
+      },
+      "id": "2c5294e9-73ec-45a4-902b-26d7217e3d6c",
+      "name": "ClaudeShotListGenerator",
+      "position": [
+        1728,
+        384
+      ],
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "credentials": {
+        "anthropicApi": {
+          "id": "bOftv5dScq3IjYQQ",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.item.json.content[0].text;\nconst executionId = $execution.id;\nlet data;\n\ntry {\n  // Extract JSON from markdown blocks or raw text\n  const jsonMatch = text.match(/```json\\n?([\\s\\S]*?)\\n?```/) || [null, text];\n  data = JSON.parse(jsonMatch[1]);\n} catch (e) {\n  throw new Error(\"Failed to parse Claude JSON: \" + e.message);\n}\n\n// Support multiple logical aliases for the array (shots or shot_list)\nconst rawShots = Array.isArray(data) ? data : (data.shots || data.shot_list || []);\n\n// Final normalization for the Runner\n// This returns 6 SEPARATE items so n8n triggers the Runner 6 times automatically.\nreturn rawShots.map((shot, idx) => ({\n  json: { \n    prompt_subject: shot.prompt_subject || shot.subject || \"Property Room\",\n    prompt_lighting: shot.prompt_lighting || shot.lighting || \"Natural lighting\",\n    prompt_camera: shot.prompt_camera || shot.movement || \"Slow cinematic pan\",\n    prompt_effect: shot.prompt_effect || \"High-end real estate video\",\n    negative_prompt: shot.negative_prompt || \"people, humans, figures, blur, distortion, morphing, warped architecture\",\n    imageUrl: shot.imageUrl || shot.image_url || \"\",\n    shotOrder: idx + 1, \n    totalShots: 6,\n    executionId \n  }\n}));"
+      },
+      "id": "parse_claude_response",
+      "name": "ParseShotList",
+      "position": [
+        2080,
+        384
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "split_shots",
+      "name": "SUB-001-SplitShots",
+      "position": [
+        2304,
+        384
+      ],
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "fromEmail": "service@rensto.com",
+        "toEmail": "={{ $input.all()[0].json.email }}",
+        "subject": "Generation Error",
+        "options": {}
+      },
+      "id": "error_handler_email",
+      "name": "ErrorHandler",
+      "position": [
+        704,
+        672
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "webhookId": "4f3c82b2-4527-46ce-998d-39ccbbcc17f5",
+      "credentials": {
+        "smtp": {
+          "id": "6LEMXhuWY1SaBCmY",
+          "name": "1shai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "9H_XAjhUsxQCFkCTC7yK-",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/9H_XAjhUsxQCFkCTC7yK-",
+          "cachedResultName": "SUB-001-CollectAllVideos"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2528,
+        288
+      ],
+      "id": "730f181d-27e4-429c-ba66-20bea8712bce",
+      "name": "SUB-001-ExecuteFinalizer"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1PFYBkdXwNgZaqokTiMP7",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1PFYBkdXwNgZaqokTiMP7",
+          "cachedResultName": "SUB-001-TaskRunner"
+        },
+        "workflowInputs": {
+          "mappingMode": "passthrough",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2528,
+        480
+      ],
+      "id": "6a1ec42a-1842-44de-812f-6fc0e90db4f3",
+      "name": "SUB-001-ExecuteRunner"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1280,
+        384
+      ],
+      "id": "03169da8-8f33-46ba-a836-ddd6504731d1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8bcd3d87-cbaf-419e-9e3a-791211532209",
+              "name": "imageUrls",
+              "value": "={{ $json[\"responsivePhotos\"].slice(0,6).map(p => (p.mixedSources.webp || p.mixedSources.jpeg).find(s => s.width >= 1024)?.url || p.url) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        384
+      ],
+      "id": "c331e735-6a0c-4322-b368-bbe7548d6262",
+      "name": "Select Property Images"
+    }
+  ],
+  "connections": {
+    "\"SUB-001-ExecuteFinalizer\"": {},
+    "\"SUB-001-ExecuteRunner\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-SplitShots",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"SUB-001-SplitShots\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-ExecuteRunner",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-ExecuteFinalizer",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "ApifyZillowScraper": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "ClaudeShotListGenerator": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "ParseShotList",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "FormTrigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "ValidateInput",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "GeminiFloorPlanAnalysis": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ParseShotList": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SUB-001-SplitShots",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "PrepareApifyInput": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "ApifyZillowScraper",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "ValidateInput": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "PrepareApifyInput",
+            "type": "main"
+          },
+          {
+            "node": "GeminiFloorPlanAnalysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "ErrorHandler",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "SUB-001-SplitShots": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-ExecuteFinalizer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SUB-001-ExecuteRunner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Select Property Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Property Images": {
+      "main": [
+        [
+          {
+            "node": "ClaudeShotListGenerator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "errorWorkflow": "",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {}
+}

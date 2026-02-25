@@ -1,0 +1,92 @@
+[
+  {
+    "startTime": 1770187821962,
+    "executionIndex": 14,
+    "source": [
+      {
+        "previousNode": "\u23f1\ufe0f Video Wait 45s"
+      }
+    ],
+    "hints": [],
+    "executionTime": 116,
+    "executionStatus": "success",
+    "data": {
+      "main": [
+        [
+          {
+            "json": {
+              "code": 200,
+              "msg": "success",
+              "data": {
+                "taskId": "9ca85d0133611803e94959eee8746298",
+                "paramJson": "{\"aspectRatio\":\"16:9\",\"enableFallback\":false,\"enableTranslation\":false,\"generationType\":\"REFERENCE_2_VIDEO\",\"imageUrls\":[\"https://photos.zillowstatic.com/fp/63a6f601f5b5480566ee474cad5ea08c-cc_ft_1152.webp\"],\"model\":\"veo3_fast\",\"prompt\":\"Modern suburban traditional home with Texas stone accents and white painted brick facade, manicured front lawn with ornamental grasses, curved concrete driveway leading to covered entry portico, clear blue Texas sky with soft afternoon clouds, warm sunlight casting gentle shadows across the architectural details Cinematic drone tracking shot, sweeping arc from street level rising to 40ft altitude, smooth lateral movement revealing full property width, golden hour lighting with lens flare accents, 24mm equivalent wide-angle perspective\",\"seeds\":90667,\"waterMark\":\"Rensto\"}",
+                "response": null,
+                "successFlag": 0,
+                "fallbackFlag": false,
+                "completeTime": null,
+                "createTime": 1770187777000,
+                "errorCode": null,
+                "errorMessage": null
+              }
+            },
+            "pairedItem": {
+              "item": 0
+            }
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "startTime": 1770187867480,
+    "executionIndex": 17,
+    "source": [
+      {
+        "previousNode": "\u23f1\ufe0f Video Wait 45s",
+        "previousNodeRun": 1
+      }
+    ],
+    "hints": [],
+    "executionTime": 273,
+    "executionStatus": "success",
+    "data": {
+      "main": [
+        [
+          {
+            "json": {
+              "code": 200,
+              "msg": "success",
+              "data": {
+                "taskId": "9ca85d0133611803e94959eee8746298",
+                "paramJson": "{\"aspectRatio\":\"16:9\",\"enableFallback\":false,\"enableTranslation\":false,\"generationType\":\"REFERENCE_2_VIDEO\",\"imageUrls\":[\"https://photos.zillowstatic.com/fp/63a6f601f5b5480566ee474cad5ea08c-cc_ft_1152.webp\"],\"model\":\"veo3_fast\",\"prompt\":\"Modern suburban traditional home with Texas stone accents and white painted brick facade, manicured front lawn with ornamental grasses, curved concrete driveway leading to covered entry portico, clear blue Texas sky with soft afternoon clouds, warm sunlight casting gentle shadows across the architectural details Cinematic drone tracking shot, sweeping arc from street level rising to 40ft altitude, smooth lateral movement revealing full property width, golden hour lighting with lens flare accents, 24mm equivalent wide-angle perspective\",\"seeds\":90667,\"waterMark\":\"Rensto\"}",
+                "response": {
+                  "taskId": "9ca85d0133611803e94959eee8746298",
+                  "resolution": "720p",
+                  "originUrls": null,
+                  "resultUrls": [
+                    "https://tempfile.aiquickdraw.com/r/16f571fd-5ffa-4ab1-bc33-3278f3108bd1_watermarked.mp4"
+                  ],
+                  "hasAudioList": [
+                    true
+                  ],
+                  "seeds": [
+                    90667
+                  ]
+                },
+                "successFlag": 1,
+                "fallbackFlag": false,
+                "completeTime": 1770187856000,
+                "createTime": 1770187777000,
+                "errorCode": null,
+                "errorMessage": null
+              }
+            },
+            "pairedItem": {
+              "item": 0
+            }
+          }
+        ]
+      ]
+    }
+  }
+]

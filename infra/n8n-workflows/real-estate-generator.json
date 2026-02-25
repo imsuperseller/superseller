@@ -1,0 +1,1002 @@
+{
+  "nodes": [
+    {
+      "name": "WebhookTrigger",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "real-estate-video",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      }
+    },
+    {
+      "name": "FormTrigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "parameters": {
+        "formTitle": "Real Estate Video Tour Generator",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Floor Plan Image",
+              "fieldType": "file",
+              "fieldName": "Floor Plan Image",
+              "multipleFiles": false,
+              "acceptFileTypes": "image/*",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Realtor Image",
+              "fieldType": "file",
+              "fieldName": "Realtor Image",
+              "multipleFiles": false,
+              "acceptFileTypes": "image/*"
+            },
+            {
+              "fieldLabel": "Property Source",
+              "fieldType": "dropdown",
+              "fieldName": "Property Source",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Zillow URL"
+                  },
+                  {
+                    "option": "Property Address"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Zillow URL",
+              "fieldName": "Zillow URL",
+              "placeholder": "https://www.zillow.com/homedetails/..."
+            },
+            {
+              "fieldLabel": "Property Address",
+              "fieldName": "Property Address",
+              "placeholder": "123 Main St, City, State 12345"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "fieldName": "Email",
+              "placeholder": "your@email.com",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "ignoreBots": true
+        }
+      }
+    },
+    {
+      "name": "ValidateInput",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "check_zillow_or_address",
+              "leftValue": "={{ $json['Property Source'] === 'Zillow URL' ? $json['Zillow URL'] : $json['Property Address'] }}",
+              "operator": {
+                "operation": "notEmpty",
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          }
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "CreateFloorPlanURL",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "floor_plan_url",
+              "name": "floorPlan",
+              "value": "={{ $node[\"convertToBase64\"].json.floorPlan }}",
+              "type": "string"
+            },
+            {
+              "id": "metadata",
+              "name": "mimeType",
+              "value": "={{ $json.binaryInfo.floorPlan.mimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "filename",
+              "name": "originalFileName",
+              "value": "={{ $json.binaryInfo.floorPlan.fileName }}",
+              "type": "string"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "PrepareApifyInput",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "// RESILIENT INPUT PREP (v6.1 - OPUS)\nconst inputData = $input.item.json;\nconst executionId = $execution.id;\n\n// GLOBAL REACH-BACK\nconst sourceNode = $('ValidateInput').item.json;\n\nconst propertySource = inputData['Property Source'] || sourceNode['Property Source'];\nconst zillowUrl = inputData['Zillow URL'] || sourceNode['Zillow URL'];\nconst address = inputData['Property Address'] || sourceNode['Property Address'];\nconst email = inputData['Email'] || sourceNode['Email'] || 'service@rensto.com';\n\nlet apifyInput = {};\n\nif (propertySource === 'Zillow URL' && zillowUrl) {\n    // DETAIL SCRAPER SCHEMA (Strict)\n    apifyInput = {\n        \"startUrls\": [{ \"url\": zillowUrl }],\n        \"maxImages\": 10\n    };\n} else if (propertySource === 'Property Address' && address) {\n    // SEARCH FALLBACK SCHEMA\n    apifyInput = {\n        \"searchStringsArray\": [address],\n        \"maxCrawledPlacesPerSearch\": 1,\n        \"maxImages\": 10\n    };\n} else {\n    throw new Error(`CRITICAL: No valid property identity found. Source: ${propertySource}, URL: ${zillowUrl}, Addr: ${address}`);\n}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData[executionId]) {\n    staticData[executionId] = {\n        startTime: new Date().toISOString(),\n        videoUrls: [],\n        retryCount: 0\n    };\n}\nstaticData[executionId].email = email;\nstaticData[executionId].address = address || zillowUrl || 'Property';\n\nreturn [{\n    ...inputData,\n    apifyInput,\n    email,\n    executionId,\n    propertyIdentifier: address || zillowUrl || 'Property'\n}];"
+      }
+    },
+    {
+      "name": "ApifyZillowScraper",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "value": "ENK9p4RZHg0iVso52",
+          "mode": "list",
+          "cachedResultName": "Zillow Detail Scraper (maxcopell/zillow-detail-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/ENK9p4RZHg0iVso52/input"
+        },
+        "customBody": "={{ $json.apifyInput }}",
+        "timeout": 180000
+      }
+    },
+    {
+      "name": "GeminiFloorPlanAnalysis",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "text": "=## ROLE\nSenior Cinematic Architect & Real Estate Cinematographer.\n## IDENTITY\nYou are an expert in architectural spatial flow and residential marketing. You understand how a house \"feels\" to a buyer.\n## MISSION\nConduct a high-fidelity spatial analysis of this floor plan. Identify \"Selfie Hooks\"—logical, visually impressive spots where a Realtor would stand to present the space effectively.\n## CORE FOCUS\n1. THE FLOW: Identify the primary movement from the entrance through public zones (Living, Kitchen).\n2. SELFIE HOOKS: Identify structural \"anchors\" (fireplaces, islands, vaulting) that provide a professional backdrop for a realtor.\n3. SPATIAL RANKING: Prioritize rooms by \"Emotional Impact\" for the marketing video.\n## REQUIRED JSON SCHEMA\n{\n  \"property_summary\": { \"style\", \"visual_key_feature\", \"sqft\", \"room_count\" },\n  \"cinematic_rooms\": [ \n    { \n      \"name\": \"Room Name\",\n      \"priority\": 1-10,\n      \"realtor_hook\": \"Specific spot for a selfie (e.g., leaning on the marble island)\",\n      \"lighting_mood\": \"e.g., Warm morning sun, soft diffused interior glow\",\n      \"spatial_flow\": \"Movement description from entrance or previous room\"\n    } \n  ]\n}",
+        "inputType": "binary",
+        "binaryPropertyName": "Floor_Plan_Image",
+        "options": {}
+      }
+    },
+    {
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      }
+    },
+    {
+      "name": "Select Property Images",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8bcd3d87-cbaf-419e-9e3a-791211532209",
+              "name": "imageUrls",
+              "value": "={{ $json[\"responsivePhotos\"]?.slice(0,6).map(p => {\n  const sources = p.mixedSources?.webp || p.mixedSources?.jpeg;\n  if (!sources) return p.url;\n  const highRes = sources.find(s => s.width >= 1024);\n  return highRes?.url || sources[0]?.url || p.url;\n}).filter(Boolean) || [] }}",
+              "type": "array"
+            },
+            {
+              "id": "property_metadata",
+              "name": "propertyData",
+              "value": "={{ {\n  address: $json.address || 'Property Address',\n  price: $json.price || null,\n  bedrooms: $json.bedrooms || null,\n  bathrooms: $json.bathrooms || null,\n  sqft: $json.livingArea || null,\n  propertyType: $json.homeType || null,\n  yearBuilt: $json.yearBuilt || null\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "ClaudeShotListGenerator",
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-opus-4-5-20251101",
+          "mode": "list",
+          "cachedResultName": "claude-opus-4-5-20251101"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=## ROLE: Lead Cinematic Director (Realtor-Guided Specialist)\n## INPUT DATA\n1. ANALYSIS: {{ $node[\"GeminiFloorPlanAnalysis\"].json.text }}\n2. IMAGES: {{ JSON.stringify($node[\"Select Property Images\"].json.imageUrls) }}\n3. REALTOR DATA: {{ $node[\"convertToBase64\"].json.realtorBase64Data ? 'REALTOR_GUIDED_MODE' : 'CLEAN_ARCHITECTURAL_MODE' }}\n## MANDATORY POV PATTERN\n- **Shot 1**: Exterior (Drone tracking)\n- **Shot 2**: REALTOR SELFIE (Entrance walkthrough - \"Handheld smartphone POV\")\n- **Shot 3**: Interior Focal Point (Architectural dolly-in)\n- **Shot 4**: REALTOR SELFIE (Room transition - \"Walking through door, holding camera\")\n- **Shot 5**: Signature Detail (Architectural macro)\n- **Shot 6**: REALTOR SELFIE (Exit/Conclusion - \"Smiling at camera, waving\")\n## OUTPUT FORMAT\n{\n  \"shots\": [\n    {\n      \"prompt_subject\": \"Detailed subject (Realtor vs Architecture focus)\",\n      \"prompt_camera\": \"MANDATORY: Use 'Selfie POV, handheld smartphone camera' for shots 2, 4, 6\",\n      \"imageUrl\": \"Matching URL\",\n      \"realtorMode\": true\n    }\n  ]\n}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 8000
+        }
+      }
+    },
+    {
+      "name": "SavePropertyStyle",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "// Enterprise-grade property style extraction with defensive error handling\nconst executionId = $execution.id;\nconst staticData = $getWorkflowStaticData('global');\n\n// Defensive access to Gemini response\nlet text = '';\ntry {\n  const geminiNode = $('GeminiFloorPlanAnalysis').item;\n  text = geminiNode?.json?.content?.parts?.[0]?.text || geminiNode?.json?.text || '';\n} catch (e) {\n  console.warn('Could not access Gemini response:', e.message);\n  text = '';\n}\n\nlet style = 'Cinematic';\nlet keyFeature = 'Luxury Property';\nlet estimatedSqft = 'Unknown';\nlet roomCount = 'Multiple';\n\nif (text) {\n  try {\n    // Extract JSON from Gemini response\n    const jsonMatch = text.match(/```json\\n?([\\s\\S]*?)\\n?```/) || [null, text];\n    const jsonString = jsonMatch[1] || text;\n    \n    // Try to parse JSON\n    const data = JSON.parse(jsonString);\n    \n    if (data && data.property_summary) {\n      style = data.property_summary.style || 'Cinematic';\n      keyFeature = data.property_summary.visual_key_feature || 'Luxury Property';\n      estimatedSqft = data.property_summary.estimated_sqft || 'Unknown';\n      roomCount = data.property_summary.room_count || 'Multiple';\n    }\n  } catch (e) {\n    console.log('Gemini JSON parsing failed, using defaults:', e.message);\n  }\n}\n\n// Enhanced static data for enterprise tracking\nif (!staticData[executionId]) {\n  staticData[executionId] = {};\n}\n\nstaticData[executionId].propertyStyle = style;\nstaticData[executionId].keyFeature = keyFeature;\nstaticData[executionId].estimatedSqft = estimatedSqft;\nstaticData[executionId].roomCount = roomCount;\nstaticData[executionId].styleProcessedAt = new Date().toISOString();\n\n// Return enhanced property data for downstream processing\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    propertyStyle: style,\n    keyFeature: keyFeature,\n    estimatedSqft: estimatedSqft,\n    roomCount: roomCount\n  }\n}));"
+      }
+    },
+    {
+      "name": "ParseShotList",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "// Enterprise-grade Claude response parsing with defensive error handling\nconst text = $input.item?.json?.content?.[0]?.text || $input.item?.json?.text || '';\nconst executionId = $execution.id;\n\nlet data;\ntry {\n  // Multiple parsing strategies for robustness\n  const jsonMatch = text.match(/```json\\n?([\\s\\S]*?)\\n?```/) || [null, text.trim()];\n  const jsonText = jsonMatch[1] || text;\n  \n  // Clean common formatting issues\n  const cleanedJson = jsonText\n    .replace(/^[^{]*/, '') // Remove text before first {\n    .replace(/[^}]*$/, '') // Remove text after last }\n    .replace(/\\n\\s*\\/\\/.*$/gm, ''); // Remove line comments\n  \n  data = JSON.parse(cleanedJson);\n} catch (e) {\n  // Fallback parsing attempt\n  try {\n    const fallbackMatch = text.match(/\\{[\\s\\S]*\\}/);\n    if (fallbackMatch) {\n      data = JSON.parse(fallbackMatch[0]);\n    } else {\n      throw new Error('No valid JSON found in Claude response: ' + e.message);\n    }\n  } catch (fallbackError) {\n    throw new Error('Failed to parse Claude JSON: ' + fallbackError.message);\n  }\n}\n\n// Validate and normalize shot data\nconst rawShots = Array.isArray(data) ? data : (data.shots || data.shot_list || []);\n\nif (!Array.isArray(rawShots) || rawShots.length === 0) {\n  throw new Error('No valid shots found in Claude response.');\n}\n\n// Get realtor mode status - defensive access\nlet hasRealtorImage = false;\ntry {\n  const convertNode = $('old').item;\n  hasRealtorImage = convertNode?.json?.realtorBase64Data ? true : false;\n} catch (e) {\n  console.warn('Could not determine realtor mode, defaulting to false');\n  hasRealtorImage = false;\n}\n\n// Enterprise shot validation and normalization\nconst shots = rawShots.slice(0, 6).map((shot, idx) => {\n  if (!shot || typeof shot !== 'object') {\n    console.warn('Shot ' + (idx + 1) + ' is invalid, using defaults');\n    shot = {};\n  }\n  \n  // Determine realtor mode for this specific shot\n  const isRealtorShot = hasRealtorImage && (idx === 1 || idx === 3 || idx === 5);\n  \n  return {\n    prompt_subject: shot.prompt_subject || shot.subject || 'Property Interior View ' + (idx + 1),\n    prompt_lighting: shot.prompt_lighting || shot.lighting || 'Natural window light streaming through',\n    prompt_camera: shot.prompt_camera || shot.movement || 'Slow dolly in',\n    prompt_effect: shot.prompt_effect || shot.effect || '8K resolution, professional real estate cinematography',\n    negative_prompt: shot.negative_prompt || 'people, humans, figures, blur, distortion, text, logos',\n    imageUrl: shot.imageUrl || shot.image_url || '',\n    realtorMode: shot.realtorMode !== undefined ? shot.realtorMode : isRealtorShot,\n    shotOrder: idx + 1,\n    executionId: executionId,\n    generatedAt: new Date().toISOString()\n  };\n});\n\n// Ensure exactly 6 shots\nwhile (shots.length < 6) {\n  const idx = shots.length;\n  const isRealtorShot = hasRealtorImage && (idx === 1 || idx === 3 || idx === 5);\n  \n  shots.push({\n    prompt_subject: 'Property Overview Shot ' + (shots.length + 1),\n    prompt_lighting: 'Natural daylight',\n    prompt_camera: 'Fixed lens, locked off camera',\n    prompt_effect: '8K resolution, professional real estate cinematography',\n    negative_prompt: 'people, humans, figures, blur, distortion, text, logos',\n    imageUrl: '',\n    realtorMode: isRealtorShot,\n    shotOrder: shots.length + 1,\n    executionId: executionId,\n    generatedAt: new Date().toISOString()\n  });\n}\n\n// Log shot generation for monitoring\nconsole.log('Generated ' + shots.length + ' shots for execution ' + executionId);\n\n// Return normalized shots\nreturn shots.map(shot => ({ json: shot }));"
+      }
+    },
+    {
+      "name": "SUB-001-SplitShots",
+      "type": "n8n-nodes-base.splitInBatches",
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "name": "KieAiSubmission (POST)",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"Luxury real estate property tour. {{ $json.prompt_subject }}. Camera: slow dolly forward, steady drone-like movement through spaces. {{ $json.prompt_lighting }}. Style: cinematic showcase with unbroken transitions. {{ $json.prompt_camera }}. Motion: subtle, controlled movements maintaining visual continuity. {{ $json.prompt_effect }}\",\n  \"imageUrls\": [\"{{ $json.imageUrl }}\"],\n  \"referenceImageUrl\": \"{{ $json.realtorMode && $('convertToBase64').item.json.realtorBase64Data ? 'data:' + $('convertToBase64').item.json.binaryInfo.realtor.mimeType + ';base64,' + $('convertToBase64').item.json.realtorBase64Data : '' }}\",\n  \"model\": \"{{ $json.isHeroShot ? 'veo3' : 'veo3_fast' }}\",\n  \"generationType\": \"{{ $json.realtorMode && $('convertToBase64').item.json.realtorBase64Data ? 'REFERENCE_2_VIDEO' : 'FIRST_AND_LAST_FRAMES_2_VIDEO' }}\",\n  \"aspect_ratio\": \"16:9\",\n  \"watermark\": \"{{ $json.agent_agency || '' }}\",\n  \"negative_prompt\": \"{{ $json.negative_prompt || 'blurry, distorted, glitchy, unstable camera, abrupt cuts' }}\",\n  \"duration\": 6,\n  \"seeds\": {{ $json.useSeed ? $json.seedValue : Math.floor(Math.random() * 89999) + 10000 }},\n  \"enableTranslation\": true\n}",
+        "options": {
+          "timeout": 180000
+        }
+      }
+    },
+    {
+      "name": "SUB-001-PollWait (10s)",
+      "type": "n8n-nodes-base.wait",
+      "parameters": {
+        "amount": 15
+      }
+    },
+    {
+      "name": "PollStatus (POST)",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/veo/record-info?taskId={{ $('KieAiSubmission (POST)').item.json.data.taskId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "name": "CheckReady (If)",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "success_check",
+              "leftValue": "={{ $json.data?.successFlag || 0 }}",
+              "operator": {
+                "operation": "equals",
+                "type": "number"
+              },
+              "rightValue": 1
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "79e48d3f-09b9-410d-8561-3b9cbedbafd6",
+              "name": "videoUrl",
+              "value": "={{ $json.data?.response?.resultUrls?.[0] || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "2bfc7894-dac3-435d-b4cf-fc7f4210f80a",
+              "name": "shotOrder",
+              "value": "={{ $('SUB-001-SplitShots').item.json.shotOrder }}",
+              "type": "string"
+            },
+            {
+              "id": "execution_metadata",
+              "name": "metadata",
+              "value": "={{ {\n  executionId: $('SUB-001-SplitShots').item.json.executionId,\n  generatedAt: new Date().toISOString(),\n  success: true\n} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "ResponseFormat (Code) (Success)",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "const executionId = $execution.id;\nconst shotOrder = $input.item.json.shotOrder;\nconst videoUrl = $json.videoUrl; \nconst staticData = $getWorkflowStaticData('global');\n// Robust Forensic Initialization\nif (!staticData[executionId]) staticData[executionId] = { videoUrls: [], errors: [] };\nif (!staticData[executionId].videoUrls) staticData[executionId].videoUrls = [];\nstaticData[executionId].videoUrls.push({\n  order: parseInt(shotOrder) || 0,\n  url: videoUrl,\n  timestamp: Date.now()\n});\nreturn { videoUrl, shotOrder, status: 'success' };"
+      }
+    },
+    {
+      "name": "KieAiSubmission (POST)1",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "=Cinematic real estate tour soundtrack for a {{ $json.propertyStyle || 'luxury' }} {{ $json.keyFeature || 'property' }}. Sophisticated, high-end ambient music that complements luxury real estate presentations. Professional, elegant, and inspiring."
+            },
+            {
+              "name": "customMode",
+              "value": "true"
+            },
+            {
+              "name": "instrumental",
+              "value": "true"
+            },
+            {
+              "name": "model",
+              "value": "V4"
+            },
+            {
+              "name": "style",
+              "value": "={{ ($json.propertyStyle || 'Cinematic') + ', Ambient, Piano, Orchestral' }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ ('Real Estate Tour: ' + ($json.address || 'Property')).slice(0, 75) }}"
+            },
+            {
+              "name": "negativeTags",
+              "value": "Heavy Metal, Rock, Rap, Electronic, Techno"
+            },
+            {
+              "name": "styleWeight",
+              "value": "0.7"
+            },
+            {
+              "name": "weirdnessConstraint",
+              "value": "0.3"
+            },
+            {
+              "name": "audioWeight",
+              "value": "0.8"
+            },
+            {
+              "name": "callBackUrl",
+              "value": "https://rensto.com"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      }
+    },
+    {
+      "name": "SUB-001-PollWait (10s)1",
+      "type": "n8n-nodes-base.wait",
+      "parameters": {
+        "amount": 15
+      }
+    },
+    {
+      "name": "PollStatus (POST)1",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/veo/record-info?taskId={{ $('KieAiSubmission (POST)').item.json.data.taskId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 90000
+        }
+      }
+    },
+    {
+      "name": "CheckReady (If)1",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "success_check",
+              "leftValue": "={{ $json.data?.status || 'PENDING' }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "rightValue": "SUCCESS"
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "RacknerdStitch (POST)",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.245.56.50:5050/merge",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-workflow/1.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_urls",
+              "value": "={{ $json.videoUrls }}"
+            },
+            {
+              "name": "address",
+              "value": "={{ $json.address }}"
+            },
+            {
+              "name": "output_format",
+              "value": "mp4"
+            },
+            {
+              "name": "quality",
+              "value": "1080p"
+            },
+            {
+              "name": "audio",
+              "value": "={{ $json.data?.response?.sunoData?.[0]?.audioUrl || '' }}"
+            },
+            {
+              "name": "style",
+              "value": "={{ $json.propertyStyle || 'Cinematic' }}"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $json.executionId }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      }
+    },
+    {
+      "name": "MergePollWait (10s)",
+      "type": "n8n-nodes-base.wait",
+      "parameters": {
+        "amount": 20
+      }
+    },
+    {
+      "name": "PollMergeStatus (GET)",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "={{ 'http://172.245.56.50:5050/status/' + $('RacknerdStitch (POST)').item.json.job_id }}",
+        "options": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "name": "CheckMergeReady (If)",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "completed_check",
+              "leftValue": "={{ $json.status || 'pending' }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "completed"
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "Send a message",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "parameters": {
+        "toRecipients": "={{ $json.email || $getWorkflowStaticData('global')[$execution.id].email }}",
+        "subject": "=🏠 Your AI Video Tour: {{ $json.address || $getWorkflowStaticData('global')[$execution.id].address }}",
+        "bodyContent": "=<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;\">\n  <div style=\"background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;\">\n    <h1 style=\"margin: 0; font-size: 28px; font-weight: 300;\">🎬 Your Video Tour is Ready!</h1>\n    <p style=\"margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;\">AI-Generated Real Estate Cinematography</p>\n  </div>\n  \n  <div style=\"background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);\">\n    <h2 style=\"color: #333; margin-top: 0;\">Property Details</h2>\n    <table style=\"width: 100%; border-collapse: collapse;\">\n      <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Address:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ $json.address }}</td></tr>\n      <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Style:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ $json.propertyStyle || 'Luxury Property' }}</td></tr>\n      <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Key Feature:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ $json.keyFeature || 'Premium Features' }}</td></tr>\n      <tr><td style=\"padding: 8px 0;\"><strong>Total Videos:</strong></td><td style=\"padding: 8px 0;\">{{ $json.totalVideos || 6 }} Cinematic Shots</td></tr>\n    </table>\n    \n    <div style=\"background: #e8f5e8; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 5px;\">\n      <p style=\"margin: 0; color: #155724;\"><strong>✅ Processing Complete!</strong><br>\n      Your AI-generated real estate tour video has been successfully created with professional cinematography and background music.</p>\n    </div>\n    \n    <div style=\"text-align: center; margin: 25px 0;\">\n      <a href=\"{{ $json.video_url || '#' }}\" style=\"display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px;\">🎥 Download Your Video</a>\n    </div>\n    \n    <div style=\"background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px;\">\n      <p style=\"margin: 0; font-size: 14px; color: #666;\"><strong>Technical Specs:</strong></p>\n      <ul style=\"margin: 5px 0; font-size: 14px; color: #666;\">\n        <li>Resolution: 1080p HD</li>\n        <li>AI Model: Google Veo 3 + Claude 4 + Gemini 2.5</li>\n        <li>Audio: Professional real estate soundtrack</li>\n        <li>Duration: ~36 seconds (6 shots × 6 seconds)</li>\n      </ul>\n    </div>\n  </div>\n  \n  <div style=\"text-align: center; margin-top: 20px; color: #666; font-size: 14px;\">\n    <p>Generated by <strong>Rensto AI</strong> • Real Estate Video Automation Platform</p>\n    <p style=\"margin: 5px 0;\">Powered by Enterprise n8n Workflow • Execution ID: {{ $json.executionId }}</p>\n  </div>\n</div>",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      }
+    },
+    {
+      "name": "ErrorHandler",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "parameters": {
+        "toRecipients": "={{ $input.all()[0].json.email || 'service@rensto.com' }}",
+        "subject": "⚠️ Real Estate Video Generation Error",
+        "bodyContent": "=<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;\">\n  <div style=\"background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); padding: 30px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;\">\n    <h1 style=\"margin: 0; font-size: 28px; font-weight: 300;\">⚠️ Video Generation Error</h1>\n    <p style=\"margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;\">AI Real Estate Video Processing Failed</p>\n  </div>\n  \n  <div style=\"background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);\">\n    <p>We apologize, but there was an error processing your real estate video request.</p>\n    \n    <div style=\"background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;\">\n      <h3 style=\"color: #333; margin-top: 0;\">Error Details</h3>\n      <table style=\"width: 100%; border-collapse: collapse;\">\n        <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Execution ID:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ $execution.id }}</td></tr>\n        <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Time:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ new Date().toISOString() }}</td></tr>\n        <tr><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\"><strong>Property:</strong></td><td style=\"padding: 8px 0; border-bottom: 1px solid #eee;\">{{ $input.all()[0].json['Property Source'] === 'Zillow URL' ? $input.all()[0].json['Zillow URL'] : $input.all()[0].json['Property Address'] }}</td></tr>\n        <tr><td style=\"padding: 8px 0;\"><strong>Email:</strong></td><td style=\"padding: 8px 0;\">{{ $input.all()[0].json.email }}</td></tr>\n      </table>\n    </div>\n    \n    <div style=\"background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px;\">\n      <p style=\"margin: 0; color: #856404;\"><strong>🔧 Next Steps:</strong></p>\n      <ol style=\"margin: 10px 0; color: #856404;\">\n        <li>Our technical team has been automatically notified</li>\n        <li>Please try again in 10-15 minutes</li>\n        <li>If the issue persists, contact support with the Execution ID above</li>\n      </ol>\n    </div>\n    \n    <div style=\"text-align: center; margin: 25px 0;\">\n      <a href=\"mailto:support@rensto.com?subject=Video Generation Error - {{ $execution.id }}\" style=\"display: inline-block; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px;\">📧 Contact Support</a>\n    </div>\n  </div>\n  \n  <div style=\"text-align: center; margin-top: 20px; color: #666; font-size: 14px;\">\n    <p>Generated by <strong>Rensto AI</strong> • Real Estate Video Automation Platform</p>\n    <p style=\"margin: 5px 0;\">Powered by Enterprise n8n Workflow • Execution ID: {{ $execution.id }}</p>\n  </div>\n</div>",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      }
+    },
+    {
+      "name": "convertToBase64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "Floor_Plan_Image",
+        "destinationKey": "floorPlan",
+        "options": {}
+      }
+    },
+    {
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "videoUrls",
+        "include": "specifiedFields",
+        "fieldsToInclude": "url",
+        "options": {}
+      }
+    },
+    {
+      "name": "Analyze an image",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-preview"
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "WebhookTrigger": {
+      "main": [
+        [
+          {
+            "node": "ValidateInput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormTrigger": {
+      "main": [
+        [
+          {
+            "node": "ValidateInput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ValidateInput": {
+      "main": [
+        [
+          {
+            "node": "convertToBase64",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ErrorHandler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CreateFloorPlanURL": {
+      "main": [
+        [
+          {
+            "node": "GeminiFloorPlanAnalysis",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "PrepareApifyInput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PrepareApifyInput": {
+      "main": [
+        [
+          {
+            "node": "ApifyZillowScraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ApifyZillowScraper": {
+      "main": [
+        [
+          {
+            "node": "Analyze an image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "GeminiFloorPlanAnalysis": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Select Property Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Property Images": {
+      "main": [
+        [
+          {
+            "node": "ClaudeShotListGenerator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ClaudeShotListGenerator": {
+      "main": [
+        [
+          {
+            "node": "SavePropertyStyle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SavePropertyStyle": {
+      "main": [
+        [
+          {
+            "node": "ParseShotList",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ParseShotList": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-SplitShots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SUB-001-SplitShots": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KieAiSubmission (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KieAiSubmission (POST)": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SUB-001-PollWait (10s)": {
+      "main": [
+        [
+          {
+            "node": "PollStatus (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PollStatus (POST)": {
+      "main": [
+        [
+          {
+            "node": "CheckReady (If)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckReady (If)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SUB-001-PollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "ResponseFormat (Code) (Success)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ResponseFormat (Code) (Success)": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-SplitShots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KieAiSubmission (POST)1": {
+      "main": [
+        [
+          {
+            "node": "SUB-001-PollWait (10s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SUB-001-PollWait (10s)1": {
+      "main": [
+        [
+          {
+            "node": "PollStatus (POST)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PollStatus (POST)1": {
+      "main": [
+        [
+          {
+            "node": "CheckReady (If)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckReady (If)1": {
+      "main": [
+        [
+          {
+            "node": "RacknerdStitch (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SUB-001-PollWait (10s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RacknerdStitch (POST)": {
+      "main": [
+        [
+          {
+            "node": "MergePollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergePollWait (10s)": {
+      "main": [
+        [
+          {
+            "node": "PollMergeStatus (GET)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PollMergeStatus (GET)": {
+      "main": [
+        [
+          {
+            "node": "CheckMergeReady (If)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckMergeReady (If)": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MergePollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "convertToBase64": {
+      "main": [
+        [
+          {
+            "node": "CreateFloorPlanURL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "KieAiSubmission (POST)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze an image": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "startTime": 1770187868628,
+    "executionIndex": 22,
+    "source": [
+      {
+        "previousNode": "\u2702\ufe0f Split Shots",
+        "previousNodeRun": 1
+      }
+    ],
+    "hints": [],
+    "executionTime": 2,
+    "executionStatus": "success",
+    "data": {
+      "main": [
+        [
+          {
+            "json": {
+              "videoData": [
+                {
+                  "videoUrl": "https://tempfile.aiquickdraw.com/r/16f571fd-5ffa-4ab1-bc33-3278f3108bd1_watermarked.mp4",
+                  "shotOrder": 0,
+                  "status": "success",
+                  "totalStored": 1
+                }
+              ]
+            },
+            "pairedItem": [
+              {
+                "item": 0
+              }
+            ]
+          }
+        ]
+      ]
+    }
+  }
+]

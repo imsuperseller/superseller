@@ -1,0 +1,67 @@
+[
+  {
+    "startTime": 1770187775677,
+    "executionIndex": 10,
+    "source": [
+      {
+        "previousNode": "\ud83d\udcbe Save Property Style"
+      }
+    ],
+    "hints": [],
+    "executionTime": 158,
+    "executionStatus": "success",
+    "data": {
+      "main": [
+        [
+          {
+            "json": {
+              "shots": [
+                {
+                  "prompt_subject": "Modern suburban traditional home with Texas stone accents and white painted brick facade, manicured front lawn with ornamental grasses, curved concrete driveway leading to covered entry portico, clear blue Texas sky with soft afternoon clouds, warm sunlight casting gentle shadows across the architectural details",
+                  "prompt_camera": "Cinematic drone tracking shot, sweeping arc from street level rising to 40ft altitude, smooth lateral movement revealing full property width, golden hour lighting with lens flare accents, 24mm equivalent wide-angle perspective",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/63a6f601f5b5480566ee474cad5ea08c-cc_ft_1152.webp",
+                  "realtorMode": true
+                },
+                {
+                  "prompt_subject": "Polished male realtor in blue textured suit with slim tie, warm genuine smile with closed lips, standing in bright foyer with natural light streaming through front door sidelights, gesturing welcomingly with open palm toward the open-concept living space behind him, confident and approachable expression, NO LIP MOVEMENT, NO SPEAKING",
+                  "prompt_camera": "Selfie POV, handheld smartphone camera, slight natural motion and subtle shake, realtor's arm partially visible holding device, wide-angle selfie distortion, high-key lighting from entryway windows illuminating face",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/724b8223554fa16fdf5d7b03b89445d2-cc_ft_1152.webp",
+                  "realtorMode": true
+                },
+                {
+                  "prompt_subject": "Expansive open-concept kitchen featuring large angled island with granite countertops, white shaker cabinetry reaching toward ceiling, stainless steel appliances, pendant lighting fixtures, neutral color palette with crisp white walls, breakfast nook visible in background with abundant natural light",
+                  "prompt_camera": "Architectural dolly-in shot, smooth 180-degree orbit around kitchen island, low angle emphasizing counter-to-ceiling height, stabilized gimbal movement, bright airy exposure with soft shadows, 35mm cinematic lens perspective",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/bb88cfb9fa74174da1c4754445988da5-cc_ft_1152.webp",
+                  "realtorMode": true
+                },
+                {
+                  "prompt_subject": "Polished male realtor in blue textured suit walking through doorway threshold from kitchen into great living room, holding smartphone at arm's length, pleasant closed-mouth smile, eyebrows raised with excitement, free hand gesturing toward expansive living space with large windows, warm afternoon glow on face, NO LIP MOVEMENT, NO SPEAKING, MOUTH COMPLETELY CLOSED",
+                  "prompt_camera": "Selfie POV, handheld smartphone camera, dynamic walking motion with natural body sway, transitional movement through doorframe, slight motion blur on background, soft-box style diffused lighting, intimate first-person perspective",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/7e015b7f65d65a6e8928c6bd7fe1a997-cc_ft_1152.webp",
+                  "realtorMode": true
+                },
+                {
+                  "prompt_subject": "Primary bedroom retreat with serene atmosphere, plush neutral bedding on king-sized bed, vaulted ceiling with architectural crown molding detail, hardwood flooring transitioning to soft carpet, soft diffused natural light through sheer window treatments, private wing separation emphasized by hallway entrance framing",
+                  "prompt_camera": "Architectural macro detail shot, gentle tilt-up movement starting from hardwood-carpet transition line rising to vaulted ceiling peak, stabilized gimbal with slow deliberate motion, soft moody lighting with warm undertones, 50mm portrait lens creating intimate depth",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/08c9df0f59a67568378ff5ed34d5e336-cc_ft_1152.webp",
+                  "realtorMode": true
+                },
+                {
+                  "prompt_subject": "Polished male realtor in blue textured suit standing in elegant dining area, genuine warm smile with teeth slightly visible but LIPS NOT MOVING, friendly wave goodbye with right hand, left arm extended holding smartphone, dining space symmetry visible behind him, structured lighting creating professional ambiance, appreciative grateful expression, NO SPEAKING, COMPLETELY SILENT, FROZEN SMILE",
+                  "prompt_camera": "Selfie POV, handheld smartphone camera, stationary farewell pose with subtle natural sway, wide-angle capturing realtor and dining room scale behind, elegant structured lighting with balanced exposure, intimate connection with viewer through direct eye contact",
+                  "imageUrl": "https://photos.zillowstatic.com/fp/71ae7840e6186e4cfe748eed6ea4592d-cc_ft_1152.webp",
+                  "realtorMode": true
+                }
+              ],
+              "totalShots": 6,
+              "originalText": "```json\n{\n  \"shots\": [\n    {\n      \"prompt_subject\": \"Modern suburban traditional home with Texas stone accents and white painted brick facade, manicured front lawn with ornamental grasses, curved concrete driveway leading to covered entry portico, clear blue Texas sky with soft afternoon clouds, warm sunlight casting gentle shadows across the architectural details\",\n      \"prompt_camera\": \"Cinematic drone tracking shot, sweeping arc from street level rising to 40ft altitude, smooth lateral movement revealing full property width, golden hour lighting with lens flare accents, 24mm equivalent wide-angle perspective\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/63a6f601f5b5480566ee474cad5ea08c-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    },\n    {\n      \"prompt_subject\": \"Polished male realtor in blue textured suit with slim tie, warm genuine smile with closed lips, standing in bright foyer with natural light streaming through front door sidelights, gesturing welcomingly with open palm toward the open-concept living space behind him, confident and approachable expression, NO LIP MOVEMENT, NO SPEAKING\",\n      \"prompt_camera\": \"Selfie POV, handheld smartphone camera, slight natural motion and subtle shake, realtor's arm partially visible holding device, wide-angle selfie distortion, high-key lighting from entryway windows illuminating face\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/724b8223554fa16fdf5d7b03b89445d2-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    },\n    {\n      \"prompt_subject\": \"Expansive open-concept kitchen featuring large angled island with granite countertops, white shaker cabinetry reaching toward ceiling, stainless steel appliances, pendant lighting fixtures, neutral color palette with crisp white walls, breakfast nook visible in background with abundant natural light\",\n      \"prompt_camera\": \"Architectural dolly-in shot, smooth 180-degree orbit around kitchen island, low angle emphasizing counter-to-ceiling height, stabilized gimbal movement, bright airy exposure with soft shadows, 35mm cinematic lens perspective\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/bb88cfb9fa74174da1c4754445988da5-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    },\n    {\n      \"prompt_subject\": \"Polished male realtor in blue textured suit walking through doorway threshold from kitchen into great living room, holding smartphone at arm's length, pleasant closed-mouth smile, eyebrows raised with excitement, free hand gesturing toward expansive living space with large windows, warm afternoon glow on face, NO LIP MOVEMENT, NO SPEAKING, MOUTH COMPLETELY CLOSED\",\n      \"prompt_camera\": \"Selfie POV, handheld smartphone camera, dynamic walking motion with natural body sway, transitional movement through doorframe, slight motion blur on background, soft-box style diffused lighting, intimate first-person perspective\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/7e015b7f65d65a6e8928c6bd7fe1a997-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    },\n    {\n      \"prompt_subject\": \"Primary bedroom retreat with serene atmosphere, plush neutral bedding on king-sized bed, vaulted ceiling with architectural crown molding detail, hardwood flooring transitioning to soft carpet, soft diffused natural light through sheer window treatments, private wing separation emphasized by hallway entrance framing\",\n      \"prompt_camera\": \"Architectural macro detail shot, gentle tilt-up movement starting from hardwood-carpet transition line rising to vaulted ceiling peak, stabilized gimbal with slow deliberate motion, soft moody lighting with warm undertones, 50mm portrait lens creating intimate depth\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/08c9df0f59a67568378ff5ed34d5e336-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    },\n    {\n      \"prompt_subject\": \"Polished male realtor in blue textured suit standing in elegant dining area, genuine warm smile with teeth slightly visible but LIPS NOT MOVING, friendly wave goodbye with right hand, left arm extended holding smartphone, dining space symmetry visible behind him, structured lighting creating professional ambiance, appreciative grateful expression, NO SPEAKING, COMPLETELY SILENT, FROZEN SMILE\",\n      \"prompt_camera\": \"Selfie POV, handheld smartphone camera, stationary farewell pose with subtle natural sway, wide-angle capturing realtor and dining room scale behind, elegant structured lighting with balanced exposure, intimate connection with viewer through direct eye contact\",\n      \"imageUrl\": \"https://photos.zillowstatic.com/fp/71ae7840e6186e4cfe748eed6ea4592d-cc_ft_1152.webp\",\n      \"realtorMode\": true\n    }\n  ]\n}\n```"
+            },
+            "pairedItem": {
+              "item": 0
+            }
+          }
+        ]
+      ]
+    }
+  }
+]

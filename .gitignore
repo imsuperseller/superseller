@@ -428,3 +428,17 @@ infra/.n8n-auth.env
 # API backup directories (old routes kept for reference but not tracked)
 **/api-backup/
 **/org-backup/
+
+# Claude Code worktrees (internal)
+.claude/worktrees/
+
+# Experiment projects (not part of monorepo)
+Celebrity Selfie Generator/
+
+# Temporary assets (screenshots, test media)
+assets/screenshots/
+assets/videos/
+assets/floor-plans/
+
+# Generated docs
+ClaudeClaw_Visual_Guide.pdf

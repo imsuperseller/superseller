@@ -1,0 +1,317 @@
+{
+  "name": "SUB-001-CollectAllVideos",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "0fb36958-8d06-4d0a-b85e-26540154e1b6",
+      "name": "Execute Workflow Trigger",
+      "position": [
+        112,
+        208
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "jsCode": "const executionId = $input.item.json.executionId;\nconst staticData = $getWorkflowStaticData('global');\nconst scope = staticData[executionId] || {};\n// Sort by order, ensuring the latest timestamp for each order is used\nconst videos = (scope.videoUrls || []).sort((a, b) => a.order - b.order);\nreturn { \n  videoUrls: videos.map(v => v.url), \n  email: scope.email, \n  address: scope.address,\n  executionId\n};"
+      },
+      "id": "aggregate_results",
+      "name": "AggregateResults (Code)",
+      "position": [
+        352,
+        208
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.245.56.50:5050/merge",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_urls",
+              "value": "={{ $json.videoUrls }}"
+            },
+            {
+              "name": "address",
+              "value": "={{ $json.address }}"
+            },
+            {
+              "name": "output_format",
+              "value": "mp4"
+            },
+            {
+              "name": "quality",
+              "value": "1080p"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "racknerd_stitch",
+      "name": "RacknerdStitch (POST)",
+      "position": [
+        608,
+        208
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "merge_poll_wait",
+      "name": "MergePollWait (10s)",
+      "position": [
+        864,
+        208
+      ],
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "webhookId": "229fea89-3918-4962-9477-cf3212b260f7"
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://172.245.56.50:5050/status/' + $('RacknerdStitch (POST)').item.json.job_id }}",
+        "options": {}
+      },
+      "id": "poll_merge_status",
+      "name": "PollMergeStatus (GET)",
+      "position": [
+        1104,
+        208
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "completed_check",
+              "leftValue": "={{ $json.status }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "completed"
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "id": "check_merge_ready",
+      "name": "CheckMergeReady (If)",
+      "position": [
+        1360,
+        208
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "fromEmail": "service@rensto.com",
+        "toEmail": "={{ $input.all()[0].json.email || 'service@rensto.com' }}",
+        "subject": "Your Real Estate Video Tour is Ready!",
+        "options": {}
+      },
+      "id": "send_email",
+      "name": "SendEmailNotification (SMTP)",
+      "position": [
+        1600,
+        112
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "webhookId": "12040123-17dc-4e2c-9c24-d16291180215",
+      "credentials": {
+        "smtp": {
+          "id": "6LEMXhuWY1SaBCmY",
+          "name": "1shai"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "\"AggregateResults (Code)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "RacknerdStitch (POST)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"CheckMergeReady (If)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SendEmailNotification (SMTP)",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "MergePollWait (10s)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"Execute Workflow Trigger\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "AggregateResults (Code)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"MergePollWait (10s)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "PollMergeStatus (GET)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"PollMergeStatus (GET)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "CheckMergeReady (If)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "\"RacknerdStitch (POST)\"": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "MergePollWait (10s)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "AggregateResults (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AggregateResults (Code)": {
+      "main": [
+        [
+          {
+            "node": "RacknerdStitch (POST)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RacknerdStitch (POST)": {
+      "main": [
+        [
+          {
+            "node": "MergePollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergePollWait (10s)": {
+      "main": [
+        [
+          {
+            "node": "PollMergeStatus (GET)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PollMergeStatus (GET)": {
+      "main": [
+        [
+          {
+            "node": "CheckMergeReady (If)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckMergeReady (If)": {
+      "main": [
+        [
+          {
+            "node": "SendEmailNotification (SMTP)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MergePollWait (10s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {}
+}
