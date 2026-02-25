@@ -1,0 +1,488 @@
+/**
+ * Photo Pre-Classification & Upscaling for TourReel Pipeline.
+ *
+ * Before ANY room-photo mapping, every listing photo is classified and filtered.
+ * This prevents floorplans, marketing collages, aerial shots, and duplicate
+ * pool/outdoor shots from contaminating the tour.
+ *
+ * Flow: Raw Zillow photos → classify (Gemini) → filter → upscale (Recraft) → map to rooms
+ */
+
+import { config } from "../config";
+import { logger } from "../utils/logger";
+import { withRetry } from "../utils/retry";
+import axios from "axios";
+
+const KIE_BASE = "https://api.kie.ai/api";
+
+// ─── Photo Types ───────────────────────────────────────────────
+export type PhotoType =
+    | "exterior_front"     // Front of house, walkway, driveway
+    | "exterior_back"      // Backyard, patio (no pool)
+    | "pool"               // Pool area (any water feature)
+    | "interior_kitchen"
+    | "interior_living"
+    | "interior_dining"
+    | "interior_bedroom"
+    | "interior_bathroom"
+    | "interior_closet"
+    | "interior_office"
+    | "interior_laundry"
+    | "interior_hallway"
+    | "interior_other"     // Garage, bonus room, etc.
+    | "floorplan"          // Blueprint, room layout diagram
+    | "aerial"             // Drone/bird's-eye view
+    | "marketing"          // Collage, text overlay, agent branding
+    | "unusable"           // Too dark, too blurry, duplicate, generic
+
+export interface ClassifiedPhoto {
+    /** Original URL (Zillow or R2) */
+    originalUrl: string;
+    /** R2 public URL after upload */
+    r2Url: string;
+    /** Index in the original listing photos array */
+    originalIndex: number;
+    /** AI-detected photo type */
+    type: PhotoType;
+    /** Confidence 0-1 */
+    confidence: number;
+    /** Brief description from AI */
+    description: string;
+    /** Upscaled R2 URL (after Recraft) — null if upscaling skipped/failed */
+    upscaledUrl: string | null;
+}
+
+// Photo types that should NEVER appear in a tour clip
+const EXCLUDED_TYPES: PhotoType[] = ["floorplan", "aerial", "marketing", "unusable"];
+
+// ─── Classify All Photos ───────────────────────────────────────
+/**
+ * Classify all listing photos using Gemini vision. Returns classified array
+ * with types, filtering info, and which photos are usable for tour clips.
+ *
+ * Sends photos in batches of 10 (Gemini multi-image limit consideration).
+ */
+export async function classifyListingPhotos(
+    photoR2Urls: string[]
+): Promise<ClassifiedPhoto[]> {
+    if (!photoR2Urls.length) return [];
+
+    const batchSize = 10;
+    const results: ClassifiedPhoto[] = [];
+
+    for (let batchStart = 0; batchStart < photoR2Urls.length; batchStart += batchSize) {
+        const batch = photoR2Urls.slice(batchStart, batchStart + batchSize);
+        const batchResults = await classifyBatch(batch, batchStart);
+        results.push(...batchResults);
+    }
+
+    const typeCounts = results.reduce((acc, p) => {
+        acc[p.type] = (acc[p.type] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+    logger.info({ msg: "Photo classification complete", total: results.length, types: typeCounts });
+
+    return results;
+}
+
+async function classifyBatch(
+    urls: string[],
+    startIndex: number
+): Promise<ClassifiedPhoto[]> {
+    const content: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
+        {
+            type: "text",
+            text: `You are a real estate photo classifier. Analyze each photo and classify it into EXACTLY ONE type.
+
+TYPES (pick the most specific match):
+- exterior_front: Front of house, walkway, driveway, front door approach. Ground level.
+- exterior_back: Backyard, patio, deck WITHOUT pool/water.
+- pool: ANY photo showing a swimming pool, water feature, hot tub — even if partially visible.
+- interior_kitchen: Kitchen area.
+- interior_living: Living room, family room, great room.
+- interior_dining: Dining room or dining area.
+- interior_bedroom: Any bedroom (primary, guest, kids).
+- interior_bathroom: Any bathroom, powder room, en-suite.
+- interior_closet: Walk-in closet, wardrobe area.
+- interior_office: Home office, study, library.
+- interior_laundry: Laundry room, utility room.
+- interior_hallway: Hallway, foyer, entryway, staircase.
+- interior_other: Garage, bonus room, game room, theater, gym.
+- floorplan: Blueprint, floor layout diagram, room labels on a diagram, schematic drawing.
+- aerial: Drone shot, bird's-eye view, satellite view, overhead shot showing roof.
+- marketing: Collage of multiple photos, text overlays, agent branding, photo grid, virtual staging montage.
+- unusable: Too dark, blurry, empty, generic, or clearly not useful for a property tour.
+
+CRITICAL RULES:
+- If you see WATER or a POOL anywhere in the image (even in background), classify as "pool".
+- If it's a bird's-eye/drone shot, classify as "aerial" even if it shows the house.
+- If it contains MULTIPLE photos in a grid/collage, classify as "marketing".
+- If it's a drawn/digital floor layout with room labels, classify as "floorplan".
+
+Reply with ONLY a JSON array. Each element: {"type": "photo_type", "confidence": 0.0-1.0, "description": "brief 5-word description"}.
+Array must have exactly ${urls.length} elements, one per image in order.`,
+        },
+        ...urls.map((url) => ({ type: "image_url" as const, image_url: { url } })),
+    ];
+
+    try {
+        const response = await withRetry(
+            async () => axios.post(
+                `${KIE_BASE.replace("/api", "")}/gemini-3-flash/v1/chat/completions`,
+                {
+                    messages: [{ role: "user", content }],
+                    stream: false,
+                    reasoning_effort: "low",
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${config.kie.apiKey}`,
+                    },
+                    timeout: 60_000,
+                }
+            ),
+            { label: "classifyBatch", maxAttempts: 2, initialDelayMs: 2000 }
+        );
+
+        const text = (response.data?.choices?.[0]?.message?.content || "").trim();
+        const jsonMatch = text.match(/\[[\s\S]*\]/);
+        if (!jsonMatch) {
+            logger.warn({ msg: "Photo classification returned no JSON, falling back to heuristic", text: text.slice(0, 200) });
+            return urls.map((url, i) => ({
+                originalUrl: url,
+                r2Url: url,
+                originalIndex: startIndex + i,
+                type: "interior_other" as PhotoType,
+                confidence: 0.1,
+                description: "classification failed",
+                upscaledUrl: null,
+            }));
+        }
+
+        const parsed = JSON.parse(jsonMatch[0]) as Array<{ type: string; confidence: number; description: string }>;
+
+        return urls.map((url, i) => {
+            const entry = parsed[i] || { type: "interior_other", confidence: 0.1, description: "missing" };
+            const validTypes: PhotoType[] = [
+                "exterior_front", "exterior_back", "pool",
+                "interior_kitchen", "interior_living", "interior_dining",
+                "interior_bedroom", "interior_bathroom", "interior_closet",
+                "interior_office", "interior_laundry", "interior_hallway", "interior_other",
+                "floorplan", "aerial", "marketing", "unusable",
+            ];
+            const photoType = validTypes.includes(entry.type as PhotoType)
+                ? (entry.type as PhotoType)
+                : "interior_other";
+
+            return {
+                originalUrl: url,
+                r2Url: url,
+                originalIndex: startIndex + i,
+                type: photoType,
+                confidence: Math.max(0, Math.min(1, entry.confidence || 0.5)),
+                description: entry.description || "",
+                upscaledUrl: null,
+            };
+        });
+    } catch (err: any) {
+        logger.error({ msg: "Photo classification batch failed", error: err.message, batchStart: startIndex });
+        return urls.map((url, i) => ({
+            originalUrl: url,
+            r2Url: url,
+            originalIndex: startIndex + i,
+            type: "interior_other" as PhotoType,
+            confidence: 0.1,
+            description: "classification error",
+            upscaledUrl: null,
+        }));
+    }
+}
+
+// ─── Filter Photos ─────────────────────────────────────────────
+/**
+ * Filter classified photos: remove floorplans, aerials, marketing, unusable.
+ * Returns only photos suitable for tour clip generation.
+ */
+export function filterUsablePhotos(classified: ClassifiedPhoto[]): ClassifiedPhoto[] {
+    const usable = classified.filter(p => !EXCLUDED_TYPES.includes(p.type));
+    const excluded = classified.filter(p => EXCLUDED_TYPES.includes(p.type));
+
+    if (excluded.length > 0) {
+        logger.info({
+            msg: "Photos excluded from tour",
+            excluded: excluded.map(p => `[${p.originalIndex}] ${p.type}: ${p.description}`),
+        });
+    }
+
+    return usable;
+}
+
+// ─── Smart Room-Photo Mapping ──────────────────────────────────
+/**
+ * Map classified photos to tour clip rooms. Uses photo type for deterministic
+ * matching instead of relying on AI to re-analyze photos.
+ *
+ * Strategy:
+ * 1. Exact type match (e.g., room "Kitchen" → photos typed "interior_kitchen")
+ * 2. Category match (e.g., room "Bedroom 2" → any "interior_bedroom" not yet assigned)
+ * 3. Fallback: nearest unassigned interior photo
+ */
+export function mapPhotosToRooms(
+    rooms: string[],
+    classified: ClassifiedPhoto[]
+): Map<number, number> {
+    const usable = filterUsablePhotos(classified);
+    if (usable.length === 0) return new Map();
+
+    // Build type → photo indices map (indices into usable array)
+    const typeToPhotos = new Map<PhotoType, number[]>();
+    usable.forEach((p, idx) => {
+        const list = typeToPhotos.get(p.type) || [];
+        list.push(idx);
+        typeToPhotos.set(p.type, list);
+    });
+
+    const roomToType: Record<string, PhotoType[]> = {
+        "exterior": ["exterior_front"],
+        "front door": ["exterior_front"],
+        "front": ["exterior_front"],
+        "foyer": ["interior_hallway", "interior_other"],
+        "entry": ["interior_hallway", "interior_other"],
+        "hallway": ["interior_hallway"],
+        "kitchen": ["interior_kitchen"],
+        "breakfast": ["interior_kitchen", "interior_dining"],
+        "nook": ["interior_kitchen", "interior_dining"],
+        "dining": ["interior_dining", "interior_kitchen"],
+        "living": ["interior_living"],
+        "family": ["interior_living"],
+        "great room": ["interior_living"],
+        "primary bedroom": ["interior_bedroom"],
+        "master bedroom": ["interior_bedroom"],
+        "bedroom": ["interior_bedroom"],
+        "closet": ["interior_closet", "interior_bedroom"],
+        "walk-in": ["interior_closet"],
+        "bathroom": ["interior_bathroom"],
+        "primary bathroom": ["interior_bathroom"],
+        "en-suite": ["interior_bathroom"],
+        "office": ["interior_office", "interior_bedroom"],
+        "study": ["interior_office"],
+        "library": ["interior_office"],
+        "laundry": ["interior_laundry", "interior_other"],
+        "garage": ["interior_other"],
+        "game": ["interior_other"],
+        "theater": ["interior_other"],
+        "bonus": ["interior_other"],
+        "pool": ["pool"],
+        "backyard": ["pool", "exterior_back"],
+        "patio": ["pool", "exterior_back"],
+        "deck": ["exterior_back", "pool"],
+    };
+
+    const assigned = new Set<number>(); // track assigned photo indices (into usable)
+    const result = new Map<number, number>(); // roomIdx → usable photo idx
+
+    // Pass 1: deterministic type match
+    for (let roomIdx = 0; roomIdx < rooms.length; roomIdx++) {
+        const roomName = rooms[roomIdx].toLowerCase();
+        // Find matching type priorities
+        let matchTypes: PhotoType[] = [];
+        for (const [keyword, types] of Object.entries(roomToType)) {
+            if (roomName.includes(keyword)) {
+                matchTypes = types;
+                break;
+            }
+        }
+
+        if (matchTypes.length === 0) {
+            // Generic interior fallback
+            matchTypes = ["interior_other", "interior_living", "interior_bedroom"];
+        }
+
+        // Try each type priority
+        for (const targetType of matchTypes) {
+            const candidates = typeToPhotos.get(targetType) || [];
+            const available = candidates.find(idx => !assigned.has(idx));
+            if (available !== undefined) {
+                result.set(roomIdx, available);
+                assigned.add(available);
+                break;
+            }
+        }
+    }
+
+    // Pass 2: fill unassigned rooms with nearest available interior photo
+    for (let roomIdx = 0; roomIdx < rooms.length; roomIdx++) {
+        if (result.has(roomIdx)) continue;
+
+        // Find any unassigned interior photo
+        const available = usable.findIndex((p, idx) =>
+            !assigned.has(idx) && p.type.startsWith("interior_")
+        );
+        if (available >= 0) {
+            result.set(roomIdx, available);
+            assigned.add(available);
+        } else {
+            // Desperate fallback: any unassigned photo
+            const any = usable.findIndex((_, idx) => !assigned.has(idx));
+            if (any >= 0) {
+                result.set(roomIdx, any);
+                assigned.add(any);
+            } else {
+                // All photos assigned — reuse the best match
+                result.set(roomIdx, 0);
+            }
+        }
+    }
+
+    logger.info({
+        msg: "Room-photo mapping complete",
+        assignments: rooms.map((r, i) => {
+            const photoIdx = result.get(i);
+            const photo = photoIdx !== undefined ? usable[photoIdx] : null;
+            return `${r} → [${photo?.originalIndex ?? "?"}] ${photo?.type ?? "none"} (${photo?.description ?? ""})`;
+        }),
+    });
+
+    return result;
+}
+
+// ─── Recraft Crisp Upscale ─────────────────────────────────────
+/**
+ * Upscale a single photo using Recraft Crisp Upscale via Kie.ai.
+ * Cost: ~$0.004 per image. Returns the upscaled image URL or null on failure.
+ */
+export async function upscalePhoto(imageUrl: string): Promise<string | null> {
+    if (process.env.SKIP_UPSCALE === "1") return null;
+
+    const KIE_KEY = config.kie.apiKey;
+    const headers = {
+        Authorization: `Bearer ${KIE_KEY}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+    try {
+        // Create upscale task
+        const createResp = await withRetry(
+            async () => {
+                const resp = await fetch(`${KIE_BASE}/v1/jobs/createTask`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({
+                        model: "recraft/crisp-upscale",
+                        input: { image: imageUrl },
+                    }),
+                    signal: AbortSignal.timeout(30_000),
+                });
+                if (!resp.ok) {
+                    const errText = await resp.text();
+                    throw new Error(`Recraft upscale create failed (${resp.status}): ${errText}`);
+                }
+                return resp.json();
+            },
+            { label: "recraftUpscaleCreate", maxAttempts: 2, initialDelayMs: 1000 }
+        );
+
+        const taskId = createResp?.data?.taskId || createResp?.data?.task_id;
+        if (!taskId) {
+            logger.warn({ msg: "Recraft upscale: no taskId in response", data: createResp });
+            return null;
+        }
+
+        // Poll for result (Recraft is fast: usually 5-15s)
+        const maxWaitMs = 60_000;
+        const pollMs = 3_000;
+        const start = Date.now();
+
+        while (Date.now() - start < maxWaitMs) {
+            const statusResp = await fetch(
+                `${KIE_BASE}/v1/jobs/recordInfo?taskId=${taskId}`,
+                { headers, signal: AbortSignal.timeout(15_000) }
+            );
+            if (!statusResp.ok) {
+                await new Promise(r => setTimeout(r, pollMs));
+                continue;
+            }
+            const statusData = (await statusResp.json())?.data;
+            if (!statusData) {
+                await new Promise(r => setTimeout(r, pollMs));
+                continue;
+            }
+
+            const state = (statusData.state || statusData.status || "").toUpperCase();
+            if (state === "SUCCESS" || state === "COMPLETED" || statusData.successFlag === 1) {
+                // Extract result URL
+                const resultUrls = statusData.resultUrls || statusData.response?.resultUrls;
+                if (resultUrls) {
+                    const urls = typeof resultUrls === "string" ? JSON.parse(resultUrls) : resultUrls;
+                    const first = Array.isArray(urls) ? urls[0] : urls;
+                    const url = typeof first === "string" ? first : first?.url;
+                    if (url) {
+                        logger.info({ msg: "Photo upscaled successfully", taskId, url: url.slice(0, 80) });
+                        return url;
+                    }
+                }
+                logger.warn({ msg: "Recraft upscale completed but no URL found", statusData });
+                return null;
+            }
+
+            if (state === "FAIL" || state === "FAILED" || statusData.successFlag === -1) {
+                logger.warn({ msg: "Recraft upscale failed", taskId, error: statusData.failMsg });
+                return null;
+            }
+
+            await new Promise(r => setTimeout(r, pollMs));
+        }
+
+        logger.warn({ msg: "Recraft upscale timed out", taskId });
+        return null;
+    } catch (err: any) {
+        logger.warn({ msg: "Recraft upscale error", error: err.message });
+        return null;
+    }
+}
+
+/**
+ * Upscale all usable photos in parallel (bounded concurrency).
+ * Updates the ClassifiedPhoto.upscaledUrl field in place.
+ * Returns the count of successfully upscaled photos.
+ */
+export async function upscaleUsablePhotos(
+    photos: ClassifiedPhoto[],
+    concurrency: number = 3
+): Promise<number> {
+    if (process.env.SKIP_UPSCALE === "1") {
+        logger.info({ msg: "Skipping photo upscale (SKIP_UPSCALE=1)" });
+        return 0;
+    }
+
+    let successCount = 0;
+    const queue = [...photos];
+
+    const worker = async () => {
+        while (queue.length > 0) {
+            const photo = queue.shift();
+            if (!photo) break;
+
+            const upscaledUrl = await upscalePhoto(photo.r2Url);
+            if (upscaledUrl) {
+                photo.upscaledUrl = upscaledUrl;
+                successCount++;
+            }
+        }
+    };
+
+    const workers = Array.from({ length: Math.min(concurrency, photos.length) }, () => worker());
+    await Promise.all(workers);
+
+    logger.info({ msg: "Photo upscaling complete", total: photos.length, succeeded: successCount });
+    return successCount;
+}
+
+/**
+ * Get the best URL for a classified photo (upscaled if available, otherwise R2 original).
+ */
+export function getBestPhotoUrl(photo: ClassifiedPhoto): string {
+    return photo.upscaledUrl || photo.r2Url;
+}

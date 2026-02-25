@@ -1,9 +1,16 @@
 /**
  * Room → Photo mapping. Single source of truth for which listing photo backs each tour clip.
+ *
+ * V2 (Feb 2026): Uses ClassifiedPhoto from photo-classifier.ts for type-based mapping.
+ * Falls back to legacy heuristic when classifiedPhotos is not provided.
+ *
  * @see PIPELINE_STEP_BY_STEP.md Phase 3
  */
 
 import type { HeroFeaturesResult } from "./hero-features";
+import type { ClassifiedPhoto } from "./photo-classifier";
+import { getBestPhotoUrl, mapPhotosToRooms } from "./photo-classifier";
+import { logger } from "../utils/logger";
 
 export interface RoomPhotoInput {
     /** Exterior/hero photo URL (R2). Often first listing photo. */
@@ -14,6 +21,8 @@ export interface RoomPhotoInput {
     heroResult: HeroFeaturesResult;
     /** Optional AI vision override: clipIndex -> photoIndex into usePhotos. When set, use instead of heuristic. */
     visionOverride?: Map<number, number>;
+    /** V2: Pre-classified photos. When provided, uses type-based mapping instead of index/heuristic. */
+    classifiedPhotos?: ClassifiedPhoto[];
 }
 
 export interface ClipPhotoAssignment {
@@ -21,14 +30,63 @@ export interface ClipPhotoAssignment {
     toRoom: string;
     photoUrl: string;
     /** Where the photo came from (for debugging). */
-    source: "exterior" | "additional" | "fallback";
+    source: "exterior" | "additional" | "fallback" | "classified";
     photoIndex: number;
 }
 
 /**
- * usePhotos: primary pool for room assignment. When visionOverride: use [exterior, ...additional] so AI indices match.
- * Otherwise: additional when present, else [exterior].
+ * Assign a photo URL to each clip based on the room being shown.
+ *
+ * V2 path (classifiedPhotos provided): Uses type-based deterministic mapping.
+ * Each photo is pre-classified as interior_kitchen, exterior_front, pool, etc.
+ * Rooms are matched to the closest photo type. No index-based guessing.
+ *
+ * Legacy path: Index-based heuristic + optional visionOverride from Gemini.
  */
+export function assignPhotosToClips(
+    clips: { clip_number: number; to_room: string }[],
+    input: RoomPhotoInput
+): ClipPhotoAssignment[] {
+    const { classifiedPhotos } = input;
+
+    // V2 path: classified photos with type-based mapping
+    if (classifiedPhotos && classifiedPhotos.length > 0) {
+        return assignWithClassifiedPhotos(clips, classifiedPhotos);
+    }
+
+    // Legacy path: heuristic/vision override
+    return assignLegacy(clips, input);
+}
+
+// ─── V2: Type-Based Mapping ────────────────────────────────────
+function assignWithClassifiedPhotos(
+    clips: { clip_number: number; to_room: string }[],
+    classified: ClassifiedPhoto[]
+): ClipPhotoAssignment[] {
+    const roomNames = clips.map(c => c.to_room);
+    const roomToUsableIdx = mapPhotosToRooms(roomNames, classified);
+
+    // Build usable photo array (same order as mapPhotosToRooms uses)
+    const usable = classified.filter(p =>
+        !["floorplan", "aerial", "marketing", "unusable"].includes(p.type)
+    );
+
+    return clips.map((clip, i) => {
+        const usableIdx = roomToUsableIdx.get(i);
+        const photo = usableIdx !== undefined ? usable[usableIdx] : null;
+        const url = photo ? getBestPhotoUrl(photo) : (usable[0] ? getBestPhotoUrl(usable[0]) : "");
+
+        return {
+            clipNumber: clip.clip_number,
+            toRoom: clip.to_room,
+            photoUrl: url,
+            source: "classified" as const,
+            photoIndex: photo?.originalIndex ?? -1,
+        };
+    });
+}
+
+// ─── Legacy: Heuristic + Vision Override ───────────────────────
 function buildUsePhotos(exteriorUrl: string | null, additionalPhotos: string[], hasVisionOverride?: boolean): string[] {
     if (hasVisionOverride && exteriorUrl) {
         return [exteriorUrl, ...additionalPhotos];
@@ -37,11 +95,7 @@ function buildUsePhotos(exteriorUrl: string | null, additionalPhotos: string[], 
     return exteriorUrl ? [exteriorUrl] : [];
 }
 
-/**
- * Assign a photo URL to each clip based on the room being shown.
- * Rules: pool/backyard → last photos; exterior/front door → exterior/first; foyer → second; default → idx.
- */
-export function assignPhotosToClips(
+function assignLegacy(
     clips: { clip_number: number; to_room: string }[],
     input: RoomPhotoInput
 ): ClipPhotoAssignment[] {

@@ -15,6 +15,7 @@ import type { KlingElement } from "../../services/kie";
 import { deriveHeroFeatures } from "../../services/hero-features";
 import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
 import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
+import { classifyListingPhotos, filterUsablePhotos, upscaleUsablePhotos, getBestPhotoUrl, type ClassifiedPhoto } from "../../services/photo-classifier";
 import { CreditManager } from "../../services/credits";
 import { NotificationService } from "../../services/notification";
 import { trackExpense } from "../../services/expense-tracker";
@@ -283,19 +284,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const urls = (rawPhotos as any).urls || (rawPhotos as any).photos || (rawPhotos as any).photos_urls;
                 additionalPhotos = Array.isArray(urls) ? urls.map(extractPhotoUrl).filter((u: any): u is string => u !== null) : [];
             }
-            // Exclude floorplan image from the photo pool (prevent it from appearing as a clip start frame)
-            if (listing.floorplan_url) {
-                const fpUrl = listing.floorplan_url;
-                const beforeCount = additionalPhotos.length;
-                additionalPhotos = additionalPhotos.filter((u) => u !== fpUrl);
-                if (additionalPhotos.length < beforeCount) {
-                    logger.info({ msg: "Removed floorplan from photo pool", removed: beforeCount - additionalPhotos.length });
-                }
-            }
             logger.info({ msg: "Photo extraction", additionalPhotosCount: additionalPhotos.length, hasExterior: !!listing.exterior_photo_url });
 
-            // Upload photos to R2 so Kie can fetch them. NEVER pass source URLs (Zillow, etc.) to Kie—they block
-            // programmatic access, causing Kie 500. Return null on fetch/upload failure; do not fall back to original URL.
+            // ═══════════════════════════════════════════════════════════
+            // V2 PHOTO PIPELINE: Upload → Classify → Filter → Upscale → Map
+            // This replaces the old index-based mapping that caused wrong photos in clips
+            // ═══════════════════════════════════════════════════════════
+
+            // Step 1: Upload ALL photos to R2 (Kie can't fetch Zillow URLs)
             const PHOTO_FETCH_TIMEOUT_MS = 30_000;
             const ensurePublicUrl = async (url: string | null, label: string): Promise<string | null> => {
                 if (!url || !url.startsWith("http")) return null;
@@ -315,37 +311,80 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     return null;
                 }
             };
+
             let exteriorPublic = await ensurePublicUrl(extractPhotoUrl(listing.exterior_photo_url) ?? null, "exterior");
+            // Upload ALL additional photos (not limited to clips.length — we need full set for classification)
             const additionalPublic: string[] = [];
-            const needCount = Math.min(additionalPhotos.length, clips.length);
-            for (let i = 0; i < needCount; i++) {
-                const p = await ensurePublicUrl(additionalPhotos[i], `room_${i}`);
+            for (let i = 0; i < additionalPhotos.length; i++) {
+                const p = await ensurePublicUrl(additionalPhotos[i], `photo_${i}`);
                 if (p) additionalPublic.push(p);
             }
-            // Do NOT pad with original URLs—Kie cannot fetch Zillow/source URLs. Only use successfully uploaded R2 URLs.
-            let lastFrameUrl: string | null = exteriorPublic;
-            const allUsablePhotos = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
-            if (allUsablePhotos.length === 0) {
+
+            const allR2Photos = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
+            if (allR2Photos.length === 0) {
                 throw new UnrecoverableError("No property photos could be fetched and uploaded to R2. Kie.ai requires public URLs—Zillow/source URLs are not fetchable by Kie (causes 500).");
             }
 
-            // Opening MUST be front of house (walkway to door). REJECT pool, backyard, interior.
-            // DO NOT force index 0 when hasPool—Zillow often uses pool/backyard as "exterior" (hero shot).
-            // Trust Gemini to pick the true front-of-house from all candidates.
-            const openingCandidates = [exteriorPublic, ...additionalPublic.slice(0, 4)].filter((u): u is string => !!u);
-            if (openingCandidates.length >= 1) {
-                try {
-                    const bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
-                    await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
-                    lastFrameUrl = openingCandidates[bestIdx];
-                    if (bestIdx > 0) logger.info({ msg: "Using non-first photo for opening (front-of-house)", index: bestIdx });
-                } catch (e) {
-                    // Fallback: skip index 0 if pool property (exterior may be pool)—try first additional
-                    lastFrameUrl = heroResult.hasPool && openingCandidates.length > 1
-                        ? openingCandidates[1]
-                        : openingCandidates[0];
-                }
+            // Step 2: Classify all photos with Gemini vision
+            logger.info({ msg: "Classifying listing photos with AI vision", count: allR2Photos.length });
+            const classifiedPhotos = await classifyListingPhotos(allR2Photos);
+            await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId, metadata: { step: "photo_classify", count: allR2Photos.length } });
+
+            // Step 3: Filter out floorplans, aerials, marketing, unusable
+            const usablePhotos = filterUsablePhotos(classifiedPhotos);
+            if (usablePhotos.length === 0) {
+                throw new UnrecoverableError(`Photo classification filtered ALL ${classifiedPhotos.length} photos. No usable interior/exterior photos found.`);
             }
+            logger.info({
+                msg: "Photo filter results",
+                total: classifiedPhotos.length,
+                usable: usablePhotos.length,
+                excluded: classifiedPhotos.length - usablePhotos.length,
+                excludedTypes: classifiedPhotos
+                    .filter(p => ["floorplan", "aerial", "marketing", "unusable"].includes(p.type))
+                    .map(p => `[${p.originalIndex}] ${p.type}`),
+            });
+
+            // Step 4: Upscale usable photos with Recraft Crisp Upscale ($0.004/image)
+            const upscaleCount = await upscaleUsablePhotos(usablePhotos, 3);
+            if (upscaleCount > 0) {
+                await trackExpense({
+                    service: "kie", operation: "recraft_upscale", jobId, userId,
+                    metadata: { step: "photo_upscale", count: upscaleCount, costEach: 0.004 },
+                });
+            }
+
+            // Step 5: Select opening photo — deterministic from classified type
+            const frontPhotos = usablePhotos.filter(p => p.type === "exterior_front");
+            let lastFrameUrl: string | null;
+            if (frontPhotos.length > 0) {
+                // Use the front-of-house photo (classified, not guessed)
+                lastFrameUrl = getBestPhotoUrl(frontPhotos[0]);
+                logger.info({ msg: "Opening photo: classified exterior_front", index: frontPhotos[0].originalIndex });
+            } else {
+                // Fallback: ask Gemini to pick from all exterior + first few interior
+                const openingCandidates = usablePhotos
+                    .filter(p => p.type.startsWith("exterior") || p.type === "interior_hallway")
+                    .slice(0, 5)
+                    .map(p => getBestPhotoUrl(p));
+                if (openingCandidates.length === 0) {
+                    // No exterior at all — use first usable photo
+                    lastFrameUrl = getBestPhotoUrl(usablePhotos[0]);
+                } else if (openingCandidates.length === 1) {
+                    lastFrameUrl = openingCandidates[0];
+                } else {
+                    try {
+                        const bestIdx = await pickBestApproachPhotoForOpening(openingCandidates);
+                        await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
+                        lastFrameUrl = openingCandidates[bestIdx];
+                    } catch (e) {
+                        lastFrameUrl = openingCandidates[0];
+                    }
+                }
+                logger.info({ msg: "Opening photo: fallback selection", url: lastFrameUrl?.slice(0, 80) });
+            }
+            // Also set exteriorPublic for downstream use (Nano Banana, etc.)
+            if (!exteriorPublic && lastFrameUrl) exteriorPublic = lastFrameUrl;
 
             // frameUrls[i] = composite for scene i. Clip i: first=frameUrls[i], last=frameUrls[i+1].
             // All frames from Nano Banana when realtor = same person. Clip N last = Clip N+1 first = seamless.
@@ -359,17 +398,21 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
             };
 
-            // Photo–room alignment: AI vision by default; set USE_AI_PHOTO_MATCH=false for heuristic only
-            const allPhotosForMatch = [exteriorPublic, ...additionalPublic].filter((u): u is string => !!u);
-            const visionMap = await matchPhotosToRoomsWithVision(allPhotosForMatch, clips.map((c) => (c as any).to_room || ""));
-            if (visionMap) await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId });
+            // Photo–room alignment: V2 uses classified photos; legacy uses AI vision + heuristic
             const photoAssignments = assignPhotosToClips(clips, {
                 exteriorUrl: exteriorPublic,
-                additionalPhotos: additionalPublic,
+                additionalPhotos: additionalPublic.map((_, i) => {
+                    const up = usablePhotos.find(p => p.r2Url === additionalPublic[i]);
+                    return up ? getBestPhotoUrl(up) : additionalPublic[i];
+                }),
                 heroResult,
-                visionOverride: visionMap ?? undefined,
+                classifiedPhotos: classifiedPhotos,
             });
-            logger.info({ msg: "Photo–room assignments", count: photoAssignments.length, clips: photoAssignments.map((a) => `${a.clipNumber}:${a.toRoom}`) });
+            logger.info({
+                msg: "Photo–room assignments (V2 classified)",
+                count: photoAssignments.length,
+                assignments: photoAssignments.map((a) => `clip${a.clipNumber} "${a.toRoom}" → photo[${a.photoIndex}] (${a.source})`),
+            });
             const photoValidation = validateClipPhotoAssignments(photoAssignments, lastFrameUrl);
             if (!photoValidation.valid) {
                 throw new UnrecoverableError(
