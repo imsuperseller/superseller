@@ -1726,28 +1726,102 @@ model MarketplacePost {
 
 // ==========================================
 // GROUP: AI MODEL OBSERVATORY
-// Automated tracking of all AI models across providers
-// @see tools/model-observatory/README.md
+// Real-time competitive intelligence database for all AI models.
+// Auto-updated daily via tools/model-observatory/daily-sync.ts
+// Pipeline workers query this to select the optimal model for each task.
 // ==========================================
 
-/// AI model registry - tracks all models from Kie.ai, Google, OpenAI, Anthropic, etc.
+/// AI model registry — every model from every provider with structured queryable fields.
+/// The pipeline does: SELECT * FROM ai_models WHERE supports_start_end_frame AND category = 'video' ORDER BY cost_per_5s_usd
 model AIModel {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  provider        String   // 'kie.ai', 'google', 'openai', 'anthropic'
-  modelName       String   // 'gemini-3-flash', 'gpt-4o', 'claude-opus-4'
-  modelId         String   // Canonical ID for API calls
-  version         String?  // '1.0', '2.5', '3.0'
+
+  // ─── Identity ───
+  provider        String   // 'kie.ai', 'fal.ai', 'google', 'openai', 'anthropic', 'bytedance', 'kuaishou', 'minimax', 'alibaba', 'runway'
+  modelName       String   // Human name: 'Kling 3.0', 'Veo 3.1', 'Seedance 2.0'
+  modelId         String   // API call ID: 'kling-3.0/video', 'fal-ai/veo3.1/first-last-frame-to-video'
+  modelFamily     String?  // 'kling', 'veo', 'wan', 'seedance', 'sora', 'hailuo', 'runway', 'gemini', 'flux'
+  version         String?  // '3.0', '2.6', '1.5-pro'
   releaseDate     DateTime?
+  developer       String?  // Original developer: 'Kuaishou', 'Google', 'ByteDance', 'Alibaba'
 
-  capabilities    Json     // {vision: true, reasoning: 'high', context_window: 1000000}
-  pricing         Json     // {input_per_1m: 0.15, output_per_1m: 0.90}
+  // ─── Category & Type ───
+  category        String   // 'video', 'image', 'avatar', 'upscale', 'music', 'llm', 'compositing', 'face_swap'
+  subcategory     String?  // 'image_to_video', 'text_to_video', 'first_last_frame', 'reference_to_video', 'talking_head', 'crisp_upscale'
+
+  // ─── API Endpoints ───
+  kieEndpoint     String?  // kie.ai endpoint: '/v1/jobs/createTask' with model param
+  kieModelParam   String?  // What to pass as "model": 'kling-3.0/video', 'recraft/crisp-upscale'
+  falEndpoint     String?  // fal.ai endpoint ID: 'fal-ai/kling-video/v3/pro/image-to-video'
+  directApiUrl    String?  // Direct API URL if not via aggregator
+
+  // ─── Pricing (structured, queryable) ───
+  costPerSecondUsd  Float?   // For video: $/second of output. NULL for non-video.
+  costPer5sUsd      Float?   // Pre-calculated: 5-second clip cost. Pipeline sorts by this.
+  costPer10sUsd     Float?   // Pre-calculated: 10-second clip cost.
+  costPerImageUsd   Float?   // For image/upscale: $/image.
+  costPerMinuteUsd  Float?   // For music: $/minute of audio.
+  costPer1mInputUsd Float?   // For LLMs: $/1M input tokens.
+  costPer1mOutputUsd Float?  // For LLMs: $/1M output tokens.
+  costPerCallUsd    Float?   // Flat per-call cost (when not per-second).
+  pricingNotes      String?  // 'Doubles with audio', 'Free trial 100 credits', etc.
+  pricingSource     String?  // URL where pricing was verified
+  pricingVerifiedAt DateTime? // When pricing was last manually verified
+
+  // ─── Video Capabilities (queryable booleans) ───
+  supportsImageToVideo    Boolean @default(false) // Can take a photo and make video
+  supportsTextToVideo     Boolean @default(false) // Text prompt → video
+  supportsStartEndFrame   Boolean @default(false) // First+last frame control for transitions
+  supportsMultiShot       Boolean @default(false) // Multi-shot storyboarding in one generation
+  supportsNativeAudio     Boolean @default(false) // Generates audio with video
+  supportsCharacterRef    Boolean @default(false) // Character/identity consistency via reference images
+  supportsElements        Boolean @default(false) // Kling Elements style named character references
+  supportsLipSync         Boolean @default(false) // Audio-driven lip/face animation
+  supportsVideoToVideo    Boolean @default(false) // Transform existing video
+  supportsInpainting      Boolean @default(false) // Edit regions of video/image
+
+  // ─── Image Capabilities ───
+  supportsUpscale         Boolean @default(false)
+  supportsCompositing     Boolean @default(false) // Place objects/people into scenes
+  supportsFaceSwap        Boolean @default(false)
+  supportsImageEdit       Boolean @default(false)
+
+  // ─── Quality & Output Specs ───
+  maxResolution     String?  // '1080p', '2K', '4K', '720p'
+  maxDurationSec    Int?     // Max clip duration in seconds
+  minDurationSec    Int?     // Min clip duration
+  outputFormats     String[] // ['mp4', 'webm', 'png', 'jpg']
+  maxUpscaleFactor  Int?     // For upscalers: 2, 4, 8
+  maxInputImages    Int?     // Max reference images accepted
+
+  // ─── Quality Scores (0-100, higher = better) ───
+  qualityOverall     Int?    // General quality ranking
+  qualityRealism     Int?    // Photorealism score
+  qualityMotion      Int?    // Motion smoothness/naturalness
+  qualityConsistency Int?    // Frame-to-frame consistency (critical for walkthroughs)
+  qualityArchitecture Int?   // Architectural/real estate specific quality
+  speedScore         Int?    // Generation speed (100=instant, 0=very slow)
+
+  // ─── Real Estate Specific ───
+  realEstateScore    Int?    // Overall suitability for property video (0-100)
+  bestForRooms       String[] // ['exterior', 'interior', 'pool', 'aerial_flyover']
+  walkthroughNotes   String?  // 'Best for room-to-room transitions', 'Background stays fixed'
+
+  // ─── Pipeline Integration ───
+  usedInPipeline     Boolean @default(false) // Currently used in TourReel/Winner Studio
+  pipelineRole       String? // 'primary_video', 'fallback_video', 'upscale', 'music', 'compositing', 'vision'
+  envVarToEnable     String? // 'USE_SEEDANCE=1' — env var that enables this model
+  fallbackFor        String? // Model ID this is a fallback for
+
+  // ─── Metadata ───
+  status          String   @default("active") // 'active', 'deprecated', 'beta', 'coming_soon'
+  capabilities    Json?    // Overflow for capabilities not in structured fields
   benchmarks      Json?    // {arc_agi: 77.1, mmlu: 85.3, ...}
-
-  kieEndpoint     String?  // For Kie.ai models: 'gemini-3-flash/v1/chat/completions'
-  status          String   @default("active") // 'active', 'deprecated', 'beta'
+  rawPricingData  Json?    // Original pricing data as scraped
 
   discoveredAt    DateTime @default(now())
   lastChecked     DateTime @default(now())
+  lastPriceChange DateTime? // When price last changed (alerts on this)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -1755,23 +1829,29 @@ model AIModel {
   fallbacks       AIModelRecommendation[] @relation("FallbackModel")
   decisions       AIModelDecision[]
 
-  @@unique([provider, modelName, version])
+  @@unique([provider, modelId])
   @@index([provider])
+  @@index([category])
   @@index([status])
   @@index([releaseDate])
+  @@index([costPer5sUsd])
+  @@index([realEstateScore])
+  @@index([supportsStartEndFrame])
+  @@index([supportsImageToVideo])
   @@map("ai_models")
 }
 
-/// Model recommendations per use case
+/// Best model per use case — auto-updated by daily sync
 model AIModelRecommendation {
   id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  useCase             String   // 'vision_analysis', 'text_generation', 'reasoning'
+  useCase             String   // 'video_clip_generation', 'photo_upscale', 'room_transition', 'avatar_talking_head', 'music', 'photo_classify', 'realtor_compositing'
   recommendedModelId  String   @db.Uuid
   fallbackModelId     String?  @db.Uuid
 
-  reasoning           String   @db.Text // Why this model was chosen
-  costPer1kTokens     Float?   // Calculated cost
-  performanceScore    Float?   // 0-100 score
+  reasoning           String   @db.Text
+  costPerUnit         Float?   // Cost for one unit of this use case
+  qualityScore        Float?   // 0-100
+  speedMs             Int?     // Typical generation time in ms
 
   updatedAt           DateTime @updatedAt
   createdAt           DateTime @default(now())
@@ -1784,16 +1864,16 @@ model AIModelRecommendation {
   @@map("ai_model_recommendations")
 }
 
-/// Log of AI model selection decisions
+/// Decision audit log — tracks every model selection
 model AIModelDecision {
   id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  useCase                 String   // Where this model is used
+  useCase                 String
   chosenModelId           String   @db.Uuid
-  alternativesConsidered  String[] // Array of model IDs considered
+  alternativesConsidered  String[]
   reasoning               String   @db.Text
 
   createdAt               DateTime @default(now())
-  createdBy               String?  @db.Uuid // User or agent who made decision
+  createdBy               String?  @db.Uuid
 
   chosenModel             AIModel  @relation(fields: [chosenModelId], references: [id], onDelete: Cascade)
 

@@ -145,7 +145,7 @@ When creating a new landing page:
 | Error | Probable Cause | Remediation |
 |-------|---------------|-------------|
 | 404 on /lp/[slug] | Page not seeded or `active: false` | Run seed script, check `active` flag in DB |
-| WhatsApp notification not sent | Missing `WHATSAPP_TOKEN` or `WHATSAPP_PHONE_NUMBER_ID` env vars | Set env vars in Vercel dashboard |
+| WhatsApp notification not sent | Missing `WAHA_BASE_URL`, `WAHA_API_KEY`, or `WAHA_SESSION` env vars (WAHA Pro, not WhatsApp Business API) | Set env vars in Vercel dashboard (`WAHA_BASE_URL` e.g. `http://172.245.56.50:3002`, `WAHA_API_KEY`, `WAHA_SESSION`) |
 | Font not loading | fontFamily has special characters or doesn't exist on Google Fonts | Check Google Fonts availability, URL-encode family name |
 | RTL layout broken | Framer Motion animations not flipped | Check `isRTL` prop in LandingPageClient — all slide-in x values must flip |
 | Lead not created | Validation failure (missing name/phone/email) | All 3 fields are mandatory — check form validation |

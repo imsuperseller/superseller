@@ -46,7 +46,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 | Pattern | Implementation | Used By |
 |---------|---------------|---------|
 | Public | No auth check | `/api/health`, `/api/contact`, `/api/marketplace/templates` |
-| Session | `getServerSession()` or cookie check | All `/api/app/*`, `/api/video/*`, `/api/billing/*` |
+| Session | `verifySession()` (magic-link based, not NextAuth) | All `/api/app/*`, `/api/video/*`, `/api/billing/*` |
 | Admin Session | Session + `role === 'admin'` check | All `/api/admin/*` |
 | Cron Secret | `?key=CRON_SECRET` query param | `/api/cron/sync-aitable` |
 | Stripe Signature | `stripe.webhooks.constructEvent()` | `/api/webhooks/stripe` |
@@ -163,7 +163,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 ```typescript
 // apps/web/rensto-site/src/app/api/example/route.ts
 import { NextResponse } from 'next/server';
-import { getServerSession } from '@/lib/auth'; // session check
+import { verifySession } from '@/lib/auth'; // magic-link session check
 import { z } from 'zod';
 
 const RequestSchema = z.object({
@@ -173,7 +173,7 @@ const RequestSchema = z.object({
 
 export async function POST(request: Request) {
   // 1. Auth check
-  const session = await getServerSession();
+  const session = await verifySession();
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

@@ -1437,4 +1437,43 @@ Historical findings: `infra/archive/findings.md`
 1. Always check function signatures before calling legacy code from new code
 2. Ensure `await` is present for async functions (pool.query calls)
 3. Test parameter order and structure - spread operators can hide mismatches
+
+---
+
+## Session: Feb 24 2026 (Evening) — Model Observatory + Skill Audit + Root Cleanup
+
+### Model Observatory
+- **31 AI models seeded** into `ai_models` table across 7 categories (video 13, llm 5, upscale 4, compositing 3, image 2, avatar 2, music 2)
+- **60+ structured fields per model** — pricing, capabilities (booleans), quality scores (0-100), real estate suitability, pipeline integration
+- **7 pipeline recommendations** set: video_clip_generation → Kling 3.0 Pro, room_transition_flf → Kling 3.0, photo_upscale → Recraft Crisp, music → Suno V5, photo_classify → Gemini 3 Flash, realtor_compositing → Nano Banana Pro, avatar → Kling Avatar v2 Pro
+- **Daily auto-updater built** (`tools/model-observatory/daily-sync.ts`) — scrapes Kie.ai/fal.ai HTML, 3-strategy parsing (NEXT_DATA, inline JSON, regex), 50% coverage threshold for removal detection, dry-run mode
+- **Admin dashboard tab MISSING** — schema exists, seed data exists, daily sync exists, but no `/api/admin/models` route or UI component yet
+
+### Celebrity Selfie Generator Techniques (Cross-Pollination to TourReel)
+- **Reference-based constancy**: `image_input: [user_photo_url]` + prompt "looks exactly like the reference image" — applicable for realtor consistency across rooms
+- **Two-frame morphing**: Kling `image_url` + `tail_image_url` with `cfg_scale: 0.5` for seamless transitions between rooms (currently TourReel uses hard cuts)
+- **wsrv.nl upscaling proxy**: `https://wsrv.nl/?url={url}&w=720&h=720&fit=outside&output=png` — free image upscaling before video generation
+- **Negative prompts**: "static, frozen, zoom effect, slideshow, morphing face, distorted features" — prevents common AI video artifacts
+- **Style modifiers**: Ultra-realistic, Cinematic film look, Vintage retro, Modern Instagram — pluggable per property style
+- **Key finding**: Celebrity Selfie uses PiAPI for Kling ($0.50+/clip) while TourReel uses Kie.ai (~$0.10/clip) — 5x cheaper
+
+### Skill Audit Results (26 skills audited)
+- **2 CRITICAL issues FIXED**: lead-pages had wrong WhatsApp env vars (WHATSAPP_TOKEN → WAHA_BASE_URL); agentforge file refs appeared to exist but don't
+- **1 MEDIUM issue FIXED**: api-contracts had wrong auth function name (getServerSession → verifySession)
+- **2 cross-skill conflicts resolved**: lead-pages vs whatsapp-waha, api-contracts vs admin-portal
+- **8 coverage gaps identified**: Redis/BullMQ, R2 storage, Prisma schema docs, Vercel config, Email/Resend, Testing, SEO, Logging
+- **New skill created**: model-observatory
+- **Skill routing manifest created**: `.claude/skills/SKILL_ROUTER.md` — central index with decision tree, combinations, overlap disambiguation
+
+### Root File Cleanup
+- **28 junk files deleted**: duplicate .gs scripts, debug .py scripts, n8n debug JSONs, empty files, chat logs
+- **26 files moved**: audits → docs/audits/, plans → docs/plans/, n8n exports → infra/n8n-workflows/, media → assets/, tools → tools/
+- **Root now clean**: only canonical .md files, package.json, tsconfig, standard directories remain
+
+### Pending
+- Admin dashboard "Model Observatory" tab (API route + React component)
+- NotebookLM notebook updates (TourReel spec, Model Observatory)
+- Cron job setup on RackNerd for daily-sync
+- Prisma schema sync (raw SQL was used, Prisma doesn't know about new tables)
+- Kie.ai credits need topping up before video regeneration
 4. Verify return value structure - destructuring wrong keys causes silent failures

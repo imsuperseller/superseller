@@ -57,16 +57,18 @@ Option A ships first (internal efficiency). Option B ships second (revenue produ
 
 ### Key Files (Target Locations)
 
-| File | Purpose |
-|------|---------|
-| `apps/web/rensto-site/src/app/dashboard/agentforge/page.tsx` | Dashboard UI — intake form + pipeline progress |
-| `apps/web/rensto-site/src/app/api/agentforge/run/route.ts` | Start pipeline run (creates BullMQ job) |
-| `apps/web/rensto-site/src/app/api/agentforge/status/[runId]/route.ts` | Poll pipeline progress |
-| `apps/web/rensto-site/src/app/api/agentforge/deliverables/[runId]/route.ts` | Fetch completed deliverables |
-| `apps/web/rensto-site/src/lib/agentforge/pipeline.ts` | Pipeline orchestrator (stage sequencing, context passing) |
-| `apps/web/rensto-site/src/lib/agentforge/stages/*.ts` | Individual stage executors (discovery, design, market, deliverables) |
-| `apps/web/rensto-site/src/lib/agentforge/prompts.ts` | Prompt templates (in-code for v1, DB for v2 A/B testing) |
-| `apps/web/rensto-site/prisma/schema.prisma` | Add AgentForge models to EXISTING schema |
+> **WARNING: NOT YET CREATED.** The paths below are planned target locations for when AgentForge is implemented. These files do NOT exist in the codebase yet. Do NOT attempt to read, modify, or import them. Only `prisma/schema.prisma` exists (but does not yet contain AgentForge models).
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `apps/web/rensto-site/src/app/dashboard/agentforge/page.tsx` | Dashboard UI — intake form + pipeline progress | NOT YET CREATED |
+| `apps/web/rensto-site/src/app/api/agentforge/run/route.ts` | Start pipeline run (creates BullMQ job) | NOT YET CREATED |
+| `apps/web/rensto-site/src/app/api/agentforge/status/[runId]/route.ts` | Poll pipeline progress | NOT YET CREATED |
+| `apps/web/rensto-site/src/app/api/agentforge/deliverables/[runId]/route.ts` | Fetch completed deliverables | NOT YET CREATED |
+| `apps/web/rensto-site/src/lib/agentforge/pipeline.ts` | Pipeline orchestrator (stage sequencing, context passing) | NOT YET CREATED |
+| `apps/web/rensto-site/src/lib/agentforge/stages/*.ts` | Individual stage executors (discovery, design, market, deliverables) | NOT YET CREATED |
+| `apps/web/rensto-site/src/lib/agentforge/prompts.ts` | Prompt templates (in-code for v1, DB for v2 A/B testing) | NOT YET CREATED |
+| `apps/web/rensto-site/prisma/schema.prisma` | Add AgentForge models to EXISTING schema | EXISTS (no AF models yet) |
 
 ### Integration Flow
 ```
