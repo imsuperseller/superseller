@@ -43,6 +43,12 @@ negativeTrigger:
 - **Pool safety**: Realtor stands on deck, gestures toward pool, NEVER walks toward water
 - **Worker concurrency: 1** — only one video job per VPS at a time
 - **Kling pro mode = 1080p native**; std mode = 720p (causes blur when upscaled)
+- **Force 1920x1080 normalization**: ALL normalizeClip calls MUST pass explicit `{ width: config.video.outputWidth, height: config.video.outputHeight }` — Kling native resolution varies per clip
+- **Exclude floorplan from photo pool**: After `detectFloorplanInPhotos()`, remove floorplan URL from both `flatPhotos` AND `additionalPhotos` — otherwise it appears as a clip start frame
+- **Kling end-frame continuity**: Parallel mode passes `last_frame` (next clip's room photo) to Kling so each clip morphs toward the next room — zero crossfade, seamless concat only
+- **Text overlay timing**: Use `getVideoDuration()` on normalized clips for actual durations — never trust DB `duration_seconds` for overlay positioning
+- **CTA overlay minimum 4s**: `ctaDuration = Math.max(dur - 1.5, 4)` — user must have time to read
+- **Sentinel clip pattern**: First clip generates alone to probe Kie.ai credits before batch submission
 
 ## Pipeline Overview
 
@@ -63,15 +69,16 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 | 4 | pending | 15-20% | Insert clip records into DB |
 | 5a | generating_clips | 20% | Upload listing photos to R2 (Kling can't fetch Zillow URLs) |
 | 5b-c | generating_clips | 20-34% | Nano Banana composites (realtor + photo) |
-| 6 | generating_clips | 20-70% | Kling 3.0 clip generation (hero rooms 10s, others 5s) + room-specific negatives + polling (10s intervals, 15min timeout) |
-| 7-9 | stitching/adding_music | 75-90% | FFmpeg concat → music overlay → text overlays (address, room labels, price, CTA with fade) |
+| 6 | generating_clips | 20-70% | Kling 3.0 clip generation (hero rooms 10s, others 5s) + end-frame continuity (next room photo as `last_frame`) + room-specific negatives + polling (10s intervals, 15min timeout) |
+| 6b | generating_clips | 70% | Sentinel clip (first clip alone) probes Kie.ai credits before batch |
+| 7-9 | stitching/adding_music | 75-90% | Force 1920x1080 normalize → seamless concat (NO crossfade) with boundary frames → music overlay → text overlays (actual measured durations, hero rooms get large text, CTA min 4s) |
 | 10-12 | exporting | 90-100% | Generate variants (vertical/square/portrait/thumb) → upload → complete |
 
 ### Key Files
 
 | File | Purpose |
 |------|---------|
-| `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Main pipeline orchestrator (694 lines) |
+| `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Main pipeline orchestrator (~1050 lines) |
 | `apps/worker/src/services/kie.ts` | Kling 3.0 + Suno API (411 lines) |
 | `apps/worker/src/services/gemini.ts` | Gemini 3 Pro — vision, prompts (266 lines) |
 | `apps/worker/src/services/ffmpeg.ts` | Video normalization, stitching, variants (348 lines) |

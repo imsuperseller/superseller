@@ -58,7 +58,7 @@ notebooklm-mcp-auth
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
 | 3e820274 | KIE.AI | 40 | Kie.ai API docs, models, limits |
-| 0baf5f36 | Zillow-to-Video (TourReel) | 23 | TourReel production instructions |
+| 0baf5f36 | Zillow-to-Video (TourReel) | 25 | TourReel production instructions |
 | 6bb5f16d | Kling 3.0 | 2 | Cinematic prompt engineering |
 | e109bcb2 | Mivnim (Yossi Laham) | 38 | Winner Studio client context |
 | 7d06c748 | AgentForge | 7 | Research pipeline spec |

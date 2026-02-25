@@ -6,6 +6,37 @@
 
 ---
 
+## 2026-02-24 (Production Quality Overhaul — NEVER REPEAT)
+
+### Video Resolution Near-Square Bug
+**Root cause**: Parallel mode called `normalizeClip(videoPath, normalizedPath)` WITHOUT explicit width/height. Kling's native resolution varies per clip — some came out near-square instead of 16:9.
+**Fix**: ALL `normalizeClip()` calls MUST pass `{ width: config.video.outputWidth, height: config.video.outputHeight }`.
+**Never repeat**: Never trust auto-detect for normalization dimensions. Always force 1920x1080 explicitly.
+
+### Floorplan Image Appearing as Clip Start Frame
+**Root cause**: `detectFloorplanInPhotos()` stored `listing.floorplan_url` but never removed it from `additionalPhotos` array. Floorplan image got assigned as a clip's room photo.
+**Fix**: Two exclusion points — (1) remove from `flatPhotos` at detection time, (2) filter `additionalPhotos` against `listing.floorplan_url` before photo pool construction.
+**Never repeat**: Any photo detection function that stores a URL must ALSO remove it from the active photo pool.
+
+### Text Overlay Timing Mismatch
+**Root cause**: `cumSec` (cumulative seconds for overlay positioning) accumulated from DB `duration_seconds` which doesn't match actual clip video duration. Kling may return different length than requested.
+**Fix**: Measure actual duration with `getVideoDuration()` on normalized clips. Store in `actualClipDurations` Map. Use for all overlay timing.
+**Never repeat**: Never trust requested duration for timing — always measure actual video file duration.
+
+### CTA Overlay Too Short (1 second)
+**Root cause**: CTA started at `start + 1` with max 3.5s regardless of clip length. On short clips, user had <1s to read.
+**Fix**: `ctaDuration = Math.max(dur - 1.5, 4)` — minimum 4 seconds visible.
+
+### Crossfade is Amateur for Real Estate
+**Research finding**: Professional real estate video uses hard cuts (dominant in luxury), whip cuts, or fade to black — NOT crossfade dissolve. Crossfade considered amateur.
+**Production strategy**: Kling `last_frame` parameter → each clip morphs toward next room photo → seamless concat stitching → zero visible transition. `stitchClipsConcat()` default, crossfade (`stitchClips()`) available but disabled.
+
+### Suno Music Returns No URL
+**Discovery**: Kie.ai Suno sometimes returns `{status: completed, error: null}` but no audio URL in response. Likely upstream API regression.
+**Fallback chain**: Suno → `music_tracks` DB table → SoundHelix public domain MP3.
+
+---
+
 ## 2026-02-24
 
 ### Sync Drift — Root Cause and Prevention

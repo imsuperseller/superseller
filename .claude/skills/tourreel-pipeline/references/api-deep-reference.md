@@ -36,6 +36,13 @@
 - **Multi-shot incompatible**: End frame does NOT work in multi-prompt mode. Use single-scene only.
 - **Guiding objects**: Keep one focal element visible in both frames to anchor the model's motion path.
 
+### Production Transition Strategy (Feb 2026 — CURRENT)
+- **Kling end-frame continuity**: Each clip's `last_frame` = next clip's room photo → Kling morphs toward next room
+- **Seamless concat stitching**: `stitchClipsConcat()` with boundary frames — zero visual transition effect
+- **NO crossfade/xfade**: Crossfade is available (`stitchClips()`) but DISABLED in production — end-frame control makes it unnecessary
+- **Professional real estate conventions**: Hard cuts (dominant in luxury tours), whip cuts (0.1s hblur), fade to black (zone changes). Crossfade considered amateur.
+- **`aspect_ratio` must be OMITTED when `last_frame` is set** — Kling constraint, will error otherwise
+
 ## ElevenLabs via Kie.ai (NEVER REPEAT)
 
 - **Working models**: `elevenlabs/text-to-speech-turbo-2-5`, `elevenlabs/text-to-speech-multilingual-v2`

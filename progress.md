@@ -6,6 +6,51 @@
 
 ---
 
+## 2026-02-24 (cont.): TourReel Production Quality Overhaul
+
+### What was done
+
+**Video quality overhaul** (commit f318779 on main):
+1. **Force 1920x1080 normalization** — parallel mode now passes explicit `config.video.outputWidth/Height` to all `normalizeClip()` calls (was auto-detecting, causing near-square resolution)
+2. **Floorplan exclusion** — `detectFloorplanInPhotos()` now removes the URL from both `flatPhotos` and `additionalPhotos` (was appearing as clip start frame)
+3. **Kling end-frame continuity** — parallel mode passes `last_frame` (next clip's room photo) so Kling morphs toward next room — zero crossfade needed
+4. **Seamless concat stitching** — reverted crossfade back to `stitchClipsConcat()` with boundary frames
+5. **Actual duration measurement** — `getVideoDuration()` on normalized clips, stored in `actualClipDurations` Map for text overlay timing
+6. **CTA min 4s** — `Math.max(dur - 1.5, 4)` ensures readable closing overlay
+7. **Hero room text** — kitchen/primary/living get `fontSize: "large"` instead of always "medium"
+
+**Sentinel clip + credit probe** (commit 21f07cf):
+- First clip generates alone to probe Kie.ai credits before full batch
+- `probeKieCredits()` function added
+
+**Yaron V3 regenerated** from scratch with all fixes — 14/14 clips complete, master video live at R2.
+
+**Documentation sweep** — updated 8 docs to reflect production changes:
+- `.claude/skills/tourreel-pipeline/SKILL.md` (critical rules, pipeline stages, line counts)
+- `.claude/skills/tourreel-pipeline/references/troubleshooting.md` (new error types: floorplan in video, text overlay timing, music no URL)
+- `.claude/skills/tourreel-pipeline/references/api-deep-reference.md` (production transition strategy)
+- `apps/worker/PIPELINE_STEP_BY_STEP.md` (Phase 5 & 6 rewritten for end-frame + concat)
+- `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` (config table: outputWidth/Height, xfade deprecated)
+- `docs/PRODUCT_BIBLE.md` (TourReel architecture updated)
+- `VIDEO_REVIEW_CHECKLIST.md` (new quality checks)
+- `findings.md` (6 root causes in NEVER REPEAT section)
+
+### Costs this session
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| Kling 3.0 Pro (10s hero clips) | 4 | $0.10 | $0.40 |
+| Kling 3.0 Pro (5s clips) | 10 | $0.03 | $0.30 |
+| Gemini Flash (analysis) | ~8 | $0.001 | $0.008 |
+| Suno (music attempt) | 1 | $0.02 | $0.02 |
+| **Session total** | | | **~$0.73** |
+
+### Pending
+- Yaron V3 regen complete — needs user review of quality
+- NotebookLM notebooks (TourReel 0baf5f36, Changelog 12724368) need source updates
+- Suno music URL bug — upstream Kie.ai issue, monitor
+
+---
+
 ## 2026-02-24 (cont.): Git Push + Bull Board Deploy + Stripe Live Prices + Aitable Migration + Validation Sweep
 
 ### What was done

@@ -35,8 +35,10 @@
 ## Overall Quality Checks
 
 ### Visual Quality
-- [ ] All clips are 1080p sharp (not blurry)
-- [ ] Transitions are smooth (no jarring cuts)
+- [ ] All clips are 1920x1080 (forced normalization, not auto-detect)
+- [ ] Kling end-frame continuity working (each clip morphs toward next room)
+- [ ] Seamless concat stitching (no visible transitions or crossfade)
+- [ ] No floorplan image appearing in any clip
 - [ ] Furniture-from-sky effects look realistic (no obvious glitches)
 - [ ] Lighting is consistent across clips
 - [ ] No visual artifacts or compression issues
@@ -61,7 +63,10 @@
 - [ ] Music style matches "elegant" theme
 - [ ] Music volume balanced (not overpowering)
 - [ ] Property address visible in opening
-- [ ] Room labels appear correctly
+- [ ] Room labels appear correctly and match actual rooms shown
+- [ ] Text overlays timed to actual clip durations (not DB estimates)
+- [ ] Hero rooms (kitchen/primary/living) have larger text
+- [ ] CTA overlay visible for at least 4 seconds
 - [ ] Text overlays readable and well-timed
 
 ---

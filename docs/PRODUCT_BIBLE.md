@@ -46,7 +46,8 @@ All products must align with one of these tactical pillars:
 ### 🎥 TourReel (Property Video Walkthrough)
 *   **Target**: Real Estate agents / Zillow listings.
 *   **Logic**: `apps/worker/src/queue/workers/video-pipeline.worker.ts`
-*   **Architecture**: Kie.ai Kling 3.0 (Video) + Suno (Music) + Nano Banana (Identity).
+*   **Architecture**: Kie.ai Kling 3.0 (Video, start+end frame continuity) + Suno (Music) + Kling Elements (Identity, replaces Nano Banana).
+*   **Production optimizations (Feb 2026)**: Force 1920x1080 normalization, floorplan exclusion from photo pool, Kling `last_frame` for inter-clip continuity, seamless concat (no crossfade), actual-duration text overlays, sentinel clip credit probe, CTA min 4s.
 *   **Source of Truth**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` + NotebookLM 0baf5f36.
 
 ### 🤖 Facebook Marketplace Autoposter

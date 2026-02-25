@@ -28,12 +28,14 @@
 
 ## Error: Low Resolution / Blurry Video
 
-**Root Cause**: Kling standard mode outputs 720p. Pipeline upscales to 1080p → blur.
+**Root Cause 1**: Kling standard mode outputs 720p. Pipeline upscales to 1080p → blur.
+**Root Cause 2** (Feb 2026): Parallel mode called `normalizeClip()` WITHOUT explicit dimensions. Kling native resolution varies per clip → some came out near-square.
 
 **Fix**:
 1. Set Kling mode to `pro` (1080p native): `KIE_KLING_MODE=pro`
 2. Set Nano Banana to 4K composites: `NANO_BANANA_RESOLUTION=4K`
 3. FFmpeg preset `medium` (better compression quality vs `veryfast`)
+4. **CRITICAL**: ALL `normalizeClip()` calls MUST pass explicit `{ width: config.video.outputWidth, height: config.video.outputHeight }` — never rely on auto-detect
 
 ---
 
@@ -101,13 +103,26 @@
 
 ---
 
-## Error: Music Generation Fails
+## Error: Music Generation Fails / No URL
 
-**Symptoms**: Suno task fails or times out.
+**Symptoms**: Suno task fails, times out, or returns `status: completed` with no audio URL.
 
-**Impact**: Non-critical — pipeline falls back to SoundHelix generic MP3.
+**Impact**: Non-critical — pipeline falls back to database `music_tracks` table, then SoundHelix generic MP3.
 
-**Fix**: Check Kie API status. If persistent, the fallback music is acceptable for delivery.
+**Fix**: Check Kie API status. If persistent, the fallback music is acceptable for delivery. Known issue (Feb 2026): Kie.ai Suno sometimes returns `completed` status but empty response — this is an upstream API regression.
+
+---
+
+## Error: Floorplan Image Appears in Video
+
+**Symptoms**: One clip shows the literal floorplan drawing as its scene instead of a room photo.
+
+**Root Cause**: `detectFloorplanInPhotos()` stores `listing.floorplan_url` but didn't remove the URL from `additionalPhotos` array → floorplan got assigned as a clip start frame.
+
+**Fix** (Feb 2026):
+1. In floorplan detection block: remove detected URL from `flatPhotos`
+2. In photo pool construction: filter `additionalPhotos` to exclude `listing.floorplan_url`
+3. Both exclusion points are required (detection stores, pool construction uses)
 
 ---
 
@@ -121,10 +136,20 @@
 3. Disk full on VPS
 
 **Fix**:
-1. Check all clips are normalized to 1920x1080 H.264
+1. Check all clips are normalized to 1920x1080 H.264 (force explicit dimensions)
 2. Re-download failed clip from R2
 3. Check disk space: `df -h /opt/tourreel-worker`
 4. Clean temp files: `rm -rf /tmp/tourreel-*`
+
+---
+
+## Error: Text Overlay Timing Mismatch
+
+**Symptoms**: Room labels appear during wrong clip or overlap with next room.
+
+**Root Cause**: `cumSec` accumulated from DB `duration_seconds` which doesn't match actual clip video duration (Kling may return different length than requested).
+
+**Fix** (Feb 2026): Measure actual duration with `getVideoDuration()` on each normalized clip, store in `actualClipDurations` Map, use that for overlay timing instead of DB values.
 
 ---
 

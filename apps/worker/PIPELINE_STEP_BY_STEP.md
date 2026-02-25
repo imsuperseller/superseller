@@ -79,11 +79,12 @@
 
 ## Phase 3: Photo Selection (Which Images Participate)
 
-### 3a. Extract photo URLs
+### 3a. Extract photo URLs (+ floorplan exclusion)
 
 - **Input**: `listing.exterior_photo_url`, `listing.additional_photos` (array or JSON)
 - **Logic**: `extractPhotoUrl()` — supports string, `{ url }`, nested structures
-- **Output**: `additionalPhotos[]`, exterior URL
+- **Floorplan exclusion**: If `listing.floorplan_url` is set, remove it from `additionalPhotos` AND `flatPhotos` — prevents floorplan image appearing as clip start frame
+- **Output**: `additionalPhotos[]` (floorplan excluded), exterior URL
 
 ### 3b. Upload photos to R2
 
@@ -129,21 +130,24 @@
 
 ## Phase 5: Clip Generation (Video)
 
-- **Per clip**:
-  1. **Start frame**: Clip 1 = opening composite/exterior; Clip N+1 = last frame of Clip N (extracted)
-  2. **End frame** (realtor): Nano composite for next room
-  3. **Kling 3.0**: Single-image mode — `start_frame` + prompt → video
-  4. **Extract last frame** from video for next clip’s start
-  5. **Normalize** clip (resolution)
-  6. **Persist**: `clips.status = 'complete'`, `video_url`, `end_frame_url`
+- **Sentinel clip**: First clip generates alone to probe Kie.ai credits before batch
+- **Per clip (parallel mode)**:
+  1. **Start frame**: Room photo (from `getPhotoForRoom`) or composite (if realtor)
+  2. **End frame**: Next clip’s room photo via `last_frame` param — Kling morphs toward next room for seamless continuity
+  3. **Kling 3.0**: Start+end frame mode — `image_url` + `last_frame` + prompt → video
+  4. **Persist**: `clips.status = ‘complete’`, `video_url`
+- **Post-processing (all clips)**:
+  1. **Extract last frame** from each clip for boundary frame stitching
+  2. **Normalize** to explicit 1920x1080 (`config.video.outputWidth/Height`) — NEVER auto-detect
+  3. **Measure actual duration** via `getVideoDuration()` for overlay timing
 
 ---
 
 ## Phase 6: Assembly
 
-- **Stitch**: FFmpeg concat of normalized clips
-- **Music**: Kie Suno or `music_tracks` table fallback
-- **Overlays**: Text per room (stub)
+- **Stitch**: Seamless concat with boundary frames (NO crossfade) — Kling end-frames ensure visual continuity
+- **Music**: Kie Suno → `music_tracks` DB table → SoundHelix fallback chain
+- **Overlays**: Text per room using actual measured durations; hero rooms (kitchen/primary/living) get `fontSize: "large"`; CTA overlay minimum 4s with 0.8s fade-in
 - **Variants**: Master, vertical, thumbnail
 - **Upload**: R2 for master, vertical, thumb
 - **Complete**: `video_jobs.status = 'complete'`, URLs, duration

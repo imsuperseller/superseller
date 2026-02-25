@@ -34,7 +34,9 @@
 |---------|-------|---------|
 | `defaultClipDuration` | 5 seconds | prompt-generator, kie (Kling `duration`), video-pipeline fallbacks |
 | `maxClipsPerVideo` | 15 (env `MAX_CLIPS`) | video-pipeline cap on tour sequence |
-| `xfadeDuration` | 0.5s | ffmpeg stitch |
+| `xfadeDuration` | 0.5s | ffmpeg stitch (DEPRECATED — seamless concat is default, crossfade disabled) |
+| `outputWidth` | 1920 | normalizeClip explicit dimension (MANDATORY) |
+| `outputHeight` | 1080 | normalizeClip explicit dimension (MANDATORY) |
 
 **Override for smoke**: `MAX_CLIPS=1` or `MAX_CLIPS=3` in worker env. **All code must read from config**—no hardcoded 5 or 15 for duration/max-clips. Clip count = `min(tour_sequence.length, maxClipsPerVideo)`.
 
