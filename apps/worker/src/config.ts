@@ -127,6 +127,15 @@ export const config = {
         sessionTtlDays: parseInt(optional("CLAUDECLAW_SESSION_TTL_DAYS", "7")),
     },
 
+    featureFlags: {
+        skipUpscale: optional("SKIP_UPSCALE", "") === "1",
+        forceNoRealtor: optional("FORCE_NO_REALTOR", "") === "1",
+        useAiPhotoMatch: optional("USE_AI_PHOTO_MATCH", "1") !== "0",
+        parallelClips: optional("PARALLEL_CLIPS", "true") !== "false",
+        useKlingElements: optional("USE_KLING_ELEMENTS", "") === "1",
+        klingSoundEnabled: optional("KLING_SOUND", "") === "1",
+    },
+
     video: {
         defaultModel: "kling_3" as const,
         defaultTransition: "fade" as const,

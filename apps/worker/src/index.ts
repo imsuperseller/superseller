@@ -23,18 +23,20 @@ async function bootstrap() {
     // 2. Routes
     app.use("/api", apiRouter);
 
-    // 3. Bull Board UI (basic-auth protected)
+    // 3. Bull Board UI (basic-auth protected, disabled if no password)
     const bullBoard = setupBullBoard();
-    app.use("/admin/queues", bullBoard.basicAuth, bullBoard.router);
+    if (bullBoard) {
+        app.use("/admin/queues", bullBoard.basicAuth, bullBoard.router);
+    }
 
     // 4. Initialize BullMQ Workers
     await initWorkers();
     await initFrontDeskPoller();
     await initClaudeClaw();
-    logger.info("✅ Workers initialized (Concurrency: 1)");
+    logger.info("✅ Workers initialized");
 
     // 5. Start Server
-    const port = process.env.PORT || 3002;
+    const port = config.port;
     app.listen(port, () => {
         logger.info(`✨ API Server listening on port ${port}`);
         logger.info(`🔗 Health Check: http://localhost:${port}/api/health`);

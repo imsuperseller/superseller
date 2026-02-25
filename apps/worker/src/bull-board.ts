@@ -7,7 +7,10 @@ import { videoPipelineQueue, clipGenerationQueue } from "./queue/queues";
 import { redisConnection } from "./queue/connection";
 import { logger } from "./utils/logger";
 
-const BULL_BOARD_PASSWORD = process.env.BULL_BOARD_PASSWORD || "rensto-dev-2026";
+const BULL_BOARD_PASSWORD = process.env.BULL_BOARD_PASSWORD;
+if (!BULL_BOARD_PASSWORD) {
+    logger.warn({ msg: "BULL_BOARD_PASSWORD not set — Bull Board disabled" });
+}
 
 /**
  * Simple basic-auth middleware for Bull Board.
@@ -37,8 +40,13 @@ function basicAuth(req: Request, res: Response, next: NextFunction): void {
 /**
  * Set up Bull Board and return the Express middleware to mount.
  * Registers all known BullMQ queues.
+ * Returns null if BULL_BOARD_PASSWORD is not set (disabled).
  */
-export function setupBullBoard() {
+export function setupBullBoard(): { router: any; basicAuth: typeof basicAuth } | null {
+    if (!BULL_BOARD_PASSWORD) {
+        return null;
+    }
+
     const serverAdapter = new ExpressAdapter();
     serverAdapter.setBasePath("/admin/queues");
 

@@ -529,4 +529,26 @@ apiRouter.post("/whatsapp/claude", (req, res) => handleClaudeClawWebhook(req, re
 apiRouter.post("/whatsapp/claude/rensto", (req, res) => handleClaudeClawWebhook(req, res, "business"));
 
 // ─── HEALTH ───
-apiRouter.get("/health", (req, res) => res.json({ status: "ok" }));
+apiRouter.get("/health", async (req, res) => {
+    const checks: Record<string, string> = { api: "ok" };
+
+    // Check Redis
+    try {
+        const { redisConnection } = await import("../queue/connection");
+        await redisConnection.ping();
+        checks.redis = "ok";
+    } catch {
+        checks.redis = "error";
+    }
+
+    // Check Postgres
+    try {
+        await query("SELECT 1");
+        checks.postgres = "ok";
+    } catch {
+        checks.postgres = "error";
+    }
+
+    const allOk = Object.values(checks).every(v => v === "ok");
+    res.status(allOk ? 200 : 503).json({ status: allOk ? "ok" : "degraded", checks });
+});
