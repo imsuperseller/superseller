@@ -165,14 +165,14 @@
 
 | Datasheet | ID | Postgres Source | Sync Direction | Sync Script |
 |-----------|----|----------------|----------------|-------------|
-| Expenses | `dstHnMVPAdtXESlJSX` | `ApiExpense` | Postgres -> Aitable | Manual |
-| LLM Registry | `dstsCAPquhDDaHTbnL` | `LlmModelConfig` | Postgres -> Aitable | Manual |
+| Expenses | `dstCyqF689UtB92Zgx` | `ApiExpense` | Postgres -> Aitable | Manual |
+| LLM Registry | `dstQm1dje81lWkUPkZ` | `LlmModelConfig` | Postgres -> Aitable | Manual |
 | Leads | `dstbftVH9AdzDKcu70` | `Lead` | Postgres -> Aitable | `tools/sync_leads_to_aitable.js` |
 | Clients | `dst1zXPh3cf72vKpmR` | `User` | Postgres -> Aitable | `tools/sync_extended_to_aitable.js` |
 | Campaigns | `dstt7Keh14AkVXF0Vl` | `OutreachCampaign` | Postgres -> Aitable | Manual |
 | Knowledge | `dstxq3xnpvu7XY37bT` | `IndexedDocument` | Postgres -> Aitable | Manual |
 | Master Registry | `dstwsqbXSmK5wYMmeQ` | `ServiceManifest` | Postgres -> Aitable | Manual |
-| Master Products | `dstr7Y928QP9X6miB2` | `Template` | Postgres -> Aitable | `tools/sync_products_to_aitable.js` |
+| Master Products | `dstGdPYy6nNTVq9Jiq` | `Template` | Postgres -> Aitable | `tools/sync_products_to_aitable.js` |
 | Payments | `dstjnQPSkUBffmb5gM` | `Payment` | Postgres -> Aitable | Manual |
 | Solutions | `dstBYSsqrzrdrFJ1wP` | `Solution` | Postgres -> Aitable | Manual |
 

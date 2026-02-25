@@ -190,7 +190,13 @@ npm audit --audit-level=high
 - **Access**: MCP tools only. Direct API forbidden.
 
 ### Airtable.com (Retired)
-Legacy reference. **Aitable.ai** used for dashboards. Base IDs archived: Operations app6saCaH88uK3kCO, Core app4nJpP1ytGukXQT, Client appQijHhqqP4z6wGe, Financial app6yzlm67lRNuQZD.
+Legacy reference. Old base IDs archived: Operations app6saCaH88uK3kCO, Core app4nJpP1ytGukXQT, Client appQijHhqqP4z6wGe, Financial app6yzlm67lRNuQZD.
+
+### Aitable.ai (Dashboards)
+- **Space**: `spc63cnXLdMYc` (migrated from spc4tjiuDMjfY)
+- **API Token**: `uskBpO7SVJC8RMDSSOSs7tM`
+- **Role**: Read-only dashboards mirroring PostgreSQL data. Never write back.
+- **Datasheets**: See `docs/DATA_DICTIONARY.md` §Aitable.ai Datasheets for full ID list.
 
 ### Notion
 - 3 databases: Business References, Customer Management, Project Tracking

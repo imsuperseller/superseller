@@ -1102,7 +1102,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
     },
     {
         connection: redisConnection,
-        concurrency: 2, // Allow 2 concurrent jobs (RackNerd has 3.2GB free RAM, 5 cores)
+        concurrency: 1, // Sequential — 3.2GB RAM can't safely run 2 concurrent FFmpeg + Kling jobs
     }
 );
 
