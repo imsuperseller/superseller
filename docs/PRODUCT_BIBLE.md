@@ -46,7 +46,7 @@ All products must align with one of these tactical pillars:
 ### 🎥 TourReel (Property Video Walkthrough)
 *   **Target**: Real Estate agents / Zillow listings.
 *   **Logic**: `apps/worker/src/queue/workers/video-pipeline.worker.ts`
-*   **Architecture**: Kie.ai Kling 3.0 (Video, start+end frame continuity) + Suno (Music) + Kling Elements (Identity, replaces Nano Banana).
+*   **Architecture**: Kie.ai Kling 3.0 (Video, start+end frame continuity) + Suno (Music) + Kling Elements (Identity). Kling Elements (USE_KLING_ELEMENTS=1) is the active approach for realtor identity in video clips. Nano Banana is PAUSED (per DECISIONS.md) -- kept in codebase as fallback but not used in production pipeline.
 *   **Production optimizations (Feb 2026)**: Force 1920x1080 normalization, floorplan exclusion from photo pool, Kling `last_frame` for inter-clip continuity, seamless concat (no crossfade), actual-duration text overlays, sentinel clip credit probe, CTA min 4s.
 *   **Source of Truth**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` + NotebookLM 0baf5f36.
 
@@ -55,7 +55,7 @@ All products must align with one of these tactical pillars:
 *   **Logic**: `fb marketplace lister/deploy-package/` (canonical), server at `/opt/fb-marketplace-bot/`
 *   **Stack**: GoLogin SDK + Puppeteer 19 + ImageMagick phone overlays + PostgreSQL (`fb_listings`).
 *   **Features**: AI-generated city-specific copy (Kie.ai Gemini 2.5 Flash), image variation pool (Kie.ai Seedream 4.5 Edit), DFW location rotation (30/20 cities), Telnyx phone rotation, dynamic phone overlay, price jitter (±10%), schedule randomization (±15min), per-profile cookies, cookie health monitoring, PM2 automated scheduler (60-min cycles).
-*   **Lead Pipeline**: Telnyx Voice AI → Claude Sonnet analysis → Workiz CRM (UAD), email (MissParty). **DORMANT** — n8n workflows active but 0 executions, Telnyx routing unverified.
+*   **Lead Pipeline**: Telnyx Voice AI → Claude Sonnet analysis → Workiz CRM (UAD), email (MissParty). **LIVE AND ACTIVE** — n8n workflows executing successfully, Telnyx AI Assistants handling inbound calls autonomously. Updated Feb 2026: Pipeline active for UAD + MissParty via n8n workflows.
 *   **Usage**: Credits per listing activation.
 *   **Status**: LIVE — both customers posting as of Feb 20, 2026.
 

@@ -52,7 +52,7 @@
 - studio.rensto.com alias live (SSL provisioning async)
 
 **Known issues**:
-- R2 bucket not publicly accessible (401 on direct URLs) — gallery page needs file proxy or public access
+- ~~R2 bucket not publicly accessible (401 on direct URLs)~~ — RESOLVED: R2 bucket public access enabled Feb 2026 (r2.dev domain working)
 - Resend sender verification pending for magic-link emails
 
 **Next actions**:

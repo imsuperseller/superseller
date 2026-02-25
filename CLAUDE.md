@@ -58,6 +58,8 @@
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
 **Retired**: Firestore (fully removed Feb 2026 — zero runtime usage), Airtable.com. **Aitable.ai** for dashboards only. `firebase-admin` kept for Storage only (onboarding secrets).
 
+**Active production n8n workflows (DO NOT disable)**: Telnyx polling UAD, Telnyx polling MissParty, FB Bot lead analysis UAD (U6EZ2iLQ4zCGg31H), FB Bot lead analysis MissParty (9gfvZo9sB4b3pMWQ).
+
 ---
 
 ## 3. Tech Stack (Brief)
@@ -138,7 +140,7 @@ npm run db:push          # Push schema to DB
 npm run test:credits     # Credit system test
 npm run test:e2e         # Playwright E2E tests
 ```
-**Deploy**: `git push` auto-deploys `api.rensto.com`. For `rensto.com`: run `vercel --prod` from repo root.
+**Deploy**: `git push` auto-deploys `api.rensto.com`. For `rensto.com`: run `cd apps/web/rensto-site && vercel --prod` (requires VERCEL_TOKEN in environment).
 
 ### Worker (apps/worker)
 ```bash
