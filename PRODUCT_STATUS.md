@@ -10,7 +10,7 @@
 
 1. Winner Video Studio → Yossi (Mivnim) — ✅ PIPELINE WORKING (avatar-pro verified, fallback ready)
 2. FB Marketplace Bot → Miss Party + UAD — LIVE (posting + lead pipeline both operational)
-3. TourReel → Realtors — MEDIUM (working but needs polish)
+3. TourReel → Realtors — LIVE (production quality overhaul complete Feb 24)
 4. Lead Landing Pages → Generic infrastructure complete, customer implementations in separate repos — DONE (100%)
 5. RAG Integration → All products — ENABLER (built but unused)
 6. AgentForge → Internal only — LOW (spec only, powers our dev)
@@ -210,7 +210,7 @@
 **Status**: LIVE and WORKING (kling-3.0/video)
 
 **What works**:
-- Full pipeline: Zillow scrape → Gemini floorplan analysis → clip prompts → Nano Banana compositing → Kling 3.0 video → FFmpeg stitch → R2 upload
+- Full pipeline: Zillow scrape → Gemini floorplan analysis → clip prompts → Kling Elements (identity) → Kling 3.0 video (with end-frame continuity) → force 1920x1080 normalize → seamless concat → R2 upload
 - 25+ completed videos exist
 - Auth + credits (50/video, 10/regen)
 - Video player with 4 format downloads (16:9, 9:16, 1:1, 4:5)
@@ -221,6 +221,13 @@
 - Realtor spatial → SPATIAL_ANCHOR
 - 720p blur → Kling Pro 1080p
 - Robotic movement → room-as-star guidance
+- Near-square resolution → force 1920x1080 explicit normalization (Feb 24)
+- Floorplan in video → exclude from photo pool at detection + construction (Feb 24)
+- No inter-clip continuity → Kling `last_frame` end-frame morphing (Feb 24)
+- Crossfade → seamless concat with boundary frames, zero transitions (Feb 24)
+- Overlay timing wrong → actual measured clip durations (Feb 24)
+- CTA too short → minimum 4 seconds visible (Feb 24)
+- Sentinel clip → probe Kie.ai credits before batch (Feb 24)
 
 **Remaining work**:
 - [x] Text overlays (FFmpeg drawtext implemented, dynamic marketing captions active)

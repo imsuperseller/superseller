@@ -185,10 +185,10 @@
 | **Authority** | DECISIONS.md > Deployed code > Codebase docs > NotebookLM > Aitable.ai |
 
 **Action Items:**
-- [ ] Audit TourReel notebook (0baf5f36) for furniture-from-sky references → update to quality-first approach
+- [x] Audit TourReel notebook (0baf5f36) for furniture-from-sky references → update to quality-first approach (Feb 24: production quality overhaul source added)
 - [ ] Update all model references (2.5-flash → 3-flash)
 - [ ] Check Aitable.ai for outdated TourReel process data
-- [ ] Sync TOURREEL_GAP_ANALYSIS findings to NotebookLM
+- [x] Sync TOURREEL_GAP_ANALYSIS findings to NotebookLM (Feb 24: production overhaul source covers all gap fixes)
 - [ ] Remove contradictions between sources
 
 ---
