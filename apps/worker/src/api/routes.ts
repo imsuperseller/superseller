@@ -438,5 +438,95 @@ apiRouter.delete("/rag/documents", async (req: Request, res: Response) => {
     res.json({ success: true, deleted: count });
 });
 
+// ─── CLAUDECLAW WAHA WEBHOOK ───
+/**
+ * Receives inbound WhatsApp messages from WAHA webhook(s).
+ * Personal:  POST /api/whatsapp/claude          — only allowed phones
+ * Business:  POST /api/whatsapp/claude/rensto    — all customers welcome
+ *
+ * Each WAHA instance sends its own webhook URL including ?waha_url= to route responses.
+ */
+async function handleClaudeClawWebhook(req: Request, res: Response, mode: "personal" | "business") {
+    try {
+        const { config: appConfig } = await import("../config");
+        if (!appConfig.claudeclaw.enabled) {
+            return res.status(404).json({ error: "ClaudeClaw not enabled" });
+        }
+
+        const event = req.body?.event;
+        const payload = req.body?.payload || req.body;
+
+        // Only process incoming text/media messages (not status updates, acks, etc.)
+        if (event && event !== "message" && event !== "message.any") {
+            return res.json({ status: "ignored", event });
+        }
+
+        const chatId = payload?.from || payload?.chatId;
+        const body = payload?.body || "";
+        const fromMe = payload?.fromMe ?? false;
+        const hasMedia = payload?.hasMedia ?? false;
+        const mediaUrl = payload?.mediaUrl || payload?.media?.url || null;
+        const mediaType = payload?.type || "chat"; // chat, image, video, audio, document
+
+        // Ignore our own messages
+        if (fromMe) {
+            return res.json({ status: "ignored", reason: "own_message" });
+        }
+
+        // Ignore group messages (only handle direct messages)
+        if (chatId && chatId.includes("@g.us")) {
+            return res.json({ status: "ignored", reason: "group_message" });
+        }
+
+        if (!chatId) {
+            return res.status(400).json({ error: "Missing chatId/from in payload" });
+        }
+
+        // Auth: personal mode checks allowed phones, business mode allows everyone
+        if (mode === "personal") {
+            const phone = chatId.replace("@c.us", "").replace("@s.whatsapp.net", "");
+            const allowed = appConfig.claudeclaw.allowedPhones;
+            if (allowed.length > 0 && !allowed.some((p: string) => phone.includes(p) || p.includes(phone))) {
+                logger.warn({ msg: "ClaudeClaw: unauthorized phone", phone });
+                return res.status(403).json({ error: "Unauthorized" });
+            }
+        }
+
+        // Ignore empty messages (status updates, reactions, etc.)
+        if (!body && !hasMedia) {
+            return res.json({ status: "ignored", reason: "empty" });
+        }
+
+        // Extract WAHA target from query params (set by webhook URL config)
+        const wahaUrl = (req.query.waha_url as string) || undefined;
+        const wahaSession = (req.query.waha_session as string) || undefined;
+
+        // Enqueue for processing
+        const { claudeclawQueue } = await import("../queue/queues");
+        const jobData = {
+            chatId,
+            messageBody: body,
+            hasMedia,
+            mediaUrl: mediaUrl || undefined,
+            mediaType: mediaType !== "chat" ? mediaType : undefined,
+            timestamp: Date.now(),
+            wahaUrl,
+            wahaSession,
+            mode,
+        };
+
+        await claudeclawQueue.add(`claude-${Date.now()}`, jobData);
+
+        logger.info({ msg: "ClaudeClaw message enqueued", chatId, bodyLength: body.length, hasMedia, mode });
+        res.json({ status: "queued" });
+    } catch (err: any) {
+        logger.error({ msg: "ClaudeClaw webhook error", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+}
+
+apiRouter.post("/whatsapp/claude", (req, res) => handleClaudeClawWebhook(req, res, "personal"));
+apiRouter.post("/whatsapp/claude/rensto", (req, res) => handleClaudeClawWebhook(req, res, "business"));
+
 // ─── HEALTH ───
 apiRouter.get("/health", (req, res) => res.json({ status: "ok" }));

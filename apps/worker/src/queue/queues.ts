@@ -23,6 +23,28 @@ export const clipGenerationQueue = new Queue("clip-generation", {
     },
 });
 
+// ClaudeClaw WhatsApp → Claude bridge queue
+export const claudeclawQueue = new Queue("claudeclaw", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 1,              // No retries — user expects single response
+        removeOnComplete: { age: 86400 },
+        removeOnFail: { age: 86400 * 7 },
+    },
+});
+
+export interface ClaudeClawJobData {
+    chatId: string;              // WhatsApp chatId (972...@c.us)
+    messageBody: string;         // User's text message
+    hasMedia: boolean;
+    mediaUrl?: string;           // WAHA media URL if present
+    mediaType?: string;          // image, video, document, audio
+    timestamp: number;
+    wahaUrl?: string;            // Which WAHA instance to respond through
+    wahaSession?: string;        // Which WAHA session to use
+    mode?: "personal" | "business";  // Channel mode for personality
+}
+
 export async function initQueues() {
     // Use for development to clear stale jobs; remove or use selectively in production
     // await videoPipelineQueue.obliterate({ force: true });

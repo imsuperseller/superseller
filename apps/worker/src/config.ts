@@ -113,6 +113,20 @@ export const config = {
         corsOrigins: ["http://localhost:3000", "http://localhost:3001", "https://rensto.com", "https://www.rensto.com"],
     },
 
+    waha: {
+        url: optional("WAHA_URL", "http://localhost:3000"),
+        apiKey: process.env.WAHA_API_KEY || "",
+        session: optional("WAHA_SESSION", "default"),
+    },
+
+    claudeclaw: {
+        enabled: optional("CLAUDECLAW_ENABLED", "false") === "true",
+        allowedPhones: (process.env.CLAUDECLAW_ALLOWED_PHONES || "").split(",").filter(Boolean),
+        projectDir: optional("CLAUDECLAW_PROJECT_DIR", "/opt/claudeclaw"),
+        maxResponseLength: parseInt(optional("CLAUDECLAW_MAX_RESPONSE_LENGTH", "4000")),
+        sessionTtlDays: parseInt(optional("CLAUDECLAW_SESSION_TTL_DAYS", "7")),
+    },
+
     video: {
         defaultModel: "kling_3" as const,
         defaultTransition: "fade" as const,
