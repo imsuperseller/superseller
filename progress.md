@@ -6,6 +6,40 @@
 
 ---
 
+## 2026-02-25: System Audit Fixes + Self-Serve Billing + Admin Tab + Worker Hardening + Deploy
+
+### Commits Pushed (13 total this session)
+- `f29c48f` feat: ClaudeClaw (WhatsApp AI bridge, 9 files, 810 insertions)
+- `e35a26c` chore: remove root-level junk (19 files deleted)
+- `2b36572` fix: video pipeline improvements (photo classifier, room mapper, gemini)
+- `ba0fd99` chore: skills, schema, tools (model observatory, skill router, Prisma)
+- `2266b96` chore: organize repo (docs/, n8n workflows, gitignore)
+- `169375b` feat: TourReel self-serve billing (success banner, manage subscription, lifecycle webhooks)
+- `7e2ce75` feat: FB Bot admin tab (MarketplaceManagement component, admin API, 7-col grid)
+- `1fad8de` fix: resolve 5 doc contradictions (Telnyx, Vercel deploy, R2, Nano Banana, n8n workflows)
+- `5270bf9` fix: worker hardening (bull-board security, health checks, config centralization, dead code)
+- `03f32e6` fix: implement 3 missing API routes (scorecard, populate-data, n8n/workflows)
+- `2264e85` chore: update lock file
+- `21f8e6b` chore: reduce video pipeline concurrency to 1, update Aitable datasheet IDs
+
+### System Audit (27 findings resolved)
+- 9 Critical, 12 Medium, 6 Low, 5 Optimization opportunities
+- 3 "findings" were false positives (entitlements not duplicated, UsageEvent schema already correct, Aitable env vars used)
+- All real findings fixed in code + docs
+
+### Aitable (New Space spc63cnXLdMYc)
+- Created 3 missing datasheets: EXPENSES (`dstCyqF689UtB92Zgx`), LLM_REGISTRY (`dstQm1dje81lWkUPkZ`), MASTER_PRODUCTS (`dstGdPYy6nNTVq9Jiq`)
+- Updated DATA_DICTIONARY.md and INFRA_SSOT.md with new IDs
+
+### NotebookLM Cleanup
+- Social Media notebook (cb99e6aa): Removed 8 off-topic sources (50/50 → 42/50)
+
+### Worker Deploy
+- Deployed to RackNerd (172.245.56.50:3002), health check OK
+- Concurrency 2→1 (3.2GB RAM constraint), no product/pricing impact
+
+---
+
 ## 2026-02-24 (cont.): TourReel Production Quality Overhaul
 
 ### What was done

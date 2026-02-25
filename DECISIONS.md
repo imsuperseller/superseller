@@ -228,6 +228,25 @@
 
 ---
 
-## 17. DEFERRED
+## 17. VIDEO PIPELINE CONCURRENCY (Feb 25, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Concurrency** | Reduce from 2 to 1 (sequential). RackNerd 3.2GB RAM can't safely run 2 concurrent FFmpeg + Kling jobs. |
+| **Impact** | Operational only. No product, pricing, or customer-facing change. Jobs queue instead of overlapping. |
+| **Revisit when** | Multiple paying customers queuing simultaneously, or RAM upgraded. |
+
+---
+
+## 18. SOCIAL MEDIA NOTEBOOK CLEANUP (Feb 25, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Action** | Removed 8 off-topic sources from Social Media notebook (cb99e6aa). Now 42/50. |
+| **Sources removed** | Misc Airtable, SocialHub architecture, agent behavior, API contracts, implementation specs not related to FB Bot/social. |
+
+---
+
+## 19. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.
