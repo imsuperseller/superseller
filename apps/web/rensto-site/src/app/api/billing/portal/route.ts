@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         }
 
         const origin = request.headers.get('origin') || 'https://rensto.com';
-        const returnUrl = `${origin}/dashboard/${session.clientId}`;
+        const returnUrl = `${origin}/video/account`;
 
         const portalSession = await stripe.billingPortal.sessions.create({
             customer: user.stripeCustomerId,

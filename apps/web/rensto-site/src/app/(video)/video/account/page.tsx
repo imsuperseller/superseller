@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Coins, CreditCard, History, User, Loader2 } from "lucide-react";
+import { ArrowLeft, Coins, CreditCard, History, User, Loader2, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface UsageEvent {
@@ -68,6 +68,36 @@ export default function AccountPage() {
                 <p className="text-sm text-gray-400 mt-1">
                     1 video tour = 50 credits · Scene regeneration = 10 credits/scene
                 </p>
+            </div>
+
+            {/* Subscription Management */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 mb-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="font-semibold flex items-center gap-2">
+                            <CreditCard size={18} className="text-gray-400" />
+                            Subscription
+                        </h2>
+                        <p className="text-sm text-gray-400 mt-1">
+                            Manage your plan, payment method, and invoices
+                        </p>
+                    </div>
+                    <button
+                        onClick={async () => {
+                            try {
+                                const res = await fetch("/api/billing/portal", { method: "POST" });
+                                const data = await res.json();
+                                if (data.url) window.location.href = data.url;
+                                else alert("No active subscription found. Subscribe first at /video/pricing");
+                            } catch {
+                                alert("Could not open billing portal. Try again.");
+                            }
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-colors border border-white/10"
+                    >
+                        Manage Subscription <ExternalLink size={14} />
+                    </button>
+                </div>
             </div>
 
             {/* Usage History */}

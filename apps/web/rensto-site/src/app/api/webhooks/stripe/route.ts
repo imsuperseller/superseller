@@ -129,6 +129,49 @@ export async function POST(req: Request) {
             }
         }
 
+        // Handle subscription updates (plan change, payment failure, etc.)
+        if (event.type === 'customer.subscription.updated') {
+            const subscription = event.data.object as Stripe.Subscription;
+            const stripeSubId = subscription.id;
+            const newStatus = subscription.status; // active, past_due, unpaid, canceled, etc.
+
+            const sub = await prisma.subscription.findFirst({
+                where: { stripeSubscriptionId: stripeSubId },
+            });
+
+            if (sub) {
+                await prisma.subscription.update({
+                    where: { id: sub.id },
+                    data: {
+                        status: newStatus,
+                        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+                        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                    },
+                });
+                console.log(`Subscription ${stripeSubId} updated to ${newStatus}`);
+
+                // Alert on past_due (payment failed)
+                if (newStatus === 'past_due' && sub.userId) {
+                    const user = await prisma.user.findUnique({ where: { id: sub.userId }, select: { email: true } });
+                    if (user?.email) {
+                        await emails.invoiceReceipt(user.email, 'Payment Failed - Action Required', 0, stripeSubId);
+                    }
+                }
+            }
+        }
+
+        // Handle subscription cancellation
+        if (event.type === 'customer.subscription.deleted') {
+            const subscription = event.data.object as Stripe.Subscription;
+            const stripeSubId = subscription.id;
+
+            await prisma.subscription.updateMany({
+                where: { stripeSubscriptionId: stripeSubId },
+                data: { status: 'canceled' },
+            });
+            console.log(`Subscription ${stripeSubId} canceled`);
+        }
+
         // Forward to n8n for additional integrations (QuickBooks, etc)
         if (n8nWebhookUrl) {
             await fetch(n8nWebhookUrl, {

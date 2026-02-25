@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Video, Plus, Loader2, Play, Clock, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Video, Plus, Loader2, Play, Clock, CheckCircle2, AlertCircle, RefreshCw, X, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface JobSummary {
@@ -53,6 +54,16 @@ export default function VideoJobsPage() {
     const [jobs, setJobs] = useState<JobSummary[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        if (searchParams.get("subscribed") === "1") {
+            setShowSuccess(true);
+            // Clean URL without reload
+            window.history.replaceState({}, "", "/video");
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         fetch("/api/video/jobs")
@@ -85,6 +96,22 @@ export default function VideoJobsPage() {
                     <Plus size={18} /> New Video
                 </Link>
             </div>
+
+            {/* Subscription Success Banner */}
+            {showSuccess && (
+                <div className="mb-6 rounded-xl bg-green-500/10 border border-green-500/30 p-4 flex items-start gap-3">
+                    <PartyPopper className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                        <p className="text-green-300 font-medium">Subscription activated!</p>
+                        <p className="text-green-300/70 text-sm mt-0.5">
+                            Your credits have been added. Create your first AI property tour now.
+                        </p>
+                    </div>
+                    <button onClick={() => setShowSuccess(false)} className="text-green-400/50 hover:text-green-300 transition-colors">
+                        <X size={16} />
+                    </button>
+                </div>
+            )}
 
             {/* Loading */}
             {loading && (
