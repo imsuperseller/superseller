@@ -114,7 +114,7 @@ export default function ProductPresentation({ product }: ProductPresentationProp
                                     </button>
                                     <button
                                         onClick={() => setPriceType('subscription')}
-                                        className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${priceType === 'subscription' ? 'bg-[#fe3d51] text-white shadow-lg shadow-[#fe3d51]/20' : 'text-slate-500 hover:text-white'}`}
+                                        className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${priceType === 'subscription' ? 'bg-[#f47920] text-white shadow-lg shadow-[#f47920]/20' : 'text-slate-500 hover:text-white'}`}
                                     >
                                         Monthly Hire
                                     </button>

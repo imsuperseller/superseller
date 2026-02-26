@@ -55,11 +55,11 @@ export function YouTubeVideoModal({
         onClick={(e) => e.stopPropagation()}
         style={{ 
           maxHeight: '90vh',
-          boxShadow: '0 0 40px rgba(254, 61, 81, 0.3)'
+          boxShadow: '0 0 40px rgba(244, 121, 32, 0.3)'
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: 'rgba(254, 61, 81, 0.2)' }}>
+        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: 'rgba(244, 121, 32, 0.2)' }}>
           <h3 className="text-xl font-bold" style={{ color: 'var(--superseller-text-primary)' }}>
             {title}
           </h3>

@@ -17,8 +17,8 @@ export function ImpersonationBanner({ clientName, clientEmail, onExit }: Imperso
         <div
             className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2"
             style={{
-                background: 'linear-gradient(90deg, #fe3d51 0%, #f7931e 100%)',
-                boxShadow: '0 2px 10px rgba(254, 61, 81, 0.3)'
+                background: 'linear-gradient(90deg, #f47920 0%, #f47920 100%)',
+                boxShadow: '0 2px 10px rgba(244, 121, 32, 0.3)'
             }}
         >
             <div className="flex items-center gap-3">

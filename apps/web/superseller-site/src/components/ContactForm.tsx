@@ -342,7 +342,7 @@ export function ContactForm({ lang = 'en' }: { lang?: 'en' | 'he' }) {
               id="budget"
               value={formData.budget}
               onChange={(e) => handleInputChange('budget', e.target.value)}
-              className={`w-full ${isRtl ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 rounded-2xl bg-[#110d28] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer`}
+              className={`w-full ${isRtl ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 rounded-2xl bg-[#0d1b2e] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer`}
             >
               <option value="">{t.placeholders.budget}</option>
               <option value="under-1k">{t.options.budget["under-1k"]}</option>
@@ -366,7 +366,7 @@ export function ContactForm({ lang = 'en' }: { lang?: 'en' | 'he' }) {
               id="timeline"
               value={formData.timeline}
               onChange={(e) => handleInputChange('timeline', e.target.value)}
-              className={`w-full ${isRtl ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 rounded-2xl bg-[#110d28] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer`}
+              className={`w-full ${isRtl ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 rounded-2xl bg-[#0d1b2e] border border-white/5 focus:border-cyan-500/30 transition-all outline-none text-white appearance-none cursor-pointer`}
             >
               <option value="">{t.placeholders.timeline}</option>
               <option value="asap">{t.options.timeline.asap}</option>

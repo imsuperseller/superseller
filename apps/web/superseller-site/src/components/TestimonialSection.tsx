@@ -219,9 +219,9 @@ export function TestimonialSection() {
                             onClick={() => setIsModalOpen(true)}
                             className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all hover:scale-105 active:scale-95"
                             style={{
-                                background: 'linear-gradient(135deg, var(--superseller-primary) 0%, #ff6b6b 100%)',
+                                background: 'linear-gradient(135deg, var(--superseller-primary) 0%, #f79d4e 100%)',
                                 color: 'white',
-                                boxShadow: '0 10px 30px -10px rgba(254, 61, 81, 0.5)'
+                                boxShadow: '0 10px 30px -10px rgba(244, 121, 32, 0.5)'
                             }}
                         >
                             <Heart className="w-5 h-5 fill-current" />
@@ -282,7 +282,7 @@ export function TestimonialSection() {
                                             <input
                                                 required
                                                 type="text"
-                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#fe3d51] transition-colors"
+                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#f47920] transition-colors"
                                                 placeholder="John Doe"
                                                 value={formData.author}
                                                 onChange={(e) => setFormData({ ...formData, author: e.target.value })}
@@ -292,7 +292,7 @@ export function TestimonialSection() {
                                             <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Company</label>
                                             <input
                                                 type="text"
-                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#fe3d51] transition-colors"
+                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#f47920] transition-colors"
                                                 placeholder="Acme Corp"
                                                 value={formData.company}
                                                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
@@ -305,7 +305,7 @@ export function TestimonialSection() {
                                             <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Role</label>
                                             <input
                                                 type="text"
-                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#fe3d51] transition-colors"
+                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#f47920] transition-colors"
                                                 placeholder="CEO"
                                                 value={formData.role}
                                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -315,7 +315,7 @@ export function TestimonialSection() {
                                             <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Result (e.g. Saved 10h/wk)</label>
                                             <input
                                                 type="text"
-                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#fe3d51] transition-colors"
+                                                className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#f47920] transition-colors"
                                                 placeholder="+30% growth"
                                                 value={formData.result}
                                                 onChange={(e) => setFormData({ ...formData, result: e.target.value })}
@@ -328,7 +328,7 @@ export function TestimonialSection() {
                                         <textarea
                                             required
                                             rows={3}
-                                            className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#fe3d51] transition-colors resize-none"
+                                            className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#f47920] transition-colors resize-none"
                                             placeholder="Tell us how SuperSeller AI helped you..."
                                             value={formData.quote}
                                             onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
@@ -354,7 +354,7 @@ export function TestimonialSection() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all bg-[#fe3d51] hover:bg-[#ff4d5d] active:scale-95 disabled:opacity-50"
+                                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all bg-[#f47920] hover:bg-[#ff4d5d] active:scale-95 disabled:opacity-50"
                                     >
                                         {isSubmitting ? 'Sending...' : (
                                             <>

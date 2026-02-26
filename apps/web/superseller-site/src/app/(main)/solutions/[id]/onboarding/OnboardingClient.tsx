@@ -236,7 +236,7 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
                                 Return to Store
                             </button>
                             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-none">
-                                ACTIVATE <span className="text-[#fe3d51]">ENGINE</span>
+                                ACTIVATE <span className="text-[#f47920]">ENGINE</span>
                                 <span className="block text-xl font-bold text-slate-500 mt-2 uppercase tracking-widest" dir="rtl">הפעלת מערכת</span>
                             </h1>
                             <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function OnboardingClient({ product }: OnboardingClientProps) {
                                     {schema.map((field: any) => (
                                         <div key={field.id} className="space-y-3">
                                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
-                                                {field.label} {field.required && <span className="text-[#fe3d51]">*</span>}
+                                                {field.label} {field.required && <span className="text-[#f47920]">*</span>}
                                                 {field.secret && <span className="ml-2 text-cyan-400 text-[8px] font-black uppercase tracking-widest border border-cyan-400/20 px-1.5 py-0.5 rounded">Encrypted</span>}
                                             </label>
                                             {field.type === 'select' ? (

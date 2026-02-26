@@ -53,7 +53,7 @@ export function LeadMagnetSection() {
                     {/* Audit Lead Magnet */}
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02] flex flex-col">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
-                        <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
+                        <div className="relative h-full bg-[#0d1b2e] rounded-[22px] p-8 flex flex-col">
                             <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20 shrink-0">
                                 <ClipboardCheck className="w-8 h-8 text-red-500" />
                             </div>
@@ -78,8 +78,8 @@ export function LeadMagnetSection() {
                                         disabled={loadingAudit}
                                         className="w-full font-bold h-[56px] flex items-center justify-center gap-2 mt-auto"
                                         style={{
-                                            background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
-                                            boxShadow: '0 8px 20px rgba(254, 61, 81, 0.3)'
+                                            background: 'linear-gradient(135deg, #F47920 0%, #f79d4e 100%)',
+                                            boxShadow: '0 8px 20px rgba(244, 121, 32, 0.3)'
                                         }}
                                     >
                                         {loadingAudit ? (
@@ -96,7 +96,7 @@ export function LeadMagnetSection() {
                     {/* Checklist Lead Magnet */}
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02] flex flex-col">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
-                        <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
+                        <div className="relative h-full bg-[#0d1b2e] rounded-[22px] p-8 flex flex-col">
                             <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20 shrink-0">
                                 <FileText className="w-8 h-8 text-cyan-400" />
                             </div>
@@ -134,7 +134,7 @@ export function LeadMagnetSection() {
                     {/* Case Study Lead Magnet */}
                     <div className="group relative rounded-3xl p-1 shadow-2xl transition-all hover:scale-[1.02] flex flex-col">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition" />
-                        <div className="relative h-full bg-[#110d28] rounded-[22px] p-8 flex flex-col">
+                        <div className="relative h-full bg-[#0d1b2e] rounded-[22px] p-8 flex flex-col">
                             <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20 shrink-0">
                                 <Zap className="w-8 h-8 text-purple-400" />
                             </div>
@@ -147,7 +147,7 @@ export function LeadMagnetSection() {
                                 <div className="flex items-center gap-1 opacity-50 mb-8">
                                     <div className="flex -space-x-2">
                                         {[1, 2, 3].map(i => (
-                                            <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#110d28]" />
+                                            <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#0d1b2e]" />
                                         ))}
                                     </div>
                                     <span className="text-[10px] text-gray-400 ml-2">Verified Success Story</span>

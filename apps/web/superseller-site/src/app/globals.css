@@ -5,7 +5,7 @@
 /* Critical: prevent white flash before full hydration (video/create, all dark pages) */
 html,
 body {
-  background-color: #110d28 !important;
+  background-color: #0d1b2e !important;
   color-scheme: dark;
 }
 
@@ -13,8 +13,8 @@ body {
 @layer base {
   :root {
     /* SuperSeller AI brand default (dark-first) */
-    --background: 266 47% 10%;
-    /* #110d28 - matches SuperSeller AI brand */
+    --background: 213 56% 12%;
+    /* #0d1b2e - matches SuperSeller AI logo navy */
     --foreground: 210 40% 98%;
     /* near white */
     --card: 0 0% 100%;
@@ -41,34 +41,36 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* SuperSeller AI Brand Colors (authoritative) */
-    --superseller-primary: #fe3d51;
-    /* Primary Red */
-    --superseller-red: #fe3d51;
+    /* SuperSeller AI Brand Colors (authoritative — matched to logo) */
+    --superseller-primary: #f47920;
+    /* Primary Orange (from logo) */
+    --superseller-red: #f47920;
+    /* Legacy alias — now orange */
+    --superseller-secondary: #4ecdc4;
+    /* Secondary Teal (from logo) */
+    --superseller-orange: #f47920;
     /* Alias for compatibility */
-    --superseller-secondary: #bf5700;
-    /* Secondary Orange */
-    --superseller-orange: #bf5700;
-    /* Alias for compatibility */
-    --superseller-accent-blue: #1eaef7;
-    /* Accent Blue */
-    --superseller-blue: #1eaef7;
+    --superseller-teal: #4ecdc4;
+    /* Teal from logo */
+    --superseller-accent-blue: #2494e0;
+    /* Accent Blue (from logo) */
+    --superseller-blue: #2494e0;
     /* Alias for compatibility */
     --superseller-accent-cyan: #5ffbfd;
     /* Accent Cyan */
     --superseller-cyan: #5ffbfd;
     /* Alias for compatibility */
     --superseller-neon: #5ffbfd;
-    --superseller-glow: #1eaef7;
+    --superseller-glow: #2494e0;
 
-    /* SuperSeller AI Background Colors */
-    --superseller-bg-primary: #110d28;
+    /* SuperSeller AI Background Colors (navy-toned, matching logo) */
+    --superseller-bg-primary: #0d1b2e;
     /* app background */
-    --superseller-bg-secondary: #1a162f;
+    --superseller-bg-secondary: #152236;
     /* panels, surfaces */
-    --superseller-bg-card: #1a153f;
+    --superseller-bg-card: #162540;
     /* cards */
-    --superseller-bg-surface: #17123a;
+    --superseller-bg-surface: #132038;
 
     /* SuperSeller AI Text Colors */
     --superseller-text-primary: #fffff3;
@@ -78,21 +80,21 @@ body {
     --superseller-text-muted: #94a3b8;
     --superseller-text-accent: #5ffbfd;
 
-    /* SuperSeller AI Gradients */
-    --superseller-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
-    --superseller-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
-    --superseller-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
-    --superseller-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+    /* SuperSeller AI Gradients (orange → teal → blue, matching logo flow) */
+    --superseller-gradient-primary: linear-gradient(135deg, #f47920 0%, #4ecdc4 100%);
+    --superseller-gradient-secondary: linear-gradient(135deg, #2494e0 0%, #5ffbfd 100%);
+    --superseller-gradient-brand: linear-gradient(135deg, #f47920 0%, #4ecdc4 50%, #2494e0 100%);
+    --superseller-gradient-neon: linear-gradient(135deg, #2494e0 0%, #5ffbfd 100%);
 
     /* SuperSeller AI Glow Effects */
-    --superseller-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
-    --superseller-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
+    --superseller-glow-primary: 0 0 20px rgba(244, 121, 32, 0.45);
+    --superseller-glow-secondary: 0 0 20px rgba(36, 148, 224, 0.45);
     --superseller-glow-accent: 0 0 20px rgba(95, 251, 253, 0.45);
     --superseller-glow-neon: 0 0 30px rgba(95, 251, 253, 0.7);
   }
 
   .dark {
-    --background: 266 47% 10%;
+    --background: 213 56% 12%;
     --foreground: 210 40% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -117,51 +119,49 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* SuperSeller AI Brand Colors (Dark Mode) */
-    --superseller-primary: #fe3d51;
-    /* Primary Red */
-    --superseller-red: #fe3d51;
+    /* SuperSeller AI Brand Colors (Dark Mode — matched to logo) */
+    --superseller-primary: #f47920;
+    /* Primary Orange (from logo) */
+    --superseller-red: #f47920;
+    /* Legacy alias — now orange */
+    --superseller-secondary: #4ecdc4;
+    /* Secondary Teal (from logo) */
+    --superseller-orange: #f47920;
     /* Alias for compatibility */
-    --superseller-secondary: #bf5700;
-    /* Secondary Orange */
-    --superseller-orange: #bf5700;
-    /* Alias for compatibility */
-    --superseller-accent-blue: #1eaef7;
-    /* Accent Blue */
-    --superseller-blue: #1eaef7;
+    --superseller-teal: #4ecdc4;
+    /* Teal from logo */
+    --superseller-accent-blue: #2494e0;
+    /* Accent Blue (from logo) */
+    --superseller-blue: #2494e0;
     /* Alias for compatibility */
     --superseller-accent-cyan: #5ffbfd;
     /* Accent Cyan */
     --superseller-cyan: #5ffbfd;
     /* Alias for compatibility */
     --superseller-neon: #5ffbfd;
-    --superseller-glow: #1eaef7;
+    --superseller-glow: #2494e0;
 
-    /* SuperSeller AI Background Colors (Dark Mode) */
-    --superseller-bg-primary: #110d28;
-    /* brand */
-    --superseller-bg-secondary: #1a162f;
-    /* brand */
-    --superseller-bg-card: #1a153f;
-    --superseller-bg-surface: #17123a;
+    /* SuperSeller AI Background Colors (Dark Mode — navy-toned) */
+    --superseller-bg-primary: #0d1b2e;
+    --superseller-bg-secondary: #152236;
+    --superseller-bg-card: #162540;
+    --superseller-bg-surface: #132038;
 
     /* SuperSeller AI Text Colors (Dark Mode) */
     --superseller-text-primary: #fffff3;
-    /* brand */
     --superseller-text-secondary: #b0bec5;
-    /* brand */
     --superseller-text-muted: #94a3b8;
     --superseller-text-accent: #5ffbfd;
 
-    /* SuperSeller AI Gradients (Dark Mode) */
-    --superseller-gradient-primary: linear-gradient(135deg, #fe3d51 0%, #bf5700 100%);
-    --superseller-gradient-secondary: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
-    --superseller-gradient-brand: linear-gradient(135deg, #fe3d51 0%, #bf5700 50%, #1eaef7 100%);
-    --superseller-gradient-neon: linear-gradient(135deg, #1eaef7 0%, #5ffbfd 100%);
+    /* SuperSeller AI Gradients (Dark Mode — orange → teal → blue) */
+    --superseller-gradient-primary: linear-gradient(135deg, #f47920 0%, #4ecdc4 100%);
+    --superseller-gradient-secondary: linear-gradient(135deg, #2494e0 0%, #5ffbfd 100%);
+    --superseller-gradient-brand: linear-gradient(135deg, #f47920 0%, #4ecdc4 50%, #2494e0 100%);
+    --superseller-gradient-neon: linear-gradient(135deg, #2494e0 0%, #5ffbfd 100%);
 
     /* SuperSeller AI Glow Effects (Dark Mode) */
-    --superseller-glow-primary: 0 0 20px rgba(254, 61, 81, 0.45);
-    --superseller-glow-secondary: 0 0 20px rgba(30, 174, 247, 0.45);
+    --superseller-glow-primary: 0 0 20px rgba(244, 121, 32, 0.45);
+    --superseller-glow-secondary: 0 0 20px rgba(36, 148, 224, 0.45);
     --superseller-glow-accent: 0 0 20px rgba(95, 251, 253, 0.45);
     --superseller-glow-neon: 0 0 30px rgba(95, 251, 253, 0.7);
   }
@@ -408,8 +408,8 @@ body {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.15),
       inset 0 -2px 4px rgba(0, 0, 0, 0.15),
-      0 4px 15px rgba(254, 61, 81, 0.35),
-      0 8px 30px rgba(254, 61, 81, 0.15);
+      0 4px 15px rgba(244, 121, 32, 0.35),
+      0 8px 30px rgba(244, 121, 32, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
@@ -438,9 +438,9 @@ body {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.2),
       inset 0 -2px 4px rgba(0, 0, 0, 0.15),
-      0 8px 25px rgba(254, 61, 81, 0.5),
-      0 16px 50px rgba(254, 61, 81, 0.2),
-      0 0 80px rgba(254, 61, 81, 0.12);
+      0 8px 25px rgba(244, 121, 32, 0.5),
+      0 16px 50px rgba(244, 121, 32, 0.2),
+      0 0 80px rgba(244, 121, 32, 0.12);
   }
 
   .superseller-btn-3d-primary:hover::before {
@@ -451,7 +451,7 @@ body {
     transform: translateY(1px) scale(0.99);
     box-shadow:
       inset 0 2px 6px rgba(0, 0, 0, 0.25),
-      0 2px 8px rgba(254, 61, 81, 0.3);
+      0 2px 8px rgba(244, 121, 32, 0.3);
     transition-duration: 0.1s;
   }
 

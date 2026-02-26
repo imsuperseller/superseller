@@ -12,8 +12,8 @@ export default function CreateVideoPage() {
             </Link>
 
             <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-[#fe3d51]/10 border border-[#fe3d51]/20">
-                    <Video className="w-6 h-6 text-[#fe3d51]" />
+                <div className="p-2 rounded-lg bg-[#f47920]/10 border border-[#f47920]/20">
+                    <Video className="w-6 h-6 text-[#f47920]" />
                 </div>
                 <h1 className="text-2xl font-bold">Create AI Property Tour</h1>
             </div>

@@ -60,8 +60,8 @@ export const TaskList: React.FC<TaskListProps> = ({
   const getPriorityColor = (priority: Task['priority']) => {
     switch (priority) {
       case 'low': return '#5ffbfd';
-      case 'medium': return '#bf5700';
-      case 'high': return '#fe3d51';
+      case 'medium': return '#4ecdc4';
+      case 'high': return '#f47920';
       default: return '#666';
     }
   };

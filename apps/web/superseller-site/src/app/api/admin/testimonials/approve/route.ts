@@ -31,9 +31,9 @@ export async function GET(request: NextRequest) {
                 <head>
                     <title>Testimonial Approved</title>
                     <style>
-                        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #110d28; color: white; }
-                        .card { background: #1a1438; padding: 2rem; border-radius: 1rem; border: 1px solid #fe3d51; text-align: center; }
-                        h1 { color: #fe3d51; }
+                        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #0d1b2e; color: white; }
+                        .card { background: #1a1438; padding: 2rem; border-radius: 1rem; border: 1px solid #f47920; text-align: center; }
+                        h1 { color: #f47920; }
                     </style>
                 </head>
                 <body>

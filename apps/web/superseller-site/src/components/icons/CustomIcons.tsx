@@ -202,8 +202,8 @@ export function SkillsIcon({ className = '', size = 64 }: IconProps) {
         >
             <defs>
                 <linearGradient id="skillsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FE3D51" />
-                    <stop offset="100%" stopColor="#FF6B7A" />
+                    <stop offset="0%" stopColor="#F47920" />
+                    <stop offset="100%" stopColor="#f79d4e" />
                 </linearGradient>
                 <filter id="skillsGlow" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="2" result="coloredBlur" />

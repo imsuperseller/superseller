@@ -82,8 +82,8 @@ export function MagicButton({
                 onClick={() => setIsOpen(true)}
                 className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform"
                 style={{
-                    background: 'linear-gradient(135deg, #fe3d51 0%, #ff6b7a 100%)',
-                    boxShadow: '0 4px 20px rgba(254, 61, 81, 0.4)',
+                    background: 'linear-gradient(135deg, #f47920 0%, #f79d4e 100%)',
+                    boxShadow: '0 4px 20px rgba(244, 121, 32, 0.4)',
                 }}
             >
                 <AlertCircle className="w-6 h-6 text-white" />
@@ -93,7 +93,7 @@ export function MagicButton({
 
     return (
         <div className="fixed bottom-6 right-6 z-50 w-80 rounded-2xl shadow-2xl overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #1a1438 0%, #110d28 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            style={{ background: 'linear-gradient(135deg, #1a1438 0%, #0d1b2e 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
 
             {/* Header */}
             <div className="p-4 border-b border-white/10 flex items-center justify-between">

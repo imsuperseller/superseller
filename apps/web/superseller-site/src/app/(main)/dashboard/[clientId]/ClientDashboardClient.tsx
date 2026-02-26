@@ -306,17 +306,17 @@ export default function ClientDashboardClient({
 
                         {/* AI Opportunity Radar */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="rounded-xl p-6 border border-white/5 relative overflow-hidden group bg-gradient-to-br from-[#1a1438] to-[#110d28]">
+                            <div className="rounded-xl p-6 border border-white/5 relative overflow-hidden group bg-gradient-to-br from-[#1a1438] to-[#0d1b2e]">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <Sparkles className="w-24 h-24 text-[#fe3d51]" />
+                                    <Sparkles className="w-24 h-24 text-[#f47920]" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
-                                    <span className="p-2 bg-[#fe3d51]/20 rounded-lg"><Zap className="w-5 h-5 text-[#fe3d51]" /></span>
+                                    <span className="p-2 bg-[#f47920]/20 rounded-lg"><Zap className="w-5 h-5 text-[#f47920]" /></span>
                                     AI Opportunity Radar
                                 </h3>
                                 <div className="space-y-4 relative z-10">
                                     <p className="text-gray-400 text-sm">Targeted upgrades to maximize your automation ROI.</p>
-                                    <div className="bg-black/20 rounded-xl p-4 border border-white/5 hover:border-[#fe3d51]/30 transition-colors">
+                                    <div className="bg-black/20 rounded-xl p-4 border border-white/5 hover:border-[#f47920]/30 transition-colors">
                                         <div className="flex justify-between items-center mb-2">
                                             <span className="text-sm font-medium text-white">Sarah (Comm Efficiency)</span>
                                             <span className="text-xs text-[#5ffbfd] font-bold">+85% Capacity</span>
@@ -334,7 +334,7 @@ export default function ClientDashboardClient({
                             </div>
 
                             {/* Marketplace Hot Picks */}
-                            <div className="rounded-xl p-6 border border-white/5 group bg-gradient-to-br from-[#1a1438] to-[#110d28]">
+                            <div className="rounded-xl p-6 border border-white/5 group bg-gradient-to-br from-[#1a1438] to-[#0d1b2e]">
                                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
                                     <span className="p-2 bg-[#1eaef7]/20 rounded-lg"><Package className="w-5 h-5 text-[#1eaef7]" /></span>
                                     Marketplace Hot Picks

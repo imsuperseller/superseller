@@ -246,10 +246,10 @@ export function CustomizationModal({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
             <div
                 className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 shadow-2xl"
-                style={{ background: 'linear-gradient(135deg, #1a1438 0%, #110d28 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #152236 0%, #0d1b2e 100%)' }}
             >
                 {/* Header */}
-                <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-white/10 bg-[#1a1438]/95 backdrop-blur-sm">
+                <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-white/10 bg-[#152236]/95 backdrop-blur-sm">
                     <div>
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
                             <Zap className="w-5 h-5 text-cyan-400" />
@@ -415,9 +415,9 @@ export function CustomizationModal({
                                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 outline-none transition-all"
                                             required={field.required}
                                         >
-                                            <option value="" className="bg-[#1a1438]">{isRtl ? 'בחר...' : 'Select...'}</option>
+                                            <option value="" className="bg-[#152236]">{isRtl ? 'בחר...' : 'Select...'}</option>
                                             {field.options?.map((option) => (
-                                                <option key={option} value={option} className="bg-[#1a1438]">
+                                                <option key={option} value={option} className="bg-[#152236]">
                                                     {option}
                                                 </option>
                                             ))}

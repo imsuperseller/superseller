@@ -274,7 +274,7 @@ export function ContactPageContent({ mounted }: { mounted: boolean }) {
           </h2>
           <div className="flex flex-col sm:flex-row gap-8 justify-center pt-8">
             <Link href="/pricing" className="w-full sm:w-auto">
-              <Button size="xl" className="w-full h-20 px-12 text-xl font-black rounded-2xl bg-[#fe3d51] text-white hover:bg-[#ff4d61] shadow-2xl transition-all">
+              <Button size="xl" className="w-full h-20 px-12 text-xl font-black rounded-2xl bg-[#f47920] text-white hover:bg-[#f58a30] shadow-2xl transition-all">
                 {t.ctaSystem}
                 <ArrowRight className="w-6 h-6 ml-2" />
               </Button>

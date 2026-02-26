@@ -280,10 +280,10 @@ function generateEmailHtml(template: EmailTemplate, data: Record<string, any>): 
         <div style="${baseStyles}">
           <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
             <img src="https://superseller.agency/superseller-logo.webp" alt="SuperSeller AI" width="120" style="margin-bottom: 24px;" />
-            <h1 style="color: ${data.severity === 'critical' ? '#fe3d51' : '#f59e0b'}; font-size: 28px; margin-bottom: 16px;">
+            <h1 style="color: ${data.severity === 'critical' ? '#f47920' : '#f59e0b'}; font-size: 28px; margin-bottom: 16px;">
               System Alert ${data.severity === 'critical' ? '🔴' : '🟡'}
             </h1>
-            <div style="${cardStyle}; border-color: ${data.severity === 'critical' ? 'rgba(254,61,81,0.3)' : 'rgba(245,158,11,0.3)'};">
+            <div style="${cardStyle}; border-color: ${data.severity === 'critical' ? 'rgba(244,121,32,0.3)' : 'rgba(245,158,11,0.3)'};">
               <p style="color: #94a3b8; margin: 0; font-size: 12px; text-transform: uppercase;">Service</p>
               <p style="color: #ffffff; font-size: 18px; font-weight: bold; margin: 4px 0 16px 0;">${data.serviceName || data.serviceId || 'Unknown'}</p>
               <p style="color: #94a3b8; margin: 0; font-size: 12px; text-transform: uppercase;">Condition</p>
@@ -337,8 +337,8 @@ function generateEmailHtml(template: EmailTemplate, data: Record<string, any>): 
 
     case 'marketplace-failed':
       const errorCardStyle = `
-        background: rgba(254, 61, 81, 0.1);
-        border: 1px solid rgba(254, 61, 81, 0.3);
+        background: rgba(244, 121, 32, 0.1);
+        border: 1px solid rgba(244, 121, 32, 0.3);
         border-radius: 16px;
         padding: 24px;
         margin: 20px 0;
@@ -356,12 +356,12 @@ function generateEmailHtml(template: EmailTemplate, data: Record<string, any>): 
         <div style="${baseStyles}">
           <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
             <img src="https://superseller.agency/superseller-logo.webp" alt="SuperSeller AI" width="120" style="margin-bottom: 24px;" />
-            <h1 style="color: #fe3d51; font-size: 28px; margin-bottom: 16px;">Listing Issue ⚠️</h1>
+            <h1 style="color: #f47920; font-size: 28px; margin-bottom: 16px;">Listing Issue ⚠️</h1>
             <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
               We encountered an issue while posting your marketplace listing for <strong>${data.productName}</strong>.
             </p>
             <div style="${errorCardStyle}">
-              <h3 style="color: #fe3d51; margin-top: 0;">What Happened</h3>
+              <h3 style="color: #f47920; margin-top: 0;">What Happened</h3>
               <p style="color: #cbd5e1; font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; overflow-wrap: break-word;">
                 ${data.error || 'Failed to post listing to marketplace'}
               </p>

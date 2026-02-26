@@ -184,7 +184,7 @@ export default function ClientManagement() {
                                     </button>
                                     <button
                                         onClick={() => handleDelete('clients', client.id)}
-                                        className="p-2.5 bg-white/5 rounded-xl text-slate-500 hover:text-[#fe3d51] hover:bg-[#fe3d51]/10 transition-all"
+                                        className="p-2.5 bg-white/5 rounded-xl text-slate-500 hover:text-[#f47920] hover:bg-[#f47920]/10 transition-all"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
@@ -216,7 +216,7 @@ export default function ClientManagement() {
                                         </span>
                                     )}
                                     {client.privacySettings.hideBusinessName && (
-                                        <span className="flex items-center space-x-1 px-3 py-1 bg-[#fe3d51]/10 text-[#fe3d51] rounded-full text-[9px] font-black uppercase tracking-widest border border-[#fe3d51]/20">
+                                        <span className="flex items-center space-x-1 px-3 py-1 bg-[#f47920]/10 text-[#f47920] rounded-full text-[9px] font-black uppercase tracking-widest border border-[#f47920]/20">
                                             <Shield className="w-3 h-3" />
                                             <span>Obfuscated</span>
                                         </span>
@@ -265,7 +265,7 @@ export default function ClientManagement() {
                                 </button>
                                 <button
                                     onClick={() => handleDelete('testimonials', testimonial.id)}
-                                    className="p-3 bg-white/5 rounded-2xl text-slate-500 hover:text-[#fe3d51] hover:bg-[#fe3d51]/10 transition-all"
+                                    className="p-3 bg-white/5 rounded-2xl text-slate-500 hover:text-[#f47920] hover:bg-[#f47920]/10 transition-all"
                                 >
                                     <Trash2 className="w-5 h-5" />
                                 </button>
@@ -278,7 +278,7 @@ export default function ClientManagement() {
             {/* Client Modal */}
             {editingClient && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-                    <div className="bg-[#1a162f] w-full max-w-2xl rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                    <div className="bg-[#152236] w-full max-w-2xl rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
                         <div className="p-8 border-b border-white/5 flex items-center justify-between">
                             <div>
                                 <h3 className="text-2xl font-black uppercase tracking-tighter text-white">
@@ -393,7 +393,7 @@ export default function ClientManagement() {
             {/* Testimonial Modal */}
             {editingTestimonial && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-                    <div className="bg-[#1a162f] w-full max-w-2xl rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                    <div className="bg-[#152236] w-full max-w-2xl rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
                         <div className="p-8 border-b border-white/5 flex items-center justify-between">
                             <div>
                                 <h3 className="text-2xl font-black uppercase tracking-tighter text-white">

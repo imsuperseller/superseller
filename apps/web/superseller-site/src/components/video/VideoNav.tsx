@@ -37,7 +37,7 @@ export default function VideoNav({ email, clientId }: VideoNavProps) {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/video" className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <div className="w-8 h-8 bg-[#fe3d51] rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#f47920] rounded-lg flex items-center justify-center">
             <Video size={16} className="text-white" />
           </div>
           <span>TourReel</span>

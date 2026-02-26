@@ -216,7 +216,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
                                 <div
                                     id={productId === 'full-ecosystem' ? 'ecosystem' : undefined}
                                     className={`relative p-8 rounded-[2.5rem] border h-full group transition-all duration-500 overflow-hidden flex flex-col ${isAudit ? 'bg-cyan-500/5 border-cyan-500/30 hover:bg-cyan-500/10' :
-                                        isEcosystem ? 'bg-[#fe3d51]/5 border-[#fe3d51]/30 hover:bg-[#fe3d51]/10' :
+                                        isEcosystem ? 'bg-[#f47920]/5 border-[#f47920]/30 hover:bg-[#f47920]/10' :
                                             'bg-white/[0.03] border-white/5 hover:bg-white/[0.05]'
                                         }`}>
                                     {product.popular && (
@@ -227,7 +227,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
 
                                     <div className="mb-10">
                                         <div className="flex items-center gap-6 mb-8">
-                                            {Icon && <Icon className={`w-12 h-12 ${isAudit ? 'text-cyan-400' : isEcosystem ? 'text-[#fe3d51]' : 'text-white'}`} />}
+                                            {Icon && <Icon className={`w-12 h-12 ${isAudit ? 'text-cyan-400' : isEcosystem ? 'text-[#f47920]' : 'text-white'}`} />}
                                             <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">{product.name}</h3>
                                         </div>
 
@@ -260,7 +260,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
                                             }
                                         }}
                                         className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${isAudit ? 'bg-cyan-400 text-black hover:bg-cyan-300 hover:scale-[1.02]' :
-                                            isEcosystem ? 'bg-[#fe3d51] text-white hover:bg-[#ff4d61] hover:scale-[1.02]' :
+                                            isEcosystem ? 'bg-[#f47920] text-white hover:bg-[#f58a30] hover:scale-[1.02]' :
                                                 'bg-white/5 text-white hover:bg-white/10'
                                             }`}
                                     >
@@ -372,7 +372,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
                                         <Link href="/contact" className="w-full">
                                             <Button
                                                 size="xl"
-                                                className="w-full h-20 text-xl font-black rounded-2xl bg-[#fe3d51] text-white hover:bg-[#ff4d61]"
+                                                className="w-full h-20 text-xl font-black rounded-2xl bg-[#f47920] text-white hover:bg-[#f58a30]"
                                             >
                                                 Schedule Discovery
                                             </Button>
@@ -406,7 +406,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
                     </p>
                     <div className="flex flex-col sm:flex-row gap-8 justify-center pt-8">
                         <Link href="/contact" className="w-full sm:w-auto">
-                            <Button size="xl" className="w-full h-20 px-12 text-xl font-black rounded-2xl bg-[#fe3d51] text-white hover:bg-[#ff4d61] shadow-2xl">
+                            <Button size="xl" className="w-full h-20 px-12 text-xl font-black rounded-2xl bg-[#f47920] text-white hover:bg-[#f58a30] shadow-2xl">
                                 {t.scheduleCall}
                             </Button>
                         </Link>

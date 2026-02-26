@@ -104,7 +104,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
                         <div className="text-center mb-8">
                             <div
                                 className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
-                                style={{ background: 'rgba(254, 61, 81, 0.2)' }}
+                                style={{ background: 'rgba(244, 121, 32, 0.2)' }}
                             >
                                 <Target className="w-6 h-6" style={{ color: 'var(--superseller-primary)' }} />
                             </div>
@@ -131,7 +131,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
                                         background: 'var(--superseller-bg-secondary)',
                                         border: '1px solid rgba(255, 255, 255, 0.1)',
                                         color: 'var(--superseller-text-primary)',
-                                        borderColor: 'rgba(254, 61, 81, 0.3)'
+                                        borderColor: 'rgba(244, 121, 32, 0.3)'
                                     }}
                                     placeholder="John Doe"
                                 />
@@ -151,7 +151,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
                                         background: 'var(--superseller-bg-secondary)',
                                         border: '1px solid rgba(255, 255, 255, 0.1)',
                                         color: 'var(--superseller-text-primary)',
-                                        borderColor: 'rgba(254, 61, 81, 0.3)'
+                                        borderColor: 'rgba(244, 121, 32, 0.3)'
                                     }}
                                     placeholder="john@company.com"
                                 />
@@ -171,7 +171,7 @@ export function ScorecardModal({ isOpen, onClose }: ScorecardModalProps) {
                                         background: 'var(--superseller-bg-secondary)',
                                         border: '1px solid rgba(255, 255, 255, 0.1)',
                                         color: 'var(--superseller-text-primary)',
-                                        borderColor: 'rgba(254, 61, 81, 0.3)'
+                                        borderColor: 'rgba(244, 121, 32, 0.3)'
                                     }}
                                     placeholder="Acme Inc."
                                 />

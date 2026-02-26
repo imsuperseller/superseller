@@ -55,8 +55,8 @@ export default function EarningsTab({ config, stats, payouts = [] }: EarningsTab
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Total Earned</p>
                     <h3 className="text-3xl font-black text-white">${defaultStats.totalEarned.toLocaleString()}</h3>
                 </Card>
-                <Card className="p-6 bg-[#fe3d51]/10 border-[#fe3d51]/20 rounded-[2rem]">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[#fe3d51] mb-1">Pending Payout</p>
+                <Card className="p-6 bg-[#f47920]/10 border-[#f47920]/20 rounded-[2rem]">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#f47920] mb-1">Pending Payout</p>
                     <h3 className="text-3xl font-black text-white">${defaultStats.pendingPayout.toLocaleString()}</h3>
                 </Card>
             </div>

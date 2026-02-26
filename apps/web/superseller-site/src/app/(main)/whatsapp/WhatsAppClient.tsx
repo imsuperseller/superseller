@@ -281,7 +281,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
             <main className="flex-grow">
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#110d28] to-[#110d28]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0d1b2e] to-[#0d1b2e]" />
 
                     <div className="container relative mx-auto px-4 text-center z-10">
                         <motion.div
@@ -308,7 +308,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
 
                         <div className="flex flex-col md:flex-row gap-8 items-stretch max-w-6xl mx-auto">
                             {/* Video - Dominant */}
-                            <div className="flex-[2] min-h-[300px] md:min-h-[400px] bg-[#1a162f]/80 rounded-2xl border border-cyan-500/30 relative overflow-hidden group shadow-[0_0_30px_rgba(30,174,247,0.2)] backdrop-blur-sm">
+                            <div className="flex-[2] min-h-[300px] md:min-h-[400px] bg-[#152236]/80 rounded-2xl border border-cyan-500/30 relative overflow-hidden group shadow-[0_0_30px_rgba(30,174,247,0.2)] backdrop-blur-sm">
                                 <video
                                     src="/assets/whatsapp-hero.mp4"
                                     poster="/images/whatsapp-hero-poster.jpg"
@@ -318,7 +318,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                                     playsInline
                                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#110d28] via-transparent to-transparent pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d1b2e] via-transparent to-transparent pointer-events-none" />
 
                                 <div className="absolute bottom-6 left-6 text-sm font-medium text-white/90 px-3 py-2 rounded-lg backdrop-blur-md border border-white/10 flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#5ffbfd]"></span>
@@ -327,7 +327,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                             </div>
 
                             {/* Base Platform Card - Slimmer */}
-                            <div className="flex-1 bg-[#1a162f] border border-white/5 rounded-2xl p-6 backdrop-blur-sm relative group flex flex-col text-left shadow-2xl">
+                            <div className="flex-1 bg-[#152236] border border-white/5 rounded-2xl p-6 backdrop-blur-sm relative group flex flex-col text-left shadow-2xl">
                                 <div className="absolute -inset-[1px] bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur opacity-20 group-hover:opacity-100 transition duration-500" />
                                 <div className="relative flex-1 flex flex-col">
                                     <div className="text-xs text-orange-500 font-bold uppercase tracking-wider mb-2">The Foundation</div>
@@ -341,7 +341,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                                             </li>
                                         ))}
                                     </ul>
-                                    <div className="mt-auto p-3 bg-[#110d28] rounded-lg border border-white/10 text-xs text-gray-400">
+                                    <div className="mt-auto p-3 bg-[#0d1b2e] rounded-lg border border-white/10 text-xs text-gray-400">
                                         Includes robust anti-ban architecture. <br />
                                         <strong>Everything else is optional.</strong>
                                     </div>
@@ -369,7 +369,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                                     className={`
                                         relative p-10 rounded-[3rem] border flex flex-col items-center text-center group cursor-pointer transition-all duration-500 h-full backdrop-blur-3xl
                                         ${bundle.highlight
-                                            ? 'bg-superseller-red/5 border-superseller-red/20 shadow-[0_20px_50px_rgba(254,61,81,0.1)] scale-105 z-10'
+                                            ? 'bg-superseller-red/5 border-superseller-red/20 shadow-[0_20px_50px_rgba(244,121,32,0.1)] scale-105 z-10'
                                             : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'}
                                     `}
                                     onClick={() => selectBundle(bundle.id)}
@@ -437,7 +437,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
                                                 ${addon.available === false
                                                     ? 'bg-white/[0.01] border-white/5 opacity-40 cursor-not-allowed'
                                                     : selectedAddons.includes(addon.id)
-                                                        ? 'bg-superseller-red/[0.03] border-superseller-red/30 shadow-[0_10px_30px_rgba(254,61,81,0.05)]'
+                                                        ? 'bg-superseller-red/[0.03] border-superseller-red/30 shadow-[0_10px_30px_rgba(244,121,32,0.05)]'
                                                         : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.04]'}
                                             `}
                                         >
@@ -642,7 +642,7 @@ export default function WhatsAppClient({ initialProduct }: WhatsAppClientProps) 
             {/* Email Capture Modal */}
             {showEmailModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="bg-[#110d28] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+                    <div className="bg-[#0d1b2e] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
                         <h3 className="text-2xl font-bold mb-2">Secure Your Slot</h3>
                         <p className="text-gray-400 mb-6">
                             Enter your email to proceed to secure payment. We&apos;ll use this to set up your Dedicated WhatsApp Instance.

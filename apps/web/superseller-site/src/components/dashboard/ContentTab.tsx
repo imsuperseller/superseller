@@ -62,8 +62,8 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
         switch (status) {
             case 'published': return '#22c55e';
             case 'scheduled': return '#1eaef7';
-            case 'needs_approval': return '#fe3d51'; // V3.1 Cyan/Pink contrast
-            case 'draft': return '#f7931e';
+            case 'needs_approval': return '#f47920'; // V3.1 Cyan/Pink contrast
+            case 'draft': return '#f47920';
             case 'failed': return '#ef4444';
             default: return '#6b7280';
         }
@@ -128,7 +128,7 @@ export default function ContentTab({ content, isLocked, onUpgradeClick }: Conten
                     { label: 'Total Content', value: stats.total, icon: FileText, color: '#f59e0b' },
                     { label: 'Published', value: stats.published, icon: CheckCircle2, color: '#22c55e' },
                     { label: 'Scheduled', value: stats.scheduled, icon: Calendar, color: '#1eaef7' },
-                    { label: 'Drafts', value: stats.drafts, icon: Edit, color: '#f7931e' },
+                    { label: 'Drafts', value: stats.drafts, icon: Edit, color: '#f47920' },
                 ].map(stat => (
                     <div
                         key={stat.label}

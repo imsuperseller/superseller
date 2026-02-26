@@ -268,7 +268,7 @@ export default function AdminDashboardClient({
                         </div>
                         <button className="relative p-2 text-slate-400 hover:text-white transition-colors">
                             <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-[#fe3d51] rounded-full shadow-[0_0_10px_rgba(254,61,81,0.5)]"></span>
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-[#f47920] rounded-full shadow-[0_0_10px_rgba(244,121,32,0.5)]"></span>
                         </button>
                         <div className="relative">
                             <button
@@ -285,7 +285,7 @@ export default function AdminDashboardClient({
                             </button>
 
                             {userMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-56 bg-[#1a162f] border border-white/10 rounded-2xl shadow-2xl py-2 z-50 backdrop-blur-2xl ring-1 ring-black/50 overflow-hidden">
+                                <div className="absolute right-0 mt-2 w-56 bg-[#152236] border border-white/10 rounded-2xl shadow-2xl py-2 z-50 backdrop-blur-2xl ring-1 ring-black/50 overflow-hidden">
                                     <div className="px-4 py-3 border-b border-white/5">
                                         <p className="text-xs font-black uppercase tracking-widest text-white">
                                             {session.user?.name}
@@ -297,7 +297,7 @@ export default function AdminDashboardClient({
                                     <div className="py-1">
                                         <button
                                             onClick={handleSignOut}
-                                            className="flex items-center w-full px-4 py-2.5 text-left hover:bg-[#fe3d51]/10 text-slate-400 hover:text-[#fe3d51] text-xs font-black uppercase tracking-widest transition-colors"
+                                            className="flex items-center w-full px-4 py-2.5 text-left hover:bg-[#f47920]/10 text-slate-400 hover:text-[#f47920] text-xs font-black uppercase tracking-widest transition-colors"
                                         >
                                             <LogOut className="h-4 w-4 mr-3" />
                                             Sign out
@@ -371,7 +371,7 @@ export default function AdminDashboardClient({
                                         { label: 'Monthly Revenue', value: `$${displayStats.revenue.current.toLocaleString()}`, change: displayStats.revenue.change, icon: DollarSign, color: 'text-green-400', bg: 'bg-green-500/10' },
                                         { label: 'Active Projects', value: displayStats.projects.active, sub: `${displayStats.projects.completed} completed`, icon: FolderOpen, color: 'text-blue-400', bg: 'bg-blue-500/10' },
                                         { label: 'Total Clients', value: displayStats.clients.total, sub: `${displayStats.clients.new} new this month`, icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-                                        { label: 'Pending Invoices', value: displayStats.invoices.pending, sub: `${displayStats.invoices.overdue} overdue`, icon: Clock, color: 'text-red-400', bg: 'bg-[#fe3d51]/10' },
+                                        { label: 'Pending Invoices', value: displayStats.invoices.pending, sub: `${displayStats.invoices.overdue} overdue`, icon: Clock, color: 'text-red-400', bg: 'bg-[#f47920]/10' },
                                     ];
 
                                     return (

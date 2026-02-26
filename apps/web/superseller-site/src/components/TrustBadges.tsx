@@ -76,8 +76,8 @@ export function TrustBadges() {
                                         <div
                                             className="p-3 rounded-lg transition-transform duration-300 group-hover:scale-110"
                                             style={{
-                                                background: `rgba(${badge.color === 'var(--superseller-primary)' ? '254, 61, 81' : badge.color === 'var(--superseller-accent-cyan)' ? '95, 251, 253' : '30, 174, 247'}, 0.15)`,
-                                                border: `1px solid rgba(${badge.color === 'var(--superseller-primary)' ? '254, 61, 81' : badge.color === 'var(--superseller-accent-cyan)' ? '95, 251, 253' : '30, 174, 247'}, 0.3)`
+                                                background: `rgba(${badge.color === 'var(--superseller-primary)' ? '244, 121, 32' : badge.color === 'var(--superseller-accent-cyan)' ? '95, 251, 253' : '30, 174, 247'}, 0.15)`,
+                                                border: `1px solid rgba(${badge.color === 'var(--superseller-primary)' ? '244, 121, 32' : badge.color === 'var(--superseller-accent-cyan)' ? '95, 251, 253' : '30, 174, 247'}, 0.3)`
                                             }}
                                         >
                                             <Icon

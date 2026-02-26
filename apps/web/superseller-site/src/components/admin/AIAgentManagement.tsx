@@ -86,7 +86,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
         </div>
         <button
           onClick={() => deployAgent('all')}
-          className="flex items-center space-x-2 px-6 py-3 bg-[#fe3d51] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#ff4d5d] transition-all shadow-lg shadow-[#fe3d51]/20"
+          className="flex items-center space-x-2 px-6 py-3 bg-[#f47920] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#f58a30] transition-all shadow-lg shadow-[#f47920]/20"
         >
           <Zap className="w-4 h-4 fill-current" />
           <span>Sync Entire Web</span>
@@ -98,17 +98,17 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
           <div
             key={agent.id}
             className={`group relative p-8 rounded-[2rem] border transition-all overflow-hidden flex flex-col ${agent.isSuperSellerCore
-              ? 'border-[#fe3d51]/30 bg-[#fe3d51]/[0.02] hover:bg-[#fe3d51]/[0.04] shadow-[0_0_20px_rgba(254,61,81,0.05)]'
+              ? 'border-[#f47920]/30 bg-[#f47920]/[0.02] hover:bg-[#f47920]/[0.04] shadow-[0_0_20px_rgba(244,121,32,0.05)]'
               : 'border-white/5 bg-white/[0.01] hover:bg-white/[0.03]'
               }`}
           >
             {agent.isSuperSellerCore && (
-              <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#fe3d51]/10 blur-[40px] rounded-full group-hover:bg-[#fe3d51]/20 transition-all duration-500" />
+              <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#f47920]/10 blur-[40px] rounded-full group-hover:bg-[#f47920]/20 transition-all duration-500" />
             )}
 
             <div className="flex items-start justify-between mb-8">
               <div className="p-4 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform duration-500">
-                <Cpu className={`w-6 h-6 ${agent.isSuperSellerCore ? 'text-[#fe3d51]' : 'text-cyan-400'}`} />
+                <Cpu className={`w-6 h-6 ${agent.isSuperSellerCore ? 'text-[#f47920]' : 'text-cyan-400'}`} />
               </div>
               <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStatusColor(agent.status)}`}>
                 {agent.status}
@@ -120,7 +120,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-black text-white tracking-tight uppercase truncate">{agent.name}</h3>
                   {agent.isSuperSellerCore && (
-                    <div className="px-1.5 py-0.5 bg-[#fe3d51] text-white text-[7px] font-black uppercase rounded shadow-[0_0_10px_rgba(254,61,81,0.5)]">
+                    <div className="px-1.5 py-0.5 bg-[#f47920] text-white text-[7px] font-black uppercase rounded shadow-[0_0_10px_rgba(244,121,32,0.5)]">
                       CORE
                     </div>
                   )}
@@ -135,7 +135,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
                 </div>
                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-1000 shadow-[0_0_10px_rgba(6,182,212,0.3)] ${agent.isSuperSellerCore ? 'bg-[#fe3d51]' : 'bg-cyan-500'}`}
+                    className={`h-full transition-all duration-1000 shadow-[0_0_10px_rgba(6,182,212,0.3)] ${agent.isSuperSellerCore ? 'bg-[#f47920]' : 'bg-cyan-500'}`}
                     style={{ width: `${agent.performance}%` }}
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
                 </div>
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                   <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Faults</p>
-                  <p className={`text-xs font-bold ${agent.errors > 0 ? 'text-[#fe3d51]' : 'text-green-400'}`}>{agent.errors}</p>
+                  <p className={`text-xs font-bold ${agent.errors > 0 ? 'text-[#f47920]' : 'text-green-400'}`}>{agent.errors}</p>
                 </div>
               </div>
             </div>

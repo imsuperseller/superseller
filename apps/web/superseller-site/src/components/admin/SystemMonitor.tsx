@@ -52,7 +52,7 @@ interface MonitoringData {
 const STATUS_CONFIG = {
   healthy: { color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20', dot: 'bg-green-400', label: 'Healthy' },
   degraded: { color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', dot: 'bg-yellow-400', label: 'Degraded' },
-  down: { color: 'text-red-400', bg: 'bg-[#fe3d51]/10', border: 'border-[#fe3d51]/20', dot: 'bg-[#fe3d51]', label: 'Down' },
+  down: { color: 'text-red-400', bg: 'bg-[#f47920]/10', border: 'border-[#f47920]/20', dot: 'bg-[#f47920]', label: 'Down' },
   unknown: { color: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/20', dot: 'bg-slate-400', label: 'Unknown' },
 };
 
@@ -205,7 +205,7 @@ export default function SystemMonitor() {
         </div>
         <div className="p-6 rounded-[2rem] border border-white/5 bg-white/[0.02]">
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Active Alerts</p>
-          <p className={`text-2xl font-black ${(data?.activeAlerts || 0) > 0 ? 'text-[#fe3d51]' : 'text-white'}`}>
+          <p className={`text-2xl font-black ${(data?.activeAlerts || 0) > 0 ? 'text-[#f47920]' : 'text-white'}`}>
             {data?.activeAlerts || 0}
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function SystemMonitor() {
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">30d API Spend</p>
           <p className="text-2xl font-black text-white">${data?.expenses?.total?.toFixed(2) || '0.00'}</p>
           {(data?.anomalies?.length || 0) > 0 && (
-            <p className="text-xs text-[#fe3d51] mt-1">{data!.anomalies.length} anomalies detected</p>
+            <p className="text-xs text-[#f47920] mt-1">{data!.anomalies.length} anomalies detected</p>
           )}
         </div>
       </div>
@@ -321,13 +321,13 @@ export default function SystemMonitor() {
                   alert.resolved
                     ? 'border-white/5 bg-white/[0.01]'
                     : alert.severity === 'critical'
-                      ? 'border-[#fe3d51]/20 bg-[#fe3d51]/5'
+                      ? 'border-[#f47920]/20 bg-[#f47920]/5'
                       : 'border-yellow-500/20 bg-yellow-500/5'
                 } flex items-start justify-between gap-4`}
               >
                 <div className="flex items-start gap-3">
                   <AlertCircle className={`w-5 h-5 mt-0.5 ${
-                    alert.resolved ? 'text-slate-500' : alert.severity === 'critical' ? 'text-[#fe3d51]' : 'text-yellow-400'
+                    alert.resolved ? 'text-slate-500' : alert.severity === 'critical' ? 'text-[#f47920]' : 'text-yellow-400'
                   }`} />
                   <div>
                     <p className="text-sm font-black text-white">{alert.message}</p>
@@ -408,8 +408,8 @@ export default function SystemMonitor() {
 
           {/* Anomalies */}
           {(data?.anomalies?.length || 0) > 0 && (
-            <div className="rounded-[2rem] border border-[#fe3d51]/20 bg-[#fe3d51]/5 p-8">
-              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[#fe3d51] mb-4 flex items-center gap-2">
+            <div className="rounded-[2rem] border border-[#f47920]/20 bg-[#f47920]/5 p-8">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[#f47920] mb-4 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
                 Spending Anomalies
               </h3>
@@ -418,7 +418,7 @@ export default function SystemMonitor() {
                   <div key={i} className="flex items-center justify-between text-sm">
                     <span className="text-white font-mono">{a.date}</span>
                     <span className="text-slate-400">${a.dailySpend.toFixed(2)} vs avg ${a.average.toFixed(2)}</span>
-                    <span className="text-[#fe3d51] font-bold">{a.ratio}x</span>
+                    <span className="text-[#f47920] font-bold">{a.ratio}x</span>
                   </div>
                 ))}
               </div>

@@ -60,7 +60,7 @@ function ThankYouContent() {
                 {activeContent.subtitle}
             </p>
 
-            <div className="bg-[#1a162f] rounded-3xl p-8 border border-white/5 shadow-xl mb-12">
+            <div className="bg-[#152236] rounded-3xl p-8 border border-white/5 shadow-xl mb-12">
                 <p className="text-gray-300 text-lg leading-relaxed mb-6">
                     {activeContent.message}
                 </p>
@@ -76,8 +76,8 @@ function ThankYouContent() {
                         size="lg"
                         className="w-full sm:w-auto font-bold h-14 px-8"
                         style={{
-                            background: 'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
-                            boxShadow: '0 8px 20px rgba(254, 61, 81, 0.3)'
+                            background: 'linear-gradient(135deg, #F47920 0%, #f79d4e 100%)',
+                            boxShadow: '0 8px 20px rgba(244, 121, 32, 0.3)'
                         }}
                     >
                         Explore Marketplace <ArrowRight className="w-5 h-5 ml-2" />

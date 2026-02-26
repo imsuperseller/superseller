@@ -57,7 +57,7 @@ export default function AccountPage() {
                     </h2>
                     <Link
                         href="/video/pricing"
-                        className="px-3 py-1.5 rounded-lg bg-[#fe3d51] text-white text-sm font-medium hover:bg-[#ff4d61] transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-[#f47920] text-white text-sm font-medium hover:bg-[#f58a30] transition-colors"
                     >
                         Add Credits
                     </Link>

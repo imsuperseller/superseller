@@ -123,12 +123,12 @@ export default function PricingPage() {
                         className={cn(
                             "rounded-2xl border p-6 flex flex-col",
                             plan.popular
-                                ? "border-[#fe3d51]/50 bg-[#fe3d51]/5 relative"
+                                ? "border-[#f47920]/50 bg-[#f47920]/5 relative"
                                 : "border-white/10 bg-white/[0.02]"
                         )}
                     >
                         {plan.popular && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#fe3d51] text-white text-xs font-bold">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#f47920] text-white text-xs font-bold">
                                 Most Popular
                             </div>
                         )}
@@ -158,7 +158,7 @@ export default function PricingPage() {
                             className={cn(
                                 "w-full py-3 rounded-xl font-medium transition-colors",
                                 plan.popular
-                                    ? "bg-[#fe3d51] hover:bg-[#ff4d61] text-white"
+                                    ? "bg-[#f47920] hover:bg-[#f58a30] text-white"
                                     : "bg-white/10 hover:bg-white/15 text-white border border-white/10",
                                 "disabled:opacity-50 disabled:cursor-not-allowed"
                             )}
@@ -175,7 +175,7 @@ export default function PricingPage() {
 
             <div className="mt-12 text-center text-sm text-gray-500">
                 <p>All plans include automatic credit refunds for failed generations.</p>
-                <p className="mt-1">Need a custom plan? <a href="mailto:shai@superseller.agency" className="text-[#fe3d51] hover:underline">Contact us</a></p>
+                <p className="mt-1">Need a custom plan? <a href="mailto:shai@superseller.agency" className="text-[#f47920] hover:underline">Contact us</a></p>
             </div>
         </div>
     );

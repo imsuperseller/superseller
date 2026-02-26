@@ -124,7 +124,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                 </p>
               </div>
 
-              <div className="bg-[#110d28]/60 rounded-2xl border border-white/5 p-6 text-left space-y-4 overflow-hidden relative">
+              <div className="bg-[#0d1b2e]/60 rounded-2xl border border-white/5 p-6 text-left space-y-4 overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-2 opacity-20">
                   <span className="text-[10px] font-mono text-cyan-400 animate-pulse">TERMINAL ACTIVE</span>
                 </div>
@@ -162,7 +162,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                 </div>
               </div>
 
-              <div className="bg-[#110d28]/40 rounded-2xl border border-white/5 p-6 space-y-4">
+              <div className="bg-[#0d1b2e]/40 rounded-2xl border border-white/5 p-6 space-y-4">
                 <p className="text-sm text-slate-400 font-medium">Broadcast your mission:</p>
                 <div className="flex gap-4">
                   <a
@@ -188,7 +188,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <Link href="/niches" className="w-full">
-                  <Button className="w-full bg-[#fe3d51] hover:bg-[#ff4d61] text-white h-14 font-bold rounded-xl shadow-[0_0_20px_rgba(254,61,81,0.2)]">
+                  <Button className="w-full bg-[#f47920] hover:bg-[#f58a30] text-white h-14 font-bold rounded-xl shadow-[0_0_20px_rgba(244,121,32,0.2)]">
                     Go to Niches Catalog
                   </Button>
                 </Link>

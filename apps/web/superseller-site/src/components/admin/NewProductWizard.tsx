@@ -135,7 +135,7 @@ export default function NewProductWizard() {
                 {steps.map((s) => (
                     <div
                         key={s.id}
-                        className={`flex flex-col items-center gap-2 bg-[#1a153f] px-4 py-2 rounded-xl border-2 transition-colors ${step >= s.id
+                        className={`flex flex-col items-center gap-2 bg-[#162540] px-4 py-2 rounded-xl border-2 transition-colors ${step >= s.id
                             ? 'border-[#5ffbfd] text-[#5ffbfd]'
                             : 'border-gray-700 text-gray-500'
                             }`}
@@ -150,7 +150,7 @@ export default function NewProductWizard() {
             </div>
 
             {/* Form Content */}
-            <Card className="border-[#5ffbfd]/20 bg-[#1a153f]/50 backdrop-blur-lg">
+            <Card className="border-[#5ffbfd]/20 bg-[#162540]/50 backdrop-blur-lg">
                 <CardContent className="p-8">
                     {/* Step 1: Basics */}
                     {step === 1 && (
@@ -315,7 +315,7 @@ export default function NewProductWizard() {
                             <Button
                                 onClick={handleSubmit}
                                 disabled={isLoading}
-                                className="bg-[#fe3d51] text-white hover:bg-[#fe3d51]/90 min-w-[140px]"
+                                className="bg-[#f47920] text-white hover:bg-[#f47920]/90 min-w-[140px]"
                             >
                                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Product'}
                             </Button>

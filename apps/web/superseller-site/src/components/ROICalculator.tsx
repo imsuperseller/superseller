@@ -49,7 +49,7 @@ export function ROICalculator() {
     return (
         <section className="relative w-full max-w-5xl mx-auto my-24 px-4">
             {/* Background Glow Effects */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-[rgba(254,61,81,0.1)] via-[rgba(95,251,253,0.05)] to-[rgba(30,174,247,0.1)] blur-3xl rounded-full -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-[rgba(244,121,32,0.1)] via-[rgba(95,251,253,0.05)] to-[rgba(30,174,247,0.1)] blur-3xl rounded-full -z-10" />
 
             <div
                 className={`relative overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl p-8 md:p-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
@@ -63,7 +63,7 @@ export function ROICalculator() {
                     <div className="space-y-8">
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="p-3 rounded-xl bg-gradient-to-br from-[rgba(254,61,81,0.2)] to-[rgba(191,87,0,0.2)] border border-[rgba(254,61,81,0.3)]">
+                                <div className="p-3 rounded-xl bg-gradient-to-br from-[rgba(244,121,32,0.2)] to-[rgba(191,87,0,0.2)] border border-[rgba(244,121,32,0.3)]">
                                     <Calculator className="w-6 h-6 text-[var(--superseller-primary)]" />
                                 </div>
                                 <h2 className="text-3xl font-bold text-white">Calculate Your ROI</h2>
@@ -136,7 +136,7 @@ export function ROICalculator() {
 
                     {/* Right Column: Results */}
                     <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[rgba(254,61,81,0.1)] to-[rgba(30,174,247,0.1)] rounded-3xl blur-xl" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-[rgba(244,121,32,0.1)] to-[rgba(30,174,247,0.1)] rounded-3xl blur-xl" />
                         <div className="relative bg-black/40 border border-white/10 rounded-3xl p-8 space-y-6 backdrop-blur-md">
 
                             {/* Annual Savings Card */}

@@ -64,7 +64,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
         { id: 'lead-machine', label: 'Salah: Leads', icon: Target, color: 'text-cyan-400' },
         { id: 'knowledge-engine', label: 'Klopp: Knowledge', icon: Database, color: 'text-purple-400' },
         { id: 'content-engine', label: 'Darwin: Content', icon: Zap, color: 'text-orange-400' },
-        { id: 'autonomous-secretary', label: 'The Team: Ops', icon: Cpu, color: 'text-[#fe3d51]' },
+        { id: 'autonomous-secretary', label: 'The Team: Ops', icon: Cpu, color: 'text-[#f47920]' },
     ];
 
     useEffect(() => {
@@ -186,7 +186,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
                         </button>
                         <button
                             onClick={() => setActiveTab('onboarding')}
-                            className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'onboarding' ? 'bg-[#fe3d51] text-white shadow-lg shadow-[#fe3d51]/20' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                            className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'onboarding' ? 'bg-[#f47920] text-white shadow-lg shadow-[#f47920]/20' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
                         >
                             Intake Requests ({onboardingRequests.length})
                         </button>
@@ -231,7 +231,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
                                     <div className="p-8 border-b border-white/5">
                                         <div className="grid md:grid-cols-2 gap-8 items-center">
                                             <div className="flex items-center gap-6">
-                                                <div className="w-16 h-16 bg-[#fe3d51]/10 text-[#fe3d51] rounded-3xl flex items-center justify-center border border-[#fe3d51]/20 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-[#fe3d51]/10">
+                                                <div className="w-16 h-16 bg-[#f47920]/10 text-[#f47920] rounded-3xl flex items-center justify-center border border-[#f47920]/20 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-[#f47920]/10">
                                                     <Zap className="w-8 h-8" />
                                                 </div>
                                                 <div>
@@ -245,7 +245,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Request ID</span>
-                                                        <span className="text-[10px] font-mono text-[#fe3d51]/70">{req.id}</span>
+                                                        <span className="text-[10px] font-mono text-[#f47920]/70">{req.id}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -253,7 +253,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
                                             <div className="flex items-center justify-end gap-4">
                                                 <button
                                                     onClick={() => handleApproveOnboarding(req.id)}
-                                                    className="px-8 py-4 bg-[#fe3d51] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#ff4d61] transition-all shadow-xl shadow-[#fe3d51]/20"
+                                                    className="px-8 py-4 bg-[#f47920] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#f58a30] transition-all shadow-xl shadow-[#f47920]/20"
                                                 >
                                                     Approve & Deploy
                                                 </button>
@@ -385,7 +385,7 @@ export default function FulfillmentQueueClient({ initialProducts }: FulfillmentQ
             {/* Activation Modal */}
             {selectedInstance && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-xl">
-                    <div className="bg-[#1a162f] w-full max-w-lg rounded-[3.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden scale-in-center">
+                    <div className="bg-[#152236] w-full max-w-lg rounded-[3.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden scale-in-center">
                         <div className="p-10 border-b border-white/5 bg-gradient-to-br from-cyan-500/5 to-transparent">
                             <div className="flex items-center gap-4 mb-4 text-cyan-400">
                                 <div className="p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20">

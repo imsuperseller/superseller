@@ -74,8 +74,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#110d28' },
-    { media: '(prefers-color-scheme: dark)', color: '#110d28' },
+    { media: '(prefers-color-scheme: light)', color: '#0d1b2e' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d1b2e' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -90,8 +90,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#110d28' }}>
-      <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif', backgroundColor: '#110d28' }}>
+    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#0d1b2e' }}>
+      <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif', backgroundColor: '#0d1b2e' }}>
         {children}
       </body>
     </html>

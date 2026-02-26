@@ -103,7 +103,7 @@ export function SupportWidget({
     }
 
     const widgetContent = (
-        <Card className={`overflow-hidden border-superseller-cyan/30 bg-[#110d28]/95 backdrop-blur-xl ${mode === 'floating' ? 'w-[380px] h-[550px] shadow-2xl' : 'w-full'}`}>
+        <Card className={`overflow-hidden border-superseller-cyan/30 bg-[#0d1b2e]/95 backdrop-blur-xl ${mode === 'floating' ? 'w-[380px] h-[550px] shadow-2xl' : 'w-full'}`}>
             <CardHeader className="p-4 border-b border-superseller-cyan/20 flex flex-row items-center justify-between bg-gradient-to-r from-superseller-bg-card to-transparent">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-superseller-cyan/10 flex items-center justify-center border border-superseller-cyan/30">

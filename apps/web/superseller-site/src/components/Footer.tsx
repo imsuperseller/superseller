@@ -100,7 +100,7 @@ export function Footer() {
                   className="object-contain"
                   style={{
                     filter:
-                      'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))',
+                      'drop-shadow(0 0 8px rgba(244, 121, 32, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))',
                   }}
                   priority
                 />

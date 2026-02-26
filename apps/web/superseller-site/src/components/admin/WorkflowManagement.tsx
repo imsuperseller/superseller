@@ -208,7 +208,7 @@ export default function WorkflowManagement({ products = [] }: WorkflowManagement
               {workflow.errorReason ? (
                 <button
                   onClick={() => openDebug(workflow.id, workflow.lastExecutionId)}
-                  className="flex-1 flex items-center justify-center space-x-2 py-3 px-4 bg-[#fe3d51]/10 border border-[#fe3d51]/20 rounded-xl text-[#fe3d51] hover:bg-[#fe3d51]/20 transition-all text-xs font-black uppercase tracking-widest"
+                  className="flex-1 flex items-center justify-center space-x-2 py-3 px-4 bg-[#f47920]/10 border border-[#f47920]/20 rounded-xl text-[#f47920] hover:bg-[#f47920]/20 transition-all text-xs font-black uppercase tracking-widest"
                 >
                   <AlertCircle className="w-3 h-3" />
                   <span>Deep Debug</span>

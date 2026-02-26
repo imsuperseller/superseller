@@ -30,8 +30,8 @@ export const CREW_MEMBERS: CrewMember[] = [
     tagline: 'Drop a link. Get a cinematic video.',
     description:
       'Paste any business URL — a property listing, a restaurant menu, a portfolio page — and Forge scrapes the data, generates cinematic AI scenes, composites your face in, and stitches a ready-to-post video with music and text overlays. Same engine, any industry.',
-    accentColor: '#fe3d51',
-    accentColorRgb: '254, 61, 81',
+    accentColor: '#f47920',
+    accentColorRgb: '244, 121, 32',
     iconName: 'Video',
     creditsPerTask: 50,
     taskUnit: 'video',

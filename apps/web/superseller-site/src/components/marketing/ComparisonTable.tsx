@@ -132,7 +132,7 @@ export function ComparisonTable({ lang = 'en' }: ComparisonTableProps) {
                     </div>
                     <div className="h-16 mb-8 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-[#110d28]">
+                            <div className="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-[#0d1b2e]">
                                 <Bot className="w-6 h-6" />
                             </div>
                             <span className="text-xl font-bold text-white font-sans">{t.aiTitle}</span>

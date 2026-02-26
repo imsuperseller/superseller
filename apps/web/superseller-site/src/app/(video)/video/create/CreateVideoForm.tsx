@@ -149,14 +149,14 @@ export default function CreateVideoForm() {
     const inputStyle = cn(
         "w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/10",
         "text-white placeholder:text-gray-500",
-        "focus:outline-none focus:ring-2 focus:ring-[#fe3d51]/30 focus:border-[#fe3d51]/50",
+        "focus:outline-none focus:ring-2 focus:ring-[#f47920]/30 focus:border-[#f47920]/50",
         "disabled:opacity-50 disabled:cursor-not-allowed"
     );
 
     const fileInputStyle = cn(
         inputStyle,
         "file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium",
-        "file:bg-[#fe3d51]/20 file:text-[#fe3d51] hover:file:bg-[#fe3d51]/30"
+        "file:bg-[#f47920]/20 file:text-[#f47920] hover:file:bg-[#f47920]/30"
     );
 
     return (
@@ -182,7 +182,7 @@ export default function CreateVideoForm() {
                 {!hasEnoughCredits && (
                     <Link
                         href="/video/pricing"
-                        className="px-3 py-1.5 rounded-lg bg-[#fe3d51] text-white text-sm font-medium hover:bg-[#ff4d61] transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-[#f47920] text-white text-sm font-medium hover:bg-[#f58a30] transition-colors"
                     >
                         Get Credits
                     </Link>
@@ -215,7 +215,7 @@ export default function CreateVideoForm() {
                 {/* Realtor Headshot */}
                 <div>
                     <label htmlFor="realtorPhoto" className="block text-sm font-medium text-gray-300 mb-2">
-                        Your headshot <span className="text-[#fe3d51]">*</span>
+                        Your headshot <span className="text-[#f47920]">*</span>
                     </label>
                     <div className="flex items-start gap-4">
                         <div className="flex-1">
@@ -274,7 +274,7 @@ export default function CreateVideoForm() {
                         <div>
                             <p>{error}</p>
                             {error.includes("Insufficient credits") && (
-                                <Link href="/video/pricing" className="text-[#fe3d51] hover:underline mt-1 inline-block">
+                                <Link href="/video/pricing" className="text-[#f47920] hover:underline mt-1 inline-block">
                                     Purchase more credits →
                                 </Link>
                             )}
@@ -288,7 +288,7 @@ export default function CreateVideoForm() {
                     disabled={loading || !hasEnoughCredits}
                     className={cn(
                         "w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold text-lg",
-                        "bg-[#fe3d51] hover:bg-[#ff4d61] text-white",
+                        "bg-[#f47920] hover:bg-[#f58a30] text-white",
                         "disabled:opacity-60 disabled:cursor-not-allowed",
                         "transition-colors duration-200"
                     )}

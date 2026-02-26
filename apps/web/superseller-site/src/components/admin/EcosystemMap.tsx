@@ -76,7 +76,7 @@ export default function EcosystemMap({ products: initialAITableProducts }: Ecosy
                 onMouseLeave={() => setHoveredNode(null)}
                 className={`absolute cursor-pointer p-4 rounded-2xl border transition-all z-10 w-48
                     ${node.type === 'pillar' ? 'bg-cyan-500/10 border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.1)]' :
-                        node.type === 'product' ? 'bg-[#fe3d51]/5 border-[#fe3d51]/20' :
+                        node.type === 'product' ? 'bg-[#f47920]/5 border-[#f47920]/20' :
                             'bg-white/5 border-white/10'}
                     ${isSelected ? 'ring-2 ring-white/50 border-white/40' : ''}
                 `}

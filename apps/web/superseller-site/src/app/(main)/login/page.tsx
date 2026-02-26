@@ -250,7 +250,7 @@ function LoginFormContent() {
                 alt="SuperSeller AI"
                 width={80}
                 height={80}
-                className="relative z-10 drop-shadow-[0_0_15px_rgba(254,61,81,0.5)]"
+                className="relative z-10 drop-shadow-[0_0_15px_rgba(244,121,32,0.5)]"
               />
             </div>
             <div className="pt-4">
@@ -275,7 +275,7 @@ function LoginFormContent() {
           className="rounded-[3rem] border p-8 md:p-12 relative overflow-hidden shadow-2xl backdrop-blur-3xl"
           style={{
             background: 'rgba(255, 255, 255, 0.02)',
-            borderColor: 'rgba(254, 61, 81, 0.1)'
+            borderColor: 'rgba(244, 121, 32, 0.1)'
           }}
         >
           {/* Subtle Glows */}
@@ -349,7 +349,7 @@ function LoginFormContent() {
                       <CheckCircle className="h-6 w-6 text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                     )}
                     {emailValid === false && email.length > 0 && (
-                      <AlertCircle className="h-6 w-6 text-superseller-red drop-shadow-[0_0_10px_rgba(254,61,81,0.5)]" />
+                      <AlertCircle className="h-6 w-6 text-superseller-red drop-shadow-[0_0_10px_rgba(244,121,32,0.5)]" />
                     )}
                     {isLoading && (
                       <Loader2 className="h-6 w-6 text-cyan-400 animate-spin" />

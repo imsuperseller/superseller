@@ -146,7 +146,7 @@ export function NichesPageContent() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <Badge className="bg-[#fe3d51]/10 text-[#fe3d51] border-[#fe3d51]/20 px-6 py-2 uppercase tracking-[0.3em] text-[10px] font-black rounded-full mb-8">
+                        <Badge className="bg-[#f47920]/10 text-[#f47920] border-[#f47920]/20 px-6 py-2 uppercase tracking-[0.3em] text-[10px] font-black rounded-full mb-8">
                             {t.badge}
                         </Badge>
                         <h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-white uppercase italic">
@@ -257,7 +257,7 @@ export function NichesPageContent() {
                             </p>
                             <div className="flex flex-wrap gap-6 pt-4">
                                 <Link href="/contact" className="w-full sm:w-auto">
-                                    <Button size="xl" className="w-full h-20 px-10 text-xl font-black rounded-2xl bg-[#fe3d51] text-white hover:bg-[#ff4d61] shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <Button size="xl" className="w-full h-20 px-10 text-xl font-black rounded-2xl bg-[#f47920] text-white hover:bg-[#f58a30] shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98]">
                                         {t.customAudit} <Zap className="ml-3 w-6 h-6 fill-current" />
                                     </Button>
                                 </Link>

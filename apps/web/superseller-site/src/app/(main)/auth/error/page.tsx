@@ -55,7 +55,7 @@ function AuthErrorContent() {
                 className="max-w-md w-full rounded-[3rem] p-12 text-center relative z-10 backdrop-blur-3xl shadow-2xl border"
                 style={{
                     background: 'rgba(255, 255, 255, 0.02)',
-                    borderColor: 'rgba(254, 61, 81, 0.15)'
+                    borderColor: 'rgba(244, 121, 32, 0.15)'
                 }}
             >
                 {/* Intense Error Glow */}

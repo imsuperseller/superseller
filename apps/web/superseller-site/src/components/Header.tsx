@@ -40,7 +40,7 @@ export function Header() {
                   className="object-contain"
                   style={{
                     filter:
-                      'drop-shadow(0 0 8px rgba(254, 61, 81, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))',
+                      'drop-shadow(0 0 8px rgba(244, 121, 32, 0.5)) drop-shadow(0 0 12px rgba(30, 174, 247, 0.3))',
                   }}
                   priority
                 />
@@ -74,7 +74,7 @@ export function Header() {
 
               {industriesOpen && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-                  <div className="rounded-xl border border-white/10 bg-[#110d28]/95 backdrop-blur-xl p-2 min-w-[180px] shadow-xl">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1b2e]/95 backdrop-blur-xl p-2 min-w-[180px] shadow-xl">
                     {NICHES.map((niche) => (
                       <Link
                         key={niche.slug}
@@ -98,8 +98,8 @@ export function Header() {
                 className="font-bold cursor-pointer text-white"
                 style={{
                   background:
-                    'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
-                  boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)',
+                    'linear-gradient(135deg, #F47920 0%, #f79d4e 100%)',
+                  boxShadow: '0 0 20px rgba(244, 121, 32, 0.4)',
                 }}
               >
                 Hire The Crew
@@ -125,7 +125,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 bg-[#110d28]">
+          <div className="md:hidden border-t border-white/10 bg-[#0d1b2e]">
             <div className="space-y-1 px-2 pt-2 pb-3">
               {navigation.map((item) => (
                 <Link
@@ -164,8 +164,8 @@ export function Header() {
                   className="w-full justify-center font-bold h-12 cursor-pointer text-white"
                   style={{
                     background:
-                      'linear-gradient(135deg, #FE3D51 0%, #FF6B7D 100%)',
-                    boxShadow: '0 0 20px rgba(254, 61, 81, 0.4)',
+                      'linear-gradient(135deg, #F47920 0%, #f79d4e 100%)',
+                    boxShadow: '0 0 20px rgba(244, 121, 32, 0.4)',
                   }}
                 >
                   Hire The Crew

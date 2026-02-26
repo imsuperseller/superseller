@@ -115,12 +115,12 @@ export function BundleUpsell({
         <div
             className="rounded-xl p-6 relative overflow-hidden"
             style={{
-                background: 'linear-gradient(135deg, #1a1438 0%, #110d28 100%)',
-                border: '1px solid rgba(254, 61, 81, 0.3)'
+                background: 'linear-gradient(135deg, #1a1438 0%, #0d1b2e 100%)',
+                border: '1px solid rgba(244, 121, 32, 0.3)'
             }}
         >
             <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Sparkles className="w-24 h-24 text-[#fe3d51]" />
+                <Sparkles className="w-24 h-24 text-[#f47920]" />
             </div>
 
             <div className="relative z-10">
@@ -154,7 +154,7 @@ export function BundleUpsell({
                     </div>
                     <Button
                         onClick={onUpgrade}
-                        className="bg-gradient-to-r from-[#fe3d51] to-[#f7931e] hover:brightness-110 text-white font-bold px-6"
+                        className="bg-gradient-to-r from-[#f47920] to-[#f47920] hover:brightness-110 text-white font-bold px-6"
                     >
                         Get Full Suite
                         <ArrowRight className="w-4 h-4 ml-2" />

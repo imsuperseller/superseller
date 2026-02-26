@@ -107,13 +107,13 @@ export async function POST(request: NextRequest) {
                                 <meta charset="utf-8">
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                             </head>
-                            <body style="margin: 0; padding: 0; background-color: #110d28; font-family: Arial, sans-serif;">
+                            <body style="margin: 0; padding: 0; background-color: #0d1b2e; font-family: Arial, sans-serif;">
                                 <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
                                     <div style="text-align: center; margin-bottom: 30px;">
-                                         <h1 style="color: #fe3d51; font-size: 24px; font-weight: bold;">SuperSeller AI</h1>
+                                         <h1 style="color: #f47920; font-size: 24px; font-weight: bold;">SuperSeller AI</h1>
                                     </div>
                                     
-                                    <div style="background: linear-gradient(135deg, #1a1535 0%, #2d2150 100%); border-radius: 16px; padding: 40px; border: 1px solid rgba(254, 61, 81, 0.3); text-align: center;">
+                                    <div style="background: linear-gradient(135deg, #132038 0%, #1a2d42 100%); border-radius: 16px; padding: 40px; border: 1px solid rgba(244, 121, 32, 0.3); text-align: center;">
                                         <h2 style="color: #ffffff; font-size: 24px; margin: 0 0 16px 0;">
                                             Welcome back, ${clientName}!
                                         </h2>
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
                                             Click the button below to securely sign in to your dashboard.
                                         </p>
                                         
-                                        <a href="${magicLink}" style="display: inline-block; background: linear-gradient(135deg, #fe3d51 0%, #ff6b7a 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 24px;">
+                                        <a href="${magicLink}" style="display: inline-block; background: linear-gradient(135deg, #f47920 0%, #f79d4e 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 24px;">
                                             Sign In Now
                                         </a>
                                         

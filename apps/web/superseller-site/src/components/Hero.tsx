@@ -70,7 +70,7 @@ export function Hero() {
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 mx-auto lg:mx-0"
               style={{
-                background: 'rgba(254, 61, 81, 0.1)',
+                background: 'rgba(244, 121, 32, 0.1)',
                 border: '1px solid var(--superseller-primary)',
                 color: 'var(--superseller-primary)'
               }}

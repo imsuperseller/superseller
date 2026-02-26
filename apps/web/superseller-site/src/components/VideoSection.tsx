@@ -73,7 +73,7 @@ export function VideoSection({
                                 className="w-20 h-20 rounded-full flex items-center justify-center transition-transform hover:scale-110"
                                 style={{
                                     background: 'var(--superseller-primary)',
-                                    boxShadow: '0 0 40px rgba(254, 61, 81, 0.5)'
+                                    boxShadow: '0 0 40px rgba(244, 121, 32, 0.5)'
                                 }}
                             >
                                 <Play className="w-10 h-10 text-white ml-1" />

@@ -100,7 +100,7 @@ export const SlackTemplates = {
         text: `🚨 Workflow Error: ${workflowName}`,
         attachments: [
             {
-                color: '#fe3d51',
+                color: '#f47920',
                 title: `🚨 Workflow Failed: ${workflowName}`,
                 text: errorMessage,
                 fields: [
@@ -124,7 +124,7 @@ export const SlackTemplates = {
         text: `⚠️ Support Escalation: ${ticketId}`,
         attachments: [
             {
-                color: '#f7931e',
+                color: '#f47920',
                 title: `⚠️ Escalated: Ticket ${ticketId}`,
                 text: summary,
             },
