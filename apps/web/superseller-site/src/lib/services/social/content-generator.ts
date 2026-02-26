@@ -38,8 +38,8 @@ const PLATFORM_LIMITS: Record<string, { maxChars: number; hashtagStyle: string }
 export async function generateContent(
   req: ContentGenerationRequest
 ): Promise<GeneratedContent> {
-  const apiKey = process.env.CLAUDE_API_KEY;
-  if (!apiKey) throw new Error("CLAUDE_API_KEY not configured");
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
   const limits = PLATFORM_LIMITS[req.platform] || PLATFORM_LIMITS.facebook;
   const maxChars = req.maxLength || limits.maxChars;

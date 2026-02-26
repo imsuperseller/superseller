@@ -79,10 +79,23 @@ export async function publishToFacebook(
     }
 
     const postId = data.id || data.post_id;
+    // Fetch the actual permalink from Graph API
+    let postUrl: string | undefined;
+    if (postId) {
+      try {
+        const permalinkRes = await fetch(
+          `${GRAPH_API_BASE}/${postId}?fields=permalink_url&access_token=${req.accessToken}`
+        );
+        const permalinkData = await permalinkRes.json();
+        postUrl = permalinkData.permalink_url || `https://www.facebook.com/${postId}`;
+      } catch {
+        postUrl = `https://www.facebook.com/${postId}`;
+      }
+    }
     return {
       success: true,
       postId,
-      postUrl: postId ? `https://facebook.com/${postId}` : undefined,
+      postUrl,
     };
   } catch (err) {
     return {

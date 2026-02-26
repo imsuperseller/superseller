@@ -19,6 +19,7 @@ export const AITABLE_DATASHEETS = {
     LLM_REGISTRY: 'dstTp0hahiF5glUV51',
     MASTER_PRODUCTS: 'dst0Chj9T437s5FcgD',
     SOCIAL_CONTENT: 'dstTYYmleksXHj3sCj',
+    BRANDS: 'dstlB8T4p8m2b0p7rX', // Mirror for Brand model
 } as const;
 
 type DatasheetId = typeof AITABLE_DATASHEETS[keyof typeof AITABLE_DATASHEETS];
@@ -130,8 +131,30 @@ export class AITableService {
     // ── High-level domain helpers ─────────────────────────────────
 
     /**
+     * Sync a brand record to Aitable Brands sheet.
+     */
+    static async syncBrand(brand: {
+        name: string;
+        slug: string;
+        logoUrl?: string;
+        primaryColor?: string;
+        tone?: string;
+        tagline?: string;
+    }) {
+        return this.addRecords(AITABLE_DATASHEETS.BRANDS, [{
+            fields: {
+                Name: brand.name,
+                Slug: brand.slug,
+                Logo: brand.logoUrl || '',
+                Color: brand.primaryColor || '#1e3a8a',
+                Tone: brand.tone || 'professional',
+                Tagline: brand.tagline || '',
+            },
+        }]);
+    }
+
+    /**
      * Sync a new lead to Aitable Leads sheet.
-     * Call after lead capture in inbound flows.
      */
     static async syncLead(lead: {
         name?: string;

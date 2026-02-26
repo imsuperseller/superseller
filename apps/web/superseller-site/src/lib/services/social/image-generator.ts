@@ -34,12 +34,20 @@ export async function generateSocialImage(
     resolution?: "1K" | "2K";
   }
 ): Promise<{ imageUrl: string; cost: number } | { error: string }> {
-  // Try DALL-E 3 first
-  const openaiKey = process.env.OPENAI_API_KEY;
+  // Try OpenAI image generation first (gpt-image-1 → dall-e-3 fallback)
+  const openaiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ALT;
   if (openaiKey) {
     const result = await generateWithDalle(prompt, options?.aspectRatio || "1:1", openaiKey);
     if ("imageUrl" in result) return result;
-    console.warn("[image-gen] DALL-E 3 failed, trying Kie.AI:", result.error);
+    // If primary key failed, try alt key
+    const altKey = process.env.OPENAI_API_KEY_ALT;
+    if (altKey && altKey !== openaiKey) {
+      const altResult = await generateWithDalle(prompt, options?.aspectRatio || "1:1", altKey);
+      if ("imageUrl" in altResult) return altResult;
+      console.warn("[image-gen] OpenAI failed with both keys, trying Kie.AI:", altResult.error);
+    } else {
+      console.warn("[image-gen] OpenAI failed, trying Kie.AI:", result.error);
+    }
   }
 
   // Fallback to Kie.AI
@@ -155,9 +163,9 @@ async function uploadBase64ToR2(
     const { S3Client, PutObjectCommand, GetObjectCommand } = await import("@aws-sdk/client-s3");
     const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
 
-    const accountId = process.env.CLOUDFLARE_R2_ACCOUNT_ID;
-    const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+    const accountId = process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_R2_ACCOUNT_ID;
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID || process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY || process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
 
     if (!accountId || !accessKeyId || !secretAccessKey) {
       console.warn("[image-gen] R2 credentials not configured, cannot upload");
