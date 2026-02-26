@@ -2,16 +2,17 @@ import { Metadata } from 'next';
 import HomePageClient from '../HomePageClient';
 
 export const metadata: Metadata = {
-  title: 'SuperSeller AI | Your AI Crew for Business',
+  title: 'SuperSeller AI | Turn Your Business into a Selling Machine',
   description:
-    'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo. Built for realtors, locksmiths, restaurants, contractors, and more.',
+    'Seven AI agents that produce videos, post your social media, answer calls, and generate leads — turning small business owners into Super Sellers. Starting at $79/mo.',
   keywords: [
     'AI business automation',
     'AI video production',
+    'AI social media',
     'AI receptionist',
     'AI lead generation',
-    'realtor video',
     'small business AI',
+    'AI content creation',
   ],
 };
 

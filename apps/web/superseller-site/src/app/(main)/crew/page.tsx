@@ -36,8 +36,7 @@ export default function CrewPage() {
             The Crew
           </h1>
           <p className="text-xl text-[var(--superseller-text-secondary)] max-w-2xl mx-auto">
-            Each agent specializes in one thing and does it better than any
-            freelancer, agency, or employee. Mix and match with credits.
+            You focus on your craft. Your AI Crew handles the videos, calls, social media, leads, and listings. Each agent does one thing better than any freelancer or agency.
           </p>
         </div>
         <CrewGrid />

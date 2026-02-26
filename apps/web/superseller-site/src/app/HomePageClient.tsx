@@ -47,7 +47,7 @@ const faqs = [
   },
   {
     q: 'Which crew members are live right now?',
-    a: 'Forge (video producer), Spoke (spokesperson), and Market (marketplace automation) are fully live and producing content today. FrontDesk, Scout, Buzz, and Cortex are launching soon — join now to be first in line.',
+    a: 'Forge (video producer), Spoke (spokesperson), Buzz (content creator), and Market (marketplace automation) are fully live and producing content today. FrontDesk, Scout, and Cortex are launching soon — join now to be first in line.',
   },
   {
     q: 'Do I own the content that\'s created?',
@@ -102,13 +102,13 @@ export default function HomePageClient() {
               transition={{ duration: 0.6 }}
             >
               <Badge className="bg-white/5 text-white/60 border-white/10 px-4 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
-                The Crew
+                Your AI Crew
               </Badge>
               <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
-                Meet Your AI Team
+                Seven Agents. Zero Overhead.
               </h2>
               <p className="text-lg text-[var(--superseller-text-secondary)] max-w-xl mx-auto">
-                Six specialized agents. Each one replaces an expensive hire or agency.
+                Each crew member replaces an expensive hire or agency &mdash; so you focus on your craft while they handle the grind.
               </p>
             </motion.div>
             <CrewGrid />
@@ -132,10 +132,10 @@ export default function HomePageClient() {
                 Built For Your Business
               </Badge>
               <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
-                Pick Your Industry
+                Your Industry. Your Crew.
               </h2>
               <p className="text-lg text-[var(--superseller-text-secondary)] max-w-xl mx-auto">
-                Each niche gets custom solutions mapped to your specific pains.
+                From overwhelmed operator to dominant market presence. Custom AI solutions for your niche.
               </p>
             </motion.div>
 
@@ -257,12 +257,12 @@ export default function HomePageClient() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-tight">
-                Ready to Hire{' '}
-                <span style={{ color: 'var(--superseller-accent-cyan)' }}>The Crew</span>?
+                Become a{' '}
+                <span style={{ color: 'var(--superseller-primary)' }}>Super Seller</span>
               </h2>
               <p className="text-xl text-[var(--superseller-text-secondary)] max-w-lg mx-auto">
-                Start with $79/mo. Use credits on any combination of AI agents.
-                Cancel anytime.
+                Your AI Crew is ready. $79/mo gets you videos, social media, leads, and more.
+                No contracts. Cancel anytime.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/pricing">

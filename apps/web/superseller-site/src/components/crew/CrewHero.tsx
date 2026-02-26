@@ -66,17 +66,17 @@ export function CrewHero() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
             <Badge className="bg-[var(--superseller-accent-cyan)]/10 text-[var(--superseller-accent-cyan)] border-[var(--superseller-accent-cyan)]/20 px-5 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
-              6 AI Agents. One Subscription.
+              Your AI Crew Is Ready
             </Badge>
           </motion.div>
 
           {/* Headline — each line staggers in with 3D perspective */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase leading-[0.9]">
             {[
-              { text: 'Fire Your', className: 'text-white' },
-              { text: 'Video Studio.', style: { color: 'var(--superseller-primary)' } },
-              { text: 'Fire Your', className: 'text-white/40' },
-              { text: 'Receptionist.', style: { color: 'var(--superseller-accent-cyan)' } },
+              { text: 'Stop Hustling.', className: 'text-white' },
+              { text: 'Start Selling.', style: { color: 'var(--superseller-primary)' } },
+              { text: 'Your AI Crew', className: 'text-white/40' },
+              { text: 'Handles the Rest.', style: { color: 'var(--superseller-accent-cyan)' } },
             ].map((line, i) => (
               <motion.span
                 key={i}
@@ -99,10 +99,11 @@ export function CrewHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5, ease: 'easeOut' }}
           >
-            Meet your AI crew. Six autonomous agents that produce videos, answer
-            calls, generate leads, create content, and run your knowledge base
-            &mdash; starting at{' '}
-            <span className="text-white font-black">$79/mo</span>.
+            Seven AI agents that produce videos, post your social media, answer
+            calls, generate leads, and dominate your market
+            &mdash; so you become a{' '}
+            <span className="text-white font-black">Super Seller</span>.
+            Starting at <span className="text-white font-black">$79/mo</span>.
           </motion.p>
 
           {/* CTAs — slide up with spring */}
@@ -142,7 +143,7 @@ export function CrewHero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.55, duration: 0.5 }}
           >
-            No contracts. Cancel anytime. Credits never expire while subscribed.
+            Trusted by restaurants, contractors, locksmiths, and realtors. No contracts. Cancel anytime.
           </motion.p>
         </div>
       </motion.div>

@@ -36,15 +36,15 @@ export default function ProcessPage() {
               transition={{ duration: 0.6 }}
             >
               <Badge className="mb-6 bg-cyan-500/10 text-cyan-400 border-cyan-500/20 px-4 py-1 uppercase tracking-widest font-black">
-                The Roadmap to Autonomy
+                From Overwhelmed to Unstoppable
               </Badge>
               <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-white mb-6 leading-[0.9]">
-                How We Build <br />
-                <span className="text-cyan-400">Your Engine</span>
+                How You Become a <br />
+                <span className="text-cyan-400">Super Seller</span>
               </h1>
               <p className="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto font-medium">
-                We don't just "install bots." We architect integrated ecosystems
-                that replace manual chaos with autonomous consistency.
+                We don&apos;t just &quot;install bots.&quot; We deploy an AI Crew that replaces
+                manual chaos with professional, automated consistency &mdash; so you dominate your market.
               </p>
             </motion.div>
           </div>
@@ -163,11 +163,11 @@ export default function ProcessPage() {
           <div className="max-w-4xl mx-auto rounded-[3rem] border border-cyan-500/30 bg-cyan-500/5 p-12 md:p-20 relative overflow-hidden backdrop-blur-xl">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 pointer-events-none" />
             <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white mb-8">
-              Ready to Start <br />
-              <span className="text-cyan-400">Your Journey?</span>
+              Ready to Become a <br />
+              <span className="text-cyan-400">Super Seller?</span>
             </h2>
             <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-              Stop wasting time on repetitive tasks. Let's architect a business that works while you sleep.
+              You focus on your craft. Your AI Crew handles the videos, calls, social media, and leads &mdash; while you sleep.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/custom">
