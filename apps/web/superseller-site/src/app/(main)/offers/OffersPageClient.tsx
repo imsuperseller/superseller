@@ -69,7 +69,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
             id,
             name: p['Product Name'] || p.name,
             price: parseInt(p['Price'] || p.price) || 0,
-            stripePriceId: p['Stripe ID'] || p.stripePriceId,
+            paypalPlanId: p['Stripe ID'] || p.paypalPlanId,
             flowType: p['Flow Type'] || p.flowType || 'service-purchase',
             description: p['Description'] || p.description || '',
             features: p['Features'] || p.features || [],
@@ -88,7 +88,7 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
             id,
             name: p['Product Name'] || p.name,
             price: parseInt(p['Price'] || p.price) || 0,
-            stripeLink: p['Stripe ID'] || p.stripeLink,
+            checkoutLink: p['Stripe ID'] || p.checkoutLink,
             period: p['Period'] || p.period || 'month',
             description: p['Description'] || p.description || '',
             features: p['Features'] || p.features || [],
@@ -358,8 +358,8 @@ export default function OffersPageClient({ initialProducts }: OffersPageClientPr
                                         ))}
                                     </ul>
 
-                                    {plan.stripeLink ? (
-                                        <Link href={plan.stripeLink} className="w-full">
+                                    {plan.checkoutLink ? (
+                                        <Link href={plan.checkoutLink} className="w-full">
                                             <Button
                                                 size="xl"
                                                 className={`w-full h-20 text-xl font-black rounded-2xl transition-all ${plan.popular ? 'bg-cyan-400 text-black hover:bg-cyan-300' : 'bg-white/5 text-white hover:bg-white/10'

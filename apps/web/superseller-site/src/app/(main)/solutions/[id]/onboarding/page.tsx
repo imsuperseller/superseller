@@ -26,7 +26,7 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
         ...product,
         name: product['Product Name'] || product.name,
         price: product['Price'] || product.price,
-        stripePriceId: product['Stripe ID'] || product.stripePriceId,
+        paypalPlanId: product['Stripe ID'] || product.paypalPlanId,
         flowType: product['flowType'] || product.flowType,
         id: product['Product ID'] || product.id
     };

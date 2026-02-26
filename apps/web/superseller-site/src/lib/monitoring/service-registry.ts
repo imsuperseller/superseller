@@ -150,17 +150,27 @@ export const SERVICE_REGISTRY: MonitoredService[] = [
     },
   },
   {
-    id: 'stripe',
-    name: 'Stripe',
+    id: 'paypal',
+    name: 'PayPal',
     category: 'api',
     alertThreshold: { latencyMs: 5000, consecutiveFailures: 2 },
     healthCheck: async () => {
       const start = Date.now();
-      const key = process.env.STRIPE_SECRET_KEY;
-      if (!key) return { status: 'unknown', latencyMs: 0, message: 'STRIPE_SECRET_KEY not set' };
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      if (!clientId || !clientSecret) return { status: 'unknown', latencyMs: 0, message: 'PAYPAL_CLIENT_ID not set' };
       try {
-        const res = await fetch('https://api.stripe.com/v1/balance', {
-          headers: { Authorization: `Bearer ${key}` },
+        const base = process.env.PAYPAL_MODE === 'live'
+          ? 'https://api-m.paypal.com'
+          : 'https://api-m.sandbox.paypal.com';
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        const res = await fetch(`${base}/v1/oauth2/token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'grant_type=client_credentials',
           signal: AbortSignal.timeout(5000),
         });
         return { status: res.ok ? 'healthy' : 'degraded', latencyMs: Date.now() - start };

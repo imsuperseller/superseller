@@ -69,16 +69,16 @@ export const config = {
 
 
     // Clerk removed — auth is magic-link via Resend (Feb 2026)
+    // Stripe removed — payments via PayPal (Feb 2026)
 
-    stripe: {
-        secretKey: required("STRIPE_SECRET_KEY"),
-        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-        prices: {
-            starter: process.env.STRIPE_STARTER_PRICE_ID,
-            pro: process.env.STRIPE_PRO_PRICE_ID,
-            team: process.env.STRIPE_TEAM_PRICE_ID,
+    paypal: {
+        clientId: process.env.PAYPAL_CLIENT_ID || '',
+        mode: process.env.PAYPAL_MODE || 'sandbox',
+        plans: {
+            starter: process.env.PAYPAL_STARTER_PLAN_ID,
+            pro: process.env.PAYPAL_PRO_PLAN_ID,
+            team: process.env.PAYPAL_TEAM_PLAN_ID,
         },
-        meterId: process.env.STRIPE_METER_ID,
     },
 
     r2: {

@@ -172,7 +172,7 @@ export default function SubscriptionsPage() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch('https://api.superseller.agency/api/stripe/checkout', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export default function SubscriptionsPage() {
           flowType: 'subscription',
           subscriptionType: selectedSubscriptionType,
           tier: leadVolume,
-          customerEmail: '', // Stripe checkout will collect this
+          customerEmail: '', // PayPal checkout will collect this
           metadata: {
             niche: selectedNiche,
             nicheName: niches.find(n => n.id === selectedNiche)?.name,
@@ -945,7 +945,7 @@ export default function SubscriptionsPage() {
                           <Button
                             className={`w-full py-6 text-lg font-bold rounded-xl ${tier.popular ? 'bg-cyan-500 text-black hover:bg-cyan-400' : 'bg-white/10 text-white hover:bg-white/20'}`}
                             onClick={() => {
-                              window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=knowledge-engine&tier=${tier.id}`;
+                              window.location.href = `/api/checkout?flowType=subscription&subscriptionType=knowledge-engine&tier=${tier.id}`;
                             }}
                           >
                             Get Started
@@ -1011,7 +1011,7 @@ export default function SubscriptionsPage() {
                           <Button
                             className={`w-full py-6 text-lg font-bold rounded-xl ${tier.popular ? 'bg-cyan-500 text-black hover:bg-cyan-400' : 'bg-white/10 text-white hover:bg-white/20'}`}
                             onClick={() => {
-                              window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=content-engine&tier=${tier.id}`;
+                              window.location.href = `/api/checkout?flowType=subscription&subscriptionType=content-engine&tier=${tier.id}`;
                             }}
                           >
                             Get Started
@@ -1080,7 +1080,7 @@ export default function SubscriptionsPage() {
                         <Button
                           className="w-full h-20 rounded-2xl text-2xl font-black uppercase tracking-wide bg-cyan-500 text-black hover:bg-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] hover:scale-[1.02] transition-all duration-300"
                           onClick={() => {
-                            window.location.href = `/api/stripe/checkout?flowType=subscription&subscriptionType=all-access&tier=monthly`;
+                            window.location.href = `/api/checkout?flowType=subscription&subscriptionType=all-access&tier=monthly`;
                           }}
                         >
                           Subscribe to All-Access

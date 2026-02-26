@@ -1,7 +1,6 @@
-import { getStripeAdmin } from '../stripe';
 import prisma from '@/lib/prisma';
 
-export type ServiceType = 'firebase' | 'stripe' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'marketplace' | 'provisioning' | 'whatsapp' | 'other';
+export type ServiceType = 'firebase' | 'stripe' | 'paypal' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'marketplace' | 'provisioning' | 'whatsapp' | 'other';
 
 export interface AuditLog {
     service: ServiceType;
@@ -56,12 +55,12 @@ export class ServiceAuditAgent {
     async runHealthCheck() {
         const results: any[] = [];
 
-        // 1. Stripe
-        const stripeKey = process.env.STRIPE_SECRET_KEY;
+        // 1. PayPal
+        const paypalClientId = process.env.PAYPAL_CLIENT_ID;
         results.push({
-            service: 'stripe',
-            status: stripeKey ? 'configured' : 'missing',
-            keyPresent: !!stripeKey,
+            service: 'paypal',
+            status: paypalClientId ? 'configured' : 'missing',
+            keyPresent: !!paypalClientId,
         });
 
         // 2. Postgres
@@ -96,13 +95,31 @@ export class ServiceAuditAgent {
             results.services.postgres = { status: 'unhealthy', error: e.message };
         }
 
-        // 2. Stripe Check
+        // 2. PayPal Check (verify OAuth token works)
         try {
-            const stripe = getStripeAdmin();
-            await stripe.paymentIntents.list({ limit: 1 });
-            results.services.stripe = { status: 'healthy' };
+            const clientId = process.env.PAYPAL_CLIENT_ID;
+            const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+            if (!clientId || !clientSecret) throw new Error('Not configured');
+
+            const base = process.env.PAYPAL_MODE === 'live'
+                ? 'https://api-m.paypal.com'
+                : 'https://api-m.sandbox.paypal.com';
+            const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+            const res = await fetch(`${base}/v1/oauth2/token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${auth}`,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'grant_type=client_credentials',
+            });
+            if (res.ok) {
+                results.services.paypal = { status: 'healthy' };
+            } else {
+                results.services.paypal = { status: 'unhealthy', error: await res.text() };
+            }
         } catch (e: any) {
-            results.services.stripe = { status: 'unhealthy', error: e.message };
+            results.services.paypal = { status: 'unhealthy', error: e.message };
         }
 
         // 3. OpenAI Check

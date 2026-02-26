@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { gsap } from 'gsap';
-import { env } from '@/lib/env';
 import { Shield, Clock, X, Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 
@@ -89,7 +88,7 @@ export function Hero() {
             </p>
 
             <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-              <Link href={env.NEXT_PUBLIC_STRIPE_LINK_AUDIT || '/offers'}>
+              <Link href="/offers">
                 <Button size="xl" className="font-bold px-8 py-6 text-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 transition-all shadow-[0_0_30px_rgba(6,182,212,0.3)]">
                   See Plans & Tokens <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>

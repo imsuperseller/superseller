@@ -204,13 +204,13 @@ export async function seedDefaultRules(): Promise<number> {
     { serviceId: 'worker', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
     { serviceId: 'kie', condition: 'service_down', threshold: 3, cooldownMinutes: 30, channels: ['email', 'audit_log'] },
     { serviceId: 'gemini', condition: 'service_down', threshold: 3, cooldownMinutes: 30, channels: ['audit_log'] },
-    { serviceId: 'stripe', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
+    { serviceId: 'paypal', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
     { serviceId: 'ollama', condition: 'service_down', threshold: 3, cooldownMinutes: 60, channels: ['audit_log'] },
     { serviceId: 'n8n', condition: 'service_down', threshold: 5, cooldownMinutes: 120, channels: ['audit_log'] },
     // Latency rules
     { serviceId: 'postgresql', condition: 'latency_high', threshold: 2000, cooldownMinutes: 30, channels: ['audit_log'] },
     { serviceId: 'worker', condition: 'latency_high', threshold: 5000, cooldownMinutes: 30, channels: ['audit_log'] },
-    { serviceId: 'stripe', condition: 'latency_high', threshold: 5000, cooldownMinutes: 60, channels: ['audit_log'] },
+    { serviceId: 'paypal', condition: 'latency_high', threshold: 5000, cooldownMinutes: 60, channels: ['audit_log'] },
   ];
 
   for (const rule of defaults) {

@@ -20,7 +20,7 @@ async function getDynamicProduct(id: string) {
         headline: aitProduct['Headline'] || aitProduct.headline || '',
         description: aitProduct['Description'] || aitProduct.description || '',
         status: aitProduct['Status'] || aitProduct.status || 'active',
-        stripePriceId: aitProduct['Stripe ID'] || aitProduct.stripePriceId || '',
+        paypalPlanId: aitProduct['Stripe ID'] || aitProduct.paypalPlanId || '',
         n8nWorkflowId: aitProduct['n8n Webhook'] || aitProduct.n8nWorkflowId || '',
         features: aitProduct['features'] || aitProduct.features || [],
         metrics: aitProduct['metrics'] || aitProduct.metrics || [],

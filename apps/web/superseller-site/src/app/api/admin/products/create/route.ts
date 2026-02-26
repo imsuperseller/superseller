@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getStripeAdmin } from '@/lib/stripe';
+import { createProduct, createPlan } from '@/lib/paypal';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
@@ -17,37 +17,18 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
-        const stripe = getStripeAdmin();
-
-        const product = await stripe.products.create({
+        // Create PayPal product and plan
+        const product = await createProduct({
             name: `${name} (Agent)`,
             description: description || `Subscription for ${name}`,
-            metadata: {
-                slug,
-                type: 'superseller_agent',
-                n8n_webhook: n8n.webhookId
-            }
         });
 
-        const price = await stripe.prices.create({
-            product: product.id,
-            unit_amount: pricing.subscription,
-            currency: 'usd',
-            recurring: { interval: 'month' },
-            metadata: { slug }
+        const plan = await createPlan({
+            productId: product.id,
+            name: `${name} Monthly`,
+            description: `Monthly subscription for ${name}`,
+            amount: pricing.subscription / 100, // Convert cents to dollars
         });
-
-        let setupPriceId = undefined;
-        if (pricing.setup > 0) {
-            const setupPrice = await stripe.prices.create({
-                product: product.id,
-                unit_amount: pricing.setup,
-                currency: 'usd',
-                nickname: 'One-time Setup Fee',
-                metadata: { type: 'setup_fee', slug }
-            });
-            setupPriceId = setupPrice.id;
-        }
 
         const manifest = {
             id: slug,
@@ -58,16 +39,14 @@ export async function POST(request: NextRequest) {
             active: true,
             pricing,
             n8n,
-            stripe: {
+            paypal: {
                 productId: product.id,
-                priceId: price.id,
-                setupPriceId
+                planId: plan.id,
             },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
 
-        // Store in Postgres instead of Firestore
         await prisma.serviceInstance.create({
             data: {
                 slug,

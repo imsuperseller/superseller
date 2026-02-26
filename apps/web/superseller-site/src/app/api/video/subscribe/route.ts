@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import { createSubscription } from "@/lib/paypal";
 import { verifySession } from "@/lib/auth";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2023-10-16" as any,
-});
-
-const PRICE_MAP: Record<string, string | undefined> = {
-    starter: process.env.STRIPE_STARTER_PRICE_ID,
-    pro: process.env.STRIPE_PRO_PRICE_ID,
-    team: process.env.STRIPE_TEAM_PRICE_ID,
+const PLAN_MAP: Record<string, string | undefined> = {
+    starter: process.env.PAYPAL_STARTER_PLAN_ID,
+    pro: process.env.PAYPAL_PRO_PLAN_ID,
+    team: process.env.PAYPAL_TEAM_PLAN_ID,
 };
 
 const CREDITS_MAP: Record<string, number> = {
@@ -25,34 +21,32 @@ export async function POST(req: NextRequest) {
     }
 
     const { plan } = await req.json();
-    if (!plan || !PRICE_MAP[plan]) {
+    if (!plan || !PLAN_MAP[plan]) {
         return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
 
-    const priceId = PRICE_MAP[plan];
-    if (!priceId || priceId === "price_xxx") {
+    const planId = PLAN_MAP[plan];
+    if (!planId) {
         return NextResponse.json(
-            { error: "Stripe pricing not configured yet. Contact shai@superseller.agency for early access." },
+            { error: "PayPal plans not configured yet. Contact shai@superseller.agency for early access." },
             { status: 503 }
         );
     }
 
     const origin = req.headers.get("origin") || process.env.NEXT_PUBLIC_BASE_URL || "https://superseller.agency";
 
-    const checkoutSession = await stripe.checkout.sessions.create({
-        customer_email: session.email,
-        payment_method_types: ["card"],
-        line_items: [{ price: priceId, quantity: 1 }],
-        mode: "subscription",
-        success_url: `${origin}/video?subscribed=1`,
-        cancel_url: `${origin}/video/pricing`,
+    const subscription = await createSubscription({
+        planId,
+        subscriberEmail: session.email,
+        returnUrl: `${origin}/video?subscribed=1`,
+        cancelUrl: `${origin}/video/pricing`,
         metadata: {
-            flowType: "video-subscription",
+            subscriptionType: "video",
             plan,
             creditsPerCycle: String(CREDITS_MAP[plan] || 500),
             userId: session.clientId || "",
         },
     });
 
-    return NextResponse.json({ url: checkoutSession.url });
+    return NextResponse.json({ url: subscription.approvalUrl });
 }

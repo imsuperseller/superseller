@@ -22,9 +22,9 @@ const COST_RATES: Record<string, Record<string, number>> = {
     storage_gb_month: 0.015,
     upload: 0.0001,
   },
-  stripe_fees: {
-    transaction_percentage: 0.029,
-    transaction_fixed: 0.30,
+  paypal_fees: {
+    transaction_percentage: 0.0349, // PayPal standard rate 3.49% + $0.49
+    transaction_fixed: 0.49,
   },
   ollama: {
     embedding: 0.0, // Self-hosted, no per-call cost

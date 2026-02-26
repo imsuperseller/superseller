@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-import { getStripeAdmin } from '@/lib/stripe';
-import prisma from '@/lib/prisma';
 
+/**
+ * POST /api/billing/portal
+ * PayPal doesn't have a hosted billing portal like Stripe.
+ * Redirects to PayPal's subscription management page.
+ */
 export async function POST(request: NextRequest) {
     try {
         const session = await verifySession();
@@ -10,32 +13,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const stripe = getStripeAdmin();
-        const user = await prisma.user.findUnique({
-            where: { id: session.clientId },
-            select: { stripeCustomerId: true, email: true },
-        });
+        // PayPal subscriptions are managed at paypal.com
+        const paypalMode = process.env.PAYPAL_MODE === 'live' ? '' : 'sandbox.';
+        const portalUrl = `https://www.${paypalMode}paypal.com/myaccount/autopay/`;
 
-        if (!user?.stripeCustomerId) {
-            return NextResponse.json(
-                { error: 'No billing account found. Contact support.' },
-                { status: 404 }
-            );
-        }
-
-        const origin = request.headers.get('origin') || 'https://superseller.agency';
-        const returnUrl = `${origin}/video/account`;
-
-        const portalSession = await stripe.billingPortal.sessions.create({
-            customer: user.stripeCustomerId,
-            return_url: returnUrl,
-        });
-
-        return NextResponse.json({ url: portalSession.url });
+        return NextResponse.json({ url: portalUrl });
     } catch (error: any) {
         console.error('[billing/portal] Error:', error.message);
         return NextResponse.json(
-            { error: 'Failed to create billing portal session' },
+            { error: 'Failed to generate billing portal URL' },
             { status: 500 }
         );
     }

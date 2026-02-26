@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-04-10',
-});
+import { createOrder } from '@/lib/paypal';
 
 interface CustomSolutionCheckoutRequest {
     packageId: 'starter' | 'professional' | 'enterprise';
@@ -13,24 +9,23 @@ interface CustomSolutionCheckoutRequest {
     returnUrl?: string;
 }
 
-// Package pricing configuration
 const PACKAGES = {
     starter: {
         name: 'Starter Automation Package',
-        price: 2997 * 100, // Stripe uses cents
-        monthlyPrice: 97 * 100,
+        price: 2997,
+        monthlyPrice: 97,
         description: 'Essential automation foundation with 3 workflows',
     },
     professional: {
         name: 'Professional Automation Package',
-        price: 4997 * 100,
-        monthlyPrice: 147 * 100,
+        price: 4997,
+        monthlyPrice: 147,
         description: 'Comprehensive automation suite with 7 workflows',
     },
     enterprise: {
         name: 'Enterprise Automation Package',
-        price: 9997 * 100,
-        monthlyPrice: 297 * 100,
+        price: 9997,
+        monthlyPrice: 297,
         description: 'Full-service automation with unlimited workflows',
     },
 };
@@ -40,7 +35,6 @@ export async function POST(request: NextRequest) {
         const body: CustomSolutionCheckoutRequest = await request.json();
         const { packageId, contractId, clientEmail, clientName, returnUrl } = body;
 
-        // Validate package
         const selectedPackage = PACKAGES[packageId];
         if (!selectedPackage) {
             return NextResponse.json(
@@ -49,8 +43,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Verify contract exists and is signed
-        // In a full implementation, you'd check with eSignatures API
         if (!contractId) {
             return NextResponse.json(
                 { error: 'Contract must be signed before payment' },
@@ -58,81 +50,31 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if customer already exists in Stripe
-        const existingCustomers = await stripe.customers.list({
-            email: clientEmail,
-            limit: 1,
-        });
+        const baseUrl = returnUrl || process.env.NEXT_PUBLIC_BASE_URL || 'https://superseller.agency';
 
-        let customer: Stripe.Customer;
-        if (existingCustomers.data.length > 0) {
-            customer = existingCustomers.data[0];
-        } else {
-            customer = await stripe.customers.create({
-                email: clientEmail,
-                name: clientName,
-                metadata: {
-                    source: 'custom_solutions',
-                    contract_id: contractId,
-                    package: packageId,
-                },
-            });
-        }
-
-        // Create the one-time payment checkout session
-        const session = await stripe.checkout.sessions.create({
-            customer: customer.id,
-            mode: 'payment',
-            payment_method_types: ['card'],
-            line_items: [
-                {
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: selectedPackage.name,
-                            description: selectedPackage.description,
-                        },
-                        unit_amount: selectedPackage.price,
-                    },
-                    quantity: 1,
-                },
-            ],
+        const order = await createOrder({
+            amount: selectedPackage.price,
+            description: `${selectedPackage.name} - ${selectedPackage.description}`,
+            returnUrl: `${baseUrl}/api/paypal/capture`,
+            cancelUrl: `${baseUrl}/custom/canceled`,
             metadata: {
-                type: 'custom_solution',
-                package_id: packageId,
-                contract_id: contractId,
-                client_email: clientEmail,
-                monthly_price: selectedPackage.monthlyPrice.toString(),
-            },
-            success_url: `${returnUrl || process.env.NEXT_PUBLIC_BASE_URL}/custom/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${returnUrl || process.env.NEXT_PUBLIC_BASE_URL}/custom/canceled`,
-            payment_intent_data: {
-                metadata: {
-                    package_id: packageId,
-                    contract_id: contractId,
-                },
-            },
-            // Set up for future monthly subscription
-            payment_method_options: {
-                card: {
-                    setup_future_usage: 'off_session',
-                },
-            },
-            custom_text: {
-                submit: {
-                    message: `After payment, we'll set up your monthly maintenance subscription ($${selectedPackage.monthlyPrice / 100}/mo) and begin your project within 24 hours.`,
-                },
+                flowType: 'custom_solution',
+                packageId,
+                contractId,
+                clientEmail,
+                clientName,
+                monthlyPrice: String(selectedPackage.monthlyPrice),
             },
         });
 
         return NextResponse.json({
             success: true,
-            checkoutUrl: session.url,
-            sessionId: session.id,
+            checkoutUrl: order.approvalUrl,
+            orderId: order.id,
         });
 
-    } catch (error) {
-        console.error('Stripe checkout error:', error);
+    } catch (error: any) {
+        console.error('PayPal checkout error:', error);
         return NextResponse.json(
             { error: 'Failed to create checkout session' },
             { status: 500 }

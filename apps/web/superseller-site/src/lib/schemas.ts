@@ -162,7 +162,7 @@ export const CredentialSchema = z.object({
     'spotify',
     'openrouter',
     'huggingface',
-    'stripe',
+    'paypal',
     'quickbooks',
     'slack',
     'email',
@@ -206,7 +206,7 @@ export const InvoiceSchema = z.object({
     total: z.number(),
   })),
   metadata: z.object({
-    stripeInvoiceId: z.string().optional(),
+    paypalInvoiceId: z.string().optional(),
     quickbooksInvoiceId: z.string().optional(),
   }),
   createdAt: z.date(),
@@ -220,9 +220,9 @@ export const PaymentSchema = z.object({
   amount: z.number(),
   currency: z.string().default('USD'),
   status: z.enum(['pending', 'completed', 'failed', 'refunded']),
-  method: z.enum(['stripe', 'quickbooks', 'manual']),
+  method: z.enum(['paypal', 'quickbooks', 'manual']),
   metadata: z.object({
-    stripePaymentIntentId: z.string().optional(),
+    paypalOrderId: z.string().optional(),
     quickbooksPaymentId: z.string().optional(),
     transactionId: z.string().optional(),
   }),
@@ -326,7 +326,7 @@ export const ApprovalSchema = z.object({
 
 export const HealthCheckSchema = z.object({
   id: z.string(),
-  service: z.enum(['app', 'database', 'n8n', 'stripe', 'openrouter', 'slack']),
+  service: z.enum(['app', 'database', 'n8n', 'paypal', 'openrouter', 'slack']),
   status: z.enum(['healthy', 'degraded', 'down']),
   responseTime: z.number(), // milliseconds
   error: z.string().optional(),
@@ -402,7 +402,7 @@ export const CreateCredentialSchema = z.object({
     'spotify',
     'openrouter',
     'huggingface',
-    'stripe',
+    'paypal',
     'quickbooks',
     'slack',
     'email',
