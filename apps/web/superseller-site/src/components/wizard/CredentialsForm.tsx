@@ -34,13 +34,13 @@ export function CredentialsForm({ data, onUpdate }: CredentialsFormProps) {
                             <div className="flex items-center gap-2">
                                 <Label className="text-xs text-gray-400 font-normal">Use SuperSeller AI&apos;s Key (+$20/mo)</Label>
                                 <Switch
-                                    checked={data.useSuperSeller AIOpenai || false}
-                                    onCheckedChange={(c) => onUpdate({ ...data, useSuperSeller AIOpenai: c })}
+                                    checked={data.useSuperSellerOpenai || false}
+                                    onCheckedChange={(c) => onUpdate({ ...data, useSuperSellerOpenai: c })}
                                 />
                             </div>
                         </div>
 
-                        {!data.useSuperSeller AIOpenai && (
+                        {!data.useSuperSellerOpenai && (
                             <div className="space-y-3">
                                 <Label className="text-white">API Key (sk-...)</Label>
                                 <div className="relative">

@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Input } from '@/components/ui/input-enhanced';
-import { SuperSeller AIProgress } from '@/components/ui/superseller-progress';
-import { SuperSeller AIStatusIndicator } from '@/components/ui/superseller-status';
+import { SuperSellerProgress } from '@/components/ui/superseller-progress';
+import { SuperSellerStatusIndicator } from '@/components/ui/superseller-status';
 import { gsap } from 'gsap';
 import { 
   Bot, 
@@ -558,7 +558,7 @@ export default function IntelligentOnboardingAgent({
             <Bot className="w-4 h-4" />
             <span>AI Assistant</span>
           </Badge>
-          <SuperSeller AIProgress 
+          <SuperSellerProgress 
             value={onboardingState.analysis.completeness} 
             className="w-24"
           />

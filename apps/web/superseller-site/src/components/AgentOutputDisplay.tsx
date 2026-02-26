@@ -1,5 +1,5 @@
 import React from 'react';
-import { SuperSeller AICard } from '@/components/ui/superseller-card';
+import { SuperSellerCard } from '@/components/ui/superseller-card';
 
 interface AgentOutputDisplayProps {
   customerId: string;
@@ -18,7 +18,7 @@ export function AgentOutputDisplay({ customerId, agentType }: AgentOutputDisplay
   const outputs = sampleOutputs[customerId as keyof typeof sampleOutputs]?.[agentType] || [];
 
   return (
-    <SuperSeller AICard variant="gradient">
+    <SuperSellerCard variant="gradient">
       <h3 className="text-xl font-semibold text-superseller-cyan capitalize">
         {agentType.replace('-', ' ')} Outputs
       </h3>
@@ -30,6 +30,6 @@ export function AgentOutputDisplay({ customerId, agentType }: AgentOutputDisplay
           </div>
         ))}
       </div>
-    </SuperSeller AICard>
+    </SuperSellerCard>
   );
 }

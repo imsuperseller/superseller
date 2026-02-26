@@ -15,7 +15,7 @@ interface AgentStatus {
   performance: number;
   lastExecution: string;
   errors: number;
-  isSuperSeller AICore?: boolean;
+  isSuperSellerCore?: boolean;
 }
 
 interface AIAgentManagementProps {
@@ -30,7 +30,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
     performance: Math.floor(Math.random() * 20) + 80, // Mock for now
     lastExecution: new Date().toISOString(),
     errors: 0,
-    isSuperSeller AICore: (p['Product Name']?.toLowerCase()?.includes('superseller') || p['Category'] === 'AI Agents') ?? false
+    isSuperSellerCore: (p['Product Name']?.toLowerCase()?.includes('superseller') || p['Category'] === 'AI Agents') ?? false
   })) : [
     {
       id: 'superseller-master-controller',
@@ -39,7 +39,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
       performance: 99,
       lastExecution: new Date().toISOString(),
       errors: 0,
-      isSuperSeller AICore: true
+      isSuperSellerCore: true
     },
     // ... default mocked items can stay or be removed if products are expected 
   ];
@@ -55,7 +55,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
         performance: Math.floor(Math.random() * 20) + 80,
         lastExecution: new Date().toISOString(),
         errors: 0,
-        isSuperSeller AICore: (p['Product Name']?.toLowerCase()?.includes('superseller') || p['Category'] === 'AI Agents') ?? false
+        isSuperSellerCore: (p['Product Name']?.toLowerCase()?.includes('superseller') || p['Category'] === 'AI Agents') ?? false
       })));
     }
   }, [products]);
@@ -97,18 +97,18 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
         {agents.map((agent) => (
           <div
             key={agent.id}
-            className={`group relative p-8 rounded-[2rem] border transition-all overflow-hidden flex flex-col ${agent.isSuperSeller AICore
+            className={`group relative p-8 rounded-[2rem] border transition-all overflow-hidden flex flex-col ${agent.isSuperSellerCore
               ? 'border-[#fe3d51]/30 bg-[#fe3d51]/[0.02] hover:bg-[#fe3d51]/[0.04] shadow-[0_0_20px_rgba(254,61,81,0.05)]'
               : 'border-white/5 bg-white/[0.01] hover:bg-white/[0.03]'
               }`}
           >
-            {agent.isSuperSeller AICore && (
+            {agent.isSuperSellerCore && (
               <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#fe3d51]/10 blur-[40px] rounded-full group-hover:bg-[#fe3d51]/20 transition-all duration-500" />
             )}
 
             <div className="flex items-start justify-between mb-8">
               <div className="p-4 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform duration-500">
-                <Cpu className={`w-6 h-6 ${agent.isSuperSeller AICore ? 'text-[#fe3d51]' : 'text-cyan-400'}`} />
+                <Cpu className={`w-6 h-6 ${agent.isSuperSellerCore ? 'text-[#fe3d51]' : 'text-cyan-400'}`} />
               </div>
               <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStatusColor(agent.status)}`}>
                 {agent.status}
@@ -119,7 +119,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-black text-white tracking-tight uppercase truncate">{agent.name}</h3>
-                  {agent.isSuperSeller AICore && (
+                  {agent.isSuperSellerCore && (
                     <div className="px-1.5 py-0.5 bg-[#fe3d51] text-white text-[7px] font-black uppercase rounded shadow-[0_0_10px_rgba(254,61,81,0.5)]">
                       CORE
                     </div>
@@ -135,7 +135,7 @@ export default function AIAgentManagement({ products = [] }: AIAgentManagementPr
                 </div>
                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-1000 shadow-[0_0_10px_rgba(6,182,212,0.3)] ${agent.isSuperSeller AICore ? 'bg-[#fe3d51]' : 'bg-cyan-500'}`}
+                    className={`h-full transition-all duration-1000 shadow-[0_0_10px_rgba(6,182,212,0.3)] ${agent.isSuperSellerCore ? 'bg-[#fe3d51]' : 'bg-cyan-500'}`}
                     style={{ width: `${agent.performance}%` }}
                   />
                 </div>

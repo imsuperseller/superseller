@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
-import { SuperSeller AIProgress } from '@/components/ui/superseller-progress';
-import { SuperSeller AIStatusIndicator } from '@/components/ui/superseller-status';
+import { SuperSellerProgress } from '@/components/ui/superseller-progress';
+import { SuperSellerStatusIndicator } from '@/components/ui/superseller-status';
 import { gsap } from 'gsap';
 import { 
   Bot, 
@@ -278,7 +278,7 @@ export default function CustomerAgentSystem({
                       {Math.round(realTimeData[agent._id].progress)}%
                     </span>
                   </div>
-                  <SuperSeller AIProgress 
+                  <SuperSellerProgress 
                     value={realTimeData[agent._id].progress} 
                     fillAnimate={true}
                     className="h-2"

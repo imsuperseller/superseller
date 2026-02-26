@@ -25,7 +25,7 @@ import { apiTools, handleApiTool } from './tools/api.js';
 // Import resources
 import { fileResources, readFileResource } from './resources/files.js';
 
-class SuperSeller AIMCPServer {
+class SuperSellerMCPServer {
   private server: Server;
 
   constructor() {
@@ -118,7 +118,7 @@ class SuperSeller AIMCPServer {
 
 // Start server if this file is run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const server = new SuperSeller AIMCPServer();
+  const server = new SuperSellerMCPServer();
   server.start().catch((error) => {
     console.error("Failed to start server:", error);
     process.exit(1);

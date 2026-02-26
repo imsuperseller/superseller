@@ -166,7 +166,7 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
                 <p className="text-sm text-slate-400 font-medium">Broadcast your mission:</p>
                 <div className="flex gap-4">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just launched my new AI ${productId || 'Automation'} with @SuperSeller AIAI! The future of work is here. 🚀 #AIAgency #Automation`)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just launched my new AI ${productId || 'Automation'} with @SuperSellerAI! The future of work is here. 🚀 #AIAgency #Automation`)}`}
                     target="_blank"
                     className="flex-1"
                   >

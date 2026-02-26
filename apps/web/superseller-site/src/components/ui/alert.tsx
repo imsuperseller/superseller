@@ -2,9 +2,9 @@ import * as React from "react"
 import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { SuperSeller AILogo } from '@/components/ui/superseller-logo';
-import { SuperSeller AIProgress } from '@/components/ui/superseller-progress';
-import { SuperSeller AIStatusIndicator } from '@/components/ui/superseller-status';
+import { SuperSellerLogo } from '@/components/ui/superseller-logo';
+import { SuperSellerProgress } from '@/components/ui/superseller-progress';
+import { SuperSellerStatusIndicator } from '@/components/ui/superseller-status';
 import { SplitText, Typewriter, FadeInText } from 'react-bits';
 import { MagneticCursor, CustomCursor, CursorFollower } from 'react-bits';
 import { GlassCard, GradientCard, HoverCard } from 'react-bits';

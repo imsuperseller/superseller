@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { SuperSeller AILogo } from '@/components/ui/superseller-logo';
-import { SuperSeller AICard } from '@/components/ui/superseller-card';
-import { SuperSeller AIButton } from '@/components/ui/superseller-button';
+import { SuperSellerLogo } from '@/components/ui/superseller-logo';
+import { SuperSellerCard } from '@/components/ui/superseller-card';
+import { SuperSellerButton } from '@/components/ui/superseller-button';
 // Disable GSAP during SSR to avoid build issues
 const isClient = typeof window !== 'undefined';
 
@@ -124,7 +124,7 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
   if (error || !config) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
-        <SuperSeller AICard className="max-w-md mx-auto text-center">
+        <SuperSellerCard className="max-w-md mx-auto text-center">
           <div className="text-red-400 mb-4">
             <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -132,10 +132,10 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">Portal Error</h2>
           <p className="text-gray-300 mb-6">{error || 'Failed to load customer configuration'}</p>
-          <SuperSeller AIButton onClick={() => window.location.reload()}>
+          <SuperSellerButton onClick={() => window.location.reload()}>
             Try Again
-          </SuperSeller AIButton>
-        </SuperSeller AICard>
+          </SuperSellerButton>
+        </SuperSellerCard>
       </div>
     );
   }
@@ -145,35 +145,35 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
       case 'dashboard':
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SuperSeller AICard className="content-card">
+            <SuperSellerCard className="content-card">
               <div className="text-center">
                 <div className="text-4xl mb-4">📊</div>
                 <h3 className="text-xl font-semibold text-white mb-2">Business Overview</h3>
                 <p className="text-gray-300">Monitor your key performance indicators and business metrics</p>
               </div>
-            </SuperSeller AICard>
+            </SuperSellerCard>
             
-            <SuperSeller AICard className="content-card">
+            <SuperSellerCard className="content-card">
               <div className="text-center">
                 <div className="text-4xl mb-4">🤖</div>
                 <h3 className="text-xl font-semibold text-white mb-2">Active Agents</h3>
                 <p className="text-gray-300">View and manage your automation agents</p>
               </div>
-            </SuperSeller AICard>
+            </SuperSellerCard>
             
-            <SuperSeller AICard className="content-card">
+            <SuperSellerCard className="content-card">
               <div className="text-center">
                 <div className="text-4xl mb-4">📈</div>
                 <h3 className="text-xl font-semibold text-white mb-2">Performance</h3>
                 <p className="text-gray-300">Track automation efficiency and ROI</p>
               </div>
-            </SuperSeller AICard>
+            </SuperSellerCard>
           </div>
         );
 
       case 'tasks':
         return (
-          <SuperSeller AICard className="content-card">
+          <SuperSellerCard className="content-card">
             <h3 className="text-2xl font-bold text-white mb-6">Task Management</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
@@ -191,45 +191,45 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
                 <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm">Pending</span>
               </div>
             </div>
-          </SuperSeller AICard>
+          </SuperSellerCard>
         );
 
       case 'agents':
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <SuperSeller AICard className="content-card">
+            <SuperSellerCard className="content-card">
               <div className="text-center">
                 <div className="text-4xl mb-4">📝</div>
                 <h3 className="text-xl font-semibold text-white mb-2">Content Agent</h3>
                 <p className="text-gray-300 mb-4">Automated content creation and management</p>
-                <SuperSeller AIButton variant="outline" size="sm">
+                <SuperSellerButton variant="outline" size="sm">
                   Configure
-                </SuperSeller AIButton>
+                </SuperSellerButton>
               </div>
-            </SuperSeller AICard>
+            </SuperSellerCard>
             
-            <SuperSeller AICard className="content-card">
+            <SuperSellerCard className="content-card">
               <div className="text-center">
                 <div className="text-4xl mb-4">🎙️</div>
                 <h3 className="text-xl font-semibold text-white mb-2">Podcast Agent</h3>
                 <p className="text-gray-300 mb-4">Automated podcast production and distribution</p>
-                <SuperSeller AIButton variant="outline" size="sm">
+                <SuperSellerButton variant="outline" size="sm">
                   Configure
-                </SuperSeller AIButton>
+                </SuperSellerButton>
               </div>
-            </SuperSeller AICard>
+            </SuperSellerCard>
           </div>
         );
 
       default:
         return (
-          <SuperSeller AICard className="content-card">
+          <SuperSellerCard className="content-card">
             <div className="text-center">
               <div className="text-6xl mb-4">🚀</div>
               <h3 className="text-2xl font-bold text-white mb-2">Coming Soon</h3>
               <p className="text-gray-300">This feature is under development</p>
             </div>
-          </SuperSeller AICard>
+          </SuperSellerCard>
         );
     }
   };
@@ -241,7 +241,7 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <SuperSeller AILogo className="h-8 w-auto" />
+              <SuperSellerLogo className="h-8 w-auto" />
               <div>
                 <h1 className="text-2xl font-bold text-white">{config.name}</h1>
                 <p className="text-cyan-300">{config.company}</p>
@@ -251,9 +251,9 @@ export default function CustomerPortal({ params }: { params: { slug: string } })
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">
                 Portal Active
               </span>
-              <SuperSeller AIButton variant="outline" size="sm">
+              <SuperSellerButton variant="outline" size="sm">
                 Settings
-              </SuperSeller AIButton>
+              </SuperSellerButton>
             </div>
           </div>
         </div>

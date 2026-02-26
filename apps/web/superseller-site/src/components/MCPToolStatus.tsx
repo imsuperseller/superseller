@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { SuperSeller AICard } from '@/components/ui/superseller-card';
+import { SuperSellerCard } from '@/components/ui/superseller-card';
 
 export function MCPToolStatus({ customerId, tools }) {
   return (
-    <SuperSeller AICard variant="superseller">
+    <SuperSellerCard variant="superseller">
       <h3 className="text-xl font-semibold text-superseller-cyan">MCP Tools</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {tools.map((tool) => (
@@ -14,6 +14,6 @@ export function MCPToolStatus({ customerId, tools }) {
           </div>
         ))}
       </div>
-    </SuperSeller AICard>
+    </SuperSellerCard>
   );
 }
