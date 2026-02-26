@@ -79,7 +79,7 @@
 
 **Root cause**: Files were committed before `.gitignore` patterns were added. `.gitignore` only prevents NEW additions; already-tracked files persist until `git rm --cached`.
 
-**Phantom health-check URLs**: Admin health-check route (`/api/admin/health-check`) had `market.rensto.com` and `gateway.rensto.com` — neither domain exists. These were aspirational/placeholder URLs that never got cleaned up. Replaced with actual RackNerd services (Worker, FB Bot, Ollama).
+**Phantom health-check URLs**: Admin health-check route (`/api/admin/health-check`) had `market.superseller.agency` and `gateway.superseller.agency` — neither domain exists. These were aspirational/placeholder URLs that never got cleaned up. Replaced with actual RackNerd services (Worker, FB Bot, Ollama).
 
 **R2 public access gap**: `winner-video-studio` bucket had public access disabled, meaning Winner Studio videos were not publicly accessible via r2.dev domain. Now enabled.
 
@@ -98,7 +98,7 @@
 | 3 | n8n "backup only" everywhere | FB Bot lead pipeline runs production n8n workflows | Updated 6 files: CLAUDE.md, brain.md, DECISIONS.md, INFRA_SSOT.md, antigravity-automation SKILL |
 | 4 | Telnyx "DORMANT" in INFRA_SSOT | FB Bot lead pipeline uses Telnyx actively | Fixed to "active" |
 | 5 | PRODUCT_BIBLE missing 5 products | Only had TourReel + FB Bot | Added Winner Studio, Lead Pages, FrontDesk, AgentForge, SocialHub |
-| 6 | WAHA env var naming undocumented | `WAHA_URL` (Studio) vs `WAHA_BASE_URL` (rensto-site) vs `config.shared.wahaUrl` (FB Bot) | Documented per-app naming in whatsapp-waha SKILL + INFRA_SSOT |
+| 6 | WAHA env var naming undocumented | `WAHA_URL` (Studio) vs `WAHA_BASE_URL` (superseller-site) vs `config.shared.wahaUrl` (FB Bot) | Documented per-app naming in whatsapp-waha SKILL + INFRA_SSOT |
 | 7 | `LIGHTRAG_BASE_URL` undocumented | Used in health-check route but not in any docs | Added to INFRA_SSOT §1 + §2 |
 | 8 | Monitoring claims "16 services" | Only 11 actually defined in service registry | Corrected to 11 in monitoring-alerts SKILL + INFRA_SSOT |
 | 9 | CLAUDE.md §5 missing 5/7 products | Only 3-line status summary | Full 7-product table added |
@@ -319,7 +319,7 @@ cumSec += dur;  // Now arithmetic addition
 **Fix**: Use `Telnyx.KokoroTTS.af_heart` instead. KokoroTTS works immediately — greeting delivered, transcription works, LLM responds, tool calls work.
 
 **Also fixed**:
-- `api_key_ref: "rensto"` in voice_settings was pointing to a non-existent key reference. Must be empty string `""` for Telnyx-native voices.
+- `api_key_ref: "superseller"` in voice_settings was pointing to a non-existent key reference. Must be empty string `""` for Telnyx-native voices.
 - Phone number was connected to old Call Control App (webhook to n8n). Switched to TeXML App (`2860769989730764458`) that routes to the AI assistant.
 - Transfer tool requires `from` parameter in the config, otherwise returns 422 "from parameter required".
 - Hangup tool makes LLM too aggressive — removed it. Let callers hang up naturally.
@@ -411,15 +411,15 @@ cumSec += dur;  // Now arithmetic addition
 #### CRITICAL (fix immediately)
 
 1. **CORS wildcard on all API routes** — `vercel.json:9-14`: `Access-Control-Allow-Origin: *` on `/api/(.*)`. Any website can make cross-origin requests to all API endpoints, including authenticated ones. Session cookies with `SameSite=Lax` mitigate CSRF for state-changing requests, but GET routes leak data.
-   - **Fix**: Replace `*` with `https://rensto.com, https://admin.rensto.com`. Add `Access-Control-Allow-Credentials: true`.
+   - **Fix**: Replace `*` with `https://superseller.agency, https://admin.superseller.agency`. Add `Access-Control-Allow-Credentials: true`.
 
 2. **68% video pipeline failure rate** — DB query: 60 failed / 88 total jobs (31.8% completion). Avg duration 1174 minutes (~19.6 hours). No api_expenses logged in 30 days (trackExpense() NOT being called).
    - **Fix**: Query failed job error patterns. Top causes likely: Kie.ai timeouts, credit insufficiency, photo URL failures. Fix root causes and add trackExpense() calls to worker pipeline.
 
-3. **~60 TypeScript errors silently ignored** — `next.config.mjs:34-36`: `ignoreBuildErrors: true`. Errors include: 6 missing modules (`rensto-card`, `rensto-progress`, `rensto-status`, `react-bits`, `rensto-logo`, `rensto-styles`), wrong Stripe API version (`2024-04-10` vs `2025-08-27.basil`), broken GSAP types, missing `@/hooks/useAnalytics`, broken Badge/Button variant types (`renstoInfo`, `renstoDanger` not in variant union).
+3. **~60 TypeScript errors silently ignored** — `next.config.mjs:34-36`: `ignoreBuildErrors: true`. Errors include: 6 missing modules (`superseller-card`, `superseller-progress`, `superseller-status`, `react-bits`, `superseller-logo`, `superseller-styles`), wrong Stripe API version (`2024-04-10` vs `2025-08-27.basil`), broken GSAP types, missing `@/hooks/useAnalytics`, broken Badge/Button variant types (`supersellerInfo`, `supersellerDanger` not in variant union).
    - **Fix**: Delete dead components referencing missing modules. Update Stripe API version. Fix variant types. Goal: `tsc --noEmit` clean, then remove `ignoreBuildErrors`.
 
-4. **No custom error pages** — Zero `error.tsx`, `not-found.tsx`, or `loading.tsx` files in entire `apps/web/rensto-site/src/app/`. Users see raw Next.js error pages.
+4. **No custom error pages** — Zero `error.tsx`, `not-found.tsx`, or `loading.tsx` files in entire `apps/web/superseller-site/src/app/`. Users see raw Next.js error pages.
    - **Fix**: Create `app/error.tsx` (global error boundary), `app/not-found.tsx` (branded 404), `app/(main)/loading.tsx` (loading skeleton).
 
 5. **Expense tracking not running** — `api_expenses` table has zero rows for last 30 days. `trackExpense()` exists in code but is not being called by the worker during Kling/Suno/Gemini API calls. Cost visibility is zero.
@@ -465,11 +465,11 @@ cumSec += dur;  // Now arithmetic addition
 17. **Email DNS — no DKIM for Resend** — SPF present (`v=spf1 include:_spf.protection.outlook.com -all`) but only covers Outlook. No DKIM record for Resend transactional emails. Deliverability risk.
     - **Fix**: Add Resend DKIM records to DNS. Add Resend to SPF include.
 
-18. **Only 1 active user in 30 days** — 46 registered, 46 verified, 1 active recently. Only 3 entitlements exist (e2e test: 1436 credits, service@rensto.com: 57, test-gating: 15). Business metric — early stage.
+18. **Only 1 active user in 30 days** — 46 registered, 46 verified, 1 active recently. Only 3 entitlements exist (e2e test: 1436 credits, shai@superseller.agency: 57, test-gating: 15). Business metric — early stage.
 
 19. **Only 1 subscription** — 1 active subscription, 3 total payments, 0 with unknown userId (linkage clean).
 
-20. **Dead code in components** — `BusinessIntelligence.tsx` imports missing `@/lib/business-intelligence`. `CustomerAgentSystem.tsx`, `IntelligentOnboardingAgent.tsx` import missing `rensto-progress`, `rensto-status`. `alert.tsx` imports missing `react-bits`. These should be deleted or fixed as part of the TypeScript cleanup (Finding #3).
+20. **Dead code in components** — `BusinessIntelligence.tsx` imports missing `@/lib/business-intelligence`. `CustomerAgentSystem.tsx`, `IntelligentOnboardingAgent.tsx` import missing `superseller-progress`, `superseller-status`. `alert.tsx` imports missing `react-bits`. These should be deleted or fixed as part of the TypeScript cleanup (Finding #3).
 
 #### HEALTHY (no action needed)
 
@@ -489,7 +489,7 @@ cumSec += dur;  // Now arithmetic addition
 | Schema types | 0 mismatches (Schema Sentinel) |
 | Stuck jobs | 0 currently |
 | Payment linkage | 3/3 linked, 0 unknown userId |
-| Lead sources | 5 distinct (Rensto AI Agent: 5, whatsapp, linkedin, google_maps, manual) |
+| Lead sources | 5 distinct (SuperSeller AI AI Agent: 5, whatsapp, linkedin, google_maps, manual) |
 | Session encryption | AES-256-GCM implemented (`auth.ts`), falls back to base64 if `SESSION_SECRET` unset |
 | Redis | Running (in Docker container, used by BullMQ + worker) |
 
@@ -529,12 +529,12 @@ cumSec += dur;  // Now arithmetic addition
 
 3. **Outlook email notification fails** — "No binary data exists on item!" when trying to attach audio file.
    - Evidence: `Send via Outlook1` node fails because `audioFile` binary property doesn't exist
-   - Sends to `service@rensto.com` via Microsoft Outlook OAuth2
+   - Sends to `shai@superseller.agency` via Microsoft Outlook OAuth2
    - **Fix**: Make audio attachment optional (some conversations won't have recordings)
 
 4. **n8n workflow IS running** — 10 recent successful executions (every 15 min, all today). Recent successes are because there are no NEW conversations to process — the workflow polls, finds nothing new, exits cleanly. Errors only occur when it finds conversations to process.
 
-#### CRITICAL — Telnyx Voice AI (Rensto FrontDesk)
+#### CRITICAL — Telnyx Voice AI (SuperSeller AI FrontDesk)
 
 1. **18/19 calls classified as "missed"** — Only 1 answered call (Shai's test). 18 others have `number_of_messages=0` and `last_message_at=null`.
    - Evidence: `SELECT outcome, COUNT(*) FROM "VoiceCallLog"` → missed: 18, answered: 1
@@ -555,7 +555,7 @@ cumSec += dur;  // Now arithmetic addition
 5. **Summary/sentiment null for all** — Insights API may be failing silently or not available for short calls
    - **Fix**: Only request insights for conversations with `number_of_messages > 0`
 
-6. **UAD/MissParty NOT polled by worker** — Worker only polls Rensto's own assistant (1 SecretaryConfig with telnyxAssistantId). UAD/MissParty are on separate Telnyx account, handled by n8n.
+6. **UAD/MissParty NOT polled by worker** — Worker only polls SuperSeller AI's own assistant (1 SecretaryConfig with telnyxAssistantId). UAD/MissParty are on separate Telnyx account, handled by n8n.
    - Evidence: `SELECT COUNT(*) FROM "SecretaryConfig" WHERE "telnyxAssistantId" IS NOT NULL` → 1
 
 #### Documentation Conflicts (from background audit)
@@ -586,11 +586,11 @@ cumSec += dur;  // Now arithmetic addition
 #### EMAIL — NOT YET VERIFIED
 
 Emails observed across systems:
-- **service@rensto.com** — n8n Outlook recipient for UAD lead analysis emails
-- **admin@rensto.com** — in ADMIN_EMAILS array (`auth.ts:14`)
+- **shai@superseller.agency** — n8n Outlook recipient for UAD lead analysis emails
+- **shai@superseller.agency** — in ADMIN_EMAILS array (`auth.ts:14`)
 - **uad.garage.doors@gmail.com** — UAD Facebook account (`bot-config.json:18`)
 - **michalkacher2006@gmail.com** — MissParty Facebook account (`bot-config.json:96`)
-- **Rensto Microsoft Outlook OAuth2** — n8n credential `EA2Fl9QT5h2HZoo9` used to send emails
+- **SuperSeller AI Microsoft Outlook OAuth2** — n8n credential `EA2Fl9QT5h2HZoo9` used to send emails
 
 **Need user confirmation**: Which emails should be configured where? Are there missing email routes?
 
@@ -618,7 +618,7 @@ Emails observed across systems:
 
 ### SSH Command Injection in /api/admin/n8n
 
-**What happened**: The `targetVersion` parameter from POST body was interpolated directly into an SSH command: `bash /opt/n8n/rensto-n8n-upgrade.sh ${targetVersion}`. An attacker with admin access could inject arbitrary shell commands.
+**What happened**: The `targetVersion` parameter from POST body was interpolated directly into an SSH command: `bash /opt/n8n/superseller-n8n-upgrade.sh ${targetVersion}`. An attacker with admin access could inject arbitrary shell commands.
 
 **Fix**: Added semver regex validation (`/^\d+\.\d+\.\d+$/`) before the spawn call. Invalid formats return 400.
 
@@ -754,7 +754,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 **Architecture (discovered Feb 22):** The Telnyx numbers are connected to **Telnyx AI Assistants** — fully autonomous voice agents that handle calls natively on Telnyx (not via n8n webhooks). Two separate Telnyx accounts:
 - **UAD/MissParty account** (`KEY019B52B283A906F6B2150BD499B7BD99`): 5 numbers (4 UAD + 1 MissParty)
-- **Rensto account** (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`): 1 number (Voice AI "Hope")
+- **SuperSeller AI account** (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`): 1 number (Voice AI "Hope")
 
 **Telnyx AI Assistants:**
 - **UAD "Sarah"** (`assistant-5515bf13`): Qwen3-235B, Deepgram Nova-2, Telnyx.NaturalHD.Esther voice. Greets callers, collects lead info, books garage door appointments, explains $49 trip charge. 4 numbers routed to it.
@@ -764,7 +764,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 **Pipeline flow:** Telnyx AI Assistant answers call → full conversation → stores transcript/insights → n8n Schedule Trigger (15 min) polls Telnyx Conversation API → Claude Sonnet 4.5 analysis → Workiz CRM (UAD) / Email (MissParty)
 
 **Critical bugs found and fixed (Feb 22):**
-1. **UAD webhook URL was WRONG** — `dynamic_variables_webhook_url` pointed to `tax4usllc.app.n8n.cloud` (external n8n cloud) instead of `n8n.rensto.com`. Fixed via Telnyx API PATCH.
+1. **UAD webhook URL was WRONG** — `dynamic_variables_webhook_url` pointed to `tax4usllc.app.n8n.cloud` (external n8n cloud) instead of `n8n.superseller.agency`. Fixed via Telnyx API PATCH.
 2. **Both n8n workflows had stale trigger registration** — marked "active: true" but `activeVersionId: null`, `triggerCount: 0`. Schedule triggers never fired. Fixed by deactivate/reactivate cycle.
 3. **MissParty workflow was corrupted** — couldn't be activated at all (`activeVersionId: null` permanently). Fixed by deleting and recreating from saved JSON. New ID: `9gfvZo9sB4b3pMWQ` (old: `U6LqmzNwiKTkd0gM`).
 4. **Claude prompt didn't receive caller metadata** — The `Get Insights` node replaces the data, losing the caller phone from conversation metadata. Fixed prompt to reference `$('Get Many Conversations1').item.json.metadata`.
@@ -778,16 +778,16 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 **Current status (Feb 22):**
 - ✅ UAD workflow (U6EZ2iLQ4zCGg31H): Active, 5 triggers, Schedule firing every 15 min
 - ✅ MissParty workflow (9gfvZo9sB4b3pMWQ): Active, 5 triggers, Schedule firing every 15 min
-- ✅ Email notifications: Working — service@rensto.com receiving lead emails
+- ✅ Email notifications: Working — shai@superseller.agency receiving lead emails
 - ✅ 3 historical UAD conversations found (1 real lead from +14695885133 on Jan 20, 2 test calls from Jan 2)
 - ✅ Workiz CRM: FIXED — `auth_secret` must go INSIDE the JSON body (not URL, not headers). PascalCase field names (`FirstName`, `LastName`, `Phone`, `Email`, `Address`, `JobType`, `JobSource`). Discovery: Pipedream SDK source code revealed the pattern. 401 was caused by missing `auth_secret` in body + Workiz server rejects `Content-Type: application/json` without it.
 - ⚠️ Caller phone extraction: Insight summaries don't always contain the caller number — metadata merging works partially. Real incoming calls will have phone from Telnyx metadata.
 - ✅ Conversation deduplication: FIXED (Feb 23) — "Filter New Conversations" Code node added to both workflows. Uses `$getWorkflowStaticData('global')` to track processed conversation IDs. Old conversations filtered out → 0 items → pipeline stops. Verified: execution #154094 completed in 0.4s (vs 20s) with 0 items passing the filter. No more spam emails.
 
 **3. Voice AI "Hope"** (MqMYMeA9U9PEX1cH) — 13 nodes, active, **0 executions**:
-- This is a **Rensto sales agent**, NOT for customer calls (talks about Automation Audit $499, Sprint Planning $1,500)
+- This is a **SuperSeller AI sales agent**, NOT for customer calls (talks about Automation Audit $499, Sprint Planning $1,500)
 - Uses GPT-4o + ElevenLabs voice via Telnyx
-- On separate Rensto Telnyx account, NOT relevant for UAD/MissParty
+- On separate SuperSeller AI Telnyx account, NOT relevant for UAD/MissParty
 
 **Workiz API auth pattern (NEVER FORGET):**
 - Base URL: `https://api.workiz.com/api/v1/{api_token}/`
@@ -986,7 +986,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - `8Ay9qG9GgOfrMUzXiC5KJ` — **FB Marketplace Listing Generator**: SUPERSEDED by `content-generator.js` + `image-pool.js`. n8n webhooks broken.
 - `U6EZ2iLQ4zCGg31H` — **UAD Lead Analysis**: Telnyx → Claude → Workiz API + Email. Active but **0 executions ever**.
 - `U6LqmzNwiKTkd0gM` — **Miss Party Lead Analysis**: Telnyx → Claude → Email. Active but **1 stuck execution, never completed**.
-- `MqMYMeA9U9PEX1cH` — **Telnyx Voice AI "Hope"**: Rensto sales agent, NOT for customer calls. **0 executions ever**.
+- `MqMYMeA9U9PEX1cH` — **Telnyx Voice AI "Hope"**: SuperSeller AI sales agent, NOT for customer calls. **0 executions ever**.
 
 **DB Table**: `fb_listings` in `app_db` (PostgreSQL). Webhook server reads from here.
 
@@ -1088,7 +1088,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 **UAD Facebook account email:**
 - Config had `uad.garage.doors@gmail.com` — Facebook says "email not connected to any account".
-- Changed to `service@rensto.com` for testing. David's actual Facebook email needs to be confirmed.
+- Changed to `shai@superseller.agency` for testing. David's actual Facebook email needs to be confirmed.
 - **Never repeat**: Check proxy connectivity (`curl -x http://proxy:port ...`) before assuming browser issues.
 
 **GoLogin API — Token and Update Errors (Feb 2026):**
@@ -1122,8 +1122,8 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 ### Port Conflict Reference (from CONFLICT_AUDIT.md — NEVER REPEAT)
 
-- **Local dev (both apps running)**: Worker MUST use `PORT=3001`. rensto-site keeps 3002. Both share same DATABASE_URL and REDIS_URL.
-- **RackNerd**: Worker runs on port 3002 at `/opt/tourreel-worker`. rensto-site is on Vercel.
+- **Local dev (both apps running)**: Worker MUST use `PORT=3001`. superseller-site keeps 3002. Both share same DATABASE_URL and REDIS_URL.
+- **RackNerd**: Worker runs on port 3002 at `/opt/tourreel-worker`. superseller-site is on Vercel.
 - **run-smoke.ts**: `API_URL` must point to WORKER, not site. Local: `API_URL=http://localhost:3001`. RackNerd: `API_URL=http://172.245.56.50:3002`.
 - **BullMQ retry fix**: UnrecoverableError for Insufficient Credits, Listing not found, No clip prompts — prevents repeated Kie.ai charges.
 - **Preflight before video test**: `cd apps/worker && npx tsx tools/run-preflight.ts --free` (checks Postgres, Redis, FFmpeg).
@@ -1139,7 +1139,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Ghost reference files fixed (see above)**.
 - **ARCHITECTURE.md had stale skills list**: Listed "n8n, Tax4Us, workflow generator" — all 3 were deleted. Replaced with actual 8 active skills. Always update ARCHITECTURE.md when skills change.
 - **Firestore references persist in comments**: 4 API routes still had Firestore in comments/variable names despite full retirement. Comments are invisible but misleading for agents. Clean stale comments after any migration.
-- **UI labels can drift from architecture**: "Submit Issue to n8n Resolver" button actually did `mailto:support@rensto.com` — label was stale from pre-paradigm-shift. Check UI labels after architectural changes.
+- **UI labels can drift from architecture**: "Submit Issue to n8n Resolver" button actually did `mailto:support@superseller.agency` — label was stale from pre-paradigm-shift. Check UI labels after architectural changes.
 - **firestore.ts type file still imported by 6+ components**: AdminDashboardClient, ClientIntelligence, ClientManagement, WorkflowManagement, AIAgentManagement, HomePageClient all import `Template` from `@/types/firestore.ts`. Tech debt — should migrate to Prisma types eventually. Not blocking.
 
 ### Admin Monitoring Dashboard Implementation
@@ -1176,7 +1176,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Config location**: `/etc/systemd/system/ollama.service.d/override.conf` — contains KEEP_ALIVE=0, MAX_LOADED_MODELS=1, NUM_PARALLEL=1, FLASH_ATTENTION=1, HOST=0.0.0.0.
 - **Port**: 11434 (Ollama default). Accessible at `http://172.245.56.50:11434`.
 - **SSH password**: Documented in CREDENTIAL_REFERENCE.md. Check conversation history or RackNerd panel. NEVER ask user again.
-- **Existing services audit (Feb 2026)**: Docker containers: postgres_db, redis_cache, n8n_rensto, waha, browserless_rensto, video-merge. PM2: saas-engine, tourreel-worker, video-merge-service, webhook-server (online); facebook-bot-enhanced, master-bot (stopped); server (errored). Nginx on 80/8080.
+- **Existing services audit (Feb 2026)**: Docker containers: postgres_db, redis_cache, n8n_superseller, waha, browserless_superseller, video-merge. PM2: saas-engine, tourreel-worker, video-merge-service, webhook-server (online); facebook-bot-enhanced, master-bot (stopped); server (errored). Nginx on 80/8080.
 
 ### Full-Stack Conflict & Completeness Audit (Session 4)
 
@@ -1184,8 +1184,8 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **PRODUCT_BIBLE.md had stale pricing model**: Referenced Starter/Growth/Scale with agent-limits. Actual model is $299/$699/$1,499 credit-based (500/1500/4000). Fix: Updated to current credit model. Added TourReel 50 credits/video.
 - **brain.md listed Veo as active**: Lines 37 + 139 referenced Veo. All notebooks and INFRA_SSOT say Veo is deprecated. Fix: Removed Veo, updated to "Kling 3.0, Suno, Nano Banana".
 - **Veo code still in kie.ts**: KieVeoRequest interface and createVeoTask function exported. Fix: Removed Veo interface, function, and type references. Changed getTaskStatus/waitForTask defaults from "veo" to "kling".
-- **ADMIN_EMAILS duplicated in 4 files**: auth.ts, send/route.ts, verify/route.ts all had identical `(process.env.ADMIN_EMAILS || 'service@rensto.com,admin@rensto.com')`. Fix: Exported ADMIN_EMAILS from auth.ts, imported in route files.
-- **Admin demo password in PRODUCT_BIBLE.md**: `admin@rensto.com / admin123` documented publicly. Fix: Removed, replaced with magic-link auth description.
+- **ADMIN_EMAILS duplicated in 4 files**: auth.ts, send/route.ts, verify/route.ts all had identical `(process.env.ADMIN_EMAILS || 'shai@superseller.agency,shai@superseller.agency')`. Fix: Exported ADMIN_EMAILS from auth.ts, imported in route files.
+- **Admin demo password in PRODUCT_BIBLE.md**: `shai@superseller.agency / admin123` documented publicly. Fix: Removed, replaced with magic-link auth description.
 - **Agent-behavior files (.cursor vs .claude)**: Verified identical content (198-byte diff = YAML frontmatter only). No actual drift.
 - **NotebookLM compliance pushed (3 notebooks)**: fc048ba8 (n8n=backup), 3e820274 (Kling 3.0 only), 8a655666 (fal.ai=deprecated).
 - **9 missing Claude skills identified**: Created 3 P1 skills (stripe-credits, database-management, antigravity-automation) + skill-template scaffold. 6 P2-P3 skills documented as TODO.
@@ -1219,7 +1219,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
   - fc048ba8 (n8n workflows): n8n = backup only, Antigravity primary, Firestore retired
   - 743744d5 (Marketplace): Firestore, Airtable.com, BMAD, Webflow = retired
   - 98b120fa (Aitable.ai): Dashboards-only scope restriction
-  - 3e820274 (KIE.AI): Kling 3.0 only for Rensto production
+  - 3e820274 (KIE.AI): Kling 3.0 only for SuperSeller AI production
 - **Verified**: Queried 5811a372 post-push — now correctly returns brain.md as Tier 1, NotebookLM as Tier 7.
 - **Stripe publishable key**: Rotated to `pk_live_...xQM`, added to Vercel production + preview via CLI.
 - **Codebase fixes (committed earlier this session)**:
@@ -1268,26 +1268,26 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 | 3 | firebase-admin Storage-only | PASS | Only 2 files: firebase-admin.ts + onboarding approve route |
 | 4 | firebase SDK removed from package.json | PASS | `"firebase"` not in dependencies |
 | 5 | firebase-client.ts + firebase.ts deleted | PASS | Files confirmed gone |
-| 6 | rensto.com returns 200 | PASS | Production healthy |
-| 7 | admin.rensto.com → login (307→200) | PASS | Domain moved from stale rensto-admin to rensto-site |
-| 8 | rensto.com/video/create | PASS | 307 to login (auth required — expected) |
-| 9 | rensto.com/login | PASS | 200 |
-| 10 | API health check | PASS | rensto.com/api/admin/health-check 200 |
-| 11 | api.rensto.com | PASS | 200 |
-| 12 | Prisma User for service@rensto.com | PASS | id=5fd79287, role=ADMIN, status=active |
-| 13 | Drizzle user for service@rensto.com | PASS | Same UUID, tier=pro, limit=500 |
+| 6 | superseller.agency returns 200 | PASS | Production healthy |
+| 7 | admin.superseller.agency → login (307→200) | PASS | Domain moved from stale superseller-admin to superseller-site |
+| 8 | superseller.agency/video/create | PASS | 307 to login (auth required — expected) |
+| 9 | superseller.agency/login | PASS | 200 |
+| 10 | API health check | PASS | superseller.agency/api/admin/health-check 200 |
+| 11 | api.superseller.agency | PASS | 200 |
+| 12 | Prisma User for shai@superseller.agency | PASS | id=5fd79287, role=ADMIN, status=active |
+| 13 | Drizzle user for shai@superseller.agency | PASS | Same UUID, tier=pro, limit=500 |
 | 14 | User IDs match across tables | PASS | Both tables share 5fd79287-... |
 | 15 | Entitlement with 500 credits | PASS | credits_balance=500, plan=pro, status=active |
 | 16 | User role is ADMIN | PASS | Confirmed |
 | 17 | Valid magic link tokens exist | PASS | 3 unused tokens ready |
-| 18 | ADMIN_EMAILS in all 3 auth files | PASS | service@rensto.com,admin@rensto.com |
-| 19 | Cookie domain .rensto.com (verify) | PASS | Cross-subdomain auth works |
-| 20 | Admin redirect to admin.rensto.com | PASS | `https://admin.rensto.com` in verify route |
-| 21 | Logout cookie domain matches | PASS | .rensto.com in logout route |
+| 18 | ADMIN_EMAILS in all 3 auth files | PASS | shai@superseller.agency,shai@superseller.agency |
+| 19 | Cookie domain .superseller.agency (verify) | PASS | Cross-subdomain auth works |
+| 20 | Admin redirect to admin.superseller.agency | PASS | `https://admin.superseller.agency` in verify route |
+| 21 | Logout cookie domain matches | PASS | .superseller.agency in logout route |
 | 22 | Design system brand colors | PASS | #fe3d51, #bf5700, #1eaef7, #5ffbfd, #110d28 |
 | 23 | No wrong design colors | PASS | No #7C3AED, Poppins only in anti-patterns |
-| 24 | VERCEL_PROJECT_MAP has admin.rensto.com | PASS | Listed under rensto-site |
-| 25 | Middleware handles admin.rensto.com | PASS | hostname check present |
+| 24 | VERCEL_PROJECT_MAP has admin.superseller.agency | PASS | Listed under superseller-site |
+| 25 | Middleware handles admin.superseller.agency | PASS | hostname check present |
 
 **25/25 PASS.** All changes verified.
 
@@ -1295,12 +1295,12 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 ### Changes made this session
 
-- **admin.rensto.com broken (was 404)**: Root cause — domain was on stale `rensto-admin` Vercel project that had no working app. Fix: removed from rensto-admin, added to rensto-site. Middleware in rensto-site already handled admin.rensto.com rewrites.
-- **Cross-subdomain auth**: Cookie had no `domain` attribute → scoped to rensto.com only → admin.rensto.com couldn't read it. Fix: set `domain: '.rensto.com'` in verify and logout routes.
-- **Magic link admin redirect**: Was `/admin` (path on rensto.com) → now `https://admin.rensto.com` in production.
-- **Owner account created**: `service@rensto.com` with ADMIN role, 500 credits, in both Prisma User + Drizzle users tables (same UUID). Entitlement active.
+- **admin.superseller.agency broken (was 404)**: Root cause — domain was on stale `superseller-admin` Vercel project that had no working app. Fix: removed from superseller-admin, added to superseller-site. Middleware in superseller-site already handled admin.superseller.agency rewrites.
+- **Cross-subdomain auth**: Cookie had no `domain` attribute → scoped to superseller.agency only → admin.superseller.agency couldn't read it. Fix: set `domain: '.superseller.agency'` in verify and logout routes.
+- **Magic link admin redirect**: Was `/admin` (path on superseller.agency) → now `https://admin.superseller.agency` in production.
+- **Owner account created**: `shai@superseller.agency` with ADMIN role, 500 credits, in both Prisma User + Drizzle users tables (same UUID). Entitlement active.
 - **RESEND_API_KEY**: Set in Vercel production + preview via API.
-- **ADMIN_EMAILS default**: Changed from `admin@rensto.com` to `service@rensto.com,admin@rensto.com` in auth.ts, send/route.ts, verify/route.ts.
+- **ADMIN_EMAILS default**: Changed from `shai@superseller.agency` to `shai@superseller.agency,shai@superseller.agency` in auth.ts, send/route.ts, verify/route.ts.
 - **Schema drift noted**: Prisma schema says `emailVerified DateTime?` but actual DB column is `boolean`. `User.id` is `@db.Uuid` in schema but `text` in actual DB. Not fixed (requires migration) but worked around with raw SQL.
 - **Two user tables**: `"User"` (Prisma, text id) and `users` (Drizzle, uuid id). Entitlements FK → `users`. Owner account inserted into both with matching UUID.
 
@@ -1330,9 +1330,9 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
     - 0baf5f36: "Zillow-to-Drone-Tour System Implementation Specification" (Veo + fal.ai) — deleted
     - 5811a372: "Architecting an AI Real Estate Video SaaS with Veo 3.1" (OBSOLETE by own OVERRIDE) — deleted
   - **Pricing page fixed**: Corrected tiers from $49/$99/$199 to canonical $299/$699/$1499 with 500/1500/4000 credits. Replaced `alert()` placeholder with real Stripe checkout via new `/api/video/subscribe` route.
-  - **Subscribe API route created**: `apps/web/rensto-site/src/app/api/video/subscribe/route.ts` — creates Stripe subscription checkout session with correct metadata for credit provisioning.
+  - **Subscribe API route created**: `apps/web/superseller-site/src/app/api/video/subscribe/route.ts` — creates Stripe subscription checkout session with correct metadata for credit provisioning.
   - **Webflow references purged**: All stale "Matching Webflow Brand System" comments removed from globals.css.
-  - **Checkout platform label fixed**: `api/checkout/route.ts` metadata changed from `rensto-firebase` to `rensto-web`.
+  - **Checkout platform label fixed**: `api/checkout/route.ts` metadata changed from `superseller-firebase` to `superseller-web`.
   - **Design system verified**: globals.css colors match notebook 286f3e4a exactly (#fe3d51, #bf5700, #1eaef7, #5ffbfd, #110d28).
 
 - **Remaining technical debt** (not launch-blocking for TourReel self-serve):
@@ -1360,7 +1360,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Pipeline config duplication**: Clip duration (5s) and max clips (15) were hardcoded in kie.ts, prompt-generator, video-pipeline. Fix: TOURREEL_REALTOR_HANDOFF_SPEC §0b declares config.ts as SSOT; all code reads config.video.defaultClipDuration and config.video.maxClipsPerVideo.
 - **Port confusion**: README said site 3001 (wrong—it's 3002). VIDEO_APP_USER_GUIDE said localhost:3000 (wrong—3002). e2e-from-zillow, run-smoke defaulted to 3002 for API_URL but worker is 3001 when both run. Fix: PORT_REFERENCE.md = SSOT. All docs/tools updated.
 - **Conflict audit protocol**: When user asks "do you have conflicts?"—run CONFLICT_AUDIT.md checks (git, ports, docs, config), do not confirm without executing. Audit doc is runnable checklist.
-- **Video page 404 on rensto.com**: rensto-site.vercel.app/video/create and /video/[jobId] work; rensto.com can 404 if the domain points to a different Vercel project. Fix: In Vercel, ensure rensto.com is aliased to the same project as rensto-site.vercel.app. If multiple projects exist (e.g. api.rensto.com), add rensto.com domain to the project that has the video routes. Added redirect /video → /video/create.
+- **Video page 404 on superseller.agency**: superseller-site.vercel.app/video/create and /video/[jobId] work; superseller.agency can 404 if the domain points to a different Vercel project. Fix: In Vercel, ensure superseller.agency is aliased to the same project as superseller-site.vercel.app. If multiple projects exist (e.g. api.superseller.agency), add superseller.agency domain to the project that has the video routes. Added redirect /video → /video/create.
 - **Video "fetch failed"**: API proxies to VIDEO_WORKER_URL; worker unreachable or 404 → fetchJobFromDb reads video_jobs+listings+clips from shared Postgres. Returns real address, exterior_photo_url, floorplan_url, clips. Only falls back to mock if DB has no record.
 - **Kie.ai charges every couple minutes**: BullMQ retries (attempts: 3, backoff 30s) caused repeated pipeline runs when job failed (e.g. Insufficient Credits). Each retry = full Kie.ai usage. Fix: throw `UnrecoverableError` for unrecoverable errors.
 

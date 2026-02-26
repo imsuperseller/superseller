@@ -441,7 +441,7 @@
       "parameters": {
         "operation": "send",
         "subject": "=Your {{ $json.leadCount }} Enriched Leads Are Ready! 🚀",
-        "message": "=Hi {{ $json.userName }},\\n\\nYour lead enrichment is complete! Here are your {{ $json.leadCount }} enriched leads.\\n\\nBest regards,\\nRensto Team",
+        "message": "=Hi {{ $json.userName }},\\n\\nYour lead enrichment is complete! Here are your {{ $json.leadCount }} enriched leads.\\n\\nBest regards,\\nSuperSeller AI Team",
         "attachments": {
           "attachments": [
             {

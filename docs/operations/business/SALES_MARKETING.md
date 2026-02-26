@@ -1,6 +1,6 @@
 # 📈 Sales & Marketing
 
-> **Source of Truth for how Rensto acquires customers.**
+> **Source of Truth for how SuperSeller AI acquires customers.**
 
 ---
 
@@ -38,6 +38,6 @@
 | Platform | Link |
 | :--- | :--- |
 | n8n | https://tinyurl.com/ym3awuke |
-| Apify | https://tinyurl.com/Rensto |
-| Instantly.ai | https://tinyurl.com/rensto-instantly |
+| Apify | https://tinyurl.com/SuperSeller AI |
+| Instantly.ai | https://tinyurl.com/superseller-instantly |
 | Airtable | https://tinyurl.com/4xujacz6 |

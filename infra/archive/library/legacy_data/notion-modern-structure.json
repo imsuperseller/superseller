@@ -1,7 +1,7 @@
 {
   "databases": [
     {
-      "name": "Rensto Business References",
+      "name": "SuperSeller AI Business References",
       "id": "d19df0fe-8284-448a-8ea1-963d2031b9c6",
       "url": "https://www.notion.so/d19df0fe8284448a8ea1963d2031b9c6",
       "properties": {
@@ -27,7 +27,7 @@
       }
     },
     {
-      "name": "Rensto Customer Management",
+      "name": "SuperSeller AI Customer Management",
       "description": "Customer-focused database aligned with Airtable Companies table",
       "properties": [
         "Company Name",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "name": "Rensto Project Tracking",
+      "name": "SuperSeller AI Project Tracking",
       "description": "Project tracking aligned with Airtable Progress Tracking",
       "properties": [
         "Project Name",

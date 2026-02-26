@@ -1,4 +1,4 @@
-# Rensto Methodology
+# SuperSeller AI Methodology
 
 **Purpose**: Process methodology for B.L.A.S.T. vs Agent Behavior. For authority precedence across all docs, see [`brain.md`](brain.md).
 
@@ -61,7 +61,7 @@
 - Teammates communicate directly with each other (unlike subagents which only report back)
 - Lead synthesizes results
 
-**Best practices for Rensto**:
+**Best practices for SuperSeller AI**:
 - **3 teammates max** for most tasks. Every agent adds communication tax.
 - **Opus as lead, Sonnet for teammates** to control token cost.
 - **Each teammate owns different files**. Two agents editing the same file = overwrites.
@@ -110,10 +110,10 @@ Use Sonnet for each teammate. Require plan approval before implementation.
 
 **Usage**: The skill activates automatically when UI/UX work is detected. For explicit use:
 ```bash
-python3 .claude/skills/ui-ux-pro-max-skill/src/ui-ux-pro-max/scripts/search.py "SaaS dark mode dashboard" --design-system -p "Rensto"
+python3 .claude/skills/ui-ux-pro-max-skill/src/ui-ux-pro-max/scripts/search.py "SaaS dark mode dashboard" --design-system -p "SuperSeller AI"
 ```
 
-**Rensto-specific**: Our stack is Next.js + Tailwind + shadcn/ui. Use `--stack nextjs` or `--stack shadcn` for implementation guidelines.
+**SuperSeller AI-specific**: Our stack is Next.js + Tailwind + shadcn/ui. Use `--stack nextjs` or `--stack shadcn` for implementation guidelines.
 
 ---
 

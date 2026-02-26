@@ -1,7 +1,7 @@
 ---
 name: notebooklm-hub
 description: >-
-  NotebookLM knowledge hub management for Rensto. Covers 36 notebooks as the spec/methodology
+  NotebookLM knowledge hub management for SuperSeller AI. Covers 36 notebooks as the spec/methodology
   source of truth, query patterns, auth flow, notebook index, research workflows, and
   conflict resolution. Use when querying NotebookLM, managing notebooks, researching specs,
   or resolving cross-reference conflicts. Not for codebase changes, video pipeline, or UI design.
@@ -78,7 +78,7 @@ notebooklm-mcp-auth
 ### Business & Marketing (6)
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
-| 719854ee | Rensto Website | 30 | Site content, copy |
+| 719854ee | SuperSeller AI Website | 30 | Site content, copy |
 | cb99e6aa | Social Media & Marketing | 50 | Social strategy, lead gen |
 | 8df32896 | Market Intelligence | 3 | Competitors, pricing |
 | 749832c6 | Design Prompts | 49 | UI/UX prompt patterns |
@@ -96,7 +96,7 @@ notebooklm-mcp-auth
 ### Customer-Specific (3)
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
-| 6a4eb203 | (Archived — external client) | 10 | Insurance landing page strategy (not part of Rensto) |
+| 6a4eb203 | (Archived — external client) | 10 | Insurance landing page strategy (not part of SuperSeller AI) |
 | b42dabb0 | AC & C HVAC | 2 | HVAC client pitch |
 | e419bca1 | Israeli Expatriates Dallas | 1 | Community forum reference |
 
@@ -105,7 +105,7 @@ notebooklm-mcp-auth
 |----|-------|---------|---------|
 | e99673f2 | JoinSecret Worthy Deals | 8 | SaaS tool deals |
 | 0996f6ab | Stack | 1 | Tech stack reference |
-| b4974f45 | Rensto Business Operations | 0 | Empty (planned) |
+| b4974f45 | SuperSeller AI Business Operations | 0 | Empty (planned) |
 | df1029dd | Templates & Design | 0 | Empty (planned) |
 | 2b5ed4df | AI Media APIs | 0 | Empty (planned) |
 

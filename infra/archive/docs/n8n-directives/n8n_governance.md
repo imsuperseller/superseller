@@ -1,6 +1,6 @@
-# Directive: n8n Governance & Standards (Rensto)
+# Directive: n8n Governance & Standards (SuperSeller AI)
 
-**Purpose**: Define the operational standards, naming conventions, and access policies for the Rensto n8n ecosystem.
+**Purpose**: Define the operational standards, naming conventions, and access policies for the SuperSeller AI n8n ecosystem.
 
 **Last Updated**: February 2026  
 **Target Version**: n8n 2.4.6
@@ -12,8 +12,8 @@
 
 ## 1. System Architecture & Access
 
-### Primary Instance (Rensto VPS)
-- **URL**: `https://n8n.rensto.com` (Cloudflare proxied)
+### Primary Instance (SuperSeller AI VPS)
+- **URL**: `https://n8n.superseller.agency` (Cloudflare proxied)
 - **Direct**: `http://172.245.56.50:5678` (internal only)
 - **Version**: Community Edition v2.4.6
 - **Host**: Racknerd VPS (172.245.56.50)
@@ -65,7 +65,7 @@ All workflows must follow the format: `{TYPE}-{FUNCTION}-{VERSION}`
 - **Task Runners**: Code nodes run in isolated environments (default in 2.x).
 
 ### Integration
-- **Webhooks**: Must use HTTPS (`https://n8n.rensto.com/webhook/...`)
+- **Webhooks**: Must use HTTPS (`https://n8n.superseller.agency/webhook/...`)
 - **Error Handling**: Every production workflow MUST have Error Trigger node.
 - **Webhook Security**: Use Header Auth or Bearer minimum. Never "None" in production.
 
@@ -83,11 +83,11 @@ All workflows must follow the format: `{TYPE}-{FUNCTION}-{VERSION}`
 
 ## 5. Environment Configuration (2.x)
 
-Required environment variables for Rensto VPS:
+Required environment variables for SuperSeller AI VPS:
 
 ```bash
 # Core
-N8N_HOST=n8n.rensto.com
+N8N_HOST=n8n.superseller.agency
 N8N_PORT=5678
 N8N_PROTOCOL=https
 

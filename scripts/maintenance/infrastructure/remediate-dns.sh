@@ -1,12 +1,12 @@
 #!/bin/bash
 # 🛠️ Cloudflare DNS Remediation Script
-# Purpose: Align DNS records with the Rensto System Blueprint
+# Purpose: Align DNS records with the SuperSeller AI System Blueprint
 
 ZONE_ID="031333b77c859d1dd4d4fd4afdc1b9bc"
 TOKEN="UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1"
 VPS_IP="172.245.56.50"
 
-echo "🚀 Starting DNS Remediation for rensto.com..."
+echo "🚀 Starting DNS Remediation for superseller.agency..."
 
 # Function to add/update A record
 upsert_a_record() {
@@ -34,23 +34,23 @@ upsert_a_record() {
     fi
 }
 
-# 1. Management: api.rensto.com & market.rensto.com
+# 1. Management: api.superseller.agency & market.superseller.agency
 # These are handled by Vercel (CNAME to cname.vercel-dns.com)
 # Removed A record upserts to avoid invalid configurations.
 
-# 3. Add gateway.rensto.com
-upsert_a_record "gateway.rensto.com" "$VPS_IP"
+# 3. Add gateway.superseller.agency
+upsert_a_record "gateway.superseller.agency" "$VPS_IP"
 
-# 4. Add waha.rensto.com
-upsert_a_record "waha.rensto.com" "$VPS_IP"
+# 4. Add waha.superseller.agency
+upsert_a_record "waha.superseller.agency" "$VPS_IP"
 
-# 5. Add browserless.rensto.com
-upsert_a_record "browserless.rensto.com" "$VPS_IP"
+# 5. Add browserless.superseller.agency
+upsert_a_record "browserless.superseller.agency" "$VPS_IP"
 
-# 6. Add hyperise.rensto.com
-upsert_a_record "hyperise.rensto.com" "$VPS_IP"
+# 6. Add hyperise.superseller.agency
+upsert_a_record "hyperise.superseller.agency" "$VPS_IP"
 
-# 7. Add rag.rensto.com
-upsert_a_record "rag.rensto.com" "$VPS_IP"
+# 7. Add rag.superseller.agency
+upsert_a_record "rag.superseller.agency" "$VPS_IP"
 
 echo "✅ DNS Remediation Complete."

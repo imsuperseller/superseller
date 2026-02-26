@@ -90,7 +90,7 @@ export const config = {
         publicUrl: (() => {
             const raw = optional("R2_PUBLIC_URL", process.env.R2_PUBLIC_DOMAIN || "");
             if (raw && raw.startsWith("http")) return raw;
-            if (raw && raw.includes("videos.rensto.com")) return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev";
+            if (raw && raw.includes("videos.superseller.agency")) return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev";
             return "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev"; // fallback: Kie needs absolute URLs
         })(),
         endpoint: r2Endpoint || `https://${r2AccountId}.r2.cloudflarestorage.com`,
@@ -104,13 +104,13 @@ export const config = {
 
     notifications: {
         resendApiKey: process.env.RESEND_API_KEY,
-        fromEmail: optional("NOTIFICATION_FROM_EMAIL", "noreply@tourreel.com"),
+        fromEmail: optional("NOTIFICATION_FROM_EMAIL", "noreply@superseller.agency"),
     },
 
     app: {
         url: optional("APP_URL", "http://localhost:3001"),
         apiUrl: optional("API_URL", "http://localhost:3002"),
-        corsOrigins: ["http://localhost:3000", "http://localhost:3001", "https://rensto.com", "https://www.rensto.com"],
+        corsOrigins: ["http://localhost:3000", "http://localhost:3001", "https://superseller.agency", "https://www.superseller.agency"],
     },
 
     waha: {

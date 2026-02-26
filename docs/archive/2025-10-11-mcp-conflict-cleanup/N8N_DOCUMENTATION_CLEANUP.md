@@ -50,7 +50,7 @@ The following files contain n8n information but are **DEPRECATED** and should be
 ### **✅ ACTIVE N8N INSTANCE:**
 - **URL**: `http://172.245.56.50:5678`
 - **Version**: 1.112.5
-- **Container**: `n8n_rensto`
+- **Container**: `n8n_superseller`
 - **Data Volume**: `n8n_n8n_data`
 
 ### **✅ ACTIVE N8N WORKFLOWS:**

@@ -1,5 +1,5 @@
-# Rensto WhatsApp Agent: "The Zen of Automation"
-**Concept**: A satirical yet ultra-premium visual journey contrasting "Old Chaos" with "Rensto Order".
+# SuperSeller AI WhatsApp Agent: "The Zen of Automation"
+**Concept**: A satirical yet ultra-premium visual journey contrasting "Old Chaos" with "SuperSeller AI Order".
 **Total Duration**: 25 Seconds (5 Scenes x 5s)
 
 ---
@@ -30,9 +30,9 @@
 **Sora 2 Prompt**:
 > Medium shot. A stylish business owner in a quiet, hyper-modern concrete loft, sitting in an Eames chair. They are holding a tiny espresso cup, looking out a window with a serene smile. In the blurred foreground, the single phone rests on a table, screen racing with "Payment Received" notifications, scrolling so fast it's just a green blur. The contrast between the owner's stillness and the phone's velocity is the satire. High fashion photography style.
 
-### SCENE 5: The Rensto Seal (0:20 - 0:25)
+### SCENE 5: The SuperSeller AI Seal (0:20 - 0:25)
 **Metric**: Authority, Brand
-**Visual**: The Rensto Logo forming from green smoke.
+**Visual**: The SuperSeller AI Logo forming from green smoke.
 **Sora 2 Prompt**:
 > A moody, dark void. Emerald green smoke swirls and condenses to form the sharp, metallic letters of "RENSTO". A subtitle fades in below in elegant sans-serif font: "Operating System for the 1%". The smoke dissipates leaving the logo gleaming in a spotlight. 8k, unreal engine 5 render style, cinematic ending.
 

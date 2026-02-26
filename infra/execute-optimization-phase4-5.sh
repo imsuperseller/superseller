@@ -87,14 +87,14 @@ version: '3.8'
 services:
   n8n:
     image: n8nio/n8n:latest
-    container_name: n8n_rensto_dev
+    container_name: n8n_superseller_dev
     restart: unless-stopped
     ports:
       - "5678:5678"
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=rensto2024
+      - N8N_BASIC_AUTH_PASSWORD=superseller2024
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
@@ -102,7 +102,7 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
-      - rensto_network
+      - superseller_network
 
   redis:
     image: redis:7.2-alpine
@@ -113,7 +113,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - rensto_network
+      - superseller_network
 
   mongodb:
     image: mongo:7.0
@@ -123,11 +123,11 @@ services:
       - "27017:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=rensto2024
+      - MONGO_INITDB_ROOT_PASSWORD=superseller2024
     volumes:
       - mongodb_data:/data/db
     networks:
-      - rensto_network
+      - superseller_network
 
 volumes:
   n8n_data:
@@ -135,7 +135,7 @@ volumes:
   mongodb_data:
 
 networks:
-  rensto_network:
+  superseller_network:
     driver: bridge
 EOF
 
@@ -145,23 +145,23 @@ version: '3.8'
 services:
   n8n:
     image: n8nio/n8n:latest
-    container_name: n8n_rensto_prod
+    container_name: n8n_superseller_prod
     restart: unless-stopped
     ports:
       - "5678:5678"
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=rensto2024_prod
+      - N8N_BASIC_AUTH_PASSWORD=superseller2024_prod
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - N8N_ENCRYPTION_KEY=rensto_encryption_key_2024
+      - N8N_ENCRYPTION_KEY=superseller_encryption_key_2024
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
-      - rensto_network
+      - superseller_network
     depends_on:
       - redis
       - mongodb
@@ -172,11 +172,11 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    command: redis-server --requirepass rensto_redis_2024 --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    command: redis-server --requirepass superseller_redis_2024 --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     networks:
-      - rensto_network
+      - superseller_network
 
   mongodb:
     image: mongo:7.0
@@ -186,11 +186,11 @@ services:
       - "27017:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=rensto2024_prod
+      - MONGO_INITDB_ROOT_PASSWORD=superseller2024_prod
     volumes:
       - mongodb_data:/data/db
     networks:
-      - rensto_network
+      - superseller_network
 
   nginx:
     image: nginx:alpine
@@ -203,7 +203,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/nginx/ssl
     networks:
-      - rensto_network
+      - superseller_network
     depends_on:
       - n8n
 
@@ -213,7 +213,7 @@ volumes:
   mongodb_data:
 
 networks:
-  rensto_network:
+  superseller_network:
     driver: bridge
 EOF
 
@@ -221,7 +221,7 @@ EOF
 echo "   Creating optimized environment configuration..."
 cat > config/environment/.env.example << 'EOF'
 # Database Configuration
-MONGODB_URI=mongodb://admin:rensto2024@localhost:27017/rensto?authSource=admin
+MONGODB_URI=mongodb://admin:superseller2024@localhost:27017/superseller?authSource=admin
 REDIS_URL=redis://localhost:6379
 
 # Authentication
@@ -251,22 +251,22 @@ EOF
 
 cat > config/environment/.env.production << 'EOF'
 # Database Configuration
-MONGODB_URI=mongodb://admin:rensto2024_prod@localhost:27017/rensto?authSource=admin
-REDIS_URL=redis://:rensto_redis_2024@localhost:6379
+MONGODB_URI=mongodb://admin:superseller2024_prod@localhost:27017/superseller?authSource=admin
+REDIS_URL=redis://:superseller_redis_2024@localhost:6379
 
 # Authentication
-NEXTAUTH_SECRET=rensto_production_secret_2024
-NEXTAUTH_URL=https://rensto.com
+NEXTAUTH_SECRET=superseller_production_secret_2024
+NEXTAUTH_URL=https://superseller.agency
 
 # External Services
-N8N_BASE_URL=https://n8n.rensto.com
-N8N_API_KEY=rensto_n8n_api_key_2024
+N8N_BASE_URL=https://n8n.superseller.agency
+N8N_API_KEY=superseller_n8n_api_key_2024
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_PUBLISHABLE_KEY=pk_live_...
 
 # Monitoring
-ROLLBAR_ACCESS_TOKEN=rensto_rollbar_token_2024
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/rensto/production
+ROLLBAR_ACCESS_TOKEN=superseller_rollbar_token_2024
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/superseller/production
 
 # Production
 NODE_ENV=production
@@ -369,7 +369,7 @@ cat > config/mcp/cursor-config.json << 'EOF'
   "mcpServers": {
     "n8n": {
       "command": "node",
-      "args": ["/Users/shaifriedman/New Rensto/rensto/rensto-marketplace/plugins/rensto-n8n-agents/mcpServers/n8n-unified-server.js"],
+      "args": ["/Users/shaifriedman/New SuperSeller AI/superseller/superseller-marketplace/plugins/superseller-n8n-agents/mcpServers/n8n-unified-server.js"],
       "env": {
         "N8N_BASE_URL": "http://localhost:5678",
         "N8N_API_KEY": "your-api-key"
@@ -405,7 +405,7 @@ cat > config/n8n/.env << 'EOF'
 # n8n Environment Configuration
 N8N_BASIC_AUTH_ACTIVE=true
 N8N_BASIC_AUTH_USER=admin
-N8N_BASIC_AUTH_PASSWORD=rensto2024
+N8N_BASIC_AUTH_PASSWORD=superseller2024
 N8N_HOST=0.0.0.0
 N8N_PORT=5678
 N8N_PROTOCOL=http
@@ -420,12 +420,12 @@ DB_POSTGRESDB_USER=n8n
 DB_POSTGRESDB_PASSWORD=n8n_password
 
 # Security
-N8N_ENCRYPTION_KEY=rensto_encryption_key_2024
-N8N_JWT_SECRET=rensto_jwt_secret_2024
+N8N_ENCRYPTION_KEY=superseller_encryption_key_2024
+N8N_JWT_SECRET=superseller_jwt_secret_2024
 
 # External Services
-WEBHOOK_URL=https://rensto.com/webhook
-WEBHOOK_TUNNEL_URL=https://rensto.com/webhook
+WEBHOOK_URL=https://superseller.agency/webhook
+WEBHOOK_TUNNEL_URL=https://superseller.agency/webhook
 
 # Monitoring
 N8N_LOG_LEVEL=info

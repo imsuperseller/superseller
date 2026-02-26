@@ -1,0 +1,147 @@
+{
+    "name": "RENSTO-CORE: Solution Supervisor Agent v1",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutes": 15
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                100,
+                100
+            ],
+            "id": "schedule-trigger",
+            "name": "Every 15 Minutes"
+        },
+        {
+            "parameters": {
+                "operation": "getMany",
+                "collection": "onboarding_requests",
+                "filters": {
+                    "fields": [
+                        {
+                            "field": "status",
+                            "operator": "==",
+                            "value": "submitted"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.firestore",
+            "typeVersion": 1,
+            "position": [
+                300,
+                100
+            ],
+            "id": "fetch-new-requests",
+            "name": "Fetch New Requests",
+            "credentials": {
+                "firestoreApi": {
+                    "id": "firestore-service-account",
+                    "name": "Firestore Service Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const requests = items.map(i => i.json);\nif (requests.length === 0) return [];\n\nreturn requests.map(r => ({\n  json: {\n    ...r,\n    action: 'provision'\n  }\n}));"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                500,
+                100
+            ],
+            "id": "process-requests",
+            "name": "Process Requests"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "=You are the SuperSeller AI Solution Supervisor. Your task is to provision the following request: {{ $json.solutionName }}.\n\nRequirements:\n1. Choose the correct n8n workflow template based on the solution ID.\n2. Ensure all inputs provided by the client are mapped.\n3. Identify any missing technical requirements.\n\nJSON Data: {{ JSON.stringify($json) }}",
+                "hasOutputParser": true
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1,
+            "position": [
+                700,
+                100
+            ],
+            "id": "provisioning-agent",
+            "name": "Supervisor AI"
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "collection": "onboarding_requests",
+                "documentId": "={{ $node[\"Process Requests\"].json.id }}",
+                "fields": {
+                    "status": "provisioning",
+                    "updatedAt": "={{ new Date().toISOString() }}"
+                }
+            },
+            "type": "n8n-nodes-base.firestore",
+            "typeVersion": 1,
+            "position": [
+                900,
+                100
+            ],
+            "id": "update-status",
+            "name": "Update Status"
+        }
+    ],
+    "connections": {
+        "Every 15 Minutes": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch New Requests",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch New Requests": {
+            "main": [
+                [
+                    {
+                        "node": "Process Requests",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Process Requests": {
+            "main": [
+                [
+                    {
+                        "node": "Supervisor AI",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Supervisor AI": {
+            "main": [
+                [
+                    {
+                        "node": "Update Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

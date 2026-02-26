@@ -1,4 +1,4 @@
-# Cursor Rensto Rules
+# Cursor SuperSeller AI Rules
 
 **Authority**: For conflict resolution, see [`brain.md`](../brain.md) Authority Precedence table.
 
@@ -6,29 +6,29 @@
 
 ### Domain Architecture:
 ```
-rensto.com          → Vercel (Next.js - main site, marketplace, all public pages) — apps/web/rensto-site/
-www.rensto.com      → Vercel (same as rensto.com)
-admin.rensto.com    → Vercel (admin dashboard — integrated in rensto-site/src/app/(main)/admin)
-api.rensto.com      → Vercel (API endpoints — same app, rensto.com/api/*)
-portal.rensto.com   → Vercel (customer portals - planned)
+superseller.agency          → Vercel (Next.js - main site, marketplace, all public pages) — apps/web/superseller-site/
+www.superseller.agency      → Vercel (same as superseller.agency)
+admin.superseller.agency    → Vercel (admin dashboard — integrated in superseller-site/src/app/(main)/admin)
+api.superseller.agency      → Vercel (API endpoints — same app, superseller.agency/api/*)
+portal.superseller.agency   → Vercel (customer portals - planned)
 ```
 **Webflow**: Retired. All pages served by Next.js on Vercel.
 
 ### Architecture Rules:
-- rensto.com is on Vercel — main Next.js app is `apps/web/rensto-site/`
+- superseller.agency is on Vercel — main Next.js app is `apps/web/superseller-site/`
 - Read brain.md first, then CLAUDE.md before architectural decisions
-- Deploy API routes to `/apps/web/rensto-site/src/app/api/`
+- Deploy API routes to `/apps/web/superseller-site/src/app/api/`
 
 ---
 
 ## Core Principles
 1) **Before writing code**: SEARCH repo for an existing function/module that fits; REUSE > EXTEND > REFACTOR; never duplicate.
 2) **Never create new top-level folders**. Allowed top-level: .github, .vscode, apps, packages, services, infra, scripts, docs, tests, assets, examples, experiments, archived.
-3) **Data models / schema**: Repo has no root `packages/schema` yet – put shared types in `apps/web/rensto-site/src/types/` or app-local; include `rgid` where applicable (see CLAUDE.md).
-4) **External integrations**: No root `services/adapters` yet – add integration logic in `apps/web/rensto-site/src/lib/` or `infra/` as appropriate.
+3) **Data models / schema**: Repo has no root `packages/schema` yet – put shared types in `apps/web/superseller-site/src/types/` or app-local; include `rgid` where applicable (see CLAUDE.md).
+4) **External integrations**: No root `services/adapters` yet – add integration logic in `apps/web/superseller-site/src/lib/` or `infra/` as appropriate.
 5) **Idempotency is MANDATORY**: outbound POSTs must set `Idempotency-Key`; inbound webhooks must be deduped by `(source, event_id)`.
 6) **Migrations**: No root `packages/db` – put SQL in `infra/migrations/`; document in CODEBASE_AUDIT or docs.
-7) **No spaces in file/dir names**. Use kebab-case. Move "Examples/ Rensto System" to examples/rensto-system.
+7) **No spaces in file/dir names**. Use kebab-case. Move "Examples/ SuperSeller AI System" to examples/superseller-system.
 9) **If a function you're writing computes or fetches a record**, add a deterministic `dedupe_key` and call `upsert_by_identity(...)`.
 10) **On pull requests**: fail CI if any file violates rules above or if duplicate keys are detected by the duplicate scanner.
 
@@ -37,9 +37,9 @@ portal.rensto.com   → Vercel (customer portals - planned)
 12) **Before implementing**: Check CLAUDE.md and existing docs for similar implementations.
 13) **After implementation**: Update CLAUDE.md and optimization plans as needed.
 
-## Rensto Brand Guidelines
-15) **Use Rensto brand colors**: #fe3d51 (primary), #bf5700 (secondary), #1eaef7 (accent), #5ffbfd (highlight), #110d28 (dark).
-16) **Include Rensto logo** in all design outputs and avoid using the weird K letter.
+## SuperSeller AI Brand Guidelines
+15) **Use SuperSeller AI brand colors**: #fe3d51 (primary), #bf5700 (secondary), #1eaef7 (accent), #5ffbfd (highlight), #110d28 (dark).
+16) **Include SuperSeller AI logo** in all design outputs and avoid using the weird K letter.
 17) **Use GSAP animations** and Shadcn components consistently throughout the codebase.
 18) **Follow modern JavaScript/TypeScript best practices** with async/await for asynchronous code.
 

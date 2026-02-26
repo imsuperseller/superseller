@@ -8,10 +8,10 @@
 
 ## 1. Product Overview
 
-**Name**: Rensto WhatsApp Agent  
+**Name**: SuperSeller AI WhatsApp Agent  
 **Value Prop**: Turn WhatsApp into a 24/7 Operating System for your business.  
 **Model**: Hybrid SaaS (Monthly Recurring + One-Time Setup).  
-**Core Tech**: WAHA Pro (WhatsApp HTTP API) + n8n + Rensto Cloud.
+**Core Tech**: WAHA Pro (WhatsApp HTTP API) + n8n + SuperSeller AI Cloud.
 
 The product is structured as a **"Base Platform + Add-ons"** menu. Customers MUST purchase the base platform, then can selectively add capabilities as needed.
 
@@ -22,7 +22,7 @@ The product is structured as a **"Base Platform + Add-ons"** menu. Customers MUS
 ### Core Capabilities (Included in Base)
 - **Messaging**: Send/receive text only.
 - **Sessions**: Single WhatsApp number connection.
-- **Integration**: 1 Webhook pipeline into Rensto "Brain" (n8n).
+- **Integration**: 1 Webhook pipeline into SuperSeller AI "Brain" (n8n).
 - **Routing**: Basic Open/Closed business hours auto-reply.
 - **Safety**: Rate limiting & retries to prevent bans.
 - **Logging**: Basic transaction logs (ID, phone, time, status).
@@ -72,7 +72,7 @@ The product is structured as a **"Base Platform + Add-ons"** menu. Customers MUS
 ## 4. Implementation Strategy
 
 ### **Page Location**
-`rensto.com/whatsapp` (New Page)
+`superseller.agency/whatsapp` (New Page)
 
 ### **Page Logic**
 1. **Configurator UI**: "Build Your Agent" calculator.
@@ -86,9 +86,9 @@ The product is structured as a **"Base Platform + Add-ons"** menu. Customers MUS
 
 ***
 
-## 5. Rensto Infrastructure Integration
+## 5. SuperSeller AI Infrastructure Integration
 
-- **Current WAHA**: Rensto-Internal-WAHA (Docker).
+- **Current WAHA**: SuperSeller AI-Internal-WAHA (Docker).
 - **Engine**: Recommend `NOWEB` for standard, `GOWS` for Reliability Pack.
 - **Hosting**: Existing VPS / Coolify infrastructure.
 - **Workflows**: New standardized "Core Router" workflow template needed.

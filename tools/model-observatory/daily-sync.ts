@@ -32,7 +32,7 @@ const FAL_MODELS_URL = "https://fal.ai/models";
 
 const HTTP_TIMEOUT_MS = 30_000;
 const USER_AGENT =
-  "Rensto-ModelObservatory/1.0 (+https://rensto.com) Node.js";
+  "SuperSeller AI-ModelObservatory/1.0 (+https://superseller.agency) Node.js";
 
 // ═══════════════════════════════════════════════════════════
 // TYPES

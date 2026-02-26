@@ -69,18 +69,18 @@
 ### CRITICAL: Two Separate Repos for Webflow
 
 **Repo 1: Main Codebase**
-- Location: `/Users/shaifriedman/New Rensto/rensto/`
-- Remote: `https://github.com/imsuperseller/rensto`
+- Location: `/Users/shaifriedman/New SuperSeller AI/superseller/`
+- Remote: `https://github.com/imsuperseller/superseller`
 - Contains: `webflow/` folder with documentation + 1 test file
 
 **Repo 2: Webflow Scripts (SEPARATE)**
-- Location: `/Users/shaifriedman/New Rensto/rensto-webflow-scripts/`
-- Remote: `https://github.com/imsuperseller/rensto-webflow-scripts`
+- Location: `/Users/shaifriedman/New SuperSeller AI/superseller-webflow-scripts/`
+- Remote: `https://github.com/imsuperseller/superseller-webflow-scripts`
 - Contains: JavaScript modules (marketplace/, subscriptions/, custom-solutions/, ready-solutions/, shared/)
-- Deployed to: `https://rensto-webflow-scripts.vercel.app`
+- Deployed to: `https://superseller-webflow-scripts.vercel.app`
 
 **RISK**: These are TWO separate Git repos with NO sync mechanism!
-- Edit JS in rensto-webflow-scripts → Need to document in main repo
+- Edit JS in superseller-webflow-scripts → Need to document in main repo
 - Edit docs in main repo → Need to update scripts repo
 - **Current state**: Documentation in main repo references scripts repo, but no automation
 
@@ -90,8 +90,8 @@
 
 | Repo | Purpose | Contains | Deployed To |
 |------|---------|----------|-------------|
-| **rensto** (main) | Documentation, apps, workflows | `webflow/` (docs only), `apps/`, `scripts/`, `workflows/` | NOT deployed (docs only) |
-| **rensto-webflow-scripts** | Production JavaScript | `marketplace/`, `subscriptions/`, `shared/`, test files | Vercel CDN |
+| **superseller** (main) | Documentation, apps, workflows | `webflow/` (docs only), `apps/`, `scripts/`, `workflows/` | NOT deployed (docs only) |
+| **superseller-webflow-scripts** | Production JavaScript | `marketplace/`, `subscriptions/`, `shared/`, test files | Vercel CDN |
 
 **Rule**:
 - ✅ Keep separate (they serve different purposes)
@@ -105,13 +105,13 @@
 
 ### GitHub Repositories (3 total)
 
-1. **https://github.com/imsuperseller/rensto** (main codebase)
-   - Apps: rensto-site, admin-dashboard, marketplace, gateway-worker
+1. **https://github.com/imsuperseller/superseller** (main codebase)
+   - Apps: superseller-site, admin-dashboard, marketplace, gateway-worker
    - Documentation: 71 MD files
    - Workflows: 69 n8n workflows
    - Status: ⚠️ 22 untracked files, 1 modified, 4 deleted
 
-2. **https://github.com/imsuperseller/rensto-webflow-scripts** (webflow JS)
+2. **https://github.com/imsuperseller/superseller-webflow-scripts** (webflow JS)
    - JavaScript modules: 9 files (745 lines)
    - Documentation: 5 MD files
    - Test suite: test.html
@@ -124,15 +124,15 @@
 ### Vercel Deployments
 
 **Found 3 Vercel deployments:**
-- `rensto-site-fzf8i1hec` (latest?)
-- `rensto-site-l6m4k0th4`
-- `rensto-site-hooe8bzsf`
+- `superseller-site-fzf8i1hec` (latest?)
+- `superseller-site-l6m4k0th4`
+- `superseller-site-hooe8bzsf`
 
 **Webflow Scripts:**
-- `https://rensto-webflow-scripts.vercel.app` (confirmed working, auto-deploy from GitHub)
+- `https://superseller-webflow-scripts.vercel.app` (confirmed working, auto-deploy from GitHub)
 
 **Questions:**
-- Which rensto-site deployment is production?
+- Which superseller-site deployment is production?
 - Is admin-dashboard deployed?
 - Is marketplace app deployed?
 - Is gateway-worker deployed?
@@ -277,8 +277,8 @@ Add new section to CLAUDE.md:
 
 | Repo | Purpose | Deployed To | Status |
 |------|---------|-------------|--------|
-| **rensto** (main) | Documentation, apps, workflows | NOT deployed | 🚨 22 uncommitted files |
-| **rensto-webflow-scripts** | Webflow JavaScript modules | Vercel CDN | ✅ Auto-deploy working |
+| **superseller** (main) | Documentation, apps, workflows | NOT deployed | 🚨 22 uncommitted files |
+| **superseller-webflow-scripts** | Webflow JavaScript modules | Vercel CDN | ✅ Auto-deploy working |
 | airtable-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified |
 | quickbooks-mcp-server | MCP server (submodule) | Local only | ⚠️ Modified |
 
@@ -286,20 +286,20 @@ Add new section to CLAUDE.md:
 
 | App | Repo Source | URL | Status |
 |-----|-------------|-----|--------|
-| **rensto-site** | apps/web/rensto-site/ | https://rensto-site-[hash].vercel.app | ❓ Which is production? |
-| **admin-dashboard** | apps/web/admin-dashboard/ | https://admin.rensto.com | ✅ Deployed |
-| **webflow-scripts** | rensto-webflow-scripts | https://rensto-webflow-scripts.vercel.app | ✅ Live, auto-deploy |
+| **superseller-site** | apps/web/superseller-site/ | https://superseller-site-[hash].vercel.app | ❓ Which is production? |
+| **admin-dashboard** | apps/web/admin-dashboard/ | https://admin.superseller.agency | ✅ Deployed |
+| **webflow-scripts** | superseller-webflow-scripts | https://superseller-webflow-scripts.vercel.app | ✅ Live, auto-deploy |
 
 ### Webflow Integration
 
 | Component | Source | Deployed To | Sync Method |
 |-----------|--------|-------------|-------------|
 | **HTML Pages** | webflow/ (main repo) | Webflow Designer | Manual copy-paste |
-| **JavaScript** | rensto-webflow-scripts repo | Vercel CDN | Auto-deploy from GitHub |
+| **JavaScript** | superseller-webflow-scripts repo | Vercel CDN | Auto-deploy from GitHub |
 | **Script Tags** | Webflow Page Settings | Webflow pages | Manual update |
 
 **Sync Rules:**
-- ✅ JavaScript changes: Edit rensto-webflow-scripts → Auto-deploy to Vercel → Webflow pages load new version
+- ✅ JavaScript changes: Edit superseller-webflow-scripts → Auto-deploy to Vercel → Webflow pages load new version
 - ⚠️ HTML/documentation changes: Edit webflow/ (main repo) → Manual paste to Webflow Designer
 - ❌ NO automatic sync between repos (intentional separation)
 ```
@@ -307,13 +307,13 @@ Add new section to CLAUDE.md:
 ### Long-term Actions (Next Session)
 
 **Priority 6: Verify All Deployments (30 minutes)**
-- Identify production Vercel URL for rensto-site
+- Identify production Vercel URL for superseller-site
 - Verify admin-dashboard is deployed and accessible
 - Check if marketplace and gateway-worker apps are deployed
 - Document environment variables for each deployment
 
 **Priority 7: Create Automated Sync Checks (1 hour)**
-- Script to verify rensto-webflow-scripts is deployed
+- Script to verify superseller-webflow-scripts is deployed
 - Script to check if Webflow pages reference correct CDN URLs
 - Automated link checker for documentation
 

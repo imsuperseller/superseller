@@ -1,6 +1,6 @@
 # 🏗️ THE ARCHITECT'S COMMAND DECK
 
-**Purpose**: Mission Control for Rensto. Top-level authority for all agents (Claude Code, Cursor, Antigravity). Read this first.
+**Purpose**: Mission Control for SuperSeller AI. Top-level authority for all agents (Claude Code, Cursor, Antigravity). Read this first.
 
 **Last Updated**: February 2026
 
@@ -45,17 +45,17 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 
 NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks via `notebooklm-mcp`. **36 notebooks total** (32 active, 4 empty).
 
-### Core Rensto (8 notebooks)
+### Core SuperSeller AI (8 notebooks)
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | **B.L.A.S.T. canonical** — Project Template, Agentic Brand Identity, Antigravity Integration, System Blueprint, Skill Engineering, Error Handling. ALL Rensto work MUST follow this notebook. Use `notebooklm_notebook_query` to align. |
+| 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | **B.L.A.S.T. canonical** — Project Template, Agentic Brand Identity, Antigravity Integration, System Blueprint, Skill Engineering, Error Handling. ALL SuperSeller AI work MUST follow this notebook. Use `notebooklm_notebook_query` to align. |
 | 2 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video** — TourReel pipeline spec (23 sources). Canonical for pipeline (Nano Banana Pro + Kling 3, no FAL/Veo). |
 | 3 | [3e820274-6839-4921-aa83-ad003dd2fb93](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | **KIE.AI** — API docs, models, usage (40 sources) |
 | 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **Master: Automation & Core Infra** — Antigravity, n8n, automation workflows (39 sources) |
 | 5 | [cb99e6aa-967f-40d4-9580-c02b3250bc78](https://notebooklm.google.com/notebook/cb99e6aa-967f-40d4-9580-c02b3250bc78) | **Master: Social Media, Lead Gen & Marketing** — FB Bot, social (50 sources) **AT MAX (50/50)** |
-| 6 | [719854ee-b94e-4555-9b2b-48ae136335b8](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **rensto website** — Site content (30 sources) |
-| 7 | [12724368-e4af-488c-a8a3-ce04da043d60](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | **Rensto Product Changelog** — Feature releases (3 sources) |
+| 6 | [719854ee-b94e-4555-9b2b-48ae136335b8](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **superseller website** — Site content (30 sources) |
+| 7 | [12724368-e4af-488c-a8a3-ce04da043d60](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | **SuperSeller AI Product Changelog** — Feature releases (3 sources) |
 | 8 | [b906e69f-7b8c-4e31-88b8-4939c830604c](https://notebooklm.google.com/notebook/b906e69f-7b8c-4e31-88b8-4939c830604c) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling (10 sources) |
 
 ### Customer / Business (6 notebooks)
@@ -63,11 +63,11 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | # | Notebook | Purpose |
 |---|----------|---------|
 | 9 | [e109bcb2-d29e-44d5-bd4a-f67b88929be6](https://notebooklm.google.com/notebook/e109bcb2-d29e-44d5-bd4a-f67b88929be6) | **mivnim (yossi laham)** — Winner Studio customer (38 sources) |
-| 10 | [b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46](https://notebooklm.google.com/notebook/b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46) | **AC & C HVAC** — Rensto Pitch for Eliran Matzrafi, prospect (2 sources) |
+| 10 | [b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46](https://notebooklm.google.com/notebook/b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46) | **AC & C HVAC** — SuperSeller AI Pitch for Eliran Matzrafi, prospect (2 sources) |
 | 11 | [6a4eb203-9479-4919-869f-7a83489ff0af](https://notebooklm.google.com/notebook/6a4eb203-9479-4919-869f-7a83489ff0af) | **לידים יורם פרידמן** — Leads (10 sources) |
-| 12 | [8df32896-d93b-4a32-961f-40c6fa3ccf7a](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | **Rensto Market Intelligence** — Competitor research, pricing trends (3 sources) |
-| 13 | [02c3946b-c69b-423b-b188-9b79ecdd1629](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | **Rensto AI Cost & Performance** — LLM benchmarks, cost budgets (3 sources) |
-| 14 | [7630d154-341b-40a7-9a10-6f9e1f3ddc7d](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | **Rensto Legal & Compliance** — TOS, GDPR, domain ownership (3 sources) |
+| 12 | [8df32896-d93b-4a32-961f-40c6fa3ccf7a](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | **SuperSeller AI Market Intelligence** — Competitor research, pricing trends (3 sources) |
+| 13 | [02c3946b-c69b-423b-b188-9b79ecdd1629](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | **SuperSeller AI AI Cost & Performance** — LLM benchmarks, cost budgets (3 sources) |
+| 14 | [7630d154-341b-40a7-9a10-6f9e1f3ddc7d](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | **SuperSeller AI Legal & Compliance** — TOS, GDPR, domain ownership (3 sources) |
 
 ### Tools & APIs (7 notebooks)
 
@@ -101,7 +101,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 33 | [b4974f45-5809-4a2f-b7be-8c4a3eddd98e](https://notebooklm.google.com/notebook/b4974f45-5809-4a2f-b7be-8c4a3eddd98e) | **Master: Rensto Business Operations** — EMPTY (0 sources, created Feb 20) |
+| 33 | [b4974f45-5809-4a2f-b7be-8c4a3eddd98e](https://notebooklm.google.com/notebook/b4974f45-5809-4a2f-b7be-8c4a3eddd98e) | **Master: SuperSeller AI Business Operations** — EMPTY (0 sources, created Feb 20) |
 | 34 | [df1029dd-7dc0-4466-8f93-6111d99a3526](https://notebooklm.google.com/notebook/df1029dd-7dc0-4466-8f93-6111d99a3526) | **Master: Templates & Design** — EMPTY (0 sources, created Feb 20) |
 | 35 | [2b5ed4df-6ef2-4a45-8e06-7ccaf8d26d50](https://notebooklm.google.com/notebook/2b5ed4df-6ef2-4a45-8e06-7ccaf8d26d50) | **Master: AI Media APIs** — EMPTY (0 sources, created Feb 20) |
 | 36 | [8ace0529-3819-4325-8013-d7127f3053bc](https://notebooklm.google.com/notebook/8ace0529-3819-4325-8013-d7127f3053bc) | **tiktok** — EMPTY (0 sources, created Feb 20) |
@@ -156,7 +156,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 │   ├── n8n/                 ← N8N_WORKFLOWS_CATALOG.md
 │   └── NOTEBOOKLM_INDEX.md  ← Notebook IDs mapped to purpose
 │
-├── apps/web/rensto-site/    ← Main Next.js app (rensto.com, admin)
+├── apps/web/superseller-site/    ← Main Next.js app (superseller.agency, admin)
 ├── apps/worker/             ← Video pipeline (Nano Banana, Kling)
 ├── apps/worker-packages/    ← Shared packages (db, etc.)
 ├── infra/                   ← MCP servers, n8n scripts, migrations
@@ -168,7 +168,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 └── .claude/skills/          ← Agent skills (rag-pgvector, tourreel-pipeline, stripe-credits, ui-ux-pro-max, etc.)
 ```
 
-**Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/rensto-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
+**Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/superseller-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
 
 ---
 
@@ -183,8 +183,8 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | **App database** | PostgreSQL + pgvector + Redis | All marketplace apps and app backends |
 | **RAG** | Ollama nomic-embed-text + pgvector HNSW | Multi-tenant document embeddings, hybrid search |
 | **Internal dashboards** | Aitable.ai | Syncs, config, reference data |
-| **Frontend** | Next.js, Tailwind, shadcn/ui | Rensto design system |
-| **Deployment** | Vercel | rensto.com, admin, API |
+| **Frontend** | Next.js, Tailwind, shadcn/ui | SuperSeller AI design system |
+| **Deployment** | Vercel | superseller.agency, admin, API |
 
 ---
 
@@ -196,7 +196,7 @@ For every new marketplace app:
 1. Start from `docs/templates/tourreel/` (Blueprint, Implementation Spec, Prompt Playbook).
 2. Adapt for purpose and needs — flexibility over rigid copy.
 3. Use PostgreSQL for app data (never Aitable.ai for production SaaS).
-4. Follow Rensto design system (query NotebookLM 286f3e4a or 719854ee).
+4. Follow SuperSeller AI design system (query NotebookLM 286f3e4a or 719854ee).
 
 ---
 
@@ -207,7 +207,7 @@ For every new marketplace app:
 1. **B**lueprint: Define vision, 5 discovery questions, data schema in brain.md/task_plan.
 2. **L**ink: Verify API connections, .env credentials.
 3. **A**rchitect: 3-layer A.N.T. (Architecture SOPs → Navigation → Tools).
-4. **S**tylize: UI/UX per design tokens, Rensto style.
+4. **S**tylize: UI/UX per design tokens, SuperSeller AI style.
 5. **T**rigger: Deploy to Vercel/n8n, activate automation.
 
 *Full framework: `docs/frameworks/blast-framework.md` | Single system: `METHODOLOGY.md`*

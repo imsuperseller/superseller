@@ -1,4 +1,4 @@
-# 🎬 Sora 2 Prompt: Rensto Mascot Cameo Character (@shai-lfc)
+# 🎬 Sora 2 Prompt: SuperSeller AI Mascot Cameo Character (@shai-lfc)
 
 **Date**: November 16, 2025  
 **Purpose**: Reference document for using `@shai-lfc` cameo character in Sora 2  
@@ -121,7 +121,7 @@ The first video is successful when:
 
 - **HeyGen Avatar Strategy**: `docs/website/HEYGEN_STYLIZED_AVATAR_STRATEGY.md`
 - **UGC Machine Workflow**: `docs/website/UGC_MACHINE_WORKFLOW_COMPLETE_SUMMARY.md`
-- **Brand Design System**: `apps/web/rensto-site/src/lib/design-system.ts`
+- **Brand Design System**: `apps/web/superseller-site/src/lib/design-system.ts`
 
 ---
 

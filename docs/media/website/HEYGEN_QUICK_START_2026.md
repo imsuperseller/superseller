@@ -21,7 +21,7 @@ Copy this template and fill in your details:
 ```
 VIDEO TYPE: [Hero Background / Service Card / Demo / Testimonial]
 DURATION: [15s / 30s / 60s / 90s / 2min]
-BRAND: Rensto (Brand Shuffle - colors: #fe3d51, #1eaef7, #bf5700, #5ffbfd on #110d28 dark background)
+BRAND: SuperSeller AI (Brand Shuffle - colors: #fe3d51, #1eaef7, #bf5700, #5ffbfd on #110d28 dark background)
 AVATAR: Professional business avatar
 STYLE: Modern, professional, empathetic rebel tone
 
@@ -44,12 +44,12 @@ MOOD/TONE:
 BRAND ELEMENTS:
 - Colors: Primary #fe3d51, Secondary #1eaef7, Accent #bf5700, Highlight #5ffbfd
 - Background: Dark theme #110d28
-- Logo: Rensto logo at start and end
+- Logo: SuperSeller AI logo at start and end
 ```
 
 ### **Step 3: Generate Video**
 1. Paste your optimized prompt
-2. Select "Rensto" brand (Brand Shuffle auto-applies)
+2. Select "SuperSeller AI" brand (Brand Shuffle auto-applies)
 3. Click "Generate Video"
 4. Wait 2-5 minutes
 
@@ -69,7 +69,7 @@ BRAND ELEMENTS:
 ```
 VIDEO TYPE: Hero Background Video
 DURATION: 60 seconds
-BRAND: Rensto (Brand Shuffle)
+BRAND: SuperSeller AI (Brand Shuffle)
 AVATAR: Professional business avatar
 STYLE: Modern, professional, empathetic rebel tone
 
@@ -80,7 +80,7 @@ VISUAL REQUIREMENTS:
 - Background: Split-screen transition - Left side shows overwhelmed business owner at desk with 47 browser tabs, Gmail chaos, scattered Google Sheets. Right side shows same person calm, organized Airtable dashboard, automated workflows running smoothly.
 - Graphics: Show Gmail inbox icon (chaos state), Google Sheets icon (scattered), WhatsApp icon (missed messages) on left. Show Airtable dashboard, connected tools (Gmail, WhatsApp, OpenAI, Claude, Gemini icons) on right.
 - Animations: Smooth transition from chaos to control. Show time progression - 11pm exhaustion → 7am automated success. Show tools connecting automatically.
-- Logo Placement: Rensto logo appears at 0:00-0:02 (fade in) and 58:00-60:00 (fade out with tagline)
+- Logo Placement: SuperSeller AI logo appears at 0:00-0:02 (fade in) and 58:00-60:00 (fade out with tagline)
 - Screenshots/Media: Include screenshots of Gmail inbox (chaos), Google Sheets (scattered data), Airtable dashboard (organized), n8n workflow connections
 
 MOOD/TONE:
@@ -93,7 +93,7 @@ BRAND ELEMENTS:
 - Primary color #fe3d51 for CTAs and highlights
 - Dark background #110d28
 - Professional, modern aesthetic
-- Logo: Rensto logo at start and end
+- Logo: SuperSeller AI logo at start and end
 ```
 
 ---
@@ -103,7 +103,7 @@ BRAND ELEMENTS:
 ```
 VIDEO TYPE: Hero Background Video
 DURATION: 60 seconds
-BRAND: Rensto (Brand Shuffle)
+BRAND: SuperSeller AI (Brand Shuffle)
 AVATAR: Professional business avatar
 STYLE: Modern, professional, empathetic rebel tone
 
@@ -114,7 +114,7 @@ VISUAL REQUIREMENTS:
 - Background: Show browser with 47 tabs open, chaotic workspace. Transition to clean, organized dashboard with connected tools.
 - Graphics: Browser tabs icon (chaos), Gmail icon, Google Sheets icon, WhatsApp icon → Connected to Airtable icon, OpenAI icon, organized workflow visualization.
 - Animations: Show manual copy-paste action (frustrating) → Automated connection (smooth). Show template download/installation process (10 minutes vs 3 hours).
-- Logo Placement: Rensto logo at start (2s) and end (2s)
+- Logo Placement: SuperSeller AI logo at start (2s) and end (2s)
 - Screenshots/Media: Browser tabs screenshot, template marketplace interface, installation process visualization
 
 MOOD/TONE:
@@ -136,7 +136,7 @@ BRAND ELEMENTS:
 ```
 VIDEO TYPE: Hero Background Video
 DURATION: 60 seconds
-BRAND: Rensto (Brand Shuffle)
+BRAND: SuperSeller AI (Brand Shuffle)
 AVATAR: Professional business avatar
 STYLE: Modern, professional, empathetic rebel tone
 
@@ -147,7 +147,7 @@ VISUAL REQUIREMENTS:
 - Background: Timeline progression - Monday confidence → Friday loss. Split-screen showing manual lead follow-up (slow) vs automated (instant).
 - Graphics: Calendar progression (Monday → Friday), LinkedIn icon, Google Maps icon, Facebook icon, Apify icon. Show lead enrichment process (email, phone, company data). Show Gmail and WhatsApp automated responses.
 - Animations: Show competitor responding in 5 minutes (fast) vs manual 3-day delay (slow). Show automated lead enrichment process. Show lead delivery dashboard.
-- Logo Placement: Rensto logo at start (2s) and end (2s)
+- Logo Placement: SuperSeller AI logo at start (2s) and end (2s)
 - Screenshots/Media: LinkedIn notification, Google Maps leads, Facebook groups, lead enrichment dashboard, automated response system
 
 MOOD/TONE:
@@ -176,7 +176,7 @@ BRAND ELEMENTS:
 
 ### **✅ You Just Need To**:
 - Write comprehensive prompt (script + visual requirements)
-- Select brand (Rensto)
+- Select brand (SuperSeller AI)
 - Generate → Review → Export
 
 ---

@@ -10,7 +10,7 @@
 
 ### **Problem**:
 - Documentation referenced **Webflow** for website updates
-- **Reality**: rensto.com is on **Vercel** (Next.js app)
+- **Reality**: superseller.agency is on **Vercel** (Next.js app)
 - Webflow is archived/inactive (DNS doesn't point to it)
 
 ### **Root Cause**:
@@ -26,7 +26,7 @@
 **File**: `docs/website/VIDEO_WORKFLOW_ARCHITECTURE_PLAN.md`
 
 **Changes**:
-- ❌ "Webflow API (page updates)" → ✅ "Vercel/Next.js (edit page files in `apps/web/rensto-site/src/app/`)"
+- ❌ "Webflow API (page updates)" → ✅ "Vercel/Next.js (edit page files in `apps/web/superseller-site/src/app/`)"
 - ❌ "Update Website (Webflow API)" → ✅ "Update Website (Vercel/Next.js - manual or via API)"
 - ❌ "Update Industry Page (Webflow CMS)" → ✅ "Update Industry Page (Vercel/Next.js - edit page files)"
 
@@ -38,7 +38,7 @@
 - `scripts/test/create-ugc-test-note.js`
 
 **Changes**:
-- ❌ `@rensto_mascot_1` → ✅ `@shai-lfc` (user's existing Sora 2 cameo)
+- ❌ `@superseller_mascot_1` → ✅ `@shai-lfc` (user's existing Sora 2 cameo)
 
 ---
 
@@ -46,21 +46,21 @@
 
 ### **Website Hosting**:
 ```
-rensto.com          → Vercel (Next.js app - apps/web/rensto-site/)
-www.rensto.com      → Vercel (Next.js app - same as rensto.com)
-admin.rensto.com    → Vercel (admin dashboard - apps/web/admin-dashboard/)
-api.rensto.com      → Vercel (API endpoints - redundant but works)
+superseller.agency          → Vercel (Next.js app - apps/web/superseller-site/)
+www.superseller.agency      → Vercel (Next.js app - same as superseller.agency)
+admin.superseller.agency    → Vercel (admin dashboard - apps/web/admin-dashboard/)
+api.superseller.agency      → Vercel (API endpoints - redundant but works)
 ```
 
 ### **Webflow Status**:
 - **Site exists**: Yes (Site ID: `66c7e551a317e0e9c9f906d8`)
 - **DNS points to**: ❌ No (archived/inactive)
 - **Status**: Archived - not serving traffic
-- **CDN scripts**: Still exist (`rensto-webflow-scripts.vercel.app`) but may not be needed
+- **CDN scripts**: Still exist (`superseller-webflow-scripts.vercel.app`) but may not be needed
 
 ### **Video Integration**:
 - **Videos**: Upload to YouTube (unlisted) → Embed in Next.js pages
-- **Page Updates**: Edit files in `apps/web/rensto-site/src/app/`
+- **Page Updates**: Edit files in `apps/web/superseller-site/src/app/`
 - **CMS**: No Webflow CMS - use Next.js file-based routing or external CMS if needed
 
 ---
@@ -93,7 +93,7 @@ These files still have Webflow references but may be historical/archived:
 ## 📝 **CORRECT REFERENCES FOR FUTURE DOCS**
 
 ### **Website Updates**:
-✅ **CORRECT**: "Edit files in `apps/web/rensto-site/src/app/`"  
+✅ **CORRECT**: "Edit files in `apps/web/superseller-site/src/app/`"  
 ✅ **CORRECT**: "Vercel/Next.js deployment"  
 ✅ **CORRECT**: "YouTube embed in Next.js pages"  
 ❌ **WRONG**: "Webflow API" or "Webflow CMS"
@@ -105,7 +105,7 @@ These files still have Webflow references but may be historical/archived:
 
 ### **Cameo References**:
 ✅ **CORRECT**: `@shai-lfc` (user's existing Sora 2 cameo)  
-❌ **WRONG**: `@rensto_mascot_1` (doesn't exist yet)
+❌ **WRONG**: `@superseller_mascot_1` (doesn't exist yet)
 
 ---
 

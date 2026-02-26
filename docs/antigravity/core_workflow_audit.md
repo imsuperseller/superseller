@@ -1,10 +1,10 @@
 # 🔍 Core Workflow Audit Report
 
-This report details the health and configuration of the 5 core Rensto workflows exposed to MCP.
+This report details the health and configuration of the 5 core SuperSeller AI workflows exposed to MCP.
 
 ---
 
-## 1. Rensto Master Controller (`0gU5vRLIcrGhnPA0`)
+## 1. SuperSeller AI Master Controller (`0gU5vRLIcrGhnPA0`)
 **Purpose**: Provision new client systems.
 
 | Attribute | Status | Notes |
@@ -12,8 +12,8 @@ This report details the health and configuration of the 5 core Rensto workflows 
 | **Active** | ✅ Yes | |
 | **MCP Exposed** | ✅ Yes | |
 | **Last Execution** | ⚠️ Stopped | Jan 7, 2026 05:59 UTC |
-| **Trigger** | Webhook (`POST /rensto-master-controller`) | |
-| **Credentials** | `n8nApi: n8n account rensto` | Bound to Provision Workflow node |
+| **Trigger** | Webhook (`POST /superseller-master-controller`) | |
+| **Credentials** | `n8nApi: n8n account superseller` | Bound to Provision Workflow node |
 
 > [!WARNING]
 > **Issue**: Last 2 executions have status `Stopped`, not `Finished`. This often indicates an error in the "Provision Workflow" node (the n8n API call to create a new workflow failed).
@@ -91,7 +91,7 @@ This report details the health and configuration of the 5 core Rensto workflows 
 
 | Workflow | Active | MCP | Executions | Health |
 | :--- | :---: | :---: | :---: | :---: |
-| Rensto Master Controller | ✅ | ✅ | ⚠️ Stopped | Needs Review |
+| SuperSeller AI Master Controller | ✅ | ✅ | ⚠️ Stopped | Needs Review |
 | Multi-Customer AI Agent | ✅ | ✅ | ✅ | Healthy |
 | Terry (Server Monitoring) | ✅ | ✅ | ✅ | Healthy |
 | Admin Dashboard | ✅ | ✅ | ✅ | Legacy Node Issue |

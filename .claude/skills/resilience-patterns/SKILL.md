@@ -1,7 +1,7 @@
 ---
 name: resilience-patterns
 description: >-
-  Cross-cutting resilience patterns for Rensto's external API dependencies.
+  Cross-cutting resilience patterns for SuperSeller AI's external API dependencies.
   Covers exponential backoff, circuit breakers, fallback chains, graceful degradation,
   error budgets, and SLA tracking. Applies to ALL products (TourReel, Winner Studio,
   FB Bot, AgentForge). Created after Kie.ai outage caused 0% success rate.

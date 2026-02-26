@@ -8,7 +8,7 @@
 
 | Channel | Response Time | Use Case |
 | :--- | :--- | :--- |
-| Email (support@rensto.com) | < 24 hours | General inquiries, bugs. |
+| Email (support@superseller.agency) | < 24 hours | General inquiries, bugs. |
 | WhatsApp | < 2 hours | Urgent issues for managed clients. |
 | Intercom (future) | < 5 min | Real-time chat for website visitors. |
 

@@ -23,7 +23,7 @@
 ## 2. Get Execution Details
 
 ```
-n8n_get_execution(id=EXECUTION_ID, instance="rensto", includeData=true)
+n8n_get_execution(id=EXECUTION_ID, instance="superseller", includeData=true)
 ```
 
 Key fields to check:

@@ -1,7 +1,7 @@
 ---
 name: migration-validator
 description: >
-  Cross-ORM migration validation for Rensto's dual-ORM (Prisma + Drizzle) architecture.
+  Cross-ORM migration validation for SuperSeller AI's dual-ORM (Prisma + Drizzle) architecture.
   Ensures schema changes compile in both apps, shared tables stay in sync,
   and deployments don't break due to schema drift.
 autoTrigger:
@@ -28,7 +28,7 @@ Use when making schema changes to either Prisma or Drizzle, validating that both
 ## Critical Rules
 1. **Every Prisma migration must be checked against Drizzle.** Shared tables exist in both ORMs.
 2. **Run Schema Sentinel before every deploy**: `npx tsx tools/schema-sentinel.ts --strict`
-3. **Build both apps after schema changes**: `cd apps/web/rensto-site && npm run build` AND `cd apps/worker && npm run build`
+3. **Build both apps after schema changes**: `cd apps/web/superseller-site && npm run build` AND `cd apps/worker && npm run build`
 4. **Never `prisma db push` to production without testing locally first.** Use `prisma migrate dev` for local, `prisma migrate deploy` for prod.
 5. **Update `docs/DATA_DICTIONARY.md`** after adding any table or changing shared fields.
 
@@ -37,7 +37,7 @@ Use when making schema changes to either Prisma or Drizzle, validating that both
 ### Schema Files
 | App | ORM | Schema | Migration Dir |
 |-----|-----|--------|--------------|
-| Web (Next.js) | Prisma | `apps/web/rensto-site/prisma/schema.prisma` | `apps/web/rensto-site/prisma/migrations/` |
+| Web (Next.js) | Prisma | `apps/web/superseller-site/prisma/schema.prisma` | `apps/web/superseller-site/prisma/migrations/` |
 | Worker (Node.js) | Drizzle | `apps/worker-packages/db/src/schema.ts` | Drizzle Kit (no persistent dir) |
 
 ### Shared Tables (Must Stay Synced)
@@ -60,10 +60,10 @@ Use when making schema changes to either Prisma or Drizzle, validating that both
 ### Full Migration Workflow
 ```bash
 # 1. Make schema change in Prisma
-vi apps/web/rensto-site/prisma/schema.prisma
+vi apps/web/superseller-site/prisma/schema.prisma
 
 # 2. Run Prisma migration locally
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npx prisma migrate dev --name describe_the_change
 
 # 3. If shared table changed: update Drizzle schema
@@ -74,7 +74,7 @@ cd ../..
 npx tsx tools/schema-sentinel.ts --strict
 
 # 5. Build both apps
-cd apps/web/rensto-site && npm run build
+cd apps/web/superseller-site && npm run build
 cd ../../apps/worker && npm run build
 
 # 6. Update docs
@@ -91,7 +91,7 @@ git push                                    # Web auto-deploys
 npx tsx tools/schema-sentinel.ts
 
 # Build web
-cd apps/web/rensto-site && npm run build
+cd apps/web/superseller-site && npm run build
 
 # Build worker
 cd apps/worker && npm run build
@@ -127,7 +127,7 @@ cd ../../apps/worker && npm run build
 
 ## Pre-Deploy Checklist
 - [ ] Schema Sentinel passes (`npx tsx tools/schema-sentinel.ts --strict`)
-- [ ] Web app builds (`cd apps/web/rensto-site && npm run build`)
+- [ ] Web app builds (`cd apps/web/superseller-site && npm run build`)
 - [ ] Worker builds (`cd apps/worker && npm run build`)
 - [ ] DATA_DICTIONARY.md updated (if table/field added)
 - [ ] database-management skill refs updated (if shared table changed)
@@ -136,7 +136,7 @@ cd ../../apps/worker && npm run build
 
 ### "Column does not exist" after deploy
 1. Check if migration was applied: `SELECT * FROM _prisma_migrations ORDER BY finished_at DESC LIMIT 5;`
-2. If not applied: `cd apps/web/rensto-site && npx prisma migrate deploy`
+2. If not applied: `cd apps/web/superseller-site && npx prisma migrate deploy`
 3. If column name mismatch: check `@map` in Prisma vs column name in Drizzle
 
 ### "Type mismatch" in Schema Sentinel
@@ -153,7 +153,7 @@ cd ../../apps/worker && npm run build
 ## References
 - `tools/schema-sentinel.ts` — Schema drift validator
 - `docs/DATA_DICTIONARY.md` — Entity-to-store mapping
-- `apps/web/rensto-site/prisma/schema.prisma` — Web schema
+- `apps/web/superseller-site/prisma/schema.prisma` — Web schema
 - `apps/worker-packages/db/src/schema.ts` — Worker schema
 - `findings.md` — Historical schema issues
 - `references/migration-checklist.md` — Detailed step-by-step

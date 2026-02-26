@@ -6,20 +6,20 @@
  *
  * Usage:
  *   const { getConfig } = require('./n8n-config.js');
- *   const config = getConfig('rensto');  // or 'tax4us' or 'shelly'
+ *   const config = getConfig('superseller');  // or 'tax4us' or 'shelly'
  */
 
 const N8N_INSTANCES = {
-  // Rensto VPS - Self-hosted on RackNerd
-  rensto: {
+  // SuperSeller AI VPS - Self-hosted on RackNerd
+  superseller: {
     type: 'vps',
-    name: 'Rensto VPS',
-    url: 'http://n8n.rensto.com',
+    name: 'SuperSeller AI VPS',
+    url: 'http://n8n.superseller.agency',
     apiKey: process.env.N8N_RENSTO_API_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMjEwMTliOC1kZTNlLTRlN2QtYmU2MS1mNDg4OTI1ZTI1ZGQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2MDkyMDIxfQ.YKPTmHyLr1_kXX2JMY7hsPy4jvnCJDL71mOCltoUbQc',
-    description: 'Rensto internal workflows (68 workflows)',
+    description: 'SuperSeller AI internal workflows (68 workflows)',
     workflows: 68,
     version: 'v1.113.3',
-    publicUrl: 'https://n8n.rensto.com',  // Via Cloudflare tunnel
+    publicUrl: 'https://n8n.superseller.agency',  // Via Cloudflare tunnel
   },
 
   // Tax4Us Cloud - Customer instance
@@ -48,7 +48,7 @@ const N8N_INSTANCES = {
 
 /**
  * Get configuration for a specific n8n instance
- * @param {string} instance - Instance name: 'rensto', 'tax4us', or 'shelly'
+ * @param {string} instance - Instance name: 'superseller', 'tax4us', or 'shelly'
  * @returns {object} Configuration object with url, apiKey, headers, etc.
  */
 function getConfig(instance) {

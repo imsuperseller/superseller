@@ -1,4 +1,4 @@
-# 🎬 UGC Machine Workflow - Rensto Adaptation Guide
+# 🎬 UGC Machine Workflow - SuperSeller AI Adaptation Guide
 
 **Date**: November 16, 2025  
 **Status**: ✅ **READY TO IMPLEMENT**  
@@ -8,18 +8,18 @@
 
 ## 🎯 **OVERVIEW**
 
-This guide shows how to adapt the UGC Machine workflow (from the tutorial) to create video ads for Rensto's services. Instead of product ads, we'll use it to:
+This guide shows how to adapt the UGC Machine workflow (from the tutorial) to create video ads for SuperSeller AI's services. Instead of product ads, we'll use it to:
 
 1. **Find winning automation/tech service ads** from Meta Ad Library
 2. **Reverse-engineer their structure** using Gemini
-3. **Adapt them for Rensto's services** (Marketplace, Tailored Solutions, Industry Packages, Subscriptions)
+3. **Adapt them for SuperSeller AI's services** (Marketplace, Tailored Solutions, Industry Packages, Subscriptions)
 4. **Generate Sora 2 prompts** ready for video creation
 
-**Key Difference**: We're creating **service ads**, not product ads. The workflow stays the same, but the messaging adapts to Rensto's value propositions.
+**Key Difference**: We're creating **service ads**, not product ads. The workflow stays the same, but the messaging adapts to SuperSeller AI's value propositions.
 
 ---
 
-## 🔄 **HOW IT WORKS (Rensto Version)**
+## 🔄 **HOW IT WORKS (SuperSeller AI Version)**
 
 ### **Step 1: Find Winning Ads**
 - Search Meta Ad Library for: "automation", "workflow", "n8n", "business automation", "lead generation", "CRM automation"
@@ -31,16 +31,16 @@ This guide shows how to adapt the UGC Machine workflow (from the tutorial) to cr
 - Gemini analyzes: cinematography, editing style, dialogue, character, performance
 - Creates detailed template (same as original workflow)
 
-### **Step 3: Adapt for Rensto**
+### **Step 3: Adapt for SuperSeller AI**
 - LLM receives:
   - Original ad analysis
-  - **Rensto brand messaging** (from Custom GPT or manual)
+  - **SuperSeller AI brand messaging** (from Custom GPT or manual)
   - **Service type** (Marketplace, Tailored Solutions, etc.)
   - **Character** (HeyGen stylized avatar or Sora 2 cameo)
 
 ### **Step 4: Generate Sora 2 Prompts**
 - Creates 10-15 second prompt segments
-- Adapts dialogue to Rensto's messaging
+- Adapts dialogue to SuperSeller AI's messaging
 - Preserves visual style from winning ad
 - Outputs ready-to-use prompts
 
@@ -65,7 +65,7 @@ This guide shows how to adapt the UGC Machine workflow (from the tutorial) to cr
    - **Note Structure**: Each note stores one ad analysis
    - **Fields stored in note content** (JSON):
      - `originalAdUrl` (text)
-     - `renstoServiceMessage` (long text) → **Rensto service messaging**
+     - `supersellerServiceMessage` (long text) → **SuperSeller AI service messaging**
      - `character` (text) → **HeyGen avatar name or Sora 2 cameo**
      - `scene1Prompt` through `scene5Prompt` (long text)
    - **Labels**: `["sora2", "ugc-machine", "video-prompts"]` (for filtering)
@@ -134,7 +134,7 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
 ### **2. Character Selection**
 
 **Use Your Stylized Avatar** (from `HEYGEN_STYLIZED_AVATAR_STRATEGY.md`):
-- **Name**: `Rensto Mascot Base` (or whatever you named it)
+- **Name**: `SuperSeller AI Mascot Base` (or whatever you named it)
 - **In Sora 2**: Reference as detailed description (Sora 2 doesn't support HeyGen avatars directly)
 - **Alternative**: Create Sora 2 cameo using your stylized avatar as reference
 
@@ -170,12 +170,12 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
 ### **Modify System Prompt (Prompt Generator Node)**
 
 **Original**: Adapts product ads  
-**Rensto Version**: Adapts service ads
+**SuperSeller AI Version**: Adapts service ads
 
 **Key Changes**:
 1. **Dialogue Adaptation**: Focus on time saved, automation benefits, service outcomes
 2. **Product References**: Replace with "workflow", "automation", "system", "service"
-3. **CTAs**: "Get started at rensto.com" instead of "Buy at Costco"
+3. **CTAs**: "Get started at superseller.agency" instead of "Buy at Costco"
 4. **Visuals**: Show dashboards, workflows, automation in action (not physical products)
 
 **Example Dialogue Adaptation**:
@@ -183,8 +183,8 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
 **Original (Product)**:
 > "went to Costco over the weekend and I got Mr. Hyde's, Hyde's Signature Dual Tub. Now this is for energy. So I'm one to like not like to try things that like make you jittery."
 
-**Rensto Version (Service)**:
-> "I was spending 20 hours a week on manual tasks. Gmail, Sheets, WhatsApp, all manual. Then I found Rensto's automation templates. Now I'm one to not like paying thousands for custom automation. These templates are $29 and they actually work."
+**SuperSeller AI Version (Service)**:
+> "I was spending 20 hours a week on manual tasks. Gmail, Sheets, WhatsApp, all manual. Then I found SuperSeller AI's automation templates. Now I'm one to not like paying thousands for custom automation. These templates are $29 and they actually work."
 
 ---
 
@@ -205,7 +205,7 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
      ```json
      {
        "originalAdUrl": "https://video-url...",
-       "renstoServiceMessage": "Service Type: Marketplace...",
+       "supersellerServiceMessage": "Service Type: Marketplace...",
        "character": "@shai-lfc"
      }
      ```
@@ -219,7 +219,7 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
    - Prompts populate in note content: `scene1Prompt` through `scene5Prompt`
 
 4. **Review & Refine**
-   - Check dialogue matches Rensto messaging
+   - Check dialogue matches SuperSeller AI messaging
    - Verify character references
    - Ensure service type is correct
    - Adjust if needed
@@ -264,11 +264,11 @@ Messaging: "Get 100-500 leads/month delivered automatically. Or generate videos 
 - **Style**: Kitchen selfie, fast-paced, authentic
 - **Duration**: 30 seconds
 
-### **Rensto Adaptation**:
+### **SuperSeller AI Adaptation**:
 
 **Scene 1 (10 seconds)**:
 ```
-"Spent $3,000 on custom automation last year. Didn't work. Then I found Rensto's marketplace. Templates are $29. They actually work. I'm one to not like paying thousands for something I can get for $29."
+"Spent $3,000 on custom automation last year. Didn't work. Then I found SuperSeller AI's marketplace. Templates are $29. They actually work. I'm one to not like paying thousands for something I can get for $29."
 ```
 
 **Scene 2 (15 seconds)**:
@@ -279,7 +279,7 @@ Voiceover: "I've been using their lead generation template. It connects Gmail, A
 
 **Scene 3 (5 seconds)**:
 ```
-"Check out rensto.com/marketplace. Templates start at $29. Stop overpaying for automation."
+"Check out superseller.agency/marketplace. Templates start at $29. Stop overpaying for automation."
 ```
 
 ---

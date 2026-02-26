@@ -47,7 +47,7 @@
 - **Overall**: Professional but not intimidating, tech-savvy but accessible
 
 ### **Brand Alignment**
-- **Colors**: Incorporate Rensto brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd)
+- **Colors**: Incorporate SuperSeller AI brand colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd)
 - **Style**: Modern, clean, tech-forward
 - **Personality**: Knowledgeable, helpful, approachable, innovative
 - **Mood**: Professional but friendly, authoritative but accessible
@@ -63,7 +63,7 @@
 2. Enter detailed prompt (see prompts below)
 3. Generate multiple variations
 4. Select best base avatar
-5. Save as "Rensto Mascot Base"
+5. Save as "SuperSeller AI Mascot Base"
 
 **Step 2: Create Different Looks**
 1. Use "Avatar Looks" feature
@@ -107,7 +107,7 @@ When creating avatars in HeyGen, you need to provide:
 
 ### **Base Avatar Prompt** (Primary - Use This First)
 
-**Name**: `Rensto Mascot Base`
+**Name**: `SuperSeller AI Mascot Base`
 
 **Orientation**: `portrait` (best for video presentations)
 
@@ -127,7 +127,7 @@ Stylized illustrated professional business consultant character, modern tech-for
 
 **Option 2 - More Tech-Focused**:
 
-**Name**: `Rensto Tech Innovator Base`
+**Name**: `SuperSeller AI Tech Innovator Base`
 
 **Orientation**: `portrait`
 
@@ -140,7 +140,7 @@ Stylized illustrated tech innovator character, modern professional appearance, f
 
 **Option 3 - More Approachable**:
 
-**Name**: `Rensto Friendly Guide Base`
+**Name**: `SuperSeller AI Friendly Guide Base`
 
 **Orientation**: `portrait`
 
@@ -153,7 +153,7 @@ Stylized illustrated friendly business guide character, warm professional expres
 
 ### **Mascot Variations** (For Static Use)
 
-**Name**: `Rensto Mascot - Full Body`
+**Name**: `SuperSeller AI Mascot - Full Body`
 
 **Orientation**: `square` (best for social media, logos)
 
@@ -164,7 +164,7 @@ Stylized illustrated friendly business guide character, warm professional expres
 Stylized illustrated professional business consultant character, full body view, modern tech-forward aesthetic, friendly confident expression, approachable smile, professional but accessible appearance, clean illustrated style, vibrant colors incorporating red (#fe3d51), blue (#1eaef7), orange (#bf5700), and cyan (#5ffbfd), modern professional outfit, tech-savvy appearance, brand mascot style, Pixar-style quality, professional illustration, 4K quality, suitable for mascot use, social media, and brand assets
 ```
 
-**Name**: `Rensto Mascot - Face Close-up`
+**Name**: `SuperSeller AI Mascot - Face Close-up`
 
 **Orientation**: `square` (best for profile pictures, small icons)
 
@@ -213,7 +213,7 @@ Once you have your base stylized avatar, create different "looks" for different 
 ### **Look 1: Professional Consultant** (Stylized)
 **Use For**: Tailored Solutions, Enterprise content
 
-**Base Avatar**: Use "Rensto Mascot Base" (portrait, upper body)
+**Base Avatar**: Use "SuperSeller AI Mascot Base" (portrait, upper body)
 
 **HeyGen Look Prompt**:
 ```
@@ -221,7 +221,7 @@ Stylized illustrated professional consultant, dark navy suit illustrated style, 
 ```
 
 **How to Create**:
-1. Select "Rensto Mascot Base" avatar
+1. Select "SuperSeller AI Mascot Base" avatar
 2. Click "Avatar Looks" → "Create New Look"
 3. Name: `Professional Consultant Look`
 4. Enter prompt above
@@ -231,7 +231,7 @@ Stylized illustrated professional consultant, dark navy suit illustrated style, 
 ### **Look 2: Tech Innovator** (Stylized)
 **Use For**: Technical demos, automation content
 
-**Base Avatar**: Use "Rensto Mascot Base" (portrait, upper body)
+**Base Avatar**: Use "SuperSeller AI Mascot Base" (portrait, upper body)
 
 **HeyGen Look Prompt**:
 ```
@@ -239,7 +239,7 @@ Stylized illustrated tech innovator, modern dark shirt, tech workspace backgroun
 ```
 
 **How to Create**:
-1. Select "Rensto Mascot Base" avatar
+1. Select "SuperSeller AI Mascot Base" avatar
 2. Click "Avatar Looks" → "Create New Look"
 3. Name: `Tech Innovator Look`
 4. Enter prompt above
@@ -248,7 +248,7 @@ Stylized illustrated tech innovator, modern dark shirt, tech workspace backgroun
 ### **Look 3: Industry Specialist** (Stylized)
 **Use For**: Industry Packages videos
 
-**Base Avatar**: Use "Rensto Mascot Base" (portrait, upper body)
+**Base Avatar**: Use "SuperSeller AI Mascot Base" (portrait, upper body)
 
 **HeyGen Look Prompt** (HVAC example):
 ```
@@ -256,7 +256,7 @@ Stylized illustrated HVAC industry specialist, professional work shirt illustrat
 ```
 
 **How to Create**:
-1. Select "Rensto Mascot Base" avatar
+1. Select "SuperSeller AI Mascot Base" avatar
 2. Click "Avatar Looks" → "Create New Look"
 3. Name: `Industry Specialist Look - HVAC` (create one per industry)
 4. Enter prompt above (adapt for each industry)
@@ -265,7 +265,7 @@ Stylized illustrated HVAC industry specialist, professional work shirt illustrat
 ### **Look 4: Friendly Guide** (Stylized)
 **Use For**: Tutorials, step-by-step guides
 
-**Base Avatar**: Use "Rensto Mascot Base" (portrait, upper body)
+**Base Avatar**: Use "SuperSeller AI Mascot Base" (portrait, upper body)
 
 **HeyGen Look Prompt**:
 ```
@@ -273,7 +273,7 @@ Stylized illustrated friendly guide, casual professional outfit, clean simple ba
 ```
 
 **How to Create**:
-1. Select "Rensto Mascot Base" avatar
+1. Select "SuperSeller AI Mascot Base" avatar
 2. Click "Avatar Looks" → "Create New Look"
 3. Name: `Friendly Guide Look`
 4. Enter prompt above
@@ -282,7 +282,7 @@ Stylized illustrated friendly guide, casual professional outfit, clean simple ba
 ### **Look 5: Approachable Expert** (Stylized)
 **Use For**: Marketplace, Subscriptions, general services
 
-**Base Avatar**: Use "Rensto Mascot Base" (portrait, upper body)
+**Base Avatar**: Use "SuperSeller AI Mascot Base" (portrait, upper body)
 
 **HeyGen Look Prompt**:
 ```
@@ -290,7 +290,7 @@ Stylized illustrated approachable expert, business casual blazer illustrated sty
 ```
 
 **How to Create**:
-1. Select "Rensto Mascot Base" avatar
+1. Select "SuperSeller AI Mascot Base" avatar
 2. Click "Avatar Looks" → "Create New Look"
 3. Name: `Approachable Expert Look`
 4. Enter prompt above
@@ -334,7 +334,7 @@ Stylized illustrated approachable expert, business casual blazer illustrated sty
 
 For mascot use, create separate avatar variations with different poses:
 
-**Name**: `Rensto Mascot - Waving`
+**Name**: `SuperSeller AI Mascot - Waving`
 
 **Orientation**: `square`
 
@@ -345,7 +345,7 @@ For mascot use, create separate avatar variations with different poses:
 Stylized illustrated professional business consultant character, waving gesture, friendly welcoming expression, approachable smile, vibrant brand colors (red #fe3d51, blue #1eaef7, orange #bf5700, cyan #5ffbfd), Pixar-style quality, suitable for welcome messages and greetings
 ```
 
-**Name**: `Rensto Mascot - Pointing`
+**Name**: `SuperSeller AI Mascot - Pointing`
 
 **Orientation**: `square`
 
@@ -356,7 +356,7 @@ Stylized illustrated professional business consultant character, waving gesture,
 Stylized illustrated professional business consultant character, pointing gesture, confident expression, call-to-action pose, vibrant brand colors (red #fe3d51, blue #1eaef7, orange #bf5700, cyan #5ffbfd), Pixar-style quality, suitable for call-to-actions and directing attention
 ```
 
-**Name**: `Rensto Mascot - Thinking`
+**Name**: `SuperSeller AI Mascot - Thinking`
 
 **Orientation**: `square`
 
@@ -367,7 +367,7 @@ Stylized illustrated professional business consultant character, pointing gestur
 Stylized illustrated professional business consultant character, thinking pose, thoughtful expression, problem-solving appearance, vibrant brand colors (red #fe3d51, blue #1eaef7, orange #bf5700, cyan #5ffbfd), Pixar-style quality, suitable for problem-solving content
 ```
 
-**Name**: `Rensto Mascot - Celebrating`
+**Name**: `SuperSeller AI Mascot - Celebrating`
 
 **Orientation**: `square`
 
@@ -378,7 +378,7 @@ Stylized illustrated professional business consultant character, thinking pose, 
 Stylized illustrated professional business consultant character, celebrating gesture, happy excited expression, success pose, vibrant brand colors (red #fe3d51, blue #1eaef7, orange #bf5700, cyan #5ffbfd), Pixar-style quality, suitable for success stories and achievements
 ```
 
-**Name**: `Rensto Mascot - Explaining`
+**Name**: `SuperSeller AI Mascot - Explaining`
 
 **Orientation**: `portrait` or `square`
 
@@ -394,9 +394,9 @@ Stylized illustrated professional business consultant character, explaining gest
 ## 📋 **CREATION CHECKLIST**
 
 ### **Phase 1: Create Base Avatar** (Day 1)
-- [ ] Create "Rensto Mascot Base" (portrait, upper body) - For videos
-- [ ] Create "Rensto Mascot Full Body" (square, full body) - For mascot use
-- [ ] Create "Rensto Mascot Face" (square, face) - For profile/icons
+- [ ] Create "SuperSeller AI Mascot Base" (portrait, upper body) - For videos
+- [ ] Create "SuperSeller AI Mascot Full Body" (square, full body) - For mascot use
+- [ ] Create "SuperSeller AI Mascot Face" (square, face) - For profile/icons
 - [ ] Generate 3-5 variations for each
 - [ ] Select best design for each pose
 - [ ] Test in HeyGen video (30-second sample with upper body version)
@@ -453,19 +453,19 @@ Stylized illustrated professional business consultant character, explaining gest
 
 1. **Open HeyGen** → Avatars → "Generative Avatar" or "Create Avatar"
 2. **Enter Avatar Details**:
-   - **Name**: `Rensto Mascot Base`
+   - **Name**: `SuperSeller AI Mascot Base`
    - **Orientation**: `portrait`
    - **Pose**: `upper body`
    - **Description**: (Copy from "Base Avatar Prompt" above)
 3. **Generate** → Review results (generate 3-5 variations)
-4. **Select Best** → Save as "Rensto Mascot Base"
+4. **Select Best** → Save as "SuperSeller AI Mascot Base"
 5. **Test**: Create 30-second sample video
 6. **Refine**: If needed, adjust description and regenerate
 
 **Note**: You can create multiple base avatars with different poses/orientations:
-- `Rensto Mascot Base` (portrait, upper body) - For videos
-- `Rensto Mascot Full Body` (square, full body) - For mascot use
-- `Rensto Mascot Face` (square, face) - For profile/icons
+- `SuperSeller AI Mascot Base` (portrait, upper body) - For videos
+- `SuperSeller AI Mascot Full Body` (square, full body) - For mascot use
+- `SuperSeller AI Mascot Face` (square, face) - For profile/icons
 
 ### **Step 2: Create First Look**
 
@@ -490,7 +490,7 @@ Stylized illustrated professional business consultant character, explaining gest
 
 - **HeyGen Generative Avatar**: https://www.heygen.com/avatars/generative-avatar/
 - **HeyGen Avatar Looks**: https://www.heygen.com/avatars/avatar-looks/
-- **Rensto Brand Colors**: See `apps/web/rensto-site/src/lib/design-system.ts`
+- **SuperSeller AI Brand Colors**: See `apps/web/superseller-site/src/lib/design-system.ts`
 - **Midjourney**: Use prompts above for reference images
 
 ---
@@ -499,7 +499,7 @@ Stylized illustrated professional business consultant character, explaining gest
 
 Your stylized avatar is successful when:
 - ✅ Works well in HeyGen videos (natural movement, clear expression)
-- ✅ Recognizable as Rensto brand mascot
+- ✅ Recognizable as SuperSeller AI brand mascot
 - ✅ Versatile across different contexts (video, marketing, website)
 - ✅ Maintains brand consistency (colors, style)
 - ✅ Appeals to target audience (professional but approachable)
@@ -510,7 +510,7 @@ Your stylized avatar is successful when:
 **Last Updated**: November 16, 2025  
 **Status**: ✅ Ready to create  
 **Next Step**: Create base avatar in HeyGen with:
-- **Name**: `Rensto Mascot Base`
+- **Name**: `SuperSeller AI Mascot Base`
 - **Orientation**: `portrait`
 - **Pose**: `upper body`
 - **Description**: (Copy from "Base Avatar Prompt" section above)

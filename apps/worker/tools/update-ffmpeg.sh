@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rensto Worker: Automated FFmpeg Updater
+# SuperSeller AI Worker: Automated FFmpeg Updater
 set -e
 
 echo "🔍 Starting FFmpeg Update Sequence based on NotebookLM ground truth..."

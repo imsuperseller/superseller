@@ -89,7 +89,7 @@ For each service:
 
 1. **Log into service dashboard**
 2. **Revoke/delete old key immediately**
-3. **Generate new key with descriptive name** (e.g., "Rensto Production - Oct 2025")
+3. **Generate new key with descriptive name** (e.g., "SuperSeller AI Production - Oct 2025")
 4. **Update in all environments**:
    - Local `.env` file
    - Vercel environment variables

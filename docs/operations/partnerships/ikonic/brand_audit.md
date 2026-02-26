@@ -37,8 +37,8 @@ The brand has a wide footprint but extremely low organic momentum.
 ## 5. Research Evidence (Recordings)
 Below are the recorded steps taken to gather this data:
 
-![Website & Amazon Research](/Users/shaifriedman/New Rensto/rensto/docs/partnerships/ikonic/ikonic_web_research_1768525416788.webp)
+![Website & Amazon Research](/Users/shaifriedman/New SuperSeller AI/superseller/docs/partnerships/ikonic/ikonic_web_research_1768525416788.webp)
 *Search and validation of the website and Amazon metrics.*
 
-![Social Media & Reputation Audit](/Users/shaifriedman/New Rensto/rensto/docs/partnerships/ikonic/ikonic_final_sweep_1768532007859.webp)
+![Social Media & Reputation Audit](/Users/shaifriedman/New SuperSeller AI/superseller/docs/partnerships/ikonic/ikonic_final_sweep_1768532007859.webp)
 *Auditing Instagram, TikTok, and cross-referencing customer complaints.*

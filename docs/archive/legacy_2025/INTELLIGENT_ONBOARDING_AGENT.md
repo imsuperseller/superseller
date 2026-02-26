@@ -197,7 +197,7 @@ SMTP_USER=your_email@gmail.com
 SMTP_PASS=your_app_password
 
 # Admin Configuration
-ADMIN_EMAIL=admin@rensto.com
+ADMIN_EMAIL=shai@superseller.agency
 ADMIN_PHONE=+1234567890
 ```
 

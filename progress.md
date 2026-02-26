@@ -89,7 +89,7 @@
 
 ### What was done
 
-**Git commit & push** (75b4dce): 39 files committed, pushed to origin/main. Triggers api.rensto.com auto-deploy.
+**Git commit & push** (75b4dce): 39 files committed, pushed to origin/main. Triggers api.superseller.agency auto-deploy.
 
 **Bull Board deployed to RackNerd**:
 - Merged from worktree to main
@@ -120,11 +120,11 @@
 - Build clean (117 pages, no errors)
 - Fixed 6 secondary files still using 'enterprise' (SubscriptionManager, ClientPage, metrics route)
 - Subscribe route verified (correct tiers, credits, price env vars)
-- rensto.com meta tags confirmed "$79/mo"
+- superseller.agency meta tags confirmed "$79/mo"
 
 ### Pending
 - Yaron V3 blocked on Kie.ai credits (402) — job ec300cd2
-- api.rensto.com auto-deploying from git push (should show $79 shortly)
+- api.superseller.agency auto-deploying from git push (should show $79 shortly)
 - 3 Aitable datasheets TODO (EXPENSES, LLM_REGISTRY, MASTER_PRODUCTS)
 - Vercel AITABLE_SPACE_ID env var needs updating to spc63cnXLdMYc
 
@@ -179,8 +179,8 @@ Note: Kling clips failed before generation started (402), so actual cost may be 
 ### What was done
 - **R2 public access enabled**: `winner-video-studio` bucket now has public r2.dev access at `https://pub-ac6c152d1390490f95184e78af932739.r2.dev/`. `zillow-to-video-finals` was already enabled.
 - **Repo security cleanup**: Removed 249 gologin-tmp browser cache files, legacy `winner-video-automator-v1.0/` (13 files), `social app/` (3 files), root photo, `infra/.n8n-auth.env`, `api-backup/` (66 files), `org-backup/` (7 files) from git tracking. Updated `.gitignore`.
-- **Phantom health-check URLs fixed**: Removed `market.rensto.com` and `gateway.rensto.com` (don't exist) from admin health-check route. Replaced with actual services: Worker, FB Bot, Ollama.
-- **WAHA sessions documented**: `internalBoss` (business notifications/approvals to owner) and `rensto-whatsapp` (future website chatbot) added to INFRA_SSOT and whatsapp-waha SKILL.
+- **Phantom health-check URLs fixed**: Removed `market.superseller.agency` and `gateway.superseller.agency` (don't exist) from admin health-check route. Replaced with actual services: Worker, FB Bot, Ollama.
+- **WAHA sessions documented**: `internalBoss` (business notifications/approvals to owner) and `superseller-whatsapp` (future website chatbot) added to INFRA_SSOT and whatsapp-waha SKILL.
 - **R2 bucket table added to INFRA_SSOT**: Both buckets with locations, public URLs, and usage.
 - **Studio R2_PUBLIC_URL default set**: `apps/studio/src/lib/env.ts` now defaults to the correct public URL instead of empty string.
 
@@ -189,7 +189,7 @@ Note: Kling clips failed before generation started (402), so actual cost may be 
 - `docs/INFRA_SSOT.md` (R2 bucket table, WAHA sessions, dashboard URL)
 - `.claude/skills/whatsapp-waha/SKILL.md` (WAHA session purposes)
 - `.claude/skills/winner-studio/SKILL.md` (R2_PUBLIC_URL env var)
-- `apps/web/rensto-site/src/app/api/admin/health-check/route.ts` (replaced phantom URLs with real services)
+- `apps/web/superseller-site/src/app/api/admin/health-check/route.ts` (replaced phantom URLs with real services)
 - `apps/studio/src/lib/env.ts` (R2_PUBLIC_URL default)
 - `apps/studio/.env.example` (R2_PUBLIC_URL value)
 
@@ -479,7 +479,7 @@ Yaron V2 video delivered with critical quality issues. User strategic decision: 
 **Modified Files** (4):
 1. `apps/worker/src/services/gemini.ts` — Upgraded to gemini-3-flash
 2. `apps/worker/src/queue/workers/video-pipeline.worker.ts` — 6 bug fixes (aspect ratio, music, timestamp, etc.)
-3. `apps/web/rensto-site/prisma/schema.prisma` — Added Model Observatory tables (AIModel, AIModelRecommendation, AIModelDecision)
+3. `apps/web/superseller-site/prisma/schema.prisma` — Added Model Observatory tables (AIModel, AIModelRecommendation, AIModelDecision)
 4. `DECISIONS.md` — Added §12 (Quality-First), §13 (Model Tracking), §14 (Documentation Audit)
 
 ### Gaps Closed
@@ -516,11 +516,11 @@ FB Marketplace Bot SaaS integration. Original plan: 4-week Hybrid MVP (Option C)
 - ✅ Added Market to niches.ts (contractors, auto-repair, home-services)
 - ✅ Updated all "6 agents" → "7 specialized agents" across frontend
 - ✅ Updated metadata (crew, pricing, homepage pages)
-- ✅ Build passed (12.5s), deployed to rensto.com
+- ✅ Build passed (12.5s), deployed to superseller.agency
 - ✅ Pushed to GitHub (triggered Vercel auto-deploy)
 
 **Files Modified**: 10 core files
-**Deployment**: Live at https://rensto.com/crew (Market visible)
+**Deployment**: Live at https://superseller.agency/crew (Market visible)
 
 ### Critical User Insight: Production Readiness Gap
 
@@ -591,7 +591,7 @@ User raised critical question: **"When do we test each agent to ensure it's full
    - `NotificationService` class with email notifications via Resend
    - `notifyVideoComplete()` — sends 4-format download links to customer
    - `notifyVideoFailed()` — sends error details + credits refunded message
-   - Professional HTML email templates (Rensto-branded, dark theme)
+   - Professional HTML email templates (SuperSeller AI-branded, dark theme)
 
 2. ✅ Integrated into `video-pipeline.worker.ts`:
    - Line 747: Call `notifyVideoComplete()` after job completion
@@ -618,8 +618,8 @@ User raised critical question: **"When do we test each agent to ensure it's full
 **Task**: Investigate Spoke agent status and make go/no-go decision
 
 **Discovery** (Feb 23 PM):
-- ❌ **Spoke does NOT exist** as Rensto SaaS agent
-- ✅ **Winner Studio exists** (studio.rensto.com) — single-tenant for Yossi only
+- ❌ **Spoke does NOT exist** as SuperSeller AI SaaS agent
+- ✅ **Winner Studio exists** (studio.superseller.agency) — single-tenant for Yossi only
 - ⚠️ **Marketing claimed "live"** in crew.ts (fraud risk)
 
 **Fix applied**:
@@ -680,7 +680,7 @@ User raised critical question: **"When do we test each agent to ensure it's full
 **Task**: Add email notifications when marketplace listings post or fail
 
 **Implementation** (Commit: `3c6e1cb`):
-1. ✅ Extended `apps/web/rensto-site/src/lib/email.ts` with 2 new templates:
+1. ✅ Extended `apps/web/superseller-site/src/lib/email.ts` with 2 new templates:
    - `'marketplace-posted'`: Success email ("Your Listing is Live! 🎉")
      - Includes: product name, price, location, Facebook URL
      - CTA: "View Listing on Facebook" button
@@ -696,7 +696,7 @@ User raised critical question: **"When do we test each agent to ensure it's full
    - Call `emails.marketplaceFailed()` when status='failed'
    - Non-blocking (failures logged, don't block webhook)
 
-**Email format**: Professional HTML matching Rensto branding (dark theme, cyan accents)
+**Email format**: Professional HTML matching SuperSeller AI branding (dark theme, cyan accents)
 
 **Pattern**: Mirrors Forge NotificationService (Resend API, HTML templates)
 
@@ -874,12 +874,12 @@ Completely rebuilt the FB Marketplace bot from a single-product template repeate
 ## 2026-02-23 — FrontDesk AI Voice Assistant: Working
 
 ### What Was Done
-Debugged and fixed the Telnyx AI Assistant ("Rensto FrontDesk") from non-functional to production-ready.
+Debugged and fixed the Telnyx AI Assistant ("SuperSeller AI FrontDesk") from non-functional to production-ready.
 
 **Issues found & fixed**:
 1. Phone number (+14699299314) was connected to old Call Control App (n8n webhook). Switched to TeXML App.
 2. `Telnyx.NaturalHD.Ava` voice causes **silent failure** — zero audio output, no errors. Switched to `Telnyx.KokoroTTS.af_heart`.
-3. `api_key_ref: "rensto"` pointing to non-existent key. Cleared to empty string.
+3. `api_key_ref: "superseller"` pointing to non-existent key. Cleared to empty string.
 4. Transfer tool missing `from` parameter. Added `+14699299314`.
 5. Hangup tool made LLM too aggressive (hung up after "hello"). Removed hangup tool.
 6. Instructions said "nationwide" — corrected to "globally" (US + Israel).
@@ -894,7 +894,7 @@ Debugged and fixed the Telnyx AI Assistant ("Rensto FrontDesk") from non-functio
 - Phone: `+14699299314` → TeXML App → AI Assistant
 - Transfer: `+14695885133` (Shai) with warm transfer
 - Tools: transfer only (no hangup)
-- Instructions: 2543 chars with real Rensto products, pricing, global scope
+- Instructions: 2543 chars with real SuperSeller AI products, pricing, global scope
 
 **Verified working**: 16-message conversation with real user — AI greeted, answered product questions about TourReel/Winner Studio/FrontDesk AI, discussed pricing, handled follow-up.
 
@@ -1032,14 +1032,14 @@ Custom Purim party video for Yossi Laham / קבוצת מבנים — March 5th B
 ### Files Created
 - `apps/worker/src/services/telnyx.ts`
 - `apps/worker/src/queue/workers/frontdesk-poller.worker.ts`
-- `apps/web/rensto-site/src/app/api/admin/frontdesk/route.ts`
-- `apps/web/rensto-site/src/app/api/dashboard/calls/route.ts`
+- `apps/web/superseller-site/src/app/api/admin/frontdesk/route.ts`
+- `apps/web/superseller-site/src/app/api/dashboard/calls/route.ts`
 
 ### Files Modified
-- `apps/web/rensto-site/prisma/schema.prisma` — SecretaryConfig + VoiceCallLog
+- `apps/web/superseller-site/prisma/schema.prisma` — SecretaryConfig + VoiceCallLog
 - `apps/worker/src/config.ts` — telnyx config section
 - `apps/worker/src/index.ts` — FrontDesk poller registration
-- `apps/web/rensto-site/src/app/(main)/dashboard/[clientId]/page.tsx` — getSecretaryData()
+- `apps/web/superseller-site/src/app/(main)/dashboard/[clientId]/page.tsx` — getSecretaryData()
 
 ### Next Steps
 - Set `TELNYX_API_KEY` env var on RackNerd worker
@@ -1052,7 +1052,7 @@ Custom Purim party video for Yossi Laham / קבוצת מבנים — March 5th B
 ## 2026-02-23 — Media Audit, Testimonials API, Strategic Analysis
 
 ### What Was Done
-1. **Full media audit** across rensto.com — identified all missing/placeholder media
+1. **Full media audit** across superseller.agency — identified all missing/placeholder media
 2. **Created public `/api/testimonials` endpoint** — was missing entirely, component always fell back to hardcoded fabricated data. Now returns 9 real testimonials from Postgres with avatar URLs.
 3. **Wired avatar rendering** into TestimonialSection — displays profile photos for Ben, Michal, Shelly, Aviad
 4. **Confirmed niche hero images** already mapped (8/8 niches have `heroImage` in data and render in NicheHero.tsx)
@@ -1081,11 +1081,11 @@ Full investigation and repair of the dormant Telnyx Voice AI → n8n lead analys
 
 ### Key Discoveries
 - **Telnyx AI Assistants are autonomous voice agents** — They handle calls natively on Telnyx (Qwen3-235B model), NOT via n8n webhooks. n8n polls for completed conversations every 15 min.
-- **Two separate Telnyx accounts**: UAD/MissParty (`KEY019B52B283A906F6B2150BD499B7BD99`) has 5 numbers; Rensto (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`) has 1 number for "Hope" sales agent.
+- **Two separate Telnyx accounts**: UAD/MissParty (`KEY019B52B283A906F6B2150BD499B7BD99`) has 5 numbers; SuperSeller AI (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`) has 1 number for "Hope" sales agent.
 - **3 historical conversations found** — 1 real customer lead from +14695885133 (Jan 20, requesting same-day garage door quote) + 2 test SIP calls from Jan 2. All were never processed.
 
 ### 10 Bugs Fixed
-1. UAD `dynamic_variables_webhook_url` pointed to `tax4usllc.app.n8n.cloud` → fixed to `n8n.rensto.com`
+1. UAD `dynamic_variables_webhook_url` pointed to `tax4usllc.app.n8n.cloud` → fixed to `n8n.superseller.agency`
 2. Both n8n workflows had `activeVersionId: null` / `triggerCount: 0` → deactivate/reactivate cycle
 3. MissParty workflow permanently corrupted → deleted and recreated (new ID: `9gfvZo9sB4b3pMWQ`)
 4. Claude prompt missing caller metadata → added `$('Get Many Conversations1').item.json.metadata` reference
@@ -1099,7 +1099,7 @@ Full investigation and repair of the dormant Telnyx Voice AI → n8n lead analys
 ### End-to-End Test Result
 - ✅ Pipeline executed successfully (execution #154073, status: success)
 - ✅ Schedule triggers firing every 15 min (both workflows, 5 triggers each)
-- ✅ Email notification sent to service@rensto.com
+- ✅ Email notification sent to shai@superseller.agency
 - ✅ Workiz CRM FIXED (Feb 22 late) — `auth_secret` goes INSIDE JSON body, PascalCase fields. Bug #11 found via Pipedream SDK source code.
 
 ### 11th Bug Fixed (Workiz API)
@@ -1164,7 +1164,7 @@ Full investigation and repair of the dormant Telnyx Voice AI → n8n lead analys
 
 ### Deployment
 - Build passes (106 routes, zero errors, only expected /admin cookies warning)
-- Deployed to Vercel production: `vercel --prod` → https://rensto.com
+- Deployed to Vercel production: `vercel --prod` → https://superseller.agency
 - All key routes verified 200: `/`, `/pricing`, `/crew`, `/realtors`, `/crew/forge`
 
 ### Trigger.dev Evaluation
@@ -1265,12 +1265,12 @@ Investigated all 3 n8n voice/lead workflows per user request. **All have 0 succe
 |----------|-----|-------|-----------|--------|
 | UAD Lead Analysis | U6EZ2iLQ4zCGg31H | 17 | **0** | Active, never triggered |
 | MissParty Lead Analysis | U6LqmzNwiKTkd0gM | 17 | **1 stuck ("new")** | Active, never completed |
-| Voice AI "Hope" | MqMYMeA9U9PEX1cH | 13 | **0** | Rensto sales agent, NOT for customers |
+| Voice AI "Hope" | MqMYMeA9U9PEX1cH | 13 | **0** | SuperSeller AI sales agent, NOT for customers |
 
 ### Key Gaps
 1. **Telnyx→n8n routing unverified** — unclear if Telnyx webhooks point to n8n URLs
 2. **MissParty has NO CRM** — email only, and email HTML is truncated/incomplete
-3. **Voice AI "Hope" is for Rensto sales** (Automation Audit $499, Sprint Planning $1,500) — NOT for customer lead intake
+3. **Voice AI "Hope" is for SuperSeller AI sales** (Automation Audit $499, Sprint Planning $1,500) — NOT for customer lead intake
 4. **No PostgreSQL lead storage** — leads would stay in n8n/Workiz/email, no bridge to app DB
 5. **MissParty workflow is v1 (never updated)** — appears cloned from UAD with Workiz removed
 
@@ -1389,12 +1389,12 @@ All marketplace-related docs updated to reflect current reality: bot LIVE, Postg
 ## 2026-02-20 — Lead Landing Pages: Template System LIVE
 
 ### What was built
-- Reusable landing page template system at `/lp/[slug]` inside rensto-site
+- Reusable landing page template system at `/lp/[slug]` inside superseller-site
 - `LandingPage` Prisma model: per-customer branding (colors, logo, font, headlines, CTA, sections JSON, locale/direction)
 - `/api/leads/landing-page` POST: validates input, creates Lead (source="landing_page"), WAHA WhatsApp + Resend email notification, submission counter
 - `LandingPageClient.tsx`: Hero, lead form, multi-step process, testimonials, credentials trust bar, compliance footer, WhatsApp FAB
 - RTL/LTR support, dynamic Google Font loading, customer-branded colors via DB
-- First customer implementation done as external project (not part of Rensto codebase)
+- First customer implementation done as external project (not part of SuperSeller AI codebase)
 
 ### Schema note
 - `prisma db push` blocked by pre-existing UUID/TEXT drift on 6 tables — created `landing_pages` table via raw SQL
@@ -1453,7 +1453,7 @@ Complete posting flow verified for UAD:
 
 ## 2026-02-20 — Lead Landing Pages — Template System Built
 
-Built reusable landing page template system inside rensto-site. One route (`/lp/[slug]`), per-customer branding from DB.
+Built reusable landing page template system inside superseller-site. One route (`/lp/[slug]`), per-customer branding from DB.
 
 **Architecture:**
 - `LandingPage` Prisma model → `landing_pages` table with full branding config (colors, logo, font, headlines, CTA, sections, locale, direction)
@@ -1462,9 +1462,9 @@ Built reusable landing page template system inside rensto-site. One route (`/lp/
 - Leads flow into existing admin `LeadsTab` automatically (same Lead model)
 
 **Files created:**
-- `apps/web/rensto-site/src/app/lp/[slug]/page.tsx` — server component
-- `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx` — client component
-- `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` — lead capture API
+- `apps/web/superseller-site/src/app/lp/[slug]/page.tsx` — server component
+- `apps/web/superseller-site/src/app/lp/[slug]/LandingPageClient.tsx` — client component
+- `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts` — lead capture API
 
 **Schema:** Added `LandingPage` model + `landingPages` relation on User. Created `landing_pages` table via raw SQL (db push blocked by pre-existing drift).
 
@@ -1552,10 +1552,10 @@ Created `/api/cron/sync-aitable` — cron-triggered endpoint that pushes unsynce
 **Files created/modified:**
 - `docs/DATA_DICTIONARY.md` (new)
 - `tools/schema-sentinel.ts` (new)
-- `apps/web/rensto-site/src/app/api/cron/sync-aitable/route.ts` (new)
+- `apps/web/superseller-site/src/app/api/cron/sync-aitable/route.ts` (new)
 - `apps/worker-packages/db/src/schema.ts` (emailVerified fix)
-- `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` (Aitable health check)
-- `apps/web/rensto-site/vercel.json` (cron config)
+- `apps/web/superseller-site/src/lib/monitoring/service-registry.ts` (Aitable health check)
+- `apps/web/superseller-site/vercel.json` (cron config)
 - `CLAUDE.md` (Data Dictionary + Schema Sentinel references)
 
 ---
@@ -1573,7 +1573,7 @@ Avatar-pro models came back online. Tested complete flow:
 - Generation `5d05446a` completed with `retry_count: 0`, `whatsapp_delivered: true`
 - Video URL: `https://tempfile.aiquickdraw.com/h/ac05455a407a7d5ddf828f087ff4c56f_1771545871.mp4`
 - R2 stored at `generations/5d05446a.../raw-video.mp4` (R2 bucket not public yet — 401 on direct access)
-- studio.rensto.com alias live (SSL provisioning async)
+- studio.superseller.agency alias live (SSL provisioning async)
 
 **Files modified:**
 - `src/lib/pipeline.ts` — avatar fallback logic in `processCallbackFailure` + `checkStuckGenerations`
@@ -1591,7 +1591,7 @@ Analyzed `social app/` (7 spec docs). SocialHub is a complete social media manag
 **after() doesn't work on Vercel Hobby** — replaced with `waitUntil` from `@vercel/functions` + fire-and-forget fetch to `/api/generate/process` (separate serverless function with own 60s timeout). Response time: 0.8-1.6s.
 
 **4 bugs found and fixed:**
-1. **CALLBACK_BASE_URL trailing newline** — was set to `https://studio.rensto.com\n` via `echo`. Fixed with `printf`. Same bug as findings.md "Vercel env vars" entry.
+1. **CALLBACK_BASE_URL trailing newline** — was set to `https://studio.superseller.agency\n` via `echo`. Fixed with `printf`. Same bug as findings.md "Vercel env vars" entry.
 2. **Presigned R2 URLs rejected by kie.ai** — Query params in presigned URLs confused file type detection ("audio_url file type not supported"). Fixed: `ensurePublicUrl()` now returns proxy URL (`/api/files/{key}`) instead of presigned URL. Proxy returns clean URL + correct Content-Type.
 3. **`mode` parameter invalid for avatar-pro** — kie.ai's `kling/ai-avatar-pro` only accepts `image_url`, `audio_url`, `prompt`. We were sending extra `mode: "std"` which caused 500. Removed from `buildAvatarProInput()` and `fireVideoTask()` switch case.
 4. **WAV MIME type detection** — curl sends `application/octet-stream` for WAV files. Added `inferAudioType()` fallback in upload.ts that checks file extension when browser MIME is generic.
@@ -1627,7 +1627,7 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 
 ### Build Complete — All 9 Tasks Done + E2E Bugs Fixed
 
-**Live URL**: `https://studio-teal-eight-38.vercel.app` (pending DNS for `studio.rensto.com`)
+**Live URL**: `https://studio-teal-eight-38.vercel.app` (pending DNS for `studio.superseller.agency`)
 
 **Health check**: All 4 services green (DB, Redis, WAHA, R2)
 
@@ -1677,7 +1677,7 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 - `src/app/api/generate/route.ts` — maxDuration, Hebrew WhatsApp message
 - `src/app/api/auth/whatsapp-otp/route.ts` — maxDuration, error detail
 - `src/app/api/auth/verify-otp/route.ts` — maxDuration
-- `src/app/login/page.tsx` — full Hebrew (וואטסאפ, אימייל, Rensto)
+- `src/app/login/page.tsx` — full Hebrew (וואטסאפ, אימייל, SuperSeller AI)
 - `src/app/verify/page.tsx` — full Hebrew
 - `src/lib/constants.ts` — all descriptions in Hebrew
 - `src/components/dashboard/GenerationForm.tsx` — Hebrew error messages, "1 קרדיט"
@@ -1685,9 +1685,9 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 
 ### Remaining Tasks
 
-**DNS (studio.rensto.com)**:
+**DNS (studio.superseller.agency)**:
 - Add CNAME in Cloudflare: `studio` → `cname.vercel-dns.com` (proxied)
-- Then update CALLBACK_BASE_URL env var from Vercel auto-URL to `https://studio.rensto.com`
+- Then update CALLBACK_BASE_URL env var from Vercel auto-URL to `https://studio.superseller.agency`
 - Redeploy: `cd apps/studio && vercel --prod --yes`
 
 **R2 public access**:
@@ -1696,7 +1696,7 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 - Currently working around it by using kie.ai CDN URL for WhatsApp delivery
 
 **Resend email verification**:
-- `studio@rensto.com` sender needs verification in Resend dashboard for magic link emails to work
+- `studio@superseller.agency` sender needs verification in Resend dashboard for magic link emails to work
 
 **Cron**: Daily stuck-task recovery at midnight (Hobby plan limitation — every-2-min requires Pro)
 
@@ -1749,14 +1749,14 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 - Login fill: React-compatible `HTMLInputElement.prototype.value.set` + `dispatchEvent` (React ignores direct DOM changes)
 - Cookie injection: Now checks for c_user+xs before injecting; skips injection if API missing session cookies
 - S3 upload guard: `uploadCookiesToServer=false` enforced in ALL failure paths (prevents broken profiles overwriting good ones)
-- UAD config email: `uad.garage.doors@gmail.com` → `service@rensto.com` (original email not connected to any FB account)
+- UAD config email: `uad.garage.doors@gmail.com` → `shai@superseller.agency` (original email not connected to any FB account)
 - noVNC: Set up at `http://172.245.56.50:6080/vnc.html` for remote browser interaction during 2FA
 - Interactive login script: `node interactive_login.js [0|1]` — fills creds, waits 10min for noVNC-assisted 2FA
 
 **BLOCKED — Facebook 2FA:**
 - Miss Party: Login succeeds, hits "Check your notifications" / "Check your text messages" checkpoint
 - Needs Michal to approve the notification from her phone, OR user to approve via noVNC
-- UAD (service@rensto.com): Not yet tested — needs valid FB account credentials
+- UAD (shai@superseller.agency): Not yet tested — needs valid FB account credentials
 - **Root cause of previous failures**: Repeated test scripts with `GL.stop()` uploaded broken profiles to S3, destroying valid Mac-login cookies. Now fixed with upload guards.
 
 **Next steps when ready:**
@@ -1777,7 +1777,7 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues found, 0 breaking. All fixed.**
 
 **Code fixes applied:**
-- `ClientDashboardClient.tsx`: "Submit Issue to n8n Resolver" → "Contact Support" (was a mailto:support@rensto.com anyway)
+- `ClientDashboardClient.tsx`: "Submit Issue to n8n Resolver" → "Contact Support" (was a mailto:support@superseller.agency anyway)
 - `sync-usage/route.ts`: Removed "(and Firestore backup)" from comment
 - `entitlements/route.ts`: "[MIGRATION] Phase 1: Firestore fallback" → "Firestore fully retired Feb 2026"
 - `proposals/generate/route.ts`: `firestoreId` → `recordId`, removed "Firestore storage" from features array
@@ -1812,7 +1812,7 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 **Verification results:**
 - n8n="backup only" — ✅ consistent across ALL 11 docs (zero contradictions)
 - Monitoring infrastructure — ✅ correctly integrated (imports, Prisma schema, tab wiring, email template)
-- Tailwind config — ✅ has all rensto brand color extensions
+- Tailwind config — ✅ has all superseller brand color extensions
 - Skills list — ✅ updated from stale "n8n, Tax4Us, workflow generator" to current 8 active skills
 
 ---
@@ -1845,8 +1845,8 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 
 **New files created:**
 - `.claude/skills/ui-design-workflow/SKILL.md` — 5 workflows: v0+Claude (primary), screenshot-to-component, Google Stitch (visual prototyping), URL/HTML extraction, component library adaptation. Tool comparison matrix, brand token quick reference, ready-made CSS classes.
-- `.claude/skills/ui-design-workflow/references/brand-token-map.md` — Complete Tailwind→Rensto token mapping (backgrounds, accents, text, borders, gradients, shadows, animations, component classes)
-- `tools/rebrand-component.ts` — Automated rebranding tool. Replaces generic Tailwind/shadcn classes with rensto-* CSS variables. Handles: dark backgrounds (9 patterns → rensto-bg-*), accent colors (red/blue/cyan/orange with hover variants), text (white/gray-300/400/500 → rensto-text-*), borders, rings, placeholders, and inline hex values (#111827 etc. → CSS vars). Supports --dry-run and --output flags.
+- `.claude/skills/ui-design-workflow/references/brand-token-map.md` — Complete Tailwind→SuperSeller AI token mapping (backgrounds, accents, text, borders, gradients, shadows, animations, component classes)
+- `tools/rebrand-component.ts` — Automated rebranding tool. Replaces generic Tailwind/shadcn classes with superseller-* CSS variables. Handles: dark backgrounds (9 patterns → superseller-bg-*), accent colors (red/blue/cyan/orange with hover variants), text (white/gray-300/400/500 → superseller-text-*), borders, rings, placeholders, and inline hex values (#111827 etc. → CSS vars). Supports --dry-run and --output flags.
 
 **Google Stitch research complete:**
 - No official API yet (on Google's roadmap, high priority)
@@ -1999,7 +1999,7 @@ Awaiting approval before implementation.
 - **Account page** — credit balance, usage history with transaction details.
 
 ### Deployment
-- Frontend: Deployed to rensto.com via Vercel (2 deploys).
+- Frontend: Deployed to superseller.agency via Vercel (2 deploys).
 - Worker: Deployed to RackNerd 172.245.56.50:3002 (pm2 tourreel-worker).
 - All /video/* routes require login (verified via curl).
 
@@ -2020,7 +2020,7 @@ Awaiting approval before implementation.
 
 - **Archive extraction & removal**: Merged archive content (2026-02-one-time-audits, residue-2026-02, research) into findings.md, DECISIONS.md, VERCEL_PROJECT_MAP, progress. Updated README, infra/README, agent-behavior.mdc. Deleted root archive/ folder.
 
-- **Video production gate fix**: Deployed rensto-site via `vercel --prod` (token from .env). rensto.com now returns "fetch failed" (worker reach) instead of "Video creation is not available in production yet." Production gate removed. Deploy: rensto-site-gf5fw4fnl. Aliased rensto.com.
+- **Video production gate fix**: Deployed superseller-site via `vercel --prod` (token from .env). superseller.agency now returns "fetch failed" (worker reach) instead of "Video creation is not available in production yet." Production gate removed. Deploy: superseller-site-gf5fw4fnl. Aliased superseller.agency.
 
 - **NotebookLM audit**: Audited 5811a372, 0baf5f36, 719854ee, 286f3e4a. Found contradictions in 5811a372 (learning.log, AGENT_BEHAVIOR.md, architecture/) and gaps (METHODOLOGY.md, Data-First scope). Added sync sources to 5811a372 and 719854ee.
 
@@ -2030,20 +2030,20 @@ Awaiting approval before implementation.
 
 - **User decisions applied**: Created DECISIONS.md from QUESTIONS_FOR_USER answers. Removed video production gate — video create works in prod (VIDEO_WORKER_URL required). REALTOR_PLACEMENT added to 0baf5f36, archived. CREDENTIAL_REFERENCE, NOTEBOOKLM_SCOPE, EXECUTION_PLAN created. QuickBooks: quickbooks-online-mcp-server canonical; docs updated. Credential rotation: no (per user). Infra→NotebookLM: NOTEBOOKLM_SCOPE clarifies what goes where.
 
-- **Methodology doc fixes**: REPO_MAP, CODEBASE_AUDIT now point to METHODOLOGY.md (not "B.L.A.S.T. only"). brain.md Data-First Rule scoped to new scripts (routine fixes = no HALT). .cursorrules: rensto-site deploy corrected (manual, not auto). CLAUDE_CODE_WORKFLOW: Vercel deploy clarified. CONFLICT_AUDIT: added Data-First + methodology-pointers check.
+- **Methodology doc fixes**: REPO_MAP, CODEBASE_AUDIT now point to METHODOLOGY.md (not "B.L.A.S.T. only"). brain.md Data-First Rule scoped to new scripts (routine fixes = no HALT). .cursorrules: superseller-site deploy corrected (manual, not auto). CLAUDE_CODE_WORKFLOW: Vercel deploy clarified. CONFLICT_AUDIT: added Data-First + methodology-pointers check.
 
-- **Phase 2–3 restructuring**: Merged one-time audits (AUDIT_REPORT_2026-02, LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT, DEPLOY_VIDEO_PAGE_FIX) into findings, VERCEL_PROJECT_MAP, progress. DOC_UPDATE_PLAN marked executed. VERCEL_PROJECT_MAP: rensto project = legacy; deploy unification options (A/B/C) documented. REALTOR_PLACEMENT_INDUSTRY_RESEARCH tagged for NotebookLM migration when MCP available.
+- **Phase 2–3 restructuring**: Merged one-time audits (AUDIT_REPORT_2026-02, LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT, DEPLOY_VIDEO_PAGE_FIX) into findings, VERCEL_PROJECT_MAP, progress. DOC_UPDATE_PLAN marked executed. VERCEL_PROJECT_MAP: superseller project = legacy; deploy unification options (A/B/C) documented. REALTOR_PLACEMENT_INDUSTRY_RESEARCH tagged for NotebookLM migration when MCP available.
 
 - **Methodology consolidation**: Created METHODOLOGY.md (single system SSOT). Resolved B.L.A.S.T. "HALT" vs Agent Behavior "one output" conflict by scoping: B.L.A.S.T. = new projects (phase gates); Agent Behavior = routine tasks (one final message). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior.mdc, .claude/rules/agent-behavior.md, CLAUDE.md, CODEBASE_VS_NOTEBOOKLM, AGENT_CONTEXT. When asked "conflicts?", run CONFLICT_AUDIT.md (now includes methodology check).
 - **Pipeline config SSOT**: TOURREEL_REALTOR_HANDOFF_SPEC §0b added. config.ts = single source for defaultClipDuration (5), maxClipsPerVideo (15). kie.ts, prompt-generator, video-pipeline, regen-clips now read from config; no hardcoded 5 or 15. Clip count unchanged: 12 for 1531 Home Park (4bed+pool); MAX_CLIPS=1 was debug-only.
 - **Port reference audit**: Created PORT_REFERENCE.md (SSOT). Fixed conflicts: README (3001→3002, dev:3001 removed), VIDEO_APP_USER_GUIDE (3000→3002), e2e-from-zillow default 3002→3001, run-1clip-validation, DEPLOYMENT_AND_ACCESS, ZILLOW_VIDEO_PRODUCT_STATUS, agent-behavior. All port refs now point to PORT_REFERENCE.md or match it.
-- **Conflict audit**: Full audit run. Created CONFLICT_AUDIT.md. Git: clean. Ports: worker 3002 conflicts with rensto-site 3002—use PORT=3001 for worker when both run. run-smoke default changed 3002→3001 (must hit worker). PIPELINE_RESEARCH_OUTPUT §1.2 Veo: deprecation notice added.
+- **Conflict audit**: Full audit run. Created CONFLICT_AUDIT.md. Git: clean. Ports: worker 3002 conflicts with superseller-site 3002—use PORT=3001 for worker when both run. run-smoke default changed 3002→3001 (must hit worker). PIPELINE_RESEARCH_OUTPUT §1.2 Veo: deprecation notice added.
 - **Smoke run (local)**: Worker started on PORT=3001. Smoke test created job `b6487225`; job likely failed (Insufficient Credits) → BullMQ retried 3× → repeated Kie.ai charges.
 - **Kie fixes (duration, negative_prompt, multi_shots)**: duration must be "5" or "10" (enum); omit negative_prompt (exceeded 500 chars); add multi_shots: false (422 when empty). Nano timeouts 30s→60s. Smoke: poll-job.ts, clip status done|complete.
 - **Kie 500 fix**: ensurePublicUrl returns null on failure (not original URL). No padding with Zillow URLs. R2 publicUrl fallback. kie.ts URL guard. progress.md, findings.md.
 - **Smoke run (2026-02-15)**: MAX_CLIPS=1, SMOKE_MAX_POLLS=20. Job `69caf060` created, polled every 30s with elapsed time. Pipeline progressed: generating_prompts → generating_clips. Failed at 6m: Kie.ai Kling 500 ("Server exception, please try again later"). Smoke script behaved: bounded polls, progress logs, clear FAILED + exit 1. Kie 500 = external; pipeline/timeout fixes working.
 - **UnrecoverableError fix**: Insufficient Credits, Listing not found, No clip prompts now throw `UnrecoverableError`—no BullMQ retries, no repeated Kie calls. Deployed to RackNerd.
-- **Port layout**: Worker default 3002 conflicts with rensto-site. Local dev: use `PORT=3001` for worker; rensto-site keeps 3002. VIDEO_WORKER_URL for prod points to RackNerd.
+- **Port layout**: Worker default 3002 conflicts with superseller-site. Local dev: use `PORT=3001` for worker; superseller-site keeps 3002. VIDEO_WORKER_URL for prod points to RackNerd.
 
 ## 2026-02-13
 
@@ -2051,7 +2051,7 @@ Awaiting approval before implementation.
 
 - **Local docs → NotebookLM migration**: Round 1 + Round 2 (gap audit). Added full REFERENCE_ALIGNMENT, RENSTO_DESIGN (Parts 1–3 + layout patterns), pipeline (testing, config, model compliance, three fixes), AGENT_SELF_AUDIT, AGENT_HANDOFF, 3-SCENE_VERIFICATION, full gemini schema.
 
-- **1531 Home Park Dr job run**: Job `68fc0ba2-4415-4841-a7a9-b47288b38b43` created via `create-1531-home-park-job.ts`. Listing `9deabefc-fe9b-4f1a-84d6-af7ca0b2da4f`. Test user `c60b6d2f-856d-49fd-8737-7e1fee3fa848`. Avatar uploaded to R2. Worker on 3001, rensto-site on 3002 with VIDEO_WORKER_URL. Browser verification: page at `/video/68fc0ba2-4415-4841-a7a9-b47288b38b43` shows real data (1531 Home Park Dr, Allen TX), status FAILED (likely Insufficient Credits).
+- **1531 Home Park Dr job run**: Job `68fc0ba2-4415-4841-a7a9-b47288b38b43` created via `create-1531-home-park-job.ts`. Listing `9deabefc-fe9b-4f1a-84d6-af7ca0b2da4f`. Test user `c60b6d2f-856d-49fd-8737-7e1fee3fa848`. Avatar uploaded to R2. Worker on 3001, superseller-site on 3002 with VIDEO_WORKER_URL. Browser verification: page at `/video/68fc0ba2-4415-4841-a7a9-b47288b38b43` shows real data (1531 Home Park Dr, Allen TX), status FAILED (likely Insufficient Credits).
 
 - **Work method failure**: Agent sent user step-by-step to try manually instead of opening the URL in browser and verifying. User correct: agent should verify in browser so user can see how it looks. Did verification after feedback.
 
@@ -2084,7 +2084,7 @@ Awaiting approval before implementation.
 
 - [x] Preflight --free passes (Postgres, Redis, FFmpeg)
 - [x] Deploy: `./apps/worker/deploy-to-racknerd.sh` (completed 2026-02-15; prompt fix deployed)
-- [x] Port layout: worker on 3001, rensto-site on 3002 (no conflict)
+- [x] Port layout: worker on 3001, superseller-site on 3002 (no conflict)
 - [x] Smoke: `API_URL=http://localhost:3001 npx tsx tools/run-smoke.ts` (2026-02-15 job 69caf060: Kie 500; pipeline OK)
 - [ ] Create job via /video/create (Zillow URL, avatar) OR retry existing: `POST /api/jobs/:id/retry-fresh` or `npx tsx tools/retry-job-fresh.ts <jobId>`
 - [ ] Optional: JOB_ID=xxx npx tsx tools/dry-run-pipeline.ts (validates pipeline logic for existing job before full run)

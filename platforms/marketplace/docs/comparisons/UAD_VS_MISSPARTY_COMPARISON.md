@@ -7,7 +7,7 @@ This document provides a comprehensive side-by-side analysis of the two Facebook
 | Feature | UAD (Garage Doors) | Miss Party (Bounce Houses) |
 | :--- | :--- | :--- |
 | **Owner** | Shai Friedman | Michal Kacher |
-| **FB Account** | `shai@rensto.com` (session-based) | `michalkacher2006@gmail.com` |
+| **FB Account** | `shai@superseller.agency` (session-based) | `michalkacher2006@gmail.com` |
 | **GoLogin Profile ID** | `694b5e53fcacf3fe4b4ff79c` | `6949a854f4994b150d430f37` |
 | **Marketplace Category** | "garage doors" | "party rentals" (or "Toys & Games") |
 | **Location Focus** | DFW Metroplex (Dallas focus) | DFW Metroplex (Plano/Frisco focus) |
@@ -20,7 +20,7 @@ This document provides a comprehensive side-by-side analysis of the two Facebook
 | **Data Table ID** | `c9z...` (UAD Listings) | `cNJEtuc3uOiFrDsB` (MissParty Listings) |
 | **Polling Webhook** | `/v1-get-jobs` | `/9037b3eb-...` (unique ID) |
 | **Update Webhook** | `/v1-update-status` | `/9b9fb340-...` (unique ID) |
-| **Instance** | `n8n_rensto` (Docker) | `n8n_rensto` (Docker) |
+| **Instance** | `n8n_superseller` (Docker) | `n8n_superseller` (Docker) |
 | **Execution Path** | `/opt/fb-marketplace-bot/index.js` | `/opt/fb-marketplace-bot/missparty-bot.js` |
 
 ## 3. Data Schema & Generation
@@ -49,7 +49,7 @@ This document provides a comprehensive side-by-side analysis of the two Facebook
 | Message Type | UAD Routing | Miss Party Routing |
 | :--- | :--- | :--- |
 | **WhatsApp Target** | `14695885133@c.us` (Shai) | `14695885133@c.us` (Shai) |
-| **WAHA Session** | `rensto-whatsapp` | `rensto-whatsapp` |
+| **WAHA Session** | `superseller-whatsapp` | `superseller-whatsapp` |
 | **Status Updates** | Errors & Success Only | Error, Success, and Navigation Logs |
 | **Media Proof** | Only final success screenshot | Multi-step progress screenshots |
 

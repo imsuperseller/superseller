@@ -74,8 +74,8 @@ class UniversalAggregator {
 
         // Multi-instance n8n configuration - synchronous, no async work here
         this.instances = {
-            'rensto': {
-                url: process.env.N8N_RENSTO_URL || 'http://n8n.rensto.com',
+            'superseller': {
+                url: process.env.N8N_RENSTO_URL || 'http://n8n.superseller.agency',
                 key: process.env.N8N_RENSTO_KEY || process.env.N8N_API_KEY
             },
             'tax4us': {
@@ -107,7 +107,7 @@ class UniversalAggregator {
     // --- SERVICE HELPERS ---
 
     async n8nRequest(instanceName, method, endpoint, data = null) {
-        const config = this.instances[instanceName] || this.instances['rensto'];
+        const config = this.instances[instanceName] || this.instances['superseller'];
 
         if (!config.key) {
             log(`n8n Error [${instanceName}]: API Key missing`);
@@ -192,7 +192,7 @@ class UniversalAggregator {
                         inputSchema: {
                             type: 'object',
                             properties: {
-                                instance: { type: 'string', enum: instanceEnum, default: 'rensto' },
+                                instance: { type: 'string', enum: instanceEnum, default: 'superseller' },
                                 limit: { type: 'number', default: 20 }
                             }
                         }
@@ -204,7 +204,7 @@ class UniversalAggregator {
                             type: 'object',
                             properties: {
                                 id: { type: 'string' },
-                                instance: { type: 'string', enum: instanceEnum, default: 'rensto' }
+                                instance: { type: 'string', enum: instanceEnum, default: 'superseller' }
                             },
                             required: ['id']
                         }
@@ -216,7 +216,7 @@ class UniversalAggregator {
                             type: 'object',
                             properties: {
                                 id: { type: 'string' },
-                                instance: { type: 'string', enum: instanceEnum, default: 'rensto' },
+                                instance: { type: 'string', enum: instanceEnum, default: 'superseller' },
                                 data: { type: 'object' }
                             },
                             required: ['id']
@@ -239,7 +239,7 @@ class UniversalAggregator {
             try {
                 let result = null;
                 if (name.startsWith('n8n_')) {
-                    const inst = args.instance || 'rensto';
+                    const inst = args.instance || 'superseller';
                     if (name === 'n8n_list_workflows') {
                         const cacheKey = `n8n_list_${inst}_${args.limit || 20}`;
                         if (this.cache[cacheKey] && (Date.now() - this.cache[cacheKey].time < this.CACHE_TTL)) {

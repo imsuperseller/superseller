@@ -14,7 +14,7 @@ if (!phone) {
 }
 
 // Firestore REST API endpoint
-const projectId = 'rensto';
+const projectId = 'superseller';
 const collectionPath = `whatsapp_conversations/${phone}/messages`;
 
 try {

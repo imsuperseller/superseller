@@ -162,7 +162,7 @@ NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agen
 | Infrastructure / deploy | fc048ba8 (Automation & Core Infra) |
 | Kie.ai usage / models | 3e820274 (KIE.AI) |
 | WhatsApp / WAHA | 0789acdb (WAHA Pro) |
-| Website / rensto.com | 719854ee (Rensto Website) |
+| Website / superseller.agency | 719854ee (SuperSeller AI Website) |
 | Agent behavior / methodology | 5811a372 (B.L.A.S.T.) |
 
 **Violation history (Feb 24, 2026):** TourReel update doc prepared Feb 23 but never pushed to notebook. User had to ask "are you in touch with the notebooks?" to discover the gap. This must never happen again.

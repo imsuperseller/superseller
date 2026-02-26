@@ -7,7 +7,7 @@ class MCPBusinessEnhancement {
     this.config = {
       mcp: { url: 'http://172.245.56.50:5678/webhook/mcp' },
       projectRoot: process.cwd(),
-      webAppPath: 'web/rensto-site',
+      webAppPath: 'web/superseller-site',
       resultsPath: 'data/mcp-business-enhancement',
       bmadProjectId: Date.now()
     };

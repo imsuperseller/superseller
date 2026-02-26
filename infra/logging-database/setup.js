@@ -20,7 +20,7 @@ class LoggingDatabaseSetup {
     }
 
     async setup() {
-        console.log('🚀 Starting Rensto Logging Database Setup...\n');
+        console.log('🚀 Starting SuperSeller AI Logging Database Setup...\n');
 
         try {
             // Step 1: Create database
@@ -41,10 +41,10 @@ class LoggingDatabaseSetup {
             // Step 6: Create environment file
             await this.createEnvironmentFile();
             
-            console.log('\n✅ Rensto Logging Database Setup Complete!');
-            console.log('📊 Database: rensto_logging');
-            console.log('👤 User: rensto_logging_user');
-            console.log('🔗 Connection string: postgresql://rensto_logging_user:secure_password_here@localhost:5432/rensto_logging');
+            console.log('\n✅ SuperSeller AI Logging Database Setup Complete!');
+            console.log('📊 Database: superseller_logging');
+            console.log('👤 User: superseller_logging_user');
+            console.log('🔗 Connection string: postgresql://superseller_logging_user:secure_password_here@localhost:5432/superseller_logging');
             
         } catch (error) {
             console.error('❌ Setup failed:', error.message);
@@ -60,14 +60,14 @@ class LoggingDatabaseSetup {
         try {
             // Check if database exists
             const result = await pool.query(
-                "SELECT 1 FROM pg_database WHERE datname = 'rensto_logging'"
+                "SELECT 1 FROM pg_database WHERE datname = 'superseller_logging'"
             );
             
             if (result.rows.length === 0) {
-                await pool.query('CREATE DATABASE rensto_logging');
-                console.log('✅ Database "rensto_logging" created');
+                await pool.query('CREATE DATABASE superseller_logging');
+                console.log('✅ Database "superseller_logging" created');
             } else {
-                console.log('ℹ️  Database "rensto_logging" already exists');
+                console.log('ℹ️  Database "superseller_logging" already exists');
             }
             
         } finally {
@@ -83,23 +83,23 @@ class LoggingDatabaseSetup {
         try {
             // Check if user exists
             const result = await pool.query(
-                "SELECT 1 FROM pg_roles WHERE rolname = 'rensto_logging_user'"
+                "SELECT 1 FROM pg_roles WHERE rolname = 'superseller_logging_user'"
             );
             
             if (result.rows.length === 0) {
                 await pool.query(`
-                    CREATE USER rensto_logging_user 
+                    CREATE USER superseller_logging_user 
                     WITH PASSWORD 'secure_password_here'
                 `);
-                console.log('✅ User "rensto_logging_user" created');
+                console.log('✅ User "superseller_logging_user" created');
             } else {
-                console.log('ℹ️  User "rensto_logging_user" already exists');
+                console.log('ℹ️  User "superseller_logging_user" already exists');
             }
             
             // Grant permissions
-            await pool.query('GRANT CONNECT ON DATABASE rensto_logging TO rensto_logging_user');
-            await pool.query('GRANT USAGE ON SCHEMA public TO rensto_logging_user');
-            await pool.query('GRANT CREATE ON SCHEMA public TO rensto_logging_user');
+            await pool.query('GRANT CONNECT ON DATABASE superseller_logging TO superseller_logging_user');
+            await pool.query('GRANT USAGE ON SCHEMA public TO superseller_logging_user');
+            await pool.query('GRANT CREATE ON SCHEMA public TO superseller_logging_user');
             
             console.log('✅ Permissions granted to user');
             
@@ -119,7 +119,7 @@ class LoggingDatabaseSetup {
         
         const pool = new Pool({
             ...this.setupConfig,
-            database: 'rensto_logging'
+            database: 'superseller_logging'
         });
         
         try {
@@ -154,8 +154,8 @@ class LoggingDatabaseSetup {
         
         const pool = new Pool({
             ...this.setupConfig,
-            database: 'rensto_logging',
-            user: 'rensto_logging_user',
+            database: 'superseller_logging',
+            user: 'superseller_logging_user',
             password: 'secure_password_here'
         });
         
@@ -266,8 +266,8 @@ class LoggingDatabaseSetup {
         
         const pool = new Pool({
             ...this.setupConfig,
-            database: 'rensto_logging',
-            user: 'rensto_logging_user',
+            database: 'superseller_logging',
+            user: 'superseller_logging_user',
             password: 'secure_password_here'
         });
         
@@ -297,14 +297,14 @@ class LoggingDatabaseSetup {
     async createEnvironmentFile() {
         console.log('📝 Creating environment configuration...');
         
-        const envContent = `# Rensto Logging Database Configuration
+        const envContent = `# SuperSeller AI Logging Database Configuration
 # Generated by setup script
 
 # Database Connection
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
-POSTGRES_DB=rensto_logging
-POSTGRES_USER=rensto_logging_user
+POSTGRES_DB=superseller_logging
+POSTGRES_USER=superseller_logging_user
 POSTGRES_PASSWORD=secure_password_here
 
 # Environment

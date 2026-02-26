@@ -1,7 +1,7 @@
 ---
 name: deploy-ops
 description: >-
-  Deployment and DevOps for Rensto. Covers RackNerd VPS deployment (SSH, rsync, PM2),
+  Deployment and DevOps for SuperSeller AI. Covers RackNerd VPS deployment (SSH, rsync, PM2),
   Vercel frontend deploys, FFmpeg auto-update, port assignments, health check validation,
   and server management. Use when deploying, restarting services, checking server status,
   managing PM2 processes, or troubleshooting deploy issues. Not for UI design, database
@@ -37,7 +37,7 @@ negativeTrigger:
 - **Never force-push or reset on the VPS** — rsync is the deploy mechanism.
 - **Always validate after deploy** — `curl -s http://172.245.56.50:3002/api/health` for worker.
 - **FFmpeg auto-update cron** is installed by `deploy-to-racknerd.sh` — runs daily at midnight.
-- **Vercel auto-deploys ONLY api.rensto.com** on `git push`. rensto.com requires `vercel --prod`.
+- **Vercel auto-deploys ONLY api.superseller.agency** on `git push`. superseller.agency requires `vercel --prod`.
 - **SSH password**: Use `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD` environment variable.
 
 ## Deploy Commands
@@ -66,11 +66,11 @@ ssh root@172.245.56.50 "pm2 status"
 
 ### Web (Vercel)
 ```bash
-# Auto-deploy (api.rensto.com only)
+# Auto-deploy (api.superseller.agency only)
 git push origin main
 
-# Manual deploy (rensto.com + admin.rensto.com)
-cd apps/web/rensto-site && vercel --prod
+# Manual deploy (superseller.agency + admin.superseller.agency)
+cd apps/web/superseller-site && vercel --prod
 
 # With token from env
 eval "$(grep '^VERCEL_TOKEN=' .env)" && vercel --prod
@@ -97,7 +97,7 @@ ssh root@172.245.56.50 "ffmpeg -version | head -1"
 
 | Service | Local (both running) | Local (worker only) | RackNerd |
 |---------|---------------------|--------------------|---------|
-| rensto-site | 3002 | -- | Vercel |
+| superseller-site | 3002 | -- | Vercel |
 | Worker | 3001 | 3002 | 172.245.56.50:3002 |
 | n8n | -- | -- | 5678 |
 | Ollama | -- | -- | 11434 |
@@ -110,9 +110,9 @@ ssh root@172.245.56.50 "ffmpeg -version | head -1"
 
 | Domain | Vercel Project | Auto-Deploy |
 |--------|---------------|-------------|
-| api.rensto.com | api-rensto-site | Yes (git push) |
-| rensto.com, admin.rensto.com | rensto-site | No (manual `vercel --prod`) |
-| studio.rensto.com | studio | No (manual `vercel --prod`) |
+| api.superseller.agency | api-superseller-site | Yes (git push) |
+| superseller.agency, admin.superseller.agency | superseller-site | No (manual `vercel --prod`) |
+| studio.superseller.agency | studio | No (manual `vercel --prod`) |
 
 ## PM2 Processes (RackNerd)
 
@@ -132,7 +132,7 @@ ssh root@172.245.56.50 "ffmpeg -version | head -1"
 curl -s http://172.245.56.50:3002/api/health
 
 # Web
-curl -s https://rensto.com/api/health
+curl -s https://superseller.agency/api/health
 
 # Ollama
 curl -s http://172.245.56.50:11434/api/tags
@@ -150,7 +150,7 @@ curl -s http://172.245.56.50:5678/healthz
 |------|---------|
 | `apps/worker/deploy-to-racknerd.sh` | Main deploy script (29 lines) |
 | `apps/worker/tools/update-ffmpeg.sh` | FFmpeg updater (34 lines) |
-| `apps/web/rensto-site/vercel.json` | Vercel config — CORS, CSP, security headers |
+| `apps/web/superseller-site/vercel.json` | Vercel config — CORS, CSP, security headers |
 | `apps/studio/vercel.json` | Studio Vercel config — cron, maxDuration |
 | `PORT_REFERENCE.md` | Port assignments reference |
 | `VERCEL_PROJECT_MAP.md` | Domain-to-project mapping |

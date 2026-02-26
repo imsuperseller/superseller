@@ -23,7 +23,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const REPO_ROOT = path.resolve(__dirname, "..");
-const PRISMA_PATH = path.join(REPO_ROOT, "apps/web/rensto-site/prisma/schema.prisma");
+const PRISMA_PATH = path.join(REPO_ROOT, "apps/web/superseller-site/prisma/schema.prisma");
 const DRIZZLE_PATH = path.join(REPO_ROOT, "apps/worker-packages/db/src/schema.ts");
 
 const strict = process.argv.includes("--strict");

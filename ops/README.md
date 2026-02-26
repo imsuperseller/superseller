@@ -1,6 +1,6 @@
 # ⚙️ Operations Specifications
 
-**Purpose:** Operational specifications, validation gates, and executable documentation for Rensto infrastructure and applications.
+**Purpose:** Operational specifications, validation gates, and executable documentation for SuperSeller AI infrastructure and applications.
 
 **Current Size:** ~20K (2 active files)
 
@@ -24,7 +24,7 @@ ops/
 
 ### **spec.md** (4.0K)
 
-**Purpose**: Comprehensive executable specifications for Rensto platform components
+**Purpose**: Comprehensive executable specifications for SuperSeller AI platform components
 
 **Sections**:
 
@@ -63,7 +63,7 @@ App Layout
 5. Check SEO meta → verify OG tags present
 6. Run Lighthouse → verify score ≥95
 
-**Status**: ⚠️ Partially implemented - Some specs apply to current rensto.com site
+**Status**: ⚠️ Partially implemented - Some specs apply to current superseller.agency site
 
 ---
 
@@ -83,7 +83,7 @@ App Layout
 
 **Leads Daily Follow-ups**:
 - Nodes: Cron Trigger, Airtable Get (view "🔥 Active"), Filter, Slack Send, Email Fallback
-- Target: service@rensto.com
+- Target: shai@superseller.agency
 - Channel: #alerts
 
 **Projects In Progress Digest**:
@@ -129,7 +129,7 @@ n8n:latest:
 
 ```yaml
 ingress:
-  - hostname: n8n.rensto.com
+  - hostname: n8n.superseller.agency
     service: http://n8n:5678
   - service: http_status:404
 ```
@@ -191,7 +191,7 @@ ingress:
 
 **Data Consistency**:
 - Timezone: America/Chicago everywhere
-- Email: service@rensto.com as default
+- Email: shai@superseller.agency as default
 - Airtable views: exact emoji names
 - Workflow names: kebab-case
 
@@ -219,7 +219,7 @@ ingress:
 
 **Usage**:
 ```bash
-cd /Users/shaifriedman/New\ Rensto/rensto
+cd /Users/shaifriedman/New\ SuperSeller AI/superseller
 ./ops/gates.sh
 ```
 
@@ -287,7 +287,7 @@ Phase: Infrastructure → Business Applications
 
 **Task Details**:
 - Task ID: 20240106-initial-setup
-- Title: "Initialize Rensto production infrastructure and marketing site"
+- Title: "Initialize SuperSeller AI production infrastructure and marketing site"
 - Owner: shai
 - Sprint: current (in 2024)
 - 8 acceptance criteria
@@ -301,11 +301,11 @@ Phase: Infrastructure → Business Applications
 ## 🎯 Implementation Status
 
 ### **What's Implemented**:
-- ✅ Cloudflare tunnel (n8n.rensto.com)
+- ✅ Cloudflare tunnel (n8n.superseller.agency)
 - ✅ n8n production instance (http://172.245.56.50:5678)
 - ✅ Security requirements (no exposed ports, HTTPS, encrypted credentials)
 - ✅ Data consistency (timezone, naming conventions)
-- ✅ Some design tokens applied to rensto.com
+- ✅ Some design tokens applied to superseller.agency
 
 ### **What's Partially Implemented**:
 - ⚠️ n8n workflows (some specs may match existing workflows)
@@ -355,7 +355,7 @@ nano ops/spec.md
 **For Infrastructure**:
 1. Check `/configs/docker/docker-compose.yml` for Docker services
 2. Check `/configs/cloudflare-tunnel/` for tunnel config
-3. Verify n8n.rensto.com resolves and loads
+3. Verify n8n.superseller.agency resolves and loads
 
 **For Backup Process**:
 1. Check if backup scripts exist in `/infra/` or `/scripts/`
@@ -434,6 +434,6 @@ nano ops/spec.md
 
 **Last Updated:** October 5, 2025
 **Next Review:** When gates.sh needs updating or new specs added
-**Maintained By:** Rensto Team
+**Maintained By:** SuperSeller AI Team
 **Active Files**: 2 (spec.md, gates.sh)
 **Archived Files**: 1 (task.yaml → archives/ops-tasks-2024/)

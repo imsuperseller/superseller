@@ -24,7 +24,7 @@ if (getApps().length === 0) {
             }
             app = initializeApp({
                 credential: cert(serviceAccount),
-                projectId: 'rensto'
+                projectId: 'superseller'
             });
             console.log("✅ Authenticated with provided service account");
         } catch (e) {

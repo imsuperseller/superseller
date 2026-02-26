@@ -1,4 +1,4 @@
-# 💰 Rensto Productization Guide: "Selling the Methods"
+# 💰 SuperSeller AI Productization Guide: "Selling the Methods"
 
 This guide explains how to turn our internal n8n "Gems" into high-ticket products by positioning them as **Methods** within the 4 Pillars.
 

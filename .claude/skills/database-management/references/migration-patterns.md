@@ -3,7 +3,7 @@
 ## Prisma Migrations
 ```bash
 # Create migration
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npx prisma migrate dev --name add_field_name
 
 # Apply to production
@@ -55,7 +55,7 @@ npx drizzle-kit generate && npx drizzle-kit migrate
 ### Step 3: Verify
 ```bash
 # Web
-cd apps/web/rensto-site && npx next build
+cd apps/web/superseller-site && npx next build
 # Worker
 cd apps/worker && npx tsx src/index.ts
 ```

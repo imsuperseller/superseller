@@ -90,7 +90,7 @@ class ProjectDeliveryAutomation {
           <p>{nextSteps}</p>
           
           <p>Thank you for your continued partnership!</p>
-          <p>Best regards,<br>The Rensto Team</p>
+          <p>Best regards,<br>The SuperSeller AI Team</p>
         `
       },
       billing_trigger: {
@@ -110,7 +110,7 @@ class ProjectDeliveryAutomation {
           <p>Please review and process payment at your earliest convenience.</p>
           
           <p>Thank you for your business!</p>
-          <p>Best regards,<br>The Rensto Team</p>
+          <p>Best regards,<br>The SuperSeller AI Team</p>
         `
       },
       project_delivery: {
@@ -132,8 +132,8 @@ class ProjectDeliveryAutomation {
           <h3>Next Steps:</h3>
           <p>{nextSteps}</p>
           
-          <p>Thank you for choosing Rensto for your project needs!</p>
-          <p>Best regards,<br>The Rensto Team</p>
+          <p>Thank you for choosing SuperSeller AI for your project needs!</p>
+          <p>Best regards,<br>The SuperSeller AI Team</p>
         `
       }
     };

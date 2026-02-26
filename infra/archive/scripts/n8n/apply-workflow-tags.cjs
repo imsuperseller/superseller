@@ -7,7 +7,7 @@
  * Usage: node apply-workflow-tags.cjs
  */
 
-const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.rensto.com';
+const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.superseller.agency';
 const N8N_API_KEY = process.env.N8N_API_KEY;
 
 if (!N8N_API_KEY) {
@@ -20,7 +20,7 @@ const WORKFLOW_TAGS = {
   // ═══════════════════════════════════════════════════════════════════
   // WHATSAPP AGENTS
   // ═══════════════════════════════════════════════════════════════════
-  'eQSCUFw91oXLxtvn': ['whatsapp-agent', 'production', 'template', 'rensto'], // SALES-WHATSAPP-001: Rensto Voice Agent
+  'eQSCUFw91oXLxtvn': ['whatsapp-agent', 'production', 'template', 'superseller'], // SALES-WHATSAPP-001: SuperSeller AI Voice Agent
   '86WHKNpj09tV9j1d': ['whatsapp-agent', 'template', 'dima'], // CUSTOMER-WHATSAPP-001: Liza AI
   '0Cyp9kWJ0oUPNx2L': ['whatsapp-agent', 'dima'], // CUSTOMER-WHATSAPP-002A
   'DNzlEU1vs7aqrlBg': ['whatsapp-agent', 'dima'], // CUSTOMER-WHATSAPP-002B
@@ -91,7 +91,7 @@ const WORKFLOW_TAGS = {
   'CydsTsbkaL5xQkIJ': ['content-pipeline', 'template'], // Automated Social Media
   'zgFBKmbMWbnqZiwk': ['content-pipeline'], // TikTok Posts
   'F0f4PtwG9FQM7ME9': ['content-pipeline', 'production'], // Cinematic Pitch Engine
-  'f2GHwdzxcsv2HcAW': ['content-pipeline', 'production'], // Sora 2 rensto-custom
+  'f2GHwdzxcsv2HcAW': ['content-pipeline', 'production'], // Sora 2 superseller-custom
   'nEOPdmUOE0bK37sQ': ['content-pipeline'], // Sora 2 Evolution API
   '8GC371u1uBQ8WLmu': ['content-pipeline'], // Find Winning Ads
   'XTTFteuNaCKEL455': ['content-pipeline', 'meatpoint'], // MeatPoint Video Ideas
@@ -176,7 +176,7 @@ const WORKFLOW_TAGS = {
   // ═══════════════════════════════════════════════════════════════════
   // INTERNAL: RENSTO
   // ═══════════════════════════════════════════════════════════════════
-  'BtpIM8sVdkrDvWrh': ['internal', 'rensto', 'production'], // PDF Gemini Rensto
+  'BtpIM8sVdkrDvWrh': ['internal', 'superseller', 'production'], // PDF Gemini SuperSeller AI
 
   // ═══════════════════════════════════════════════════════════════════
   // TESTING/DEV

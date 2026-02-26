@@ -13,7 +13,7 @@ echo ""
 declare -A instance_data
 
 # Collect data from all instances
-for instance in rensto tax4us shelly; do
+for instance in superseller tax4us shelly; do
   result=$(node multi-instance-api.js list-workflows $instance 2>/dev/null)
 
   if [ $? -eq 0 ]; then
@@ -35,7 +35,7 @@ done
 printf "%-20s | %-10s | %-10s | %-10s\n" "Instance" "Total" "Active" "Inactive"
 echo "---------------------+------------+------------+-----------"
 
-for instance in rensto tax4us shelly; do
+for instance in superseller tax4us shelly; do
   total=${instance_data["${instance}_total"]}
   active=${instance_data["${instance}_active"]}
   inactive=${instance_data["${instance}_inactive"]}
@@ -49,9 +49,9 @@ echo ""
 echo "====================================================================="
 
 # Calculate totals
-total_workflows=$((${instance_data["rensto_total"]} + ${instance_data["tax4us_total"]} + ${instance_data["shelly_total"]}))
-total_active=$((${instance_data["rensto_active"]} + ${instance_data["tax4us_active"]} + ${instance_data["shelly_active"]}))
-total_inactive=$((${instance_data["rensto_inactive"]} + ${instance_data["tax4us_inactive"]} + ${instance_data["shelly_inactive"]}))
+total_workflows=$((${instance_data["superseller_total"]} + ${instance_data["tax4us_total"]} + ${instance_data["shelly_total"]}))
+total_active=$((${instance_data["superseller_active"]} + ${instance_data["tax4us_active"]} + ${instance_data["shelly_active"]}))
+total_inactive=$((${instance_data["superseller_inactive"]} + ${instance_data["tax4us_inactive"]} + ${instance_data["shelly_inactive"]}))
 
 echo "Total Workflows: $total_workflows"
 echo "Total Active: $total_active"

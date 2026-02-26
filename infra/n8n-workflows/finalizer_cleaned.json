@@ -136,8 +136,8 @@
     },
     {
       "parameters": {
-        "fromEmail": "service@rensto.com",
-        "toEmail": "={{ $input.all()[0].json.email || 'service@rensto.com' }}",
+        "fromEmail": "shai@superseller.agency",
+        "toEmail": "={{ $input.all()[0].json.email || 'shai@superseller.agency' }}",
         "subject": "Your Real Estate Video Tour is Ready!",
         "options": {}
       },

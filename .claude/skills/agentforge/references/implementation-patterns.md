@@ -147,4 +147,4 @@ The original AgentForge specs exist as Word docs in `agentforge/`. These should 
 - `AgentForge-Prompts-Library-v1.docx` — Prompt templates (most critical — extract prompts from here)
 - `AgentForge-UIUX-Spec-v1.docx` — UI design tokens
 - `AgentForge-TechArch-v1.docx` — Original architecture (superseded — use SKILL.md instead)
-- `AgentForge-EnvDeploy-v1.docx` — Deploy config (superseded — deploys with rensto-site on Vercel)
+- `AgentForge-EnvDeploy-v1.docx` — Deploy config (superseded — deploys with superseller-site on Vercel)

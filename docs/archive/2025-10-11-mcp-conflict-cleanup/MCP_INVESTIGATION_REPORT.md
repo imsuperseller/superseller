@@ -120,7 +120,7 @@ curl -H "X-N8N-API-KEY: eyJ..." \
 
 **System**: 100% operational
 **Instances**: 3 configured
-- `n8n-rensto-vps`: Rensto VPS (68 workflows)
+- `n8n-superseller-vps`: SuperSeller AI VPS (68 workflows)
 - `n8n-customer:-tax4us`: Tax4Us Cloud (10 workflows) ← **CURRENT**
 - `n8n-customer:-shelly`: Shelly Cloud
 
@@ -133,7 +133,7 @@ curl -H "X-N8N-API-KEY: eyJ..." \
 
 **To Switch**:
 ```bash
-node n8n-instance-manager.js switch n8n-rensto-vps
+node n8n-instance-manager.js switch n8n-superseller-vps
 # ⚠️ REQUIRES CURSOR RESTART
 ```
 

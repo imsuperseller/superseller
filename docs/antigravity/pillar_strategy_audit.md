@@ -1,4 +1,4 @@
-# 🏛️ Rensto 4 Pillars - Complete Strategy Audit
+# 🏛️ SuperSeller AI 4 Pillars - Complete Strategy Audit
 
 This audit answers every question about the Pillar product strategy.
 

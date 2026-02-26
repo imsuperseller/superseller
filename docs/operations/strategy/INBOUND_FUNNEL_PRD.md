@@ -1,4 +1,4 @@
-# Rensto Inbound Lead Funnel (PRD)
+# SuperSeller AI Inbound Lead Funnel (PRD)
 
 Strategic design for converting social media attention into qualified high-ticket leads using "Call to Action" (CTA) automation.
 
@@ -16,7 +16,7 @@ Strategic design for converting social media attention into qualified high-ticke
     - **> $10M**: High-Ticket Custom. Push to **Whale Onboarding**.
 
 ### Lead Scoring & CRM Integration
-- All leads from DM flows are pushed to the **Rensto Master CRM** (n8n + PostgreSQL `leads` table).
+- All leads from DM flows are pushed to the **SuperSeller AI Master CRM** (n8n + PostgreSQL `leads` table).
 - n8n analyzes the business niche and drafts a "Personalized Problem-Solver" response for Shai to review.
 
 ## Revenue Loops

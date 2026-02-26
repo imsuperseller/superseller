@@ -39,8 +39,8 @@ Claude Code → Node.js script → n8n API → Response
 ```
 
 **MCP tools** = 41 pre-built functions like:
-- `mcp__n8n-rensto__n8n_get_workflow`
-- `mcp__n8n-rensto__n8n_list_workflows`
+- `mcp__n8n-superseller__n8n_get_workflow`
+- `mcp__n8n-superseller__n8n_list_workflows`
 - `mcp__n8n-tax4us__n8n_health_check`
 
 **These scripts** = Equivalent functions that do the same thing:
@@ -62,7 +62,7 @@ Expected output:
 ```
 🏥 Checking health of all n8n instances...
 
-Checking Rensto VPS...
+Checking SuperSeller AI VPS...
   ✅ healthy - http://172.245.56.50:5678
 Checking Tax4Us Cloud...
   ✅ healthy - https://tax4usllc.app.n8n.cloud
@@ -78,8 +78,8 @@ Checking Shelly Cloud...
 ### 2. List Workflows for an Instance
 
 ```bash
-# Rensto VPS (68 workflows)
-node scripts/n8n/examples/list-workflows.js rensto
+# SuperSeller AI VPS (68 workflows)
+node scripts/n8n/examples/list-workflows.js superseller
 
 # Tax4Us Cloud (4 workflows)
 node scripts/n8n/examples/list-workflows.js tax4us
@@ -94,8 +94,8 @@ node scripts/n8n/examples/list-workflows.js shelly
 # Tax4Us: Get the AI Agent Builder workflow
 node scripts/n8n/examples/get-workflow.js tax4us zQIkACTYDgaehp6S
 
-# Rensto: Get any workflow by ID
-node scripts/n8n/examples/get-workflow.js rensto <workflow-id>
+# SuperSeller AI: Get any workflow by ID
+node scripts/n8n/examples/get-workflow.js superseller <workflow-id>
 ```
 
 This will:
@@ -110,12 +110,12 @@ This will:
 
 ### When I need to work with n8n workflows, I:
 
-1. **Identify which instance** (Rensto VPS, Tax4Us Cloud, or Shelly Cloud)
+1. **Identify which instance** (SuperSeller AI VPS, Tax4Us Cloud, or Shelly Cloud)
 
 2. **Load the config**:
 ```javascript
 const { getConfig } = require('./scripts/n8n/n8n-config.js');
-const config = getConfig('tax4us');  // or 'rensto' or 'shelly'
+const config = getConfig('tax4us');  // or 'superseller' or 'shelly'
 ```
 
 3. **Call the API function**:
@@ -159,7 +159,7 @@ All credentials are in `n8n-config.js`:
 
 ### Instance Types
 
-**1. Rensto VPS** (Self-hosted):
+**1. SuperSeller AI VPS** (Self-hosted):
 - URL: `http://172.245.56.50:5678`
 - Type: Internal workflows
 - Workflows: 68

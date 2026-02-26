@@ -1,4 +1,4 @@
-# Rensto Architecture – Folder Map
+# SuperSeller AI Architecture – Folder Map
 
 **Last Updated**: February 2026  
 **Purpose**: Quick reference for where things live. For mission and protocol: **brain.md**. For full context: **CLAUDE.md**.
@@ -9,11 +9,11 @@
 
 | Path | Purpose |
 |------|---------|
-| **apps/web/rensto-site/** | Main Next.js app (rensto.com, admin.rensto.com, api.rensto.com) |
+| **apps/web/superseller-site/** | Main Next.js app (superseller.agency, admin.superseller.agency, api.superseller.agency) |
 | **apps/worker/** | Video pipeline worker (TourReel: Nano Banana, Kling, R2) |
-| **apps/web/rensto-site/src/app/** | Pages and API routes |
-| **apps/web/rensto-site/src/app/(main)/admin/** | Admin dashboard (served via admin.rensto.com) |
-| **apps/web/rensto-site/src/app/api/** | API endpoints |
+| **apps/web/superseller-site/src/app/** | Pages and API routes |
+| **apps/web/superseller-site/src/app/(main)/admin/** | Admin dashboard (served via admin.superseller.agency) |
+| **apps/web/superseller-site/src/app/api/** | API endpoints |
 | **infra/** | MCP servers, n8n scripts, migrations, workflow artifacts |
 | **infra/mcp-servers/** | MCP server configs |
 | **infra/n8n-scripts/** | n8n workflow deploy/fix scripts |
@@ -46,13 +46,13 @@
 
 ## Not Present at Repo Root
 
-- **packages/** — Does not exist. Use `apps/web/rensto-site/src/` or `infra/`.
+- **packages/** — Does not exist. Use `apps/web/superseller-site/src/` or `infra/`.
 - **scripts/** — Exists but in .cursorignore. Use `infra/n8n-scripts/` for automation scripts.
 - **archives/** — Does not exist. Use `infra/archive/` or `docs/archive/` for archived material.
 - **directives/** — Deleted. n8n governance in NotebookLM 5811a372.
-- **legal-pages/** — Deleted. Legal content in rensto-site or external.
+- **legal-pages/** — Deleted. Legal content in superseller-site or external.
 - **apps/api**, **apps/gateway-worker**, **apps/marketplace** — Deleted from repo.
-- **apps/web/admin-dashboard** — Deleted. Admin lives in `rensto-site/src/app/admin`.
+- **apps/web/admin-dashboard** — Deleted. Admin lives in `superseller-site/src/app/admin`.
 
 ---
 
@@ -71,9 +71,9 @@
 
 | Domain | Serves |
 |--------|--------|
-| rensto.com, www.rensto.com | Main site, marketplace, all public pages |
-| admin.rensto.com | Admin dashboard |
-| api.rensto.com | Same app as rensto.com (separate Vercel project) |
+| superseller.agency, www.superseller.agency | Main site, marketplace, all public pages |
+| admin.superseller.agency | Admin dashboard |
+| api.superseller.agency | Same app as superseller.agency (separate Vercel project) |
 
 **Deploy details**: See **VERCEL_PROJECT_MAP.md** — which Vercel project owns each domain, auto-deploy vs manual.
 

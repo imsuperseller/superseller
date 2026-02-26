@@ -21,7 +21,7 @@ class AdminDashboardImplementation {
         url: 'http://172.245.56.50:5678/webhook/mcp'
       },
       projectRoot: process.cwd(),
-      webAppPath: 'web/rensto-site',
+      webAppPath: 'web/superseller-site',
       resultsPath: 'data/admin-dashboard-implementation'
     };
     
@@ -188,7 +188,7 @@ class AdminDashboardImplementation {
     
     this.integrationPoints = {
       mcpServers: [
-        'rensto-n8n-unified',
+        'superseller-n8n-unified',
         'stripe-mcp-server',
         'analytics-reporting-mcp',
         'financial-billing-mcp'
@@ -1042,7 +1042,7 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Rensto Admin Dashboard</h1>
+        <h1 className="text-4xl font-bold tracking-tight">SuperSeller AI Admin Dashboard</h1>
         <p className="text-muted-foreground">
           Comprehensive management system for AI agents, customers, workflows, and system monitoring
         </p>

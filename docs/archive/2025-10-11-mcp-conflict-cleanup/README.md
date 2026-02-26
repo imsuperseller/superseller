@@ -27,7 +27,7 @@ A comprehensive investigation revealed **6 separate MCP fix attempts** between J
 {
   "n8n-mcp": {
     "command": "docker",
-    "args": ["exec", "n8n_rensto", "n8n", "execute", "workflow"]
+    "args": ["exec", "n8n_superseller", "n8n", "execute", "workflow"]
   }
 }
 ```

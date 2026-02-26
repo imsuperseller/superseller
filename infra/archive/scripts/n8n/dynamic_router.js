@@ -8,14 +8,14 @@ const incomingSource = $node['Webhook'].json.body;
 
 // 1. Get the ID we are looking for (The one pasted in the Dashboard)
 // For this verifying launch, we assume the user pasted the n8n Webhook ID or Session Name
-// For testing, we might just match the 'shai-personal' client directly if found.
+// For testing, we might just match the 'shai' client directly if found.
 
 const incomingId = '556f1aab-220c-4281-90b8-0570465d50b1'; // Example: In real usage, extract this from the webhook URL or body
 
 // 2. Find the config that matches
 const match = allConfigs.find(item => {
   const config = item.json;
-  return config.n8nWebhookId === incomingId || config.clientId === 'shai-personal'; // Fallback for dev
+  return config.n8nWebhookId === incomingId || config.clientId === 'shai'; // Fallback for dev
 });
 
 if (match) {
@@ -23,7 +23,7 @@ if (match) {
     json: {
       found: true,
       clientId: match.json.clientId,
-      agentName: match.json.agentName || 'Rensto Secretary', // Default
+      agentName: match.json.agentName || 'SuperSeller AI Secretary', // Default
       ...match.json
     }
   };

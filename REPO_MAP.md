@@ -9,12 +9,12 @@
 
 | App | Path | Framework | Entry Point | Deploy |
 |-----|------|-----------|-------------|--------|
-| **Web** (rensto.com, admin, API) | `apps/web/rensto-site/` | Next.js 14+ (Vercel) | `src/app/layout.tsx` | `git push` or `vercel --prod` |
+| **Web** (superseller.agency, admin, API) | `apps/web/superseller-site/` | Next.js 14+ (Vercel) | `src/app/layout.tsx` | `git push` or `vercel --prod` |
 | **Worker** (TourReel, FrontDesk) | `apps/worker/` | Express + BullMQ (RackNerd) | `src/index.ts` (48 lines) | `./apps/worker/deploy-to-racknerd.sh` |
 
 ---
 
-## Web — Key Modules (`apps/web/rensto-site/src/lib/`)
+## Web — Key Modules (`apps/web/superseller-site/src/lib/`)
 
 | File | Main Exports | Purpose |
 |------|-------------|---------|
@@ -77,13 +77,13 @@
 
 | Schema | Path | ORM | Purpose |
 |--------|------|-----|---------|
-| Prisma (web) | `apps/web/rensto-site/prisma/schema.prisma` | Prisma | User, Tenant, Subscription, Payment, UsageEvent, Lead, etc. |
+| Prisma (web) | `apps/web/superseller-site/prisma/schema.prisma` | Prisma | User, Tenant, Subscription, Payment, UsageEvent, Lead, etc. |
 | Drizzle (worker) | `apps/worker-packages/db/src/schema.ts` | Drizzle | users, videoJobs, clips, assets, usageEvents, documents |
 | Drift validator | `tools/schema-sentinel.ts` | — | Compares Prisma vs Drizzle on 5 shared tables |
 
 ---
 
-## Web Pages (`apps/web/rensto-site/src/app/(main)/`)
+## Web Pages (`apps/web/superseller-site/src/app/(main)/`)
 
 | Category | Routes |
 |----------|--------|
@@ -94,7 +94,7 @@
 
 ---
 
-## API Routes (`apps/web/rensto-site/src/app/api/`)
+## API Routes (`apps/web/superseller-site/src/app/api/`)
 
 | Category | Key Routes | Auth |
 |----------|-----------|------|
@@ -112,7 +112,7 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 
 ---
 
-## Components (`apps/web/rensto-site/src/components/`)
+## Components (`apps/web/superseller-site/src/components/`)
 
 | Dir | Purpose | Key Files |
 |-----|---------|-----------|
@@ -158,4 +158,4 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 
 ## What's Gone
 
-`apps/api`, `apps/gateway-worker`, `apps/marketplace`, `apps/web/admin-dashboard`, `firestore/`, `legal-pages/`, `directives/` — all deleted. Functionality merged into rensto-site or retired.
+`apps/api`, `apps/gateway-worker`, `apps/marketplace`, `apps/web/admin-dashboard`, `firestore/`, `legal-pages/`, `directives/` — all deleted. Functionality merged into superseller-site or retired.

@@ -107,12 +107,12 @@
 
 **Professional Consultant Look**:
 ```
-Professional business consultant, dark navy suit or dark blazer, white dress shirt, modern office background with subtle Rensto brand colors (#fe3d51, #1eaef7) visible, professional studio lighting, warm tone, authoritative but approachable, trustworthy expert appearance, confident but empathetic expression, modern professional aesthetic
+Professional business consultant, dark navy suit or dark blazer, white dress shirt, modern office background with subtle SuperSeller AI brand colors (#fe3d51, #1eaef7) visible, professional studio lighting, warm tone, authoritative but approachable, trustworthy expert appearance, confident but empathetic expression, modern professional aesthetic
 ```
 
 **Founder/Personal Look**:
 ```
-Founder personal appearance, casual professional, branded t-shirt or dark shirt with Rensto logo visible, home office background or modern workspace, warm natural lighting, authentic personal appearance, relatable founder vibe, genuine expression, approachable and authentic
+Founder personal appearance, casual professional, branded t-shirt or dark shirt with SuperSeller AI logo visible, home office background or modern workspace, warm natural lighting, authentic personal appearance, relatable founder vibe, genuine expression, approachable and authentic
 ```
 
 ### **For Professional Business Avatar**:

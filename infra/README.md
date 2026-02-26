@@ -72,7 +72,7 @@ infra/
 | financial-billing-mcp | 32K | 🚧 WIP | Billing automation MCP (not active) |
 | analytics-reporting-mcp | 32K | 🚧 WIP | Analytics MCP (not active) |
 | stripe-mcp-server | 52K | ⚠️ Prototype | Docker version used instead |
-| rensto-mcp-template | 28K | 📦 Template | Template for new MCP servers |
+| superseller-mcp-template | 28K | 📦 Template | Template for new MCP servers |
 | mongodb-mcp-server | 4K | 🚧 WIP | MongoDB integration (skeleton) |
 | github-mcp-server | 4K | 🚧 WIP | GitHub integration (skeleton) |
 | vercel-mcp-server | 4K | 🚧 WIP | Vercel deployment (skeleton) |
@@ -81,7 +81,7 @@ infra/
 
 **Adding a New MCP Server**:
 1. Create directory in `infra/mcp-servers/your-server-name/`
-2. Implement MCP protocol (see `rensto-mcp-template/` for template)
+2. Implement MCP protocol (see `superseller-mcp-template/` for template)
 3. Add to `~/.cursor/mcp.json`:
    ```json
    "your-server": {
@@ -112,7 +112,7 @@ node infra/mcp-servers/your-server/server.js
 
 ## 📊 Logging Database (39M)
 
-**Purpose**: Centralized PostgreSQL logging system for Rensto production workflows
+**Purpose**: Centralized PostgreSQL logging system for SuperSeller AI production workflows
 
 **Location**: `infra/logging-database/`
 
@@ -147,7 +147,7 @@ npm test                   # Test error handling
 
 **Location**: `infra/saas-frontend/`
 
-**Full Name**: "rensto-lead-enrichment-saas"
+**Full Name**: "superseller-lead-enrichment-saas"
 
 **Tech Stack**:
 - Next.js 14+ (App Router)
@@ -157,7 +157,7 @@ npm test                   # Test error handling
 - React Hook Form + Zod validation
 - Zustand state management
 
-**Status**: ⚠️ **Prototype** - Not deployed, may be superseded by apps/web/rensto-site/
+**Status**: ⚠️ **Prototype** - Not deployed, may be superseded by apps/web/superseller-site/
 
 **Action**: Consider archiving if not actively developed
 
@@ -354,7 +354,7 @@ sudo systemctl start your-service
 
 ```bash
 # Using rclone
-rclone sync infra/ remote:rensto-infra-backup/
+rclone sync infra/ remote:superseller-infra-backup/
 ```
 
 ---
@@ -368,7 +368,7 @@ rclone sync infra/ remote:rensto-infra-backup/
 
 ### **Issue 2: saas-frontend status unclear**
 **Impact**: 60K of code that may be obsolete
-**Solution**: Archive if superseded by apps/web/rensto-site/
+**Solution**: Archive if superseded by apps/web/superseller-site/
 **Status**: ⚠️ Decision needed
 
 ### **Issue 3: logging-database usage unknown**
@@ -397,6 +397,6 @@ rclone sync infra/ remote:rensto-infra-backup/
 
 **Last Updated:** February 2026
 **Next Audit:** April 2026 (quarterly)
-**Maintained By:** Rensto Team
+**Maintained By:** SuperSeller AI Team
 **Active MCP Servers**: 12 (context7 removed; universal-aggregator + notebooklm in Cursor)
 **Size**: ~330M (260M node_modules, 70M source code)

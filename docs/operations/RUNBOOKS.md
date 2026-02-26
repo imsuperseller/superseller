@@ -9,8 +9,8 @@
 ### Service Down (n8n)
 1. SSH to VPS: `ssh root@172.245.56.50`
 2. Check Docker: `docker ps | grep n8n`
-3. Restart: `docker restart n8n_rensto`
-4. Verify: `curl http://n8n.rensto.com/healthz`
+3. Restart: `docker restart n8n_superseller`
+4. Verify: `curl http://n8n.superseller.agency/healthz`
 
 ### Stripe Webhook Failure
 1. Check Stripe Dashboard for failed events.

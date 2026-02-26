@@ -1,14 +1,14 @@
 # FB Marketplace Bot → Market (7th Crew Member) Integration Plan
 
 **Date**: February 23, 2026
-**Scope**: Systemic integration of FB Marketplace Bot into Rensto's credit-based SaaS as the 7th crew member
+**Scope**: Systemic integration of FB Marketplace Bot into SuperSeller AI's credit-based SaaS as the 7th crew member
 **Authority**: Supersedes standalone pricing ($99/$299/$999)
 
 ---
 
 ## Executive Summary
 
-FB Marketplace Bot is currently a **custom agency product** serving UAD and MissParty. This plan converts it into **Market**, the 7th crew member in Rensto's unified credit-based SaaS.
+FB Marketplace Bot is currently a **custom agency product** serving UAD and MissParty. This plan converts it into **Market**, the 7th crew member in SuperSeller AI's unified credit-based SaaS.
 
 **Key changes**:
 - ❌ **Remove**: 3 Stripe products (prod_U2EFmrdU4xFlTK, prod_U2EFxjzvGOvDsy, prod_U2EFS8dpDfqjVB)
@@ -24,9 +24,9 @@ FB Marketplace Bot is currently a **custom agency product** serving UAD and Miss
 
 | File | Change | Status |
 |------|--------|--------|
-| `apps/web/rensto-site/src/data/crew.ts` | Add Market crew member (25 credits/listing) | ⏳ Pending |
-| `apps/web/rensto-site/src/data/pricing.ts` | Add Market to creditExamples for all 3 tiers | ⏳ Pending |
-| `apps/web/rensto-site/src/data/niches.ts` | Add Market to crewMapping for e-commerce niches | ⏳ Pending |
+| `apps/web/superseller-site/src/data/crew.ts` | Add Market crew member (25 credits/listing) | ⏳ Pending |
+| `apps/web/superseller-site/src/data/pricing.ts` | Add Market to creditExamples for all 3 tiers | ⏳ Pending |
+| `apps/web/superseller-site/src/data/niches.ts` | Add Market to crewMapping for e-commerce niches | ⏳ Pending |
 
 **Market crew member spec**:
 ```typescript
@@ -71,31 +71,31 @@ FB Marketplace Bot is currently a **custom agency product** serving UAD and Miss
 
 | File | Change | Status |
 |------|--------|--------|
-| `apps/web/rensto-site/src/app/HomePageClient.tsx` | Change "6 crew members" → "7 specialized agents" or "Your AI department" | ⏳ Pending |
-| `apps/web/rensto-site/src/app/(main)/crew/page.tsx` | Change "6 AI Agents" badge → "7 AI Agents" | ⏳ Pending |
-| `apps/web/rensto-site/src/app/(main)/crew/[slug]/page.tsx` | Auto-generates Market detail page from crew.ts | ✅ No change |
-| `apps/web/rensto-site/src/app/(main)/pricing/page.tsx` | Metadata: "6 crew" → "7 specialized agents" | ⏳ Pending |
-| `apps/web/rensto-site/src/components/crew/CrewGrid.tsx` | Auto-renders from crew.ts | ✅ No change |
-| `apps/web/rensto-site/src/components/crew/CrewHero.tsx` | Check for hardcoded "6" | ⏳ Pending |
-| `apps/web/rensto-site/src/components/pricing/PricingSection.tsx` | Verify credit examples render Market | ⏳ Pending |
-| `apps/web/rensto-site/src/components/pricing/CreditSlider.tsx` | Verify Market included in calculations | ⏳ Pending |
-| `apps/web/rensto-site/src/components/niche/NicheCrewMapping.tsx` | Auto-renders from niches.ts | ✅ No change |
+| `apps/web/superseller-site/src/app/HomePageClient.tsx` | Change "6 crew members" → "7 specialized agents" or "Your AI department" | ⏳ Pending |
+| `apps/web/superseller-site/src/app/(main)/crew/page.tsx` | Change "6 AI Agents" badge → "7 AI Agents" | ⏳ Pending |
+| `apps/web/superseller-site/src/app/(main)/crew/[slug]/page.tsx` | Auto-generates Market detail page from crew.ts | ✅ No change |
+| `apps/web/superseller-site/src/app/(main)/pricing/page.tsx` | Metadata: "6 crew" → "7 specialized agents" | ⏳ Pending |
+| `apps/web/superseller-site/src/components/crew/CrewGrid.tsx` | Auto-renders from crew.ts | ✅ No change |
+| `apps/web/superseller-site/src/components/crew/CrewHero.tsx` | Check for hardcoded "6" | ⏳ Pending |
+| `apps/web/superseller-site/src/components/pricing/PricingSection.tsx` | Verify credit examples render Market | ⏳ Pending |
+| `apps/web/superseller-site/src/components/pricing/CreditSlider.tsx` | Verify Market included in calculations | ⏳ Pending |
+| `apps/web/superseller-site/src/components/niche/NicheCrewMapping.tsx` | Auto-renders from niches.ts | ✅ No change |
 
 ### C. Marketplace Customer Portal (REWIRE)
 
 | File | Change | Status |
 |------|--------|--------|
-| `apps/web/rensto-site/src/app/(main)/dashboard/marketplace/page.tsx` | Remove subscription tier display, show User.credits balance | ⏳ Pending |
-| `apps/web/rensto-site/src/app/api/marketplace/customer/products/route.ts` | Add credit check (User.credits >= 25) before product creation | ⏳ Pending |
-| `apps/web/rensto-site/src/app/api/marketplace/customer/stats/route.ts` | Change subscription field → credit balance | ⏳ Pending |
-| `apps/web/rensto-site/prisma/schema.prisma` | Remove MarketplaceCustomer.subscription field (use User.credits) | ⏳ Pending |
+| `apps/web/superseller-site/src/app/(main)/dashboard/marketplace/page.tsx` | Remove subscription tier display, show User.credits balance | ⏳ Pending |
+| `apps/web/superseller-site/src/app/api/marketplace/customer/products/route.ts` | Add credit check (User.credits >= 25) before product creation | ⏳ Pending |
+| `apps/web/superseller-site/src/app/api/marketplace/customer/stats/route.ts` | Change subscription field → credit balance | ⏳ Pending |
+| `apps/web/superseller-site/prisma/schema.prisma` | Remove MarketplaceCustomer.subscription field (use User.credits) | ⏳ Pending |
 
 ### D. Backend Integration (Credit Deduction)
 
 | File | Change | Status |
 |------|--------|--------|
 | `fb marketplace lister/deploy-package/webhook-server.js` | Add credit check + deduction on getJobsHandler | ⏳ Pending |
-| `apps/web/rensto-site/src/lib/credits.ts` | Verify deductCredits() supports Market agent | ⏳ Pending |
+| `apps/web/superseller-site/src/lib/credits.ts` | Verify deductCredits() supports Market agent | ⏳ Pending |
 | `apps/worker/src/services/credits.ts` | Verify expense tracking includes Market | ⏳ Pending |
 
 **Credit deduction flow**:
@@ -110,9 +110,9 @@ FB Marketplace Bot is currently a **custom agency product** serving UAD and Miss
 
 | File | Change | Status |
 |------|--------|--------|
-| `apps/web/rensto-site/src/app/layout.tsx` | Update default meta description if it mentions "6 agents" | ⏳ Pending |
-| `apps/web/rensto-site/src/app/sitemap.ts` | Verify /crew/market included | ⏳ Pending |
-| `apps/web/rensto-site/src/app/robots.ts` | No change needed | ✅ N/A |
+| `apps/web/superseller-site/src/app/layout.tsx` | Update default meta description if it mentions "6 agents" | ⏳ Pending |
+| `apps/web/superseller-site/src/app/sitemap.ts` | Verify /crew/market included | ⏳ Pending |
+| `apps/web/superseller-site/src/app/robots.ts` | No change needed | ✅ N/A |
 
 ---
 
@@ -161,7 +161,7 @@ FB Marketplace Bot is currently a **custom agency product** serving UAD and Miss
 ## III. NotebookLM Source Document Updates
 
 **Affected Notebooks**:
-- **#6**: rensto website (14 sources) — business model, pricing, crew
+- **#6**: superseller website (14 sources) — business model, pricing, crew
 - **#8**: Master: Social Media, Lead Gen & Marketing (49 sources) — FB Marketplace
 
 **Process**:
@@ -172,8 +172,8 @@ FB Marketplace Bot is currently a **custom agency product** serving UAD and Miss
 
 **Key source docs to update** (likely in Notebook #6):
 - `docs/PRODUCT_BIBLE.md`
-- `apps/web/rensto-site/src/data/pricing.ts`
-- `apps/web/rensto-site/src/data/crew.ts`
+- `apps/web/superseller-site/src/data/pricing.ts`
+- `apps/web/superseller-site/src/data/crew.ts`
 - Any business model markdown in `docs/operations/business/`
 
 **Notebook sync command** (via notebooklm-mcp):

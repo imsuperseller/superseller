@@ -66,7 +66,7 @@
 | Global (Hebrew) | Bottom sticky banner "LIMITED AVAILABILITY" is in English | P2 |
 | Global | Language toggle (bottom-left) overlaps bottom sticky banner | P1 |
 | Global | WhatsApp button (bottom-right) overlaps "Check Compatibility" button in footer | P2 |
-| Global (Hebrew) | Core brand "Rensto" text in hero/menu could be localized if appropriate | P3 |
+| Global (Hebrew) | Core brand "SuperSeller AI" text in hero/menu could be localized if appropriate | P3 |
 | Marketplace | Horizontal scroll in filter tabs (Expected - no fix needed) | P4 |
 | Custom | Quiz results screen text slightly tight on small screens | P3 |
 

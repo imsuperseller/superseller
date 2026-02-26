@@ -6,7 +6,7 @@
  *
  * Usage:
  *   node scripts/n8n/examples/get-workflow.js tax4us zQIkACTYDgaehp6S
- *   node scripts/n8n/examples/get-workflow.js rensto <workflow-id>
+ *   node scripts/n8n/examples/get-workflow.js superseller <workflow-id>
  */
 
 import { getConfig } from '../n8n-config.js';
@@ -19,7 +19,7 @@ async function main() {
 
   if (!instanceName || !workflowId) {
     console.error('❌ Usage: node get-workflow.js <instance> <workflow-id>');
-    console.error('   Valid instances: rensto, tax4us, shelly');
+    console.error('   Valid instances: superseller, tax4us, shelly');
     process.exit(1);
   }
 

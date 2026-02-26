@@ -120,13 +120,13 @@ setInterval(async () => {
 ```
 
 ### Phase 2: Customer Portal (Week 2)
-**Routes** (`apps/web/rensto-site/src/app/api/marketplace/`):
+**Routes** (`apps/web/superseller-site/src/app/api/marketplace/`):
 - `POST /api/marketplace/products` — Add product (creates customer config file)
 - `GET /api/marketplace/products` — List products
 - `GET /api/marketplace/posts` — List posts with Facebook links
 - `POST /api/marketplace/session` — Upload GoLogin cookies
 
-**UI** (`apps/web/rensto-site/src/app/(main)/dashboard/marketplace/`):
+**UI** (`apps/web/superseller-site/src/app/(main)/dashboard/marketplace/`):
 - Product management: add/edit/pause products
 - Post history: calendar view, Facebook links, status
 - Session status: connected/disconnected, reconnect button
@@ -150,7 +150,7 @@ await db.marketplaceUsage.create({
 ```
 
 ### Phase 4: Admin Dashboard (Week 4)
-**Admin Routes** (`admin.rensto.com/marketplace`):
+**Admin Routes** (`admin.superseller.agency/marketplace`):
 - Customer list: status, active products, posts today, credits
 - Per-customer view: products, posts, session health
 - Support actions: pause customer, reset session, regenerate listings

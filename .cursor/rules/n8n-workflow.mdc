@@ -22,12 +22,12 @@ alwaysApply: false
 6. Use `validate_workflow` before deployment
 7. Use `n8n_autofix_workflow` to fix common errors
 
-## Rensto Project Rules
-- **Default Instance**: Rensto VPS (http://172.245.56.50:5678)
-- **68 Rensto Workflows**: Internal operations, customer templates, testing
+## SuperSeller AI Project Rules
+- **Default Instance**: SuperSeller AI VPS (http://172.245.56.50:5678)
+- **68 SuperSeller AI Workflows**: Internal operations, customer templates, testing
 - **Customer Workflows**: Export from customer instances, work locally, re-import
 - **Naming Convention**:
-  - Rensto: `INT-`, `SUB-`, `MKT-`, `DEV-` prefixes
+  - SuperSeller AI: `INT-`, `SUB-`, `MKT-`, `DEV-` prefixes
   - Customer: `WF: [Agent Name] - [Purpose]`
 
 ## Node Configuration Best Practices

@@ -1,6 +1,6 @@
 # Database Schema Reference
 
-> **Historical reference.** This file originally documented Firestore collections. The primary database is now **PostgreSQL** (migration completed Feb 2026). For the current schema, see `apps/web/rensto-site/prisma/schema.prisma`.
+> **Historical reference.** This file originally documented Firestore collections. The primary database is now **PostgreSQL** (migration completed Feb 2026). For the current schema, see `apps/web/superseller-site/prisma/schema.prisma`.
 
 ---
 
@@ -43,7 +43,7 @@ showInClientDashboard: boolean;  // Client's dashboard
 
 Plus ownership tracking:
 ```typescript
-owner: 'rensto' | 'client';
+owner: 'superseller' | 'client';
 clientId?: string;
 department: 'lead_machine' | 'autonomous_secretary' | 'knowledge_engine' | 'content_engine' | 'internal_ops' | 'client_fulfillment';
 ```
@@ -69,4 +69,4 @@ These were the original Firestore collections. Data has been migrated to Postgre
 
 ---
 
-**Canonical schema**: `apps/web/rensto-site/prisma/schema.prisma`
+**Canonical schema**: `apps/web/superseller-site/prisma/schema.prisma`

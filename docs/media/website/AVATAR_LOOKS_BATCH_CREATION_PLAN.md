@@ -8,13 +8,13 @@
 
 ## 🎯 **WHAT IS "BRAND SHUFFLE"?**
 
-**Clarification**: "Brand Shuffle" is just HeyGen's term for selecting your brand when creating videos. Since you've already set up your Rensto brand with:
+**Clarification**: "Brand Shuffle" is just HeyGen's term for selecting your brand when creating videos. Since you've already set up your SuperSeller AI brand with:
 - ✅ Logo
 - ✅ Colors (#fe3d51, #1eaef7, #bf5700, #5ffbfd)
 - ✅ Fonts
 - ✅ Assets
 
-**You're all set!** When creating videos, just select "Rensto" as your brand, and HeyGen will automatically apply your logo, colors, and fonts.
+**You're all set!** When creating videos, just select "SuperSeller AI" as your brand, and HeyGen will automatically apply your logo, colors, and fonts.
 
 ---
 
@@ -41,7 +41,7 @@
 
 **Look Prompt** (following HeyGen best practices):
 ```
-High-resolution photo of professional business consultant, dark navy suit or dark blazer, white dress shirt, modern office background with subtle Rensto brand colors (#fe3d51, #1eaef7) visible in background, professional studio lighting, warm tone, authoritative but approachable expression, trustworthy expert appearance, confident but empathetic facial expression, modern professional aesthetic, natural lighting, warm tones, business professional setting
+High-resolution photo of professional business consultant, dark navy suit or dark blazer, white dress shirt, modern office background with subtle SuperSeller AI brand colors (#fe3d51, #1eaef7) visible in background, professional studio lighting, warm tone, authoritative but approachable expression, trustworthy expert appearance, confident but empathetic facial expression, modern professional aesthetic, natural lighting, warm tones, business professional setting
 ```
 
 **Motion Prompts** (add these when creating the look):
@@ -59,7 +59,7 @@ High-resolution photo of professional business consultant, dark navy suit or dar
 
 **Look Prompt**:
 ```
-High-resolution photo of founder, casual professional attire, branded t-shirt or dark shirt with Rensto logo visible, home office background or modern workspace, warm natural lighting, authentic personal appearance, relatable founder vibe, genuine expression, approachable and authentic, natural lighting, warm tones, personal workspace setting
+High-resolution photo of founder, casual professional attire, branded t-shirt or dark shirt with SuperSeller AI logo visible, home office background or modern workspace, warm natural lighting, authentic personal appearance, relatable founder vibe, genuine expression, approachable and authentic, natural lighting, warm tones, personal workspace setting
 ```
 
 **Motion Prompts**:

@@ -1,7 +1,7 @@
 ---
 name: stripe-credits
 description: >
-  Stripe integration and credit-based billing for Rensto SaaS.
+  Stripe integration and credit-based billing for SuperSeller AI SaaS.
   Covers credit ledger, subscriptions ($79/$149/$299), payment webhooks,
   usage tracking, and provisioning. Use for any billing, credits, or Stripe work.
 autoTrigger:
@@ -32,13 +32,13 @@ Use when working on billing, credits, subscriptions, payment webhooks, or usage 
 ### Key Files
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/lib/credits.ts` | Credit balance, deduction, top-up logic (web) |
+| `apps/web/superseller-site/src/lib/credits.ts` | Credit balance, deduction, top-up logic (web) |
 | `apps/worker/src/services/credits.ts` | Worker-side credit checks before Kie.ai calls |
-| `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (provisioning) |
-| `apps/web/rensto-site/src/lib/services/ProvisioningService.ts` | Subscription → credit grant logic |
-| `apps/web/rensto-site/src/app/api/video/subscribe/route.ts` | Subscription checkout creation |
-| `apps/web/rensto-site/src/app/api/video/credits/route.ts` | Credit balance endpoint |
-| `apps/web/rensto-site/src/app/api/video/usage/route.ts` | Usage history endpoint |
+| `apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (provisioning) |
+| `apps/web/superseller-site/src/lib/services/ProvisioningService.ts` | Subscription → credit grant logic |
+| `apps/web/superseller-site/src/app/api/video/subscribe/route.ts` | Subscription checkout creation |
+| `apps/web/superseller-site/src/app/api/video/credits/route.ts` | Credit balance endpoint |
+| `apps/web/superseller-site/src/app/api/video/usage/route.ts` | Usage history endpoint |
 
 ### Database Tables
 - **UsageEvent** (Prisma): `id, userId, type (event_type), amount, jobId, createdAt` — Types: debit, refund, topup, grant, reset
@@ -91,5 +91,5 @@ Stripe checkout.session.completed
 ## References
 - PRODUCT_BIBLE.md § SaaS Billing — Canonical pricing
 - NotebookLM 719854ee — Subscription tiers and pricing
-- `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` — Webhook handler
-- `apps/web/rensto-site/src/lib/credits.ts` — Credit balance logic
+- `apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts` — Webhook handler
+- `apps/web/superseller-site/src/lib/credits.ts` — Credit balance logic

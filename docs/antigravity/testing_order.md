@@ -1,4 +1,4 @@
-# Rensto Operational Testing Protocol 🧪
+# SuperSeller AI Operational Testing Protocol 🧪
 
 Follow this order to ensure the entire "Machine" is working from lead-to-fulfillment.
 
@@ -17,7 +17,7 @@ Follow this order to ensure the entire "Machine" is working from lead-to-fulfill
   - Does the Firestore record update with the `configuration` data?
 
 ## 3. The "Cloner" Test (Master Controller -> n8n)
-- [ ] **Action**: Check n8n execution history for the `Rensto Master Controller`.
+- [ ] **Action**: Check n8n execution history for the `SuperSeller AI Master Controller`.
 - [ ] **Verification**:
   - Did it trigger upon form submission?
   - Did it successfully fetch the "Master" template and "create" a new workflow for the client?

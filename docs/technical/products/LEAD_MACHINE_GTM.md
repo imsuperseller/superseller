@@ -104,11 +104,11 @@
 
 ---
 
-## Test Campaign for Rensto
+## Test Campaign for SuperSeller AI
 
 ### Campaign Settings:
 
-**Name**: `rensto-lead-machine-test-jan-2026`
+**Name**: `superseller-lead-machine-test-jan-2026`
 
 **Target**: Marketing agencies in Dallas, TX
 
@@ -132,7 +132,7 @@ Subject: Quick question about {{ company_name }}
 We help agencies like yours automate lead generation. 
 Would you be open to a quick chat?
 
-- Shai, Rensto
+- Shai, SuperSeller AI
 ```
 
 ---

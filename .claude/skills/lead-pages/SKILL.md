@@ -1,7 +1,7 @@
 ---
 name: lead-pages
 description: >-
-  Dynamic lead landing pages for Rensto customers. Covers /lp/[slug] pages with
+  Dynamic lead landing pages for SuperSeller AI customers. Covers /lp/[slug] pages with
   per-customer branding (colors, logo, font, RTL/LTR), lead capture forms,
   WhatsApp/email notifications, seed scripts, and content extraction governance.
   Use when working on landing pages, lead capture, /lp/ routes, customer branding,
@@ -32,7 +32,7 @@ negativeTrigger:
 
 ## Critical
 - **NEVER invent content** — Extract verbatim from customer strategy docs. If content doesn't exist in docs, leave the section EMPTY. Cite source in seed scripts. Violation history: fabricated testimonials despite docs explicitly saying content didn't exist (see findings.md).
-- **Customer implementations in separate repos** — Customer-specific strategy docs, seed scripts, and assets live in dedicated private repositories. Generic landing page infrastructure remains in Rensto.
+- **Customer implementations in separate repos** — Customer-specific strategy docs, seed scripts, and assets live in dedicated private repositories. Generic landing page infrastructure remains in SuperSeller AI.
 - **RTL/LTR is per-page** — `page.direction` controls all layout, animations, text alignment, and FAB positioning. Test both directions.
 - **Seed scripts are the canonical data source** — Landing page data is upserted via Prisma seed scripts, not admin UI (admin UI not built yet).
 - **WhatsApp notifications are best-effort** — Uses WAHA Pro (self-hosted on RackNerd) with `WAHA_BASE_URL` + `WAHA_API_KEY` + `WAHA_SESSION`. Resend email as fallback. Log and continue if delivery fails.
@@ -54,13 +54,13 @@ Browser → /lp/[slug] (SSR) → Prisma lookup → LandingPageClient.tsx (734 li
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/app/lp/[slug]/page.tsx` | Server component — Prisma lookup, SEO metadata, view counter (42 lines) |
-| `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx` | Client render — hero, form, steps, testimonials, differentiators, credentials, footer, WhatsApp FAB (734 lines) |
-| `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` | Lead capture API — validation, Lead creation, WhatsApp notification (116 lines) |
-| `apps/web/rensto-site/prisma/seed-*.ts` | Customer seed scripts — content extracted from strategy docs with source citations (archived to customer repos) |
-| `apps/web/rensto-site/src/lib/db/leads.ts` | Lead data access — queries, filters, sync flags (96 lines) |
-| `apps/web/rensto-site/src/components/lp/MicroExpanderFAB.tsx` | WhatsApp floating button — expands on hover, directional (100 lines) |
-| `apps/web/rensto-site/prisma/schema.prisma` | LandingPage + Lead models |
+| `apps/web/superseller-site/src/app/lp/[slug]/page.tsx` | Server component — Prisma lookup, SEO metadata, view counter (42 lines) |
+| `apps/web/superseller-site/src/app/lp/[slug]/LandingPageClient.tsx` | Client render — hero, form, steps, testimonials, differentiators, credentials, footer, WhatsApp FAB (734 lines) |
+| `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts` | Lead capture API — validation, Lead creation, WhatsApp notification (116 lines) |
+| `apps/web/superseller-site/prisma/seed-*.ts` | Customer seed scripts — content extracted from strategy docs with source citations (archived to customer repos) |
+| `apps/web/superseller-site/src/lib/db/leads.ts` | Lead data access — queries, filters, sync flags (96 lines) |
+| `apps/web/superseller-site/src/components/lp/MicroExpanderFAB.tsx` | WhatsApp floating button — expands on hover, directional (100 lines) |
+| `apps/web/superseller-site/prisma/schema.prisma` | LandingPage + Lead models |
 
 ## API Endpoints
 
@@ -131,12 +131,12 @@ When creating a new landing page:
 
 ## Creating a New Landing Page
 
-**Note**: Customer-specific implementations are maintained in separate private repositories, not in Rensto.
+**Note**: Customer-specific implementations are maintained in separate private repositories, not in SuperSeller AI.
 
 1. Create separate customer repository with strategy docs
 2. Create seed script: `prisma/seed-{customer}-landing-page.ts` in customer repo
 3. Extract content from docs (cite sources)
-4. Run seed script against Rensto database (if hosting on Rensto platform)
+4. Run seed script against SuperSeller AI database (if hosting on SuperSeller AI platform)
 5. Test: visit `/lp/{slug}` — verify branding, RTL/LTR, form submission
 6. Verify WhatsApp/email notification delivery
 
@@ -153,9 +153,9 @@ When creating a new landing page:
 
 ## References
 
-- NotebookLM 719854ee — Rensto website content
+- NotebookLM 719854ee — SuperSeller AI website content
 - Content extraction rule: `CLAUDE.md` §Content Extraction Rule
 - PRODUCT_STATUS.md §4 — Landing page product status
 - findings.md — Content Invention Pattern (root cause, safeguards)
 
-**Reference**: The `/lp/[slug]` system has been used in production for a Hebrew RTL insurance landing page (external client project, not part of Rensto).
+**Reference**: The `/lp/[slug]` system has been used in production for a Hebrew RTL insurance landing page (external client project, not part of SuperSeller AI).

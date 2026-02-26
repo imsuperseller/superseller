@@ -10,9 +10,9 @@
 ## 📊 **INPUT REFERENCES** (Upload These First)
 
 **Brand Assets** (Create these reference images):
-1. `brand_palette.png` - Rensto colors: #fe3d51 (red), #bf5700 (orange), #1eaef7 (blue), #5ffbfd (cyan), #110d28 (dark bg)
+1. `brand_palette.png` - SuperSeller AI colors: #fe3d51 (red), #bf5700 (orange), #1eaef7 (blue), #5ffbfd (cyan), #110d28 (dark bg)
 2. `shai.png` - Headshot of @shai (founder/talking head videos)
-3. `rensto_logo.png` - Clean logo on transparent background
+3. `superseller_logo.png` - Clean logo on transparent background
 4. `desk_setup.png` - Clean desk with laptop, modern office aesthetic
 5. `dashboard_ui.png` - Generic automation dashboard (no brand names)
 
@@ -55,8 +55,8 @@
   "model": "sora-2-pro",
   "size": "1024x1792",
   "seconds": "6",
-  "input_reference": ["https://.../brand_palette.png", "https://.../rensto_logo.png"],
-  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble from corners, then lock with shine. Action beats: 0-3s: shapes slide and snap into rensto logo. 3-6s: logo locks, small shine sweep. Audio bed: soft snap, subtle whoosh. On-screen text: 'Same human. Different system.'. Center. Notes: keep spacing equal. final safe area 10%."
+  "input_reference": ["https://.../brand_palette.png", "https://.../superseller_logo.png"],
+  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble from corners, then lock with shine. Action beats: 0-3s: shapes slide and snap into superseller logo. 3-6s: logo locks, small shine sweep. Audio bed: soft snap, subtle whoosh. On-screen text: 'Same human. Different system.'. Center. Notes: keep spacing equal. final safe area 10%."
 }
 ```
 
@@ -224,8 +224,8 @@
   "model": "sora-2-pro",
   "size": "1024x1792",
   "seconds": "6",
-  "input_reference": ["https://.../brand_palette.png", "https://.../rensto_logo.png"],
-  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble, then tagline appears below. Action beats: 0-3s: rensto logo assembles from corners. 3-6s: tagline 'Stop Being the Robot' appears below logo. Audio bed: soft snap, subtle whoosh. On-screen text: 'Stop Being the Robot'. Center below logo. Notes: keep spacing equal. final safe area 10%."
+  "input_reference": ["https://.../brand_palette.png", "https://.../superseller_logo.png"],
+  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble, then tagline appears below. Action beats: 0-3s: superseller logo assembles from corners. 3-6s: tagline 'Stop Being the Robot' appears below logo. Audio bed: soft snap, subtle whoosh. On-screen text: 'Stop Being the Robot'. Center below logo. Notes: keep spacing equal. final safe area 10%."
 }
 ```
 
@@ -284,7 +284,7 @@
   "size": "1024x1792",
   "seconds": "12",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2, subtle nod. Dialogue: - @shai: 'Stop spending your weekends on manual setup.' - @shai: '10-minute installation. We handle it.' Audio bed: room tone only. On-screen text: 'rensto.com/marketplace'. Lower third. Notes: lips articulate. keep pacing calm."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2, subtle nod. Dialogue: - @shai: 'Stop spending your weekends on manual setup.' - @shai: '10-minute installation. We handle it.' Audio bed: room tone only. On-screen text: 'superseller.agency/marketplace'. Lower third. Notes: lips articulate. keep pacing calm."
 }
 ```
 
@@ -371,7 +371,7 @@
   "size": "1024x1792",
   "seconds": "9",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-4s: delivers line 1. 4-9s: delivers line 2. Dialogue: - @shai: 'While you're researching leads manually...' - @shai: 'Your competitor already closed 3 deals this month.' Audio bed: room tone only. On-screen text: 'rensto.com/subscriptions'. Lower third. Notes: lips articulate. keep pacing calm."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-4s: delivers line 1. 4-9s: delivers line 2. Dialogue: - @shai: 'While you're researching leads manually...' - @shai: 'Your competitor already closed 3 deals this month.' Audio bed: room tone only. On-screen text: 'superseller.agency/subscriptions'. Lower third. Notes: lips articulate. keep pacing calm."
 }
 ```
 
@@ -431,8 +431,8 @@
   "model": "sora-2-pro",
   "size": "1024x1792",
   "seconds": "6",
-  "input_reference": ["https://.../brand_palette.png", "https://.../rensto_logo.png"],
-  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo appears, then text. Action beats: 0-3s: rensto logo appears. 3-6s: '16 industries. Built for you.' appears below. Audio bed: soft snap, subtle whoosh. On-screen text: '16 industries. Built for you.'. Center below logo. Notes: keep spacing equal."
+  "input_reference": ["https://.../brand_palette.png", "https://.../superseller_logo.png"],
+  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo appears, then text. Action beats: 0-3s: superseller logo appears. 3-6s: '16 industries. Built for you.' appears below. Audio bed: soft snap, subtle whoosh. On-screen text: '16 industries. Built for you.'. Center below logo. Notes: keep spacing equal."
 }
 ```
 
@@ -549,7 +549,7 @@
   "size": "1024x1792",
   "seconds": "6",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line. Dialogue: - @shai: 'Schedule your escape plan call.' Audio bed: room tone only. On-screen text: 'rensto.com/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line. Dialogue: - @shai: 'Schedule your escape plan call.' Audio bed: room tone only. On-screen text: 'superseller.agency/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
 }
 ```
 
@@ -608,7 +608,7 @@
   "size": "1024x1792",
   "seconds": "12",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2. Dialogue: - @shai: '48 hours later, your follow-ups send themselves.' - @shai: 'You work normal hours. Your competitors wonder what changed.' Audio bed: room tone only. On-screen text: 'rensto.com/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2. Dialogue: - @shai: '48 hours later, your follow-ups send themselves.' - @shai: 'You work normal hours. Your competitors wonder what changed.' Audio bed: room tone only. On-screen text: 'superseller.agency/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
 }
 ```
 
@@ -710,7 +710,7 @@
 ### **Step 1: Create Input References**
 - Upload brand palette image
 - Upload @shai headshot
-- Upload Rensto logo
+- Upload SuperSeller AI logo
 - Upload desk setup reference
 - Upload dashboard UI reference
 - Get URLs for `input_reference` array

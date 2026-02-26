@@ -1,7 +1,7 @@
 ---
 name: data-integrity
 description: >
-  Data integrity enforcement for Rensto's multi-store architecture. Covers Prisma/Drizzle
+  Data integrity enforcement for SuperSeller AI's multi-store architecture. Covers Prisma/Drizzle
   schema drift detection, Postgres-Aitable reconciliation, sync watchdog monitoring,
   and cross-store data consistency validation.
 autoTrigger:
@@ -24,7 +24,7 @@ negativeTrigger:
 # Data Integrity
 
 ## When to Use
-Use when detecting, preventing, or fixing data inconsistencies across Rensto's storage systems (PostgreSQL, Aitable.ai, Redis, R2, Stripe). Covers schema drift between Prisma and Drizzle, unsynced records, orphaned data, and cross-store reconciliation. Not for video pipeline logic, UI design, n8n workflows, or Stripe billing code.
+Use when detecting, preventing, or fixing data inconsistencies across SuperSeller AI's storage systems (PostgreSQL, Aitable.ai, Redis, R2, Stripe). Covers schema drift between Prisma and Drizzle, unsynced records, orphaned data, and cross-store reconciliation. Not for video pipeline logic, UI design, n8n workflows, or Stripe billing code.
 
 ## Critical Rules
 1. **PostgreSQL is ALWAYS the SSOT.** If data differs between Postgres and any external store (Aitable, Stripe, n8n), Postgres wins.
@@ -40,12 +40,12 @@ Use when detecting, preventing, or fixing data inconsistencies across Rensto's s
 |------|---------|
 | `docs/DATA_DICTIONARY.md` | Master reference: where every entity lives, sync rules, mismatches |
 | `tools/schema-sentinel.ts` | Build-time Prisma vs Drizzle comparator |
-| `apps/web/rensto-site/src/app/api/cron/sync-aitable/route.ts` | Cron-triggered Aitable sync (every 15 min) |
-| `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` | Aitable health check (unsynced lead count) |
-| `apps/web/rensto-site/src/lib/services/AITableService.ts` | Aitable API client + datasheet IDs |
-| `apps/web/rensto-site/tools/sync_leads_to_aitable.js` | Manual lead sync script |
-| `apps/web/rensto-site/tools/sync_products_to_aitable.js` | Manual product sync script |
-| `apps/web/rensto-site/tools/sync_extended_to_aitable.js` | Manual extended data sync |
+| `apps/web/superseller-site/src/app/api/cron/sync-aitable/route.ts` | Cron-triggered Aitable sync (every 15 min) |
+| `apps/web/superseller-site/src/lib/monitoring/service-registry.ts` | Aitable health check (unsynced lead count) |
+| `apps/web/superseller-site/src/lib/services/AITableService.ts` | Aitable API client + datasheet IDs |
+| `apps/web/superseller-site/tools/sync_leads_to_aitable.js` | Manual lead sync script |
+| `apps/web/superseller-site/tools/sync_products_to_aitable.js` | Manual product sync script |
+| `apps/web/superseller-site/tools/sync_extended_to_aitable.js` | Manual extended data sync |
 
 ### Storage Systems
 | Store | Role | Sync Direction |
@@ -85,7 +85,7 @@ SELECT COUNT(*) FROM "Lead" WHERE "syncedToAITable" = false;
 
 ### Manual Aitable Sync
 ```bash
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 node tools/sync_leads_to_aitable.js
 node tools/sync_products_to_aitable.js
 ```
@@ -114,7 +114,7 @@ The Vercel Cron (`/api/cron/sync-aitable`) runs every 15 min. If leads pile up:
 1. Check `AITABLE_API_TOKEN` is set in Vercel env
 2. Check `CRON_SECRET` matches between vercel.json and env
 3. Check Aitable API status: `curl -H "Authorization: Bearer $TOKEN" https://aitable.ai/fusion/v1/spaces`
-4. Run manual sync: `cd apps/web/rensto-site && node tools/sync_leads_to_aitable.js`
+4. Run manual sync: `cd apps/web/superseller-site && node tools/sync_leads_to_aitable.js`
 
 ### "Schema Sentinel reports mismatch"
 1. Identify which field mismatches (Prisma type vs Drizzle type)

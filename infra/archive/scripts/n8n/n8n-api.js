@@ -7,7 +7,7 @@
  * Usage:
  *   const { getConfig } = require('./n8n-config.js');
  *   const api = require('./n8n-api.js');
- *   const config = getConfig('rensto');
+ *   const config = getConfig('superseller');
  *   const workflows = await api.listWorkflows(config);
  */
 

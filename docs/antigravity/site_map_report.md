@@ -1,18 +1,18 @@
 # Site Map & Progress Report
 
-This document tracking the current state of the Rensto ecosystem, what has been implemented, what has been tested, and the roadmap ahead.
+This document tracking the current state of the SuperSeller AI ecosystem, what has been implemented, what has been tested, and the roadmap ahead.
 
 ## 🗺️ Site Map (Current Architecture)
 
 | Route | Purpose | Status |
 | :--- | :--- | :--- |
-| [`/`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/page.tsx) | **Home**: Vision, 4 Pillars Visualization, Testimonials, Hero CTA | ✅ **Optimized** |
-| [`/offers`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/offers/page.tsx) | **Pricing**: Checkout for Audit, Individual Pillars, Bundle, and Care Plans | ✅ **Functional** |
-| [`/marketplace`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/marketplace/page.tsx) | **Solutions**: Granular one-off automation products | ✅ **Live** |
-| [`/custom`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/custom/page.tsx) | **Custom Solutions**: Lead intake for enterprise builds | ✅ **Ready** |
-| [`/niches`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/niches/page.tsx) | **Industries**: Landing pages for eCommerce, Healthcare, Legal | 🛠️ **Review Needed** |
-| [`/process`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/process/page.tsx) | **The Flow**: Detailed breakdown of how we build Engines | 🛠️ **In Progress** |
-| [`/contact`](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/contact/page.tsx) | **Lead Intake**: Standard contact form and Voice AI call link | ✅ **Active** |
+| [`/`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/page.tsx) | **Home**: Vision, 4 Pillars Visualization, Testimonials, Hero CTA | ✅ **Optimized** |
+| [`/offers`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/offers/page.tsx) | **Pricing**: Checkout for Audit, Individual Pillars, Bundle, and Care Plans | ✅ **Functional** |
+| [`/marketplace`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/marketplace/page.tsx) | **Solutions**: Granular one-off automation products | ✅ **Live** |
+| [`/custom`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/custom/page.tsx) | **Custom Solutions**: Lead intake for enterprise builds | ✅ **Ready** |
+| [`/niches`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/niches/page.tsx) | **Industries**: Landing pages for eCommerce, Healthcare, Legal | 🛠️ **Review Needed** |
+| [`/process`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/process/page.tsx) | **The Flow**: Detailed breakdown of how we build Engines | 🛠️ **In Progress** |
+| [`/contact`](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/contact/page.tsx) | **Lead Intake**: Standard contact form and Voice AI call link | ✅ **Active** |
 
 ## 🏗️ IA Realignment Analysis
 
@@ -38,7 +38,7 @@ This document tracking the current state of the Rensto ecosystem, what has been 
 ## 🚀 What's Ahead (Missing & Recommended)
 1. **Pillars Page Content**: There is no dedicated `/pillars` page. If we want one, we can move the visualization there and provide more technical depth.
 2. **Marketplace Integration**: Improving the transition between the main site and the solution store.
-3. **Automated Audit n8n Workflow**: The core cloning logic for the "Rensto Master Controller" needs verification.
+3. **Automated Audit n8n Workflow**: The core cloning logic for the "SuperSeller AI Master Controller" needs verification.
 4. **Sitemap.xml**: Ensure `src/app/sitemap.ts` is fully populated for SEO.
 
 ---

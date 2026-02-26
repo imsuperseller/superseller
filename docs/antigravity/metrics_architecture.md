@@ -1,4 +1,4 @@
-# Rensto Success Metrics: Looker Studio Architecture
+# SuperSeller AI Success Metrics: Looker Studio Architecture
 
 This document describes the data infrastructure for proving the ROI of each Pillar product via Looker Studio.
 

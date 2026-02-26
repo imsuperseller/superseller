@@ -10,7 +10,7 @@ Decisions made 2026-02-19. Do not revisit without user approval.
 ## What AgentForge is NOT
 - NOT a web builder (v0, Bolt, Lovable own that space)
 - NOT a code generator (the original code_generation stage was deliberately killed)
-- NOT a standalone app (lives inside rensto-site, not a separate project)
+- NOT a standalone app (lives inside superseller-site, not a separate project)
 
 ## Why Code Gen Was Removed
 - 8K tokens produces placeholder garbage, not a real website
@@ -20,7 +20,7 @@ Decisions made 2026-02-19. Do not revisit without user approval.
 ## Pricing
 | Product | Price | Credits | Customer |
 |---------|-------|---------|----------|
-| Internal proposal tool (Option A) | Free (internal) | 0 | Rensto staff |
+| Internal proposal tool (Option A) | Free (internal) | 0 | SuperSeller AI staff |
 | Website Intelligence Report (Option B) | $49-$149 one-time | 50-100 | SMB owners, marketers, freelancers |
 
 ## Model Selection Rationale
@@ -40,8 +40,8 @@ Decisions made 2026-02-19. Do not revisit without user approval.
 ## What Was Discarded
 - Separate Prisma schema (redundant with existing)
 - Separate User/Auth models (redundant with existing)
-- NextAuth.js setup (already exists in rensto-site)
-- Supabase/Neon database (Rensto uses RackNerd PostgreSQL)
+- NextAuth.js setup (already exists in superseller-site)
+- Supabase/Neon database (SuperSeller AI uses RackNerd PostgreSQL)
 - Client-side Anthropic API calls (security hole)
 - architecture stage (stage 4 in original)
 - code_generation stage (stage 5 in original)

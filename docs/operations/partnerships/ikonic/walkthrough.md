@@ -36,7 +36,7 @@ Running the automation machine has direct token and API costs that Matt should c
 *   **Privacy:** Update brand TOS to cover third-party AI processing for customer support data.
 
 ### **Technical Access & Credentials**
-I have added a specific **[Credential Checklist](file:///Users/shaifriedman/New Rensto/rensto/docs/partnerships/ikonic/growth_strategy.md#technical-credential-checklist)** to the growth strategy. This includes:
+I have added a specific **[Credential Checklist](file:///Users/shaifriedman/New SuperSeller AI/superseller/docs/partnerships/ikonic/growth_strategy.md#technical-credential-checklist)** to the growth strategy. This includes:
 *   **Shopify Admin Tokens** for the n8n logic.
 *   **Billing Credentials** for OpenAI, ElevenLabs, and WhatsApp APIs (so Matt pays for the AI "fuel").
 

@@ -1,4 +1,4 @@
-# Claude Skills — Rensto Project
+# Claude Skills — SuperSeller AI Project
 
 ## Active Skills
 

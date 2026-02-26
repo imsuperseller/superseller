@@ -8,7 +8,7 @@ class MCPMonetizationImplementation {
       // Updated: MCP servers now use NPX packages instead of VPS HTTP endpoints
       mcp: { url: 'NPX_PACKAGE_METHOD' }, // OBSOLETE: VPS HTTP endpoint
       projectRoot: process.cwd(),
-      webAppPath: 'web/rensto-site',
+      webAppPath: 'web/superseller-site',
       resultsPath: 'data/mcp-monetization-implementation',
       bmadProjectId: Date.now()
     };

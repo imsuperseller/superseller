@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-**Rensto Content AI** is an AI-powered content processing system that transforms any content (YouTube videos, PDFs, documents, podcasts) into viral scripts, summaries, blog posts, and provides RAG-powered chatbot capabilities.
+**SuperSeller AI Content AI** is an AI-powered content processing system that transforms any content (YouTube videos, PDFs, documents, podcasts) into viral scripts, summaries, blog posts, and provides RAG-powered chatbot capabilities.
 
 **Value Proposition**: *"Transform any content into viral gold in minutes"*
 
@@ -112,7 +112,7 @@
 **Infrastructure:**
 - **VPS**: 172.245.56.50 (existing n8n server)
 - **Docker**: n8n container
-- **HTTPS**: Cloudflare Tunnel (n8n.rensto.com)
+- **HTTPS**: Cloudflare Tunnel (n8n.superseller.agency)
 - **AI**: OpenAI API (no local hosting required)
 
 ---
@@ -345,7 +345,7 @@ Respond
 ## API Endpoints
 
 ### Base URL
-`https://api.rensto.com/v1/content-ai`
+`https://api.superseller.agency/v1/content-ai`
 
 ### Authentication
 ```
@@ -484,12 +484,12 @@ Get customer's content library
 
 ## Webhook URLs
 
-### Production (n8n.rensto.com)
-- **YouTube**: `https://n8n.rensto.com/webhook/content-youtube`
-- **Document**: `https://n8n.rensto.com/webhook/content-document`
-- **Chat**: `https://n8n.rensto.com/webhook/content-chat`
-- **Script Gen**: `https://n8n.rensto.com/webhook/content-script`
-- **Blog Gen**: `https://n8n.rensto.com/webhook/content-blog`
+### Production (n8n.superseller.agency)
+- **YouTube**: `https://n8n.superseller.agency/webhook/content-youtube`
+- **Document**: `https://n8n.superseller.agency/webhook/content-document`
+- **Chat**: `https://n8n.superseller.agency/webhook/content-chat`
+- **Script Gen**: `https://n8n.superseller.agency/webhook/content-script`
+- **Blog Gen**: `https://n8n.superseller.agency/webhook/content-blog`
 
 ---
 
@@ -575,11 +575,11 @@ Get customer's content library
 **Strengths**: Visual canvas interface, multi-AI models
 **Weaknesses**: Manual process, no automation
 
-**Rensto's Advantage**:
+**SuperSeller AI's Advantage**:
 - **Lower price**: $297/month vs $399/year (but more features)
 - **Automation**: Workflows automate entire process
 - **RAG included**: Poppy doesn't have RAG chat
-- **Brand**: Rensto's automation expertise
+- **Brand**: SuperSeller AI's automation expertise
 
 ### Other Competitors
 - **Descript**: $30/month (focused on video editing)
@@ -651,13 +651,13 @@ Get customer's content library
 
 ## Contact & Resources
 
-**Project Lead**: Shai Friedman (service@rensto.com)
+**Project Lead**: Shai Friedman (shai@superseller.agency)
 **Technical Documentation**: `/docs/products/CONTENT_AI_TECHNICAL_DOCUMENTATION.md`
 **User Guide**: `/docs/products/CONTENT_AI_USER_GUIDE.md`
 **API Docs**: This file (API Endpoints section)
 
-**n8n Instance**: https://n8n.rensto.com
-**Customer Portal**: https://rensto.com/content-ai (coming soon)
+**n8n Instance**: https://n8n.superseller.agency
+**Customer Portal**: https://superseller.agency/content-ai (coming soon)
 
 ---
 

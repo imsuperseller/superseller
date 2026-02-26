@@ -1,0 +1,79 @@
+{
+    "vps": {
+        "ip": "172.245.56.50",
+        "domains": {
+            "n8n": "n8n.superseller.agency",
+            "waha": "waha.superseller.agency",
+            "rag": "rag.superseller.agency",
+            "gateway": "gateway.superseller.agency",
+            "browserless": "browserless.superseller.agency",
+            "hyperise": "hyperise.superseller.agency"
+        },
+        "ports": {
+            "n8n": 5678,
+            "mcp": 4000,
+            "waha": 3000,
+            "lightrag": 8020,
+            "websocket": 4000
+        }
+    },
+    "vercel": {
+        "projects": {
+            "superseller-site": {
+                "domains": [
+                    "superseller.agency",
+                    "api.superseller.agency"
+                ],
+                "path": "apps/web/superseller-site"
+            },
+            "admin-dashboard": {
+                "domains": [
+                    "admin.superseller.agency"
+                ],
+                "path": "apps/web/admin-dashboard"
+            },
+            "local-il-lead-portal": {
+                "domains": [
+                    "localil.superseller.agency"
+                ],
+                "path": "live-systems/customer-portal",
+                "status": "DEPRECATED_PENDING_UNIFICATION"
+            },
+            "superseller-tax4us-portal": {
+                "domains": [
+                    "tax4us.superseller.agency"
+                ],
+                "path": "live-systems/customer-portal"
+            },
+            "linkedin-verification": {
+                "domains": [
+                    "linkedin-verification.superseller.agency"
+                ],
+                "path": "legal-pages"
+            }
+        }
+    },
+    "products": {
+        "core7": {
+            "ids": [
+                "4OYGXXMYeJFfAo6X",
+                "8GC371u1uBQ8WLmu",
+                "5pMi01SwffYB6KeX",
+                "U6EZ2iLQ4zCGg31H",
+                "5Fl9WUjYTpodcloJ",
+                "stj8DmATqe66D9j4",
+                "vCxY2DXUZ8vUb30f"
+            ],
+            "fulfillment": "service_instance_activation"
+        },
+        "subscriptions": {
+            "lead_gen": {
+                "id": "prod_leads_001",
+                "pillar": "leads"
+            }
+        }
+    },
+    "cloudflare": {
+        "zoneId": "031333b77c859d1dd4d4fd4afdc1b9bc"
+    }
+}

@@ -1,4 +1,4 @@
-# Rensto Domain Agents: Technical Blueprint
+# SuperSeller AI Domain Agents: Technical Blueprint
 
 This document details the technical implementation strategy for the specialized "Terry-like" agents. Each agent acts as a high-level MCP tool that orchestrates multiple n8n nodes and external APIs.
 

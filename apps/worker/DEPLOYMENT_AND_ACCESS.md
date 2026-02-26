@@ -4,12 +4,12 @@
 
 | Component | Location in Repo | Where It Runs | URL (if applicable) |
 |-----------|-----------------|---------------|----------------------|
-| **rensto.com** (main site) | `apps/web/rensto-site/` | Vercel | https://rensto.com |
+| **superseller.agency** (main site) | `apps/web/superseller-site/` | Vercel | https://superseller.agency |
 | **Video pipeline worker** | `apps/worker/` | Your server (RackNerd, Railway, etc.) | Backend process, no public URL |
 
-## 2. rensto.com vs Video Pipeline
+## 2. superseller.agency vs Video Pipeline
 
-- **rensto.com** = Next.js marketing site + dashboard. Deployed by Vercel from `apps/web/rensto-site/`. Auto-deploys on push to `main` when Vercel is linked to `imsuperseller/rensto`.
+- **superseller.agency** = Next.js marketing site + dashboard. Deployed by Vercel from `apps/web/superseller-site/`. Auto-deploys on push to `main` when Vercel is linked to `imsuperseller/superseller`.
 - **Video pipeline** = Node.js worker in `apps/worker/`. Does NOT deploy to Vercel. Must be run on a server with Redis, Postgres, R2, Kie API, etc.
 
 ### What runs on Racknerd (The "Backstage")
@@ -21,14 +21,14 @@ When we deploy the video worker to RackNerd via the `deploy-to-racknerd.sh` scri
 ### Where to See the Pushed Work
 
 #### GitHub (code)
-- **Repo**: https://github.com/imsuperseller/rensto
+- **Repo**: https://github.com/imsuperseller/superseller
 - **Latest commit**: `4555169` — Zillow-to-video pipeline changes
 - **Changed paths**: `apps/worker/*`, `brain.md`, `CLAUDE.md`, NotebookLM
-- **Not changed**: `apps/web/rensto-site/*` — rensto.com is unchanged
+- **Not changed**: `apps/web/superseller-site/*` — superseller.agency is unchanged
 
-### Vercel (rensto.com)
+### Vercel (superseller.agency)
 - **Dashboard**: https://vercel.com/dashboard
-- **Project**: Select the project connected to `imsuperseller/rensto`
+- **Project**: Select the project connected to `imsuperseller/superseller`
 - **Deployments**: Each push to `main` triggers a new deployment
 - **Build logs**: Deployment detail → "Building" → view logs
 
@@ -54,9 +54,9 @@ When we deploy the video worker to RackNerd via the `deploy-to-racknerd.sh` scri
 ## 5. Steps to Diagnose Email Issues
 
 1. **Open the email** — check sender and subject (Vercel, GitHub, etc.).
-2. **Vercel build failure**: Go to https://vercel.com → your rensto project → Deployments → click the failed one → open build logs.
+2. **Vercel build failure**: Go to https://vercel.com → your superseller project → Deployments → click the failed one → open build logs.
 3. **GitHub**: Repo → Actions — this repo has no workflows; GitHub emails would be for other events (PRs, issues, etc.).
 
 ---
 
-**Commit `4555169`** did not touch `apps/web/rensto-site/`. So rensto.com deployments should behave the same as before. If the failing emails are from Vercel, they are likely from an earlier build or a different project.
+**Commit `4555169`** did not touch `apps/web/superseller-site/`. So superseller.agency deployments should behave the same as before. If the failing emails are from Vercel, they are likely from an earlier build or a different project.

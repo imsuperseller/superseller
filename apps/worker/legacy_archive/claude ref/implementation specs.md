@@ -423,15 +423,15 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
 
 # Backend API (RackNerd via Cloudflare Tunnel)
-NEXT_PUBLIC_API_URL=https://api.tourreel.com
+NEXT_PUBLIC_API_URL=https://api.superseller.agency
 # OR during development: http://YOUR_RACKNERD_IP:3001
 
 # Stripe (public key only — secret key on worker)
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxx
 
 # App
-NEXT_PUBLIC_APP_URL=https://tourreel.com
-NEXT_PUBLIC_CDN_URL=https://videos.tourreel.com
+NEXT_PUBLIC_APP_URL=https://superseller.agency
+NEXT_PUBLIC_CDN_URL=https://videos.superseller.agency
 ```
 
 ### `tourreel-worker/.env`
@@ -462,7 +462,7 @@ FAL_WEBHOOK_SECRET=whsec_xxxxx   # Optional: webhook signature verification
 
 # ─── kie.ai (Veo 3.1 + Suno) ───
 KIE_API_KEY=kie_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-KIE_WEBHOOK_URL=https://api.tourreel.com/api/webhooks/kie
+KIE_WEBHOOK_URL=https://api.superseller.agency/api/webhooks/kie
 
 # ─── OpenRouter (LLM) ───
 OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -486,7 +486,7 @@ R2_ACCOUNT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 R2_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 R2_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 R2_BUCKET_NAME=tour-videos
-R2_PUBLIC_URL=https://videos.tourreel.com
+R2_PUBLIC_URL=https://videos.superseller.agency
 # R2 endpoint (S3-compatible):
 R2_ENDPOINT=https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
 
@@ -497,11 +497,11 @@ MAX_TEMP_AGE_MINUTES=120          # Cleanup files older than this
 
 # ─── Email Notifications (optional — Resend) ───
 RESEND_API_KEY=re_xxxxx
-NOTIFICATION_FROM_EMAIL=noreply@tourreel.com
+NOTIFICATION_FROM_EMAIL=noreply@superseller.agency
 
 # ─── App URLs ───
-APP_URL=https://tourreel.com
-API_URL=https://api.tourreel.com
+APP_URL=https://superseller.agency
+API_URL=https://api.superseller.agency
 ```
 
 ---
@@ -1019,7 +1019,7 @@ export const config = {
 
   notifications: {
     resendApiKey: process.env.RESEND_API_KEY,
-    fromEmail: optional("NOTIFICATION_FROM_EMAIL", "noreply@tourreel.com"),
+    fromEmail: optional("NOTIFICATION_FROM_EMAIL", "noreply@superseller.agency"),
   },
 
   app: {
@@ -3054,7 +3054,7 @@ fi
   "rewrites": [
     {
       "source": "/api/proxy/:path*",
-      "destination": "https://api.tourreel.com/api/:path*"
+      "destination": "https://api.superseller.agency/api/:path*"
     }
   ]
 }

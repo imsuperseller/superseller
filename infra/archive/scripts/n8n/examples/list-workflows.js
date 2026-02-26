@@ -5,7 +5,7 @@
  * Lists all workflows with stats.
  *
  * Usage:
- *   node scripts/n8n/examples/list-workflows.js rensto
+ *   node scripts/n8n/examples/list-workflows.js superseller
  *   node scripts/n8n/examples/list-workflows.js tax4us
  *   node scripts/n8n/examples/list-workflows.js shelly
  */
@@ -18,7 +18,7 @@ async function main() {
 
   if (!instanceName) {
     console.error('❌ Usage: node list-workflows.js <instance>');
-    console.error('   Valid instances: rensto, tax4us, shelly');
+    console.error('   Valid instances: superseller, tax4us, shelly');
     process.exit(1);
   }
 

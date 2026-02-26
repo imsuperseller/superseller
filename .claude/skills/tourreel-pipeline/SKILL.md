@@ -146,7 +146,7 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 
 #### How to Log Costs
 
-**In automated pipeline** (video-pipeline.worker.ts): Use `trackExpense()` from `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts`. Call after each Kling/Suno/Nano/Gemini API call.
+**In automated pipeline** (video-pipeline.worker.ts): Use `trackExpense()` from `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts`. Call after each Kling/Suno/Nano/Gemini API call.
 
 **In manual/ad-hoc sessions** (like Purim video): Log costs in the session's progress entry in `progress.md` with a cost table:
 ```

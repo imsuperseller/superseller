@@ -12,7 +12,7 @@ const headers = {
     "Accept": "application/json",
 };
 
-// Veo is DEPRECATED (Feb 2026). Kling 3.0 is the only approved video model for Rensto.
+// Veo is DEPRECATED (Feb 2026). Kling 3.0 is the only approved video model for SuperSeller AI.
 // KieVeoRequest and createVeoTask removed. See findings.md 2026-02-17.
 
 export interface KieTaskResponse {

@@ -4,8 +4,8 @@
 
 Tables NOT shared with Drizzle (e.g., Lead, Testimonial, ServiceInstance, SupportTicket):
 
-1. Edit `apps/web/rensto-site/prisma/schema.prisma`
-2. Run migration: `cd apps/web/rensto-site && npx prisma migrate dev --name describe_change`
+1. Edit `apps/web/superseller-site/prisma/schema.prisma`
+2. Run migration: `cd apps/web/superseller-site && npx prisma migrate dev --name describe_change`
 3. Build web: `npm run build`
 4. Deploy: `git push` (auto-deploy to Vercel)
 5. If prod DB: `npx prisma migrate deploy` (runs pending migrations)
@@ -41,21 +41,21 @@ Tables in BOTH ORMs: User, Tenant, TenantUser, Entitlement, UsageEvent
    | `String?` (optional) | `text()` (nullable by default in Drizzle) |
    | `@map("column_name")` | Use `"column_name"` as first arg |
 4. **Run Schema Sentinel**: `npx tsx tools/schema-sentinel.ts --strict`
-5. **Run Prisma migration**: `cd apps/web/rensto-site && npx prisma migrate dev --name describe_change`
+5. **Run Prisma migration**: `cd apps/web/superseller-site && npx prisma migrate dev --name describe_change`
 6. **Build BOTH apps**:
-   - `cd apps/web/rensto-site && npm run build`
+   - `cd apps/web/superseller-site && npm run build`
    - `cd apps/worker && npm run build`
 7. **Update docs**: Edit `docs/DATA_DICTIONARY.md` if new field/table
 8. **Deploy both**:
    - Web: `git push`
    - Worker: `./apps/worker/deploy-to-racknerd.sh`
 9. **Verify both**:
-   - `curl -s https://rensto.com/api/health/check`
+   - `curl -s https://superseller.agency/api/health/check`
    - `curl -s http://172.245.56.50:3002/api/health`
 
 ## Adding a New Shared Table
 
-1. Add model to `apps/web/rensto-site/prisma/schema.prisma`
+1. Add model to `apps/web/superseller-site/prisma/schema.prisma`
 2. Add table to `apps/worker-packages/db/src/schema.ts`
 3. Add entry to `SHARED_TABLES` in `tools/schema-sentinel.ts`
 4. Run Prisma migration: `npx prisma migrate dev --name add_table_name`
@@ -80,7 +80,7 @@ Renaming is the most dangerous migration — both ORMs must change atomically.
 ### Prisma
 ```bash
 # Revert last migration (dev only)
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npx prisma migrate reset  # WARNING: drops all data
 
 # For prod: create a new "undo" migration
@@ -103,7 +103,7 @@ echo "--- Schema Sentinel ---"
 npx tsx tools/schema-sentinel.ts --strict
 
 echo "--- Web Build ---"
-cd apps/web/rensto-site && npm run build
+cd apps/web/superseller-site && npm run build
 cd ../../..
 
 echo "--- Worker Build ---"

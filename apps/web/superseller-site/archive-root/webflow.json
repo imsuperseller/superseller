@@ -1,0 +1,12 @@
+{
+  "name": "superseller-pricing-components",
+  "version": "1.0.0",
+  "description": "SuperSeller AI pricing page components for Webflow",
+  "library": {
+    "name": "superseller-pricing-library",
+    "components": [
+      "./webflow-components/PricingPage.tsx"
+    ]
+  },
+  "siteId": "66c7e551a317e0e9c9f906d8"
+}

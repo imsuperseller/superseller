@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Rensto Studio | Video Generator",
-  description: "AI-powered video generation studio by Rensto",
+  title: "SuperSeller AI Studio | Video Generator",
+  description: "AI-powered video generation studio by SuperSeller AI",
 };
 
 export default function RootLayout({

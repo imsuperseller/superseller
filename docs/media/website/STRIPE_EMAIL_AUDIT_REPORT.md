@@ -9,7 +9,7 @@
 
 Searched entire `apps/web` directory for:
 - Fake email generation patterns
-- `customer-${Date.now()}@rensto.com` pattern
+- `customer-${Date.now()}@superseller.agency` pattern
 - Stripe customer creation without email validation
 - Other email auto-population issues
 
@@ -18,14 +18,14 @@ Searched entire `apps/web` directory for:
 ## ✅ Files Checked
 
 ### **1. Main Checkout Route** ⚠️ **HAD ISSUE - FIXED**
-**File**: `apps/web/rensto-site/src/app/api/stripe/checkout/route.ts`
+**File**: `apps/web/superseller-site/src/app/api/stripe/checkout/route.ts`
 
 **Issue Found**:
 ```typescript
 // OLD (BROKEN):
 const emailToUse = (customerEmail && customerEmail.trim() && customerEmail.includes('@')) 
   ? customerEmail.trim() 
-  : `customer-${Date.now()}@rensto.com`; // ❌ Fake email
+  : `customer-${Date.now()}@superseller.agency`; // ❌ Fake email
 ```
 
 **Status**: ✅ **FIXED**
@@ -61,7 +61,7 @@ if (!firstName || !lastName || !email || ...) {
 ---
 
 ### **3. Stripe Library** ✅ **NO ISSUE**
-**File**: `apps/web/rensto-site/src/lib/stripe.ts`
+**File**: `apps/web/superseller-site/src/lib/stripe.ts`
 
 **Status**: ✅ **SAFE**
 - `createCustomer()` method requires `email: string` parameter
@@ -82,10 +82,10 @@ async createCustomer(email: string, name?: string) {
 
 ### **4. Frontend Pages** ✅ **NO ISSUE**
 **Files Checked**:
-- `apps/web/rensto-site/src/app/solutions/page.tsx`
-- `apps/web/rensto-site/src/app/marketplace/page.tsx`
-- `apps/web/rensto-site/src/app/subscriptions/page.tsx`
-- `apps/web/rensto-site/src/app/custom/page.tsx`
+- `apps/web/superseller-site/src/app/solutions/page.tsx`
+- `apps/web/superseller-site/src/app/marketplace/page.tsx`
+- `apps/web/superseller-site/src/app/subscriptions/page.tsx`
+- `apps/web/superseller-site/src/app/custom/page.tsx`
 
 **Status**: ✅ **SAFE**
 - All pages pass `customerEmail: ''` (empty string)

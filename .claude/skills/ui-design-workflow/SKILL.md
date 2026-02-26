@@ -2,11 +2,11 @@
 name: ui-design-workflow
 description: >-
   Operational bridge between external UI generation tools (v0, Stitch, screenshot-to-code)
-  and Rensto's branded React/Next.js codebase. Use when converting external UI designs
-  into Rensto-branded components, extracting UI from screenshots/URLs, or generating
+  and SuperSeller AI's branded React/Next.js codebase. Use when converting external UI designs
+  into SuperSeller AI-branded components, extracting UI from screenshots/URLs, or generating
   new pages from prompts via v0/Stitch. Complements ui-ux-pro-max (design intelligence)
   with execution workflows. Not for backend logic, video pipeline, or database work.
-  Example: "Take this v0 component and rebrand it for Rensto".
+  Example: "Take this v0 component and rebrand it for SuperSeller AI".
 autoTrigger:
   - "v0"
   - "Stitch"
@@ -25,10 +25,10 @@ negativeTrigger:
   - "schema"
 ---
 
-# UI Design Workflow — External UI to Rensto-Branded Code
+# UI Design Workflow — External UI to SuperSeller AI-Branded Code
 
 ## Critical
-- **Always rebrand before committing** — generic shadcn/Tailwind must use `rensto-*` tokens
+- **Always rebrand before committing** — generic shadcn/Tailwind must use `superseller-*` tokens
 - **v0.dev is primary tool** for React/Next.js generation (beta API, shadcn/ui, design system support)
 - **Google Stitch is secondary** — good for visual prototyping (350 free/month), outputs HTML/CSS not React
 - **Run `rebrand-component.ts`** on all externally generated code before integration
@@ -37,10 +37,10 @@ negativeTrigger:
 ## Architecture
 
 ```
-External Sources                    Rensto Pipeline
+External Sources                    SuperSeller AI Pipeline
 ┌──────────────┐
 │  v0.dev      │─── React/shadcn ──→ ┌─────────────────┐    ┌──────────────┐
-│  Stitch      │─── HTML/CSS ──────→ │ rebrand-component│───→│ Rensto-branded│
+│  Stitch      │─── HTML/CSS ──────→ │ rebrand-component│───→│ SuperSeller AI-branded│
 │  Screenshot  │─── Image ─────────→ │ .ts (auto-token  │    │ .tsx component│
 │  URL Clone   │─── HTML ──────────→ │  replacement)    │    │ in codebase   │
 └──────────────┘                     └─────────────────┘    └──────────────┘
@@ -58,9 +58,9 @@ Best for: New pages, complex components, dashboard sections, forms.
 **Steps:**
 1. Generate design system context with `ui-ux-pro-max`:
    ```bash
-   python3 .claude/skills/ui-ux-pro-max/scripts/search.py "saas dark dashboard" --design-system -p "Rensto"
+   python3 .claude/skills/ui-ux-pro-max/scripts/search.py "saas dark dashboard" --design-system -p "SuperSeller AI"
    ```
-2. Craft a v0 prompt incorporating Rensto brand:
+2. Craft a v0 prompt incorporating SuperSeller AI brand:
    ```
    Create a [component] using shadcn/ui and Tailwind CSS.
    Dark theme: background #110d28, cards #1a153f, surfaces #17123a.
@@ -84,8 +84,8 @@ Best for: Cloning existing UI you saw somewhere, reference designs, competitor a
 1. Take screenshot of target UI
 2. Feed screenshot to Claude Code: "Convert this screenshot to a React/Tailwind component"
 3. Claude generates component matching the visual structure
-4. Run rebrand tool to replace generic colors with Rensto tokens
-5. Polish: add brand animations (`rensto-animate-glow`, `rensto-animate-shimmer`)
+4. Run rebrand tool to replace generic colors with SuperSeller AI tokens
+5. Polish: add brand animations (`superseller-animate-glow`, `superseller-animate-shimmer`)
 
 **Alternative tools:**
 - **AIUI.me** (aiui.me) — Screenshot to code, free
@@ -98,7 +98,7 @@ Best for: Exploring multiple layout ideas quickly, early-stage wireframing, Figm
 
 **Steps:**
 1. Go to stitch.withgoogle.com
-2. Prompt with Rensto context:
+2. Prompt with SuperSeller AI context:
    ```
    Design a [page type] for a SaaS platform.
    Dark purple background (#110d28). Neon cyan accents (#5ffbfd).
@@ -131,7 +131,7 @@ Best for: Specific sections from live websites you want to adapt.
 1. Target a live page URL
 2. Use Claude Code to fetch and extract the relevant HTML section
 3. Convert to React/Tailwind component
-4. Run rebrand tool to apply Rensto tokens
+4. Run rebrand tool to apply SuperSeller AI tokens
 5. Remove any external dependencies, replace with local equivalents
 
 ### Workflow 5: Component Library Adaptation
@@ -147,41 +147,41 @@ Best for: Data-heavy pages, standard UI patterns, admin panels.
 3. Run rebrand tool
 4. Customize content and behavior
 
-## Rensto Brand Token Quick Reference
+## SuperSeller AI Brand Token Quick Reference
 
 See `references/brand-token-map.md` for the complete mapping table.
 
 ### Colors
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--rensto-red` | `#fe3d51` | CTAs, primary actions, alerts |
-| `--rensto-orange` | `#bf5700` | Secondary actions, warnings |
-| `--rensto-blue` | `#1eaef7` | Links, info, secondary accent |
-| `--rensto-cyan` | `#5ffbfd` | Highlights, neon effects, emphasis |
+| `--superseller-red` | `#fe3d51` | CTAs, primary actions, alerts |
+| `--superseller-orange` | `#bf5700` | Secondary actions, warnings |
+| `--superseller-blue` | `#1eaef7` | Links, info, secondary accent |
+| `--superseller-cyan` | `#5ffbfd` | Highlights, neon effects, emphasis |
 
 ### Backgrounds
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--rensto-bg-primary` | `#110d28` | Page background |
-| `--rensto-bg-secondary` | `#1a162f` | Panels, surfaces |
-| `--rensto-bg-card` | `#1a153f` | Cards |
-| `--rensto-bg-surface` | `#17123a` | Elevated surfaces |
+| `--superseller-bg-primary` | `#110d28` | Page background |
+| `--superseller-bg-secondary` | `#1a162f` | Panels, surfaces |
+| `--superseller-bg-card` | `#1a153f` | Cards |
+| `--superseller-bg-surface` | `#17123a` | Elevated surfaces |
 
 ### Text
 | Token | Hex | Use |
 |-------|-----|-----|
-| `--rensto-text-primary` | `#fffff3` | Headings, body |
-| `--rensto-text-secondary` | `#b0bec5` | Descriptions |
-| `--rensto-text-muted` | `#94a3b8` | Captions, hints |
-| `--rensto-text-accent` | `#5ffbfd` | Highlighted text |
+| `--superseller-text-primary` | `#fffff3` | Headings, body |
+| `--superseller-text-secondary` | `#b0bec5` | Descriptions |
+| `--superseller-text-muted` | `#94a3b8` | Captions, hints |
+| `--superseller-text-accent` | `#5ffbfd` | Highlighted text |
 
 ### Ready-Made Classes (globals.css)
-- Cards: `.rensto-card`, `.rensto-card-neon`, `.rensto-card-gradient`
-- Inputs: `.rensto-input` (with focus glow)
-- Badges: `.rensto-badge-success`, `-warning`, `-error`, `-info`, `-neon`
-- Glows: `.rensto-glow-primary`, `-secondary`, `-accent`, `-neon`
-- Gradients: `.rensto-gradient-primary`, `-secondary`, `-brand`, `-neon`
-- Animations: `.rensto-animate-glow`, `-pulse`, `-shimmer`, `-fadeIn`
+- Cards: `.superseller-card`, `.superseller-card-neon`, `.superseller-card-gradient`
+- Inputs: `.superseller-input` (with focus glow)
+- Badges: `.superseller-badge-success`, `-warning`, `-error`, `-info`, `-neon`
+- Glows: `.superseller-glow-primary`, `-secondary`, `-accent`, `-neon`
+- Gradients: `.superseller-gradient-primary`, `-secondary`, `-brand`, `-neon`
+- Animations: `.superseller-animate-glow`, `-pulse`, `-shimmer`, `-fadeIn`
 
 ## Tool Comparison Matrix
 
@@ -198,7 +198,7 @@ See `references/brand-token-map.md` for the complete mapping table.
 
 | File | Purpose |
 |------|---------|
-| `references/brand-token-map.md` | Complete Tailwind → Rensto token mapping |
+| `references/brand-token-map.md` | Complete Tailwind → SuperSeller AI token mapping |
 | `globals.css` | Authoritative brand tokens, animations, components |
 | `ui-ux-pro-max/SKILL.md` | Design intelligence (styles, palettes, fonts) |
 | `tailwind.config.ts` | Tailwind theme extensions |

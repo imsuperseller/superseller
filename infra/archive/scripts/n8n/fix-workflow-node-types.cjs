@@ -126,8 +126,8 @@ async function main() {
 
     console.log('\n✨ All done! Workflow fixed successfully.');
     console.log('\n📝 Next steps:');
-    console.log('   1. Validate workflow using n8n MCP: mcp__rensto-n8n__n8n_validate_workflow');
-    console.log('   2. Check execution logs: https://n8n.rensto.com/workflow/GRlA3iuB7A8y8xFJ/executions');
+    console.log('   1. Validate workflow using n8n MCP: mcp__superseller-n8n__n8n_validate_workflow');
+    console.log('   2. Check execution logs: https://n8n.superseller.agency/workflow/GRlA3iuB7A8y8xFJ/executions');
     console.log('   3. Activate workflow when ready');
 
   } catch (error) {

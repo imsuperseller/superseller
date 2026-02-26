@@ -1,7 +1,7 @@
 ---
 name: api-contracts
 description: >
-  API contract governance for Rensto's 80+ endpoints across web (Next.js) and worker (Express).
+  API contract governance for SuperSeller AI's 80+ endpoints across web (Next.js) and worker (Express).
   Covers route inventory, input/output types, auth patterns, versioning strategy,
   and breaking-change detection.
 autoTrigger:
@@ -39,7 +39,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 ### Route Locations
 | App | Framework | Route Dir | Auth Method |
 |-----|-----------|-----------|-------------|
-| Web | Next.js 14+ (App Router) | `apps/web/rensto-site/src/app/api/` | Session cookie (magic link) |
+| Web | Next.js 14+ (App Router) | `apps/web/superseller-site/src/app/api/` | Session cookie (magic link) |
 | Worker | Express.js | `apps/worker/src/api/routes.ts` | Query params (`?userId=`) |
 
 ### Auth Patterns
@@ -161,7 +161,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 
 ### Adding a New API Route (Web)
 ```typescript
-// apps/web/rensto-site/src/app/api/example/route.ts
+// apps/web/superseller-site/src/app/api/example/route.ts
 import { NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth'; // magic-link session check
 import { z } from 'zod';
@@ -252,13 +252,13 @@ export async function GET(request: Request) {
 | `405 Method Not Allowed` (Worker) | Express route registration order — earlier route matches first. | Check `routes.ts` for conflicting paths. More specific routes must come before wildcards. |
 | `401 Unauthorized` on Vercel, works locally | Session cookie not set or stripped by edge runtime. | Check `Set-Cookie` in `/api/auth/magic-link/verify`. Add `export const runtime = 'nodejs'` to route. |
 | `CORS error` from client | `Access-Control-Allow-Origin` missing or mismatched. | Web: check `vercel.json` headers for `/api/*`. Worker: verify CORS middleware in Express config. |
-| Response shape changed unexpectedly | Prisma model field added/renamed → raw model leaks into response. | `git log --oneline -20 -- apps/web/rensto-site/src/app/api/the-route/`. Run Schema Sentinel for drift. |
+| Response shape changed unexpectedly | Prisma model field added/renamed → raw model leaks into response. | `git log --oneline -20 -- apps/web/superseller-site/src/app/api/the-route/`. Run Schema Sentinel for drift. |
 | `400 Bad Request` on POST | Zod validation rejecting input. Client sending wrong field names or types. | Check `parsed.error.flatten()` in response. Compare client payload against Zod schema. |
 | Route works on `next dev` but 500 on Vercel | Missing env var, or importing server-only module in edge runtime. | Check Vercel function logs. Verify all env vars exist in Vercel dashboard. |
 
 ## References
-- `apps/web/rensto-site/src/app/api/` — All web API routes
+- `apps/web/superseller-site/src/app/api/` — All web API routes
 - `apps/worker/src/api/routes.ts` — All worker routes
-- `apps/web/rensto-site/vercel.json` — CORS headers, cron config
+- `apps/web/superseller-site/vercel.json` — CORS headers, cron config
 - `.claude/skills/api-contracts/references/route-inventory.md` — Full route details
 - `.claude/skills/api-contracts/references/response-shapes.md` — Key response types

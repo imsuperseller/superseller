@@ -3,7 +3,7 @@
 **Date**: October 31, 2025 (Updated: December 2025)  
 **Tool**: HeyGen "Transform Idea into a Compelling Video"  
 **Avatar**: Use @shai or professional business avatar  
-**Media**: Add Rensto logo at appropriate moments  
+**Media**: Add SuperSeller AI logo at appropriate moments  
 **Duration Options**: 15s, 30s, 60s, 2min, 3min  
 
 ---
@@ -52,12 +52,12 @@
 ### **Video 1: Hero Background - "Everyone Else Is Using Agents" (30 seconds)**
 
 **Media to Add**:
-- Rensto logo (appears at 0:00 and 25:00)
+- SuperSeller AI logo (appears at 0:00 and 25:00)
 - Screenshots: Gmail inbox chaos, Google Sheets scattered data, WhatsApp missed messages (during narration)
 
 **HeyGen Script**:
 ```
-You're working 50+ hour weeks. Your Gmail inbox has 247 unread emails. Your Google Sheets is chaos - customer data scattered, manual copy-paste from Gmail. WhatsApp messages from customers go unanswered. You forgot to follow up with six leads yesterday. Meanwhile, your competitor responded in 5 minutes and already booked the meeting. The difference? They stopped doing everything manually like a damn martyr. They're using AI agents that handle Gmail emails, WhatsApp messages, and Airtable data automatically. Everyone else in your industry is using agents. You're still doing it manually. But here's the thing - it feels expensive, like it's way beyond what you know. The truth? It's actually really easy to start, and affordable. From just $29. Stop working like it's 1997. Your competitors didn't. Rensto - AI agents that handle Gmail, WhatsApp, and Airtable automatically.
+You're working 50+ hour weeks. Your Gmail inbox has 247 unread emails. Your Google Sheets is chaos - customer data scattered, manual copy-paste from Gmail. WhatsApp messages from customers go unanswered. You forgot to follow up with six leads yesterday. Meanwhile, your competitor responded in 5 minutes and already booked the meeting. The difference? They stopped doing everything manually like a damn martyr. They're using AI agents that handle Gmail emails, WhatsApp messages, and Airtable data automatically. Everyone else in your industry is using agents. You're still doing it manually. But here's the thing - it feels expensive, like it's way beyond what you know. The truth? It's actually really easy to start, and affordable. From just $29. Stop working like it's 1997. Your competitors didn't. SuperSeller AI - AI agents that handle Gmail, WhatsApp, and Airtable automatically.
 ```
 
 **Visual Notes for HeyGen**:
@@ -382,7 +382,7 @@ Real results from real businesses. Not corporate fluff. Shelly: Insurance agency
 
 **HeyGen Script**:
 ```
-I'm Shelly. I run an insurance agency. Before automation, I spent four to five hours every day just on client profiling. Manual data entry from Gmail to Google Sheets. Copy-pasting customer information from emails. Responding to WhatsApp messages manually. It was chaos. Every client profile was manual. Every follow-up I had to remember. Every document I had to create from scratch. I was drowning. I had no time for client relationships - the thing that actually grows my business. Then I found Rensto. They migrated my Google Sheets to Airtable. Built a custom agent. Connected Gmail, WhatsApp, OpenAI, Claude, Gemini. Now my agent handles Gmail emails automatically. WhatsApp messages answered via agent. Client data organized in Airtable automatically. No more Sheets. No more manual work. Four point five hours saved every single day. Ninety percent faster profiling. Three hundred percent more client time. My clients get faster service. I actually have time for my family. Automation changed everything. I wish I'd done this sooner. If you're still doing Gmail and Sheets manually, stop. Agent does the work. You get your life back.
+I'm Shelly. I run an insurance agency. Before automation, I spent four to five hours every day just on client profiling. Manual data entry from Gmail to Google Sheets. Copy-pasting customer information from emails. Responding to WhatsApp messages manually. It was chaos. Every client profile was manual. Every follow-up I had to remember. Every document I had to create from scratch. I was drowning. I had no time for client relationships - the thing that actually grows my business. Then I found SuperSeller AI. They migrated my Google Sheets to Airtable. Built a custom agent. Connected Gmail, WhatsApp, OpenAI, Claude, Gemini. Now my agent handles Gmail emails automatically. WhatsApp messages answered via agent. Client data organized in Airtable automatically. No more Sheets. No more manual work. Four point five hours saved every single day. Ninety percent faster profiling. Three hundred percent more client time. My clients get faster service. I actually have time for my family. Automation changed everything. I wish I'd done this sooner. If you're still doing Gmail and Sheets manually, stop. Agent does the work. You get your life back.
 ```
 
 **Visual Notes**:
@@ -403,7 +403,7 @@ I'm Shelly. I run an insurance agency. Before automation, I spent four to five h
 
 **HeyGen Script**:
 ```
-I'm Ben. I run Tax4Us, a tax services business. I was spending twenty plus hours a week on content creation. WordPress blogs. Podcast scripts. Social media posts. All manual. Gmail drafts. Google Sheets with content calendar. WhatsApp messages from customers. I couldn't keep up. I was creating content instead of growing the business. Then Rensto built me four AI agents. Connected to Gmail, WhatsApp, Airtable, OpenAI, Claude, Gemini. Agent one handles WordPress blogs. Reads Gmail for topics. Generates via OpenAI. Publishes automatically. Agent two creates WordPress pages. Airtable-driven. Agent three manages social media. WhatsApp and Gmail integration. Agent four produces weekly podcasts. Claude and Gemini for research. OpenAI for scripts. All automated. Gmail handled. WhatsApp answered. Airtable organized. Now I saved twenty hours weekly. I'm producing five times more content. Engagement increased one hundred fifty percent. My agents handle Gmail, WhatsApp, content creation automatically. I can finally focus on growing the business. If you're spending hours on Gmail, Sheets, and WhatsApp manually, stop. Agents do the work. You focus on growth.
+I'm Ben. I run Tax4Us, a tax services business. I was spending twenty plus hours a week on content creation. WordPress blogs. Podcast scripts. Social media posts. All manual. Gmail drafts. Google Sheets with content calendar. WhatsApp messages from customers. I couldn't keep up. I was creating content instead of growing the business. Then SuperSeller AI built me four AI agents. Connected to Gmail, WhatsApp, Airtable, OpenAI, Claude, Gemini. Agent one handles WordPress blogs. Reads Gmail for topics. Generates via OpenAI. Publishes automatically. Agent two creates WordPress pages. Airtable-driven. Agent three manages social media. WhatsApp and Gmail integration. Agent four produces weekly podcasts. Claude and Gemini for research. OpenAI for scripts. All automated. Gmail handled. WhatsApp answered. Airtable organized. Now I saved twenty hours weekly. I'm producing five times more content. Engagement increased one hundred fifty percent. My agents handle Gmail, WhatsApp, content creation automatically. I can finally focus on growing the business. If you're spending hours on Gmail, Sheets, and WhatsApp manually, stop. Agents do the work. You focus on growth.
 ```
 
 **Visual Notes**:
@@ -422,7 +422,7 @@ I'm Ben. I run Tax4Us, a tax services business. I was spending twenty plus hours
 - [ ] Write script (provided above)
 - [ ] Select avatar (@shai or professional business avatar)
 - [ ] Choose duration (15s, 30s, 60s, 2min, 3min - as specified)
-- [ ] Add Rensto logo (at start and end of each video)
+- [ ] Add SuperSeller AI logo (at start and end of each video)
 - [ ] Add screenshots/media (as specified in each video's "Media to Add" section)
 - [ ] Review script for customer tools emphasis (WhatsApp, Gmail, Sheets → Airtable)
 - [ ] Verify affordability message ($29, $299/month, etc.)

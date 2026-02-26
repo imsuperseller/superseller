@@ -24,7 +24,7 @@
       },
       {
         "id": "27830b70-a044-81b1-857e-ccd12231f974",
-        "name": "Rensto Micro-SaaS Business Model",
+        "name": "SuperSeller AI Micro-SaaS Business Model",
         "rgid": "RGID_NOTION_BUSINESS_REF_20250116_006"
       },
       {
@@ -119,7 +119,7 @@
       },
       {
         "id": "27830b70-a044-81de-977c-c2c39103a059",
-        "name": "Rensto Admin Dashboard",
+        "name": "SuperSeller AI Admin Dashboard",
         "rgid": "RGID_NOTION_TECHNICAL_REF_20240922_006"
       },
       {
@@ -174,8 +174,8 @@
       },
       {
         "id": "27630b70-a044-815a-adff-d393ebbabe88",
-        "name": "Rensto Micro-SaaS Business Model",
-        "rgid": "RGID_NOTION_BUSINESS_1758754981330_renstomicrosaasbusinessmodel"
+        "name": "SuperSeller AI Micro-SaaS Business Model",
+        "rgid": "RGID_NOTION_BUSINESS_1758754981330_supersellermicrosaasbusinessmodel"
       }
     ],
     "airtable_records": [
@@ -196,7 +196,7 @@
       },
       {
         "id": "recKKmuaaUryu79Th",
-        "name": "Rensto Micro-SaaS Business Model",
+        "name": "SuperSeller AI Micro-SaaS Business Model",
         "rgid": "RGID_MICROSAAS_MODEL_20250116_001"
       },
       {
@@ -238,8 +238,8 @@
       },
       {
         "id": "27830b70-a044-8184-8de1-cedfc8151b3d",
-        "name": "Rensto",
-        "rgid": "RGID_CUSTOMERS_1758754016737_renstotechnologies"
+        "name": "SuperSeller AI",
+        "rgid": "RGID_CUSTOMERS_1758754016737_supersellertechnologies"
       },
       {
         "id": "27830b70-a044-8163-a5ad-c3b42a770b18",
@@ -273,15 +273,15 @@
       },
       {
         "id": "27830b70-a044-8154-b78b-ca2cebfb6255",
-        "name": "Rensto",
+        "name": "SuperSeller AI",
         "rgid": "TBD"
       }
     ],
     "airtable_records": [
       {
         "id": "rec1UEu53goUAV1JA",
-        "name": "Rensto",
-        "rgid": "RGID_CUSTOMERS_1758754016737_renstotechnologies"
+        "name": "SuperSeller AI",
+        "rgid": "RGID_CUSTOMERS_1758754016737_supersellertechnologies"
       },
       {
         "id": "rec2vLhdlQ8ij3BpI",

@@ -7,7 +7,7 @@
  * Usage: node rename-workflows.cjs
  */
 
-const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.rensto.com';
+const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.superseller.agency';
 const N8N_API_KEY = process.env.N8N_API_KEY;
 
 if (!N8N_API_KEY) {
@@ -22,7 +22,7 @@ const WORKFLOW_RENAMES = {
   // ═══════════════════════════════════════════════════════════════════
   // WHATSAPP AGENTS - Already well-named, minor tweaks
   // ═══════════════════════════════════════════════════════════════════
-  'eQSCUFw91oXLxtvn': 'WA-AGENT-001: Rensto Voice Agent (Shai AI) v1',
+  'eQSCUFw91oXLxtvn': 'WA-AGENT-001: SuperSeller AI Voice Agent (Shai AI) v1',
   '86WHKNpj09tV9j1d': 'WA-AGENT-002: Liza AI - Kitchen Design Assistant v1',
   '0Cyp9kWJ0oUPNx2L': 'WA-AGENT-003A: Human-in-Loop Question Handler v1',
   'DNzlEU1vs7aqrlBg': 'WA-AGENT-003B: Human-in-Loop Answer Handler v1',
@@ -75,7 +75,7 @@ const WORKFLOW_RENAMES = {
   'CydsTsbkaL5xQkIJ': 'CONTENT-SOCIAL-001: Automated Social Media Video v1',
   'zgFBKmbMWbnqZiwk': 'CONTENT-SOCIAL-002: TikTok Posts Automation v1',
   'F0f4PtwG9FQM7ME9': 'CONTENT-GEN-002: Cinematic Pitch Engine v1',
-  'f2GHwdzxcsv2HcAW': 'CONTENT-SORA-004: Rensto Custom Script & Show v1',
+  'f2GHwdzxcsv2HcAW': 'CONTENT-SORA-004: SuperSeller AI Custom Script & Show v1',
   'nEOPdmUOE0bK37sQ': 'CONTENT-SORA-005: Sora 2 Evolution API Polls v1',
   '8GC371u1uBQ8WLmu': 'CONTENT-ADS-001: Find Winning Ads Meta Library v1',
   'XTTFteuNaCKEL455': 'CONTENT-VIDEO-002: MeatPoint Video Ideas Agent v1',
@@ -96,7 +96,7 @@ const WORKFLOW_RENAMES = {
   '7ArwzAJhIUlpOEZh': 'INFRA-AGENT-001: Server Monitor (Terry) v1',
   'kGJlGfmnIHPvzket': 'INFRA-SSH-001: RackNerd SSH Access v1',
   '5Fl9WUjYTpodcloJ': 'INFRA-AGENT-002: Calendar Agent (Dom) v1',
-  'se8JzwjqkOZNWt3Z': 'INFRA-EMAIL-001: Rensto Email Agent (Ron) v2',
+  'se8JzwjqkOZNWt3Z': 'INFRA-EMAIL-001: SuperSeller AI Email Agent (Ron) v2',
 
   // ═══════════════════════════════════════════════════════════════════
   // TECH
@@ -204,7 +204,7 @@ const WORKFLOW_RENAMES = {
   // ═══════════════════════════════════════════════════════════════════
   'CA77hnWrOJUrpSJN': '[ARCHIVED] WA-ROUTER-DUP: Router Duplicate',
   'hs7c1Y5pdNtfRJAd': '[ARCHIVED] WA-ROUTER-OLD: Router Old Version',
-  'oh9FHhiJgU9Fe1U4': '[ARCHIVED] WA-SUPPORT-001: Rensto Support Agent',
+  'oh9FHhiJgU9Fe1U4': '[ARCHIVED] WA-SUPPORT-001: SuperSeller AI Support Agent',
   'h0gcKRZbgrIVK3Ka': '[ARCHIVED] LEAD-GEN-OLD-004: Smart Lead Enrichment',
   'SrgOTg0pZX9b8Jmc': '[ARCHIVED] LEAD-GEN-OLD-002: Facebook Groups Scraper',
   '0SxNwE2IvN43iFpt': '[ARCHIVED] LEAD-GEN-OLD-001: SaaS Template',

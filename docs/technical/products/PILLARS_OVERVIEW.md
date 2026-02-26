@@ -1,6 +1,6 @@
-# 🏛️ Rensto Pillars: Production Source of Truth
+# 🏛️ SuperSeller AI Pillars: Production Source of Truth
 
-This document serves as the absolute authority on the **Active Production Stack** for each of the 4 Rensto Pillars. If a tool is not listed here as "Active", it is either in development or legacy.
+This document serves as the absolute authority on the **Active Production Stack** for each of the 4 SuperSeller AI Pillars. If a tool is not listed here as "Active", it is either in development or legacy.
 
 ---
 
@@ -19,7 +19,7 @@ This document serves as the absolute authority on the **Active Production Stack*
 | **Methods (Upsells)** | **Warm Outreach Method** | 💎 Premium | Multi-channel (LinkedIn + Email) warmup. |
 
 > [!NOTE]
-> See [Pillar 1 Guide](file:///Users/shaifriedman/New%20Rensto/rensto/docs/products/LEAD_MACHINE_GTM.md) for strategy.
+> See [Pillar 1 Guide](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/docs/products/LEAD_MACHINE_GTM.md) for strategy.
 
 > [!IMPORTANT]
 > **Instantly.ai** is LEGACY. Do not use or reference in active production paths.
@@ -35,12 +35,12 @@ This document serves as the absolute authority on the **Active Production Stack*
 | **Voice AI** | **Telnyx Voice API** | ✅ Active | Replaced Vapi/Twilio for unified billing/control. |
 | **Voice Synthesis** | **ElevenLabs** | ✅ Active | High-fidelity TTS. |
 | **WhatsApp Comms** | **WAHA Pro** | ✅ Active | Self-hosted on Racknerd VPS. |
-| **Scheduling** | **Rensto AI Agent** | ✅ Active | Replaced TidyCal/Calendly for deeper integration. |
+| **Scheduling** | **SuperSeller AI AI Agent** | ✅ Active | Replaced TidyCal/Calendly for deeper integration. |
 | **Methods (Upsells)** | **COO Growth Agent** | 💎 Premium | Conti v2: Professional high-level follow-ups. |
 | **Methods (Upsells)** | **Ops System Manager** | 💎 Premium | Automated internal ops coordination. |
 
 > [!NOTE]
-> See [Pillar 2 Deep Dive Guide](file:///Users/shaifriedman/New%20Rensto/rensto/docs/products/PILLAR_2_SECRETARY_GUIDE.md) for full stack details.
+> See [Pillar 2 Deep Dive Guide](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/docs/products/PILLAR_2_SECRETARY_GUIDE.md) for full stack details.
 
 ---
 
@@ -58,7 +58,7 @@ This document serves as the absolute authority on the **Active Production Stack*
 | **Methods (Upsells)** | **Research Pulse** | 💎 Premium | Automated multi-source web verification. |
 
 > [!NOTE]
-> See [Pillar 3 Deep Dive Guide](file:///Users/shaifriedman/New%20Rensto/rensto/docs/products/PILLAR_3_KNOWLEDGE_GUIDE.md) for the "Brain" architecture.
+> See [Pillar 3 Deep Dive Guide](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/docs/products/PILLAR_3_KNOWLEDGE_GUIDE.md) for the "Brain" architecture.
 
 ---
 

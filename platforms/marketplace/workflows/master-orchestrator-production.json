@@ -65,7 +65,7 @@
             "parameters": {
                 "authentication": "serviceAccount",
                 "operation": "get",
-                "projectId": "rensto",
+                "projectId": "superseller",
                 "collection": "marketplace_configs",
                 "query": "={{ $json.product }}"
             },

@@ -166,7 +166,7 @@ realtorElements = [{
 **Required Changes to Customer Onboarding:**
 
 ```typescript
-// apps/web/rensto-site/src/app/api/video/jobs/from-zillow/route.ts
+// apps/web/superseller-site/src/app/api/video/jobs/from-zillow/route.ts
 
 // Validate avatar count
 if (!avatarUrls || avatarUrls.length < 4) {

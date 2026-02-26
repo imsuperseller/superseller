@@ -13,10 +13,10 @@
 Phase 2.5 audited all production systems to ensure documentation accuracy and identify mismatches. **Overall Status: Production mostly stable, documentation now in sync.**
 
 **Key Achievements**:
-- ✅ Fixed rensto.com 403 error (Cloudflare redirect implemented)
+- ✅ Fixed superseller.agency 403 error (Cloudflare redirect implemented)
 - ✅ Created 7 Stripe payment links ($1,997 + $297 + 5 subscriptions)
 - ✅ Added all payment links to Vercel environment variables
-- ✅ Fixed n8n webhook URLs (now using https://n8n.rensto.com)
+- ✅ Fixed n8n webhook URLs (now using https://n8n.superseller.agency)
 - ✅ Updated n8n Docker version (1.110.1 → 1.113.3)
 - ✅ Verified VPS services (Docker, Nginx, Cloudflare tunnels all running)
 - ✅ Stripe key rotation complete (all 3 keys rotated, old keys invalidated)
@@ -32,8 +32,8 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 | **Docker Version** | 1.113.3 (updated) | ✅ Fixed |
 | **Workflows** | 69 active (not 68) | ✅ Verified |
 | **Active Workflows** | 30 of 69 | ✅ Documented |
-| **Webhook URL** | https://n8n.rensto.com | ✅ Fixed |
-| **Editor URL** | https://n8n.rensto.com | ✅ Fixed |
+| **Webhook URL** | https://n8n.superseller.agency | ✅ Fixed |
+| **Editor URL** | https://n8n.superseller.agency | ✅ Fixed |
 | **Database** | SQLite (46MB) | ✅ OK |
 | **Backups** | 3 exist, latest today (33M) | ✅ OK |
 
@@ -45,7 +45,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 | Service | Status | Details |
 |---------|--------|---------|
-| **Docker** | ✅ Running | n8n_rensto container |
+| **Docker** | ✅ Running | n8n_superseller container |
 | **Nginx** | ✅ Running | v1.18.0 (Ubuntu) |
 | **Cloudflare Tunnel** | ✅ Running | 2 tunnels (n8n + OAuth2) |
 | **Backup System** | ✅ Working | Latest: 2025-10-06_05-36-27 (33M) |
@@ -62,22 +62,22 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 | Domain | Status | Details |
 |--------|--------|---------|
-| **rensto.com** | ✅ 301 → www | Fixed via Cloudflare redirect rule |
-| **www.rensto.com** | ✅ 200 OK | Vercel (Next.js app) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
-| **admin.rensto.com** | ✅ 307 Redirect | Vercel (login redirect) |
-| **n8n.rensto.com** | ✅ 200 OK | Cloudflare tunnel |
-| **api.rensto.com** | ✅ 200 OK | Next.js API routes (Stripe webhook) |
+| **superseller.agency** | ✅ 301 → www | Fixed via Cloudflare redirect rule |
+| **www.superseller.agency** | ✅ 200 OK | Vercel (Next.js app) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
+| **admin.superseller.agency** | ✅ 307 Redirect | Vercel (login redirect) |
+| **n8n.superseller.agency** | ✅ 200 OK | Cloudflare tunnel |
+| **api.superseller.agency** | ✅ 200 OK | Next.js API routes (Stripe webhook) |
 
 **Fix Applied**: Created Cloudflare redirect rule for apex domain:
-- `rensto.com/*` → `https://www.rensto.com/$1` (301 permanent)
+- `superseller.agency/*` → `https://www.superseller.agency/$1` (301 permanent)
 - **Root Cause**: Apex domain A record pointed to Cloudflare proxy IPs, creating DNS loop
 
-**api.rensto.com Explanation** ✅:
-- **Purpose**: Serves Next.js API routes from rensto-site application
+**api.superseller.agency Explanation** ✅:
+- **Purpose**: Serves Next.js API routes from superseller-site application
 - **Primary Use**: Stripe webhook endpoint (`/api/stripe/webhook/route.ts`)
 - **Webhook Events**: checkout.session.completed, payment_intent.succeeded, subscription events
 - **n8n Integration**: Triggers workflows at http://172.245.56.50:5678
-- **Hosted**: Same Vercel deployment as www.rensto.com (different DNS routing)
+- **Hosted**: Same Vercel deployment as www.superseller.agency (different DNS routing)
 
 ---
 
@@ -85,7 +85,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| **Project** | rensto-main-website | ✅ Live |
+| **Project** | superseller-main-website | ✅ Live |
 | **Latest Deploy** | Oct 5, ~17:00 (14h ago) | ✅ Ready |
 | **Build Time** | 59 seconds | ✅ Good |
 
@@ -144,7 +144,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 **Webhook**:
 - Webhook ID: `we_1SF5qCDE8rt1dEs1SbZCqETE`
-- URL: `https://api.rensto.com/stripe/webhook`
+- URL: `https://api.superseller.agency/stripe/webhook`
 - Secret: `whsec_RGYzuYIi...` (in Vercel env vars)
 
 **Security Issue** ✅ RESOLVED:
@@ -157,13 +157,13 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 ### **6. Docker Configurations** ⚠️ UNUSED FILES
 
-**Running Containers**: Only `n8n_rensto` (clean system) ✅
+**Running Containers**: Only `n8n_superseller` (clean system) ✅
 
 **Docker Compose Files Found** (7 total):
 - ✅ `/opt/n8n/docker-compose.yml` - Active (n8n)
 - ⚠️ `/var/www/html/config/docker/docker-compose.yml` - PostgreSQL (unused)
-- ⚠️ `/opt/rensto/infra/docker-compose.yml` - PostgreSQL (unused)
-- ⚠️ `/root/rensto/live-systems/hyperise-replacement/docker-compose.yml` - Unknown status
+- ⚠️ `/opt/superseller/infra/docker-compose.yml` - PostgreSQL (unused)
+- ⚠️ `/root/superseller/live-systems/hyperise-replacement/docker-compose.yml` - Unknown status
 
 **Action Needed**: Document purpose of unused PostgreSQL configs, check hyperise-replacement status
 
@@ -180,7 +180,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 - ✅ API connection successful
 - ✅ 11 bases confirmed via API
 - ✅ All base IDs match documentation
-- ✅ Base names: Rensto Client Operations, Core Business Operations, Financial Management, Marketing & Sales, Operations & Automation, Customer Success, Entities, Analytics & Monitoring, Integrations, RGID-based entity management, Idempotency systems
+- ✅ Base names: SuperSeller AI Client Operations, Core Business Operations, Financial Management, Marketing & Sales, Operations & Automation, Customer Success, Entities, Analytics & Monitoring, Integrations, RGID-based entity management, Idempotency systems
 
 ---
 
@@ -197,7 +197,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 - ✅ 3 main databases confirmed:
   - **Project Tracking** (2123596d-d33c-40bb-91d9-3d2983dbfb23) - Matches CLAUDE.md ✅
   - **Customer Management** (7840ad47-64dc-4e8a-982c-cb3a0dcc3a14) - Matches CLAUDE.md ✅
-  - **Rensto Business References** (6f3c687f-91b4-46fc-a54e-193b0951d1a5) - Matches CLAUDE.md ✅
+  - **SuperSeller AI Business References** (6f3c687f-91b4-46fc-a54e-193b0951d1a5) - Matches CLAUDE.md ✅
 - ⚠️ Additional databases found (some duplicates, test databases)
 - ⚠️ INT-TECH-005 sync workflow needs updating (Notion is source of truth, has newer data)
 
@@ -207,20 +207,20 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 
 | Service | URL | Status |
 |---------|-----|--------|
-| **Main Site** | https://www.rensto.com | ✅ Live (Vercel/Next.js) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
-| **Admin Dashboard** | https://admin.rensto.com | ✅ Live (Vercel) |
-| **n8n Production** | https://n8n.rensto.com | ✅ Live (Cloudflare tunnel) |
-| **API Routes** | https://api.rensto.com | ✅ Live (Next.js API routes) |
-| **Stripe Webhook** | https://api.rensto.com/api/stripe/webhook | ✅ Configured |
+| **Main Site** | https://www.superseller.agency | ✅ Live (Vercel/Next.js) - **NOTE: Historical audit from Oct 6, 2025 - site migrated to Vercel Nov 2, 2025** |
+| **Admin Dashboard** | https://admin.superseller.agency | ✅ Live (Vercel) |
+| **n8n Production** | https://n8n.superseller.agency | ✅ Live (Cloudflare tunnel) |
+| **API Routes** | https://api.superseller.agency | ✅ Live (Next.js API routes) |
+| **Stripe Webhook** | https://api.superseller.agency/api/stripe/webhook | ✅ Configured |
 
 ---
 
 ## Critical Issues Fixed
 
-### **Critical #1: rensto.com 403 Error** ✅ FIXED
+### **Critical #1: superseller.agency 403 Error** ✅ FIXED
 - **Impact**: Main website not accessible
 - **Root Cause**: DNS loop (apex domain pointed to Cloudflare proxy IPs)
-- **Solution**: Created Cloudflare 301 redirect rule: `rensto.com/*` → `www.rensto.com/$1`
+- **Solution**: Created Cloudflare 301 redirect rule: `superseller.agency/*` → `www.superseller.agency/$1`
 - **Status**: ✅ Working
 
 ### **Critical #2: Stripe Payment Links Missing** ✅ CREATED
@@ -242,7 +242,7 @@ Phase 2.5 audited all production systems to ensure documentation accuracy and id
 **Priority 1 (This Week)**: ✅ **ALL COMPLETE**
 1. ✅ Complete Stripe key rotation (DONE - Oct 6, 2025)
 2. ✅ Trigger Vercel redeploy (DONE - deployment ready)
-3. ✅ Document what's behind api.rensto.com (DONE - Next.js API routes for Stripe)
+3. ✅ Document what's behind api.superseller.agency (DONE - Next.js API routes for Stripe)
 4. ✅ Create remaining Stripe products (DONE - 18 total products, 11 added Oct 6, 2025)
 5. ✅ Verify Airtable/Notion APIs (DONE - both APIs working, 11 bases + 3 databases confirmed)
 

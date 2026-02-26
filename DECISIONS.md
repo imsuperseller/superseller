@@ -10,9 +10,9 @@
 | Decision | Answer |
 |----------|--------|
 | **1.1 Split?** | **A** — Keep one repo. No split. |
-| **1.2 Video structure** | Keep video as `rensto.com/video/*` in the main site. |
+| **1.2 Video structure** | Keep video as `superseller.agency/video/*` in the main site. |
 | **1.3 GitHubs (if split later)** | One org, multiple repos. |
-| **1.4 Launch links** | `rensto.com/video/*` |
+| **1.4 Launch links** | `superseller.agency/video/*` |
 | **1.5 Order** | Agent decides. |
 
 ---
@@ -21,18 +21,18 @@
 
 | Decision | Answer |
 |----------|--------|
-| **Unify deploy** | Aspirational: One project with rensto.com + api.rensto.com, single deploy on push. |
+| **Unify deploy** | Aspirational: One project with superseller.agency + api.superseller.agency, single deploy on push. |
 
-**Current reality (Feb 2026)**: NOT yet unified. Two separate Vercel projects remain. `git push` deploys api.rensto.com (auto). rensto.com requires manual `vercel --prod`. See `VERCEL_PROJECT_MAP.md` for current state.
-**Action (deferred)**: Add rensto.com and www.rensto.com to api-rensto-site. Remove from rensto-site. Merge env vars.
+**Current reality (Feb 2026)**: NOT yet unified. Two separate Vercel projects remain. `git push` deploys api.superseller.agency (auto). superseller.agency requires manual `vercel --prod`. See `VERCEL_PROJECT_MAP.md` for current state.
+**Action (deferred)**: Add superseller.agency and www.superseller.agency to api-superseller-site. Remove from superseller-site. Merge env vars.
 
 ---
 
-## 3. VERCEL "rensto" PROJECT
+## 3. VERCEL "superseller" PROJECT
 
 | Decision | Answer |
 |----------|--------|
-| **rensto project** | Keep as legacy/experimental; ignore for production. |
+| **superseller project** | Keep as legacy/experimental; ignore for production. |
 
 ---
 
@@ -115,7 +115,7 @@
 
 | Decision | Answer |
 |----------|--------|
-| **Dashboard** | Admin monitoring tab at `rensto.com/admin` → "System Monitor" |
+| **Dashboard** | Admin monitoring tab at `superseller.agency/admin` → "System Monitor" |
 | **Health checks** | 10 services: PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, Stripe, Prisma, n8n |
 | **Alerts** | Rule-based with cooldown. Channels: email (Resend) + audit_log (PostgreSQL). Auto-resolve on recovery. |
 | **Expense tracking** | Per-call API cost tracking. Anomaly = daily > 2x 7-day rolling average. |
@@ -128,7 +128,7 @@
 |----------|--------|
 | **Primary tool** | v0.dev — React/Next.js output, shadcn/ui, beta API, design system support |
 | **Secondary tool** | Google Stitch — visual prototyping only (350 free gen/month). No API yet. HTML output, not React. |
-| **Rebrand tool** | `tools/rebrand-component.ts` — auto-replaces generic Tailwind → Rensto tokens |
+| **Rebrand tool** | `tools/rebrand-component.ts` — auto-replaces generic Tailwind → SuperSeller AI tokens |
 | **Brand tokens SSOT** | `globals.css` CSS custom properties (50+ tokens). See `.claude/skills/ui-design-workflow/references/brand-token-map.md` |
 
 ---

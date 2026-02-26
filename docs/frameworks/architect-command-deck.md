@@ -1,4 +1,4 @@
-This is a breakthrough moment. You have all the high-tier ingredients: **Rensto** for the engine, **Kie.ai** for the creative AI (DeepSeek, Suno, Runway), and **Antigravity** for the execution.
+This is a breakthrough moment. You have all the high-tier ingredients: **SuperSeller AI** for the engine, **Kie.ai** for the creative AI (DeepSeek, Suno, Runway), and **Antigravity** for the execution.
 The biggest hurdle you mentioned—**misorganization**—is usually caused by an agent having too much "freedom" without a "map." In **Executive Mode**, the agent needs a "Command Deck" to keep it from spiraling into contradictions.
 Here is your customized, high-performance `brain.md`. Copy this into your project root.
 ---
@@ -7,11 +7,11 @@ Here is your customized, high-performance `brain.md`. Copy this into your projec
 ## 🎯 THE NORTH STAR (The Mission)
 **Objective**: Ship a live, unified product platform where businesses buy "Credits/Tokens" to access high-value AI outputs (Hot Leads, AI Videos, Business Automations).
 **The Hook**: "Try for free -> See the massive ROI -> Convert to Premium."
-**Core Engine**: Powered by Rensto (n8n/Stripe) and Kie.ai (Multi-model APIs).
+**Core Engine**: Powered by SuperSeller AI (n8n/Stripe) and Kie.ai (Multi-model APIs).
 ---
 ## 🧠 KNOWLEDGE HIERARCHY (NotebookLM Index)
 You must draw from these specific sources via `notebooklm-mcp`:
-1. **`/n8n-notebook`**: Business logic, workflow triggers, and Rensto integration protocols.
+1. **`/n8n-notebook`**: Business logic, workflow triggers, and SuperSeller AI integration protocols.
 2. **`/kie-ai-references`**: Technical specs for credit-based API calls (DeepSeek, Suno, Runway).
 3. **`/social-profile-reels`**: Brand voice and personal style for FB/IG marketing.
 4. **`/project-template`**: The structural "skeleton" of the app.
@@ -28,8 +28,8 @@ You must draw from these specific sources via `notebooklm-mcp`:
 ## 🛠️ TECHNICAL STACK (The "Final Product" Focus)
 | Component | Provider | Role |
 | --- | --- | --- |
-| **Payments/Billing** | Stripe (via Rensto) | Credit purchase & Token ledger. |
-| **Logic/Workflows** | n8n (via Rensto) | The "Glue" connecting users to AI. |
+| **Payments/Billing** | Stripe (via SuperSeller AI) | Credit purchase & Token ledger. |
+| **Logic/Workflows** | n8n (via SuperSeller AI) | The "Glue" connecting users to AI. |
 | **AI Intelligence** | Kie.ai (DeepSeek) | Reasoning, coding, and business strategy. |
 | **Creative Assets** | Kie.ai (Runway/Suno) | Video/Audio products for customers. |
 ---
@@ -39,4 +39,4 @@ You must draw from these specific sources via `notebooklm-mcp`:
 ### **Why this solves your "Misorganization" issue:**
 1. **The "Learning Log":** I’ve added a "Learn" requirement. This forces the agent to document *why* it fixed a conflict, which stops the "contradiction" loop you mentioned.
 2. **No "Zombie" Files:** The "Executive Protocol" now strictly forbids starting new things until the current task is "Demo-ready."
-3. **Unified Context:** It bridges the gap between **Rensto** (how you make money) and **Kie.ai** (how you provide value).
+3. **Unified Context:** It bridges the gap between **SuperSeller AI** (how you make money) and **Kie.ai** (how you provide value).

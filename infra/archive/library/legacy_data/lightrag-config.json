@@ -1,11 +1,11 @@
 {
   "server": {
-    "url": "https://rensto-lightrag.onrender.com",
+    "url": "https://superseller-lightrag.onrender.com",
     "apiKey": "your-api-key-here",
-    "webhookUrl": "https://rensto-lightrag.onrender.com/webhook"
+    "webhookUrl": "https://superseller-lightrag.onrender.com/webhook"
   },
   "github": {
-    "repository": "rensto/business-intelligence",
+    "repository": "superseller/business-intelligence",
     "token": "your-github-token-here",
     "webhookSecret": "your-webhook-secret-here"
   },
@@ -31,8 +31,8 @@
     ]
   },
   "n8n": {
-    "baseUrl": "https://rensto.app.n8n.cloud",
+    "baseUrl": "https://superseller.app.n8n.cloud",
     "apiKey": "your-n8n-api-key-here",
-    "webhookUrl": "https://rensto.app.n8n.cloud/webhook/lightrag-query"
+    "webhookUrl": "https://superseller.app.n8n.cloud/webhook/lightrag-query"
   }
 }

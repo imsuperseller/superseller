@@ -1,6 +1,6 @@
-# 🎯 Rensto 4 Pillars - Product Definition Gap Analysis
+# 🎯 SuperSeller AI 4 Pillars - Product Definition Gap Analysis
 
-**Source**: `/offers/page.tsx` - The actual products sold on rensto.com/offers
+**Source**: `/offers/page.tsx` - The actual products sold on superseller.agency/offers
 
 ---
 

@@ -9,8 +9,8 @@
 | System | Purpose | URL |
 | :--- | :--- | :--- |
 | **PostgreSQL + Redis** | Primary database for leads, customers, service instances. | Connection strings in env |
-| **n8n** | Workflow automation engine. | https://n8n.rensto.com |
-| **Vercel** | Frontend hosting. | https://vercel.com/rensto |
+| **n8n** | Workflow automation engine. | https://n8n.superseller.agency |
+| **Vercel** | Frontend hosting. | https://vercel.com/superseller |
 | **Stripe** | Payments. | https://dashboard.stripe.com |
 | **Resend** | Transactional email. | https://resend.com |
 

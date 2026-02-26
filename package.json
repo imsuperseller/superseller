@@ -1,7 +1,7 @@
 {
-  "name": "rensto-business-operations",
+  "name": "superseller-business-operations",
   "version": "1.0.0",
-  "description": "Rensto Business Operations - Centralized business management system",
+  "description": "SuperSeller AI Business Operations - Centralized business management system",
   "main": "index.js",
   "type": "module",
   "workspaces": [
@@ -12,19 +12,19 @@
     "migrate-notion": "node notion-migration-script.js",
     "migrate-notion-v2025": "node notion-migration-script-v2025.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:e2e": "npm run test:e2e --prefix apps/web/rensto-site",
-    "test:e2e:headed": "npm run test:e2e:headed --prefix apps/web/rensto-site",
-    "test:e2e:ui": "npm run test:e2e:ui --prefix apps/web/rensto-site"
+    "test:e2e": "npm run test:e2e --prefix apps/web/superseller-site",
+    "test:e2e:headed": "npm run test:e2e:headed --prefix apps/web/superseller-site",
+    "test:e2e:ui": "npm run test:e2e:ui --prefix apps/web/superseller-site"
   },
   "keywords": [
-    "rensto",
+    "superseller",
     "business",
     "operations",
     "notion",
     "airtable",
     "migration"
   ],
-  "author": "Rensto",
+  "author": "SuperSeller AI",
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.63.1",

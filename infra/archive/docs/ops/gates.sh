@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Rensto Gates Script
+# SuperSeller AI Gates Script
 # Runs all validation checks for Unified Working Methodology
 # Exit codes: 0 = all gates pass, 1+ = gate failed
 
@@ -52,7 +52,7 @@ run_gate() {
 
 # Header
 echo "=========================================="
-echo "Rensto Gates - BMAD Validation"
+echo "SuperSeller AI Gates - BMAD Validation"
 echo "=========================================="
 echo ""
 
@@ -97,9 +97,9 @@ run_gate "CI/CD Configuration" "
 "
 
 # Gate 5: Web Application (if exists)
-if [ -d "web/rensto-site" ]; then
+if [ -d "web/superseller-site" ]; then
     run_gate "Web Dependencies" "
-        cd web/rensto-site && \
+        cd web/superseller-site && \
         [ -f 'package.json' ] && \
         [ -f 'next.config.ts' ] && \
         [ -f 'tailwind.config.ts' ] && \

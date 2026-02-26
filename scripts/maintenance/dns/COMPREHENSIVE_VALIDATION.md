@@ -26,11 +26,11 @@ curl -H "Authorization: Bearer [TOKEN]" \
 
 **Test**: Verify specific records exist
 
-**Root Domain (rensto.com)**:
+**Root Domain (superseller.agency)**:
 - ✅ Found: `A` record → `198.202.211.1` (Webflow IP)
 - ✅ Record ID: `03ce67fb02e62df01711f1537340d597`
 
-**WWW Subdomain (www.rensto.com)**:
+**WWW Subdomain (www.superseller.agency)**:
 - ✅ Found: `CNAME` record → `cdn.webflow.com` (Webflow CDN)
 - ✅ Record ID: `d15c77baed4639b4d135463cb1d2a518`
 
@@ -46,7 +46,7 @@ curl -H "Authorization: Bearer [TOKEN]" \
 
 **Contents**:
 - ✅ Timestamp: November 2, 2025, 2:23:57 PM
-- ✅ Domain: rensto.com
+- ✅ Domain: superseller.agency
 - ✅ 25 DNS records backed up
 - ✅ Root A record: `198.202.211.1`
 - ✅ WWW CNAME: `cdn.webflow.com`
@@ -61,12 +61,12 @@ curl -H "Authorization: Bearer [TOKEN]" \
 
 **Method**: Vercel API call + CLI verification
 ```bash
-vercel domains ls --project=rensto-site
+vercel domains ls --project=superseller-site
 ```
 
 **Result**: ✅ **PASS**
-- ✅ `rensto.com` added to `rensto-site` project
-- ✅ `www.rensto.com` added to `rensto-site` project
+- ✅ `superseller.agency` added to `superseller-site` project
+- ✅ `www.superseller.agency` added to `superseller-site` project
 
 ---
 
@@ -76,11 +76,11 @@ vercel domains ls --project=rensto-site
 
 **Test Cases**:
 1. Find root A record (`@`, `A`)
-   - Expected: `rensto.com` with type `A`
+   - Expected: `superseller.agency` with type `A`
    - ✅ Result: Found correctly
 
 2. Find www CNAME (`www`, `CNAME`)
-   - Expected: `www.rensto.com` with type `CNAME`
+   - Expected: `www.superseller.agency` with type `CNAME`
    - ✅ Result: Found correctly
 
 **Result**: ✅ **PASS** - Logic validated with test data
@@ -91,7 +91,7 @@ vercel domains ls --project=rensto-site
 
 **Test**: Run script in dry-run mode
 
-**Command**: `node scripts/dns/migrate-rensto-to-vercel.js --dry-run`
+**Command**: `node scripts/dns/migrate-superseller-to-vercel.js --dry-run`
 
 **Result**: ✅ **PASS**
 - ✅ Connects to Cloudflare

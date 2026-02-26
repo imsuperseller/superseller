@@ -175,7 +175,7 @@ export async function runAgent(
     try {
         // Build mode-specific system prompt
         const modeInstructions = mode === "business"
-            ? "You are Rensto's customer-facing WhatsApp assistant. Be warm, professional, and helpful. Answer questions about products, pricing, and features using the knowledge base provided. Never expose internal details (server IPs, code, architecture). For complex requests, say 'Let me connect you with Shai' and note the request."
+            ? "You are SuperSeller AI's customer-facing WhatsApp assistant. Be warm, professional, and helpful. Answer questions about products, pricing, and features using the knowledge base provided. Never expose internal details (server IPs, code, architecture). For complex requests, say 'Let me connect you with Shai' and note the request."
             : "You are Shai's personal technical assistant on WhatsApp. Be direct, technical, efficient. Execute tasks, don't explain plans.";
 
         const events = sdkQuery({

@@ -14,7 +14,7 @@ Central index for agent skill selection. When a task arrives, use this file to d
 | # | Skill | Purpose | Trigger Keywords | Status |
 |---|-------|---------|-----------------|--------|
 | 1 | **tourreel-pipeline** | Real estate video pipeline -- Zillow scraping, Kling 3.0, FFmpeg assembly, clip regen | TourReel, video pipeline, Kling, Kie.ai, clip generation, FFmpeg, listing video, Zillow, floorplan, Nano Banana, Suno | Active |
-| 2 | **winner-studio** | AI avatar video for Mivnim/Yossi -- Gemini brain, avatar-pro, lip-sync, WhatsApp delivery | Winner Studio, Spoke, avatar, lip-sync, infinitalk, avatar-pro, Mivnim, Yossi, studio.rensto.com | Active |
+| 2 | **winner-studio** | AI avatar video for Mivnim/Yossi -- Gemini brain, avatar-pro, lip-sync, WhatsApp delivery | Winner Studio, Spoke, avatar, lip-sync, infinitalk, avatar-pro, Mivnim, Yossi, studio.superseller.agency | Active |
 | 3 | **marketplace-saas** | FB Marketplace bot SaaS -- multi-tenant posting, GoLogin, Kie.ai image gen, customer isolation | FB Marketplace, marketplace bot, UAD, MissParty, GoLogin, listing generation, marketplace SaaS | Active |
 | 4 | **lead-pages** | Dynamic lead landing pages -- /lp/[slug], per-customer branding, lead capture, RTL/LTR | landing page, lead page, /lp/, lead capture, customer branding, lead form, RTL | Active |
 | 5 | **frontdesk-voice** | Telnyx AI voice assistant -- telephony routing, conversation polling, call transfer | FrontDesk, Telnyx, voice AI, AI receptionist, phone answering, call transfer, KokoroTTS | Active (partial) |
@@ -47,7 +47,7 @@ Central index for agent skill selection. When a task arrives, use this file to d
 | # | Skill | Purpose | Trigger Keywords | Status |
 |---|-------|---------|-----------------|--------|
 | 19 | **ui-ux-pro-max** | Design intelligence -- 50+ styles, 97 palettes, 57 fonts, 9 stacks, accessibility rules | landing page, dashboard, color palette, design, typography, glassmorphism | Active |
-| 20 | **ui-design-workflow** | External UI bridge -- v0/Stitch/screenshot-to-code to Rensto-branded React/Next.js components | v0, Stitch, screenshot to code, rebrand component, external UI, convert design, clone UI | Active |
+| 20 | **ui-design-workflow** | External UI bridge -- v0/Stitch/screenshot-to-code to SuperSeller AI-branded React/Next.js components | v0, Stitch, screenshot to code, rebrand component, external UI, convert design, clone UI | Active |
 
 ### Knowledge and AI Skills
 
@@ -62,7 +62,7 @@ Central index for agent skill selection. When a task arrives, use this file to d
 | # | Skill | Purpose | Trigger Keywords | Status |
 |---|-------|---------|-----------------|--------|
 | 24 | **customer-journey** | Customer lifecycle pipeline -- 4-stage funnel, provisioning, magic-link auth, entitlements | onboarding, provisioning, customer journey, entitlements, customer dashboard, subscription management | Active |
-| 25 | **admin-portal** | Admin dashboard at admin.rensto.com -- 8 tabs, CRM, treasury, workflow management, 23 API routes | admin, admin dashboard, admin portal, admin.rensto.com, AdminLayout, admin tab | Active |
+| 25 | **admin-portal** | Admin dashboard at admin.superseller.agency -- 8 tabs, CRM, treasury, workflow management, 23 API routes | admin, admin dashboard, admin portal, admin.superseller.agency, AdminLayout, admin tab | Active |
 
 ### Communication Skills
 
@@ -130,7 +130,7 @@ Use this tree to map incoming tasks to the correct skill(s).
 "Design a page" / "choose colors" / "pick typography" / "design system"
   --> ui-ux-pro-max (design intelligence and decisions)
 
-"Convert a v0/Stitch output to Rensto code" / "clone a UI from screenshot"
+"Convert a v0/Stitch output to SuperSeller AI code" / "clone a UI from screenshot"
   --> ui-design-workflow (execution bridge)
     + ui-ux-pro-max (for brand/style decisions)
 
@@ -190,7 +190,7 @@ Use this tree to map incoming tasks to the correct skill(s).
 ### Admin and Customer Portals
 
 ```
-"Admin dashboard" / "admin tab" / "admin.rensto.com"
+"Admin dashboard" / "admin tab" / "admin.superseller.agency"
   --> admin-portal
 
 "Customer dashboard" / "onboarding" / "provisioning"
@@ -248,7 +248,7 @@ These are the most frequent scenarios where multiple skills work together.
 | api-contracts | Route design, Zod validation, type definitions |
 | database-management | New tables/columns if needed |
 | credential-guardian | External API key setup if calling third-party services |
-| admin-portal | If the endpoint serves admin.rensto.com |
+| admin-portal | If the endpoint serves admin.superseller.agency |
 
 ### Schema Migration (safe deploy)
 
@@ -326,7 +326,7 @@ These are the most frequent scenarios where multiple skills work together.
 | Scenario | Use This | Not This |
 |----------|----------|----------|
 | Customer sees their bill, buys credits, subscription management | **stripe-credits** | cost-tracker |
-| Logging what Rensto pays for Kling/Suno/Gemini API calls | **cost-tracker** | stripe-credits |
+| Logging what SuperSeller AI pays for Kling/Suno/Gemini API calls | **cost-tracker** | stripe-credits |
 | "How much does a TourReel video cost us to produce?" | **cost-tracker** | stripe-credits |
 | "How much does a TourReel video cost the customer?" | **stripe-credits** | cost-tracker |
 
@@ -338,7 +338,7 @@ These are the most frequent scenarios where multiple skills work together.
 |----------|----------|----------|
 | "Choose a color palette for the dashboard" | **ui-ux-pro-max** | ui-design-workflow |
 | "What typography should we use?" | **ui-ux-pro-max** | ui-design-workflow |
-| "Take this v0 output and make it match Rensto brand" | **ui-design-workflow** | ui-ux-pro-max (use alongside) |
+| "Take this v0 output and make it match SuperSeller AI brand" | **ui-design-workflow** | ui-ux-pro-max (use alongside) |
 | "Clone this competitor's page layout" | **ui-design-workflow** | ui-ux-pro-max |
 | Building a new page from scratch | **Both**: ui-ux-pro-max for decisions, ui-design-workflow for execution | -- |
 

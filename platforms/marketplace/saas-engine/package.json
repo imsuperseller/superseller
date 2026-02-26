@@ -1,5 +1,5 @@
 {
-    "name": "@rensto/facebook-autoposter",
+    "name": "@superseller/facebook-autoposter",
     "version": "1.0.0",
     "private": true,
     "main": "index.js",

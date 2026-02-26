@@ -6,7 +6,7 @@
 - **Database**: Postgres + Redis (primary). Firestore and Airtable.com retired. **Aitable.ai in use** (dashboards, syncs).
 - **Automation**: Antigravity on RackNerd (primary). n8n is backup/reference only.
 - **Webflow**: Retired. Site is Next.js on Vercel.
-- **Marketplace**: Credit-based self-serve SaaS apps, yearly subscription per app, different apps = different audiences, Rensto style.
+- **Marketplace**: Credit-based self-serve SaaS apps, yearly subscription per app, different apps = different audiences, SuperSeller AI style.
 - **Methodology**: B.L.A.S.T. only. BMAD is retired.
 
 ---
@@ -36,7 +36,7 @@
 | File | Changes Needed |
 |------|----------------|
 | **CLAUDE.md** | Replace Firestore/Airtable as primary with Postgres+Redis. Replace n8n-primary with Antigravity-primary, n8n-backup. Remove Webflow CMS from service URLs. Remove BMAD; B.L.A.S.T. only. Remove apps/api, gateway-worker, marketplace from Tech Stack (or mark archived). Fix admin-dashboard reference (no "moved to archives" — folder deleted). Fix MCP counts (pick one: 6 or 11 or 12). Fix n8n workflow count (56). |
-| **.cursorrules** | Quick Decision Tree: admin path → `apps/web/rensto-site/src/app/admin`. Data storage: Postgres+Redis primary. Remove Airtable from "Which database" tree. Remove or update BMAD references; B.L.A.S.T. only. |
+| **.cursorrules** | Quick Decision Tree: admin path → `apps/web/superseller-site/src/app/admin`. Data storage: Postgres+Redis primary. Remove Airtable from "Which database" tree. Remove or update BMAD references; B.L.A.S.T. only. |
 | **.cursor/rules.md** | Align with Postgres+Redis, B.L.A.S.T. Remove BMAD rule 11–13. Update ARCHITECTURE.md reference (create or remove link). |
 | **.cursor/AGENT_CONTEXT.md** | Change "Firebase → PostgreSQL / Redis (under consideration)" to "PostgreSQL + Redis (primary). Migration from Firestore in progress." Remove ARCHITECTURE.md link if missing. |
 | **README.md** | Remove ARCHITECTURE.md and REPO_MAP.md links (or create those files). Update Tech Architecture diagram if it references old stack. |
@@ -48,9 +48,9 @@
 
 | Issue | Fix |
 |-------|-----|
-| CLAUDE.md says "admin-dashboard moved to archives/" | Change to: "admin-dashboard folder was deleted. Admin is in rensto-site/src/app/admin." |
+| CLAUDE.md says "admin-dashboard moved to archives/" | Change to: "admin-dashboard folder was deleted. Admin is in superseller-site/src/app/admin." |
 | archives/ doesn't exist | Remove "moved to archives" language. Use "deleted" or "infra/archive/" for actual archives. |
-| .cursorrules Quick Decision Tree → admin-dashboard | Change to `apps/web/rensto-site/src/app/admin` |
+| .cursorrules Quick Decision Tree → admin-dashboard | Change to `apps/web/superseller-site/src/app/admin` |
 
 ### 1.3 Missing Docs
 
@@ -72,7 +72,7 @@
 
 | File | Change |
 |------|--------|
-| CLAUDE.md | Service URLs: remove "via Webflow CMS". All pages served by rensto-site. |
+| CLAUDE.md | Service URLs: remove "via Webflow CMS". All pages served by superseller-site. |
 | All other Webflow refs | Mark as "legacy/archived" or remove if redundant |
 
 ### 1.6 Deleted Apps
@@ -81,7 +81,7 @@
 |-----|------------------------------------------|
 | apps/api | Remove or mark "Archived (deleted from repo)" |
 | apps/gateway-worker | Same |
-| apps/marketplace | Same — marketplace now lives in rensto-site |
+| apps/marketplace | Same — marketplace now lives in superseller-site |
 | apps/web/admin-dashboard | Already noted legacy; ensure consistency |
 
 ### 1.7 Antigravity / n8n Context
@@ -115,8 +115,8 @@
 
 | Path | Action |
 |------|--------|
-| apps/web/rensto-site/tools/*.js | setup_aitable, sync_*_to_aitable — add deprecation comment or archive |
-| apps/web/rensto-site/tools/README.md | Note Airtable tools are legacy |
+| apps/web/superseller-site/tools/*.js | setup_aitable, sync_*_to_aitable — add deprecation comment or archive |
+| apps/web/superseller-site/tools/README.md | Note Airtable tools are legacy |
 
 ---
 
@@ -132,9 +132,9 @@
 
 ### 3.2 Affected Code (Summary)
 
-- `apps/web/rensto-site/src/lib/firebase-admin.ts` — core Firestore access
-- `apps/web/rensto-site/src/lib/firebase-client.ts`
-- `apps/web/rensto-site/src/types/firestore.ts`
+- `apps/web/superseller-site/src/lib/firebase-admin.ts` — core Firestore access
+- `apps/web/superseller-site/src/lib/firebase-client.ts`
+- `apps/web/superseller-site/src/types/firestore.ts`
 - All `/api/*` routes importing `getFirestoreAdmin` or `COLLECTIONS`
 - `ProvisioningService`, `UsageService`, `ServiceAuditAgent`
 - Admin components (ClientManagement, WorkflowManagement, etc.)

@@ -1,5 +1,5 @@
 /**
- * Error Notification System for Rensto Logging Database
+ * Error Notification System for SuperSeller AI Logging Database
  * Production-ready alerting and notification system with multiple channels
  */
 
@@ -415,7 +415,7 @@ class ErrorNotificationSystem {
                         short: true
                     }
                 ],
-                footer: 'Rensto Logging Database',
+                footer: 'SuperSeller AI Logging Database',
                 ts: Math.floor(new Date(payload.timestamp).getTime() / 1000)
             }]
         };
@@ -455,7 +455,7 @@ ${JSON.stringify(payload.details, null, 2)}
                     </div>
                     <hr style="margin: 20px 0;">
                     <p style="color: #666; font-size: 12px;">
-                        This is an automated notification from the Rensto Logging Database System.
+                        This is an automated notification from the SuperSeller AI Logging Database System.
                     </p>
                 </div>
             `,
@@ -473,7 +473,7 @@ ${JSON.stringify(payload.details, null, 2)}
                 Context: ${JSON.stringify(payload.context, null, 2)}
                 Details: ${JSON.stringify(payload.details, null, 2)}
                 
-                This is an automated notification from the Rensto Logging Database System.
+                This is an automated notification from the SuperSeller AI Logging Database System.
             `
         };
     }
@@ -513,7 +513,7 @@ ${JSON.stringify(payload.details, null, 2)}
             event: 'error_notification',
             data: payload,
             metadata: {
-                source: 'rensto_logging_database',
+                source: 'superseller_logging_database',
                 version: '1.0.0',
                 timestamp: new Date().toISOString()
             }

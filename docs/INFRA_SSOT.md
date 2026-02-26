@@ -1,6 +1,6 @@
 # 🏗️ INFRASTRUCTURE SSOT
 
-> **Single source of truth for Rensto infrastructure** (servers, DB, storage, env vars, deployment).
+> **Single source of truth for SuperSeller AI infrastructure** (servers, DB, storage, env vars, deployment).
 > For overall authority precedence, see [`brain.md`](../brain.md).
 > **Rule**: If an infrastructure setting contradicts this doc, this doc wins within its domain.
 
@@ -10,7 +10,7 @@
 
 | Service | Role | Provider | Status |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | rensto.com (App/Admin/Site) | Vercel (Next.js) | ✅ Active |
+| **Frontend** | superseller.agency (App/Admin/Site) | Vercel (Next.js) | ✅ Active |
 | **Database** | Primary Transactional DB + RAG | **PostgreSQL + pgvector 0.8.1** (RackNerd) | ✅ Active |
 | **Cache/Queue**| BullMQ / Temporary Data | **Redis** (RackNerd) | ✅ Active |
 | **Storage** | Video Exports / Product Media | **Cloudflare R2** | ✅ Active |
@@ -37,10 +37,10 @@
     *   `GOOGLE_GENERATIVE_AI_API_KEY` (Gemini)
     *   `ANTHROPIC_API_KEY` (Dummy for local proxy; Real for n8n)
 *   **WhatsApp (WAHA)**:
-    *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (rensto-site) / `config.shared.wahaUrl` (FB Bot) — same server: `http://172.245.56.50:3000`
+    *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (superseller-site) / `config.shared.wahaUrl` (FB Bot) — same server: `http://172.245.56.50:3000`
     *   `WAHA_API_KEY` — Bearer token for WAHA Pro
-    *   `WAHA_SESSION` — Session name (default: rensto-whatsapp)
-    *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `rensto-whatsapp` (future website chatbot with knowledge base)
+    *   `WAHA_SESSION` — Session name (default: superseller-whatsapp)
+    *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `superseller-whatsapp` (future website chatbot with knowledge base)
     *   **Dashboard**: `http://172.245.56.50:3000/dashboard`
 *   **LightRAG**: `LIGHTRAG_BASE_URL` (referenced in admin health-check)
 *   **Finance**:
@@ -107,7 +107,7 @@ npm audit --audit-level=high
 ## 5b. Monitoring & Observability
 
 ### Admin Monitoring Dashboard
-- **Location**: `rensto.com/admin` → "System Monitor" tab
+- **Location**: `superseller.agency/admin` → "System Monitor" tab
 - **API**: `GET/POST /api/admin/monitoring`, `GET/POST /api/admin/alerts`
 
 ### Service Registry (11 monitored services)
@@ -115,7 +115,7 @@ npm audit --audit-level=high
 |---------|----------|-------------|-----------------|
 | PostgreSQL | infrastructure | `SELECT 1` via Prisma | 2 failures / 15min cooldown |
 | Worker (RackNerd) | infrastructure | HTTP `172.245.56.50:3002/api/health` | 2 failures / 15min cooldown |
-| Vercel | infrastructure | HTTP `rensto.com/api/health` | 3 failures / 30min cooldown |
+| Vercel | infrastructure | HTTP `superseller.agency/api/health` | 3 failures / 30min cooldown |
 | Ollama | infrastructure | HTTP `172.245.56.50:11434/api/tags` | 3 failures / 30min cooldown |
 | Kie.ai | api | HTTP `api.klingai.com/v1/models` | 2 failures / 15min cooldown |
 | Gemini | api | Generative AI ping | 3 failures / 30min cooldown |
@@ -142,7 +142,7 @@ npm audit --audit-level=high
 | R2 | Storage | $0.015/GB/mo | Monthly |
 | Ollama | Embeddings | $0.00 | Self-hosted |
 
-**Service**: `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts`
+**Service**: `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts`
 **Anomaly detection**: daily spend > 2x rolling 7-day average.
 
 ### Ollama (Embedding Service)
@@ -184,7 +184,7 @@ npm audit --audit-level=high
 ## 7. Active Systems Reference
 
 ### n8n
-- **URL**: https://n8n.rensto.com (172.245.56.50:5678)
+- **URL**: https://n8n.superseller.agency (172.245.56.50:5678)
 - **Role**: Backup for new automation. Antigravity is primary. Existing production workflows (FB Bot lead pipeline: UAD + MissParty) still run on n8n.
 - **Customer instances**: Tax4Us Cloud, Shelly Cloud
 - **Access**: MCP tools only. Direct API forbidden.
@@ -213,8 +213,8 @@ See `.cursor/MCP_CONFIGURATION_STATUS.md` for current list and status. Key activ
 ### Quick Reference URLs
 | Service | URL |
 |---------|-----|
-| n8n Rensto | http://n8n.rensto.com |
-| Admin | https://admin.rensto.com |
+| n8n SuperSeller AI | http://n8n.superseller.agency |
+| Admin | https://admin.superseller.agency |
 | Vercel | https://vercel.com/dashboard |
 
-**Key files**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `apps/web/rensto-site/prisma/schema.prisma`, `apps/worker-packages/db/src/schema.ts`
+**Key files**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `apps/web/superseller-site/prisma/schema.prisma`, `apps/worker-packages/db/src/schema.ts`

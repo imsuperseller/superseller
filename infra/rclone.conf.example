@@ -49,6 +49,6 @@ pass = YOUR_ENCRYPTED_PASSWORD
 
 # Test commands:
 # rclone ls icedrive:                    # List all files
-# rclone mkdir icedrive:backups/rensto   # Create backup directory
+# rclone mkdir icedrive:backups/superseller   # Create backup directory
 # rclone copy test.txt icedrive:backups/ # Upload test file
 # rclone sync ./local icedrive:remote    # Sync directories

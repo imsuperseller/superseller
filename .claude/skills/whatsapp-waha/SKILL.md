@@ -1,7 +1,7 @@
 ---
 name: whatsapp-waha
 description: >-
-  WhatsApp integration via WAHA Pro for Rensto. Covers message sending (text, video, file),
+  WhatsApp integration via WAHA Pro for SuperSeller AI. Covers message sending (text, video, file),
   session management, OTP authentication, lead notifications, and video delivery.
   Used by Winner Studio (delivery), Lead Pages (notifications), and FB Bot (alerts).
   Use when working on WhatsApp messaging, WAHA, OTP auth, or WhatsApp notifications.
@@ -33,7 +33,7 @@ negativeTrigger:
 - **WAHA is the WhatsApp HTTP API** — not the official Meta Business API. It runs its own session.
 - **Chat ID format**: `{phoneWithCountryCode}@c.us` (e.g., `972501234567@c.us`). Never include `+` or dashes.
 - **Session must be alive** — check `isSessionAlive()` before critical sends. Session name: `WAHA_SESSION` env var.
-- **Two sessions**: `internalBoss` (business notifications/approvals to owner — functions like Slack for the business) and `rensto-whatsapp` (future website chatbot with full knowledge base — big project, not yet started).
+- **Two sessions**: `internalBoss` (business notifications/approvals to owner — functions like Slack for the business) and `superseller-whatsapp` (future website chatbot with full knowledge base — big project, not yet started).
 - **All sends are best-effort** — catch errors, log, return null. Never fail a pipeline because WhatsApp is down.
 - **WAHA is used by all products** — Studio (`WAHA_URL`), Lead Pages (`WAHA_BASE_URL`), FB Bot (`config.shared.wahaUrl`). Env var names differ per app.
 - **OTP TTL is 5 minutes**, max 3 attempts. Stored in Redis key `otp:{phone}`.
@@ -58,8 +58,8 @@ Three consumers:
 | `apps/studio/src/lib/waha.ts` | WAHA client — sendText, sendVideo, sendFile, isSessionAlive (124 lines) |
 | `apps/studio/src/lib/auth.ts` | WhatsApp OTP auth flow (173 lines) |
 | `apps/studio/src/app/api/auth/whatsapp-otp/route.ts` | OTP send endpoint (25 lines) |
-| `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts` | Lead WhatsApp notification (WAHA, env: WAHA_BASE_URL) |
-| `apps/web/rensto-site/src/app/(main)/whatsapp/WhatsAppClient.tsx` | WhatsApp AI Agent product page (680 lines) |
+| `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts` | Lead WhatsApp notification (WAHA, env: WAHA_BASE_URL) |
+| `apps/web/superseller-site/src/app/(main)/whatsapp/WhatsAppClient.tsx` | WhatsApp AI Agent product page (680 lines) |
 
 ## WAHA API Functions
 
@@ -97,7 +97,7 @@ Three consumers:
    → Upsert winner_users (phone, whatsapp_jid, auth_method='whatsapp')
    → Auto-create winner_user_credits (starter tier, 3 credits)
    → Generate 6-digit OTP → Redis (5min TTL, key: otp:{phone})
-   → Send via WAHA: "Rensto Studio login code: {code}"
+   → Send via WAHA: "SuperSeller AI Studio login code: {code}"
    → Return { ok: true }
 
 2. POST /api/auth/verify-otp { phone, code }
@@ -114,9 +114,9 @@ All products use WAHA Pro. Env var names differ by app (historical reasons, not 
 | Variable | Used By | Purpose |
 |----------|---------|---------|
 | `WAHA_URL` | Studio (`apps/studio`) | WAHA server base URL |
-| `WAHA_BASE_URL` | rensto-site (`apps/web/rensto-site`) | WAHA server base URL (lead pages, health check) |
-| `WAHA_API_KEY` | Studio, rensto-site | WAHA Bearer token |
-| `WAHA_SESSION` | Studio, rensto-site | Session name (default: rensto-whatsapp) |
+| `WAHA_BASE_URL` | superseller-site (`apps/web/superseller-site`) | WAHA server base URL (lead pages, health check) |
+| `WAHA_API_KEY` | Studio, superseller-site | WAHA Bearer token |
+| `WAHA_SESSION` | Studio, superseller-site | Session name (default: superseller-whatsapp) |
 | `config.shared.wahaUrl` | FB Bot (`fb marketplace lister/`) | WAHA server URL (read from bot-config.json) |
 
 **Note**: `WAHA_URL` and `WAHA_BASE_URL` point to the same server (`http://172.245.56.50:3000`). The naming differs per app but the value is identical.
@@ -144,11 +144,11 @@ All products use WAHA Pro. Env var names differ by app (historical reasons, not 
 | `isSessionAlive()` returns false | WAHA session expired or server down | Restart WAHA session via admin panel or API |
 | sendVideo returns null | Video URL not accessible from WAHA server | Ensure R2 URL is public or use proxy |
 | OTP not received | Phone number format wrong | Check `phoneToChatId()` — must produce `{countryCode}{number}@c.us` |
-| Lead notification not sent | Missing `WHATSAPP_TOKEN` env var | Set in Vercel dashboard for rensto-site |
+| Lead notification not sent | Missing `WHATSAPP_TOKEN` env var | Set in Vercel dashboard for superseller-site |
 | Rate limit from WAHA | Too many messages in short period | Add delay between sends, check WAHA rate config |
 
 ## References
 
 - NotebookLM 0789acdb — WAHA Pro documentation, session management, API reference
 - Studio codebase: `apps/studio/src/lib/waha.ts`
-- Lead Pages: `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts`
+- Lead Pages: `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts`

@@ -44,7 +44,7 @@
             {
               "id": "id-3",
               "name": "emailRecipient",
-              "value": "service@rensto.com",
+              "value": "shai@superseller.agency",
               "type": "string"
             }
           ]
@@ -240,7 +240,7 @@
     },
     {
       "parameters": {
-        "toRecipients": "=service@rensto.com",
+        "toRecipients": "=shai@superseller.agency",
         "subject": "={{ $json.emailSubject }}",
         "bodyContent": "={{ $json.emailBody }}",
         "additionalFields": {
@@ -266,7 +266,7 @@
       "credentials": {
         "microsoftOutlookOAuth2Api": {
           "id": "EA2Fl9QT5h2HZoo9",
-          "name": "rensto"
+          "name": "superseller"
         }
       }
     },

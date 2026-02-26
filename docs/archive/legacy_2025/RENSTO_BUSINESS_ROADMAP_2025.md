@@ -10,7 +10,7 @@
 ## 🏔️ **BIRD'S EYE VIEW: BUSINESS STRATEGY**
 
 ### **🎯 MISSION STATEMENT**
-**Rensto**: Universal Micro-SaaS Automation Platform that transforms businesses through AI-powered automation, delivering measurable outcomes with subscription-based scalability.
+**SuperSeller AI**: Universal Micro-SaaS Automation Platform that transforms businesses through AI-powered automation, delivering measurable outcomes with subscription-based scalability.
 
 ### **🎯 VISION STATEMENT**
 To become the leading universal automation platform that enables any business to achieve 10x operational efficiency through AI-powered workflows, making advanced automation accessible to businesses of all sizes.
@@ -327,7 +327,7 @@ To become the leading universal automation platform that enables any business to
 
 ## 📞 **CONTACT & UPDATES**
 
-**Document Owner**: Rensto Leadership Team  
+**Document Owner**: SuperSeller AI Leadership Team  
 **Last Review**: January 16, 2025  
 **Next Review**: February 16, 2025  
 **Update Frequency**: Monthly  

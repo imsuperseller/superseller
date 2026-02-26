@@ -13,7 +13,7 @@
 **Impact**: Missing lead qualification, no email capture before purchase
 
 ### 2. Stripe Email Auto-Population
-**Current Behavior**: Creates fake email `customer-{timestamp}@rensto.com` when no email provided  
+**Current Behavior**: Creates fake email `customer-{timestamp}@superseller.agency` when no email provided  
 **Issue**: Shows weird email in Stripe checkout form  
 **Status**: ✅ **FIXED** - Now only creates customer if email provided, otherwise Stripe collects it
 
@@ -65,10 +65,10 @@ Click "Get This Package" → Industry Quiz (Typeform) → Email with recommendat
 
 ### **Recommendation 2: Fix Stripe Email** ✅ COMPLETED
 
-**Status**: ✅ **FIXED** in `apps/web/rensto-site/src/app/api/stripe/checkout/route.ts`
+**Status**: ✅ **FIXED** in `apps/web/superseller-site/src/app/api/stripe/checkout/route.ts`
 
 **Changes Made**:
-- Removed fake email generation (`customer-${Date.now()}@rensto.com`)
+- Removed fake email generation (`customer-${Date.now()}@superseller.agency`)
 - Only creates Stripe customer if email is provided
 - If no email, Stripe checkout collects it naturally
 - Pre-fills `customer_email` if provided but no customer created yet

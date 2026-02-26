@@ -17,7 +17,7 @@
 ## Setup
 
 1. Open Cursor's **integrated terminal** (`` Ctrl+` `` or `View → Terminal`)
-2. Navigate to project root: `cd /Users/shaifriedman/New\ Rensto/rensto` (or you may already be there)
+2. Navigate to project root: `cd /Users/shaifriedman/New\ SuperSeller AI/superseller` (or you may already be there)
 3. Run Claude Code: `claude` (or your CLI command)
 
 Claude Code will have:
@@ -43,7 +43,7 @@ Before making changes, ensure alignment with:
 
 ## Data / Architecture Truth (Feb 2026)
 
-- **Primary DB**: PostgreSQL (Prisma in rensto-site, Drizzle in worker)
+- **Primary DB**: PostgreSQL (Prisma in superseller-site, Drizzle in worker)
 - **Firestore**: Fully removed (Feb 2026). `firebase-admin` kept for Storage only.
 - **Airtable.com**: Retired. **Aitable.ai**: Dashboards/syncs only
 - **n8n**: Backup/reference; Antigravity is primary automation
@@ -61,8 +61,8 @@ Before making changes, ensure alignment with:
 ## Commands
 
 ```bash
-# Rensto-site build
-cd apps/web/rensto-site && npm run build
+# SuperSeller AI-site build
+cd apps/web/superseller-site && npm run build
 
 # Worker (TourReel pipeline)
 cd apps/worker && pnpm run build
@@ -89,7 +89,7 @@ If Qwen gives short/JSON responses instead of doing the work, the rules should s
 
 - Cursor's MCP config ≠ Claude Code's. Configure MCP in Claude Code separately if needed.
 - For offline work: Use Ollama via Claude Code's Ollama MCP.
-- GitHub = source of truth. api.rensto.com auto-deploys from `main`; rensto.com needs manual deploy. See VERCEL_PROJECT_MAP.md.
+- GitHub = source of truth. api.superseller.agency auto-deploys from `main`; superseller.agency needs manual deploy. See VERCEL_PROJECT_MAP.md.
 
 ---
 
@@ -112,7 +112,7 @@ ollama pull qwen3-coder:30b    # More capable, needs more RAM
 
 **2. Launch Claude Code with Ollama (simplest — video method):**
 ```bash
-cd /Users/shaifriedman/New\ Rensto/rensto
+cd /Users/shaifriedman/New\ SuperSeller AI/superseller
 ollama launch claude --config
 ```
 Pick your model when prompted, then launch. Or specify model directly (7B for MacBook):

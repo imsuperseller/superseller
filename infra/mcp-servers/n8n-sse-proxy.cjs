@@ -147,7 +147,7 @@ rl.on('line', async (line) => {
                         tools: {}
                     },
                     serverInfo: {
-                        name: 'n8n-rensto-proxy',
+                        name: 'n8n-superseller-proxy',
                         version: '1.0.0'
                     }
                 }

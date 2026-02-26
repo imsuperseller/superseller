@@ -2,13 +2,13 @@
 
 ## 📋 **OVERVIEW**
 
-Rensto is a comprehensive lead generation platform that consolidates ALL 15+ existing lead generation systems into one powerful, scalable solution. This platform serves both Rensto's internal lead generation needs and provides white-label solutions for external customers.
+SuperSeller AI is a comprehensive lead generation platform that consolidates ALL 15+ existing lead generation systems into one powerful, scalable solution. This platform serves both SuperSeller AI's internal lead generation needs and provides white-label solutions for external customers.
 
 ## 🎯 **UNIFIED LEAD GENERATION MACHINE**
 
 ### **Status**: ✅ **FULLY IMPLEMENTED AND DOCUMENTED**
 
-The **Unified Lead Generation Machine** represents the most comprehensive lead generation platform ever built for the Rensto ecosystem. It consolidates 15+ existing systems into one powerful, scalable platform capable of serving both Rensto's internal needs and external customers.
+The **Unified Lead Generation Machine** represents the most comprehensive lead generation platform ever built for the SuperSeller AI ecosystem. It consolidates 15+ existing systems into one powerful, scalable platform capable of serving both SuperSeller AI's internal needs and external customers.
 
 ### **Key Features:**
 - **Multi-AI Support**: Gemini, Claude, OpenAI integration
@@ -69,12 +69,12 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 
 See **[PORT_REFERENCE.md](PORT_REFERENCE.md)** for the single source of truth. Quick ref:
 
-- **rensto-site** (Next.js): `3002` (package.json sets PORT=3002)
+- **superseller-site** (Next.js): `3002` (package.json sets PORT=3002)
 - **Worker** (TourReel): `3001` when site runs; `3002` when worker-only
 - **n8n Local**: `5678`
 
 ```bash
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npm run dev   # Runs on 3002
 ```
 
@@ -88,14 +88,14 @@ npm run dev   # Runs on 3002
 ### **Installation:**
 ```bash
 # Clone the repository
-git clone https://github.com/rensto/rensto.git
-cd rensto
+git clone https://github.com/superseller/superseller.git
+cd superseller
 
 # Install dependencies
 npm install
 
-# Start the main site (Next.js on Vercel = rensto.com)
-cd apps/web/rensto-site
+# Start the main site (Next.js on Vercel = superseller.agency)
+cd apps/web/superseller-site
 npm install
 npm run dev
 # Site runs on 3002. For video pipeline: also start worker (PORT=3001). See PORT_REFERENCE.md.
@@ -127,8 +127,8 @@ npm run dev
 
 ## 🎯 **USE CASES**
 
-### **Rensto Internal**
-- Generate leads for Rensto services
+### **SuperSeller AI Internal**
+- Generate leads for SuperSeller AI services
 - Customer acquisition and retention
 - Sales pipeline management
 
@@ -160,7 +160,7 @@ npm run dev
 ## 🔧 **DEVELOPMENT**
 
 ### **Core app (main site)**
-- **`apps/web/rensto-site/`** – Next.js app (rensto.com). Live API: **`src/app/api/`**; live admin: **`src/app/admin/`**; pages and components in **`src/app/`**, **`src/components/`**, **`src/lib/`**.
+- **`apps/web/superseller-site/`** – Next.js app (superseller.agency). Live API: **`src/app/api/`**; live admin: **`src/app/admin/`**; pages and components in **`src/app/`**, **`src/components/`**, **`src/lib/`**.
 
 ### **API Endpoints**
 - **20+ RESTful endpoints** for lead generation and management
@@ -206,9 +206,9 @@ npm run dev
 
 ## 🎯 **CONCLUSION**
 
-The **Unified Lead Generation Machine** represents the most comprehensive lead generation platform ever built for the Rensto ecosystem. It consolidates 15+ existing systems into one powerful, scalable platform capable of serving both Rensto's internal needs and external customers.
+The **Unified Lead Generation Machine** represents the most comprehensive lead generation platform ever built for the SuperSeller AI ecosystem. It consolidates 15+ existing systems into one powerful, scalable platform capable of serving both SuperSeller AI's internal needs and external customers.
 
-**This machine is ready for production deployment and represents the future of lead generation for Rensto.** 🚀
+**This machine is ready for production deployment and represents the future of lead generation for SuperSeller AI.** 🚀
 
 ---
 

@@ -11,22 +11,22 @@ GitHub detected the following secrets in your repository. You need to unblock ea
 
 ### **1. Stripe API Key**
 - **Location**: `webflow/IMMEDIATE_FIX_STEPS.md:18`, `webflow/STRIPE_TEST_MODE_VERIFICATION.md:16`
-- **Unblock URL**: https://github.com/imsuperseller/rensto/security/secret-scanning/unblock-secret/34uH5QC1NDfPBtp1ZsxGBOcfvw2
+- **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5QC1NDfPBtp1ZsxGBOcfvw2
 - **Action**: Choose "I'll fix it later"
 
 ### **2. Stripe Test API Restricted Key**
 - **Location**: `webflow/STRIPE_TEST_MODE_FIX.md:22`
-- **Unblock URL**: https://github.com/imsuperseller/rensto/security/secret-scanning/unblock-secret/34uH5NcRspRmvzf2WLCpNR1oBk7
+- **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5NcRspRmvzf2WLCpNR1oBk7
 - **Action**: Choose "I'll fix it later"
 
 ### **3. Stripe Test API Secret Key**
 - **Location**: Multiple files in `webflow/` directory
-- **Unblock URL**: https://github.com/imsuperseller/rensto/security/secret-scanning/unblock-secret/34uH5R98AgVEq2Qcdn7w9y9WGHE
+- **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5R98AgVEq2Qcdn7w9y9WGHE
 - **Action**: Choose "I'll fix it later"
 
 ### **4. Airtable Personal Access Token**
 - **Location**: `claude_desktop_config.json:93`, `docs/security/CREDENTIAL_ROTATION_CHECKLIST.md:75` (now redacted)
-- **Unblock URL**: https://github.com/imsuperseller/rensto/security/secret-scanning/unblock-secret/34uH5SG9wQ1xjfj7uZswQhVgiAy
+- **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5SG9wQ1xjfj7uZswQhVgiAy
 - **Action**: Choose "I'll fix it later"
 
 ---

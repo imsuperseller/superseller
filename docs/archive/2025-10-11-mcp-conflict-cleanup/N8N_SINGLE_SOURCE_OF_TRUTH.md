@@ -4,7 +4,7 @@
 **Date**: January 26, 2025  
 **Status**: ✅ **SINGLE SOURCE OF TRUTH ESTABLISHED & OPTIMIZED**  
 **Purpose**: The ONLY document you need for all n8n workflow creation, management, and optimization  
-**Location**: `/Users/shaifriedman/New Rensto/rensto/N8N_SINGLE_SOURCE_OF_TRUTH.md`  
+**Location**: `/Users/shaifriedman/New SuperSeller AI/superseller/N8N_SINGLE_SOURCE_OF_TRUTH.md`  
 **Last Updated**: January 26, 2025 - Added systematic troubleshooting approach and error patterns
 
 ---
@@ -57,7 +57,7 @@
 ### **Current Production Instance:**
 - **URL**: `http://172.245.56.50:5678`
 - **Version**: 1.112.5 (upgraded from 1.110.1)
-- **Container**: `n8n_rensto`
+- **Container**: `n8n_superseller`
 - **Data Volume**: `n8n_n8n_data` (preserved during upgrade)
 - **Security**: `N8N_SECURE_COOKIE=false` (for HTTP access)
 
@@ -66,7 +66,7 @@
 {
   "n8n-mcp": {
     "command": "docker",
-    "args": ["exec", "n8n_rensto", "n8n", "execute", "workflow"]
+    "args": ["exec", "n8n_superseller", "n8n", "execute", "workflow"]
   }
 }
 ```

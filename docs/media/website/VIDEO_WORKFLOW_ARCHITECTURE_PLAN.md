@@ -2,7 +2,7 @@
 
 **Date**: November 16, 2025  
 **Status**: 🚀 **READY TO IMPLEMENT**  
-**Current Workflow**: `8GC371u1uBQ8WLmu` - "Rensto Website Video Generator" (UGC Machine)
+**Current Workflow**: `8GC371u1uBQ8WLmu` - "SuperSeller AI Website Video Generator" (UGC Machine)
 
 ---
 
@@ -10,13 +10,13 @@
 
 ### **What You Have Now** (`8GC371u1uBQ8WLmu`)
 
-**Workflow Name**: "Rensto Website Video Generator"  
+**Workflow Name**: "SuperSeller AI Website Video Generator"  
 **URL**: http://172.245.56.50:5678/workflow/8GC371u1uBQ8WLmu  
 **Purpose**: Generate Sora 2 prompts from winning Meta Ad Library ads (UGC-style social media ads)
 
 **What It Does**:
 1. **Part 1 (Automated)**: Weekly scrape of Meta Ad Library → Find long-running ads → Store to Boost.space
-2. **Part 2 (Manual/Webhook)**: Analyze video → Generate Rensto-specific Sora 2 prompts → Save to Boost.space
+2. **Part 2 (Manual/Webhook)**: Analyze video → Generate SuperSeller AI-specific Sora 2 prompts → Save to Boost.space
 
 **Current Use Case**: Social media ads, UGC-style testimonials, conversion-focused content
 
@@ -101,7 +101,7 @@ Notify (Slack/Email)
 **Output**:
 - YouTube video URL (unlisted)
 - Video ID for embedding
-- Vercel/Next.js page update (manual - edit `apps/web/rensto-site/src/app/` files)
+- Vercel/Next.js page update (manual - edit `apps/web/superseller-site/src/app/` files)
 
 **Priority**: 🔥 **HIGH** - Needed for all 5 pages
 
@@ -281,7 +281,7 @@ Add to Website (Testimonials section)
 2. Set up batch processing for 16 industries
 3. Build industry-specific script templates
 4. Generate videos for all industries
-5. Update Vercel/Next.js pages (edit files in `apps/web/rensto-site/src/app/`)
+5. Update Vercel/Next.js pages (edit files in `apps/web/superseller-site/src/app/`)
 
 **Deliverable**: 16+ industry hero videos
 
@@ -320,7 +320,7 @@ Add to Website (Testimonials section)
    - YouTube API (upload automation)
 
 4. **Website Integration**:
-   - Vercel/Next.js (edit page files in `apps/web/rensto-site/src/app/`)
+   - Vercel/Next.js (edit page files in `apps/web/superseller-site/src/app/`)
    - CMS updates (for dynamic pages)
 
 ---

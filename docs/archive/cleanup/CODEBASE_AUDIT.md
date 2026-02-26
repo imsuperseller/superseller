@@ -1,4 +1,4 @@
-# Rensto Codebase Master Audit
+# SuperSeller AI Codebase Master Audit
 
 **Date**: February 8, 2026  
 **Purpose**: Single checklist of what to fix, re-organize, optimize, consolidate, remove, or align so the project is unambiguous for you and any future agent.
@@ -11,20 +11,20 @@
 
 ## 1. CRITICAL – Contradicting / outdated docs (fix first)
 
-### 1.1 Architecture: rensto.com → Webflow vs Vercel
+### 1.1 Architecture: superseller.agency → Webflow vs Vercel
 
 | File | Says |
 |------|------|
-| **`.cursorrules`** (root) | rensto.com → **Vercel** (Next.js `apps/web/rensto-site/`). Webflow **archived/inactive**. |
-| **`.cursor/rules.md`** | ~~rensto.com → Webflow~~ → **Updated to Vercel.** |
+| **`.cursorrules`** (root) | superseller.agency → **Vercel** (Next.js `apps/web/superseller-site/`). Webflow **archived/inactive**. |
+| **`.cursor/rules.md`** | ~~superseller.agency → Webflow~~ → **Updated to Vercel.** |
 
-**Action**: ✅ **Done.** `.cursor/rules.md` now matches: rensto.com → Vercel, Webflow archived.
+**Action**: ✅ **Done.** `.cursor/rules.md` now matches: superseller.agency → Vercel, Webflow archived.
 
 ---
 
 ### 1.2 Broken references in CLAUDE.md
 
-- **`docs/BIBLE.md`** – Linked as "Rensto Bible" and canonical docs. **File does not exist.**
+- **`docs/BIBLE.md`** – Linked as "SuperSeller AI Bible" and canonical docs. **File does not exist.**
 - Sub-links: `docs/business/MODEL.md`, `docs/technical/STACK.md`, `docs/design/SYSTEM.md`, `docs/reference/JARGON.md` – **verify these exist** or update/remove the block.
 
 **Action**: ✅ **Done.** Block in CLAUDE.md replaced with pointer to CLAUDE.md, ARCHITECTURE.md, CODEBASE_AUDIT.md.
@@ -116,7 +116,7 @@ Rules refer to:
 
 - `packages/schema`, `services/adapters`, `packages/identity`, `packages/db/migrations`, `tests/integration`, `docs/adr/`, `data/bmad-projects/`
 
-**Action**: If these paths don’t exist, either create minimal structure or rewrite rules to point at actual paths (e.g. `apps/web/rensto-site/`, `firestore/`, `docs/`, `library/`).
+**Action**: If these paths don’t exist, either create minimal structure or rewrite rules to point at actual paths (e.g. `apps/web/superseller-site/`, `firestore/`, `docs/`, `library/`).
 
 ---
 
@@ -137,7 +137,7 @@ Includes `"packages/**/*.ts"` but there is no `packages/` at root.
 
 ## 6. Quick wins (do early)
 
-1. **Fix .cursor/rules.md** – ✅ **Done.** rensto.com → Vercel; Webflow archived.
+1. **Fix .cursor/rules.md** – ✅ **Done.** superseller.agency → Vercel; Webflow archived.
 2. **Fix CLAUDE.md** – ✅ **Done.** BIBLE.md block replaced with canonical doc pointers.
 3. **.cursor/rules.md** – ✅ **Done.** ONE_SOURCE_OF_TRUTH → CLAUDE.md; MCP ref → MCP_CONFIGURATION_STATUS.md.
 4. **Delete or document** the root file named `=`. ✅ **Done.** Deleted (was empty).
@@ -194,7 +194,7 @@ Use this order when reviewing **all** folders and files so that the highest-impa
 |---|------|----------------|----------------------|
 | **1** | **`.cursor/`** | Every agent reads rules, context, MCP status. Wrong here = wrong everywhere. | `AGENT_CONTEXT.md`, `rules.md`, `rules/*.mdc`, `MCP_CONFIGURATION_STATUS.md`, `SETUP_COMPLETE.md`, `context.json`. No contradicting rules; links point to existing files; dates/status current. |
 | **2** | **Root config + canonical docs** | Single source of truth and repo-wide config. | `.cursorrules`, `.cursorignore`, `.gitignore`, `.env.example`, `tsconfig.json`, `package.json`, `ARCHITECTURE.md`, `CLAUDE.md`, `CODEBASE_AUDIT.md`, `README.md`. Align with each other; no stale links; no duplicate “truth” in two places. |
-| **3** | **`apps/web/rensto-site/`** | The app that ships (Vercel). Revenue and users depend on it. | `src/app/`, `src/components/`, `src/lib/`, `public/`. Then `api-backup/`, `temp-backup/`, `org-backup/`, `scripts/`, `n8n/`, `data/`, `prisma/` — identify dead/backup vs active; consolidate or archive. Root-level `.js`/`.md` (e.g. `list_clients.js`, `PRODUCTION_SETUP.md`) — still needed or move/remove. |
+| **3** | **`apps/web/superseller-site/`** | The app that ships (Vercel). Revenue and users depend on it. | `src/app/`, `src/components/`, `src/lib/`, `public/`. Then `api-backup/`, `temp-backup/`, `org-backup/`, `scripts/`, `n8n/`, `data/`, `prisma/` — identify dead/backup vs active; consolidate or archive. Root-level `.js`/`.md` (e.g. `list_clients.js`, `PRODUCTION_SETUP.md`) — still needed or move/remove. |
 | **4** | **`infra/`** | MCP servers, n8n scripts, migrations, workflow JSONs. Automation and deploy. | `n8n-scripts/` (canonical vs archive clear), `migrations/`, `mcp-servers/` (each server’s README and config), `workflow-artifacts/`, `reference/`. **infra root:** many `*_WORKFLOW.json`, `unified_marketplace_*.json` — pick one production source; archive or remove the rest; add one-line README. `archive/`, `logging-database/`, `saas-frontend/`, `video-merge/`, `design-tools/`, `waha/`, `systemd/` — no outdated or conflicting instructions. |
 | **5** | **`library/`** | Reference workflows and configs. Wrong names or duplicates confuse agents. | `client-workflows/` — naming consistent; which are current vs legacy. `legacy_data/` — many JSON configs (notion, sync, webflow, etc.); any redundant or superseded; one canonical per purpose. `solution-data/` — CSVs and usage clear. |
 | **6** | **`legal-pages/`** | Already consolidated; quick pass. | Only canonical files at top level; `archive/` for variants only; `COMPLIANCE.md` matches. |

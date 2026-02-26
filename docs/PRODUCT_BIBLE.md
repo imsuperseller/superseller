@@ -1,6 +1,6 @@
 # 📦 PRODUCT BIBLE
 
-> **Single source of truth for Rensto products and services** (SaaS billing, agents, service offerings).
+> **Single source of truth for SuperSeller AI products and services** (SaaS billing, agents, service offerings).
 > For overall authority precedence, see [`brain.md`](../brain.md).
 > **Rule**: Products are defined as **Agents** or **Applets**. Logic is programmatic; n8n is for prototypes only.
 
@@ -9,17 +9,17 @@
 ## 🎨 Design System & Visual Tokens
 
 ### Core Design Tokens — "Spotlight Dark Mode"
-These tokens are the canonical source for all Rensto web applications (Next.js/React).
-Verified against `apps/web/rensto-site/src/app/globals.css` and NotebookLM 286f3e4a + 719854ee.
+These tokens are the canonical source for all SuperSeller AI web applications (Next.js/React).
+Verified against `apps/web/superseller-site/src/app/globals.css` and NotebookLM 286f3e4a + 719854ee.
 ```css
---rensto-bg-primary: #110d28
---rensto-bg-secondary: #1a1145
---rensto-text: #E5E7EB
---rensto-muted: #94A3B8
---rensto-red: #fe3d51          /* Primary brand red */
---rensto-orange: #bf5700       /* Secondary orange */
---rensto-blue: #1eaef7         /* Accent blue */
---rensto-cyan: #5ffbfd         /* Accent cyan */
+--superseller-bg-primary: #110d28
+--superseller-bg-secondary: #1a1145
+--superseller-text: #E5E7EB
+--superseller-muted: #94A3B8
+--superseller-red: #fe3d51          /* Primary brand red */
+--superseller-orange: #bf5700       /* Secondary orange */
+--superseller-blue: #1eaef7         /* Accent blue */
+--superseller-cyan: #5ffbfd         /* Accent cyan */
 --border: rgba(255,255,255,0.08)
 --radius: 1rem
 --shadow: 0 10px 30px rgba(0,0,0,0.25)
@@ -64,12 +64,12 @@ All products must align with one of these tactical pillars:
 *   **Logic**: `apps/studio/` (standalone Next.js app)
 *   **Architecture**: Audio upload → Gemini Brain (5-in-1: script, prompt, model router, music, quality) → Kie.ai (`avatar-pro` primary, `kling-3.0/video` fallback) → R2 storage → WhatsApp delivery via WAHA.
 *   **Credit Cost**: 50 credits/video (same as TourReel).
-*   **Status**: LIVE — pipeline verified Feb 19, 2026. `studio.rensto.com`.
+*   **Status**: LIVE — pipeline verified Feb 19, 2026. `studio.superseller.agency`.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §1, `.claude/skills/winner-studio/SKILL.md`.
 
 ### 📄 Lead Landing Pages
-*   **Target**: Any Rensto customer needing a branded lead capture page.
-*   **Logic**: `apps/web/rensto-site/src/app/lp/[slug]/` (SSR + client component)
+*   **Target**: Any SuperSeller AI customer needing a branded lead capture page.
+*   **Logic**: `apps/web/superseller-site/src/app/lp/[slug]/` (SSR + client component)
 *   **Architecture**: Dynamic `/lp/[slug]` → Prisma lookup → branded page (colors, logo, font, RTL/LTR) → lead form → `POST /api/leads/landing-page` → Lead record + WhatsApp (WAHA) + email (Resend) notifications.
 *   **Status**: Infrastructure COMPLETE. Customer implementations in separate repos.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §4, `.claude/skills/lead-pages/SKILL.md`.
@@ -82,7 +82,7 @@ All products must align with one of these tactical pillars:
 *   **Source of Truth**: `.claude/skills/frontdesk-voice/SKILL.md`.
 
 ### 🔬 AgentForge (Internal Research Tool)
-*   **Target**: Internal use only — powers Rensto's own development workflow.
+*   **Target**: Internal use only — powers SuperSeller AI's own development workflow.
 *   **Logic**: `agentforge/` (spec only, code not started)
 *   **Architecture**: Multi-stage AI research pipeline (business discovery → design analysis → market research → deliverable packaging).
 *   **Status**: Spec only. Decision: keep internal, not customer-facing.
@@ -149,4 +149,4 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 4. Active → Retention (Lifecycle) ❌ Not built
 
 ### Admin Portal
-admin.rensto.com. Next.js, Tailwind, shadcn/ui. Auth: magic-link for ADMIN_EMAILS (service@rensto.com, admin@rensto.com). 14 tabs including dashboard, CRM, treasury, analytics, AI agents, support queue, launch control.
+admin.superseller.agency. Next.js, Tailwind, shadcn/ui. Auth: magic-link for ADMIN_EMAILS (shai@superseller.agency, shai@superseller.agency). 14 tabs including dashboard, CRM, treasury, analytics, AI agents, support queue, launch control.

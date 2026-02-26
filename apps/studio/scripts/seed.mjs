@@ -58,7 +58,7 @@ async function seed() {
     // Seed Shai Friedman (admin)
     const shai = await client.query(
       `INSERT INTO winner_users (tenant_id, name, email, phone, whatsapp_jid, auth_method, tier)
-       VALUES ('mivnim', 'Shai Friedman', 'service@rensto.com', '+14695885133', '14695885133@c.us', 'email', 'elite')
+       VALUES ('mivnim', 'Shai Friedman', 'shai@superseller.agency', '+14695885133', '14695885133@c.us', 'email', 'elite')
        ON CONFLICT DO NOTHING
        RETURNING id`
     );

@@ -13,7 +13,7 @@
 
 > [!NOTE]
 > **Database Stack**: 
-> - **Primary (Web)**: Prisma + PostgreSQL (apps/web/rensto-site/prisma/schema.prisma).
+> - **Primary (Web)**: Prisma + PostgreSQL (apps/web/superseller-site/prisma/schema.prisma).
 > - **Video Worker**: Drizzle + PostgreSQL (apps/worker-packages/db/src/schema.ts).
 > - Both use the same `DATABASE_URL`. Shared tables like `User` must be manually synced.
 
@@ -33,7 +33,7 @@
 > 5. If docs say "we don't have this yet" → OMIT the section
 > 6. Cite source in seed scripts (which doc, which section)
 > **Violation history**: Past violations include fabricated testimonials despite docs explicitly stating content didn't exist. See `findings.md` for full history and prevention checklist.
-> **Note**: Customer-specific content lives in separate private repositories, not in the Rensto codebase.
+> **Note**: Customer-specific content lives in separate private repositories, not in the SuperSeller AI codebase.
 
 ---
 
@@ -66,13 +66,13 @@
 
 | Layer | Stack |
 |-------|-------|
-| **Web** | Next.js 14+ (rensto-site), Vercel |
+| **Web** | Next.js 14+ (superseller-site), Vercel |
 | **Worker** | Node.js, BullMQ, FFmpeg (Auto-updated), Kie.ai (Kling 3.0 & Nano Banana), R2 |
 | **RAG** | Ollama nomic-embed-text (768-dim) + pgvector 0.8.1 HNSW |
 | **Automation** | Antigravity (primary), n8n (backup) |
 | **Database** | PostgreSQL + pgvector (Prisma + Drizzle), Redis |
 
-**Key paths**: `apps/web/rensto-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`, `fb marketplace lister/deploy-package/`.
+**Key paths**: `apps/web/superseller-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`, `fb marketplace lister/deploy-package/`.
 
 ---
 
@@ -81,9 +81,9 @@
 ### URLs
 | Service | URL |
 |---------|-----|
-| rensto.com | https://rensto.com |
-| admin | https://admin.rensto.com |
-| n8n | https://n8n.rensto.com |
+| superseller.agency | https://superseller.agency |
+| admin | https://admin.superseller.agency |
+| n8n | https://n8n.superseller.agency |
 | Vercel | https://vercel.com/dashboard |
 
 ### Key Files
@@ -94,12 +94,12 @@
 | **Vercel deploy** | `VERCEL_PROJECT_MAP.md` — domain → project, auto-deploy vs manual |
 | **Ports** | `PORT_REFERENCE.md` — site 3002, worker 3001 (local both) or 3002 (RackNerd) |
 | TourReel Spec | NotebookLM 0baf5f36 |
-| Prisma Schema | `apps/web/rensto-site/prisma/schema.prisma` |
+| Prisma Schema | `apps/web/superseller-site/prisma/schema.prisma` |
 | Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |
 | **Data Dictionary** | `docs/DATA_DICTIONARY.md` — where every entity lives, sync rules, mismatches |
 | **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
-| Credits Logic | `apps/web/rensto-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
-| **Cost Tracking** | `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
+| Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
+| **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
 | Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.02, Nano $0.05, Gemini $0.001 — see tourreel-pipeline SKILL.md |
 | FB Bot Config | `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
 | FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
@@ -129,9 +129,9 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 
 ## 6. Build / Deploy / Test Commands
 
-### Web (apps/web/rensto-site)
+### Web (apps/web/superseller-site)
 ```bash
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npm run dev              # Local dev on port 3002
 npm run build            # prisma generate + next build
 npm run lint             # Next.js lint
@@ -140,7 +140,7 @@ npm run db:push          # Push schema to DB
 npm run test:credits     # Credit system test
 npm run test:e2e         # Playwright E2E tests
 ```
-**Deploy**: `git push` auto-deploys `api.rensto.com`. For `rensto.com`: run `cd apps/web/rensto-site && vercel --prod` (requires VERCEL_TOKEN in environment).
+**Deploy**: `git push` auto-deploys `api.superseller.agency`. For `superseller.agency`: run `cd apps/web/superseller-site && vercel --prod` (requires VERCEL_TOKEN in environment).
 
 ### Worker (apps/worker)
 ```bash
@@ -157,7 +157,7 @@ Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.24
 
 ### Health Checks
 ```bash
-curl -s https://rensto.com/api/health          # Web
+curl -s https://superseller.agency/api/health          # Web
 curl -s http://172.245.56.50:3002/api/health   # Worker
 curl -s http://172.245.56.50:11434/api/tags    # Ollama
 curl -s http://172.245.56.50:8082/health       # FB Marketplace Bot

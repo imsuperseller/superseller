@@ -1,4 +1,4 @@
-# Product Spec Template — Rensto SaaS
+# Product Spec Template — SuperSeller AI SaaS
 
 **Version**: 1.0  
 **Purpose**: Reusable structure for product PRDs. Use for video products (TourReel, Winner), non-video products, and different niches.

@@ -9,7 +9,7 @@
 
 AgentForge is a Next.js web application that automates the research, design, architecture, and code generation phases of web development projects. A user submits a client intake form, and the system runs a 6-stage AI pipeline (powered by Claude API with web search) that produces research reports, design specs, architecture plans, and production-ready starter code.
 
-**Owner:** SuperSeller Agency (rensto.com)
+**Owner:** SuperSeller Agency (superseller.agency)
 **Primary User:** Agency developer (solo operator handling multiple client projects)
 **Core Value Prop:** Turn a 15-40 hour manual research+development process into a 3-5 minute automated pipeline
 

@@ -3,7 +3,7 @@ import * as api from './n8n-api.js';
 
 async function enableMcp(workflowId) {
     try {
-        const config = getConfig('rensto');
+        const config = getConfig('superseller');
 
         console.log(`🔍 Fetching full workflow: ${workflowId}`);
         const workflow = await api.getWorkflow(config, workflowId);
@@ -42,7 +42,7 @@ async function enableMcp(workflowId) {
 }
 
 const targetWorkflows = [
-    '0gU5vRLIcrGhnPA0', // Rensto Master Controller
+    '0gU5vRLIcrGhnPA0', // SuperSeller AI Master Controller
     '1LWTwUuN6P6uq2Ha', // Multi-Customer AI Agent
     '0Ss043Wge5zasNWy', // Cold Outreach Lead Machine v2
 ];

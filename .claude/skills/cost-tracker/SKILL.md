@@ -1,7 +1,7 @@
 ---
 name: cost-tracker
 description: >-
-  API cost and expense tracking for Rensto. Covers trackExpense() calls, per-service
+  API cost and expense tracking for SuperSeller AI. Covers trackExpense() calls, per-service
   cost rates, api_expenses table, anomaly detection, session cost tables in progress.md,
   and monthly budget tracking. MANDATORY per CLAUDE.md — every API generation must log cost.
   Use when logging costs, checking expenses, tracking API spend, or adding cost tracking
@@ -63,9 +63,9 @@ negativeTrigger:
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` | Web-side expense tracking (Prisma, 191 lines) |
+| `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` | Web-side expense tracking (Prisma, 191 lines) |
 | `apps/worker/src/services/expense-tracker.ts` | Worker-side expense tracking (raw SQL, non-blocking) |
-| `apps/web/rensto-site/prisma/schema.prisma` | ApiExpense model definition |
+| `apps/web/superseller-site/prisma/schema.prisma` | ApiExpense model definition |
 | `apps/worker/src/queue/workers/video-pipeline.worker.ts` | trackExpense() wired into all API calls |
 | `apps/worker/src/utils/retry.ts` | withRetry() — exponential backoff for external APIs |
 | `apps/studio/src/lib/pipeline.ts` | Studio pipeline — needs cost tracking |

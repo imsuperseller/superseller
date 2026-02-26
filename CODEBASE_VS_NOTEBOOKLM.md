@@ -17,7 +17,7 @@ When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If 
 
 | Category | Examples |
 |----------|----------|
-| **File paths** | `apps/web/rensto-site/`, `apps/worker/`, `prisma/schema.prisma` |
+| **File paths** | `apps/web/superseller-site/`, `apps/worker/`, `prisma/schema.prisma` |
 | **Env vars** | `DATABASE_URL`, `KIE_API_KEY`, `STRIPE_SECRET_KEY` |
 | **Router docs** | `brain.md`, `CLAUDE.md` — minimal routers that point to notebooks |
 | **Bibles** | `docs/INFRA_SSOT.md`, `docs/PRODUCT_BIBLE.md` — infrastructure and product facts needed for builds and deploys |
@@ -54,7 +54,7 @@ When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If 
 | **286f3e4a** | Stitch — design system, assets |
 | **3e820274** | Kie.ai — API docs |
 | **fc048ba8** | Master: Automation & Core Infra — Antigravity, n8n, automation workflows |
-| **719854ee** | rensto website — main site, business model, subscription tiers |
+| **719854ee** | superseller website — main site, business model, subscription tiers |
 | **b906e69f** | Claude Code — Claude Code mastery, agentic workflows, tooling |
 | **f0747c8b** | prd template — **LEGACY** (different product version, do not use for current TourReel) |
 
@@ -84,4 +84,4 @@ These were archived to `infra/archive/worker-docs-in-notebooklm-2026-02/` becaus
 
 Also archived (stale):
 
-- `apps/web/rensto-site/src/app/video/create/CONFLICT_ANALYSIS.md` — said floorplan/realtor were removed; they are now required/optional again.
+- `apps/web/superseller-site/src/app/video/create/CONFLICT_ANALYSIS.md` — said floorplan/realtor were removed; they are now required/optional again.

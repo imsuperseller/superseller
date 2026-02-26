@@ -1,6 +1,6 @@
 # 🎛️ Admin Portal
 
-> **Source of Truth for the Rensto Admin Dashboard at `/control`.**
+> **Source of Truth for the SuperSeller AI Admin Dashboard at `/control`.**
 
 ---
 

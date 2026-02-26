@@ -12,7 +12,7 @@ curl -X POST https://api.render.com/v1/services \
   -H "Authorization: Bearer $RENDER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "rensto-lightrag",
+    "name": "superseller-lightrag",
     "type": "web_service",
     "env": "docker",
     "image": "ghcr.io/hkuds/lightrag:latest",
@@ -25,7 +25,7 @@ curl -X POST https://api.render.com/v1/services \
 
 # Configure GitHub webhook
 echo "🔗 Configuring GitHub webhook..."
-curl -X POST https://api.github.com/repos/rensto/business-intelligence/hooks \
+curl -X POST https://api.github.com/repos/superseller/business-intelligence/hooks \
   -H "Authorization: token $GITHUB_TOKEN" \
   -H "Accept: application/vnd.github.v3+json" \
   -d '{

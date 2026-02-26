@@ -220,7 +220,7 @@
     },
     {
       "parameters": {
-        "fromEmail": "service@rensto.com",
+        "fromEmail": "shai@superseller.agency",
         "toEmail": "={{ $input.all()[0].json.email }}",
         "subject": "Generation Error",
         "options": {}

@@ -1,9 +1,9 @@
 ---
 name: agentforge
 description: >
-  AgentForge multi-stage AI research pipeline for Rensto SaaS.
+  AgentForge multi-stage AI research pipeline for SuperSeller AI SaaS.
   Covers business discovery, design analysis, market research, and deliverable packaging.
-  Integrated within rensto-site using Antigravity orchestration, BullMQ, and credit billing.
+  Integrated within superseller-site using Antigravity orchestration, BullMQ, and credit billing.
   Use when working on AgentForge, website intelligence, client proposals, research pipeline,
   or multi-stage AI processing. Not for video pipeline, UI design, or n8n workflows.
   Example: "Add a new research stage to AgentForge" or "Wire AgentForge credits".
@@ -28,7 +28,7 @@ Use when working on AgentForge research pipeline, adding/modifying pipeline stag
 
 ## Critical Rules
 1. **AgentForge is a RESEARCH product, NOT a web builder.** It generates business intelligence reports (discovery, design analysis, market research). Code generation was deliberately removed — v0/Bolt/Lovable own that space.
-2. **It lives INSIDE `apps/web/rensto-site/`, NOT as a separate app.** Routes at `/dashboard/agentforge/`, API at `/api/agentforge/`. Uses the existing Prisma schema, auth, and credit system. Never create a separate Next.js project.
+2. **It lives INSIDE `apps/web/superseller-site/`, NOT as a separate app.** Routes at `/dashboard/agentforge/`, API at `/api/agentforge/`. Uses the existing Prisma schema, auth, and credit system. Never create a separate Next.js project.
 3. **All Claude API calls are SERVER-SIDE only.** API routes call Anthropic SDK. Never expose API keys to the browser. The original `agentforge.jsx` had this bug — do not repeat it.
 4. **Use BullMQ for pipeline orchestration.** Same pattern as TourReel: queue job → worker processes stages sequentially → poll for progress. Never run multi-minute pipelines synchronously in API routes.
 5. **Credit-gated.** Every pipeline run deducts credits. Check before starting, deduct on completion. Use existing credit system (`src/lib/credits.ts`).
@@ -39,7 +39,7 @@ Use when working on AgentForge research pipeline, adding/modifying pipeline stag
 ### Product Tiers
 | Product | What Customer Gets | Credit Cost | Target |
 |---------|-------------------|-------------|--------|
-| **Option A: Internal Tool** | Automated client proposal for Rensto sales team | 0 (internal) | Rensto staff |
+| **Option A: Internal Tool** | Automated client proposal for SuperSeller AI sales team | 0 (internal) | SuperSeller AI staff |
 | **Option B: Website Intelligence Report** | Branded PDF — discovery + competitive analysis + design recs | 50-100 credits | SMB owners, marketers, freelancers |
 
 Option A ships first (internal efficiency). Option B ships second (revenue product).
@@ -61,14 +61,14 @@ Option A ships first (internal efficiency). Option B ships second (revenue produ
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `apps/web/rensto-site/src/app/dashboard/agentforge/page.tsx` | Dashboard UI — intake form + pipeline progress | NOT YET CREATED |
-| `apps/web/rensto-site/src/app/api/agentforge/run/route.ts` | Start pipeline run (creates BullMQ job) | NOT YET CREATED |
-| `apps/web/rensto-site/src/app/api/agentforge/status/[runId]/route.ts` | Poll pipeline progress | NOT YET CREATED |
-| `apps/web/rensto-site/src/app/api/agentforge/deliverables/[runId]/route.ts` | Fetch completed deliverables | NOT YET CREATED |
-| `apps/web/rensto-site/src/lib/agentforge/pipeline.ts` | Pipeline orchestrator (stage sequencing, context passing) | NOT YET CREATED |
-| `apps/web/rensto-site/src/lib/agentforge/stages/*.ts` | Individual stage executors (discovery, design, market, deliverables) | NOT YET CREATED |
-| `apps/web/rensto-site/src/lib/agentforge/prompts.ts` | Prompt templates (in-code for v1, DB for v2 A/B testing) | NOT YET CREATED |
-| `apps/web/rensto-site/prisma/schema.prisma` | Add AgentForge models to EXISTING schema | EXISTS (no AF models yet) |
+| `apps/web/superseller-site/src/app/dashboard/agentforge/page.tsx` | Dashboard UI — intake form + pipeline progress | NOT YET CREATED |
+| `apps/web/superseller-site/src/app/api/agentforge/run/route.ts` | Start pipeline run (creates BullMQ job) | NOT YET CREATED |
+| `apps/web/superseller-site/src/app/api/agentforge/status/[runId]/route.ts` | Poll pipeline progress | NOT YET CREATED |
+| `apps/web/superseller-site/src/app/api/agentforge/deliverables/[runId]/route.ts` | Fetch completed deliverables | NOT YET CREATED |
+| `apps/web/superseller-site/src/lib/agentforge/pipeline.ts` | Pipeline orchestrator (stage sequencing, context passing) | NOT YET CREATED |
+| `apps/web/superseller-site/src/lib/agentforge/stages/*.ts` | Individual stage executors (discovery, design, market, deliverables) | NOT YET CREATED |
+| `apps/web/superseller-site/src/lib/agentforge/prompts.ts` | Prompt templates (in-code for v1, DB for v2 A/B testing) | NOT YET CREATED |
+| `apps/web/superseller-site/prisma/schema.prisma` | Add AgentForge models to EXISTING schema | EXISTS (no AF models yet) |
 
 ### Integration Flow
 ```

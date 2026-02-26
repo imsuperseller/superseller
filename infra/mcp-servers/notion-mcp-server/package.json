@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["notion", "mcp", "server"],
-  "author": "Rensto",
+  "author": "SuperSeller AI",
   "license": "ISC",
-  "description": "Notion MCP Server for Rensto Business Operations",
+  "description": "Notion MCP Server for SuperSeller AI Business Operations",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
     "@notionhq/client": "^5.1.0"

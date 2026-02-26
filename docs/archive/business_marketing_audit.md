@@ -1,7 +1,7 @@
-# Rensto Business & Marketing Audit (Dec 2025)
+# SuperSeller AI Business & Marketing Audit (Dec 2025)
 
 ## Overview
-Rensto has built a world-class foundation using psychological framing (Gatekeeper model) and a standardized $X97 pricing engine. However, there are critical gaps in the conversion funnel and technical marketing setup that prevent it from reaching "Full Autonomy."
+SuperSeller AI has built a world-class foundation using psychological framing (Gatekeeper model) and a standardized $X97 pricing engine. However, there are critical gaps in the conversion funnel and technical marketing setup that prevent it from reaching "Full Autonomy."
 
 ---
 
@@ -14,7 +14,7 @@ Rensto has built a world-class foundation using psychological framing (Gatekeepe
 - **Recommendation**: Implement a multi-step Typeform-like intake engine that branches based on industry (Legal, Healthcare, etc.).
 
 ### [OPPORTUNITY] Multilingual Dominance
-- **Finding**: Rensto services a significant Hebrew-speaking founder base (Tax4Us, MLH Law, Ardan).
+- **Finding**: SuperSeller AI services a significant Hebrew-speaking founder base (Tax4Us, MLH Law, Ardan).
 - **Reality**: The site is 100% English.
 - **Impact**: Missed opportunity for organic "Local SEO" in the Israeli and Hebrew-speaking US market.
 - **Recommendation**: Launch a `/he` landing page with localized case studies.

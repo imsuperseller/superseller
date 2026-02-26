@@ -1,7 +1,7 @@
 ---
 name: monitoring-alerts
 description: >-
-  Production monitoring, health checks, alerting, and system observability for Rensto.
+  Production monitoring, health checks, alerting, and system observability for SuperSeller AI.
   Covers 11 monitored services, alert rules with cooldowns, health check persistence,
   uptime tracking, and the System Monitor admin tab. Use when working on health checks,
   alerts, service monitoring, uptime, system status, or the monitoring admin UI.
@@ -56,14 +56,14 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` | 11 service definitions with check functions (256 lines) |
-| `apps/web/rensto-site/src/lib/monitoring/health-checker.ts` | Health check runner, persistence, uptime calc (183 lines) |
-| `apps/web/rensto-site/src/lib/monitoring/alert-engine.ts` | Alert evaluation, cooldowns, firing, auto-resolve (247 lines) |
-| `apps/web/rensto-site/src/app/api/health/check/route.ts` | Public + admin health endpoint |
-| `apps/web/rensto-site/src/app/api/admin/health-check/route.ts` | Admin-only detailed health check |
-| `apps/web/rensto-site/src/app/api/admin/monitoring/route.ts` | Monitoring data API |
-| `apps/web/rensto-site/src/app/api/admin/alerts/route.ts` | Alert configuration API |
-| `apps/web/rensto-site/src/components/admin/SystemMonitoring.tsx` | System Monitor admin tab (158+ lines) |
+| `apps/web/superseller-site/src/lib/monitoring/service-registry.ts` | 11 service definitions with check functions (256 lines) |
+| `apps/web/superseller-site/src/lib/monitoring/health-checker.ts` | Health check runner, persistence, uptime calc (183 lines) |
+| `apps/web/superseller-site/src/lib/monitoring/alert-engine.ts` | Alert evaluation, cooldowns, firing, auto-resolve (247 lines) |
+| `apps/web/superseller-site/src/app/api/health/check/route.ts` | Public + admin health endpoint |
+| `apps/web/superseller-site/src/app/api/admin/health-check/route.ts` | Admin-only detailed health check |
+| `apps/web/superseller-site/src/app/api/admin/monitoring/route.ts` | Monitoring data API |
+| `apps/web/superseller-site/src/app/api/admin/alerts/route.ts` | Alert configuration API |
+| `apps/web/superseller-site/src/components/admin/SystemMonitoring.tsx` | System Monitor admin tab (158+ lines) |
 
 ## Monitored Services (11)
 
@@ -72,7 +72,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 |---------|-------|-----------|-------------------|
 | PostgreSQL | `SELECT 1` via Prisma | 2000ms | 2 consecutive |
 | Video Worker | `http://172.245.56.50:3002/api/health` | 5000ms | 2 consecutive |
-| Vercel Self | `https://rensto.com/api/health/check` | 3000ms | 2 consecutive |
+| Vercel Self | `https://superseller.agency/api/health/check` | 3000ms | 2 consecutive |
 | Ollama | `http://172.245.56.50:11434/api/tags` | 5000ms | 3 consecutive |
 
 ### APIs (6)
@@ -83,7 +83,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 | Resend | `https://api.resend.com/domains` (Bearer) | 5000ms | 3 consecutive |
 | Stripe | `https://api.stripe.com/v1/balance` (Bearer) | 5000ms | 2 consecutive |
 | Aitable Sync | `aitable.ai/fusion/v1/spaces` (counts unsynced, 50+ = degraded) | 10000ms | 3 consecutive |
-| n8n Backup | `https://n8n.rensto.com/healthz` | 10000ms | 5 consecutive |
+| n8n Backup | `https://n8n.superseller.agency/healthz` | 10000ms | 5 consecutive |
 
 ### Database (1)
 | Service | Check | Notes |
@@ -152,4 +152,4 @@ await cleanupOldRecords(30);
 
 - NotebookLM 02c3946b — AI Cost & Performance benchmarks
 - `INFRA_SSOT.md` — Service inventory, expected endpoints
-- Admin tab: System Monitor in `rensto.com/admin`
+- Admin tab: System Monitor in `superseller.agency/admin`

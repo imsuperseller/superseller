@@ -22,14 +22,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd web/rensto-site
+          cd web/superseller-site
           npm ci
 
       - name: Check for TODO/FIXME comments
         id: todo-check
         run: |
           echo "Checking for TODO/FIXME comments..."
-          TODO_COUNT=$(grep -r "TODO\|FIXME" web/rensto-site/src --include="*.tsx" --include="*.ts" --include="*.js" | wc -l)
+          TODO_COUNT=$(grep -r "TODO\|FIXME" web/superseller-site/src --include="*.tsx" --include="*.ts" --include="*.js" | wc -l)
           echo "Found $TODO_COUNT TODO/FIXME comments"
           echo "todo_count=$TODO_COUNT" >> $GITHUB_OUTPUT
           
@@ -74,7 +74,7 @@ jobs:
           echo "Checking for unimplemented features..."
           
           # Check for placeholder content
-          PLACEHOLDER_COUNT=$(grep -r "placeholder\|TODO\|FIXME\|NOT IMPLEMENTED" web/rensto-site/src --include="*.tsx" --include="*.ts" | wc -l)
+          PLACEHOLDER_COUNT=$(grep -r "placeholder\|TODO\|FIXME\|NOT IMPLEMENTED" web/superseller-site/src --include="*.tsx" --include="*.ts" | wc -l)
           echo "Found $PLACEHOLDER_COUNT placeholder/unimplemented items"
           echo "placeholder_count=$PLACEHOLDER_COUNT" >> $GITHUB_OUTPUT
           
@@ -102,7 +102,7 @@ jobs:
         id: quality-check
         run: |
           echo "Running code quality checks..."
-          cd web/rensto-site
+          cd web/superseller-site
           
           # Run ESLint
           npm run lint || echo "⚠️ ESLint issues found"

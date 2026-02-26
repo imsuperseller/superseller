@@ -1,4 +1,4 @@
-# 🏷️ Rensto n8n Workflow Tagging Strategy
+# 🏷️ SuperSeller AI n8n Workflow Tagging Strategy
 
 ## Overview
 Total workflows on instance: **119**
@@ -11,12 +11,12 @@ Total workflows on instance: **119**
 
 | Issue | Duplicates | Recommendation |
 | :--- | :--- | :--- |
-| **Master Controller** | `Rensto Master Controller` vs `Rento Master Controller` (typo) vs `Rensto Fulfillment Orchestrator` | Keep one, archive others |
+| **Master Controller** | `SuperSeller AI Master Controller` vs `Rento Master Controller` (typo) vs `SuperSeller AI Fulfillment Orchestrator` | Keep one, archive others |
 | **Youtuber Cloner** | `Youtuber Cloner` vs `Youtuber Cloner zamir cohen` | Merge if same logic, or tag one as customer-specific |
 | **WhatsApp Router** | `INT-WHATSAPP-ROUTER-OPTIMIZED` vs `INT-WHATSAPP-ROUTER-MODERN` | Keep "Optimized" (active), archive "Modern" (inactive) |
 | **Celebrity Generator** | Two `🎬 Celebrity Selfie Movie Sets Generator` (same emoji!) | Identical names, check if duplicate |
 | **UAD Garage Doors** | `UAD Garage Doors - Bot Interface API` vs `UAD v2 - Bot Interface API` vs `uad Garage Door FB Marketplace Listing Generator - MASTER FINAL` | Consolidate to "MASTER FINAL" |
-| **PDF Upload** | 3 separate "PDF and Text File Upload to Google Gemini..." workflows for rensto/meatpoint/tax4us | Could be one parameterized workflow |
+| **PDF Upload** | 3 separate "PDF and Text File Upload to Google Gemini..." workflows for superseller/meatpoint/tax4us | Could be one parameterized workflow |
 | **Marketing Agency** | Multiple `Marketing Agency #1/2/3a/3b/3c` workflows | Could be consolidated into one multi-step workflow |
 | **OPS-SZEN** | `OPS-SZEN-001: Ops-Szen Operations Manager v2` - **I created this** | May be redundant with existing Terry or monitoring workflows |
 
@@ -27,7 +27,7 @@ Total workflows on instance: **119**
 ### 1. Owner Context (WHO owns this?)
 | Tag | Meaning | Examples |
 | :--- | :--- | :--- |
-| `owner:rensto` | Internal Rensto infrastructure | Master Controller, Terry, Dashboard |
+| `owner:superseller` | Internal SuperSeller AI infrastructure | Master Controller, Terry, Dashboard |
 | `owner:customer` | Customer-specific workflows | Tax4US, UAD, Miss Party |
 | `owner:prospect` | Demo or prospecting workflows | Venturity, Meatpoint demos |
 
@@ -78,12 +78,12 @@ Total workflows on instance: **119**
 
 ## 📊 Complete Workflow Classification
 
-### Internal Rensto (`owner:rensto`)
+### Internal SuperSeller AI (`owner:superseller`)
 
 #### Fulfillment (`pillar:fulfillment`)
-- `Rensto Master Controller` → `owner:rensto`, `pillar:fulfillment`, `mcp:enabled`, `status:production`
+- `SuperSeller AI Master Controller` → `owner:superseller`, `pillar:fulfillment`, `mcp:enabled`, `status:production`
 - `Rento Master Controller` → **ARCHIVE** (typo duplicate)
-- `Rensto Fulfillment Orchestrator` → **REVIEW** (possibly redundant)
+- `SuperSeller AI Fulfillment Orchestrator` → **REVIEW** (possibly redundant)
 - `INT-TECH-002: Template Deployment Pipeline v1` → `pillar:fulfillment`, `status:staging`
 
 #### Monitoring (`pillar:monitoring`)

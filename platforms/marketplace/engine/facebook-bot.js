@@ -95,7 +95,7 @@ async function sendWhatsApp(text, screenshotPath = null) {
                 chatId: NOTIFICATION_TARGET,
                 file: { mimetype: "image/png", data: base64, filename: path.basename(screenshotPath) },
                 caption: text,
-                session: "rensto-whatsapp"
+                session: "superseller-whatsapp"
             }, {
                 headers: { "X-Api-Key": WAHA_API_KEY, "Content-Type": "application/json" }
             });
@@ -103,7 +103,7 @@ async function sendWhatsApp(text, screenshotPath = null) {
             await axios.post(`${WAHA_URL}/api/sendText`, {
                 chatId: NOTIFICATION_TARGET,
                 text: text,
-                session: "rensto-whatsapp"
+                session: "superseller-whatsapp"
             }, {
                 headers: { "X-Api-Key": WAHA_API_KEY, "Content-Type": "application/json" }
             });

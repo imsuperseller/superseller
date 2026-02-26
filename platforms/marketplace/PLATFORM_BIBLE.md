@@ -59,8 +59,8 @@ Each posting gets a different DFW city from the configured array. Bot converts `
 ### Lead Analysis (n8n — LIVE as of Feb 22)
 - **UAD**: Telnyx AI Assistant "Sarah" → 15-min poll → Claude Sonnet 4.5 analysis → Workiz CRM + Outlook email (n8n workflow U6EZ2iLQ4zCGg31H) — **ACTIVE, 5 triggers**
 - **MissParty**: Telnyx AI Assistant "Sarah" → 15-min poll → Claude analysis → Email notification (n8n workflow 9gfvZo9sB4b3pMWQ) — **ACTIVE, 5 triggers**
-- **Voice AI "Hope"**: Rensto sales agent (n8n workflow MqMYMeA9U9PEX1cH) — NOT for customer calls
-- **Status**: Both UAD and MissParty pipelines executing successfully. Emails sent to service@rensto.com. Workiz POST returns 401 (needs write permission in Workiz dashboard).
+- **Voice AI "Hope"**: SuperSeller AI sales agent (n8n workflow MqMYMeA9U9PEX1cH) — NOT for customer calls
+- **Status**: Both UAD and MissParty pipelines executing successfully. Emails sent to shai@superseller.agency. Workiz POST returns 401 (needs write permission in Workiz dashboard).
 
 ## Legacy Reference
 

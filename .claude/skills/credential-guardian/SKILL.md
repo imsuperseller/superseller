@@ -1,7 +1,7 @@
 ---
 name: credential-guardian
 description: >
-  API key and credential lifecycle management for Rensto. Monitors expiry dates,
+  API key and credential lifecycle management for SuperSeller AI. Monitors expiry dates,
   tracks credential locations across web/worker/MCP, validates connectivity,
   and prevents silent outages from expired or misconfigured keys.
 autoTrigger:
@@ -114,14 +114,14 @@ curl -s https://api.resend.com/domains -H "Authorization: Bearer $RESEND_API_KEY
 1. Generate new key in service dashboard
 2. Update in ALL locations (see Credential Locations table)
 3. Deploy: `git push` (web auto-deploy) + `./apps/worker/deploy-to-racknerd.sh` (worker)
-4. Run health checks: `curl https://rensto.com/api/health/check`
+4. Run health checks: `curl https://superseller.agency/api/health/check`
 5. Verify worker: `curl http://172.245.56.50:3002/api/health`
 6. Remove old key from service dashboard (after confirming new key works)
 
 ### Check All Services at Once
 ```bash
 # Run full health check (checks Stripe, Gemini, Kie, Resend, Aitable, etc.)
-curl -s https://rensto.com/api/admin/monitoring | jq '.services[] | {name, status}'
+curl -s https://superseller.agency/api/admin/monitoring | jq '.services[] | {name, status}'
 ```
 
 ## Error-Cause-Fix
@@ -131,7 +131,7 @@ curl -s https://rensto.com/api/admin/monitoring | jq '.services[] | {name, statu
 | `401 Unauthorized` on Kie.ai | Balance is $0 or API key was regenerated. | `curl -H "Authorization: Bearer $KIE_API_KEY" https://api.kie.ai/api/v1/user/balance`. If 0: top up. If invalid: regenerate key, update BOTH web + worker envs. |
 | `401` on Stripe API | Wrong key mode (test vs live) or key rotated. | Verify key starts with `sk_live_`. Check Vercel + RackNerd both have the same key. |
 | NotebookLM MCP not responding | OAuth session expired (session-based tokens). | Run `notebooklm-mcp-auth` in terminal. Tokens auto-refresh. |
-| Vercel OIDC token expired | ~12hr TTL, auto-rotates. | `cd apps/web/rensto-site && vercel env pull .env.local`. |
+| Vercel OIDC token expired | ~12hr TTL, auto-rotates. | `cd apps/web/superseller-site && vercel env pull .env.local`. |
 | Aitable sync 401/403 | Token revoked or space permissions changed. | Test: `curl -H "Authorization: Bearer $TOKEN" https://aitable.ai/fusion/v1/spaces`. Regenerate in Aitable dashboard if invalid. |
 | `ECONNREFUSED` on R2 upload | R2 access key misconfigured or region mismatch. | Verify `R2_ACCESS_KEY_ID` + `R2_SECRET_ACCESS_KEY` in worker `.env`. Test: `curl http://172.245.56.50:3002/api/health`. |
 | Gemini 429 rate limit | Too many concurrent vision/prompt calls. | Add exponential backoff. Check quota at console.cloud.google.com. |
@@ -144,7 +144,7 @@ curl -s https://rensto.com/api/admin/monitoring | jq '.services[] | {name, statu
 
 ## References
 - `CREDENTIAL_REFERENCE.md` — Where credentials are stored (paths only, no values)
-- `apps/web/rensto-site/src/lib/env.ts` — Web app env schema (Zod validated)
+- `apps/web/superseller-site/src/lib/env.ts` — Web app env schema (Zod validated)
 - `apps/worker/src/config.ts` — Worker config with defaults
-- `apps/web/rensto-site/src/lib/monitoring/service-registry.ts` — Health checks that validate keys
+- `apps/web/superseller-site/src/lib/monitoring/service-registry.ts` — Health checks that validate keys
 - `references/credential-inventory.md` — Full inventory with service details

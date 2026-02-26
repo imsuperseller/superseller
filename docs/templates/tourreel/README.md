@@ -1,6 +1,6 @@
 # TourReel — Template for Credit-Based SaaS Apps
 
-**Purpose**: This folder is the canonical template for building new credit-based SaaS apps in the Rensto marketplace. TourReel (AI property tour videos) is the first such app.
+**Purpose**: This folder is the canonical template for building new credit-based SaaS apps in the SuperSeller AI marketplace. TourReel (AI property tour videos) is the first such app.
 
 ## Template Structure
 
@@ -17,7 +17,7 @@
 3. **Replace** TourReel-specific content (real estate, video pipeline) with your domain.
 4. **Preserve** the structure: Blueprint → Implementation Spec → Prompt Playbook.
 5. **Use PostgreSQL** for app data (never Aitable.ai for production SaaS).
-6. **Follow** Rensto design system: `apps/web/rensto-site/RENSTO_DESIGN_SYSTEM_REFERENCE.md`.
+6. **Follow** SuperSeller AI design system: `apps/web/superseller-site/RENSTO_DESIGN_SYSTEM_REFERENCE.md`.
 
 ## Tech Stack (Per brain.md)
 

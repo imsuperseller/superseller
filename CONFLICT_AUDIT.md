@@ -20,7 +20,7 @@ Action: All three must list the same products with consistent status labels.
 Compare: INFRA_SSOT.md §1 (service status) vs actual health checks
 Action: curl each health endpoint. Update status if changed.
 Health checks:
-  - curl -s https://rensto.com/api/health
+  - curl -s https://superseller.agency/api/health
   - curl -s http://172.245.56.50:3002/api/health
   - curl -s http://172.245.56.50:11434/api/tags
   - curl -s http://172.245.56.50:8082/health
@@ -31,7 +31,7 @@ Health checks:
 ```
 Compare: Code env vars vs INFRA_SSOT.md §2 vs skill docs
 Action: Grep for env var names, verify they match docs.
-Known split (by design): WAHA_URL (Studio), WAHA_BASE_URL (rensto-site), config.shared.wahaUrl (FB Bot)
+Known split (by design): WAHA_URL (Studio), WAHA_BASE_URL (superseller-site), config.shared.wahaUrl (FB Bot)
 ```
 
 ### 4. Deploy Model

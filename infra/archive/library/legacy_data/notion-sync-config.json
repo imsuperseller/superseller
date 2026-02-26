@@ -17,7 +17,7 @@
       },
       {
         "id": "app8tbCaH88uK3kCO",
-        "name": "Rensto Client Operations"
+        "name": "SuperSeller AI Client Operations"
       }
     ],
     "tables": {
@@ -39,7 +39,7 @@
     "databases": [
       {
         "id": "d19df0fe-8284-448a-8ea1-963d2031b9c6",
-        "name": "Rensto Business References",
+        "name": "SuperSeller AI Business References",
         "syncFields": [
           "Name",
           "Type",

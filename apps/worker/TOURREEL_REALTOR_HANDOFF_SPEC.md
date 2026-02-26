@@ -74,7 +74,7 @@
 1. **Delete residue** — Remove test jobs, clips, temp files for user.
 2. **Reset credentials** — New `dashboardToken` or invite.
 3. **Payment** — Stripe; webhook provisions credits.
-4. **Deliver** — Send `https://rensto.com/dashboard/{userId}?token={dashboardToken}` (or magic-link).
+4. **Deliver** — Send `https://superseller.agency/dashboard/{userId}?token={dashboardToken}` (or magic-link).
 
 ---
 

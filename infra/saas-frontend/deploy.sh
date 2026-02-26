@@ -4,7 +4,7 @@
 echo "🚀 Deploying Lead Enrichment SaaS Frontend..."
 
 # Navigate to frontend directory
-cd /Users/shaifriedman/New\ Rensto/rensto/infra/saas-frontend
+cd /Users/shaifriedman/New\ SuperSeller AI/superseller/infra/saas-frontend
 
 # Install dependencies
 echo "📦 Installing dependencies..."

@@ -1,7 +1,7 @@
 ---
 name: antigravity-automation
 description: >
-  Antigravity is Rensto's primary automation engine (Node.js on RackNerd).
+  Antigravity is SuperSeller AI's primary automation engine (Node.js on RackNerd).
   Covers workflow orchestration, n8n backup patterns, NotebookLM integration
   via Stitch MCP, and programmatic automation replacing n8n for production.
 autoTrigger:
@@ -32,7 +32,7 @@ Use when working on automation workflows, Antigravity engine, n8n backup pattern
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | Antigravity Engine | RackNerd VPS (172.245.56.50) | Primary automation runtime |
-| n8n Instance | https://n8n.rensto.com (port 5678) | Backup for new automation; existing production workflows still run |
+| n8n Instance | https://n8n.superseller.agency (port 5678) | Backup for new automation; existing production workflows still run |
 | NotebookLM MCP | `notebooklm-mcp` tools | Knowledge retrieval for automation |
 | Stitch MCP | NotebookLM 286f3e4a | Design assets + Gemini integration |
 | BullMQ | Redis-backed job queues | Async task processing |
@@ -61,7 +61,7 @@ When replacing an n8n workflow with programmatic code:
 | Antigravity | 12c80d7d | Platform docs, MCP integration |
 | B.L.A.S.T. | 5811a372 | Methodology, agent behavior |
 | n8n workflows | fc048ba8 | Legacy workflow catalog |
-| n8n rensto | f360003f | Instance-specific patterns |
+| n8n superseller | f360003f | Instance-specific patterns |
 
 ## Common Patterns
 

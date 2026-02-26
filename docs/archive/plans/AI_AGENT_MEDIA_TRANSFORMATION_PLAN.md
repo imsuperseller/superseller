@@ -11,7 +11,7 @@
 ### Node Type
 - **Type**: `@n8n/n8n-nodes-langchain.agent`
 - **TypeVersion**: `3` (Latest)
-- **Current Usage**: Rensto AI Agent (green box)
+- **Current Usage**: SuperSeller AI AI Agent (green box)
 
 ### Key Parameters (Based on Current Configuration)
 
@@ -68,7 +68,7 @@ Message Type Router (text)
   → Prepare AI Input 
     → Set Store Name and Extract Text1 
       → Merge Transcription Metadata 
-        → Rensto AI Agent
+        → SuperSeller AI AI Agent
           ├─ OpenAI Model (gpt-4o-mini)
           ├─ Conversation Memory (BufferWindow)
           └─ Search Knowledge Base (Tool)
@@ -83,7 +83,7 @@ Message Type Router (image/video/document)
       → Merge Image/Video/Document Analysis (Code)
         → Process Media Context (Code)
           → Prepare AI Input
-            → (continues to Rensto AI Agent)
+            → (continues to SuperSeller AI AI Agent)
 ```
 
 ---
@@ -106,7 +106,7 @@ Message Type Router
   ├─ image → Download Image → Image Analysis Agent
   ├─ video → Download Video → Video Analysis Agent
   ├─ document → Download Document → Document Analysis Agent
-  └─ text → (direct to Rensto AI Agent)
+  └─ text → (direct to SuperSeller AI AI Agent)
 ```
 
 ---

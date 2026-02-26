@@ -1,5 +1,5 @@
 /**
- * Error Recovery Strategies for Rensto Logging Database
+ * Error Recovery Strategies for SuperSeller AI Logging Database
  * Production-ready recovery mechanisms with intelligent retry logic
  */
 

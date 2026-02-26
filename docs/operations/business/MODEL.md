@@ -1,15 +1,15 @@
 # 💰 Business Model
 
-> **Source of Truth for Rensto's pricing, fulfillment, and products.**
+> **Source of Truth for SuperSeller AI's pricing, fulfillment, and products.**
 
 ---
 
 ## The "Fulfillment Loop"
-1.  **Selection**: Users choose an AI service from the [/offers](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/offers) or [/marketplace](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/marketplace) catalogs.
+1.  **Selection**: Users choose an AI service from the [/offers](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/offers) or [/marketplace](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/marketplace) catalogs.
 2.  **Conversion**: Payments processed via Stripe.
 3.  **Configuration**: Users provide metadata on `/success` page.
 4.  **Initiation**: System creates a `ServiceInstance` in **PostgreSQL** and triggers fulfillment (Antigravity primary, n8n backup).
-5.  **Provisioning**: Admins oversee the [Fulfillment Queue](https://www.rensto.com/control/fulfillment).
+5.  **Provisioning**: Admins oversee the [Fulfillment Queue](https://www.superseller.agency/control/fulfillment).
 
 ---
 

@@ -16,7 +16,7 @@ class BMADSmartSyncValidation {
   constructor() {
     this.config = {
       adminDashboard: {
-        url: 'https://admin.rensto.com',
+        url: 'https://admin.superseller.agency',
         apiKey: process.env.ADMIN_DASHBOARD_API_KEY
       },
       airtable: {

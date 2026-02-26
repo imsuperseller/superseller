@@ -18,7 +18,7 @@
 ### Kie.ai
 1. Go to kie.ai dashboard -> API Keys
 2. Generate new key
-3. Update in: `apps/worker/.env` (RackNerd), `apps/web/rensto-site/.env.local` (Vercel)
+3. Update in: `apps/worker/.env` (RackNerd), `apps/web/superseller-site/.env.local` (Vercel)
 4. Verify: `curl https://api.kie.ai/api/v1/user/balance -H "Authorization: Bearer $NEW_KEY"`
 5. Deploy worker: `./apps/worker/deploy-to-racknerd.sh`
 
@@ -53,7 +53,7 @@
 1. Update password in Neon/Supabase/provider dashboard
 2. Update `DATABASE_URL` in: Vercel env, RackNerd `.env`, FB Bot `.env`
 3. Deploy all three apps
-4. Verify: `curl https://rensto.com/api/health/check`
+4. Verify: `curl https://superseller.agency/api/health/check`
 
 ### Redis
 1. Update password on RackNerd: `redis-cli CONFIG SET requirepass "NEW_PASSWORD"`
@@ -64,9 +64,9 @@
 ## Post-Rotation Verification
 ```bash
 # Full system health check
-curl -s https://rensto.com/api/health/check | jq .
+curl -s https://superseller.agency/api/health/check | jq .
 curl -s http://172.245.56.50:3002/api/health | jq .
-curl -s https://rensto.com/api/admin/monitoring | jq '.services[] | {name, status}'
+curl -s https://superseller.agency/api/admin/monitoring | jq '.services[] | {name, status}'
 ```
 
 ## Emergency: Key Compromised

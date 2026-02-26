@@ -1,7 +1,7 @@
 ---
 name: socialhub
 description: >-
-  SocialHub — multi-platform social media management with AI content creation for Rensto.
+  SocialHub — multi-platform social media management with AI content creation for SuperSeller AI.
   Covers content generation (Claude + Kie.ai), multi-platform publishing (FB, IG, LinkedIn,
   X, TikTok, YouTube), approval workflows, analytics, competitive intelligence, and smart
   scheduling. Phase 2 product — spec complete, code NOT started. Use when working on SocialHub,

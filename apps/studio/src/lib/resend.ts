@@ -14,10 +14,10 @@ export async function sendMagicLink(email: string, token: string): Promise<boole
       body: JSON.stringify({
         from: env.RESEND_FROM,
         to: email,
-        subject: "Rensto Studio — Login Link",
+        subject: "SuperSeller AI Studio — Login Link",
         html: `
           <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 40px 20px;">
-            <h2 style="color: #3A388E;">Rensto Studio</h2>
+            <h2 style="color: #3A388E;">SuperSeller AI Studio</h2>
             <p>Click below to sign in:</p>
             <a href="${verifyUrl}"
                style="display: inline-block; padding: 12px 32px; background: #3A388E; color: white;

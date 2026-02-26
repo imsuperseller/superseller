@@ -1,17 +1,17 @@
 ---
 name: admin-portal
 description: >-
-  Rensto admin dashboard at admin.rensto.com. Covers the 8-tab admin UI, magic-link auth,
+  SuperSeller AI admin dashboard at admin.superseller.agency. Covers the 8-tab admin UI, magic-link auth,
   31 admin components, 23 API routes, CRM, system monitoring, treasury, workflow management,
   and AI agent configuration. Use when building admin features, adding admin tabs, modifying
-  admin API routes, or working on admin.rensto.com. Not for customer dashboard (see customer-journey),
+  admin API routes, or working on admin.superseller.agency. Not for customer dashboard (see customer-journey),
   video pipeline, or public website pages.
   Example: "Add a new admin tab for SocialHub" or "Fix the admin health check display".
 autoTrigger:
   - "admin"
   - "admin dashboard"
   - "admin portal"
-  - "admin.rensto.com"
+  - "admin.superseller.agency"
   - "AdminDashboard"
   - "AdminLayout"
   - "admin tab"
@@ -30,16 +30,16 @@ negativeTrigger:
 # Admin Portal
 
 ## Critical
-- **Magic-link auth only** — admin emails: `service@rensto.com`, `admin@rensto.com`. No password auth.
+- **Magic-link auth only** — admin emails: `shai@superseller.agency`, `shai@superseller.agency`. No password auth.
 - **Role check**: `session.role === 'admin'` — non-admins redirected to client dashboard.
-- **Session**: 30-day expiry, encrypted AES-256-GCM cookie `rensto_client_session`.
+- **Session**: 30-day expiry, encrypted AES-256-GCM cookie `superseller_client_session`.
 - **31 components, 23 API routes** — always check existing components before creating new ones.
-- **Admin URL**: `admin.rensto.com` (same Vercel project as rensto.com, different route).
+- **Admin URL**: `admin.superseller.agency` (same Vercel project as superseller.agency, different route).
 
 ## Architecture
 
 ```
-admin.rensto.com → /admin/page.tsx → verifySession() → AdminDashboard.tsx
+admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashboard.tsx
                                                              ↓
                                                     AdminLayout.tsx (sidebar + header)
                                                              ↓
@@ -152,7 +152,7 @@ admin.rensto.com → /admin/page.tsx → verifySession() → AdminDashboard.tsx
 
 ## References
 
-- NotebookLM 719854ee — Rensto website content
-- Admin URL: `admin.rensto.com` (same Vercel deploy as rensto.com)
+- NotebookLM 719854ee — SuperSeller AI website content
+- Admin URL: `admin.superseller.agency` (same Vercel deploy as superseller.agency)
 - All components: `src/components/admin/`
 - All routes: `src/app/api/admin/`

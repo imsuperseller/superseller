@@ -6,11 +6,11 @@
 if [ $# -lt 2 ]; then
   echo "Usage: ./backup-workflow.sh <instance> <workflow-id> [output-dir]"
   echo ""
-  echo "Instances: rensto, tax4us, shelly"
+  echo "Instances: superseller, tax4us, shelly"
   echo ""
   echo "Example:"
   echo "  ./backup-workflow.sh tax4us zQIkACTYDgaehp6S"
-  echo "  ./backup-workflow.sh rensto abc123 ~/Desktop/backups"
+  echo "  ./backup-workflow.sh superseller abc123 ~/Desktop/backups"
   exit 1
 fi
 

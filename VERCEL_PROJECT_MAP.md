@@ -9,25 +9,25 @@
 
 | Domain(s) | Vercel Project | Root Directory | Auto-deploy on push? |
 |-----------|----------------|----------------|----------------------|
-| rensto.com, www.rensto.com, admin.rensto.com | **rensto-site** | `apps/web/rensto-site` | **No** — manual deploy |
-| api.rensto.com | **api-rensto-site** | `apps/web/rensto-site` | **Yes** — Git push → deploy |
-| rensto.vercel.app | **rensto** | `apps/web/rensto-site` | No |
-| studio.rensto.com (pending DNS) | **studio** | `apps/studio` | **No** — manual `vercel --prod` |
+| superseller.agency, www.superseller.agency, admin.superseller.agency | **superseller-site** | `apps/web/superseller-site` | **No** — manual deploy |
+| api.superseller.agency | **api-superseller-site** | `apps/web/superseller-site` | **Yes** — Git push → deploy |
+| superseller.vercel.app | **superseller** | `apps/web/superseller-site` | No |
+| studio.superseller.agency (pending DNS) | **studio** | `apps/studio` | **No** — manual `vercel --prod` |
 
-**Note**: `admin.rensto.com` is served by rensto-site. Middleware rewrites requests to `/admin/*`. The stale `rensto-admin` project was removed Feb 2026.
+**Note**: `admin.superseller.agency` is served by superseller-site. Middleware rewrites requests to `/admin/*`. The stale `superseller-admin` project was removed Feb 2026.
 
-**Both rensto-site and api-rensto-site build the same app** from the same path. Different projects exist for domain separation (main vs API subdomain).
+**Both superseller-site and api-superseller-site build the same app** from the same path. Different projects exist for domain separation (main vs API subdomain).
 
 ---
 
 ## Deploy Runbook
 
-### After changes to rensto-site (main site, video, marketplace)
+### After changes to superseller-site (main site, video, marketplace)
 
-1. Push to `main` — this deploys **api.rensto.com** only.
-2. To update **rensto.com**:
+1. Push to `main` — this deploys **api.superseller.agency** only.
+2. To update **superseller.agency**:
    - From repo root: `eval "$(grep -E '^VERCEL_TOKEN=' .env)" && vercel --prod`
-   - Or: Vercel dashboard → rensto-site → Redeploy
+   - Or: Vercel dashboard → superseller-site → Redeploy
 
 ### After changes to worker or other apps
 
@@ -38,15 +38,15 @@
 
 ## Critical Notes
 
-- **rensto.com 404 on /video** (fixed Feb 2026): Caused by middleware blocking `/video/*` on rensto.com host. **Not** caused by root directory. See `findings.md` and `VIDEO_QUALITY_AUDIT.md`.
-- **api.rensto.com** = same Next.js app as rensto.com; routes at `/api/*` work on both domains.
-- **rensto** project: Currently only serves rensto.vercel.app. **Decision (Feb 2026)**: Treat as legacy/alternate. Do not use for production domains. If experiments needed, use rensto.vercel.app; main flows use rensto-site and api-rensto-site only.
+- **superseller.agency 404 on /video** (fixed Feb 2026): Caused by middleware blocking `/video/*` on superseller.agency host. **Not** caused by root directory. See `findings.md` and `VIDEO_QUALITY_AUDIT.md`.
+- **api.superseller.agency** = same Next.js app as superseller.agency; routes at `/api/*` work on both domains.
+- **superseller** project: Currently only serves superseller.vercel.app. **Decision (Feb 2026)**: Treat as legacy/alternate. Do not use for production domains. If experiments needed, use superseller.vercel.app; main flows use superseller-site and api-superseller-site only.
 
 ### Deploy unification (Phase 3)
 
-**Current**: Push to main deploys api.rensto.com only. rensto.com needs manual `vercel --prod` or Vercel API trigger.
+**Current**: Push to main deploys api.superseller.agency only. superseller.agency needs manual `vercel --prod` or Vercel API trigger.
 
 **Options** (choose when ready):
-- **A**: Add rensto.com to api-rensto-site (one project, two domains) — single deploy on push
-- **B**: Enable Git deploy for rensto-site so both projects deploy on push
+- **A**: Add superseller.agency to api-superseller-site (one project, two domains) — single deploy on push
+- **B**: Enable Git deploy for superseller-site so both projects deploy on push
 - **C**: Keep manual; document in runbook (current)

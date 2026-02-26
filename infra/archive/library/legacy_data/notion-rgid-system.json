@@ -1,5 +1,5 @@
 {
-  "purpose": "Rensto Global ID system for unique identification across all systems",
+  "purpose": "SuperSeller AI Global ID system for unique identification across all systems",
   "format": "RGID_[SYSTEM]_[TYPE]_[DATE]_[SEQUENCE]",
   "examples": [
     "RGID_NOTION_BUSINESS_REF_20240922_001",

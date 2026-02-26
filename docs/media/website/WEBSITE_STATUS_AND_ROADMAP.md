@@ -1,4 +1,4 @@
-# 📊 Rensto Website - Current Status & Roadmap
+# 📊 SuperSeller AI Website - Current Status & Roadmap
 
 **Date**: November 14, 2025  
 **Status**: ✅ Functional but has gaps  

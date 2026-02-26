@@ -315,7 +315,7 @@ Web UI for customers to manage products, view posts, and connect Facebook sessio
 ### Tasks
 
 #### 2.1 Database Schema (Minimal)
-**Add to**: `apps/web/rensto-site/prisma/schema.prisma`
+**Add to**: `apps/web/superseller-site/prisma/schema.prisma`
 
 ```prisma
 model MarketplaceCustomer {
@@ -340,7 +340,7 @@ enum MarketplaceCustomerStatus {
 **Note**: Products and posts stay in file system for MVP. Only customer record in DB.
 
 #### 2.2 API Routes
-**Create**: `apps/web/rensto-site/src/app/api/marketplace/`
+**Create**: `apps/web/superseller-site/src/app/api/marketplace/`
 
 **Routes**:
 1. `GET /api/marketplace/status` — Customer status, active products count
@@ -353,7 +353,7 @@ enum MarketplaceCustomerStatus {
 
 **Implementation**:
 ```typescript
-// apps/web/rensto-site/src/app/api/marketplace/products/route.ts
+// apps/web/superseller-site/src/app/api/marketplace/products/route.ts
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -424,7 +424,7 @@ export async function GET(req: Request) {
 ```
 
 #### 2.3 Customer Portal UI
-**Create**: `apps/web/rensto-site/src/app/(main)/dashboard/marketplace/page.tsx`
+**Create**: `apps/web/superseller-site/src/app/(main)/dashboard/marketplace/page.tsx`
 
 **Sections**:
 1. **Product List**
@@ -520,7 +520,7 @@ Stripe subscriptions with post limits. Reuse TourReel credit system foundation.
 ### Tasks
 
 #### 3.1 Subscription Tiers
-**Add to**: `apps/web/rensto-site/src/lib/stripe/products.ts`
+**Add to**: `apps/web/superseller-site/src/lib/stripe/products.ts`
 
 ```typescript
 export const MARKETPLACE_PRODUCTS = {
@@ -579,7 +579,7 @@ if (customer.postsThisMonth >= customer.postLimit) {
 ```
 
 #### 3.3 Checkout Flow
-**Create**: `apps/web/rensto-site/src/app/(main)/marketplace/pricing/page.tsx`
+**Create**: `apps/web/superseller-site/src/app/(main)/marketplace/pricing/page.tsx`
 
 **Pricing Cards**:
 - Starter: $99/mo, 100 posts, 1 product
@@ -589,7 +589,7 @@ if (customer.postsThisMonth >= customer.postLimit) {
 **Subscribe Button** → Stripe Checkout
 
 #### 3.4 Webhook Handler
-**Update**: `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts`
+**Update**: `apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts`
 
 Handle `customer.subscription.created`:
 ```typescript
@@ -640,7 +640,7 @@ Admin tools for monitoring customers, support, and system health.
 ### Tasks
 
 #### 4.1 Admin Routes
-**Create**: `apps/web/rensto-site/src/app/api/admin/marketplace/`
+**Create**: `apps/web/superseller-site/src/app/api/admin/marketplace/`
 
 1. `GET /api/admin/marketplace/customers` — List all customers
 2. `GET /api/admin/marketplace/customers/:id` — Customer details
@@ -649,7 +649,7 @@ Admin tools for monitoring customers, support, and system health.
 5. `GET /api/admin/marketplace/stats` — System stats (total customers, posts today, queue depth)
 
 #### 4.2 Admin Dashboard UI
-**Create**: `apps/web/rensto-site/src/app/(admin)/marketplace/page.tsx`
+**Create**: `apps/web/superseller-site/src/app/(admin)/marketplace/page.tsx`
 
 **Sections**:
 1. **Overview**
@@ -692,7 +692,7 @@ setInterval(async () => {
   };
 
   // Send to admin API
-  await fetch('https://rensto.com/api/admin/marketplace/health', {
+  await fetch('https://superseller.agency/api/admin/marketplace/health', {
     method: 'POST',
     body: JSON.stringify(health),
   });

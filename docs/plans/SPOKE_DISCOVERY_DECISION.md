@@ -8,10 +8,10 @@
 
 ## The Problem
 
-**Marketing claims Spoke is "live"**, but Spoke doesn't exist as a Rensto SaaS agent.
+**Marketing claims Spoke is "live"**, but Spoke doesn't exist as a SuperSeller AI SaaS agent.
 
 ### What Exists
-- ✅ **Winner Video Studio** (studio.rensto.com)
+- ✅ **Winner Video Studio** (studio.superseller.agency)
   - Standalone product for single customer (Yossi/Mivnim)
   - Audio + photo → AI avatar video with lip-sync
   - Uses kie.ai `kling/ai-avatar-pro` model
@@ -19,8 +19,8 @@
   - Fully working (verified Feb 19, 2026)
 
 ### What Doesn't Exist
-- ❌ **Spoke as Rensto SaaS agent**
-  - No `/crew/spoke` page in rensto.com
+- ❌ **Spoke as SuperSeller AI SaaS agent**
+  - No `/crew/spoke` page in superseller.agency
   - Not integrated with User.credits system
   - Not available in dashboard
   - No multi-tenant support
@@ -65,13 +65,13 @@ This removes fraud risk — customers now see Spoke as "coming soon" instead of 
 
 ### Option B: Build Spoke by Integrating Winner Studio
 
-**Action**: Refactor Winner Studio to work as Spoke within Rensto SaaS
+**Action**: Refactor Winner Studio to work as Spoke within SuperSeller AI SaaS
 
 **Scope**:
 1. **Multi-tenant support**:
    - Winner Studio is single-tenant (Yossi only)
    - Need to add `userId` to all tables, isolate data
-   - Update auth to use Rensto's magic-link system
+   - Update auth to use SuperSeller AI's magic-link system
 
 2. **Credit system integration**:
    - Wire to `User.credits` (deduct 50 credits per video)
@@ -79,18 +79,18 @@ This removes fraud risk — customers now see Spoke as "coming soon" instead of 
    - Add credit pre-check before processing
 
 3. **Dashboard integration**:
-   - Add to rensto.com/dashboard
+   - Add to superseller.agency/dashboard
    - Job history, video gallery, upload UI
    - WhatsApp/email notifications (already built for Forge)
 
 4. **Database migration**:
-   - Merge Winner Studio schema into Rensto Prisma schema
+   - Merge Winner Studio schema into SuperSeller AI Prisma schema
    - OR: Keep separate but add foreign key to User
 
 **Pros**:
 - Spoke becomes real (no longer vaporware)
 - Can charge 50 credits/video to all customers
-- Differentiates Rensto from competitors (avatar videos rare in SaaS)
+- Differentiates SuperSeller AI from competitors (avatar videos rare in SaaS)
 
 **Cons**:
 - 1-2 weeks of work (auth refactor, multi-tenant, credit wiring)

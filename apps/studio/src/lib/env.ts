@@ -32,11 +32,11 @@ function loadEnv() {
     // WAHA
     WAHA_URL: required("WAHA_URL"),
     WAHA_API_KEY: required("WAHA_API_KEY"),
-    WAHA_SESSION: optional("WAHA_SESSION", "rensto-whatsapp"),
+    WAHA_SESSION: optional("WAHA_SESSION", "superseller-whatsapp"),
 
     // Resend
     RESEND_API_KEY: required("RESEND_API_KEY"),
-    RESEND_FROM: optional("RESEND_FROM", "Rensto Studio <studio@rensto.com>"),
+    RESEND_FROM: optional("RESEND_FROM", "SuperSeller AI Studio <studio@superseller.agency>"),
 
     // App
     APP_URL: optional("NEXT_PUBLIC_APP_URL", "http://localhost:3003"),

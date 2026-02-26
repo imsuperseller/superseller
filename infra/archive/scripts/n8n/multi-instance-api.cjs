@@ -2,16 +2,16 @@
 
 /**
  * n8n Multi-Instance API Script
- * Provides command-line access to all 3 n8n instances (Rensto VPS, Tax4Us Cloud, Shelly Cloud)
+ * Provides command-line access to all 3 n8n instances (SuperSeller AI VPS, Tax4Us Cloud, Shelly Cloud)
  *
  * Usage:
  *   node multi-instance-api.js <command> <instance> [args]
  *
  * Examples:
- *   node multi-instance-api.js list-workflows rensto
+ *   node multi-instance-api.js list-workflows superseller
  *   node multi-instance-api.js get-workflow tax4us zQIkACTYDgaehp6S
  *   node multi-instance-api.js activate-workflow shelly abc123
- *   node multi-instance-api.js list-executions rensto zQIkACTYDgaehp6S 5
+ *   node multi-instance-api.js list-executions superseller zQIkACTYDgaehp6S 5
  *
  * Created: October 12, 2025
  * Purpose: Workaround for Cursor MCP integration bug
@@ -38,7 +38,7 @@ try {
 }
 
 const INSTANCES = CONFIG.environments;
-const DEFAULT_INSTANCE = CONFIG.defaultEnv || 'rensto';
+const DEFAULT_INSTANCE = CONFIG.defaultEnv || 'superseller';
 
 // =====================================================================
 // HTTP Request Helper
@@ -339,7 +339,7 @@ n8n Multi-Instance API Script
 Usage: node multi-instance-api.js <command> <instance> [args]
 
 Instances:
-  rensto    Rensto VPS (http://172.245.56.50:5678) [default]
+  superseller    SuperSeller AI VPS (http://172.245.56.50:5678) [default]
   tax4us    Tax4Us Cloud (https://tax4usllc.app.n8n.cloud)
   shelly    Shelly Cloud (https://shellyins.app.n8n.cloud)
 
@@ -366,8 +366,8 @@ Utility Commands:
   --help, -h                                   Show this help
 
 Examples:
-  # List workflows from Rensto VPS
-  node multi-instance-api.js list-workflows rensto
+  # List workflows from SuperSeller AI VPS
+  node multi-instance-api.js list-workflows superseller
 
   # Get specific workflow from Tax4Us
   node multi-instance-api.js get-workflow tax4us zQIkACTYDgaehp6S
@@ -376,7 +376,7 @@ Examples:
   node multi-instance-api.js activate-workflow shelly abc123
 
   # List last 5 executions for a workflow
-  node multi-instance-api.js list-executions rensto zQIkACTYDgaehp6S 5
+  node multi-instance-api.js list-executions superseller zQIkACTYDgaehp6S 5
 
   # List all available instances
   node multi-instance-api.js list-instances

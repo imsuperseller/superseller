@@ -1,10 +1,10 @@
-name: Deploy API (api.rensto.com)
+name: Deploy API (api.superseller.agency)
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'apps/web/rensto-site/**'
+      - 'apps/web/superseller-site/**'
       - '.github/workflows/deploy-api.yml'
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.API_PROJECT_ID }}
         run: |
-          cd apps/web/rensto-site
+          cd apps/web/superseller-site
           vercel deploy --prod --token "$VERCEL_TOKEN" --confirm
 
       - name: Assign Domain Alias
@@ -43,6 +43,6 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           # Ensure alias exists; ignore error if already set
-          vercel alias set api.rensto.com api.rensto.com --token "$VERCEL_TOKEN" || true
+          vercel alias set api.superseller.agency api.superseller.agency --token "$VERCEL_TOKEN" || true
 
 

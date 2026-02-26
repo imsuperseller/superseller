@@ -13,8 +13,8 @@ if (!fs.existsSync(deployDir)) {
 }
 
 // Copy the legal pages
-fs.copyFileSync('rensto-legal-pages/privacy-policy.html', `${deployDir}/privacy-policy.html`);
-fs.copyFileSync('rensto-legal-pages/terms-of-service.html', `${deployDir}/terms-of-service.html`);
+fs.copyFileSync('superseller-legal-pages/privacy-policy.html', `${deployDir}/privacy-policy.html`);
+fs.copyFileSync('superseller-legal-pages/terms-of-service.html', `${deployDir}/terms-of-service.html`);
 
 // Create a simple index page
 const indexContent = `<!DOCTYPE html>
@@ -22,7 +22,7 @@ const indexContent = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rensto Legal Pages</title>
+    <title>SuperSeller AI Legal Pages</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -106,12 +106,12 @@ console.log('4. If using drag and drop, upload the netlify-deploy folder');
 console.log('5. Your site will be deployed to a URL like: https://amazing-site-123456.netlify.app');
 console.log('');
 console.log('🌐 Once deployed, update DNS records:');
-console.log('• privacy-policy.rensto.com → your-netlify-url.netlify.app');
-console.log('• terms-of-service.rensto.com → your-netlify-url.netlify.app');
+console.log('• privacy-policy.superseller.agency → your-netlify-url.netlify.app');
+console.log('• terms-of-service.superseller.agency → your-netlify-url.netlify.app');
 console.log('');
 console.log('📄 Your legal pages will be available at:');
-console.log('• https://privacy-policy.rensto.com/privacy-policy');
-console.log('• https://terms-of-service.rensto.com/terms-of-service');
+console.log('• https://privacy-policy.superseller.agency/privacy-policy');
+console.log('• https://terms-of-service.superseller.agency/terms-of-service');
 console.log('');
 console.log('🎯 Ready for Facebook approval!');
 
@@ -125,8 +125,8 @@ const summary = {
         instructions: 'Deploy to Netlify for immediate public access'
     },
     urls: {
-        privacyPolicy: 'https://privacy-policy.rensto.com/privacy-policy',
-        termsOfService: 'https://terms-of-service.rensto.com/terms-of-service'
+        privacyPolicy: 'https://privacy-policy.superseller.agency/privacy-policy',
+        termsOfService: 'https://terms-of-service.superseller.agency/terms-of-service'
     }
 };
 

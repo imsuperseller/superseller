@@ -70,7 +70,7 @@
       "credentials": {
         "airtableTokenApi": {
           "id": "tilk3s6sK9ATRt9r",
-          "name": "rensto/shai"
+          "name": "superseller/shai"
         }
       }
     },
@@ -300,7 +300,7 @@
       "credentials": {
         "airtableTokenApi": {
           "id": "tilk3s6sK9ATRt9r",
-          "name": "rensto/shai"
+          "name": "superseller/shai"
         }
       }
     },

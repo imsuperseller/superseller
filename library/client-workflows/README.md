@@ -1,6 +1,6 @@
 # Client workflows
 
-n8n workflow JSONs and docs for Rensto clients and internal systems. **Current stack:** Antigravity primary, n8n backup. See CLAUDE.md.
+n8n workflow JSONs and docs for SuperSeller AI clients and internal systems. **Current stack:** Antigravity primary, n8n backup. See CLAUDE.md.
 
 | File | Use |
 |------|-----|
@@ -8,8 +8,8 @@ n8n workflow JSONs and docs for Rensto clients and internal systems. **Current s
 | **Marketplace-Engine-Master.json** | FB Marketplace engine |
 | **niche-smart-router.json** | Niche routing |
 | **onboarding-supervisor.json** | Onboarding |
-| **rensto_content_engine_adapted.json** | Content Engine (adapted) |
-| **rensto_content_engine_patched.json** | Content Engine (patched) |
+| **superseller_content_engine_adapted.json** | Content Engine (adapted) |
+| **superseller_content_engine_patched.json** | Content Engine (patched) |
 | **Smart_AI_Blog_Writing_System_*.json** | Blog writing |
 | **tax4us_migrated_workflow_consolidated.md** | Tax4Us migrated workflow doc |
 

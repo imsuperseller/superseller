@@ -8,7 +8,7 @@ const path = require("path");
  * Polls Firestore and executes jobs for ALL clients.
  */
 
-const LOCK_FILE = "/tmp/rensto-saas-bot.lock";
+const LOCK_FILE = "/tmp/superseller-saas-bot.lock";
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
 const randomRange = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
@@ -27,7 +27,7 @@ async function main() {
     fs.writeFileSync(LOCK_FILE, process.pid.toString());
     process.on("exit", () => { try { fs.unlinkSync(LOCK_FILE); } catch (e) { } });
 
-    console.log("Rensto SaaS Orchestrator Started — Monitoring Firestore Queue...");
+    console.log("SuperSeller AI SaaS Orchestrator Started — Monitoring Firestore Queue...");
 
     while (true) {
         try {

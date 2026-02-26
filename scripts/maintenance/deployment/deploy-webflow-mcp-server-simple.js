@@ -58,7 +58,7 @@ class WebflowMCPServerNPXMigration {
             const packageJson = {
                 "name": "webflow-mcp-server",
                 "version": "1.0.0",
-                "description": "Webflow MCP Server for Rensto",
+                "description": "Webflow MCP Server for SuperSeller AI",
                 "main": "dist/index.js",
                 "type": "module",
                 "scripts": {

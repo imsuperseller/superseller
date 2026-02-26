@@ -7,26 +7,26 @@ import path from 'path';
 /**
  * 🚀 PRODUCTION DEPLOYMENT
  * 
- * Deploying the Rensto business system to production
+ * Deploying the SuperSeller AI business system to production
  */
 
 class ProductionDeployment {
     constructor() {
         this.deploymentConfig = {
             environment: 'production',
-            domain: 'rensto.com',
+            domain: 'superseller.agency',
             customers: {
                 'ben-ginati': {
                     name: 'Ben Ginati',
                     company: 'Tax4Us',
-                    subdomain: 'tax4us.rensto.com',
-                    portalUrl: 'https://tax4us.rensto.com'
+                    subdomain: 'tax4us.superseller.agency',
+                    portalUrl: 'https://tax4us.superseller.agency'
                 },
                 'shelly-mizrahi': {
                     name: 'Shelly Mizrahi',
                     company: 'Insurance Services',
-                    subdomain: 'shelly-mizrahi.rensto.com',
-                    portalUrl: 'https://shelly-mizrahi.rensto.com'
+                    subdomain: 'shelly-mizrahi.superseller.agency',
+                    portalUrl: 'https://shelly-mizrahi.superseller.agency'
                 }
             },
             deploymentSteps: [
@@ -66,10 +66,10 @@ class ProductionDeployment {
                 'GOOGLE_CLIENT_SECRET'
             ],
             customDomains: [
-                'rensto.com',
-                'www.rensto.com',
-                'tax4us.rensto.com',
-                'shelly-mizrahi.rensto.com'
+                'superseller.agency',
+                'www.superseller.agency',
+                'tax4us.superseller.agency',
+                'shelly-mizrahi.superseller.agency'
             ]
         };
 
@@ -125,7 +125,7 @@ class ProductionDeployment {
             sslConfiguration: {
                 provider: 'Cloudflare',
                 type: 'wildcard',
-                domain: '*.rensto.com',
+                domain: '*.superseller.agency',
                 status: 'pending'
             }
         };
@@ -181,7 +181,7 @@ class ProductionDeployment {
 
         const dnsGuide = {
             timestamp: new Date().toISOString(),
-            domain: 'rensto.com',
+            domain: 'superseller.agency',
             provider: 'GoDaddy',
             requiredRecords: [
                 {
@@ -194,21 +194,21 @@ class ProductionDeployment {
                 {
                     type: 'CNAME',
                     name: 'www',
-                    value: 'rensto-business-system.vercel.app',
+                    value: 'superseller-business-system.vercel.app',
                     ttl: 3600,
                     description: 'WWW subdomain'
                 },
                 {
                     type: 'CNAME',
                     name: 'ben-ginati',
-                    value: 'rensto-business-system.vercel.app',
+                    value: 'superseller-business-system.vercel.app',
                     ttl: 3600,
                     description: 'Ben Ginati customer portal'
                 },
                 {
                     type: 'CNAME',
                     name: 'shelly-mizrahi',
-                    value: 'rensto-business-system.vercel.app',
+                    value: 'superseller-business-system.vercel.app',
                     ttl: 3600,
                     description: 'Shelly Mizrahi customer portal'
                 }
@@ -216,7 +216,7 @@ class ProductionDeployment {
             sslConfiguration: {
                 provider: 'Cloudflare',
                 type: 'wildcard',
-                domain: '*.rensto.com',
+                domain: '*.superseller.agency',
                 setupInstructions: [
                     'Add domain to Cloudflare',
                     'Update nameservers to Cloudflare',
@@ -226,7 +226,7 @@ class ProductionDeployment {
             },
             manualSteps: [
                 '1. Log into GoDaddy account',
-                '2. Navigate to DNS management for rensto.com',
+                '2. Navigate to DNS management for superseller.agency',
                 '3. Add CNAME records for customer subdomains',
                 '4. Update A record for main domain',
                 '5. Configure Cloudflare for SSL certificates',
@@ -312,7 +312,7 @@ class ProductionDeployment {
             timestamp: new Date().toISOString(),
             summary: {
                 environment: 'production',
-                domain: 'rensto.com',
+                domain: 'superseller.agency',
                 customers: Object.keys(this.deploymentConfig.customers).length,
                 deploymentStatus: 'ready',
                 securityStatus: 'implemented',
@@ -329,9 +329,9 @@ class ProductionDeployment {
                 'Monitor system performance'
             ],
             urls: {
-                'main-domain': 'https://rensto.com',
-                'tax4us': 'https://tax4us.rensto.com',
-                'shelly-mizrahi': 'https://shelly-mizrahi.rensto.com'
+                'main-domain': 'https://superseller.agency',
+                'tax4us': 'https://tax4us.superseller.agency',
+                'shelly-mizrahi': 'https://shelly-mizrahi.superseller.agency'
             },
             support: {
                 documentation: 'docs/PHASE_2_COMPLETION_SUMMARY.md',

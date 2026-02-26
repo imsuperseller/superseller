@@ -1,0 +1,276 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card-enhanced';
+import { Button } from '@/components/ui/button-enhanced';
+import { Badge } from '@/components/ui/badge-enhanced';
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table-enhanced';
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
+  FileText,
+  Users,
+  Search,
+  Eye,
+  Terminal
+} from 'lucide-react';
+import { ApprovalRequest } from '@/types/legacy-types';
+import { Input } from '@/components/ui/input-enhanced';
+
+export default function ApprovalsPage() {
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [approvals, setApprovals] = useState<ApprovalRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/app/approvals')
+      .then(res => {
+        if (res.status === 401) { setLoading(false); return; }
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(data => { if (data) setApprovals(data); })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleApprove = async (id: string) => {
+    try {
+      // Optimistic update
+      setApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'approved' } : a));
+
+      const res = await fetch(`/api/app/approvals/${id}/respond`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'approved' }),
+      });
+      if (!res.ok) throw new Error('Failed to approve');
+      console.log('Approved:', id);
+    } catch (error) {
+      console.error('Approval failed:', error);
+      alert('Failed to approve. Please try again.');
+      window.location.reload();
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    if (!confirm("Are you sure you want to reject this request?")) return;
+    try {
+      setApprovals(prev => prev.map(a => a.id === id ? { ...a, status: 'rejected' } : a));
+
+      const res = await fetch(`/api/app/approvals/${id}/respond`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'rejected' }),
+      });
+      if (!res.ok) throw new Error('Failed to reject');
+      console.log('Rejected:', id);
+    } catch (error) {
+      console.error('Rejection failed:', error);
+      alert('Failed to reject.');
+      window.location.reload();
+    }
+  };
+
+  const filteredApprovals = approvals.filter(approval => {
+    const matchesFilter = filter === 'all' || approval.status === filter;
+    const matchesSearch = (approval.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (approval.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Badge variant="supersellerWarning">Pending</Badge>;
+      case 'approved':
+        return <Badge variant="supersellerSuccess">Approved</Badge>;
+      case 'rejected':
+        return <Badge variant="supersellerError">Rejected</Badge>;
+      default:
+        return <Badge variant="supersellerSecondary">{status}</Badge>;
+    }
+  };
+
+  const getTypeIcon = (serviceId: string) => {
+    if (serviceId.includes('writer') || serviceId.includes('blog')) return <FileText className="h-4 w-4 text-superseller-cyan" />;
+    if (serviceId.includes('social') || serviceId.includes('linkedin')) return <Users className="h-4 w-4 text-purple-400" />;
+    return <Terminal className="h-4 w-4 text-slate-400" />;
+  };
+
+  // Stats
+  const pendingCount = approvals.filter(a => a.status === 'pending').length;
+  const approvedCount = approvals.filter(a => a.status === 'approved').length;
+  const rejectedCount = approvals.filter(a => a.status === 'rejected').length;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-superseller-text-primary">Approvals</h1>
+          <p className="text-superseller-text-secondary mt-2">
+            Review and manage pending content and automation requests
+          </p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Input
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-48 bg-white/5 border-white/10 text-white focus:border-superseller-cyan focus:ring-superseller-cyan"
+          />
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium text-superseller-text-secondary">Filter:</span>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-md text-white focus:ring-2 focus:ring-superseller-cyan focus:border-transparent"
+            >
+              <option value="all" className="bg-slate-900">All</option>
+              <option value="pending" className="bg-slate-900">Pending</option>
+              <option value="approved" className="bg-slate-900">Approved</option>
+              <option value="rejected" className="bg-slate-900">Rejected</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card variant="supersellerNeon" className="superseller-card-neon">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-yellow-500/10 rounded-lg">
+                <Clock className="h-6 w-6 text-yellow-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-superseller-text-secondary">Pending</p>
+                <p className="text-2xl font-bold text-superseller-text-primary">{pendingCount}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card variant="supersellerNeon" className="superseller-card-neon">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <CheckCircle className="h-6 w-6 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-superseller-text-secondary">Approved</p>
+                <p className="text-2xl font-bold text-superseller-text-primary">{approvedCount}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card variant="supersellerNeon" className="superseller-card-neon">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-red-500/10 rounded-lg">
+                <XCircle className="h-6 w-6 text-red-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-superseller-text-secondary">Rejected</p>
+                <p className="text-2xl font-bold text-superseller-text-primary">{rejectedCount}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Approvals Table */}
+      <Card variant="supersellerNeon" className="superseller-card-neon">
+        <CardHeader>
+          <CardTitle className="text-superseller-text-primary">Approval Requests</CardTitle>
+          <CardDescription className="text-superseller-text-secondary">
+            Review and manage content and automation requests
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-superseller-cyan"></div>
+            </div>
+          ) : filteredApprovals.length === 0 ? (
+            <div className="text-center py-12 text-superseller-text-secondary">
+              <CheckCircle className="h-12 w-12 mx-auto mb-4 text-white/5" />
+              <p>No approval requests found.</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-white/10 hover:bg-white/5">
+                  <TableHead className="text-superseller-text-secondary">Type</TableHead>
+                  <TableHead className="text-superseller-text-secondary">Details</TableHead>
+                  <TableHead className="text-superseller-text-secondary">Requested</TableHead>
+                  <TableHead className="text-superseller-text-secondary">Status</TableHead>
+                  <TableHead className="text-superseller-text-secondary">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredApprovals.map((approval) => (
+                  <TableRow key={approval.id} className="border-white/5 hover:bg-white/5">
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        {getTypeIcon(approval.serviceId || '')}
+                        <span className="capitalize text-superseller-text-primary hidden md:inline-block">
+                          {(approval.serviceId || 'Generic').split('-')[0]}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-superseller-text-primary">{approval.title}</p>
+                        <p className="text-sm text-superseller-text-tertiary truncate max-w-xs">{approval.description}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-superseller-text-secondary text-sm">
+                        {new Date(approval.requestedAt).toLocaleDateString()}
+                      </div>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(approval.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="supersellerSecondary"
+                          size="sm"
+                          onClick={() => alert('View Details: ' + JSON.stringify(approval.content, null, 2))}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        {approval.status === 'pending' && (
+                          <>
+                            <Button
+                              variant="supersellerSuccess"
+                              size="sm"
+                              onClick={() => handleApprove(approval.id)}
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="supersellerError"
+                              size="sm"
+                              onClick={() => handleReject(approval.id)}
+                            >
+                              <XCircle className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

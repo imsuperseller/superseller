@@ -8,7 +8,7 @@
 
 ### UAD Garage Doors (David Szender)
 - **Status**: Active Partnership
-- **Deal**: Partner in leads (Rensto gets paid per lead)
+- **Deal**: Partner in leads (SuperSeller AI gets paid per lead)
 - **System**: FB Marketplace Listing Generator
 - **Tech**: Telnyx AI Agent + 4 phone numbers
 - **Revenue Model**: Revenue share on leads
@@ -17,14 +17,14 @@
 - **Status**: Active
 - **Relation**: David Szender's partner
 - **System**: Similar to UAD (FB Marketplace listings)
-- **Tech**: Separate Telnyx number in Rensto account
+- **Tech**: Separate Telnyx number in SuperSeller AI account
 - **Testimonial**: "The team understood my needs from day one."
 
 ### Tax4Us (Ben Ginati)
 - **Status**: Active
 - **Hosting**: Client's own cloud n8n (`tax4usllc.app.n8n.cloud`)
 - **Agents**: Posts, SEO, FB, LinkedIn, Podcast
-- **Note**: Runs on their infrastructure, not Rensto VPS
+- **Note**: Runs on their infrastructure, not SuperSeller AI VPS
 - **Testimonial**: "The autonomous team handles our WordPress updates like having a full dev team on call 24/7."
 
 ### Ardan Engineering (Aviad Hazut)
@@ -64,7 +64,7 @@
 
 ## ⚡ Dynamic Synchronization
 
-The Rensto Website's "Industry Leaders" (Logos) and "Testimonials" sections are dynamically synced from Firestore.
+The SuperSeller AI Website's "Industry Leaders" (Logos) and "Testimonials" sections are dynamically synced from Firestore.
 
 - **Collection**: `clients` (Logos)
 - **Collection**: `testimonials` (Quotes)
@@ -75,8 +75,8 @@ The Rensto Website's "Industry Leaders" (Logos) and "Testimonials" sections are 
 
 ## 📝 Notes
 
-- **Telnyx Numbers**: Rensto account holds numbers for Rensto (header), UAD, and Miss Party.
+- **Telnyx Numbers**: SuperSeller AI account holds numbers for SuperSeller AI (header), UAD, and Miss Party.
 - **Partnership Model**: UAD is a revenue-share partnership, not a typical client.
-- **n8n Server**: `https://n8n.rensto.com` (172.245.56.50)
+- **n8n Server**: `https://n8n.superseller.agency` (172.245.56.50)
 - **WAHA Server**: `http://172.245.56.50:3000`
 

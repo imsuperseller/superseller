@@ -7,7 +7,7 @@
  * Usage: node create-tag-structure.cjs
  */
 
-const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.rensto.com';
+const N8N_API_URL = process.env.N8N_API_URL || 'http://n8n.superseller.agency';
 const N8N_API_KEY = process.env.N8N_API_KEY;
 
 if (!N8N_API_KEY) {
@@ -22,7 +22,7 @@ const TAGS_TO_CREATE = [
   { name: 'lead-generation', description: 'Lead generation and scraping workflows' },
   { name: 'content-pipeline', description: 'Content creation and marketing workflows' },
   { name: 'voice-ai', description: 'Voice AI and TTS workflows' },
-  { name: 'internal', description: 'Rensto internal operations' },
+  { name: 'internal', description: 'SuperSeller AI internal operations' },
   { name: 'payments', description: 'Stripe and payment workflows' },
   { name: 'forms', description: 'Typeform and form handling' },
   
@@ -34,7 +34,7 @@ const TAGS_TO_CREATE = [
   { name: 'testing', description: 'Experimental, under development' },
   
   // Client Tags
-  { name: 'rensto', description: 'Rensto internal workflows' },
+  { name: 'superseller', description: 'SuperSeller AI internal workflows' },
   { name: 'tax4us', description: 'Tax4Us client workflows' },
   { name: 'dima', description: 'Dima Vainer client workflows' },
   { name: 'meatpoint', description: 'MeatPoint Dallas client workflows' },

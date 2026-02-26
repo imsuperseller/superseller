@@ -1,6 +1,6 @@
 # 📖 Jargon Dictionary
 
-> **Source of Truth for all Rensto-specific terminology.**
+> **Source of Truth for all SuperSeller AI-specific terminology.**
 
 ---
 

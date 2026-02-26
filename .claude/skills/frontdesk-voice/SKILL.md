@@ -1,7 +1,7 @@
 ---
 name: frontdesk-voice
 description: >-
-  Telnyx AI Voice Assistant (FrontDesk) for Rensto. Covers assistant configuration, voice/TTS selection,
+  Telnyx AI Voice Assistant (FrontDesk) for SuperSeller AI. Covers assistant configuration, voice/TTS selection,
   telephony routing, conversation polling, call transfer, outbound calls, and the BullMQ poller worker.
   Use when working on FrontDesk, Telnyx, voice AI, phone answering, AI receptionist, call handling,
   or the frontdesk-poller worker. Not for video pipeline, UI design, or non-voice backend code.
@@ -53,7 +53,7 @@ negativeTrigger:
 | **TeXML App** | `2860769989730764458` |
 | **Phone Number** | `+14699299314` (ID: `2860769429279475356`) |
 | **Outbound Profile** | `2860763204303193542` (US, CA, IL) |
-| **CNAM** | "Rensto" |
+| **CNAM** | "SuperSeller AI" |
 
 ### Current Assistant Config
 | Setting | Value |
@@ -64,7 +64,7 @@ negativeTrigger:
 | **Background** | `office` (volume 0.2) |
 | **Transfer** | `+14695885133` (Shai) with warm handoff |
 | **Tools** | transfer only (no hangup) |
-| **Instructions** | Real Rensto products/pricing/global scope (2543 chars) |
+| **Instructions** | Real SuperSeller AI products/pricing/global scope (2543 chars) |
 
 ### Key Files
 | File | Purpose |
@@ -72,9 +72,9 @@ negativeTrigger:
 | `apps/worker/src/services/telnyx.ts` | Telnyx API client — CRUD assistants, conversations, outbound calls |
 | `apps/worker/src/queue/workers/frontdesk-poller.worker.ts` | BullMQ poller — ingests conversations every 15 min |
 | `apps/worker/src/config.ts` | `config.telnyx.*` — apiKey, baseUrl, pollInterval, creditsPerCall |
-| `apps/web/rensto-site/src/app/api/admin/frontdesk/route.ts` | Admin CRUD for provisioning |
-| `apps/web/rensto-site/src/app/api/dashboard/calls/route.ts` | Dashboard call log API |
-| `apps/web/rensto-site/prisma/schema.prisma` | SecretaryConfig + VoiceCallLog models |
+| `apps/web/superseller-site/src/app/api/admin/frontdesk/route.ts` | Admin CRUD for provisioning |
+| `apps/web/superseller-site/src/app/api/dashboard/calls/route.ts` | Dashboard call log API |
+| `apps/web/superseller-site/prisma/schema.prisma` | SecretaryConfig + VoiceCallLog models |
 
 ### Database Tables
 - **SecretaryConfig** — `telnyxAssistantId`, `telnyxPhoneNumberId`, `transferNumber`, linked to `clientId` (User)

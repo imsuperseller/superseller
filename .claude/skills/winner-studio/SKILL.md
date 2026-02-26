@@ -5,7 +5,7 @@ description: >-
   Covers Gemini brain routing, Kie.ai avatar-pro/infinitalk/kling-3.0 video generation,
   audio isolation, WhatsApp delivery via WAHA, R2 storage, and credit billing.
   Use when working on Winner Studio, Spoke, avatar video, lip-sync, Mivnim, Yossi,
-  studio.rensto.com, or the apps/studio/ codebase. Not for TourReel, FB Marketplace,
+  studio.superseller.agency, or the apps/studio/ codebase. Not for TourReel, FB Marketplace,
   UI design, or non-studio video work.
   Example: "Fix the avatar-pro fallback in Winner Studio".
 autoTrigger:
@@ -17,7 +17,7 @@ autoTrigger:
   - "avatar-pro"
   - "Mivnim"
   - "Yossi"
-  - "studio.rensto.com"
+  - "studio.superseller.agency"
   - "apps/studio"
   - "winner_generations"
   - "Gemini brain"
@@ -141,7 +141,7 @@ PENDING → SCRIPT_PROCESSING → [AUDIO_ISOLATING] → VIDEO_GENERATING → DEL
 | `RESEND_API_KEY` | Yes | Email magic links |
 | `R2_BUCKET_NAME` | No | Default: winner-video-studio |
 | `R2_PUBLIC_URL` | No | Default: `https://pub-ac6c152d1390490f95184e78af932739.r2.dev` |
-| `WAHA_SESSION` | No | Default: rensto-whatsapp |
+| `WAHA_SESSION` | No | Default: superseller-whatsapp |
 | `CALLBACK_BASE_URL` | No | Kie.ai callback URL base |
 | `INTERNAL_SECRET` | No | Internal API auth |
 
@@ -162,4 +162,4 @@ PENDING → SCRIPT_PROCESSING → [AUDIO_ISOLATING] → VIDEO_GENERATING → DEL
 - NotebookLM 3e820274 — Kie.ai API docs (avatar-pro, infinitalk, kling-3.0)
 - NotebookLM 6bb5f16d — Kling 3.0 prompt engineering
 - Codebase: `apps/studio/` (self-contained Next.js app)
-- Deployment: `studio.rensto.com` (Vercel, manual deploy)
+- Deployment: `studio.superseller.agency` (Vercel, manual deploy)

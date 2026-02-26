@@ -14,7 +14,7 @@ We have created a new API endpoint (`/api/secretary/lookup`) that n8n can call t
 2.  **Delete** the "Detect WAHA Session" Code node.
 3.  **Add an HTTP Request Node** in its place (after the Trigger).
     *   **Method**: `GET`
-    *   **URL**: `https://rensto.com/api/secretary/lookup` (or `http://host.docker.internal:3002/api/secretary/lookup` for local testing)
+    *   **URL**: `https://superseller.agency/api/secretary/lookup` (or `http://host.docker.internal:3002/api/secretary/lookup` for local testing)
     *   **Query Parameters**:
         *   Name: `webhookId`
         *   Value: `{{ $json.webhookId }}`
@@ -23,7 +23,7 @@ We have created a new API endpoint (`/api/secretary/lookup`) that n8n can call t
     *   Pass this `config` object to your AI Agent node.
 
 ## Example Config to Test
-If you are testing locally, you can use the default Rensto webhook ID:
+If you are testing locally, you can use the default SuperSeller AI webhook ID:
 `webhookId` = `556f1aab-220c-4281-90b8-0570465d50b1`
 
 This will ensure your routing is always in sync with the Dashboard settings!

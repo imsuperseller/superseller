@@ -5,8 +5,8 @@
 **Status**: ❌ **MISSING - NEEDS IMPLEMENTATION**  
 **Persona**: John Smith  
 **Role**: Technical Support Engineer  
-**Email**: `john.smith@rensto.com`  
-**Shared Mailbox**: `technical-support@rensto.com`
+**Email**: `shai@superseller.agency`  
+**Shared Mailbox**: `support@superseller.agency`
 
 ## 🎯 **PURPOSE**
 
@@ -30,7 +30,7 @@ Email Webhook → Content Analysis → Persona Identification → John Smith Han
 - **Type**: `n8n-nodes-base.webhook`
 - **Method**: POST
 - **Path**: `email-webhook`
-- **Purpose**: Receives emails from service@rensto.com
+- **Purpose**: Receives emails from shai@superseller.agency
 
 #### **2. Content Analysis**
 - **Type**: `n8n-nodes-base.function`
@@ -68,7 +68,7 @@ Email Webhook → Content Analysis → Persona Identification → John Smith Han
 #### **7. Email Send**
 - **Type**: `n8n-nodes-base.gmail`
 - **Operation**: `send`
-- **From**: `john.smith@rensto.com`
+- **From**: `shai@superseller.agency`
 - **Purpose**: Sends technical support responses
 
 #### **8. Airtable Update**
@@ -118,7 +118,7 @@ I'll keep you updated on the progress. For urgent issues, you can also reach me 
 Best regards,
 John Smith
 Technical Support Engineer
-Rensto
+SuperSeller AI
 ```
 
 ### **API Integration Template**
@@ -142,7 +142,7 @@ Based on your request, I've analyzed:
 **Code Example:**
 ```javascript
 // Example implementation
-const response = await fetch('https://api.rensto.com/v1/endpoint', {
+const response = await fetch('https://api.superseller.agency/v1/endpoint', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY',
@@ -169,7 +169,7 @@ If you need further assistance, I'm available for a technical call to walk throu
 Best regards,
 John Smith
 Technical Support Engineer
-Rensto
+SuperSeller AI
 ```
 
 ### **Performance Optimization Template**
@@ -215,7 +215,7 @@ I can help you implement these optimizations. Would you like to schedule a techn
 Best regards,
 John Smith
 Technical Support Engineer
-Rensto
+SuperSeller AI
 ```
 
 ## 🎯 **KEYWORD TRIGGERS**
@@ -293,7 +293,7 @@ Rensto
 ## 🔧 **CONFIGURATION REQUIREMENTS**
 
 ### **Microsoft 365 Setup**
-- **Shared Mailbox**: `technical-support@rensto.com`
+- **Shared Mailbox**: `support@superseller.agency`
 - **Email Rules**: Route technical emails to shared mailbox
 - **Auto-Reply**: Set up auto-reply for after-hours
 - **Signatures**: Technical signature with contact information
@@ -304,7 +304,7 @@ Rensto
 - **Airtable Credentials**: `3lTwFd8waEI1UQEW`
 
 ### **Environment Variables**
-- `GMAIL_FROM_ADDRESS`: `john.smith@rensto.com`
+- `GMAIL_FROM_ADDRESS`: `shai@superseller.agency`
 - `AIRTABLE_BASE_ID`: Technical Support Tickets base ID
 - `MONITORING_API_KEY`: System monitoring API key
 

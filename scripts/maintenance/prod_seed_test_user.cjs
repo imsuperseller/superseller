@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 
-// Default to 'rensto' project ID
-const projectId = 'rensto';
+// Default to 'superseller' project ID
+const projectId = 'superseller';
 
 async function seedUser() {
     if (!admin.apps.length) {
@@ -11,7 +11,7 @@ async function seedUser() {
     }
 
     const db = admin.firestore();
-    const email = 'shai-personal@rensto.com';
+    const email = 'shai@superseller.agency';
     const userDocId = email.replace(/[^a-z0-9]/g, '_');
 
     console.log(`Seeding user: ${email} (ID: ${userDocId})`);

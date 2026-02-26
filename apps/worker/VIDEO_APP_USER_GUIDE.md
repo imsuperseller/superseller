@@ -8,7 +8,7 @@
 
 **When a video has issues in only some scenes, fix ONLY those scenes. Do NOT retry the whole job.**
 
-- **In-app**: Go to `https://rensto.com/video` (or `http://localhost:3002/video`) → click **View** on a completed job → scroll to "Fix only bad scenes" → select only the bad scenes (e.g. Scene 3: Living Room) → Regenerate selected.
+- **In-app**: Go to `https://superseller.agency/video` (or `http://localhost:3002/video`) → click **View** on a completed job → scroll to "Fix only bad scenes" → select only the bad scenes (e.g. Scene 3: Living Room) → Regenerate selected.
 - **CLI**: `cd apps/worker && JOB_ID={jobId} CLIP_NUMBERS=2,3 npx tsx tools/regen-clips.ts` (replace 2,3 with actual scene numbers).
 - **List clips**: `cd apps/worker && JOB_ID={jobId} npx tsx tools/list-clips-for-regen.ts` — shows Scene 1, 2, 3... with `to_room` so you know which to fix.
 
@@ -20,7 +20,7 @@
 
 ### Local development (recommended for testing)
 
-1. **Start the Next.js app** from `apps/web/rensto-site/`:
+1. **Start the Next.js app** from `apps/web/superseller-site/`:
    ```bash
    VIDEO_WORKER_URL=http://172.245.56.50:3002 pnpm dev
    ```
@@ -34,7 +34,7 @@
    - You are redirected to `/video/{jobId}`
    - Polls every 3 seconds; shows progress, clips, and final video
 
-### Production (rensto.com)
+### Production (superseller.agency)
 
 - **Video create is enabled.** Ensure `VIDEO_WORKER_URL` is set in Vercel (e.g. `http://172.245.56.50:3002` for RackNerd).
 - Without VIDEO_WORKER_URL: "Video worker not configured."

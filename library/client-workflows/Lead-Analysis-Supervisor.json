@@ -70,11 +70,11 @@
                     "parameters": [
                         {
                             "name": "Workiz-Api-Token",
-                            "value": "={{ $node[\"Rensto Vault\"].json.workiz_token }}"
+                            "value": "={{ $node[\"SuperSeller AI Vault\"].json.workiz_token }}"
                         },
                         {
                             "name": "Workiz-Api-Secret",
-                            "value": "={{ $node[\"Rensto Vault\"].json.workiz_secret }}"
+                            "value": "={{ $node[\"SuperSeller AI Vault\"].json.workiz_secret }}"
                         }
                     ]
                 },
@@ -106,7 +106,7 @@
         },
         {
             "parameters": {
-                "toRecipients": "service@rensto.com",
+                "toRecipients": "shai@superseller.agency",
                 "subject": "=New Miss Party Lead: {{ $json.customerName }}",
                 "bodyContent": "=<html><body>New lead detected for Miss Party...</body></html>"
             },

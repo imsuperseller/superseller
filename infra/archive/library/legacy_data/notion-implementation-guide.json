@@ -1,7 +1,7 @@
 {
   "overview": {
     "title": "Notion Templates Implementation Guide",
-    "description": "Complete guide for implementing Notion templates in Rensto operations",
+    "description": "Complete guide for implementing Notion templates in SuperSeller AI operations",
     "status": "Ready for Implementation",
     "estimatedTime": "2-4 hours"
   },
@@ -55,10 +55,10 @@
       "title": "Template Customization",
       "description": "Customize templates for specific use cases",
       "steps": [
-        "Review each template for Rensto-specific needs",
+        "Review each template for SuperSeller AI-specific needs",
         "Customize property options and values",
         "Update content structure as needed",
-        "Add Rensto branding and styling",
+        "Add SuperSeller AI branding and styling",
         "Create template variations for different scenarios",
         "Test customized templates"
       ],

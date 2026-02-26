@@ -1,4 +1,4 @@
-# 🚀 Rensto Website - Current Stack
+# 🚀 SuperSeller AI Website - Current Stack
 
 **Last Updated**: December 22, 2025  
 **Status**: ✅ LIVE on Vercel
@@ -12,15 +12,15 @@
 | **Hosting** | Vercel | Auto-deploy on git push |
 | **Framework** | Next.js 14 | App Router |
 | **Styling** | Tailwind CSS + CSS Variables | Custom design system |
-| **Source** | `apps/web/rensto-site/` | Monorepo structure |
-| **Domain** | rensto.com | Vercel managed DNS/SSL |
+| **Source** | `apps/web/superseller-site/` | Monorepo structure |
+| **Domain** | superseller.agency | Vercel managed DNS/SSL |
 
 ---
 
 ## Site Architecture
 
 ```
-rensto.com/
+superseller.agency/
 ├── /                          # Homepage (3 service paths)
 ├── /custom                    # URL Scan + Qualification Flow
 │   ├── /onboarding           # Client onboarding
@@ -70,7 +70,7 @@ rensto.com/
 ## Development
 
 ```bash
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npm run dev          # Local development
 npm run build        # Production build
 ```

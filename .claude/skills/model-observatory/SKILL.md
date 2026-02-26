@@ -64,14 +64,14 @@ fal.ai/models ──┘                          │                        for 
 | Level | File | Purpose |
 |-------|------|---------|
 | L0 | This SKILL.md | Routing doc |
-| L1 | `apps/web/rensto-site/prisma/schema.prisma` (AIModel, AIModelRecommendation, AIModelDecision) | Schema -- 3 tables, 60+ fields |
+| L1 | `apps/web/superseller-site/prisma/schema.prisma` (AIModel, AIModelRecommendation, AIModelDecision) | Schema -- 3 tables, 60+ fields |
 | L1 | `tools/model-observatory/seed-initial-models.mjs` | Seed 31 models with full structured data |
 | L1 | `tools/model-observatory/daily-sync.ts` | Auto-update from Kie.ai/fal.ai (1194 lines) |
 | L1 | `tools/model-observatory/README.md` | Original spec and architecture overview |
 | L2 | `apps/worker/src/services/kie.ts` | Kie.ai API client (Kling 3.0, Suno, Nano Banana) |
 | L2 | `apps/worker/src/services/gemini.ts` | Gemini API client (vision, prompts) |
 | L2 | `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Pipeline worker that should query observatory |
-| L2 | `apps/web/rensto-site/src/lib/monitoring/expense-tracker.ts` | Cost tracking (pairs with observatory pricing) |
+| L2 | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` | Cost tracking (pairs with observatory pricing) |
 
 ## Database Schema
 
@@ -373,7 +373,7 @@ const cheaper = await pool.query(
 ## References
 
 - `tools/model-observatory/README.md` -- Original architecture spec and design rationale
-- `apps/web/rensto-site/prisma/schema.prisma` -- AIModel, AIModelRecommendation, AIModelDecision models
+- `apps/web/superseller-site/prisma/schema.prisma` -- AIModel, AIModelRecommendation, AIModelDecision models
 - `.claude/skills/tourreel-pipeline/SKILL.md` -- Pipeline that consumes observatory data
 - `.claude/skills/cost-tracker/SKILL.md` -- Cost tracking that pairs with observatory pricing
 - `docs/INFRA_SSOT.md` -- Infrastructure context (RackNerd, Postgres, cron jobs)

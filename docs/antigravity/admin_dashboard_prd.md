@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Admin Dashboard is **Mission Control** for Rensto operations. It provides visibility into business health, client status, support queue, and workflow performance.
+The Admin Dashboard is **Mission Control** for SuperSeller AI operations. It provides visibility into business health, client status, support queue, and workflow performance.
 
 ---
 
@@ -91,7 +91,7 @@ The Admin Dashboard is **Mission Control** for Rensto operations. It provides vi
 | Workflow | Admin Feature |
 |----------|---------------|
 | RENSTO-STRIPE-HANDLER | Updates client entitlements, logs purchases |
-| Rensto Master Controller | Routes leads to correct handlers |
+| SuperSeller AI Master Controller | Routes leads to correct handlers |
 | Universal Lead Machine v3.0 | Generates leads for clients |
 | Client Onboarding Sequence | Sends welcome emails, creates resources |
 | Support Ticket Handler | Notifies team, routes to Slack |

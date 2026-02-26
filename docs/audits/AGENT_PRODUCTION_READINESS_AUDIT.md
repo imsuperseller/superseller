@@ -310,7 +310,7 @@ We've built pricing ($299/$699/$1499), added Market as the 7th crew member, and 
 ### Phase 2: Beta Testing (Week 3)
 1. Invite 3-5 beta customers (UAD, MissParty, + 3 new)
 2. Monitor for 7 days: failures, complaints, refund requests
-3. Measure NPS: "How likely are you to recommend Rensto?" (target: 9/10)
+3. Measure NPS: "How likely are you to recommend SuperSeller AI?" (target: 9/10)
 4. Iterate based on feedback
 
 ### Phase 3: Public Launch (Week 4)
@@ -362,7 +362,7 @@ We've built pricing ($299/$699/$1499), added Market as the 7th crew member, and 
 - Bulk operations (regenerate all failed tasks)
 
 ### 6. **Documentation**
-- Help docs for each agent (rensto.com/docs/forge)
+- Help docs for each agent (superseller.agency/docs/forge)
 - Video tutorials (Loom screencasts)
 - API docs (for custom integrations)
 

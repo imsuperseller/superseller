@@ -1,4 +1,4 @@
-# Rensto Executable Specification
+# SuperSeller AI Executable Specification
 
 ## Web Application Spec
 
@@ -50,7 +50,7 @@ App Layout
 - Airtable Get: Leads view "🔥 Active"
 - Filter: next_action_at ≤ now
 - Slack Send: #alerts channel
-- Email Fallback: service@rensto.com
+- Email Fallback: shai@superseller.agency
 
 ### 2. Projects In Progress Digest
 **Nodes:**
@@ -105,7 +105,7 @@ n8n:latest:
 ### Cloudflare Tunnel
 ```yaml
 ingress:
-  - hostname: n8n.rensto.com
+  - hostname: n8n.superseller.agency
     service: http://n8n:5678
   - service: http_status:404
 ```
@@ -173,7 +173,7 @@ npm audit --audit-level=high
 
 ### Data Consistency
 - Timezone: America/Chicago everywhere
-- Email: service@rensto.com as default
+- Email: shai@superseller.agency as default
 - Airtable views: exact emoji names
 - Workflow names: kebab-case
 

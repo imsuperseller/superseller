@@ -33,7 +33,7 @@
 | `/api/fulfillment/initiate` | POST | Create ServiceInstance, trigger n8n |
 | `/api/fulfillment/finalize` | POST | Mark service as complete |
 
-**Webhook**: Triggers `N8N_FULFILLMENT_WEBHOOK_URL` (default: `https://n8n.rensto.com/webhook/fulfillment-orchestrator`)
+**Webhook**: Triggers `N8N_FULFILLMENT_WEBHOOK_URL` (default: `https://n8n.superseller.agency/webhook/fulfillment-orchestrator`)
 
 ---
 

@@ -1,6 +1,6 @@
 # 🌐 DNS Migration Scripts
 
-**Purpose**: Automate Cloudflare DNS changes for rensto.com migration
+**Purpose**: Automate Cloudflare DNS changes for superseller.agency migration
 
 ---
 
@@ -11,14 +11,14 @@
 Before running the migration script, you need to get DNS values from Vercel:
 
 1. Go to Vercel Dashboard → Your Project → Settings → Domains
-2. Add `rensto.com` and `www.rensto.com` to your project
+2. Add `superseller.agency` and `www.superseller.agency` to your project
 3. Vercel will show you:
    - **A record IP** (for root domain)
    - **CNAME target** (for www - usually `cname.vercel-dns.com`)
 
 ### **2. Update Script Configuration**
 
-Edit `scripts/dns/migrate-rensto-to-vercel.js`:
+Edit `scripts/dns/migrate-superseller-to-vercel.js`:
 
 ```javascript
 const VERCEL_DNS = {
@@ -48,8 +48,8 @@ Or the script will use the token from the code (hardcoded).
 ### **Step 1: Dry Run** (Test without making changes)
 
 ```bash
-cd /Users/shaifriedman/New\ Rensto/rensto
-node scripts/dns/migrate-rensto-to-vercel.js --dry-run
+cd /Users/shaifriedman/New\ SuperSeller AI/superseller
+node scripts/dns/migrate-superseller-to-vercel.js --dry-run
 ```
 
 **What it does**:
@@ -63,7 +63,7 @@ node scripts/dns/migrate-rensto-to-vercel.js --dry-run
 ### **Step 2: Execute** (Make actual changes)
 
 ```bash
-node scripts/dns/migrate-rensto-to-vercel.js --execute
+node scripts/dns/migrate-superseller-to-vercel.js --execute
 ```
 
 **What it does**:
@@ -77,13 +77,13 @@ node scripts/dns/migrate-rensto-to-vercel.js --execute
 ### **Step 3: Rollback** (If needed)
 
 ```bash
-node scripts/dns/migrate-rensto-to-vercel.js --rollback
+node scripts/dns/migrate-superseller-to-vercel.js --rollback
 ```
 
 **What it does**:
 - ✅ Loads backup file
 - ✅ Restores DNS records to Webflow
-- ✅ Points rensto.com back to Webflow
+- ✅ Points superseller.agency back to Webflow
 
 **When to use**: If Vercel deployment has issues, rollback immediately
 
@@ -93,11 +93,11 @@ node scripts/dns/migrate-rensto-to-vercel.js --rollback
 
 ### **Changes Made**:
 
-1. **Root Domain (`rensto.com`)**:
+1. **Root Domain (`superseller.agency`)**:
    - Updates A record: Webflow IP → Vercel IP
    - Sets proxy status: DNS Only (gray cloud)
 
-2. **WWW Subdomain (`www.rensto.com`)**:
+2. **WWW Subdomain (`www.superseller.agency`)**:
    - Updates CNAME: `cdn.webflow.com` → `cname.vercel-dns.com`
    - Sets proxy status: DNS Only (gray cloud)
 
@@ -124,7 +124,7 @@ node scripts/dns/migrate-rensto-to-vercel.js --rollback
 1. ⏱️ **Wait 5-30 minutes** for DNS propagation
 2. ✅ **Check DNS propagation**: https://dnschecker.org
 3. ✅ **Verify SSL certificates** in Vercel
-4. ✅ **Test rensto.com** loads correctly
+4. ✅ **Test superseller.agency** loads correctly
 5. ✅ **Monitor for errors** first hour
 
 ### **Rollback Triggers**:
@@ -143,10 +143,10 @@ Rollback immediately if:
 
 ```bash
 # Check root domain
-dig rensto.com +short
+dig superseller.agency +short
 
 # Check www subdomain
-dig www.rensto.com +short
+dig www.superseller.agency +short
 
 # Check from multiple locations
 # Use: https://dnschecker.org
@@ -156,7 +156,7 @@ dig www.rensto.com +short
 
 ```bash
 # Check SSL
-openssl s_client -connect rensto.com:443 -servername rensto.com
+openssl s_client -connect superseller.agency:443 -servername superseller.agency
 
 # Or use: https://www.ssllabs.com/ssltest/
 ```

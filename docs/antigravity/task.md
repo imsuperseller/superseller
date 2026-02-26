@@ -1,7 +1,7 @@
-# Rensto SaaS Task List
+# SuperSeller AI SaaS Task List
 
 ## Phase 0: Planning & PRD
-- [x] Create Rensto SaaS Playbook artifact
+- [x] Create SuperSeller AI SaaS Playbook artifact
 - [x] Define Phase 0-8 structure
 - [x] Create Customer Dashboard PRD
 - [x] Create Admin Dashboard PRD
@@ -29,7 +29,7 @@
 
 ## Phase 3: Core Business Logic (Current)
 - [x] Wire Qualification Quiz to API Route (`/api/custom-solutions/intake`)
-- [x] Active `Rensto Master Controller` n8n workflow
+- [x] Active `SuperSeller AI Master Controller` n8n workflow
 - [x] Verify Lead Capture flow (Quiz -> API -> n8n)
 - [ ] Implement Marketplace "Buy Blueprint" flow
     - [x] Create "Checkout Success" n8n workflow (`RENSTO-STRIPE-HANDLER`)

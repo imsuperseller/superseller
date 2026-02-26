@@ -49,7 +49,7 @@ start_mcp_proxy() {
     
     # Create a simple MCP Proxy if it doesn't exist
     ssh root@172.245.56.50 << 'EOF'
-        cd /root/rensto/infra/mcp-servers/
+        cd /root/superseller/infra/mcp-servers/
         
         # Create MCP Proxy directory if it doesn't exist
         if [ ! -d "mcp-proxy" ]; then
@@ -60,9 +60,9 @@ start_mcp_proxy() {
             # Create package.json
             cat > package.json << 'PACKAGE_EOF'
 {
-  "name": "rensto-mcp-proxy",
+  "name": "superseller-mcp-proxy",
   "version": "1.0.0",
-  "description": "Main Rensto MCP Proxy Server",
+  "description": "Main SuperSeller AI MCP Proxy Server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -97,7 +97,7 @@ app.use(express.json());
 app.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
-        service: 'rensto-mcp-proxy',
+        service: 'superseller-mcp-proxy',
         timestamp: new Date().toISOString(),
         version: '1.0.0',
         endpoints: {
@@ -158,7 +158,7 @@ app.get('/mcp/vercel', (req, res) => {
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Rensto MCP Proxy running on port ${PORT}`);
+    console.log(`🚀 SuperSeller AI MCP Proxy running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
 

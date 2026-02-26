@@ -26,7 +26,7 @@
 
 ## 🟢 Completed (P2)
 
-### Voice AI for Rensto ✅
+### Voice AI for SuperSeller AI ✅
 | Item | Status | Notes |
 | :--- | :--- | :--- |
 | Phone number | ✅ Done | +1 (469) 929-9314 |
@@ -38,7 +38,7 @@
 
 ## 🟡 Medium Priority (P2)
 
-### Voice AI for Rensto (3 hours)
+### Voice AI for SuperSeller AI (3 hours)
 | Gap | Status | Notes |
 | :--- | :--- | :--- |
 | Telnyx configured but no frontend | ⚠️ Partial | n8n workflow exists: `telnyx-voice-ai-agent.json` |

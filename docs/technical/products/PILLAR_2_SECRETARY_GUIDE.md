@@ -1,7 +1,7 @@
 # Pillar 2: Autonomous Secretary - Architecture & Setup
 
 ## Overview
-The **Autonomous Secretary** (formerly Voice AI) is a multi-tenant system designed to handle inbound communication (Voice, WhatsApp) and administrative tasks (Calendar) for Rensto clients.
+The **Autonomous Secretary** (formerly Voice AI) is a multi-tenant system designed to handle inbound communication (Voice, WhatsApp) and administrative tasks (Calendar) for SuperSeller AI clients.
 
 ## Architecture
 

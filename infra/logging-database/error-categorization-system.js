@@ -1,5 +1,5 @@
 /**
- * Error Categorization System for Rensto Logging Database
+ * Error Categorization System for SuperSeller AI Logging Database
  * Intelligent error classification and severity assessment
  */
 

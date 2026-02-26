@@ -3,22 +3,22 @@
 **NotebookLM notebook**: [N8n workflows](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529)  
 **Last updated**: February 2026
 
-This doc groups the workflow sources in the N8n workflows notebook. Use it to find which sources to query when working on Rensto internal, marketplace, or customer projects.
+This doc groups the workflow sources in the N8n workflows notebook. Use it to find which sources to query when working on SuperSeller AI internal, marketplace, or customer projects.
 
 ---
 
-## Rensto Internal
+## SuperSeller AI Internal
 
-Core operational workflows for Rensto's own business.
+Core operational workflows for SuperSeller AI's own business.
 
 | Workflow | Use when |
 |----------|----------|
 | Universal Lead Machine v4.0 Workflow | Primary lead generation system |
 | Lead Machine Reporting Dashboard Workflow | Lead reporting, analytics |
-| Rensto Internal Content Engine n8n Workflow Automation | Content processing (LightRAG) |
-| Rensto Master Controller: Automated Workflow Provisioning Engine | Workflow provisioning, orchestration |
-| Rensto Premium Voice AI Agent Workflow | Voice AI for consultations |
-| Rensto Voice Agent: WhatsApp Smart Sales Router | WhatsApp routing, sales automation |
+| SuperSeller AI Internal Content Engine n8n Workflow Automation | Content processing (LightRAG) |
+| SuperSeller AI Master Controller: Automated Workflow Provisioning Engine | Workflow provisioning, orchestration |
+| SuperSeller AI Premium Voice AI Agent Workflow | Voice AI for consultations |
+| SuperSeller AI Voice Agent: WhatsApp Smart Sales Router | WhatsApp routing, sales automation |
 | Knowledge Engine Document Ingestion Workflow v2 | Document ingestion for knowledge base |
 
 ---
@@ -48,9 +48,9 @@ Client-specific implementations and deliverables.
 
 | Workflow | Client / Project |
 |----------|------------------|
-| AI Garage Door Lead Analysis Workflow (U6EZ2iLQ4zCGg31H) | UAD Garage Doors — ACTIVE, 5 triggers, emails to service@rensto.com |
+| AI Garage Door Lead Analysis Workflow (U6EZ2iLQ4zCGg31H) | UAD Garage Doors — ACTIVE, 5 triggers, emails to shai@superseller.agency |
 | Miss Party Lead Analysis Workflow (9gfvZo9sB4b3pMWQ) | Miss Party — ACTIVE, 5 triggers (recreated Feb 22, old ID U6LqmzNwiKTkd0gM deleted) |
-| Telnyx Voice AI "Hope" | Rensto sales agent — NOT for customer calls (0 executions) |
+| Telnyx Voice AI "Hope" | SuperSeller AI sales agent — NOT for customer calls (0 executions) |
 | Automated Facebook Marketplace Listing Generator | UAD, Miss Party — SUPERSEDED by content-generator.js |
 | Samson Core Automated Hebrew and English Content Pipeline | Samson |
 | SAMSON-WEB: AI-Driven Competitor Analysis and Landing Page Builder | Samson |

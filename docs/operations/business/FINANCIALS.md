@@ -1,6 +1,6 @@
 # 📊 Financial Tracking
 
-> **Source of Truth for Rensto's revenue, costs, and metrics.**
+> **Source of Truth for SuperSeller AI's revenue, costs, and metrics.**
 
 ---
 

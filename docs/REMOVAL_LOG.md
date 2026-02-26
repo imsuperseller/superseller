@@ -23,7 +23,7 @@
 
 ### 🛑 Webflow Scripts (Retired Feb 2026)
 *   **Reason**: Hosting complex SaaS logic on Webflow was a "duct-tape" solution. Custom JS injections became unmanageable for deep agent integrations.
-*   **Replacement**: **Next.js (rensto-site)**.
+*   **Replacement**: **Next.js (superseller-site)**.
 *   **Wasted Time**: $2k+ in subscription/dev time for a site that ultimately limited programmatic freedom.
 *   **Lesson**: Portfolios look great on Webflow; SaaS products belong on Next.js.
 

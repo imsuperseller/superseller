@@ -29,16 +29,16 @@ I have generated an optimized version of the workflow that:
 - Uses direct OpenAI → Telnyx Speak flow for maximum reliability.
 
 ### 📥 Optimized JSON Fix
-Copy the content of [TELNYX_HOPE_OPTIMIZED.json](file:///Users/shaifriedman/New%20Rensto/rensto/workflows/TELNYX_HOPE_OPTIMIZED.json) and import it into your n8n instance.
+Copy the content of [TELNYX_HOPE_OPTIMIZED.json](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/workflows/TELNYX_HOPE_OPTIMIZED.json) and import it into your n8n instance.
 
 ---
 
 ## 🧪 Verification Steps
 
 1.  **Call the number**: +1 (469) 929-9314.
-2.  **Greeting**: Confirm she says "Hi, thanks for calling Rensto. I am Hope...".
+2.  **Greeting**: Confirm she says "Hi, thanks for calling SuperSeller AI. I am Hope...".
 3.  **Speech**: Ask "What is the Automation Audit?".
 4.  **Response**: She should say "One moment..." and then provide the answer within 3-5 seconds.
 
 > [!IMPORTANT]
-> Ensure your ElevenLabs API key is still valid and the `rensto` credential reference in Telnyx Call Control is active.
+> Ensure your ElevenLabs API key is still valid and the `superseller` credential reference in Telnyx Call Control is active.

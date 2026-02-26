@@ -49,7 +49,7 @@
 data-flow-type="marketplace-template"
 data-tier="simple" | "standard" | "advanced"
 data-template-price="29" | "97" | "197"
-API_URL: 'https://api.rensto.com/api/stripe/checkout'
+API_URL: 'https://api.superseller.agency/api/stripe/checkout'
 ```
 
 **Issues**: 2 minor
@@ -305,7 +305,7 @@ function filterIndustry(category) {
 ### **3.3 Stripe Integration Status**
 
 **All niche pages**: GitHub scripts integration (external CDN)
-- CDN: `https://rensto-webflow-scripts.vercel.app`
+- CDN: `https://superseller-webflow-scripts.vercel.app`
 - Scripts: `shared/stripe-core.js`, `ready-solutions/checkout.js`
 
 **HVAC Exception**: Has 3 Stripe references (may have full Ready Solutions integration)
@@ -387,13 +387,13 @@ function filterIndustry(category) {
 ```javascript
 (function() {
   'use strict';
-  const API_URL = 'https://api.rensto.com/api/stripe/checkout';
+  const API_URL = 'https://api.superseller.agency/api/stripe/checkout';
 
   function initCheckout() {
     // Initialization logic
   }
 
-  window.RenstoMarketplace = { initCheckout };
+  window.SuperSeller AIMarketplace = { initCheckout };
 })();
 ```
 

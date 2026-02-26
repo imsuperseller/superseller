@@ -46,7 +46,7 @@ Created: February 23, 2026
 
 ### API Route Example
 ```typescript
-// apps/web/rensto-site/src/app/api/marketplace/checkout/route.ts
+// apps/web/superseller-site/src/app/api/marketplace/checkout/route.ts
 const PRICE_IDS = {
   starter: 'price_1T49maDE8rt1dEs1yoVGzIfL',
   pro: 'price_1T49maDE8rt1dEs1ysQsHB9U',
@@ -73,7 +73,7 @@ const session = await stripe.checkout.sessions.create({
 
 ### Webhook Handler
 ```typescript
-// apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts
+// apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts
 switch (event.type) {
   case 'checkout.session.completed':
     // Update marketplace_customers.subscription
@@ -123,7 +123,7 @@ All products use consistent metadata for programmatic access:
 
 ## Related Files
 
-- `/apps/web/rensto-site/src/app/api/marketplace/checkout/route.ts` — Checkout flow
-- `/apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` — Subscription webhooks
-- `/apps/web/rensto-site/src/app/(main)/dashboard/marketplace/billing/page.tsx` — Billing UI
-- `/apps/web/rensto-site/prisma/schema.prisma` — marketplace_customers.subscription field
+- `/apps/web/superseller-site/src/app/api/marketplace/checkout/route.ts` — Checkout flow
+- `/apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts` — Subscription webhooks
+- `/apps/web/superseller-site/src/app/(main)/dashboard/marketplace/billing/page.tsx` — Billing UI
+- `/apps/web/superseller-site/prisma/schema.prisma` — marketplace_customers.subscription field

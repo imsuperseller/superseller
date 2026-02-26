@@ -1,4 +1,4 @@
-# Rensto Social Media Playbook (2026)
+# SuperSeller AI Social Media Playbook (2026)
 
 This playbook operationalizes the "90% Demand" strategy. Our goal is to shift from "Supply Only" (building) to "Demand First" (selling).
 
@@ -20,15 +20,15 @@ This playbook operationalizes the "90% Demand" strategy. Our goal is to shift fr
 Reach out to 50 people (friends, former co-workers, family).
 
 **Script**:
-> "Hey [Name], I've officially launched Rensto—my AI agency. We focus on 4 core systems that actually drive ROI: RAG, Lead Gen, Voice Agents, and Content Automation. Do you know any business owners doing $2M+ who are drowning in manual work and need to automate? Just looking for a warm intro if anyone comes to mind."
+> "Hey [Name], I've officially launched SuperSeller AI—my AI agency. We focus on 4 core systems that actually drive ROI: RAG, Lead Gen, Voice Agents, and Content Automation. Do you know any business owners doing $2M+ who are drowning in manual work and need to automate? Just looking for a warm intro if anyone comes to mind."
 
 ## The Pillar mapping (What to Sell)
-- **RAG** -> Rensto Knowledge Engine
-- **Lead Gen** -> Rensto Lead Machine
-- **Voice Agents** -> Rensto Secretary AI (Autonomous Secretary)
-- **Content Automation** -> Rensto Content Engine
+- **RAG** -> SuperSeller AI Knowledge Engine
+- **Lead Gen** -> SuperSeller AI Lead Machine
+- **Voice Agents** -> SuperSeller AI Secretary AI (Autonomous Secretary)
+- **Content Automation** -> SuperSeller AI Content Engine
 
 ## Funnel Flow
 1. **Awareness**: Short-form content.
 2. **Consideration**: LinkedIn / Long-form YouTube.
-3. **Conversion**: Rensto Dashboard / ManyChat "DM to Lead" automation.
+3. **Conversion**: SuperSeller AI Dashboard / ManyChat "DM to Lead" automation.

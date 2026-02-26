@@ -1,7 +1,7 @@
 ---
 name: customer-journey
 description: >-
-  Customer journey and onboarding pipeline for Rensto SaaS. Covers the 4-stage funnel
+  Customer journey and onboarding pipeline for SuperSeller AI SaaS. Covers the 4-stage funnel
   (Awareness → Purchase → Onboarding → Retention), Stripe webhook provisioning,
   magic-link auth, customer portals, dashboard tabs, entitlements, and lifecycle automation.
   Use when working on onboarding, customer dashboard, provisioning, entitlements,
@@ -36,7 +36,7 @@ negativeTrigger:
 - **Three provisioning paths** — marketplace-template, managed-plan, registry-driven. Each has different flows.
 - **Entitlements are JSON in User model** — `User.entitlements.engines[]` tracks active services. Always update atomically.
 - **Dashboard tabs are dynamic** — shown/hidden based on user entitlements. Never hardcode tab visibility.
-- **Magic-link auth** — 30-day session, encrypted AES-256-GCM cookie `rensto_client_session`.
+- **Magic-link auth** — 30-day session, encrypted AES-256-GCM cookie `superseller_client_session`.
 - **Current status**: Purchase → Onboarding is ~40-60% automated. Customer portals NOT built yet.
 
 ## 4-Stage Funnel
@@ -63,12 +63,12 @@ Stage 4: ACTIVE → RETENTION
 
 | File | Purpose |
 |------|---------|
-| `apps/web/rensto-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (100+ lines) |
-| `apps/web/rensto-site/src/lib/services/ProvisioningService.ts` | 3-path provisioning orchestrator (150+ lines) |
-| `apps/web/rensto-site/src/lib/auth.ts` | Magic-link session auth (AES-256-GCM) |
-| `apps/web/rensto-site/src/lib/email.ts` | Email templates (11 types) via Resend (80+ lines) |
-| `apps/web/rensto-site/src/app/(main)/dashboard/[clientId]/page.tsx` | Customer dashboard page |
-| `apps/web/rensto-site/src/app/(main)/dashboard/[clientId]/ClientDashboardClient.tsx` | Dashboard client (100+ lines) |
+| `apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (100+ lines) |
+| `apps/web/superseller-site/src/lib/services/ProvisioningService.ts` | 3-path provisioning orchestrator (150+ lines) |
+| `apps/web/superseller-site/src/lib/auth.ts` | Magic-link session auth (AES-256-GCM) |
+| `apps/web/superseller-site/src/lib/email.ts` | Email templates (11 types) via Resend (80+ lines) |
+| `apps/web/superseller-site/src/app/(main)/dashboard/[clientId]/page.tsx` | Customer dashboard page |
+| `apps/web/superseller-site/src/app/(main)/dashboard/[clientId]/ClientDashboardClient.tsx` | Dashboard client (100+ lines) |
 
 ## Provisioning Flows
 
@@ -185,4 +185,4 @@ pending_setup → configuring → provisioning → active → suspended / cancel
 
 - `PRODUCT_BIBLE.md` — Subscription tiers, credit allocations
 - `stripe-credits` skill — Detailed Stripe integration
-- NotebookLM 719854ee — Rensto website customer-facing content
+- NotebookLM 719854ee — SuperSeller AI website customer-facing content

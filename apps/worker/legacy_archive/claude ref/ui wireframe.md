@@ -1216,7 +1216,7 @@ Clerk customization (via Clerk Dashboard → Appearance):
 │  │  "Share" (h3)                                            │   │
 │  │                                                          │   │
 │  │  Direct link:                                            │   │
-│  │  [https://videos.tourreel.com/abc123/master.mp4   📋]    │   │
+│  │  [https://videos.superseller.agency/abc123/master.mp4   📋]    │   │
 │  │  (input readonly + copy button)                          │   │
 │  │                                                          │   │
 │  │  Embed code:                                             │   │

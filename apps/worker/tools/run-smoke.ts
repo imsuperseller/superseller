@@ -1,4 +1,4 @@
-// API_URL must point to WORKER (not rensto-site). Worker has /api/dev/, /api/jobs/.
+// API_URL must point to WORKER (not superseller-site). Worker has /api/dev/, /api/jobs/.
 // Local (worker 3001, site 3002): API_URL=http://localhost:3001
 // RackNerd: API_URL=http://172.245.56.50:3002
 const API = process.env.API_URL || "http://localhost:3001";

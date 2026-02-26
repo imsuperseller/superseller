@@ -237,7 +237,7 @@
         "resource": "email",
         "to": "={{ $json.clientEmail }}",
         "subject": "Your Design is Ready! 🎨",
-        "message": "Hi {{ $json.clientName }},\n\nYour design request has been completed!\n\nDesign Package Includes:\n- Design specification\n- Component recommendations\n- Interactive mockup\n- Implementation workflow\n\nView your design: https://design.rensto.com/{{ $json.designRequestId }}\n\nNext steps:\n1. Review the design\n2. Approve for implementation\n3. Schedule development call\n\nBest regards,\nThe Rensto Design Team",
+        "message": "Hi {{ $json.clientName }},\n\nYour design request has been completed!\n\nDesign Package Includes:\n- Design specification\n- Component recommendations\n- Interactive mockup\n- Implementation workflow\n\nView your design: https://design.superseller.agency/{{ $json.designRequestId }}\n\nNext steps:\n1. Review the design\n2. Approve for implementation\n3. Schedule development call\n\nBest regards,\nThe SuperSeller AI Design Team",
         "options": {}
       },
       "id": "send-design-completion-email",

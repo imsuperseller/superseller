@@ -1,6 +1,6 @@
 # 💼 Products & Services
 
-> **Source of Truth for everything Rensto sells.**
+> **Source of Truth for everything SuperSeller AI sells.**
 
 ---
 

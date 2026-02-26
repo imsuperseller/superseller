@@ -3,7 +3,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 // Load environment variables from the web app
-const envPath = path.resolve(__dirname, '../apps/web/rensto-site/.env.local');
+const envPath = path.resolve(__dirname, '../apps/web/superseller-site/.env.local');
 dotenv.config({ path: envPath });
 
 async function seed() {

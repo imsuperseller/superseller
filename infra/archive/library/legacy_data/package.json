@@ -1,5 +1,5 @@
 {
-  "name": "rensto",
+  "name": "superseller",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
@@ -16,7 +16,7 @@
   "devDependencies": {
     "typescript": "^5.9.2"
   },
-  "description": "**Purpose:** Operational scripts, automation tools, BMAD workflows, deployment utilities, and system maintenance scripts for Rensto operations.",
+  "description": "**Purpose:** Operational scripts, automation tools, BMAD workflows, deployment utilities, and system maintenance scripts for SuperSeller AI operations.",
   "main": "activate-quickbooks-integration.js",
   "directories": {
     "test": "test"

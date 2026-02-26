@@ -1,5 +1,5 @@
 {
-  "name": "rensto-lightrag",
+  "name": "superseller-lightrag",
   "image": "ghcr.io/hkuds/lightrag:latest",
   "environment": {
     "LIGHTRAG_API_KEY": "generated-api-key",

@@ -1,0 +1,1011 @@
+{
+    "updatedAt": "2025-12-26T02:58:58.024Z",
+    "createdAt": "2025-12-12T01:14:41.854Z",
+    "id": "vCxY2DXUZ8vUb30f",
+    "name": "CRO-INSIGHTS-001: Monthly CRO Insights Robot v1",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "=## CRO ANALYSIS REQUEST\n\n**Client:** {{ $json.client_name }}\n**Website:** {{ $json.website }}\n**Report Period:** {{ $json.reportMonth }}\n**Primary Conversion Event:** {{ $json.primary_conversion_event }}\n\n---\n\n## DATA FOR ANALYSIS\n\n### Google Analytics 4 Data:\n```json\n{{ JSON.stringify($json.ga4, null, 2) }}\n```\n\n### Microsoft Clarity Behavior Data:\n```json\n{{ JSON.stringify($json.clarity, null, 2) }}\n```\n\n---\n\n## REQUIRED OUTPUT FORMAT\n\nProvide your analysis in the following markdown structure:\n\n# {{ $json.client_name }} — CRO Insights ({{ $json.reportMonth }})\n\n## 1. Performance Overview\n- Total Sessions: [number]\n- Total Users: [number]\n- Conversions ({{ $json.primary_conversion_event }}): [number]\n- Sitewide Conversion Rate: [percentage]\n- Mobile vs Desktop conversion comparison\n- Top 3 converting landing pages\n- Bottom 3 converting landing pages\n\n## 2. Behavioral Findings (Clarity)\n- Pages with highest rage click density (and why it matters)\n- Pages with low scroll depth (< 50%)\n- Device-specific UX issues identified\n- Average engagement time analysis\n\n## 3. Hypotheses (What Might Be Going Wrong)\nFor each hypothesis:\n- H1: [Hypothesis statement]\n  - Evidence: [Data supporting this]\n  - Confidence: [High/Medium/Low]\n\n## 4. Recommended Actions\nFor each recommendation (3-5 total):\n| Page/Section | Issue Identified | Suggested Change | Expected Impact | Priority |\n|-------------|-----------------|------------------|-----------------|----------|\n| [specific page] | [specific issue] | [specific fix] | [qualitative] | [High/Med/Low] |\n\n## 5. Priority Actions for Next Month\n1. [Most impactful action]\n2. [Second priority]\n3. [Third priority]\n\n## 6. Dashboard Links for Manual Review\n- [Clarity Dashboard Link placeholder]\n- [GA4 Dashboard Link placeholder]\n\n---\nGenerate the complete report now.",
+                "options": {
+                    "systemMessage": "You are a Senior Conversion Rate Optimization (CRO) Specialist with 10+ years of experience analyzing website behavior data and improving conversion funnels.\n\n## YOUR EXPERTISE:\n- Interpreting Google Analytics 4 metrics (sessions, users, conversions, device breakdowns)\n- Analyzing Microsoft Clarity behavioral data (rage clicks, dead clicks, scroll depth, engagement time)\n- Identifying UX friction points and conversion blockers\n- Formulating data-driven hypotheses\n- Prioritizing recommendations by impact vs effort\n\n## YOUR ANALYSIS APPROACH:\n1. Start with the conversion funnel overview\n2. Identify statistical anomalies and outliers\n3. Correlate behavior data with conversion drops\n4. Focus on actionable, specific recommendations\n5. Prioritize quick wins vs long-term improvements\n\n## OUTPUT REQUIREMENTS:\n- Use clear, non-technical language suitable for marketers\n- Be specific about pages, metrics, and percentages\n- Provide concrete recommendations, not vague suggestions\n- Include expected impact estimates (qualitative)\n- Format as markdown with clear sections",
+                    "maxIterations": 3,
+                    "returnIntermediateSteps": false,
+                    "passthroughBinaryImages": false,
+                    "enableStreaming": false,
+                    "batching": {}
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3,
+            "position": [
+                480,
+                64
+            ],
+            "id": "18d74419-4b02-4915-920d-89554fa415df",
+            "name": "Generate CRO Insights"
+        },
+        {
+            "parameters": {},
+            "id": "manual-trigger",
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -608,
+                32
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// CLIENT CONFIGURATION\nconst clients = [\n  {\n    client_name: 'Your Client Name',\n    client_slug: 'your-client-slug',\n    website_url: 'https://yourwebsite.com',\n    clarity_project_id: 'your_clarity_id',\n    ga4_property_id: 'your_ga4_id',\n    primary_conversion_event: 'purchase',\n    email_recipients: ['admin@example.com'],\n    slack_channel_id: 'C012345678',\n    active: true\n  }\n];\nreturn clients.filter(c => c.active).map(c => ({ json: c }));"
+            },
+            "id": "client-config",
+            "name": "Client Config",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -384,
+                128
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "// Get input data - in runOnceForEachItem mode, just use $json directly\nconst client = $json;\n\nconst now = new Date();\nconst startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);\nconst endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);\nconst formatDate = (d) => d.toISOString().split('T')[0];\nconst monthName = startOfLastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });\n\n// In runOnceForEachItem mode, return the object directly (not wrapped in [{json:...}])\nreturn {\n  client_name: client.client_name,\n  client_slug: client.client_slug,\n  website_url: client.website_url,\n  clarity_project_id: client.clarity_project_id,\n  ga4_property_id: client.ga4_property_id,\n  primary_conversion_event: client.primary_conversion_event,\n  email_recipients: client.email_recipients,\n  slack_channel_id: client.slack_channel_id,\n  notion_report_db_id: client.notion_report_db_id,\n  active: client.active,\n  dateRange: {\n    clarity: { numOfDays: 3 },\n    ga4: {\n      startDate: formatDate(startOfLastMonth),\n      endDate: formatDate(endOfLastMonth)\n    },\n    reportMonth: monthName\n  },\n  executionId: $execution.id\n};"
+            },
+            "id": "date-range",
+            "name": "Calculate Date Range",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -160,
+                128
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.clarity.ms/export-data/api/v1/project-live-insights",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "projectId",
+                            "value": "={{ $json.clarity_project_id }}"
+                        },
+                        {
+                            "name": "numOfDays",
+                            "value": "3"
+                        },
+                        {
+                            "name": "dimension1",
+                            "value": "URL"
+                        },
+                        {
+                            "name": "dimension2",
+                            "value": "Device"
+                        }
+                    ]
+                },
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer {YOUR_CLARITY_TOKEN}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "clarity-api",
+            "name": "Clarity API",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                48,
+                32
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Merge Clarity and GA4 data with aggressive size limits\nconst items = $input.all();\nlet clarityData = items[0]?.json || {};\nlet ga4Data = items[1]?.json || {};\nconst clientConfig = $('Calculate Date Range').first().json;\n\n// Aggressively trim Clarity data - keep only first 20 rows\nif (clarityData.rows && clarityData.rows.length > 20) {\n  clarityData = { \n    totalRows: clarityData.rows.length,\n    rows: clarityData.rows.slice(0, 20), \n    trimmed: true \n  };\n}\n\n// Aggressively trim GA4 rows\nif (ga4Data.rows && ga4Data.rows.length > 15) {\n  ga4Data = { \n    totalRows: ga4Data.rows.length,\n    rows: ga4Data.rows.slice(0, 15), \n    trimmed: true \n  };\n}\n\nreturn [{\n  json: {\n    client_name: clientConfig.client_name,\n    client_slug: clientConfig.client_slug,\n    reportMonth: clientConfig.dateRange.reportMonth,\n    website: clientConfig.website_url,\n    clarity: clarityData,\n    ga4: ga4Data,\n    primary_conversion_event: clientConfig.primary_conversion_event,\n    notion_report_db_id: clientConfig.notion_report_db_id,\n    slack_channel_id: clientConfig.slack_channel_id,\n    email_recipients: clientConfig.email_recipients\n  }\n}];"
+            },
+            "id": "merge-data",
+            "name": "Merge Data",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                288,
+                128
+            ]
+        },
+        {
+            "parameters": {
+                "authentication": "oAuth2",
+                "select": "channel",
+                "channelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "cro-reports"
+                },
+                "text": "=🤖 *CRO Report Generated*\n\n📊 *Client:* {{ $('Merge Data').item.json.client_name }}\n📅 *Period:* {{ $('Merge Data').item.json.reportMonth }}\n\n@Kelly - Please review, add Clarity screenshots, and finalize action items.\n\n👉 Report created in Notion",
+                "otherOptions": {}
+            },
+            "id": "slack-notify",
+            "name": "Slack Notification",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.4,
+            "position": [
+                864,
+                160
+            ],
+            "webhookId": "c53243ad-cb03-428f-943a-46c467f0948f",
+            "credentials": {
+                "slackOAuth2Api": {
+                    "id": "hI8Vxzp3iNbHYndW",
+                    "name": "IoLite"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "0 9 * * 1"
+                        }
+                    ]
+                }
+            },
+            "id": "schedule-trigger",
+            "name": "Weekly Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.3,
+            "position": [
+                -608,
+                224
+            ]
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "value": "gpt-4o-mini",
+                    "mode": "list",
+                    "cachedResultName": "gpt-4o-mini"
+                },
+                "responsesApiEnabled": false,
+                "options": {
+                    "frequencyPenalty": 0.3,
+                    "maxTokens": 4000,
+                    "presencePenalty": 0.2,
+                    "temperature": 0.3,
+                    "timeout": 120000,
+                    "maxRetries": 2
+                }
+            },
+            "id": "openai-model",
+            "name": "OpenAI Chat Model",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1.3,
+            "position": [
+                400,
+                304
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "FJVFZMQlvOEkTgLy",
+                    "name": "Varnai Openai"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem",
+                "jsCode": "// Log error to console and prepare notification\nconst error = $input.item.json;\nconst clientConfig = $('Calculate Date Range').first()?.json || {};\n\nreturn [{\n  json: {\n    error_type: error.name || 'Unknown',\n    error_message: error.message || JSON.stringify(error),\n    client_slug: clientConfig.client_slug || 'unknown',\n    execution_id: $execution.id,\n    workflow_name: $workflow.name,\n    timestamp: new Date().toISOString()\n  }\n}];"
+            },
+            "id": "error-handler",
+            "name": "Error Handler",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -384,
+                -208
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "error-trigger",
+            "name": "On Error",
+            "type": "n8n-nodes-base.errorTrigger",
+            "typeVersion": 1,
+            "position": [
+                -608,
+                -208
+            ]
+        },
+        {
+            "parameters": {
+                "authentication": "oAuth2",
+                "select": "channel",
+                "channelId": {
+                    "__rl": true,
+                    "value": "cro-alerts",
+                    "mode": "name"
+                },
+                "text": "=⚠️ *CRO Robot Error*\n\n📌 *Client:* {{ $json.client_slug }}\n❌ *Error:* {{ $json.error_message }}\n🔗 *Execution:* {{ $json.execution_id }}\n\nCheck n8n for details.",
+                "otherOptions": {}
+            },
+            "id": "error-slack",
+            "name": "Error Slack Alert",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 2.4,
+            "position": [
+                -160,
+                -208
+            ],
+            "webhookId": "e34a9c11-047d-44ae-b263-da0f9fd942b2",
+            "credentials": {
+                "slackOAuth2Api": {
+                    "id": "hI8Vxzp3iNbHYndW",
+                    "name": "IoLite"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "propertyId": "={{ $json.ga4_property_id }}",
+                "resource": "report",
+                "operation": "get",
+                "dimensions": [
+                    "deviceCategory",
+                    "landingPage"
+                ],
+                "metrics": [
+                    "sessions",
+                    "totalUsers",
+                    "conversions",
+                    "bounceRate",
+                    "sessionConversionRate"
+                ],
+                "dateRange": "custom",
+                "startDate": "={{ $json.dateRange.ga4.startDate }}",
+                "endDate": "={{ $json.dateRange.ga4.endDate }}",
+                "limit": 25
+            },
+            "type": "n8n-nodes-base.googleAnalytics",
+            "typeVersion": 2,
+            "position": [
+                48,
+                240
+            ],
+            "id": "9a66262b-63ad-4319-b2aa-a7f0a9e1053a",
+            "name": "GA4 (Service Account)",
+            "credentials": {
+                "googleServiceAccount": {
+                    "id": "5P8d7emKIUKFSmGz",
+                    "name": "Google Service Account account 2"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Client Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Client Config": {
+            "main": [
+                [
+                    {
+                        "node": "Calculate Date Range",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Calculate Date Range": {
+            "main": [
+                [
+                    {
+                        "node": "Clarity API",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "GA4 (Service Account)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Clarity API": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge Data": {
+            "main": [
+                [
+                    {
+                        "node": "Generate CRO Insights",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate CRO Insights": {
+            "main": [
+                [
+                    {
+                        "node": "Slack Notification",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Weekly Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Client Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "On Error": {
+            "main": [
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Error Handler": {
+            "main": [
+                [
+                    {
+                        "node": "Error Slack Alert",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model": {
+            "main": [
+                []
+            ],
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Generate CRO Insights",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GA4 (Service Account)": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": true,
+        "timeSavedMode": "fixed"
+    },
+    "staticData": {
+        "node:Weekly Schedule": {
+            "recurrenceRules": []
+        }
+    },
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "43b28bb4-ed90-47f3-b705-cd6c718b7f9b",
+    "activeVersionId": "43b28bb4-ed90-47f3-b705-cd6c718b7f9b",
+    "versionCounter": 73,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2025-12-12T01:14:41.860Z",
+            "createdAt": "2025-12-12T01:14:41.860Z",
+            "role": "workflow:owner",
+            "workflowId": "vCxY2DXUZ8vUb30f",
+            "projectId": "6L20DLwgKEB5r0rn",
+            "project": {
+                "updatedAt": "2025-11-12T01:28:20.899Z",
+                "createdAt": "2025-11-12T01:28:20.899Z",
+                "id": "6L20DLwgKEB5r0rn",
+                "name": "Unnamed Project",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                "projectRelations": [
+                    {
+                        "updatedAt": "2025-11-12T01:28:20.899Z",
+                        "createdAt": "2025-11-12T01:28:20.899Z",
+                        "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                        "projectId": "6L20DLwgKEB5r0rn",
+                        "user": {
+                            "updatedAt": "2026-01-14T06:00:01.000Z",
+                            "createdAt": "2025-11-12T01:28:20.421Z",
+                            "id": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7",
+                            "email": "shai@superseller.agency",
+                            "firstName": "Service",
+                            "lastName": "SuperSeller AI",
+                            "personalizationAnswers": {
+                                "version": "v4",
+                                "personalization_survey_submitted_at": "2025-11-12T02:46:44.970Z",
+                                "personalization_survey_n8n_version": "1.119.1",
+                                "companyIndustryExtended": [
+                                    "marketing-industry"
+                                ],
+                                "companySize": "<20",
+                                "companyType": "other",
+                                "role": "business-owner",
+                                "reportedSource": "google"
+                            },
+                            "settings": {
+                                "userActivated": true,
+                                "easyAIWorkflowOnboarded": true
+                            },
+                            "disabled": false,
+                            "mfaEnabled": false,
+                            "lastActiveAt": "2026-01-14",
+                            "isPending": false
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "tags": [
+        {
+            "updatedAt": "2025-12-23T05:26:35.183Z",
+            "createdAt": "2025-12-23T05:26:35.183Z",
+            "id": "4nDjZ9Kpiu9GZgfh",
+            "name": "slack"
+        },
+        {
+            "updatedAt": "2025-12-23T05:13:14.616Z",
+            "createdAt": "2025-12-23T05:13:14.616Z",
+            "id": "4rHCf57w8n2wkgaf",
+            "name": "schedule"
+        },
+        {
+            "updatedAt": "2025-12-23T05:14:19.743Z",
+            "createdAt": "2025-12-23T05:14:19.743Z",
+            "id": "A2ZFz4uaJaaHSX94",
+            "name": "ai agent"
+        },
+        {
+            "updatedAt": "2025-12-23T05:26:21.974Z",
+            "createdAt": "2025-12-23T05:26:21.974Z",
+            "id": "E9XM9TrdbkvNfrk4",
+            "name": "google analytics"
+        },
+        {
+            "updatedAt": "2025-12-23T05:15:46.118Z",
+            "createdAt": "2025-12-23T05:15:46.118Z",
+            "id": "EQRCygQA40fdecfT",
+            "name": "http"
+        },
+        {
+            "updatedAt": "2025-12-23T05:13:08.145Z",
+            "createdAt": "2025-12-23T05:13:08.145Z",
+            "id": "bT62YT8oSIFeKXOS",
+            "name": "openai"
+        },
+        {
+            "updatedAt": "2025-12-23T05:13:20.512Z",
+            "createdAt": "2025-12-23T05:13:20.512Z",
+            "id": "bUeNCB9wzPs4CAil",
+            "name": "code"
+        },
+        {
+            "updatedAt": "2025-12-23T05:25:59.532Z",
+            "createdAt": "2025-12-23T05:25:59.532Z",
+            "id": "dOJgVyB1ybW8VmU8",
+            "name": "varnai"
+        },
+        {
+            "updatedAt": "2025-12-23T05:26:52.459Z",
+            "createdAt": "2025-12-23T05:26:52.459Z",
+            "id": "oR8iRqBhNeKcGiRL",
+            "name": "error"
+        }
+    ],
+    "activeVersion": {
+        "updatedAt": "2025-12-26T02:58:45.000Z",
+        "createdAt": "2025-12-26T02:58:43.216Z",
+        "versionId": "43b28bb4-ed90-47f3-b705-cd6c718b7f9b",
+        "workflowId": "vCxY2DXUZ8vUb30f",
+        "nodes": [
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=## CRO ANALYSIS REQUEST\n\n**Client:** {{ $json.client_name }}\n**Website:** {{ $json.website }}\n**Report Period:** {{ $json.reportMonth }}\n**Primary Conversion Event:** {{ $json.primary_conversion_event }}\n\n---\n\n## DATA FOR ANALYSIS\n\n### Google Analytics 4 Data:\n```json\n{{ JSON.stringify($json.ga4, null, 2) }}\n```\n\n### Microsoft Clarity Behavior Data:\n```json\n{{ JSON.stringify($json.clarity, null, 2) }}\n```\n\n---\n\n## REQUIRED OUTPUT FORMAT\n\nProvide your analysis in the following markdown structure:\n\n# {{ $json.client_name }} — CRO Insights ({{ $json.reportMonth }})\n\n## 1. Performance Overview\n- Total Sessions: [number]\n- Total Users: [number]\n- Conversions ({{ $json.primary_conversion_event }}): [number]\n- Sitewide Conversion Rate: [percentage]\n- Mobile vs Desktop conversion comparison\n- Top 3 converting landing pages\n- Bottom 3 converting landing pages\n\n## 2. Behavioral Findings (Clarity)\n- Pages with highest rage click density (and why it matters)\n- Pages with low scroll depth (< 50%)\n- Device-specific UX issues identified\n- Average engagement time analysis\n\n## 3. Hypotheses (What Might Be Going Wrong)\nFor each hypothesis:\n- H1: [Hypothesis statement]\n  - Evidence: [Data supporting this]\n  - Confidence: [High/Medium/Low]\n\n## 4. Recommended Actions\nFor each recommendation (3-5 total):\n| Page/Section | Issue Identified | Suggested Change | Expected Impact | Priority |\n|-------------|-----------------|------------------|-----------------|----------|\n| [specific page] | [specific issue] | [specific fix] | [qualitative] | [High/Med/Low] |\n\n## 5. Priority Actions for Next Month\n1. [Most impactful action]\n2. [Second priority]\n3. [Third priority]\n\n## 6. Dashboard Links for Manual Review\n- [Clarity Dashboard Link placeholder]\n- [GA4 Dashboard Link placeholder]\n\n---\nGenerate the complete report now.",
+                    "options": {
+                        "systemMessage": "You are a Senior Conversion Rate Optimization (CRO) Specialist with 10+ years of experience analyzing website behavior data and improving conversion funnels.\n\n## YOUR EXPERTISE:\n- Interpreting Google Analytics 4 metrics (sessions, users, conversions, device breakdowns)\n- Analyzing Microsoft Clarity behavioral data (rage clicks, dead clicks, scroll depth, engagement time)\n- Identifying UX friction points and conversion blockers\n- Formulating data-driven hypotheses\n- Prioritizing recommendations by impact vs effort\n\n## YOUR ANALYSIS APPROACH:\n1. Start with the conversion funnel overview\n2. Identify statistical anomalies and outliers\n3. Correlate behavior data with conversion drops\n4. Focus on actionable, specific recommendations\n5. Prioritize quick wins vs long-term improvements\n\n## OUTPUT REQUIREMENTS:\n- Use clear, non-technical language suitable for marketers\n- Be specific about pages, metrics, and percentages\n- Provide concrete recommendations, not vague suggestions\n- Include expected impact estimates (qualitative)\n- Format as markdown with clear sections",
+                        "maxIterations": 3,
+                        "returnIntermediateSteps": false,
+                        "passthroughBinaryImages": false,
+                        "enableStreaming": false,
+                        "batching": {}
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3,
+                "position": [
+                    480,
+                    64
+                ],
+                "id": "18d74419-4b02-4915-920d-89554fa415df",
+                "name": "Generate CRO Insights"
+            },
+            {
+                "parameters": {},
+                "id": "manual-trigger",
+                "name": "Manual Trigger",
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -608,
+                    32
+                ]
+            },
+            {
+                "parameters": {
+                    "jsCode": "// CLIENT CONFIGURATION\nconst clients = [\n  {\n    client_name: 'Your Client Name',\n    client_slug: 'your-client-slug',\n    website_url: 'https://yourwebsite.com',\n    clarity_project_id: 'your_clarity_id',\n    ga4_property_id: 'your_ga4_id',\n    primary_conversion_event: 'purchase',\n    email_recipients: ['admin@example.com'],\n    slack_channel_id: 'C012345678',\n    active: true\n  }\n];\nreturn clients.filter(c => c.active).map(c => ({ json: c }));"
+                },
+                "id": "client-config",
+                "name": "Client Config",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -384,
+                    128
+                ]
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "// Get input data - in runOnceForEachItem mode, just use $json directly\nconst client = $json;\n\nconst now = new Date();\nconst startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);\nconst endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);\nconst formatDate = (d) => d.toISOString().split('T')[0];\nconst monthName = startOfLastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });\n\n// In runOnceForEachItem mode, return the object directly (not wrapped in [{json:...}])\nreturn {\n  client_name: client.client_name,\n  client_slug: client.client_slug,\n  website_url: client.website_url,\n  clarity_project_id: client.clarity_project_id,\n  ga4_property_id: client.ga4_property_id,\n  primary_conversion_event: client.primary_conversion_event,\n  email_recipients: client.email_recipients,\n  slack_channel_id: client.slack_channel_id,\n  notion_report_db_id: client.notion_report_db_id,\n  active: client.active,\n  dateRange: {\n    clarity: { numOfDays: 3 },\n    ga4: {\n      startDate: formatDate(startOfLastMonth),\n      endDate: formatDate(endOfLastMonth)\n    },\n    reportMonth: monthName\n  },\n  executionId: $execution.id\n};"
+                },
+                "id": "date-range",
+                "name": "Calculate Date Range",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -160,
+                    128
+                ]
+            },
+            {
+                "parameters": {
+                    "url": "https://www.clarity.ms/export-data/api/v1/project-live-insights",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpHeaderAuth",
+                    "sendQuery": true,
+                    "queryParameters": {
+                        "parameters": [
+                            {
+                                "name": "projectId",
+                                "value": "={{ $json.clarity_project_id }}"
+                            },
+                            {
+                                "name": "numOfDays",
+                                "value": "3"
+                            },
+                            {
+                                "name": "dimension1",
+                                "value": "URL"
+                            },
+                            {
+                                "name": "dimension2",
+                                "value": "Device"
+                            }
+                        ]
+                    },
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {YOUR_CLARITY_TOKEN}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "clarity-api",
+                "name": "Clarity API",
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.3,
+                "position": [
+                    48,
+                    32
+                ]
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Merge Clarity and GA4 data with aggressive size limits\nconst items = $input.all();\nlet clarityData = items[0]?.json || {};\nlet ga4Data = items[1]?.json || {};\nconst clientConfig = $('Calculate Date Range').first().json;\n\n// Aggressively trim Clarity data - keep only first 20 rows\nif (clarityData.rows && clarityData.rows.length > 20) {\n  clarityData = { \n    totalRows: clarityData.rows.length,\n    rows: clarityData.rows.slice(0, 20), \n    trimmed: true \n  };\n}\n\n// Aggressively trim GA4 rows\nif (ga4Data.rows && ga4Data.rows.length > 15) {\n  ga4Data = { \n    totalRows: ga4Data.rows.length,\n    rows: ga4Data.rows.slice(0, 15), \n    trimmed: true \n  };\n}\n\nreturn [{\n  json: {\n    client_name: clientConfig.client_name,\n    client_slug: clientConfig.client_slug,\n    reportMonth: clientConfig.dateRange.reportMonth,\n    website: clientConfig.website_url,\n    clarity: clarityData,\n    ga4: ga4Data,\n    primary_conversion_event: clientConfig.primary_conversion_event,\n    notion_report_db_id: clientConfig.notion_report_db_id,\n    slack_channel_id: clientConfig.slack_channel_id,\n    email_recipients: clientConfig.email_recipients\n  }\n}];"
+                },
+                "id": "merge-data",
+                "name": "Merge Data",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    288,
+                    128
+                ]
+            },
+            {
+                "parameters": {
+                    "authentication": "oAuth2",
+                    "select": "channel",
+                    "channelId": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "cro-reports"
+                    },
+                    "text": "=🤖 *CRO Report Generated*\n\n📊 *Client:* {{ $('Merge Data').item.json.client_name }}\n📅 *Period:* {{ $('Merge Data').item.json.reportMonth }}\n\n@Kelly - Please review, add Clarity screenshots, and finalize action items.\n\n👉 Report created in Notion",
+                    "otherOptions": {}
+                },
+                "id": "slack-notify",
+                "name": "Slack Notification",
+                "type": "n8n-nodes-base.slack",
+                "typeVersion": 2.4,
+                "position": [
+                    864,
+                    160
+                ],
+                "webhookId": "c53243ad-cb03-428f-943a-46c467f0948f",
+                "credentials": {
+                    "slackOAuth2Api": {
+                        "id": "hI8Vxzp3iNbHYndW",
+                        "name": "IoLite"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "rule": {
+                        "interval": [
+                            {
+                                "field": "cronExpression",
+                                "expression": "0 9 * * 1"
+                            }
+                        ]
+                    }
+                },
+                "id": "schedule-trigger",
+                "name": "Weekly Schedule",
+                "type": "n8n-nodes-base.scheduleTrigger",
+                "typeVersion": 1.3,
+                "position": [
+                    -608,
+                    224
+                ]
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "gpt-4o-mini",
+                        "mode": "list",
+                        "cachedResultName": "gpt-4o-mini"
+                    },
+                    "responsesApiEnabled": false,
+                    "options": {
+                        "frequencyPenalty": 0.3,
+                        "maxTokens": 4000,
+                        "presencePenalty": 0.2,
+                        "temperature": 0.3,
+                        "timeout": 120000,
+                        "maxRetries": 2
+                    }
+                },
+                "id": "openai-model",
+                "name": "OpenAI Chat Model",
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    400,
+                    304
+                ],
+                "credentials": {
+                    "openAiApi": {
+                        "id": "FJVFZMQlvOEkTgLy",
+                        "name": "Varnai Openai"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "// Log error to console and prepare notification\nconst error = $input.item.json;\nconst clientConfig = $('Calculate Date Range').first()?.json || {};\n\nreturn [{\n  json: {\n    error_type: error.name || 'Unknown',\n    error_message: error.message || JSON.stringify(error),\n    client_slug: clientConfig.client_slug || 'unknown',\n    execution_id: $execution.id,\n    workflow_name: $workflow.name,\n    timestamp: new Date().toISOString()\n  }\n}];"
+                },
+                "id": "error-handler",
+                "name": "Error Handler",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -384,
+                    -208
+                ]
+            },
+            {
+                "parameters": {},
+                "id": "error-trigger",
+                "name": "On Error",
+                "type": "n8n-nodes-base.errorTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -608,
+                    -208
+                ]
+            },
+            {
+                "parameters": {
+                    "authentication": "oAuth2",
+                    "select": "channel",
+                    "channelId": {
+                        "__rl": true,
+                        "value": "cro-alerts",
+                        "mode": "name"
+                    },
+                    "text": "=⚠️ *CRO Robot Error*\n\n📌 *Client:* {{ $json.client_slug }}\n❌ *Error:* {{ $json.error_message }}\n🔗 *Execution:* {{ $json.execution_id }}\n\nCheck n8n for details.",
+                    "otherOptions": {}
+                },
+                "id": "error-slack",
+                "name": "Error Slack Alert",
+                "type": "n8n-nodes-base.slack",
+                "typeVersion": 2.4,
+                "position": [
+                    -160,
+                    -208
+                ],
+                "webhookId": "e34a9c11-047d-44ae-b263-da0f9fd942b2",
+                "credentials": {
+                    "slackOAuth2Api": {
+                        "id": "hI8Vxzp3iNbHYndW",
+                        "name": "IoLite"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "propertyId": "={{ $json.ga4_property_id }}",
+                    "resource": "report",
+                    "operation": "get",
+                    "dimensions": [
+                        "deviceCategory",
+                        "landingPage"
+                    ],
+                    "metrics": [
+                        "sessions",
+                        "totalUsers",
+                        "conversions",
+                        "bounceRate",
+                        "sessionConversionRate"
+                    ],
+                    "dateRange": "custom",
+                    "startDate": "={{ $json.dateRange.ga4.startDate }}",
+                    "endDate": "={{ $json.dateRange.ga4.endDate }}",
+                    "limit": 25
+                },
+                "type": "n8n-nodes-base.googleAnalytics",
+                "typeVersion": 2,
+                "position": [
+                    48,
+                    240
+                ],
+                "id": "9a66262b-63ad-4319-b2aa-a7f0a9e1053a",
+                "name": "GA4 (Service Account)",
+                "credentials": {
+                    "googleServiceAccount": {
+                        "id": "5P8d7emKIUKFSmGz",
+                        "name": "Google Service Account account 2"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "Manual Trigger": {
+                "main": [
+                    [
+                        {
+                            "node": "Client Config",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Client Config": {
+                "main": [
+                    [
+                        {
+                            "node": "Calculate Date Range",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Calculate Date Range": {
+                "main": [
+                    [
+                        {
+                            "node": "Clarity API",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "GA4 (Service Account)",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Clarity API": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Merge Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Generate CRO Insights",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Generate CRO Insights": {
+                "main": [
+                    [
+                        {
+                            "node": "Slack Notification",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Weekly Schedule": {
+                "main": [
+                    [
+                        {
+                            "node": "Client Config",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "On Error": {
+                "main": [
+                    [
+                        {
+                            "node": "Error Handler",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Error Handler": {
+                "main": [
+                    [
+                        {
+                            "node": "Error Slack Alert",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "main": [
+                    []
+                ],
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Generate CRO Insights",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "GA4 (Service Account)": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "Service SuperSeller AI",
+        "name": "Version 43b28bb4",
+        "description": "",
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2025-12-26T02:58:45.091Z",
+                "id": 762,
+                "workflowId": "vCxY2DXUZ8vUb30f",
+                "versionId": "43b28bb4-ed90-47f3-b705-cd6c718b7f9b",
+                "event": "activated",
+                "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7"
+            },
+            {
+                "createdAt": "2025-12-26T02:58:58.091Z",
+                "id": 763,
+                "workflowId": "vCxY2DXUZ8vUb30f",
+                "versionId": "43b28bb4-ed90-47f3-b705-cd6c718b7f9b",
+                "event": "activated",
+                "userId": "0b4a3251-26f6-4617-bcf9-e07f3ca968a7"
+            }
+        ]
+    }
+}

@@ -13,7 +13,7 @@ class LoggingDatabaseTest {
     }
 
     async runAllTests() {
-        console.log('🧪 Starting Rensto Logging Database Tests...\n');
+        console.log('🧪 Starting SuperSeller AI Logging Database Tests...\n');
 
         try {
             // Test 1: Database Connection

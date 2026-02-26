@@ -1,5 +1,5 @@
 /**
- * Enhanced Error Handling Templates for Rensto Logging Database
+ * Enhanced Error Handling Templates for SuperSeller AI Logging Database
  * Production-ready error management with comprehensive recovery strategies
  */
 

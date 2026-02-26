@@ -1,6 +1,6 @@
 # Data Dictionary — Where Everything Lives
 
-> **Authority**: This document is the single reference for "where does X data live?" across all Rensto systems.
+> **Authority**: This document is the single reference for "where does X data live?" across all SuperSeller AI systems.
 > **Last updated**: 2026-02-19
 > **Rule**: PostgreSQL is the SSOT for all transactional data. External stores are mirrors or caches.
 

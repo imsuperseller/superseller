@@ -2,7 +2,7 @@
  * Register workflows.js script to Webflow and apply to Marketplace page
  * 
  * Requires:
- * 1. workflows.js deployed to: https://rensto-webflow-scripts.vercel.app/marketplace/workflows.js
+ * 1. workflows.js deployed to: https://superseller-webflow-scripts.vercel.app/marketplace/workflows.js
  * 2. WEBFLOW_TOKEN env var set
  */
 
@@ -10,7 +10,7 @@ import axios from 'axios';
 
 const SITE_ID = '66c7e551a317e0e9c9f906d8';
 const MARKETPLACE_PAGE_ID = '68ddb0fb5b6408d0687890dd';
-const SCRIPT_URL = 'https://rensto-webflow-scripts.vercel.app/marketplace/workflows.js';
+const SCRIPT_URL = 'https://superseller-webflow-scripts.vercel.app/marketplace/workflows.js';
 
 const API_TOKEN = process.env.WEBFLOW_TOKEN || process.env.WEBFLOW_API_TOKEN;
 
@@ -136,7 +136,7 @@ async function verifyScriptDeployment() {
     }
   } catch (error) {
     console.log('  ❌ Script not yet deployed (404)');
-    console.log('     Deploy workflows.js to rensto-webflow-scripts repo first');
+    console.log('     Deploy workflows.js to superseller-webflow-scripts repo first');
     return false;
   }
 }

@@ -10,7 +10,7 @@ echo "n8n Workflows - All Instances"
 echo "====================================================================="
 echo ""
 
-for instance in rensto tax4us shelly; do
+for instance in superseller tax4us shelly; do
   echo "=== ${instance^^} ==="
 
   result=$(node multi-instance-api.js list-workflows $instance 2>/dev/null)

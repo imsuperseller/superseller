@@ -1,6 +1,6 @@
-# Rensto Domain Agent Roadmap: "The Terry Squad"
+# SuperSeller AI Domain Agent Roadmap: "The Terry Squad"
 
-We currently have **Terry** (Infra Monitoring). To transform Rensto into a fully AI-operated automation platform, we need domain-specific "Operatives" that bridge your tech stack with business outcomes.
+We currently have **Terry** (Infra Monitoring). To transform SuperSeller AI into a fully AI-operated automation platform, we need domain-specific "Operatives" that bridge your tech stack with business outcomes.
 
 ## 1. 💹 Finny (The Profit Guardian)
 **Goal**: Real-time financial intelligence and proactive churn management.
@@ -39,7 +39,7 @@ We currently have **Terry** (Infra Monitoring). To transform Rensto into a fully
 ## The Pitch: "Sell the Operator, not the Tool"
 
 ### Pitch to the Owner (You):
-> "Right now, you own a library of cars (Templates). If a customer wants to move, they have to learn to drive. With **AI-Operated Rensto**, you are selling the **Driver+Car package**. You get higher margins because you own the 'Operator' (the Agents) that run the machines. It scales without you because these agents (Terry, Finny, Conti) live in the MCP layer, ready to act on your behalf 24/7."
+> "Right now, you own a library of cars (Templates). If a customer wants to move, they have to learn to drive. With **AI-Operated SuperSeller AI**, you are selling the **Driver+Car package**. You get higher margins because you own the 'Operator' (the Agents) that run the machines. It scales without you because these agents (Terry, Finny, Conti) live in the MCP layer, ready to act on your behalf 24/7."
 
 ### Pitch to the Audience (The Customer):
-> "Stop buying software you never use. Rensto gives you an **AI Department**, not just a dashboard. You don't 'set up a workflow'; you hire a **Digital Operative** that uses our exclusive modkits to deliver your leads, manage your content, and handle your books. **Outcome-as-a-Service, powered by Rensto.**"
+> "Stop buying software you never use. SuperSeller AI gives you an **AI Department**, not just a dashboard. You don't 'set up a workflow'; you hire a **Digital Operative** that uses our exclusive modkits to deliver your leads, manage your content, and handle your books. **Outcome-as-a-Service, powered by SuperSeller AI.**"

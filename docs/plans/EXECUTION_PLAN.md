@@ -14,24 +14,24 @@
 - [x] Update VIDEO_APP_USER_GUIDE (production enabled)
 - [x] Add VIDEO_WORKER_URL to .env.example
 
-**Verify**: [x] Deployed rensto-site (Feb 2026). rensto.com no longer returns 503 production gate. Video create works when VIDEO_WORKER_URL is set and worker is reachable.
+**Verify**: [x] Deployed superseller-site (Feb 2026). superseller.agency no longer returns 503 production gate. Video create works when VIDEO_WORKER_URL is set and worker is reachable.
 
 ---
 
 ## Phase 2: Vercel Deploy Unification
 
-**Goal**: One project (api-rensto-site) serves rensto.com + api.rensto.com. Single deploy on push.
+**Goal**: One project (api-superseller-site) serves superseller.agency + api.superseller.agency. Single deploy on push.
 
 **Steps** (manual in Vercel dashboard or via API):
 
-1. In **api-rensto-site** → Settings → Domains: Add `rensto.com`, `www.rensto.com`
-2. In **rensto-site** → Settings → Domains: Remove `rensto.com`, `www.rensto.com`
-3. Merge env vars: Ensure api-rensto-site has all vars from rensto-site (VIDEO_WORKER_URL, DATABASE_URL, Stripe, etc.)
-4. Rename api-rensto-site to rensto (optional) or leave as is
+1. In **api-superseller-site** → Settings → Domains: Add `superseller.agency`, `www.superseller.agency`
+2. In **superseller-site** → Settings → Domains: Remove `superseller.agency`, `www.superseller.agency`
+3. Merge env vars: Ensure api-superseller-site has all vars from superseller-site (VIDEO_WORKER_URL, DATABASE_URL, Stripe, etc.)
+4. Rename api-superseller-site to superseller (optional) or leave as is
 5. Update VERCEL_PROJECT_MAP.md
 6. Test: Push to main → both domains deploy
 
-**Rollback**: Re-add rensto.com to rensto-site, remove from api-rensto-site. Redeploy rensto-site.
+**Rollback**: Re-add superseller.agency to superseller-site, remove from api-superseller-site. Redeploy superseller-site.
 
 ---
 
@@ -55,7 +55,7 @@
 
 **Steps**:
 
-1. **saas-frontend**: Grep for imports. If none, add "Lead enrichment SaaS prototype; superseded by rensto-site" to notebook. Archive folder.
+1. **saas-frontend**: Grep for imports. If none, add "Lead enrichment SaaS prototype; superseded by superseller-site" to notebook. Archive folder.
 2. **design-tools**: Check usage. Add purpose to notebook. Archive if unused.
 3. **n8n-client-delivery**: Confirm used for customer delivery. Add "when to use" to fc048ba8 (N8n). Keep if used.
 4. **library/client-workflows**: Add summary to N8n notebook. Keep as reference or archive.
@@ -73,8 +73,8 @@
 
 ## Verification Checklist (After Phase 1 Deploy)
 
-- [ ] rensto.com loads
-- [ ] rensto.com/video/create loads
+- [ ] superseller.agency loads
+- [ ] superseller.agency/video/create loads
 - [ ] Paste Zillow URL + realtor image → Generate Tour → job created (not 503)
 - [ ] /video/[jobId] loads with job data
-- [ ] VIDEO_WORKER_URL set in Vercel for rensto-site (and api-rensto-site when merged)
+- [ ] VIDEO_WORKER_URL set in Vercel for superseller-site (and api-superseller-site when merged)

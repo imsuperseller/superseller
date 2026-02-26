@@ -15,7 +15,7 @@ const { listWorkflows, getWorkflow, updateWorkflow } = require(apiPath);
 async function fixValidatorNode() {
   const workflowId = 'GRlA3iuB7A8y8xFJ';
   const nodeId = '5a89c9ab-4442-44fd-9f8f-d0e2ec7f3fc4';
-  const instance = 'rensto';
+  const instance = 'superseller';
 
   console.log('🔧 Fixing WordPress Content Validator Node...');
   console.log(`Workflow: ${workflowId}`);

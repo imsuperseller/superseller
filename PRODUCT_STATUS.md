@@ -49,7 +49,7 @@
 - Replaced `after()` with `waitUntil` + separate process endpoint
 - Added avatar→kling-3.0 automatic fallback in processCallbackFailure
 - Fixed `model_fallback` event_type in DB CHECK constraint
-- studio.rensto.com alias live (SSL provisioning async)
+- studio.superseller.agency alias live (SSL provisioning async)
 
 **Known issues**:
 - ~~R2 bucket not publicly accessible (401 on direct URLs)~~ — RESOLVED: R2 bucket public access enabled Feb 2026 (r2.dev domain working)
@@ -57,11 +57,11 @@
 
 **Next actions**:
 - [ ] R2 public access: Enable in Cloudflare dashboard for winner-video-studio bucket
-- [ ] Resend: Verify studio@rensto.com sender for magic-link emails
+- [ ] Resend: Verify studio@superseller.agency sender for magic-link emails
 - [ ] Test with Yossi's real content (real audio recording, his photo)
 - [ ] Gallery page: serve videos via file proxy since R2 isn't public
 
-**Live URLs**: https://studio.rensto.com | https://studio-teal-eight-38.vercel.app
+**Live URLs**: https://studio.superseller.agency | https://studio-teal-eight-38.vercel.app
 **Deploy**: `cd apps/studio && npx vercel --prod --yes`
 
 ---
@@ -137,10 +137,10 @@
 | E1 | Telnyx AI Assistant call handling | OK | OK | Autonomous AI assistants ("Sarah") on Telnyx — NOT n8n webhooks. Qwen model, Deepgram STT, NaturalHD voice |
 | E2 | Conversation polling (n8n) | OK | OK | Schedule trigger every 15 min polls Telnyx Conversation API |
 | E3 | Claude AI lead analysis | OK | OK | Claude Sonnet 4.5 analyzes transcripts — urgency, category, caller info extraction |
-| E4 | CRM integration | OK (Workiz) | N/A (email only) | Workiz is UAD-only (auth_secret in JSON body, PascalCase fields). MissParty uses email to service@rensto.com — no CRM |
-| E5 | Email lead notification | OK | OK | Outlook email to service@rensto.com with full analysis |
+| E4 | CRM integration | OK (Workiz) | N/A (email only) | Workiz is UAD-only (auth_secret in JSON body, PascalCase fields). MissParty uses email to shai@superseller.agency — no CRM |
+| E5 | Email lead notification | OK | OK | Outlook email to shai@superseller.agency with full analysis |
 | E8 | Conversation deduplication | OK | OK | "Filter New Conversations" Code node — tracks processed IDs in static data, skips re-processed conversations. No more spam emails. |
-| E6 | Voice AI agent | N/A | N/A | "Hope" agent (MqMYMeA9U9PEX1cH) is for Rensto sales, NOT for customer calls |
+| E6 | Voice AI agent | N/A | N/A | "Hope" agent (MqMYMeA9U9PEX1cH) is for SuperSeller AI sales, NOT for customer calls |
 | E7 | PostgreSQL lead storage | GAP | GAP | No bridge from n8n to PostgreSQL — leads stay in n8n/Workiz/email |
 
 #### F. Infrastructure
@@ -235,7 +235,7 @@
 - [ ] User testing of full flow
 - [ ] Stripe checkout integration for pricing tiers
 
-**Live URL**: https://rensto.com/video/create
+**Live URL**: https://superseller.agency/video/create
 **Worker**: pm2 `tourreel-worker` on 172.245.56.50:3002
 **Deploy**: `git push` (auto) or `deploy-to-racknerd.sh` (worker)
 
@@ -268,12 +268,12 @@
 - [ ] Admin UI to create/edit landing pages (currently DB-seeded via scripts)
 
 **Location**:
-- Route: `apps/web/rensto-site/src/app/lp/[slug]/page.tsx`
-- Component: `apps/web/rensto-site/src/app/lp/[slug]/LandingPageClient.tsx`
-- API: `apps/web/rensto-site/src/app/api/leads/landing-page/route.ts`
-- Schema: `apps/web/rensto-site/prisma/schema.prisma` (LandingPage + Lead models)
+- Route: `apps/web/superseller-site/src/app/lp/[slug]/page.tsx`
+- Component: `apps/web/superseller-site/src/app/lp/[slug]/LandingPageClient.tsx`
+- API: `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts`
+- Schema: `apps/web/superseller-site/prisma/schema.prisma` (LandingPage + Lead models)
 
-**Note**: Customer-specific landing page implementations (strategy docs, seed scripts, assets) live in their own private repositories — not in Rensto. The generic `/lp/[slug]` infrastructure is the Rensto product.
+**Note**: Customer-specific landing page implementations (strategy docs, seed scripts, assets) live in their own private repositories — not in SuperSeller AI. The generic `/lp/[slug]` infrastructure is the SuperSeller AI product.
 
 ---
 
@@ -307,7 +307,7 @@
 ## 6. AgentForge
 
 **Status**: Spec only (5 Word docs + Prisma schema + seed)
-**Purpose**: Internal AI web development agent — should power Rensto's own dev workflow, NOT a separate product
+**Purpose**: Internal AI web development agent — should power SuperSeller AI's own dev workflow, NOT a separate product
 **Location**: `agentforge/`
 
 **Decision**: Keep internal. Don't build as customer-facing product.
@@ -354,7 +354,7 @@
 **Priority**: Phase 2 — build AFTER existing customer products are delivered and validated
 
 **Next actions**:
-- [ ] Decision: first customer (Yossi/Mivnim? Rensto dogfooding?)
+- [ ] Decision: first customer (Yossi/Mivnim? SuperSeller AI dogfooding?)
 - [ ] Decision: auth system (reuse existing vs Clerk for org-switching)
 - [ ] Create `apps/socialhub/` scaffold when ready
 - [ ] Migrate DB schema from spec to Prisma/Drizzle
@@ -366,12 +366,12 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
-| Web | https://rensto.com | LIVE |
-| Admin | https://admin.rensto.com | LIVE |
+| Web | https://superseller.agency | LIVE |
+| Admin | https://admin.superseller.agency | LIVE |
 | Studio | https://studio-teal-eight-38.vercel.app | LIVE |
 | Worker | http://172.245.56.50:3002 | LIVE |
 | Ollama | http://172.245.56.50:11434 | LIVE |
-| n8n | https://n8n.rensto.com | BACKUP |
+| n8n | https://n8n.superseller.agency | BACKUP |
 | Redis | Docker on RackNerd (auth: 2ea94441a41477c9b8081659) | LIVE |
 | PostgreSQL | Docker on RackNerd (admin/a1efbcd564b928d3ef1d7cae/app_db) | LIVE |
 

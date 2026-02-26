@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CLOUDFLARE_API_TOKEN = 'UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1';
-const DOMAIN = 'rensto.com';
+const DOMAIN = 'superseller.agency';
 const API_BASE = 'https://api.cloudflare.com/client/v4';
 const BACKUP_FILE = path.join(__dirname, '../../data/dns/cloudflare-backup.json');
 
@@ -129,7 +129,7 @@ function validateBackupFile() {
 function validateScriptConfiguration() {
   log('\n⚙️  Test 4: Script Configuration Validation', 'blue');
   try {
-    const scriptPath = path.join(__dirname, 'migrate-rensto-to-vercel.js');
+    const scriptPath = path.join(__dirname, 'migrate-superseller-to-vercel.js');
     const scriptContent = fs.readFileSync(scriptPath, 'utf8');
 
     // Check Vercel DNS values
@@ -160,7 +160,7 @@ async function validateVercelDomains() {
   log('\n🌐 Test 5: Vercel Domain Configuration', 'blue');
   try {
     const VERCEL_TOKEN = 'qO8TKRoEuFOwsFuHFpM4AOWM';
-    const response = await axios.get('https://api.vercel.com/v2/projects/rensto-site/domains', {
+    const response = await axios.get('https://api.vercel.com/v2/projects/superseller-site/domains', {
       headers: {
         'Authorization': `Bearer ${VERCEL_TOKEN}`
       }
@@ -171,15 +171,15 @@ async function validateVercelDomains() {
     const hasWWW = domains.some(d => d.name === `www.${DOMAIN}`);
 
     if (hasRoot) {
-      log(`   ✅ rensto.com added to Vercel project`, 'green');
+      log(`   ✅ superseller.agency added to Vercel project`, 'green');
     } else {
-      log(`   ⚠️  rensto.com not found in Vercel project`, 'yellow');
+      log(`   ⚠️  superseller.agency not found in Vercel project`, 'yellow');
     }
 
     if (hasWWW) {
-      log(`   ✅ www.rensto.com added to Vercel project`, 'green');
+      log(`   ✅ www.superseller.agency added to Vercel project`, 'green');
     } else {
-      log(`   ⚠️  www.rensto.com not found in Vercel project`, 'yellow');
+      log(`   ⚠️  www.superseller.agency not found in Vercel project`, 'yellow');
     }
 
     return { hasRoot, hasWWW };

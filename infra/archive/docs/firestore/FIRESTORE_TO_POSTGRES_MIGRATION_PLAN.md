@@ -34,13 +34,13 @@
 
 - **Primary DB**: PostgreSQL on RackNerd (172.245.56.50)
 - **ORM**: Prisma v5
-- **Schema**: `apps/web/rensto-site/prisma/schema.prisma` (25+ models)
+- **Schema**: `apps/web/superseller-site/prisma/schema.prisma` (25+ models)
 - **Firestore**: Legacy fallback reads only (~17 routes) — remove after verification period
 
 ---
 
 ## References
 
-- Prisma schema: `apps/web/rensto-site/prisma/schema.prisma`
-- Prisma README: `apps/web/rensto-site/prisma/README.md`
+- Prisma schema: `apps/web/superseller-site/prisma/schema.prisma`
+- Prisma README: `apps/web/superseller-site/prisma/README.md`
 - CLAUDE.md: Data Storage Strategy section

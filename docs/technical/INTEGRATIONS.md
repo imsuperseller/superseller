@@ -1,6 +1,6 @@
 # 🔗 Integrations & APIs
 
-> **Source of Truth for external services Rensto uses.**
+> **Source of Truth for external services SuperSeller AI uses.**
 
 ---
 
@@ -44,5 +44,5 @@
 
 ## VPS Infrastructure
 
-- **IP**: 172.245.56.50 (n8n.rensto.com)
+- **IP**: 172.245.56.50 (n8n.superseller.agency)
 - **Services**: n8n, WAHA, LightRAG.

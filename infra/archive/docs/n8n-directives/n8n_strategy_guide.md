@@ -81,7 +81,7 @@ These are **already enforced** in 2.4.6:
 Using `universal-aggregator` MCP server with:
 - `n8n_*` tools for workflow management
 - `n8n-skills` remote MCP for best practices
-- Single `rensto` instance (172.245.56.50)
+- Single `superseller` instance (172.245.56.50)
 
 ### Best Practices
 - **Tool Design**: Design for outcomes ("Onboard User") not utilities ("Write DB Row")

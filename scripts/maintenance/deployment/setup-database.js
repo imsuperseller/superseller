@@ -1,4 +1,4 @@
-// MongoDB setup script for Rensto SaaS
+// MongoDB setup script for SuperSeller AI SaaS
 const { MongoClient } = require('mongodb');
 
 async function setupDatabase() {
@@ -8,7 +8,7 @@ async function setupDatabase() {
     await client.connect();
     console.log('Connected to MongoDB');
     
-    const db = client.db('rensto-saas');
+    const db = client.db('superseller-saas');
     
     // Create collections
     await db.createCollection('customers');

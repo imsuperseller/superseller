@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Customer Dashboard is the **primary interface** where Rensto clients see value, manage their services, and are presented with upgrade opportunities. It must deliver immediate ROI visibility and seamless upsell paths.
+The Customer Dashboard is the **primary interface** where SuperSeller AI clients see value, manage their services, and are presented with upgrade opportunities. It must deliver immediate ROI visibility and seamless upsell paths.
 
 ---
 
@@ -83,7 +83,7 @@ Users choose how to receive leads. Tiered model for upselling:
 | **CRM Integration (Done-for-you)** | $297 one-time | Matches marketplace template pricing |
 | **Full Automation Package** | $199-$1999/mo | Based on lead volume tier (existing pricing) |
 
-> **Pricing rationale**: CRM setup at $297 aligns with marketplace templates. Lead volume tiers use existing pricing from [subscriptions page](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/app/subscriptions/ClientPage.tsx#L123-127).
+> **Pricing rationale**: CRM setup at $297 aligns with marketplace templates. Lead volume tiers use existing pricing from [subscriptions page](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/app/subscriptions/ClientPage.tsx#L123-127).
 
 ### DIY Escalation Path
 

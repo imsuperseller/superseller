@@ -1,5 +1,5 @@
 {
-    "name": "@rensto/marketplace-ecosystem",
+    "name": "@superseller/marketplace-ecosystem",
     "version": "1.0.0",
     "description": "Standalone Facebook Marketplace Automation & Lead Hub (UAD/MissParty)",
     "main": "saas-engine/index.js",

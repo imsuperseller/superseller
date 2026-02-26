@@ -19,7 +19,7 @@ if pgrep -f "mcp-server" > /dev/null; then
 fi
 
 # Navigate to MCP servers directory
-cd /root/rensto/infra/mcp-servers/
+cd /root/superseller/infra/mcp-servers/
 
 echo "📂 MCP Server directories:"
 ls -la
@@ -48,7 +48,7 @@ fi
 
 # Start n8n MCP Server Extended
 echo "🔗 Starting n8n MCP Server Extended..."
-cd ../rensto-n8n-agents/mcpServers/
+cd ../superseller-n8n-agents/mcpServers/
 if [ -f "package.json" ]; then
     npm install
     nohup node n8n-unified-server.js > /var/log/n8n-unified-server.log 2>&1 &

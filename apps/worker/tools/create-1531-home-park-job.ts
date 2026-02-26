@@ -5,7 +5,7 @@
  * - Realtor avatar (uploaded to R2 for test user)
  *
  * Prerequisites:
- * - Worker running (PORT=3001 if rensto-site on 3002)
+ * - Worker running (PORT=3001 if superseller-site on 3002)
  * - DATABASE_URL, REDIS_URL, R2_*, KIE_API_KEY, APIFY_API_TOKEN
  *
  * Usage:
@@ -81,7 +81,7 @@ async function main() {
     console.log("   Job ID:   ", jobId);
     console.log("   Listing:  ", listingId);
     console.log("\n   View at:  http://localhost:3002/video/" + jobId);
-    console.log("   (Ensure rensto-site runs on 3002 and VIDEO_WORKER_URL=" + WORKER_URL + ")\n");
+    console.log("   (Ensure superseller-site runs on 3002 and VIDEO_WORKER_URL=" + WORKER_URL + ")\n");
 }
 
 main().catch((e) => {

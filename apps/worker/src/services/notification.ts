@@ -159,7 +159,7 @@ export class NotificationService {
     return `
       <div style="${baseStyles}">
         <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-          <img src="https://rensto.com/rensto-logo.webp" alt="Rensto" width="120" style="margin-bottom: 24px;" />
+          <img src="https://superseller.agency/superseller-logo.webp" alt="SuperSeller AI" width="120" style="margin-bottom: 24px;" />
           <h1 style="color: #00d4ff; font-size: 28px; margin-bottom: 16px;">Your Property Video is Ready! 🎬</h1>
           <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
             Great news! Your cinematic property tour video for <strong>${data.address}</strong> has been generated successfully.
@@ -186,10 +186,10 @@ export class NotificationService {
             </ul>
           </div>
           <p style="font-size: 14px; color: #64748b; margin-top: 40px;">
-            Questions about your video? Reply to this email or visit <a href="https://rensto.com/contact" style="color: #00d4ff;">rensto.com/contact</a>
+            Questions about your video? Reply to this email or visit <a href="https://superseller.agency/contact" style="color: #00d4ff;">superseller.agency/contact</a>
           </p>
           <p style="font-size: 12px; color: #475569; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            You're receiving this because you created a video job at Rensto. <a href="https://rensto.com/video/account" style="color: #00d4ff;">Manage your account</a>
+            You're receiving this because you created a video job at SuperSeller AI. <a href="https://superseller.agency/video/account" style="color: #00d4ff;">Manage your account</a>
           </p>
         </div>
       </div>
@@ -238,7 +238,7 @@ export class NotificationService {
     return `
       <div style="${baseStyles}">
         <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-          <img src="https://rensto.com/rensto-logo.webp" alt="Rensto" width="120" style="margin-bottom: 24px;" />
+          <img src="https://superseller.agency/superseller-logo.webp" alt="SuperSeller AI" width="120" style="margin-bottom: 24px;" />
           <h1 style="color: #fe3d51; font-size: 28px; margin-bottom: 16px;">Video Generation Issue ⚠️</h1>
           <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">
             We encountered an issue while generating your property tour video for <strong>${data.address}</strong>.
@@ -264,12 +264,12 @@ export class NotificationService {
               <li>If the issue persists, we'll reach out within 24 hours</li>
             </ul>
           </div>
-          <a href="https://rensto.com/video/create" style="${buttonStyle}">Try Creating a New Video</a>
+          <a href="https://superseller.agency/video/create" style="${buttonStyle}">Try Creating a New Video</a>
           <p style="font-size: 14px; color: #64748b; margin-top: 40px;">
-            Need immediate help? Email us at support@rensto.com with your job ID and we'll prioritize your request.
+            Need immediate help? Email us at support@superseller.agency with your job ID and we'll prioritize your request.
           </p>
           <p style="font-size: 12px; color: #475569; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            You're receiving this because your video job at Rensto encountered an error. <a href="https://rensto.com/video/account" style="color: #00d4ff;">Manage your account</a>
+            You're receiving this because your video job at SuperSeller AI encountered an error. <a href="https://superseller.agency/video/account" style="color: #00d4ff;">Manage your account</a>
           </p>
         </div>
       </div>

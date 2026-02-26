@@ -1,7 +1,7 @@
 ---
 name: database-management
 description: >
-  Prisma + Drizzle dual-ORM database management for Rensto.
+  Prisma + Drizzle dual-ORM database management for SuperSeller AI.
   Covers schema sync, migrations, shared tables (User, Job, Clip),
   and the single PostgreSQL database used by both web and worker apps.
 autoTrigger:
@@ -34,9 +34,9 @@ Use when working on database schema, migrations, ORM queries, or data consistenc
 ### Key Files
 | File | Purpose | App |
 |------|---------|-----|
-| `apps/web/rensto-site/prisma/schema.prisma` | Web app schema | Next.js (Prisma) |
+| `apps/web/superseller-site/prisma/schema.prisma` | Web app schema | Next.js (Prisma) |
 | `apps/worker-packages/db/src/schema.ts` | Worker schema | Worker (Drizzle) |
-| `apps/web/rensto-site/prisma/migrations/` | Prisma migration history | Web |
+| `apps/web/superseller-site/prisma/migrations/` | Prisma migration history | Web |
 
 ### Shared Tables (BOTH apps read/write)
 | Table | Prisma Model | Drizzle Table | Known Conflicts |
@@ -47,7 +47,7 @@ Use when working on database schema, migrations, ORM queries, or data consistenc
 
 ### Database Connection
 ```
-DATABASE_URL=postgresql://user:pass@host:5432/rensto
+DATABASE_URL=postgresql://user:pass@host:5432/superseller
 ```
 Both apps use the same connection string. Shared via Vercel env vars (web) and RackNerd env (worker).
 
@@ -55,7 +55,7 @@ Both apps use the same connection string. Shared via Vercel env vars (web) and R
 
 ### Prisma Migration
 ```bash
-cd apps/web/rensto-site
+cd apps/web/superseller-site
 npx prisma migrate dev --name describe_change
 npx prisma generate
 ```
@@ -87,5 +87,5 @@ npx drizzle-kit migrate
 ## References
 - CLAUDE.md § Database Stack — Architecture overview
 - findings.md § Schema drift — Historical issues
-- `apps/web/rensto-site/prisma/schema.prisma` — Prisma schema (web)
+- `apps/web/superseller-site/prisma/schema.prisma` — Prisma schema (web)
 - `apps/worker-packages/db/src/schema.ts` — Drizzle schema (worker)

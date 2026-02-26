@@ -11,8 +11,8 @@ const dbConfig = {
     production: {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: process.env.POSTGRES_PORT || 5432,
-        database: process.env.POSTGRES_DB || 'rensto_logging',
-        user: process.env.POSTGRES_USER || 'rensto_logging_user',
+        database: process.env.POSTGRES_DB || 'superseller_logging',
+        user: process.env.POSTGRES_USER || 'superseller_logging_user',
         password: process.env.POSTGRES_PASSWORD || 'secure_password_here',
         ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
         max: 20, // Maximum number of clients in the pool
@@ -25,8 +25,8 @@ const dbConfig = {
     development: {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: process.env.POSTGRES_PORT || 5432,
-        database: process.env.POSTGRES_DB || 'rensto_logging_dev',
-        user: process.env.POSTGRES_USER || 'rensto_logging_user',
+        database: process.env.POSTGRES_DB || 'superseller_logging_dev',
+        user: process.env.POSTGRES_USER || 'superseller_logging_user',
         password: process.env.POSTGRES_PASSWORD || 'dev_password_here',
         ssl: false,
         max: 10,
@@ -38,8 +38,8 @@ const dbConfig = {
     test: {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: process.env.POSTGRES_PORT || 5432,
-        database: process.env.POSTGRES_DB || 'rensto_logging_test',
-        user: process.env.POSTGRES_USER || 'rensto_logging_user',
+        database: process.env.POSTGRES_DB || 'superseller_logging_test',
+        user: process.env.POSTGRES_USER || 'superseller_logging_user',
         password: process.env.POSTGRES_PASSWORD || 'test_password_here',
         ssl: false,
         max: 5,

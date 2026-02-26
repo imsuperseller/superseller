@@ -1,7 +1,7 @@
 # ✅ DNS Migration Script - Validation Report
 
 **Date**: November 2, 2025  
-**Script**: `scripts/dns/migrate-rensto-to-vercel.js`  
+**Script**: `scripts/dns/migrate-superseller-to-vercel.js`  
 **Validation**: `scripts/dns/validate-migration.js`
 
 ---
@@ -34,8 +34,8 @@
 - ✅ Cloudflare API token configured
 
 ### **Test 5: Vercel Domain Configuration** ✅
-- ✅ `rensto.com` added to Vercel project `rensto-site`
-- ✅ `www.rensto.com` added to Vercel project `rensto-site`
+- ✅ `superseller.agency` added to Vercel project `superseller-site`
+- ✅ `www.superseller.agency` added to Vercel project `superseller-site`
 
 ---
 

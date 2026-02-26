@@ -26,13 +26,13 @@ The following credentials were committed to git history and need rotation:
 ---
 
 ### **2. n8n API Keys** (Lines 19, 39, 59) ⚠️ **HIGH PRIORITY**
-- **Rensto VPS**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (line 19)
+- **SuperSeller AI VPS**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (line 19)
 - **Tax4Us Cloud**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (line 39)
 - **Shelly Cloud**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (line 59)
 - **Risk**: Full workflow management access
 
 **Rotation Steps**:
-1. Rensto VPS (http://172.245.56.50:5678):
+1. SuperSeller AI VPS (http://172.245.56.50:5678):
    - Login to n8n
    - Go to Settings → API
    - Revoke old API key

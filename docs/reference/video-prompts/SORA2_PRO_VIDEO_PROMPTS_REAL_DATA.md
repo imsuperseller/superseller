@@ -12,9 +12,9 @@
 ## 📊 **REAL INPUT REFERENCES** (Upload These First)
 
 **Brand Assets**:
-1. `brand_palette.png` - Rensto colors: #fe3d51 (red), #bf5700 (orange), #1eaef7 (blue), #5ffbfd (cyan), #110d28 (dark bg)
+1. `brand_palette.png` - SuperSeller AI colors: #fe3d51 (red), #bf5700 (orange), #1eaef7 (blue), #5ffbfd (cyan), #110d28 (dark bg)
 2. `shai.png` - Headshot of @shai (founder/talking head videos)
-3. `rensto_logo.png` - Clean logo on transparent background
+3. `superseller_logo.png` - Clean logo on transparent background
 4. `n8n_dashboard.png` - Actual n8n workflow interface (172.245.56.50:5678)
 5. `airtable_interface.png` - Airtable dashboard showing client data
 6. `wordpress_admin.png` - WordPress admin panel (tax4us.co.il style)
@@ -54,8 +54,8 @@
   "model": "sora-2-pro",
   "size": "1024x1792",
   "seconds": "6",
-  "input_reference": ["https://.../brand_palette.png", "https://.../rensto_logo.png"],
-  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble, then tagline appears. Action beats: 0-3s: rensto logo assembles from corners. 3-6s: 'Stop working like it's 1997.' appears below logo. Audio bed: soft snap, subtle whoosh. On-screen text: 'Stop working like it's 1997.'. Center below logo. Notes: keep spacing equal. final safe area 10%."
+  "input_reference": ["https://.../brand_palette.png", "https://.../superseller_logo.png"],
+  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo pieces assemble, then tagline appears. Action beats: 0-3s: superseller logo assembles from corners. 3-6s: 'Stop working like it's 1997.' appears below logo. Audio bed: soft snap, subtle whoosh. On-screen text: 'Stop working like it's 1997.'. Center below logo. Notes: keep spacing equal. final safe area 10%."
 }
 ```
 
@@ -337,8 +337,8 @@
   "model": "sora-2-pro",
   "size": "1024x1792",
   "seconds": "6",
-  "input_reference": ["https://.../brand_palette.png", "https://.../rensto_logo.png"],
-  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo + pricing appears. Action beats: 0-3s: rensto logo appears. 3-6s: '16 industries. $890-$2,990. Built for you.' appears below. Audio bed: soft snap, whoosh. On-screen text: '16 industries. $890-$2,990. Built for you.'. Center. Notes: real pricing from codebase."
+  "input_reference": ["https://.../brand_palette.png", "https://.../superseller_logo.png"],
+  "prompt": "Color pop. Bold shapes. Clean motion. Location: solid dark backdrop #110d28. Palette: brand primary #fe3d51, cyan #5ffbfd, white. Camera: static. Motion: logo + pricing appears. Action beats: 0-3s: superseller logo appears. 3-6s: '16 industries. $890-$2,990. Built for you.' appears below. Audio bed: soft snap, whoosh. On-screen text: '16 industries. $890-$2,990. Built for you.'. Center. Notes: real pricing from codebase."
 }
 ```
 
@@ -379,7 +379,7 @@
   "size": "1024x1792",
   "seconds": "6",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line. Dialogue: - @shai: 'Schedule your escape plan call.' Audio bed: room tone only. On-screen text: 'rensto.com/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line. Dialogue: - @shai: 'Schedule your escape plan call.' Audio bed: room tone only. On-screen text: 'superseller.agency/custom-solutions'. Lower third. Notes: lips articulate. calm pacing."
 }
 ```
 
@@ -440,7 +440,7 @@
   "size": "1024x1792",
   "seconds": "12",
   "input_reference": ["https://.../shai.png", "https://.../brand_palette.png"],
-  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2. Dialogue: - @shai: 'Tax4Us saved 20 hours weekly. Shelly saved 4.5 hours daily.' - @shai: '48 hours later, your automation runs itself. You work normal hours.' Audio bed: room tone only. On-screen text: 'rensto.com/custom-solutions. $3,500-$8,000.'. Lower third. Notes: lips articulate. calm pacing. REAL METRICS FROM CASE STUDIES."
+  "prompt": "Founder docu. Static MCU. Location: studio corner. Palette: sand, olive, black. Camera: medium close-up 40mm. Eye level. Motion: none. Subject: @shai. Props: lapel mic. Action beats: 0-6s: delivers line 1. 6-12s: delivers line 2. Dialogue: - @shai: 'Tax4Us saved 20 hours weekly. Shelly saved 4.5 hours daily.' - @shai: '48 hours later, your automation runs itself. You work normal hours.' Audio bed: room tone only. On-screen text: 'superseller.agency/custom-solutions. $3,500-$8,000.'. Lower third. Notes: lips articulate. calm pacing. REAL METRICS FROM CASE STUDIES."
 }
 ```
 
@@ -621,5 +621,5 @@
 
 **Last Updated**: October 31, 2025  
 **Data Source**: Codebase (CLAUDE.md, case studies, customer docs, workflows)  
-**Authenticity**: ✅ 100% based on real Rensto business data
+**Authenticity**: ✅ 100% based on real SuperSeller AI business data
 

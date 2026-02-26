@@ -1,7 +1,7 @@
-# 🧠 Rensto: Business Coverage Master Index
+# 🧠 SuperSeller AI: Business Coverage Master Index
 > **Last Updated**: February 2026 | **Authority**: Tier 3 (see `brain.md`) | **Owned by**: Admin Operations
 
-This document defines the **Source of Truth** for every tracked business and technical element in the Rensto ecosystem.
+This document defines the **Source of Truth** for every tracked business and technical element in the SuperSeller AI ecosystem.
 
 For the full interactive version with automation details, see the [Antigravity Artifact](https://antigravity.internal/brain/ef8e3f5c-ae37-4b45-9025-9dc042dcb02a/master_index.md).
 
@@ -111,7 +111,7 @@ For the full interactive version with automation details, see the [Antigravity A
 | Self-service apps (per-product) | 💻🐘 | Ecosystem Map |
 | Admin dashboard modules | 💻 | Dashboard |
 | User dashboards | 💻🐘 | Ecosystem Map |
-| Rensto-related assets | 💻📚🐘 | Vault & Infra |
+| SuperSeller AI-related assets | 💻📚🐘 | Vault & Infra |
 | Platforms (Vercel, RackNerd, etc.) | 💻🐘 | Vault & Infra |
 
 ---

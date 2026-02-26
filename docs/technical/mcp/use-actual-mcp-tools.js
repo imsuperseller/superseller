@@ -21,10 +21,10 @@ async function useActualMCPTools() {
         console.log('🚀 Using Actual MCP Tools to Fix Gemini Node...');
         
         // The actual MCP tools available in this environment are:
-        // - mcp_rensto-n8n-unified_n8n_get_workflow
-        // - mcp_rensto-n8n-unified_n8n_get_execution
-        // - mcp_rensto-n8n-unified_n8n_update_workflow
-        // - mcp_rensto-n8n-unified_n8n_smart_route
+        // - mcp_superseller-n8n-unified_n8n_get_workflow
+        // - mcp_superseller-n8n-unified_n8n_get_execution
+        // - mcp_superseller-n8n-unified_n8n_update_workflow
+        // - mcp_superseller-n8n-unified_n8n_smart_route
         
         // But I need to use the actual workflow management tools
         // Let me create a script that uses the MCP tools properly

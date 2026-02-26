@@ -20,7 +20,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 # Neon (via Vercel Marketplace) – Vercel Postgres retired Dec 2024; use Neon.
 # Provision: Vercel Dashboard → Storage → Add Integration → Neon
 # Injected automatically: POSTGRES_URL, DATABASE_URL
-DATABASE_URL=postgresql://user:password@host:5432/rensto
+DATABASE_URL=postgresql://user:password@host:5432/superseller
 # Or separate (if not using Neon integration):
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=your-postgres-password
@@ -50,7 +50,7 @@ RACKNERD_IP=172.245.56.50
 # ============================================
 # 📚 OPTIONAL (LightRag, etc.)
 # ============================================
-LIGHTRAG_WEBHOOK_URL=https://rensto-lightrag.onrender.com/webhook
+LIGHTRAG_WEBHOOK_URL=https://superseller-lightrag.onrender.com/webhook
 LIGHTRAG_API_KEY=your-lightrag-api-key-here
 GITHUB_TOKEN=your-github-personal-access-token-here
 GITHUB_WEBHOOK_SECRET=your-webhook-secret-here

@@ -30,7 +30,7 @@ HeyGen's Avatar Looks feature allows you to:
 ### **Best Practices**:
 1. **Consistency**: Use same look per video series (e.g., all Tailored Solutions videos use "Professional Consultant" look)
 2. **Audience Match**: Match look to target audience (formal for enterprise, casual for SMB)
-3. **Brand Alignment**: Keep colors aligned with Rensto brand (#fe3d51, #1eaef7, #bf5700, #5ffbfd)
+3. **Brand Alignment**: Keep colors aligned with SuperSeller AI brand (#fe3d51, #1eaef7, #bf5700, #5ffbfd)
 4. **Context Appropriate**: Match look to video content (consultation = professional, demo = approachable)
 
 ---
@@ -42,7 +42,7 @@ HeyGen's Avatar Looks feature allows you to:
 
 **Description**:
 - **Outfit**: Dark navy or charcoal business suit, white or light blue dress shirt, no tie (modern approachable)
-- **Background**: Modern office with subtle Rensto brand colors, clean white wall with Rensto logo visible
+- **Background**: Modern office with subtle SuperSeller AI brand colors, clean white wall with SuperSeller AI logo visible
 - **Lighting**: Professional studio lighting, soft shadows, warm tone
 - **Mood**: Authoritative but approachable, trustworthy, expert
 - **Accessories**: Minimal - watch visible, no distracting jewelry
@@ -109,7 +109,7 @@ HVAC industry specialist, professional work shirt, HVAC service context visible 
 **Use For**: Testimonials, personal stories, behind-the-scenes
 
 **Description**:
-- **Outfit**: Casual professional - branded Rensto t-shirt or polo, or simple dark shirt
+- **Outfit**: Casual professional - branded SuperSeller AI t-shirt or polo, or simple dark shirt
 - **Background**: Home office or casual workspace, personal touch visible
 - **Lighting**: Warm, natural, personal
 - **Mood**: Authentic, personal, "I've been there", relatable founder
@@ -285,11 +285,11 @@ Tech innovator portrait, modern dark shirt, tech workspace with automation dashb
 3. **Enter Look Name**: "Professional Consultant"
 4. **Enter Description/Prompt**:
    ```
-   Professional business consultant, dark navy suit, white dress shirt, modern office background with subtle Rensto brand colors, professional studio lighting, warm tone, authoritative but approachable, trustworthy expert appearance
+   Professional business consultant, dark navy suit, white dress shirt, modern office background with subtle SuperSeller AI brand colors, professional studio lighting, warm tone, authoritative but approachable, trustworthy expert appearance
    ```
 5. **Customize Settings**:
    - **Outfit**: Select "Business Suit" → Dark navy
-   - **Background**: Select "Modern Office" → Add Rensto logo visible
+   - **Background**: Select "Modern Office" → Add SuperSeller AI logo visible
    - **Lighting**: "Professional Studio" → Warm tone
    - **Mood**: "Authoritative but Approachable"
 6. **Preview** → Adjust if needed

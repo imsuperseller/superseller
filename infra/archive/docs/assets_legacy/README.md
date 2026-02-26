@@ -22,7 +22,7 @@ assets/
 
 ### **Hybrid Approach** (Recommended)
 
-Rensto uses a **hybrid asset management strategy**:
+SuperSeller AI uses a **hybrid asset management strategy**:
 
 ### **1. Shared Brand Assets** → `/assets/`
 **Use `/assets/` for:**
@@ -42,9 +42,9 @@ Rensto uses a **hybrid asset management strategy**:
 assets/
 ├── images/
 │   ├── logos/
-│   │   ├── rensto-logo-primary.svg
-│   │   ├── rensto-logo-white.svg
-│   │   └── rensto-icon.png
+│   │   ├── superseller-logo-primary.svg
+│   │   ├── superseller-logo-white.svg
+│   │   └── superseller-icon.png
 │   ├── brand/
 │   │   └── brand-colors.png
 │   └── marketing/
@@ -61,7 +61,7 @@ assets/
 - Assets only used in one app
 
 **Current App Asset Locations:**
-- `apps/web/rensto-site/public/` (32K) - Icons, SVGs for main site
+- `apps/web/superseller-site/public/` (32K) - Icons, SVGs for main site
 - `apps/web/admin-dashboard/public/` - (if exists) Admin dashboard assets
 - `apps/marketplace/public/` - (if exists) Marketplace assets
 
@@ -87,17 +87,17 @@ cp path/to/logo.svg assets/images/logos/
 
 # 3. Reference in your app
 # In Next.js apps:
-import Logo from '../../../assets/images/logos/rensto-logo.svg'
+import Logo from '../../../assets/images/logos/superseller-logo.svg'
 
 # Or with Image component:
-<Image src="/assets/images/logos/rensto-logo.svg" alt="Rensto" />
+<Image src="/assets/images/logos/superseller-logo.svg" alt="SuperSeller AI" />
 ```
 
 ### **App-Specific Assets**
 
 ```bash
 # 1. Add your asset to the app's public directory
-cp path/to/icon.png apps/web/rensto-site/public/icons/
+cp path/to/icon.png apps/web/superseller-site/public/icons/
 
 # 2. Reference in your app (Next.js automatically serves from /public)
 <Image src="/icons/icon.png" alt="Icon" />
@@ -111,11 +111,11 @@ cp path/to/icon.png apps/web/rensto-site/public/icons/
 
 Use lowercase with hyphens:
 ```
-✅ rensto-logo-primary.svg
+✅ superseller-logo-primary.svg
 ✅ brand-icon-dark.png
 ✅ og-image-homepage.jpg
 
-❌ RenstoLogo.svg
+❌ SuperSeller AILogo.svg
 ❌ brand_icon.png
 ❌ OGImageHomepage.jpg
 ```
@@ -154,7 +154,7 @@ Use lowercase with hyphens:
 
 ### **October 5, 2025 Cleanup:**
 - ❌ Deleted `2025-10-03_18-02-12.png` (1.2MB screenshot) → Moved to archives/screenshots/
-- ❌ Deleted `Rensto-Logo.png` (1.4MB) → Archived (not referenced in any code)
+- ❌ Deleted `SuperSeller AI-Logo.png` (1.4MB) → Archived (not referenced in any code)
 - ✅ **Result**: Reduced from 2.6MB → 0B
 
 **Reason for archival:**
@@ -182,12 +182,12 @@ grep -r "filename.png" apps/ --exclude-dir=node_modules
 **Shared Brand Assets**: 0 (ready for future additions)
 
 **App-Specific Assets**:
-- `apps/web/rensto-site/public/` - 32KB (icons, SVGs)
+- `apps/web/superseller-site/public/` - 32KB (icons, SVGs)
 - Other apps: Check individual app directories
 
 **Archived Assets**:
 - `archives/screenshots/2025-10-03_18-02-12.png` (1.2MB)
-- `archives/screenshots/Rensto-Logo.png` (1.4MB)
+- `archives/screenshots/SuperSeller AI-Logo.png` (1.4MB)
 
 ---
 
@@ -204,7 +204,7 @@ grep -r "filename.png" apps/ --exclude-dir=node_modules
 ### **DO:**
 - ✅ Optimize images before adding (compress, resize)
 - ✅ Use SVG for logos and icons (vector, scalable)
-- ✅ Use semantic names (rensto-logo-primary.svg, not logo1.svg)
+- ✅ Use semantic names (superseller-logo-primary.svg, not logo1.svg)
 - ✅ Keep shared assets in `/assets/`
 - ✅ Keep app-specific assets in app's `public/` folder
 
@@ -222,7 +222,7 @@ grep -r "filename.png" apps/ --exclude-dir=node_modules
 
 ```typescript
 // For assets in /assets/ (shared)
-import Logo from '../../../assets/images/logos/rensto-logo.svg'
+import Logo from '../../../assets/images/logos/superseller-logo.svg'
 
 // For assets in app's /public/ (app-specific)
 import { StaticImageData } from 'next/image'
@@ -237,10 +237,10 @@ Webflow assets are managed separately in Webflow CMS. See `/webflow/README.md`.
 
 ## 📞 Questions?
 
-If you need to add a new brand asset or have questions about asset management, refer to this guide or contact the Rensto development team.
+If you need to add a new brand asset or have questions about asset management, refer to this guide or contact the SuperSeller AI development team.
 
 ---
 
 **Last Updated:** October 5, 2025
 **Next Audit:** January 2026 (3 months)
-**Maintained By:** Rensto Team
+**Maintained By:** SuperSeller AI Team

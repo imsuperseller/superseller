@@ -11,7 +11,7 @@ Currently:
 - Workflows are scattered across codebase, n8n, and Firebase
 - No single source of truth for what's active vs archived
 - Frontend doesn't know what to display where
-- Unclear which workflows belong to Rensto vs customers
+- Unclear which workflows belong to SuperSeller AI vs customers
 
 **Solution**: Firebase `templates` collection as the single source of truth.
 
@@ -19,7 +19,7 @@ Currently:
 
 ## 📋 Marketplace Templates (Firebase `templates` Collection)
 
-These are the 7 core marketplace products that appear on rensto.com/marketplace:
+These are the 7 core marketplace products that appear on superseller.agency/marketplace:
 
 | ID | Name | Category | Price | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -88,7 +88,7 @@ These map to workflows but are sold as bundles:
 ### Voice AI
 | File | Purpose | Status |
 | :--- | :--- | :--- |
-| `telnyx-voice-ai-agent.json` | Rensto Voice Agent | ⚠️ Check n8n |
+| `telnyx-voice-ai-agent.json` | SuperSeller AI Voice Agent | ⚠️ Check n8n |
 | `telnyx-voice-ai-agent-v2.json` | V2 (improved?) | ⚠️ Check n8n |
 
 ---
@@ -98,8 +98,8 @@ These map to workflows but are sold as bundles:
 ### Active Customers
 | Customer | Folder | n8n Instance | Status |
 | :--- | :--- | :--- | :--- |
-| **UAD Garage Doors** | TBD | Rensto n8n | ✅ Active |
-| **Miss Party** | TBD | Rensto n8n | ✅ Active |
+| **UAD Garage Doors** | TBD | SuperSeller AI n8n | ✅ Active |
+| **Miss Party** | TBD | SuperSeller AI n8n | ✅ Active |
 | **Tax4Us** | `/Customers/tax4us/` | `tax4usllc.app.n8n.cloud` | ✅ Active |
 | **Wonder Care** | `/Customers/wonder.care/` | TBD | ❓ Status? |
 | **Ortal** | `/Customers/ortal/` | TBD | ❓ Status? |
@@ -128,7 +128,7 @@ interface Template {
   readinessStatus: 'Active' | 'Beta' | 'Coming Soon' | 'Internal' | 'Draft';
   
   // Ownership (NEW)
-  owner: 'rensto' | 'client';
+  owner: 'superseller' | 'client';
   clientId?: string;
   department: 'lead_machine' | 'autonomous_secretary' | 'knowledge_engine' | 'content_engine' | 'internal_ops' | 'client_fulfillment';
   
@@ -157,7 +157,7 @@ interface Template {
 > [!IMPORTANT]
 > The correct n8n server is `172.245.56.50`, NOT `172.245.56.50` (old/deprecated)
 
-- **URL**: `https://n8n.rensto.com`
+- **URL**: `https://n8n.superseller.agency`
 - **IP**: `172.245.56.50`
 - **VPS**: RackNerd DAL177KVM (Ubuntu 24.04, 6GB RAM, 100GB disk)
 - **WAHA**: `http://172.245.56.50:3000` (WhatsApp API)
@@ -176,8 +176,8 @@ interface Template {
 ### Active Customers
 | Customer | Folder | n8n Instance | Status |
 | :--- | :--- | :--- | :--- |
-| **UAD Garage Doors** | TBD | Rensto n8n | ✅ Active |
-| **Miss Party** | TBD | Rensto n8n | ✅ Active |
+| **UAD Garage Doors** | TBD | SuperSeller AI n8n | ✅ Active |
+| **Miss Party** | TBD | SuperSeller AI n8n | ✅ Active |
 | **Tax4Us** | `/Customers/tax4us/` | `tax4usllc.app.n8n.cloud` | ✅ Active |
 | **Ben Ginati** | `/Customers/ben-ginati/` | Tax4Us cloud | ✅ Same as Tax4Us |
 
@@ -242,6 +242,6 @@ User confirmed there are many versions:
 
 ## 📎 Related Documentation
 
-- [workflows/README.md](file:///Users/shaifriedman/New%20Rensto/rensto/workflows/README.md) - Workflow folder structure
-- [types/firestore.ts](file:///Users/shaifriedman/New%20Rensto/rensto/apps/web/rensto-site/src/types/firestore.ts) - Template interface
-- [CLIENTS.md](file:///Users/shaifriedman/New%20Rensto/rensto/docs/business/CLIENTS.md) - Customer list
+- [workflows/README.md](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/workflows/README.md) - Workflow folder structure
+- [types/firestore.ts](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/apps/web/superseller-site/src/types/firestore.ts) - Template interface
+- [CLIENTS.md](file:///Users/shaifriedman/New%20SuperSeller AI/superseller/docs/business/CLIENTS.md) - Customer list

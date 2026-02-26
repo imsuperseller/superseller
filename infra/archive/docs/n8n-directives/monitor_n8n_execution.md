@@ -5,7 +5,7 @@ Track the status, progress, and result of a specific n8n workflow execution.
 
 ## Inputs
 - **Execution ID**: The numeric or alphanumeric ID of the execution (e.g., `142956`).
-- **Instance**: The n8n instance name (default: `rensto`).
+- **Instance**: The n8n instance name (default: `superseller`).
 
 ## Procedure
 

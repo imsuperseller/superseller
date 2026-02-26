@@ -1,5 +1,5 @@
 /**
- * Error Handling Integration for Rensto Logging Database
+ * Error Handling Integration for SuperSeller AI Logging Database
  * Main integration point for all error handling components
  */
 

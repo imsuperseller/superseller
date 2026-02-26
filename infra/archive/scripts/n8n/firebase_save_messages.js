@@ -17,7 +17,7 @@ if (!phone) {
     return { json: { ...$json, saveError: 'No phone number' } };
 }
 
-const projectId = 'rensto';
+const projectId = 'superseller';
 const now = new Date().toISOString();
 
 // Helper function to create Firestore document

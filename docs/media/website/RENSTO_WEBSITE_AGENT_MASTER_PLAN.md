@@ -1,8 +1,8 @@
-# 🎯 Rensto Website AI Agent - Master Plan
+# 🎯 SuperSeller AI Website AI Agent - Master Plan
 
 **Date**: November 14, 2025  
 **Status**: 📋 Planning Phase  
-**Purpose**: Adapt Dima's WhatsApp agent architecture for Rensto website chat agent
+**Purpose**: Adapt Dima's WhatsApp agent architecture for SuperSeller AI website chat agent
 
 ---
 
@@ -11,8 +11,8 @@
 ### **✅ What's Live & Working**
 
 **Architecture**:
-- ✅ **Hosting**: Vercel (Next.js) - `rensto.com` is 100% on Vercel
-- ✅ **Source**: `apps/web/rensto-site/`
+- ✅ **Hosting**: Vercel (Next.js) - `superseller.agency` is 100% on Vercel
+- ✅ **Source**: `apps/web/superseller-site/`
 - ✅ **DNS**: Points to Vercel (`cname.vercel-dns.com`)
 - ✅ **SSL**: HTTPS working (Vercel managed)
 - ✅ **Deployment**: Auto-deploy on git push
@@ -130,7 +130,7 @@
 - HTTP Response node (sends replies back)
 
 **Knowledge Base**:
-- Gemini File Search Store: `fileSearchStores/rensto-knowledge`
+- Gemini File Search Store: `fileSearchStores/superseller-knowledge`
 - Documents: Service descriptions, pricing, FAQs, technical docs
 - Auto-updates from Airtable/Boost.space
 
@@ -141,16 +141,16 @@
 ### **Phase 1: Frontend Chat Widget** (Week 1)
 
 **Tasks**:
-1. Create chat widget component (`components/chat/RenstoChatWidget.tsx`)
+1. Create chat widget component (`components/chat/SuperSeller AIChatWidget.tsx`)
 2. Add chat button to all pages (floating button, bottom-right)
 3. Implement message UI (bubbles, timestamps)
 4. Add input field with send button
 5. Implement session management (cookies)
 6. Add message history (localStorage or API)
-7. Style with Rensto brand colors
+7. Style with SuperSeller AI brand colors
 
 **Components to Build**:
-- `RenstoChatWidget.tsx` - Main chat widget
+- `SuperSeller AIChatWidget.tsx` - Main chat widget
 - `ChatMessage.tsx` - Individual message bubble
 - `ChatInput.tsx` - Input field with send button
 - `ChatHeader.tsx` - Header with agent name/status
@@ -164,7 +164,7 @@
 
 ### **Phase 2: n8n Backend Workflow** (Week 1-2)
 
-**Workflow Name**: `INT-WEBSITE-001: Rensto Website Chat Agent`
+**Workflow Name**: `INT-WEBSITE-001: SuperSeller AI Website Chat Agent`
 
 **Node Structure**:
 ```
@@ -176,7 +176,7 @@ AI Agent (LangChain)
     ├─→ Simple Memory (session-based, 10 messages)
     ├─→ OpenAI Chat Model (gpt-4o-mini)
     ├─→ Search Documents Tool (Gemini File Search)
-    └─→ System Message (Rensto context)
+    └─→ System Message (SuperSeller AI context)
     ↓
 Format Response
     ↓
@@ -185,7 +185,7 @@ HTTP Response (return to website)
 
 **System Message** (Adapted from Dima's):
 ```
-את Rensto, עוזרת AI ידידותית של פלטפורמת האוטומציה.
+את SuperSeller AI, עוזרת AI ידידותית של פלטפורמת האוטומציה.
 
 **תפקידך:**
 - לענות על שאלות על השירותים שלנו (Marketplace, Subscriptions, Ready Solutions, Custom Solutions)
@@ -213,7 +213,7 @@ HTTP Response (return to website)
 ```
 
 **Knowledge Base Setup**:
-1. Create Gemini File Search Store: `fileSearchStores/rensto-knowledge`
+1. Create Gemini File Search Store: `fileSearchStores/superseller-knowledge`
 2. Upload documents:
    - Service descriptions (Marketplace, Subscriptions, Ready Solutions, Custom)
    - Pricing information
@@ -284,16 +284,16 @@ HTTP Response (return to website)
 **Position**: Fixed bottom-right corner (desktop), full-screen overlay (mobile)
 
 **Components**:
-- **Chat Button**: Floating button with Rensto logo/icon
+- **Chat Button**: Floating button with SuperSeller AI logo/icon
 - **Chat Window**: Expandable panel (400px wide, 600px tall)
-- **Header**: "Chat with Rensto AI" + close button
+- **Header**: "Chat with SuperSeller AI AI" + close button
 - **Messages**: Bubbles (user: right, agent: left)
 - **Input**: Text field + send button (bottom)
 - **Typing Indicator**: Shows when agent is thinking
 
 **Branding**:
-- Colors: Rensto brand colors (#fe3d51, #bf5700, #1eaef7, #5ffbfd)
-- Fonts: Rensto brand fonts
+- Colors: SuperSeller AI brand colors (#fe3d51, #bf5700, #1eaef7, #5ffbfd)
+- Fonts: SuperSeller AI brand fonts
 - Icons: Lucide React icons (consistent with site)
 
 **States**:
@@ -354,17 +354,17 @@ HTTP Response (return to website)
 ## 🚀 **NEXT STEPS**
 
 ### **Step 1: Create Chat Widget Component**
-- Location: `apps/web/rensto-site/src/components/chat/RenstoChatWidget.tsx`
+- Location: `apps/web/superseller-site/src/components/chat/SuperSeller AIChatWidget.tsx`
 - Features: Basic UI, message display, input field
 - Integration: Add to layout (appears on all pages)
 
 ### **Step 2: Create API Endpoint**
-- Location: `apps/web/rensto-site/src/app/api/chat/send/route.ts`
+- Location: `apps/web/superseller-site/src/app/api/chat/send/route.ts`
 - Purpose: Receive messages from frontend, forward to n8n
 - Response: Return agent reply
 
 ### **Step 3: Create n8n Workflow**
-- Name: `INT-WEBSITE-001: Rensto Website Chat Agent`
+- Name: `INT-WEBSITE-001: SuperSeller AI Website Chat Agent`
 - Based on: Dima's WhatsApp agent (`86WHKNpj09tV9j1d`)
 - Adaptations: Remove voice nodes, add HTTP webhook
 
@@ -383,18 +383,18 @@ HTTP Response (return to website)
 ## 📝 **FILES TO CREATE/MODIFY**
 
 ### **New Files**:
-1. `apps/web/rensto-site/src/components/chat/RenstoChatWidget.tsx`
-2. `apps/web/rensto-site/src/components/chat/ChatMessage.tsx`
-3. `apps/web/rensto-site/src/components/chat/ChatInput.tsx`
-4. `apps/web/rensto-site/src/components/chat/ChatHeader.tsx`
-5. `apps/web/rensto-site/src/app/api/chat/send/route.ts`
-6. `apps/web/rensto-site/src/app/api/chat/history/route.ts`
+1. `apps/web/superseller-site/src/components/chat/SuperSeller AIChatWidget.tsx`
+2. `apps/web/superseller-site/src/components/chat/ChatMessage.tsx`
+3. `apps/web/superseller-site/src/components/chat/ChatInput.tsx`
+4. `apps/web/superseller-site/src/components/chat/ChatHeader.tsx`
+5. `apps/web/superseller-site/src/app/api/chat/send/route.ts`
+6. `apps/web/superseller-site/src/app/api/chat/history/route.ts`
 7. `live-systems/n8n-system/workflows/INT-WEBSITE-001.json` (workflow export)
 
 ### **Modify Files**:
-1. `apps/web/rensto-site/src/app/layout.tsx` - Add chat widget to layout
-2. `apps/web/rensto-site/src/app/custom/page.tsx` - Add Typeform integration
-3. `apps/web/rensto-site/src/app/api/marketplace/workflows/route.ts` - Fix API (use Boost.space)
+1. `apps/web/superseller-site/src/app/layout.tsx` - Add chat widget to layout
+2. `apps/web/superseller-site/src/app/custom/page.tsx` - Add Typeform integration
+3. `apps/web/superseller-site/src/app/api/marketplace/workflows/route.ts` - Fix API (use Boost.space)
 
 ---
 
@@ -418,7 +418,7 @@ HTTP Response (return to website)
 
 ### **Dima's WhatsApp Agent**:
 - Workflow ID: `86WHKNpj09tV9j1d`
-- Location: Rensto VPS n8n instance
+- Location: SuperSeller AI VPS n8n instance
 - Components: WAHA Trigger, AI Agent, RAG Tool, Memory
 
 ### **Documentation**:

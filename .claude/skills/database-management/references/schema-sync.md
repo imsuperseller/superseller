@@ -23,7 +23,7 @@
 - [ ] Check Prisma schema.prisma for matching models
 - [ ] Verify column names match
 - [ ] Run `npx drizzle-kit generate && npx drizzle-kit migrate`
-- [ ] Test web: `cd apps/web/rensto-site && npx next build`
+- [ ] Test web: `cd apps/web/superseller-site && npx next build`
 
 ## Safe Migration Strategy
 1. Add nullable columns first (no breaking change)

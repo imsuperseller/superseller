@@ -684,7 +684,7 @@
 
 ## 📞 **CONTACT & UPDATES**
 
-**Document Owner**: Rensto Leadership Team  
+**Document Owner**: SuperSeller AI Leadership Team  
 **Last Review**: January 16, 2025  
 **Next Review**: February 16, 2025  
 **Update Frequency**: Monthly  

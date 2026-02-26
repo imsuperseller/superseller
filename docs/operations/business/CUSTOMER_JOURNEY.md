@@ -1,6 +1,6 @@
 # 🛤️ Customer Journey
 
-> **Source of Truth for how customers move through the Rensto funnel.**
+> **Source of Truth for how customers move through the SuperSeller AI funnel.**
 
 ---
 

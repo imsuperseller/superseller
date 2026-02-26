@@ -62,7 +62,7 @@ marketplace_posts       -- FB post records
 ## 🏗️ Architecture Decisions
 
 ### Why Manual SQL Migration?
-Prisma `db push` failed due to FK type conflicts on existing tables (User.id UUID vs String inconsistency). Rather than `--force-reset` and lose data, created new tables manually via SSH psql. **Schema changes did NOT affect existing Rensto tables.**
+Prisma `db push` failed due to FK type conflicts on existing tables (User.id UUID vs String inconsistency). Rather than `--force-reset` and lose data, created new tables manually via SSH psql. **Schema changes did NOT affect existing SuperSeller AI tables.**
 
 ### Why File-Based Config Still Exists?
 Week 1 created file-based multi-tenant structure (`/opt/fb-marketplace-bot/customers/<customerId>/`). Week 2 adds PostgreSQL as the **source of truth**, but sync to files is still **manual** (via `/api/marketplace/customer/sync`). Week 3+ will automate via webhook or SSH rsync.
@@ -108,7 +108,7 @@ Week 2 adds:
 
 ### Vercel (Web App)
 - **Auto-deployed** on push to `main`
-- URL: `https://rensto.com/dashboard/marketplace`
+- URL: `https://superseller.agency/dashboard/marketplace`
 - **Status**: Build succeeded (commit `23f0d71`)
 
 ### RackNerd (Worker)
@@ -147,7 +147,7 @@ Week 2 adds:
 
 ### API Routes (6 files)
 ```
-apps/web/rensto-site/src/app/api/marketplace/customer/
+apps/web/superseller-site/src/app/api/marketplace/customer/
 ├── products/route.ts                  # GET/POST products
 ├── products/[productId]/route.ts      # GET/PATCH/DELETE product
 ├── posts/route.ts                     # GET posts
@@ -158,7 +158,7 @@ apps/web/rensto-site/src/app/api/marketplace/customer/
 
 ### Frontend Pages (3 files)
 ```
-apps/web/rensto-site/src/app/(main)/dashboard/marketplace/
+apps/web/superseller-site/src/app/(main)/dashboard/marketplace/
 ├── page.tsx                           # Main dashboard
 ├── products/new/page.tsx              # Add product wizard
 └── posts/page.tsx                     # Post history
@@ -166,7 +166,7 @@ apps/web/rensto-site/src/app/(main)/dashboard/marketplace/
 
 ### Database Schema (1 file)
 ```
-apps/web/rensto-site/prisma/schema.prisma  # Added 4 marketplace models
+apps/web/superseller-site/prisma/schema.prisma  # Added 4 marketplace models
 ```
 
 ---

@@ -3,7 +3,7 @@
 
 ## 📋 **OVERVIEW**
 
-The Rensto AI Agent Ecosystem consists of three intelligent agents working together to automate business operations, enhance customer success, and maintain system performance. Each agent is designed with specific responsibilities and capabilities to create a comprehensive automation solution.
+The SuperSeller AI AI Agent Ecosystem consists of three intelligent agents working together to automate business operations, enhance customer success, and maintain system performance. Each agent is designed with specific responsibilities and capabilities to create a comprehensive automation solution.
 
 ---
 
@@ -280,7 +280,7 @@ Agent execution is monitored through:
 OPENAI_API_KEY=your_openai_api_key
 MONGODB_URI=your_mongodb_connection_string
 N8N_BASE_URL=https://your-n8n-instance.com
-ADMIN_EMAIL=admin@rensto.com
+ADMIN_EMAIL=shai@superseller.agency
 
 # Customer-specific Configuration
 CUSTOMER_SLUG=ben-ginati

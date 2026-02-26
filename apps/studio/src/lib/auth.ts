@@ -148,7 +148,7 @@ export async function sendWhatsAppOtp(phone: string): Promise<boolean> {
     300 // 5 min TTL
   );
 
-  const msgId = await sendText(chatId, `Rensto Studio login code: ${code}\nValid for 5 minutes.`);
+  const msgId = await sendText(chatId, `SuperSeller AI Studio login code: ${code}\nValid for 5 minutes.`);
   return msgId !== null;
 }
 

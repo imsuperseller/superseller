@@ -442,7 +442,7 @@ apiRouter.delete("/rag/documents", async (req: Request, res: Response) => {
 /**
  * Receives inbound WhatsApp messages from WAHA webhook(s).
  * Personal:  POST /api/whatsapp/claude          — only allowed phones
- * Business:  POST /api/whatsapp/claude/rensto    — all customers welcome
+ * Business:  POST /api/whatsapp/claude/superseller    — all customers welcome
  *
  * Each WAHA instance sends its own webhook URL including ?waha_url= to route responses.
  */
@@ -526,7 +526,7 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
 }
 
 apiRouter.post("/whatsapp/claude", (req, res) => handleClaudeClawWebhook(req, res, "personal"));
-apiRouter.post("/whatsapp/claude/rensto", (req, res) => handleClaudeClawWebhook(req, res, "business"));
+apiRouter.post("/whatsapp/claude/superseller", (req, res) => handleClaudeClawWebhook(req, res, "business"));
 
 // ─── HEALTH ───
 apiRouter.get("/health", async (req, res) => {

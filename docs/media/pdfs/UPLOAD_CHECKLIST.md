@@ -1,7 +1,7 @@
 # 📋 PDF Upload Checklist
 
 **Generated**: November 17, 2025  
-**Store**: `fileSearchStores/rensto-knowledge-base-ndf9fmymwb2p`  
+**Store**: `fileSearchStores/superseller-knowledge-base-ndf9fmymwb2p`  
 **Upload URL**: `http://172.245.56.50:5678/form/0509cfab-f2e9-40fc-a268-8b966efb8305`
 
 ---
@@ -54,7 +54,7 @@ After uploading, test with these questions:
 - "What are your subscription plans?"
 - "How much does Custom Solutions cost?"
 - "What is Content AI?"
-- "What is Rensto's business model?"
+- "What is SuperSeller AI's business model?"
 - "What is the current implementation status?"
 
 ---

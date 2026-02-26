@@ -6,7 +6,7 @@
 
 - [TOURREEL_REALTOR_HANDOFF_SPEC.md](TOURREEL_REALTOR_HANDOFF_SPEC.md) — pipeline architecture, Kling 3, Nano Banana, selective regen
 - [CLAUDE.md](../../CLAUDE.md) — product/technical context
-- [gemini.md](../web/rensto-site/gemini.md) — site/product law
+- [gemini.md](../web/superseller-site/gemini.md) — site/product law
 
 ## Reference Docs (Inspiration Only)
 

@@ -9,7 +9,7 @@
 | 3 | 0baf5f36-7ff0-4550-a878-923dbf59de5c | Zillow-to-Video | 22 | TourReel pipeline spec (canonical) | Active |
 | 4 | fc048ba8-12b7-432a-b8d9-65baae62d529 | Master: Automation & Core Infra | 37 | Master domain: Antigravity, n8n, automation workflows | Active |
 | 5 | 286f3e4a-a3a2-40ab-9c45-d198e91b27f4 | Google Stitch | 8 | Stitch MCP, design system, Gemini integration | Active |
-| 6 | 719854ee-b94e-4555-9b2b-48ae136335b8 | rensto website | 14 | Main site, design, pages, business model | Active |
+| 6 | 719854ee-b94e-4555-9b2b-48ae136335b8 | superseller website | 14 | Main site, design, pages, business model | Active |
 | 7 | e1acc83c-978f-4601-b98a-d4c4b4b9ff50 | Resources | 6 | General reference resources | Active |
 | 8 | cb99e6aa-967f-40d4-9580-c02b3250bc78 | Master: Social Media, Lead Gen & Marketing | 49 | Master domain: Social Media, FB Marketplace, Profiles | Active |
 | 9 | 98b120fa-bc5e-466a-a8d2-7a609c044283 | aitable.ai | 9 | Aitable.ai for dashboards/syncs | Active |

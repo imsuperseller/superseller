@@ -21,7 +21,7 @@
 
 | # | Path | What’s missing |
 |---|------|-----------------|
-| 3 | **apps/web/rensto-site/** | READMEs in api-backup, temp-backup, org-backup. **Done (Feb 2026):** src has no references to backups; live API = src/app/api/, admin = src/app/admin/. n8n/README and prisma/README added (templates + Firestore-primary note). scripts/ empty; data/ and scripts/ READMEs skipped (cursorignore). **Not done:** Root file audit (D) – list_clients.js, get_samples.ts, *.md, netlify.toml, etc. |
+| 3 | **apps/web/superseller-site/** | READMEs in api-backup, temp-backup, org-backup. **Done (Feb 2026):** src has no references to backups; live API = src/app/api/, admin = src/app/admin/. n8n/README and prisma/README added (templates + Firestore-primary note). scripts/ empty; data/ and scripts/ READMEs skipped (cursorignore). **Not done:** Root file audit (D) – list_clients.js, get_samples.ts, *.md, netlify.toml, etc. |
 | 5 | **library/** | See above – consolidation and “current vs legacy” not done. |
 
 ---
@@ -32,9 +32,9 @@
 |-------|------|------------|
 | ~~**A**~~ | ~~.cursor/rules/~~ | **Done.** n8n + tax4us mdcs read; tax4us context7 note; rules.md paths updated. |
 | ~~**B**~~ | ~~Root config (full)~~ | **Done.** Line-by-line: .cursorrules, .cursorignore, .gitignore, .env.example, tsconfig.json, package.json, ARCHITECTURE.md, CLAUDE.md – align with each other; fix stale links and duplicate “truth”. |
-| ~~**C**~~ | ~~apps/web/rensto-site/src/~~ | **Done.** Confirmed live API = src/app/api/, admin = src/app/admin/; no backup refs in src. |
-| **D** | **apps/web/rensto-site root files** | ✅ **Done (Feb 2026).** Moved 20 files to archive-root/ (incl. list_clients, DESIGN_OPTIMIZATION_PLAN, FIRESTORE_*, ENVIRONMENT_SETUP, PRODUCTION_SETUP). Deleted netlify.toml. Remain: Dockerfile, components.json, gemini.md, data/, scripts/, tools/, n8n/, prisma/, public/, src/, vercel.json, next.config, etc. (in use). |
-| ~~**E**~~ | ~~rensto-site scripts, n8n, data, prisma~~ | **Done.** n8n/README, prisma/README added; scripts empty; data/bmad-projects; prisma = NextAuth/sqlite (Firestore primary). |
+| ~~**C**~~ | ~~apps/web/superseller-site/src/~~ | **Done.** Confirmed live API = src/app/api/, admin = src/app/admin/; no backup refs in src. |
+| **D** | **apps/web/superseller-site root files** | ✅ **Done (Feb 2026).** Moved 20 files to archive-root/ (incl. list_clients, DESIGN_OPTIMIZATION_PLAN, FIRESTORE_*, ENVIRONMENT_SETUP, PRODUCTION_SETUP). Deleted netlify.toml. Remain: Dockerfile, components.json, gemini.md, data/, scripts/, tools/, n8n/, prisma/, public/, src/, vercel.json, next.config, etc. (in use). |
+| ~~**E**~~ | ~~superseller-site scripts, n8n, data, prisma~~ | **Done.** n8n/README, prisma/README added; scripts empty; data/bmad-projects; prisma = NextAuth/sqlite (Firestore primary). |
 | **F** | **infra/mcp-servers/** (per server) | ✅ **Partial.** infra/README: webflow-mcp, airtable-mcp marked legacy. Per-server audit when needed. |
 | **G** | **infra/** logging-database, saas-frontend, video-merge, design-tools, waha, systemd | ✅ **Done (Feb 2026).** video-merge, waha docs added to infra/README. |
 | **H** | **library/client-workflows/** | ✅ **Done.** client-workflows/README.md added. |
@@ -55,7 +55,7 @@
 ## Order I will continue (until fully mastered)
 
 1. ~~**A** → **B**~~ (done)
-2. ~~**C** → **E**~~ (done); **D** next (rensto-site root files)
+2. ~~**C** → **E**~~ (done); **D** next (superseller-site root files)
 3. **F** → **G** (infra: mcp-servers, then other subdirs)
 4. **H** → **I** (library: client-workflows, then legacy_data consolidation)
 5. **J** → **K** → **L** (directives, firestore, n8n-skills-drafts)

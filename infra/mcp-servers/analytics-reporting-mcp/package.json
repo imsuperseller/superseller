@@ -21,7 +21,7 @@
     "n8n",
     "airtable"
   ],
-  "author": "Rensto Team",
+  "author": "SuperSeller AI Team",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.4.0",
