@@ -6,7 +6,7 @@ const e = <T extends z.ZodTypeAny>(schema: T) =>
 
 const envSchema = z.object({
   NEXT_PUBLIC_SITE_NAME: e(z.string().default('SuperSeller AI')),
-  NEXT_PUBLIC_CONTACT_EMAIL: e(z.string().email().default('shai@superseller.agency')),
+  NEXT_PUBLIC_CONTACT_EMAIL: e(z.string().default('shai@superseller.agency')),
   NEXT_PUBLIC_TYPEFORM_CONTACT_URL: e(z.string().url().optional()),
   NEXT_PUBLIC_LINKEDIN_URL: e(z.string().url().optional()),
   NEXT_PUBLIC_X_URL: e(z.string().url().optional()),

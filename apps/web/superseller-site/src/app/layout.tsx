@@ -10,6 +10,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  manifest: '/manifest.webmanifest',
   title: 'SuperSeller AI | Your AI Crew for Business',
   description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
   keywords: ['AI business automation', 'AI video production', 'AI receptionist', 'AI lead generation', 'small business AI', 'realtor video'],
