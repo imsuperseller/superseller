@@ -179,7 +179,7 @@ export function SystemHealth() {
                 <Zap className="h-5 w-5 text-gray-600" />
                 <div>
                   <p className="font-medium">Payment Processing</p>
-                  <p className="text-sm text-gray-600">Stripe integration</p>
+                  <p className="text-sm text-gray-600">PayPal integration</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">

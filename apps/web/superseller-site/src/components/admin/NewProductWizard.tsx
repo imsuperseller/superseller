@@ -227,7 +227,7 @@ export default function NewProductWizard() {
                             <div className="p-4 rounded-lg bg-[#5ffbfd]/10 border border-[#5ffbfd]/20 text-[#5ffbfd] text-sm flex gap-3">
                                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                                 <p>
-                                    Values entered here will automatically create live Stripe Products and Prices.
+                                    Values entered here will automatically create live PayPal Products and Prices.
                                     Ensure these are final before creating.
                                 </p>
                             </div>

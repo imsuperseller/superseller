@@ -70,7 +70,7 @@ export default function TermsOfServicePage() {
                 <ul className="list-disc list-inside text-muted mb-4 space-y-2">
                   <li>One-time services require payment before project commencement</li>
                   <li>Care plans are billed monthly in advance</li>
-                  <li>All payments are processed securely through Stripe</li>
+                  <li>All payments are processed securely through PayPal</li>
                   <li>Late payments may result in service suspension</li>
                 </ul>
 

@@ -69,7 +69,7 @@ export const CREW_MEMBERS: CrewMember[] = [
       'Brand voice customization',
       'Automatic fallback models',
     ],
-    status: 'coming-soon',
+    status: 'live',
     href: '/crew/spoke',
     demoVideo: '/videos/celebrity-selfie-generator.mp4',
     demoCaption: 'Real output — AI avatar video generated from a photo and voice note',

@@ -187,7 +187,7 @@ model Payment {
   flowType         String?
   productId        String?
   tier             String?
-  platform         String   @default("rensto-web")
+  platform         String   @default("superseller-web")
   createdAt        DateTime @default(now())
   amount           Int      @default(0)
   metadata         Json?

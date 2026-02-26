@@ -496,7 +496,7 @@ export default function NicheTemplatePage() {
                             },
                             {
                                 question: "How do you handle sales tax?",
-                                answer: "Our payments are processed via Stripe, which automatically calculates and collects applicable sales tax based on your location (e.g., Texas regulations) at checkout."
+                                answer: "Our payments are processed via PayPal, which automatically calculates and collects applicable sales tax based on your location (e.g., Texas regulations) at checkout."
                             },
                             {
                                 question: "Can I customize the AI's response style?",
@@ -520,7 +520,7 @@ export default function NicheTemplatePage() {
                             },
                             {
                                 question: "How do I get paid?",
-                                answer: "For services booked through the automation, we integrate with your Stripe or CRM payment link. Funds go directly to your bank account; we never touch your transaction money."
+                                answer: "For services booked through the automation, we integrate with your PayPal or CRM payment link. Funds go directly to your bank account; we never touch your transaction money."
                             }
                         ]).map((faq: any, i: number) => (
                             <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] transition-colors">

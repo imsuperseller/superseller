@@ -723,7 +723,7 @@
             },
             {
                 "question": "Can it process recurring payments?",
-                "answer": "It can monitor your Stripe billing and send friendly reminders or pause scheduling if a payment fails."
+                "answer": "It can monitor your PayPal billing and send friendly reminders or pause scheduling if a payment fails."
             },
             {
                 "question": "Is it safe for children?",

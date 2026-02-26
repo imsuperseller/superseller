@@ -5,6 +5,7 @@ SuperSeller AI is a credit-based SaaS platform that gives businesses an AI crew 
 ## The Crew (AI Agents)
 
 - **Forge** (Video Producer): Paste any business URL → AI generates cinematic marketing videos with face compositing, music, and text overlays.
+- **Spoke** (AI Avatar Video): Record a voice note and upload a photo → AI generates a lip-synced avatar video of you speaking. Explain policies, announce specials, pitch services — without being on camera.
 - **FrontDesk** (AI Receptionist): 24/7 natural voice AI answering, lead capture, appointment booking, urgent call routing.
 - **Scout** (Lead Hunter): AI-sourced qualified leads, landing page builder, CRM integration, WhatsApp delivery.
 - **Buzz** (Content Creator): AI content creation, approval workflows, 6-platform publishing (FB, IG, LinkedIn, X, TikTok, YouTube).

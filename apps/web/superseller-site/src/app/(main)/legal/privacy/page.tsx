@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
                   <li>Company information</li>
                   <li>Project requirements and specifications</li>
                   <li>Communication preferences</li>
-                  <li>Payment information (processed securely through Stripe)</li>
+                  <li>Payment information (processed securely through PayPal)</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold mb-3">Automatically Collected Information</h3>
