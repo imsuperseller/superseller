@@ -1,0 +1,195 @@
+/**
+ * POST /api/social/webhook/approval
+ * WAHA webhook — processes WhatsApp approval replies.
+ * On "approve" → auto-publishes to the platform.
+ * On "reject" → updates status in Postgres + Aitable.
+ */
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { parseApprovalResponse, sendPublishNotification } from "@/lib/services/social/approval-flow";
+import { publishToFacebook, publishToInstagram } from "@/lib/services/social/facebook-publisher";
+import { findRecordByPostgresId, updateContentRecord } from "@/lib/services/social/aitable-sync";
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+
+    // WAHA webhook payload
+    const event = body.event;
+    if (event !== "message") {
+      return NextResponse.json({ ok: true, skipped: "not a message event" });
+    }
+
+    const payload = body.payload;
+    const messageBody = payload?.body || "";
+    const from = payload?.from?.replace("@c.us", "") || "";
+
+    if (!messageBody || !from) {
+      return NextResponse.json({ ok: true, skipped: "empty message" });
+    }
+
+    const { action, reason } = parseApprovalResponse(messageBody);
+    if (action === "unknown") {
+      return NextResponse.json({ ok: true, skipped: "not an approval response" });
+    }
+
+    // Find the most recent pending post
+    const pendingPost = await prisma.contentPost.findFirst({
+      where: {
+        approvalStatus: "pending",
+        status: "pending_approval",
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!pendingPost) {
+      return NextResponse.json({ ok: true, skipped: "no pending posts" });
+    }
+
+    const meta = pendingPost.metadata as Record<string, unknown> | null;
+    const aitableRecordId =
+      (meta?.aitableRecordId as string) || (await findRecordByPostgresId(pendingPost.id));
+
+    // === APPROVE ===
+    if (action === "approve") {
+      // Update Postgres
+      await prisma.contentPost.update({
+        where: { id: pendingPost.id },
+        data: {
+          approvalStatus: "approved",
+          approvedBy: from,
+          approvedAt: new Date(),
+          status: "approved",
+        },
+      });
+
+      // Update Aitable
+      if (aitableRecordId) {
+        await updateContentRecord(aitableRecordId, {
+          status: "Approved",
+          approvedBy: from,
+        });
+      }
+
+      // Auto-publish: find the platform account and publish
+      const account = await prisma.platformAccount.findFirst({
+        where: {
+          userId: pendingPost.userId,
+          platform: pendingPost.platform || "facebook",
+          isActive: true,
+        },
+      });
+
+      if (account?.accessToken && account.accountId) {
+        const content = pendingPost.content || "";
+        const mediaUrls = (pendingPost.mediaUrls as string[]) || [];
+        let publishResult;
+
+        if (pendingPost.platform === "facebook") {
+          publishResult = await publishToFacebook({
+            pageId: account.accountId,
+            accessToken: account.accessToken,
+            message: content,
+            imageUrl: mediaUrls[0],
+          });
+        } else if (pendingPost.platform === "instagram" && mediaUrls[0]) {
+          publishResult = await publishToInstagram({
+            igUserId: account.accountId,
+            accessToken: account.accessToken,
+            caption: content,
+            imageUrl: mediaUrls[0],
+          });
+        }
+
+        if (publishResult?.success) {
+          await prisma.contentPost.update({
+            where: { id: pendingPost.id },
+            data: {
+              status: "published",
+              platformPostId: publishResult.postId,
+              platformUrl: publishResult.postUrl,
+              publishedAt: new Date(),
+            },
+          });
+
+          if (aitableRecordId) {
+            await updateContentRecord(aitableRecordId, {
+              status: "Published",
+              platformUrl: publishResult.postUrl || "",
+              platformPostId: publishResult.postId || "",
+              publishedAt: new Date().toISOString(),
+            });
+          }
+
+          // Notify via WhatsApp
+          await sendPublishNotification(from, pendingPost.platform || "social", publishResult.postUrl);
+
+          return NextResponse.json({
+            ok: true,
+            action: "approved_and_published",
+            postId: pendingPost.id,
+            platformUrl: publishResult.postUrl,
+          });
+        }
+      }
+
+      return NextResponse.json({
+        ok: true,
+        action: "approved",
+        postId: pendingPost.id,
+        note: "Approved but auto-publish skipped (no account or publish failed)",
+      });
+    }
+
+    // === REJECT ===
+    if (action === "reject") {
+      await prisma.contentPost.update({
+        where: { id: pendingPost.id },
+        data: {
+          approvalStatus: "rejected",
+          approvedBy: from,
+          approvedAt: new Date(),
+          rejectionNote: reason || "Rejected without reason",
+          status: "rejected",
+        },
+      });
+
+      if (aitableRecordId) {
+        await updateContentRecord(aitableRecordId, {
+          status: "Rejected",
+          approvedBy: from,
+          rejectionNote: reason || "Rejected without reason",
+        });
+      }
+
+      return NextResponse.json({ ok: true, action: "rejected", postId: pendingPost.id, reason });
+    }
+
+    // === EDIT REQUEST ===
+    if (action === "edit") {
+      const existingMeta = (meta || {}) as Record<string, unknown>;
+      const editRequests = Array.isArray(existingMeta.editRequests) ? existingMeta.editRequests : [];
+      const updatedMeta = JSON.parse(JSON.stringify({
+        ...existingMeta,
+        editRequests: [
+          ...editRequests,
+          { from, reason, at: new Date().toISOString() },
+        ],
+      }));
+      await prisma.contentPost.update({
+        where: { id: pendingPost.id },
+        data: { metadata: updatedMeta },
+      });
+
+      return NextResponse.json({ ok: true, action: "edit_requested", postId: pendingPost.id, instructions: reason });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[social/webhook/approval] Error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Webhook processing failed" },
+      { status: 500 }
+    );
+  }
+}

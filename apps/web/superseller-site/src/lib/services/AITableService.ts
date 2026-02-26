@@ -18,6 +18,7 @@ export const AITABLE_DATASHEETS = {
     EXPENSES: 'dstKpsKWUVg6ACgmL5',
     LLM_REGISTRY: 'dstTp0hahiF5glUV51',
     MASTER_PRODUCTS: 'dst0Chj9T437s5FcgD',
+    SOCIAL_CONTENT: 'dstTYYmleksXHj3sCj',
 } as const;
 
 type DatasheetId = typeof AITABLE_DATASHEETS[keyof typeof AITABLE_DATASHEETS];

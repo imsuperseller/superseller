@@ -46,6 +46,14 @@ model Tenant {
 
   users TenantUser[]
 
+  // Reverse relations for tenant-scoped data
+  leads            Lead[]
+  serviceInstances ServiceInstance[]
+  subscriptions    Subscription[]
+  voiceCallLogs    VoiceCallLog[]
+  contentPosts     ContentPost[]
+  usageLogs        UsageLog[]
+
   @@index([slug])
   @@index([status])
 }
@@ -153,6 +161,7 @@ model User {
   notifications        Notification[]
   landingPages         LandingPage[]
   MarketplaceCustomer  MarketplaceCustomer?
+  platformAccounts     PlatformAccount[]
 
   @@index([email])
   @@index([stripeCustomerId])
@@ -342,6 +351,7 @@ model Download {
 model ServiceInstance {
   id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clientId    String  @db.Uuid
+  tenantId    String? @db.Uuid
   clientEmail String
   productId   String?
   productName String?
@@ -372,17 +382,20 @@ model ServiceInstance {
   activatedAt DateTime?
   updatedAt   DateTime  @updatedAt
 
-  user User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([clientId])
+  @@index([tenantId])
   @@index([productId])
   @@index([status])
 }
 
 /// Recurring subscriptions (WhatsApp, care plan, lead gen, content AI)
 model Subscription {
-  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId    String @db.Uuid
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String  @db.Uuid
+  tenantId  String? @db.Uuid
   userEmail String
 
   // Stripe
@@ -424,11 +437,13 @@ model Subscription {
   updatedAt DateTime @updatedAt
 
   user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant               Tenant?               @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   whatsappInstances    WhatsAppInstance[]
   carePlanDeliverables CarePlanDeliverable[]
   leads                Lead[]
 
   @@index([userId])
+  @@index([tenantId])
   @@index([stripeSubscriptionId])
   @@index([status])
   @@index([subscriptionType])
@@ -809,6 +824,7 @@ model Lead {
   sourceId String?
 
   userId             String  @db.Uuid
+  tenantId           String? @db.Uuid
   subscriptionId     String? @db.Uuid
   whatsappInstanceId String? @db.Uuid
 
@@ -855,10 +871,12 @@ model Lead {
   updatedAt DateTime @updatedAt
 
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant           Tenant?           @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   subscription     Subscription?     @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
   whatsappInstance WhatsAppInstance? @relation(fields: [whatsappInstanceId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
   @@index([subscriptionId])
   @@index([status])
   @@index([source])
@@ -935,6 +953,7 @@ model ResponseTimeMetrics {
 model UsageLog {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clientId String  @db.Uuid
+  tenantId String? @db.Uuid
   userId   String? @db.Uuid // alias for clientId (used by billing queries)
   agentId  String  @default("system") // matches ServiceManifest.id
   status   String  @default("completed") // completed, failed, running
@@ -955,9 +974,11 @@ model UsageLog {
 
   clientEmail String? // for billing queries by email
 
-  user User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([clientId])
+  @@index([tenantId])
   @@index([userId])
   @@index([agentId])
   @@index([clientEmail])
@@ -965,29 +986,78 @@ model UsageLog {
   @@index([status])
 }
 
-/// Blog posts and social content
+/// Blog posts and social content (enhanced for SocialHub)
 model ContentPost {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId   String  @db.Uuid
+  tenantId String? @db.Uuid
   title    String?
   content  String? @db.Text
-  type     String? // blog, social, etc.
-  status   String  @default("draft")
+  type     String? // blog, social, reel, story, thread
+  status   String  @default("draft") // draft, pending_approval, approved, rejected, scheduled, published, failed
   slug     String?
-  platform String? // blog, linkedin, twitter, etc.
+  platform String? // facebook, instagram, linkedin, twitter, tiktok, youtube
 
-  metadata Json?
+  // SocialHub fields
+  mediaUrls      Json?    // string[] — R2/CDN URLs for images/videos
+  platformPostId String?  // ID returned by the platform after publishing
+  platformUrl    String?  // Direct URL to the published post
+  scheduledAt    DateTime? // When to publish (null = immediate on approval)
+  approvalStatus String?  // pending, approved, rejected
+  approvedBy     String?  // WhatsApp number or user ID that approved
+  approvedAt     DateTime?
+  rejectionNote  String?  @db.Text
+  aiModel        String?  // claude-sonnet-4-20250514, etc.
+  aiPrompt       String?  @db.Text // Original prompt used for AI generation
+  hashtags       Json?    // string[]
+  platformAccountId String? @db.Uuid
+
+  metadata Json? // { engagementMetrics, platformResponse, generationCost }
 
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant          Tenant?          @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  platformAccount PlatformAccount? @relation(fields: [platformAccountId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
   @@index([slug])
   @@index([status])
   @@index([type])
+  @@index([platform])
+  @@index([approvalStatus])
+  @@index([scheduledAt])
+  @@index([platformAccountId])
+}
+
+/// Connected social media accounts (OAuth tokens)
+model PlatformAccount {
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String  // TEXT to match User.id type
+  tenantId String? @db.Uuid
+  platform String  // facebook, instagram, linkedin, twitter, tiktok, youtube
+  accountName  String? // Display name (e.g. "SuperSeller AI" page)
+  accountId    String? // Platform-specific account/page ID
+  accessToken  String? @db.Text // Encrypted OAuth access token
+  refreshToken String? @db.Text // Encrypted OAuth refresh token
+  tokenExpiry  DateTime?
+  scope        String?  // Granted OAuth scopes
+  isActive     Boolean  @default(true)
+  metadata     Json?    // { pageId, profileUrl, followerCount, etc. }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts  ContentPost[]
+
+  @@unique([userId, platform, accountId])
+  @@index([userId])
+  @@index([platform])
+  @@index([isActive])
 }
 
 /// Knowledge-base indexed documents (PDF, URL, text)
@@ -1048,8 +1118,9 @@ model SecretaryConfig {
 
 /// Voice call log entries (populated by FrontDesk poller from Telnyx conversations)
 model VoiceCallLog {
-  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String @db.Uuid
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String  @db.Uuid
+  tenantId String? @db.Uuid
 
   // Telnyx conversation reference
   telnyxConversationId String? @unique
@@ -1079,9 +1150,11 @@ model VoiceCallLog {
   endedAt   DateTime?
   createdAt DateTime  @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
   @@index([createdAt])
   @@index([telnyxAssistantId])
 }
