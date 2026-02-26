@@ -48,7 +48,7 @@ export default function ClientCRM() {
             const response = await fetch('/api/admin/clients');
             const data = await response.json();
             if (data.clients) {
-                // Map Firestore fields to our UI interface
+                // Map API response fields to our UI interface
                 const mappedClients = data.clients.map((c: any) => ({
                     id: c.id,
                     name: c.name || c.id,

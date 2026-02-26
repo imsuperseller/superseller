@@ -5,12 +5,37 @@ import { logger } from "../../utils/logger";
 import { config } from "../../config";
 import * as telnyx from "../../services/telnyx";
 import { CreditManager } from "../../services/credits";
+import { analyzeConversation, LeadAnalysis } from "../../services/lead-analysis";
+import { createWorkizLead, WorkizConfig } from "../../services/workiz";
+import { sendLeadNotificationEmail, LeadNotificationConfig } from "../../services/lead-notification";
 
-// ─── QUEUE + WORKER ───
+// ─── TYPES ───
 
 export interface FrontDeskPollJobData {
     trigger: "scheduled" | "manual";
 }
+
+interface LeadConfig {
+    analysisEnabled?: boolean;
+    businessType?: string;
+    notificationEmail?: string;
+    businessName?: string;
+    businessPhone?: string;
+    logoUrl?: string;
+    brandColor?: string;
+    workizApiUrl?: string;
+    workizAuthSecret?: string;
+}
+
+interface SecretaryRow {
+    id: string;
+    client_id: string;
+    telnyx_assistant_id: string;
+    business_context: string | null;
+    lead_config: LeadConfig | null;
+}
+
+// ─── WORKER ───
 
 export const frontdeskPollerWorker = new Worker<FrontDeskPollJobData>(
     "frontdesk-poller",
@@ -23,12 +48,9 @@ export const frontdeskPollerWorker = new Worker<FrontDeskPollJobData>(
         logger.info({ msg: "FrontDesk poller starting", trigger: job.data.trigger });
 
         // 1. Get all active SecretaryConfigs with a telnyxAssistantId
-        const configs = await query<{
-            id: string;
-            client_id: string;
-            telnyx_assistant_id: string;
-        }>(
-            `SELECT id, "clientId" as client_id, "telnyxAssistantId" as telnyx_assistant_id
+        const configs = await query<SecretaryRow>(
+            `SELECT id, "clientId" as client_id, "telnyxAssistantId" as telnyx_assistant_id,
+                    "businessContext" as business_context, "leadConfig" as lead_config
              FROM "SecretaryConfig"
              WHERE "telnyxAssistantId" IS NOT NULL`
         );
@@ -44,10 +66,7 @@ export const frontdeskPollerWorker = new Worker<FrontDeskPollJobData>(
 
         for (const cfg of configs) {
             try {
-                const newCalls = await pollAssistantConversations(
-                    cfg.telnyx_assistant_id,
-                    cfg.client_id
-                );
+                const newCalls = await pollAssistantConversations(cfg);
                 totalNew += newCalls;
             } catch (err: any) {
                 logger.error({
@@ -70,16 +89,13 @@ export const frontdeskPollerWorker = new Worker<FrontDeskPollJobData>(
 
 // ─── POLL LOGIC ───
 
-async function pollAssistantConversations(
-    assistantId: string,
-    userId: string
-): Promise<number> {
+async function pollAssistantConversations(cfg: SecretaryRow): Promise<number> {
+    const { telnyx_assistant_id: assistantId, client_id: userId, lead_config: leadCfg } = cfg;
+
     // Fetch completed conversations from Telnyx
     let conversations: telnyx.TelnyxConversation[];
     try {
-        conversations = await telnyx.listConversations(assistantId, {
-            pageSize: 50,
-        });
+        conversations = await telnyx.listConversations(assistantId, { pageSize: 50 });
     } catch (err: any) {
         logger.error({ msg: "Failed to list conversations", assistantId, error: err.message });
         return 0;
@@ -120,12 +136,24 @@ async function pollAssistantConversations(
         const callerPhone = meta.telnyx_end_user_target || meta.from || null;
         const channel = meta.telnyx_conversation_channel || "phone_call";
         const direction = channel === "phone_call" ? "inbound" : "unknown";
-
-        // Determine outcome based on messages
         const outcome = determineOutcome(conv);
         const creditsToCharge = config.telnyx.creditsPerCall;
 
-        // Insert VoiceCallLog
+        // ── AI Lead Analysis (if enabled) ──
+        let analysis: LeadAnalysis | null = null;
+        if (leadCfg?.analysisEnabled && insights) {
+            try {
+                analysis = await analyzeConversation(
+                    { ...insights, conversationId: conv.id } as Record<string, unknown>,
+                    meta as Record<string, unknown>,
+                    cfg.business_context || leadCfg.businessName
+                );
+            } catch (err: any) {
+                logger.error({ msg: "Lead analysis failed", conversationId: conv.id, error: err.message });
+            }
+        }
+
+        // Insert VoiceCallLog (with analysis data)
         await query(
             `INSERT INTO "VoiceCallLog" (
                 id, "userId", "telnyxConversationId", "telnyxAssistantId",
@@ -144,16 +172,57 @@ async function pollAssistantConversations(
                 direction,
                 0, // duration not available from conversation object
                 outcome,
-                insights?.summary || null,
-                insights?.sentiment || null,
+                analysis?.topic || insights?.summary || null,
+                analysis?.sentiment || insights?.sentiment || null,
                 creditsToCharge,
                 JSON.stringify({
                     conversation: conv,
                     insights: insights || null,
+                    analysis: analysis || null,
                 }),
                 conv.created_at ? new Date(conv.created_at) : null,
             ]
         );
+
+        // ── Workiz Lead Creation (if configured) ──
+        if (analysis && leadCfg?.workizApiUrl && leadCfg?.workizAuthSecret) {
+            const workizCfg: WorkizConfig = {
+                apiUrl: leadCfg.workizApiUrl,
+                authSecret: leadCfg.workizAuthSecret,
+            };
+
+            const nameParts = (analysis.customerName || "").split(" ");
+            const firstName = nameParts[0] && nameParts[0] !== "UNKNOWN" ? nameParts[0] : "FB Marketplace";
+            const lastName = nameParts.slice(1).join(" ") || "Lead";
+
+            const phone = analysis.customerPhoneNumber !== "UNKNOWN" ? analysis.customerPhoneNumber
+                : analysis.callerPhoneNumber !== "UNKNOWN" ? analysis.callerPhoneNumber
+                : callerPhone || undefined;
+
+            await createWorkizLead(workizCfg, {
+                FirstName: firstName,
+                LastName: lastName,
+                Phone: phone && phone.length > 5 ? phone : undefined,
+                Email: analysis.customerEmail !== "UNKNOWN" ? analysis.customerEmail : undefined,
+                Address: analysis.customerAddress !== "UNKNOWN" ? analysis.customerAddress : undefined,
+                JobType: analysis.category || "General Inquiry",
+                JobSource: "OTHER",
+                Comment: `AI Analysis: ${analysis.topic}. Priority: ${analysis.priority}. Sentiment: ${analysis.sentiment}.`,
+            });
+        }
+
+        // ── Email Notification (if configured) ──
+        if (analysis && leadCfg?.notificationEmail) {
+            const notifCfg: LeadNotificationConfig = {
+                recipientEmail: leadCfg.notificationEmail,
+                businessName: leadCfg.businessName || "SuperSeller Client",
+                businessPhone: leadCfg.businessPhone,
+                logoUrl: leadCfg.logoUrl,
+                brandColor: leadCfg.brandColor,
+            };
+
+            await sendLeadNotificationEmail(notifCfg, analysis, conv.id);
+        }
 
         // Deduct credits
         try {
@@ -182,8 +251,9 @@ async function pollAssistantConversations(
             conversationId: conv.id,
             userId,
             callerPhone,
-            messages: conv.number_of_messages,
             outcome,
+            analysisEnabled: !!analysis,
+            businessName: leadCfg?.businessName,
         });
     }
 

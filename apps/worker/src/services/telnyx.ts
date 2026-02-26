@@ -97,7 +97,7 @@ export interface TelnyxPhoneNumber {
 
 // ─── API CLIENT ───
 
-async function telnyxFetch<T>(
+export async function telnyxFetch<T>(
     path: string,
     options: RequestInit = {}
 ): Promise<T> {

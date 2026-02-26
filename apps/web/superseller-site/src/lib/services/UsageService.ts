@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
  * USAGE SERVICE
  * Handles metric resets and reporting for the SuperSeller AI Dashboard.
  *
- * [MIGRATION] Phase 1: Postgres is primary, Firestore is backup.
+ * Postgres is the single source of truth (Firestore fully retired Feb 2026).
  */
 export class UsageService {
     /**
@@ -30,7 +30,6 @@ export class UsageService {
                 });
             });
 
-            // Backup: Firestore (non-blocking)
             console.log(`[UsageService] Successfully reset metrics for client: ${clientId}`);
             return { success: true };
         } catch (error) {

@@ -48,7 +48,7 @@ export default function WorkflowTemplatesManagement() {
   const fetchTemplates = async () => {
     try {
       setLoading(true);
-      // This would connect to your Firebase Firestore API
+      // This would connect to the Postgres API
       // For now, using mock data based on the created records
       const mockTemplates: WorkflowTemplate[] = [
         {

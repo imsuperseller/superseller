@@ -18,7 +18,12 @@ function mapPropertyType(raw: string | undefined): string {
     return "house";
 }
 
+import { telnyxVoiceRouter } from "./telnyx-voice-webhook";
+
 export const apiRouter = Router();
+
+// Mount Telnyx voice webhook (migrated from n8n)
+apiRouter.use(telnyxVoiceRouter);
 
 // ─── LIST JOBS ───
 apiRouter.get("/jobs", async (req: Request, res: Response) => {

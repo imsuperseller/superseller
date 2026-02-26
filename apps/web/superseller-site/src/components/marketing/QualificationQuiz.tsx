@@ -369,7 +369,7 @@ export function QualificationQuiz({ lang = 'en' }: QuizProps) {
                             <Button
                                 size="xl"
                                 onClick={async () => {
-                                    // Submit to API route (which handles Firestore + n8n)
+                                    // Submit to API route (which handles Postgres + n8n)
                                     try {
                                         await fetch('/api/custom-solutions/intake', {
                                             method: 'POST',

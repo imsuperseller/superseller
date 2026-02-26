@@ -64,6 +64,11 @@ export const config = {
         baseUrl: "https://api.telnyx.com/v2",
         pollIntervalMinutes: parseInt(optional("FRONTDESK_POLL_INTERVAL_MINUTES", "15")),
         creditsPerCall: parseInt(optional("FRONTDESK_CREDITS_PER_CALL", "5")),
+        // Voice webhook config
+        elevenLabsApiKeyRef: optional("TELNYX_ELEVENLABS_API_KEY_REF", "rensto"),
+        defaultVoiceId: optional("TELNYX_DEFAULT_VOICE_ID", "ElevenLabs.eleven_multilingual_v2.tnSpp4vdxKPjI9w0GnoV"),
+        defaultLanguage: optional("TELNYX_DEFAULT_LANGUAGE", "en-US"),
+        voiceChatModel: optional("TELNYX_VOICE_CHAT_MODEL", "openai/gpt-4o"),
     },
 
 

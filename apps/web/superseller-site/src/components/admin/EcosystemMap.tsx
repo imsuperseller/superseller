@@ -55,7 +55,7 @@ export default function EcosystemMap({ products: initialAITableProducts }: Ecosy
         };
     }).filter(p => p.parentId); // Only show those assigned to a pillar
 
-    // Mock Agents for visualization (In real life these come from Firestore/n8n)
+    // Mock Agents for visualization (In real life these come from Postgres/n8n)
     const agents: Node[] = [
         { id: 'agent-1', type: 'agent', label: 'Abraham-Worker-01', status: 'active', icon: Cpu, parentId: 'lead-machine' },
         { id: 'agent-2', type: 'agent', label: 'Abraham-Worker-02', status: 'active', icon: Cpu, parentId: 'lead-machine' },

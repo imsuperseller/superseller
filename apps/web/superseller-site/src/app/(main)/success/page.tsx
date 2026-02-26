@@ -10,7 +10,7 @@ interface SuccessPageProps {
   };
 }
 
-// This would ideally fetch from API/Firestore based on searchParams.product_id
+// This would ideally fetch from API/Postgres based on searchParams.product_id
 // For now, we use a mock schema if product_id is present
 import { ConfigurationForm } from '@/components/fulfillment/ConfigurationForm';
 import { FormField } from '@/types/legacy-types';
