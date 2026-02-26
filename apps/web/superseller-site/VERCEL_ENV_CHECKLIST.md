@@ -57,7 +57,7 @@ Apply to **Production**, **Preview**, and **Development** as needed.
 | `N8N_SUPPORT_AGENT_WEBHOOK_URL` | Support create | Support ticket webhook |
 | `SLACK_WEBHOOK_URL` | Notifications | Slack inbound webhook |
 | `DASHBOARD_SYNC_SECRET` | `/api/dashboard/sync-usage` | Shared secret for usage sync |
-| `RENSTO_API_KEY` | `/api/webhooks/usage` | API key validation |
+| `SUPERSELLER_API_KEY` | `/api/webhooks/usage` | API key validation (also reads legacy RENSTO_API_KEY) |
 | `VPS_PASSWORD` / `RACKNERD_SSH_PASSWORD` | Admin n8n route | Only if using admin SSH diagnostics |
 | `RACKNERD_IP` | Admin n8n route | `172.245.56.50` |
 | `NEXT_PUBLIC_STRIPE_LINK_*` | Hero, HomePageClient | Stripe product links (optional) |

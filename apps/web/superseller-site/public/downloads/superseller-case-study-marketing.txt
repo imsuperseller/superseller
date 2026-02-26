@@ -1,23 +1,26 @@
-# Rensto Case Study: Marketing Automation
-## Result: 312% Lead Velocity Increase
+# SuperSeller AI Case Study: Real Estate Video Marketing
+## Result: 10x Faster Listing Videos at 1/10th the Cost
 
 ### Executive Summary
-A leading real estate consultancy was struggling with manual lead follow-up. Using Rensto's **WhatsApp Router** and **N8N Logic**, we automated the initial qualification and booking process.
+A real estate agent was spending $500+ per listing video and waiting 5-7 days for delivery. Using SuperSeller AI's **Forge** agent, they now generate cinematic property tour videos in minutes from a Zillow URL.
 
 ### Challenges
-- Response times over 4 hours.
-- 60% of leads weren't qualified.
-- Manual data entry into CRM was prone to errors.
+- $500+ per professional listing video
+- 5-7 day turnaround per video
+- Inconsistent quality across videographers
+- No video for lower-priced listings (not worth the cost)
 
-### The Rensto Solution
-1. **Automated Triage**: n8n scans incoming inquiries and routes them based on property value.
-2. **AI Qualification**: GPT-4o powered WhatsApp bot handles initial discovery.
-3. **Calendar Sync**: Integrated TidyCal for instant booking of qualified leads.
+### The SuperSeller AI Solution
+1. **Forge Video Agent**: Paste Zillow URL → AI generates cinematic property tour with realtor face compositing, room transitions, music, and text overlays
+2. **Automatic Delivery**: Videos delivered via WhatsApp and email within minutes
+3. **Universal Credits**: Same credits used for social content, call handling, and lead gen
 
 ### Results
-- **Response Time**: < 30 seconds.
-- **Qualified Leads**: +45% month-over-month.
-- **ROI**: System paid for itself in 14 days.
+- **Video Cost**: ~$15 per video (50 credits on Pro plan) vs $500+ traditional
+- **Turnaround**: Minutes, not days
+- **Coverage**: Every listing gets a video, not just premium ones
+- **ROI**: System paid for itself with the first listing
 
 ---
-© 2025 Rensto. All Rights Reserved.
+© 2026 SuperSeller AI. All Rights Reserved.
+https://superseller.agency

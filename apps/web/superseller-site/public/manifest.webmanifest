@@ -1,24 +1,24 @@
 {
-  "name": "Rensto - Automations that ship in days",
-  "short_name": "Rensto",
-  "description": "Automations that ship in days — not months. Transform your manual processes into intelligent workflows.",
+  "name": "SuperSeller AI — Your AI Crew for Business",
+  "short_name": "SuperSeller AI",
+  "description": "Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1318",
-  "theme_color": "#0B1318",
+  "background_color": "#110d28",
+  "theme_color": "#110d28",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
+      "src": "/superseller-logo.png",
+      "sizes": "800x800",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     }
   ],
   "categories": ["business", "productivity", "utilities"],

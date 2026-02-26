@@ -4,7 +4,7 @@ import * as dbDashboard from '@/lib/db/dashboard';
 export async function POST(request: NextRequest) {
     try {
         const apiKey = request.headers.get('x-api-key');
-        const VALID_API_KEY = process.env.RENSTO_API_KEY;
+        const VALID_API_KEY = process.env.SUPERSELLER_API_KEY || process.env.RENSTO_API_KEY;
 
         if (!apiKey || apiKey !== VALID_API_KEY) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });

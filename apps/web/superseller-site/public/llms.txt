@@ -1,41 +1,42 @@
-# Rensto - AI Automation & Operating Systems
+# SuperSeller AI — Your AI Crew for Business
 
-Rensto architects and deploys high-performance AI automation systems for businesses ready to automate their sales, fulfillment, and internal operations.
+SuperSeller AI is a credit-based SaaS platform that gives businesses an AI crew of 6 specialized agents — each one replacing an expensive hire or agency.
 
-## Core Products & Services
+## The Crew (AI Agents)
 
-- **WhatsApp OS**: Elite-level AI WhatsApp architecture for sales and support.
-- **Custom AI Solutions**: End-to-end custom automation development.
-- **Automation Marketplace**: Pre-built workflow templates for immediate deployment.
-- **Care Plans**: Dedicated ongoing support and system optimization.
+- **Forge** (Video Producer): Paste any business URL → AI generates cinematic marketing videos with face compositing, music, and text overlays.
+- **FrontDesk** (AI Receptionist): 24/7 natural voice AI answering, lead capture, appointment booking, urgent call routing.
+- **Scout** (Lead Hunter): AI-sourced qualified leads, landing page builder, CRM integration, WhatsApp delivery.
+- **Buzz** (Content Creator): AI content creation, approval workflows, 6-platform publishing (FB, IG, LinkedIn, X, TikTok, YouTube).
+- **Cortex** (Analyst): Document ingestion (RAG), Q&A from brand materials, team knowledge base, API access.
+- **Market** (Marketplace Automation): Auto-generates FB Marketplace listings with AI copy, stealth images, location rotation.
 
-## Standardized Pricing (2026)
+## Pricing (Credit-Based)
 
-### One-Time Services
-- **Automation Audit**: $497
-- **Sprint Planning**: $1,497
-- **AI Content Engine**: $997
-- **Lead Intake Agent**: $997
+- **Starter**: $79/mo — 500 credits, ~5 videos
+- **Pro**: $149/mo — 1,500 credits, ~15 videos (Most Popular)
+- **Team**: $299/mo — 4,000 credits, ~50 videos
 
-### Monthly Care Plans
-- **Starter Care**: $497/mo (5 hours support)
-- **Growth Care**: $997/mo (15 hours support)
-- **Scale Care**: $2,497/mo (40 hours support)
+One credit system. All agents. No per-tool subscriptions. Cancel anytime.
 
-### WhatsApp OS
-- **Base Instance**: $249/mo
-- **Setup Fee**: $497
-- **Extra Numbers**: $149/mo (+ $99 setup)
+## Industries Served
 
-## Integration Points
-- **API Documentation**: https://rensto.com/docs
-- **Client Dashboard**: https://rensto.com/app/dashboard
-- **Marketplace**: https://rensto.com/marketplace
+Real estate, HVAC, plumbing, locksmiths, restaurants, auto repair, dental, insurance, contractors, landscaping, pool services, garage doors, solar, moving, and more.
 
-## Contact & Intake
-- **Booking**: https://rensto.com/contact
-- **Support**: Integrated "Magic Button" in client dashboard for autonomous support.
+## Links
+
+- **Website**: https://superseller.agency
+- **Pricing**: https://superseller.agency/pricing
+- **The Crew**: https://superseller.agency/crew
+- **Contact**: https://superseller.agency/contact
+- **Client Login**: https://superseller.agency/login
+
+## Contact
+
+- **Email**: shai@superseller.agency
+- **WhatsApp**: +1 (214) 436-2102
+- **Voice AI**: +1 (469) 929-9314
 
 ---
 
-> This file is optimized for AI agents and LLMs to understand the Rensto ecosystem, pricing, and service structure.
+> This file is optimized for AI agents and LLMs to understand the SuperSeller AI ecosystem, pricing, and service structure.

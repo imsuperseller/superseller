@@ -1,23 +1,36 @@
-# Rensto AI Automation Readiness Checklist
-## For High-Volume Operations
+# SuperSeller AI — Business Automation Readiness Checklist
 
-1. **Infrastructure Audit**
-   - [ ] n8n Host (RackNerd/Self-Hosted)
-   - [ ] Dedicated WhatsApp Number (Evolution API/WAHA)
-   - [ ] AI Model Access (OpenAI/Gemini/Claude)
-   - [ ] Secure Vault for API Keys
+## Before You Start
 
-2. **Sales Automation**
-   - [ ] Lead Scoring Logic (Airtable)
-   - [ ] Multi-platform Scraper (Apollo/LinkedIn)
-   - [ ] Personalized Outreach (GPT-4o)
-   - [ ] CRM Sync (QuickBooks/HubSpot)
+1. **AI Crew Access**
+   - [ ] SuperSeller AI account (superseller.agency)
+   - [ ] Credit plan selected (Starter $79/mo, Pro $149/mo, or Team $299/mo)
+   - [ ] Business URL ready for Forge video generation
 
-3. **Operations & Support**
-   - [ ] Knowledge Base (RAG System)
-   - [ ] Multi-Agent Routing (WhatsApp/Email)
-   - [ ] Invoicing Automation (QuickBooks)
-   - [ ] Real-time Error Alerting (Telegram)
+2. **Video Production (Forge)**
+   - [ ] Business photos/headshots available
+   - [ ] Property listing URLs (for real estate)
+   - [ ] Brand colors and logo for overlays
+
+3. **Call Handling (FrontDesk)**
+   - [ ] Dedicated phone number for AI receptionist
+   - [ ] Business hours and routing preferences
+   - [ ] FAQ and common questions documented
+
+4. **Lead Generation (Scout)**
+   - [ ] Target customer profile defined
+   - [ ] Landing page content prepared
+   - [ ] CRM or email for lead delivery
+
+5. **Social Media (Buzz)**
+   - [ ] Social accounts connected (FB, IG, LinkedIn, X, TikTok, YouTube)
+   - [ ] Brand voice guidelines
+   - [ ] Content calendar preferences
+
+6. **Knowledge Base (Cortex)**
+   - [ ] Business documents for ingestion (PDFs, docs, FAQs)
+   - [ ] Team access requirements defined
 
 ---
-© 2025 Rensto. All Rights Reserved.
+© 2026 SuperSeller AI. All Rights Reserved.
+https://superseller.agency

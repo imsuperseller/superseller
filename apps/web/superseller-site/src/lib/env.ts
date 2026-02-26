@@ -26,7 +26,7 @@ const envSchema = z.object({
   AITABLE_SPACE_ID: z.string().optional(),
   AITABLE_LEADS_DATASHEET_ID: z.string().optional(),
   AITABLE_CLIENTS_DATASHEET_ID: z.string().optional(),
-  AITABLE_RENSTO_MASTER_REGISTRY_ID: z.string().optional(),
+  AITABLE_MASTER_REGISTRY_ID: z.string().optional(),
   AITABLE_KNOWLEDGE_DATASHEET_ID: z.string().optional(),
   AITABLE_TESTIMONIALS_DATASHEET_ID: z.string().optional(),
   AITABLE_PAYMENTS_DATASHEET_ID: z.string().optional(),
