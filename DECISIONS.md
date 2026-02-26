@@ -116,7 +116,7 @@
 | Decision | Answer |
 |----------|--------|
 | **Dashboard** | Admin monitoring tab at `superseller.agency/admin` → "System Monitor" |
-| **Health checks** | 10 services: PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, Stripe, Prisma, n8n |
+| **Health checks** | 10 services: PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, PayPal, Prisma, n8n |
 | **Alerts** | Rule-based with cooldown. Channels: email (Resend) + audit_log (PostgreSQL). Auto-resolve on recovery. |
 | **Expense tracking** | Per-call API cost tracking. Anomaly = daily > 2x 7-day rolling average. |
 
@@ -247,6 +247,22 @@
 
 ---
 
-## 19. DEFERRED
+## 19. STRIPE → PAYPAL MIGRATION (Feb 25, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Mandate** | User: "change stripe to paypal" |
+| **Payment processor** | PayPal REST API v2 (native fetch, zero SDK) |
+| **DB column names** | Keep `stripe*` column names in Prisma schema — reuse for PayPal IDs. Avoids destructive migration. |
+| **Credentials mode** | LIVE only (sandbox returns 401). `PAYPAL_MODE=live` mandatory. |
+| **PayPal fee rate** | 3.49% + $0.49 per transaction |
+| **Plan IDs** | Starter: P-0B306329F7595150BNGP3YLI, Pro: P-8N117174GS808883MNGP3YLI, Team: P-0239494375225084CNGP3YLI |
+| **Product ID** | PROD-4W993698BV951770E |
+| **Webhook ID** | 7K1581345X6344910 |
+| **Webhook URL** | https://superseller.agency/api/webhooks/paypal |
+
+---
+
+## 20. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.

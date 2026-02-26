@@ -6,7 +6,10 @@
 
 ---
 
-## RENSTO CREDENTIALS (Shai Friedman — own business)
+## SUPERSELLER AI CREDENTIALS (Shai Friedman — own business)
+
+**Business Address**: 309 S. Jupiter Rd, Allen, TX 75002
+**LLC**: Rensto LLC (DBA SuperSeller Agency)
 
 ### Infrastructure
 

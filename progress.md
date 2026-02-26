@@ -6,6 +6,37 @@
 
 ---
 
+## 2026-02-25 (cont.): Stripe → PayPal Migration + PayPal Webhook Setup
+
+### What was done
+
+**Complete payment system migration** — Stripe removed, PayPal REST API v2 integrated (commit `befacf8`, 24 files, 902 insertions, 781 deletions):
+
+1. **New files**:
+   - `src/lib/paypal.ts` — Full PayPal REST API v2 client (OAuth caching, Orders, Subscriptions, Catalog, Refunds, Webhook verification)
+   - `src/app/api/paypal/capture/route.ts` — GET endpoint for order capture after PayPal approval redirect
+   - `src/app/api/webhooks/paypal/route.ts` — Webhook handler (7 event types)
+   - `tools/setup-paypal-plans.ts` — One-time plan creation script
+
+2. **Rewritten**: checkout, subscribe, billing portal, custom-solutions checkout, admin products, stripe.ts (→ re-export shim)
+
+3. **Updated**: env.ts, schemas.ts, Hero.tsx, subscriptions/ClientPage, offers/OffersPageClient, products/[id], solutions/onboarding, ServiceAuditAgent, service-registry, alert-engine, expense-tracker, worker config, package.json (removed stripe deps), .env.local
+
+4. **PayPal Live Resources Created**:
+   - Product: `PROD-4W993698BV951770E`
+   - Starter Plan ($79/mo): `P-0B306329F7595150BNGP3YLI`
+   - Pro Plan ($149/mo): `P-8N117174GS808883MNGP3YLI`
+   - Team Plan ($299/mo): `P-0239494375225084CNGP3YLI`
+   - Webhook: `7K1581345X6344910` → `https://superseller.agency/api/webhooks/paypal`
+
+5. **Vercel env vars**: All 8 PAYPAL_* vars set on production (CLIENT_ID, CLIENT_SECRET, MODE, WEBHOOK_ID, STARTER_PLAN_ID, PRO_PLAN_ID, TEAM_PLAN_ID, PRODUCT_ID)
+
+6. **DB strategy**: Kept Prisma column names (`stripeCustomerId`, etc.) as-is — reused for PayPal IDs with code comments. Avoids destructive migration.
+
+7. **Build**: Clean — no TypeScript errors from migration, Stripe deps removed from package.json
+
+---
+
 ## 2026-02-25: System Audit Fixes + Self-Serve Billing + Admin Tab + Worker Hardening + Deploy
 
 ### Commits Pushed (13 total this session)

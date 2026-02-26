@@ -2,7 +2,7 @@
 name: customer-journey
 description: >-
   Customer journey and onboarding pipeline for SuperSeller AI SaaS. Covers the 4-stage funnel
-  (Awareness → Purchase → Onboarding → Retention), Stripe webhook provisioning,
+  (Awareness → Purchase → Onboarding → Retention), PayPal webhook provisioning,
   magic-link auth, customer portals, dashboard tabs, entitlements, and lifecycle automation.
   Use when working on onboarding, customer dashboard, provisioning, entitlements,
   subscription management, or customer lifecycle. Not for admin portal, video pipeline,
@@ -31,8 +31,10 @@ negativeTrigger:
 
 # Customer Journey & Onboarding
 
+> **Migration note (Feb 25, 2026):** Stripe replaced by PayPal. DB columns still named `stripe*` (reused for PayPal IDs).
+
 ## Critical
-- **Provisioning is webhook-driven** — Stripe `checkout.session.completed` triggers `ProvisioningService`. Never provision manually.
+- **Provisioning is webhook-driven** — PayPal `BILLING.SUBSCRIPTION.ACTIVATED` and `PAYMENT.SALE.COMPLETED` trigger `ProvisioningService`. Never provision manually.
 - **Three provisioning paths** — marketplace-template, managed-plan, registry-driven. Each has different flows.
 - **Entitlements are JSON in User model** — `User.entitlements.engines[]` tracks active services. Always update atomically.
 - **Dashboard tabs are dynamic** — shown/hidden based on user entitlements. Never hardcode tab visibility.
@@ -43,11 +45,11 @@ negativeTrigger:
 
 ```
 Stage 1: AWARENESS → PURCHASE
-  ✅ SEO, pricing pages, Stripe checkout (LIVE)
+  ✅ SEO, pricing pages, PayPal checkout (LIVE)
 
 Stage 2: PURCHASE → ONBOARDING
   ⚠️ 40-60% automated
-  Stripe webhook → ProvisioningService → Email notifications
+  PayPal webhook → ProvisioningService → Email notifications
   Missing: guided onboarding wizard, progress tracking
 
 Stage 3: ONBOARDING → ACTIVE
@@ -63,7 +65,9 @@ Stage 4: ACTIVE → RETENTION
 
 | File | Purpose |
 |------|---------|
-| `apps/web/superseller-site/src/app/api/webhooks/stripe/route.ts` | Stripe webhook handler (100+ lines) |
+| `apps/web/superseller-site/src/app/api/webhooks/paypal/route.ts` | PayPal webhook handler (7 event types) |
+| `apps/web/superseller-site/src/app/api/paypal/capture/route.ts` | Order capture after PayPal approval |
+| `apps/web/superseller-site/src/lib/paypal.ts` | PayPal REST API v2 client |
 | `apps/web/superseller-site/src/lib/services/ProvisioningService.ts` | 3-path provisioning orchestrator (150+ lines) |
 | `apps/web/superseller-site/src/lib/auth.ts` | Magic-link session auth (AES-256-GCM) |
 | `apps/web/superseller-site/src/lib/email.ts` | Email templates (11 types) via Resend (80+ lines) |
@@ -74,21 +78,21 @@ Stage 4: ACTIVE → RETENTION
 
 ### 1. Marketplace Template (`marketplace-template`)
 ```
-Stripe webhook → generate download token → Create Purchase record
+PayPal capture → generate download token → Create Purchase record
   → Update ServiceInstance → Sync User.entitlements.engines
   → Send download email via Resend
 ```
 
 ### 2. Managed Plan (`managed-plan`)
 ```
-Stripe webhook → Create Subscription (Stripe-linked)
+PayPal subscription webhook → Create Subscription (PayPal-linked)
   → Create WhatsAppInstance → Add to User.entitlements.engines
   → Enable WhatsApp bundle
 ```
 
 ### 3. Registry-Driven (dynamic products)
 ```
-Stripe webhook → Fetch product from registry
+PayPal webhook → Fetch product from registry
   → Apply feature flags via entitlements
   → Create ServiceInstance → Update User.activeServices
 ```
@@ -136,7 +140,7 @@ pending_setup → configuring → provisioning → active → suspended / cancel
 
 | Status | Meaning |
 |--------|---------|
-| pending_setup | Stripe payment received, awaiting config |
+| pending_setup | PayPal payment received, awaiting config |
 | configuring | Customer providing details |
 | provisioning | System setting up resources |
 | active | Live and operational |
@@ -164,8 +168,8 @@ pending_setup → configuring → provisioning → active → suspended / cancel
 | Model | Purpose |
 |-------|---------|
 | `User` | Identity, entitlements, activeServices |
-| `Subscription` | Stripe-linked recurring (type: whatsapp/care_plan/content_ai) |
-| `Payment` | Invoice + payment history |
+| `Subscription` | PayPal-linked recurring (type: whatsapp/care_plan/content_ai). Column named `stripeSubscriptionId` stores PayPal sub ID. |
+| `Payment` | Invoice + payment history. Column named `stripeSessionId` stores PayPal order ID. |
 | `ServiceInstance` | Per-product instance with lifecycle status |
 | `Purchase` | One-time purchases (templates) |
 | `OnboardingRequest` | Pending onboarding approvals |
@@ -174,8 +178,8 @@ pending_setup → configuring → provisioning → active → suspended / cancel
 
 | Error | Probable Cause | Remediation |
 |-------|---------------|-------------|
-| Webhook returns 400 | Stripe signature verification failed | Check `STRIPE_WEBHOOK_SECRET` matches Stripe dashboard |
-| Provisioning doesn't trigger | Event type not handled | Check webhook handler — only `checkout.session.completed` is processed |
+| Webhook returns 400 | PayPal signature verification failed | Check `PAYPAL_WEBHOOK_ID` on Vercel matches `7K1581345X6344910` |
+| Provisioning doesn't trigger | Event type not handled | Check webhook handler — processes BILLING.SUBSCRIPTION.ACTIVATED, PAYMENT.SALE.COMPLETED, etc. |
 | Dashboard shows no tabs | User.entitlements empty or malformed | Query user, check entitlements JSON structure |
 | Magic link expired | >30 days since last login | User must re-request magic link |
 | ServiceInstance stuck in pending_setup | Provisioning flow errored | Check logs, manually transition via admin |
@@ -184,5 +188,5 @@ pending_setup → configuring → provisioning → active → suspended / cancel
 ## References
 
 - `PRODUCT_BIBLE.md` — Subscription tiers, credit allocations
-- `stripe-credits` skill — Detailed Stripe integration
+- `stripe-credits` skill — Detailed PayPal integration and credit billing
 - NotebookLM 719854ee — SuperSeller AI website customer-facing content

@@ -6,6 +6,31 @@
 
 ---
 
+## 2026-02-25: Stripe → PayPal Migration Findings
+
+### PayPal Credentials Are LIVE Only
+**Discovery**: PayPal sandbox auth returned 401 `invalid_client`. The user's app credentials only work in live mode (`api-m.paypal.com`), not sandbox (`api-m.sandbox.paypal.com`).
+**Impact**: All testing must be against live PayPal. `PAYPAL_MODE=live` is mandatory.
+
+### PayPal Checkout Flow Differs from Stripe
+**Key difference**: Stripe auto-captures after checkout session. PayPal requires an explicit "capture" step after user approves. Created `/api/paypal/capture` GET route to handle the redirect-back + capture flow.
+**Never repeat**: Always remember PayPal is approve → capture (2-step), not auto-capture like Stripe.
+
+### PayPal OAuth Token Expiry in Shell Commands
+**Root cause**: Token fetched in one shell command, used in a separate command — expired between them.
+**Fix**: Combine token fetch + API call in a single command: `TOKEN=$(curl ... | jq -r .access_token) && curl ... -H "Authorization: Bearer $TOKEN"`.
+**Never repeat**: Always chain PayPal token acquisition with its usage in a single shell invocation.
+
+### DB Column Reuse Strategy (stripe* → PayPal IDs)
+**Decision**: Keep Prisma column names (`stripeCustomerId`, `stripeSessionId`, `stripeSubscriptionId`, `stripePriceId`) as-is. Reuse for PayPal IDs with code comments.
+**Rationale**: Renaming requires destructive `prisma db push` migration. Data safety > naming purity.
+**Impact**: Code comments in paypal.ts and webhook handler explain the reuse. Future devs must read comments.
+
+### PayPal Fee Structure
+**Rate**: 3.49% + $0.49 per transaction (vs Stripe's 2.9% + $0.30). Updated in expense-tracker.ts.
+
+---
+
 ## 2026-02-24 (Production Quality Overhaul — NEVER REPEAT)
 
 ### Video Resolution Near-Square Bug

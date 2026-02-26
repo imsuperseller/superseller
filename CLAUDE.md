@@ -123,7 +123,7 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 | **AgentForge** | ⚠️ Spec only | Internal tool decision made, code not started |
 | **SocialHub** | ⏳ Phase 2 | Spec complete (7 docs), code not started |
 
-**Infrastructure ✅ Done**: Firestore→Postgres migration, Stripe checkout (19 pages), credits schema, worker gating, Phase 2 credit-based SaaS.
+**Infrastructure ✅ Done**: Firestore→Postgres migration, PayPal checkout (migrated from Stripe Feb 2026), credits schema, worker gating, Phase 2 credit-based SaaS.
 
 ---
 
