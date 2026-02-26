@@ -58,7 +58,8 @@
 
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
-| **Stripe** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | `apps/worker/.env` (worker), `apps/web/superseller-site/.env.local` (web) | Live keys (not test). Publishable: `pk_live_51R4ws...`. Signing: `whsec_qPeQ...` |
+| **PayPal** | `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID` | `apps/web/superseller-site/.env.local` (web), Vercel env vars | Live mode only. Product: PROD-4W993698BV951770E. Webhook: 7K1581345X6344910. |
+| ~~Stripe~~ | ~~`STRIPE_SECRET_KEY`~~ | ~~Deprecated~~ | **REMOVED Feb 2026** — replaced by PayPal. |
 
 ### Communication (SuperSeller AI)
 
@@ -92,7 +93,7 @@
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
 | **n8n MCP** | JWT token | `~/.cursor/mcp.json` (via universal-aggregator) | API key + MCP server token (two separate JWTs) |
-| **Stripe MCP** | Stripe key | `~/.cursor/mcp.json` (via universal-aggregator) | Same key as `STRIPE_SECRET_KEY` |
+| ~~Stripe MCP~~ | ~~Stripe key~~ | ~~`~/.cursor/mcp.json`~~ | **DEPRECATED** — Stripe removed Feb 2026. PayPal uses REST API directly, no MCP server. |
 | **NotebookLM** | OAuth tokens | `~/.cursor/mcp.json` (notebooklm entry) | Python script handles auth. Run `notebooklm-mcp-auth` if expired. |
 | **Boost.space** | `BOOST_SPACE_API_KEY` | `apps/web/superseller-site/.env.local` | MCP integration |
 
@@ -157,16 +158,16 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 
 | File | What's In It | Owner | Active Products |
 |------|-------------|-------|----------------|
-| `apps/worker/.env` | DB, Redis, Apify, Kie (SuperSeller AI), Gemini, R2, Stripe, NextAuth | SuperSeller AI | TourReel, Winner Studio |
+| `apps/worker/.env` | DB, Redis, Apify, Kie (SuperSeller AI), Gemini, R2, NextAuth | SuperSeller AI | TourReel, Winner Studio |
 | `apps/web/superseller-site/.env` | DATABASE_URL only | SuperSeller AI | superseller-site (web) |
-| `apps/web/superseller-site/.env.local` | Airtable, Kie, Redis, Stripe, Vercel, VIDEO_WORKER_URL, Boost | SuperSeller AI | superseller-site (web) |
+| `apps/web/superseller-site/.env.local` | Airtable, Kie, Redis, PayPal, Vercel, VIDEO_WORKER_URL, Boost | SuperSeller AI | superseller-site (web) |
 | `.env.racknerd` | VPS_PASSWORD only | SuperSeller AI | SSH access |
 | `social app/.env` | 50+ keys (SuperSeller AI credential dump) | SuperSeller AI | NONE actively — reference only |
 | `social app/.env.master` | Same as above (COMMITTED TO GIT — security risk) | SuperSeller AI | NONE |
 | `fb marketplace lister/.env` | DB, Redis, GoLogin | UAD/MissParty | FB Bot |
 | `fb marketplace lister/deploy-package/bot-config.json` | GoLogin, FB creds, phone rotation, WAHA, webhook URLs | UAD/MissParty | FB Marketplace Bot |
 | `/opt/fb-marketplace-bot/.env` | Kie.ai (UAD key), DB connection | UAD/MissParty | FB Bot (server) |
-| `~/.cursor/mcp.json` | n8n, Stripe, NotebookLM MCP configs | SuperSeller AI | Claude Code MCP tools |
+| `~/.cursor/mcp.json` | n8n, NotebookLM MCP configs | SuperSeller AI | Claude Code MCP tools |
 
 ---
 

@@ -12,10 +12,11 @@
 3. Restart: `docker restart n8n_superseller`
 4. Verify: `curl http://n8n.superseller.agency/healthz`
 
-### Stripe Webhook Failure
-1. Check Stripe Dashboard for failed events.
-2. Review n8n execution logs.
-3. Re-trigger webhook manually if needed.
+### PayPal Webhook Failure
+1. Check PayPal Developer Dashboard → Webhooks for failed events.
+2. Verify `PAYPAL_WEBHOOK_ID` env var matches `7K1581345X6344910`.
+3. Check `/api/webhooks/paypal` route logs on Vercel.
+4. Re-trigger webhook manually via PayPal dashboard if needed.
 
 ---
 
@@ -41,4 +42,4 @@
 ### Before Deploying Code
 - Run `npm run build` locally to catch errors.
 - Test on `/marketplace` and `/offers` pages.
-- Verify Stripe webhooks in test mode first.
+- Verify PayPal webhooks are receiving events (check PayPal developer dashboard).

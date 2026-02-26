@@ -233,7 +233,7 @@
 - [x] Text overlays (FFmpeg drawtext implemented, dynamic marketing captions active)
 - [ ] Email notifications on completion (Resend partial)
 - [ ] User testing of full flow
-- [ ] Stripe checkout integration for pricing tiers
+- [x] PayPal checkout integration for pricing tiers (migrated from Stripe Feb 2026)
 
 **Live URL**: https://superseller.agency/video/create
 **Worker**: pm2 `tourreel-worker` on 172.245.56.50:3002
@@ -264,7 +264,7 @@
 
 **What's missing**:
 - [ ] Content generation via RAG (niche-specific knowledge)
-- [ ] Stripe billing per landing page
+- [ ] PayPal billing per landing page
 - [ ] Admin UI to create/edit landing pages (currently DB-seeded via scripts)
 
 **Location**:
@@ -380,7 +380,7 @@
 ## Self-Serve SaaS Conversion Plan
 
 **Phase 1 (NOW)**: Deliver working products to existing customers. Get them using and validating.
-**Phase 2**: Once validated, add onboarding flows, Stripe billing, self-serve signup.
+**Phase 2**: Once validated, add onboarding flows, PayPal billing, self-serve signup.
 **Phase 3**: Marketing — each happy customer becomes a case study + referral source.
 
 **Shared infrastructure to extract**:

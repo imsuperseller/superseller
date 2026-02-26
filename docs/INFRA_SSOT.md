@@ -120,7 +120,7 @@ npm audit --audit-level=high
 | Kie.ai | api | HTTP `api.klingai.com/v1/models` | 2 failures / 15min cooldown |
 | Gemini | api | Generative AI ping | 3 failures / 30min cooldown |
 | Resend | api | HTTP `api.resend.com/domains` | 3 failures / 60min cooldown |
-| Stripe | api | HTTP `api.stripe.com/v1/balance` | 2 failures / 15min cooldown |
+| PayPal | api | OAuth token acquisition `api-m.paypal.com/v1/oauth2/token` | 2 failures / 15min cooldown |
 | Prisma Migrations | database | Migration status check | 1 failure / 60min cooldown |
 | n8n | backup | HTTP `172.245.56.50:5678/healthz` | 5 failures / 120min cooldown |
 
@@ -208,7 +208,7 @@ Legacy reference. Old base IDs archived: Operations app6saCaH88uK3kCO, Core app4
 - Cost: $0 (lifetime plan)
 
 ### MCP Servers
-See `.cursor/MCP_CONFIGURATION_STATUS.md` for current list and status. Key active servers: n8n MCP, NotebookLM, Airtable, Notion, Make, Stripe, Shadcn, Apify, Ollama, GitHub, Postgres, Redis, Docker. QuickBooks disabled.
+See `.cursor/MCP_CONFIGURATION_STATUS.md` for current list and status. Key active servers: n8n MCP, NotebookLM, Airtable, Notion, Make, Shadcn, Apify, Ollama, GitHub, Postgres, Redis, Docker. QuickBooks disabled. Stripe MCP deprecated (PayPal uses REST API directly).
 
 ### Quick Reference URLs
 | Service | URL |

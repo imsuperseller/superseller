@@ -51,7 +51,7 @@ The **Unified Lead Generation Machine** represents the most comprehensive lead g
 └─────────────────────────────────────────────────────────────┘
 │                    INTEGRATION LAYER                        │
 ├─────────────────────────────────────────────────────────────┤
-│  Payment (Stripe)  │  Invoicing (QB) │  Antigravity / n8n │
+│  Payment (PayPal)  │  Invoicing (QB) │  Antigravity / n8n │
 │  - Processing      │  - Auto Invoice │  - Workflows       │
 │  - Subscriptions   │  - Customer Mgmt│  - Follow-ups      │
 │  - Webhooks        │  - Reporting    │  - Notifications   │
@@ -113,7 +113,7 @@ npm run dev
 - **Core Platform**: Next.js 16 + React 19 architecture.
 - **Fulfillment**: Admin Fulfillment Queue, Antigravity/n8n webhooks.
 - **Documentation**: Consolidated `CLAUDE.md`, ARCHITECTURE.md, REPO_MAP.md. Consistency updates (Feb 2026).
-- **Payments**: Stripe webhooks integrated.
+- **Payments**: PayPal webhooks integrated (migrated from Stripe Feb 2026).
 
 ### **🔄 IN PROGRESS**
 - **Database**: ✅ Migration from Firestore to PostgreSQL + Redis **COMPLETE** (Feb 2026). PostgreSQL is now primary database.
@@ -198,7 +198,7 @@ npm run dev
 
 ### **Future Development**
 1. **White-Label Portals**: Customer portal development
-2. **Payment Integration**: Stripe + QuickBooks integration
+2. **Payment Integration**: PayPal + QuickBooks integration
 3. **Advanced Features**: Machine learning and AI optimization
 4. **Enterprise Features**: Advanced analytics and reporting
 

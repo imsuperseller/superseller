@@ -35,7 +35,6 @@
     "axios": "^1.13.2",
     "eventsource": "^4.0.0",
     "express": "^5.1.0",
-    "stripe": "^19.0.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

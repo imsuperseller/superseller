@@ -35,7 +35,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
 - **n8n** (RackNerd): Backup for new automation. Existing production workflows (FB Bot lead pipeline) still run on n8n.
 - **Kie.ai**: Creative AI (Kling 3.0, Suno, Nano Banana) — credit-based APIs. Veo and FAL are deprecated.
-- **Stripe**: Payments, subscriptions, credit ledger.
+- **PayPal**: Payments, subscriptions, credit ledger (migrated from Stripe Feb 2026).
 - **PostgreSQL + Redis**: App backends and marketplace products.
 - **Aitable.ai**: Internal dashboards and syncs only (not production app DB).
 
@@ -178,7 +178,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 |-----------|----------|------|
 | **Automation** | Antigravity (RackNerd) | Primary workflow execution |
 | **Automation (backup)** | n8n (RackNerd) | Use only when Antigravity cannot |
-| **Payments** | Stripe | Credits, subscriptions, token ledger |
+| **Payments** | PayPal REST API v2 | Credits, subscriptions, token ledger |
 | **Creative AI** | Kie.ai | Video (Kling 3.0), audio (Suno), compositing (Nano Banana) |
 | **App database** | PostgreSQL + pgvector + Redis | All marketplace apps and app backends |
 | **RAG** | Ollama nomic-embed-text + pgvector HNSW | Multi-tenant document embeddings, hybrid search |
@@ -218,7 +218,7 @@ For every new marketplace app:
 
 Before any code:
 1. **North Star**: Singular desired outcome?
-2. **Integrations**: External keys (Stripe, Kie.ai) ready?
+2. **Integrations**: External keys (PayPal, Kie.ai) ready?
 3. **Source of Truth**: Where does primary data live?
 4. **Delivery Payload**: Where is the final result delivered?
 5. **Behavioral Rules**: Any "Do Not" constraints?
