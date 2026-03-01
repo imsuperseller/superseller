@@ -1,2 +1,0 @@
-client_name,client_slug,website_url,clarity_project_id,ga4_property_id,ga4_credentials_name,primary_conversion_event,email_recipients,slack_channel_id,notion_report_db_id,active,last_run_date,last_run_status
-Iolite Ventures,iolite-ventures,https://ioliteventures.co,CLARITY_PROJECT_ID_HERE,GA4_PROPERTY_ID_HERE,GA4 - Iolite,lead_submit,"david@ioliteventures.co,kelly@ioliteventures.co",C01234567,NOTION_DB_ID_HERE,true,,

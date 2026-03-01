@@ -1,87 +1,106 @@
 # Codebase vs NotebookLM — Single Source of Truth Split
 
 **Purpose**: Clear boundary so the codebase stays minimal and NotebookLM is the canonical reference.
+**Last cleanup**: Mar 1, 2026 — removed 188 stale files (40,745 lines). Synced 5 notebooks.
 
 ---
 
 ## The Rule
 
-**Codebase** = What IDEs, builds, and agents need to navigate and run the code.  
+**Codebase** = What IDEs, builds, and agents need to navigate and run the code.
 **NotebookLM** = Specs, methodology, reference content, lessons learned, agent handoffs.
 
 When in doubt: **if it's a spec, methodology, or reference → NotebookLM**. If it's a file path, env var, or minimal routing → codebase.
 
 ---
 
-## What Belongs in the Codebase
+## Codebase Doc Inventory (What Remains)
 
-| Category | Examples |
-|----------|----------|
-| **File paths** | `apps/web/superseller-site/`, `apps/worker/`, `prisma/schema.prisma` |
-| **Env vars** | `DATABASE_URL`, `KIE_API_KEY`, `STRIPE_SECRET_KEY` |
-| **Router docs** | `brain.md`, `CLAUDE.md` — minimal routers that point to notebooks |
-| **Bibles** | `docs/INFRA_SSOT.md`, `docs/PRODUCT_BIBLE.md` — infrastructure and product facts needed for builds and deploys |
-| **Code comments** | Inline docs for complex logic |
-| **Schema files** | Prisma, Drizzle — truth for data shape |
-| **Monitoring** | Service registry, health checks, alerts, expense tracking (`src/lib/monitoring/`) |
-| **Agent skills** | `.claude/skills/` — operational intelligence (9 skills) |
-| **Tools** | `tools/rebrand-component.ts` — automated rebranding for external UI |
-| **Config files** | `package.json`, `tsconfig`, `next.config` |
+### Root Level (15 files)
+| File | Purpose |
+|------|---------|
+| `brain.md` | North Star, authority precedence (Tier 1) |
+| `CLAUDE.md` | Technical router to all key references |
+| `METHODOLOGY.md` | B.L.A.S.T. vs Agent Behavior decision rules |
+| `DECISIONS.md` | User decisions as canonical truth |
+| `PRODUCT_STATUS.md` | Living product status tracker |
+| `ARCHITECTURE.md` | System design overview |
+| `REPO_MAP.md` | File structure overview |
+| `README.md` | Repo overview |
+| `CREDENTIAL_REFERENCE.md` | Where to find credentials (paths only) |
+| `PORT_REFERENCE.md` | Port assignments |
+| `VERCEL_PROJECT_MAP.md` | Vercel projects → domains |
+| `CLAUDE_CODE_WORKFLOW.md` | Terminal workflow patterns |
+| `CODEBASE_VS_NOTEBOOKLM.md` | This file |
+| `progress.md` | Session work log (truncate periodically) |
+| `findings.md` | Root cause analysis (truncate periodically) |
+
+### docs/ (6 files)
+| File | Purpose |
+|------|---------|
+| `PRODUCT_BIBLE.md` | SaaS products, agents, credit logic |
+| `INFRA_SSOT.md` | Server, DB, Storage, R2, Environment |
+| `DATA_DICTIONARY.md` | Entity definitions, sync rules |
+| `BUSINESS_COVERAGE_INDEX.md` | Business matters → sources of truth |
+| `REMOTION_BIBLE.md` | Remotion 4.0 spec |
+| `NOTEBOOKLM_INDEX.md` | Pointer index to 34 notebooks |
+
+### .claude/skills/ (30 SKILL.md files + references)
+Operational intelligence for each product/tool domain.
+
+### apps/web/superseller-site/ (1 file)
+`VERCEL_ENV_CHECKLIST.md` — deploy checklist.
 
 ---
 
-## What Belongs in NotebookLM
+## NotebookLM Notebook Index (34 total)
 
-| Category | Examples | Notebook |
-|----------|----------|----------|
-| **Pipeline spec** | TourReel flow, Kling/Nano Banana, R2 | 0baf5f36 (Zillow-to-Video) |
-| **Agent behavior** | Completion rules, anti-drift, executive protocol | 5811a372 (B.L.A.S.T.) |
-| **Create page spec** | Form fields, API contract, UI notes | 0baf5f36 |
-| **Lessons learned** | Past mistakes (R2 config, FAL removal) | 0baf5f36 |
-| **Agent handoff** | Pipeline summary for second opinion | 0baf5f36 |
-| **Verification matrices** | 3-scene success criteria, debugging | 0baf5f36 |
-| **Design system** | Brand, Stitch assets | 286f3e4a (Stitch) |
-| **Methodology** | B.L.A.S.T., Reference Alignment | 5811a372 |
+### Product Notebooks
+| ID | Title | Product |
+|----|-------|---------|
+| `0baf5f36` | Zillow-to-Video | Forge/TourReel |
+| `e109bcb2` | Mivnim (Yossi) | Spoke/Winner Studio |
+| `cb99e6aa` | Social Media & Lead Gen | Buzz/Scout |
+| `f67b6668` | Remotion | Remotion composition engine |
+| `7d06c748` | AgentForge | AgentForge spec |
 
----
+### Infrastructure Notebooks
+| ID | Title | Scope |
+|----|-------|-------|
+| `fc048ba8` | Automation & Core Infra | Antigravity, n8n, deploy |
+| `3e820274` | KIE.AI | Kie.ai API, models, pricing |
+| `0789acdb` | WAHA Pro | WhatsApp integration |
+| `98b120fa` | Aitable.ai | Dashboard analytics |
+| `f54f121b` | Apify | Web scraping |
 
-## Notebook Index (Quick Reference)
+### Methodology
+| ID | Title |
+|----|-------|
+| `5811a372` | B.L.A.S.T. — Agent behavior, methodology |
+| `12724368` | Product Changelog |
+| `02c3946b` | Cost & Performance |
 
-| ID | Purpose |
-|----|---------|
-| **5811a372** | B.L.A.S.T. canonical — project template, agent behavior, methodology |
-| **0baf5f36** | Zillow-to-Video — pipeline spec, create page, agent handoff, verification |
-| **286f3e4a** | Stitch — design system, assets |
-| **3e820274** | Kie.ai — API docs |
-| **fc048ba8** | Master: Automation & Core Infra — Antigravity, n8n, automation workflows |
-| **719854ee** | superseller website — main site, business model, subscription tiers |
-| **b906e69f** | Claude Code — Claude Code mastery, agentic workflows, tooling |
-| **f0747c8b** | prd template — **LEGACY** (different product version, do not use for current TourReel) |
+### Website & Brand
+| ID | Title |
+|----|-------|
+| `719854ee` | SuperSeller Website |
+| `749832c6` | Design Prompts |
+| `382e5982` | Instagram |
 
-Full index: `docs/NOTEBOOKLM_INDEX.md` (canonical), also referenced in `brain.md` Knowledge Hierarchy.
+### Customer Notebooks
+| ID | Title |
+|----|-------|
+| `b42dabb0` | AC&C HVAC |
+| `6a4eb203` | Yoram leads |
+| `720eb7e6` | Kedem Real Estate |
+| `e109bcb2` | Mivnim (Yossi) |
 
 ---
 
 ## Conflict Resolution
 
-Per [`brain.md`](brain.md) Authority Precedence table:
-
-1. **brain.md is Tier 1** — final authority on all conflicts.
-2. **Methodology** → [METHODOLOGY.md](METHODOLOGY.md) (Tier 4). B.L.A.S.T. = new projects. Agent Behavior = routine tasks.
-3. **Code vs NotebookLM disagree** → brain.md decides. NotebookLM provides deep context but does not override brain.md or codebase instruction files.
-4. **TourReel pipeline specifics** → NotebookLM 0baf5f36 is the spec reference; brain.md and codebase override on authority questions.
-5. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply, subordinate to brain.md.
-
----
-
-## What Was Removed from Codebase (Migrated to NotebookLM)
-
-These were archived to `infra/archive/worker-docs-in-notebooklm-2026-02/` because they exist in NotebookLM 0baf5f36:
-
-- `apps/worker/AGENT_SELF_AUDIT.md`
-- `apps/worker/AGENT_HANDOFF.md`
-- `apps/worker/3-SCENE_VERIFICATION.md`
-
-Also archived (stale):
-
-- `apps/web/superseller-site/src/app/video/create/CONFLICT_ANALYSIS.md` — said floorplan/realtor were removed; they are now required/optional again.
+Per `brain.md` Authority Precedence:
+1. **brain.md is Tier 1** — final authority on all conflicts
+2. **Methodology** → METHODOLOGY.md (Tier 4)
+3. **Code vs NotebookLM disagree** → brain.md decides
+4. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply

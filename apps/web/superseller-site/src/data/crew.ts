@@ -15,6 +15,8 @@ export interface CrewMember {
   features: string[];
   status: 'live' | 'coming-soon' | 'beta';
   href: string;
+  /** Cinematic showcase video (V3 AI-generated or V2 Remotion render) — autoplay hero */
+  showcaseVideo?: string;
   /** Path to a demo video showing actual product output (relative to /public) */
   demoVideo?: string;
   /** Caption shown below the demo video */
@@ -45,8 +47,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/forge',
-    demoVideo: '/videos/floor-plan-tour.mp4',
-    demoCaption: 'Real output — AI-generated property tour from a single listing URL',
+    showcaseVideo: '/videos/crew-demo-v3-forge.mp4',
   },
   {
     id: 'spoke',
@@ -71,8 +72,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/spoke',
-    demoVideo: '/videos/celebrity-selfie-generator.mp4',
-    demoCaption: 'Real output — AI avatar video generated from a photo and voice note',
+    showcaseVideo: '/videos/crew-demo-v3-spoke.mp4',
   },
   {
     id: 'frontdesk',
@@ -97,8 +97,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/frontdesk',
-    demoVideo: '/videos/call-audio-analyzer.mp4',
-    demoCaption: 'Preview — AI call handling with real-time transcription',
+    showcaseVideo: '/videos/crew-demo-v3-frontdesk.mp4',
   },
   {
     id: 'scout',
@@ -123,8 +122,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/scout',
-    demoVideo: '/videos/meta-ad-analyzer.mp4',
-    demoCaption: 'Preview — AI lead qualification and scoring in action',
+    showcaseVideo: '/videos/crew-demo-v3-scout.mp4',
   },
   {
     id: 'buzz',
@@ -149,8 +147,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/buzz',
-    demoVideo: '/videos/youtube-clone.mp4',
-    demoCaption: 'Real output — AI-generated social content published to Facebook',
+    showcaseVideo: '/videos/crew-demo-v3-buzz.mp4',
   },
   {
     id: 'cortex',
@@ -175,8 +172,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/cortex',
-    demoVideo: '/videos/cro-insights.mp4',
-    demoCaption: 'Preview — RAG-powered Q&A with source-cited answers',
+    showcaseVideo: '/videos/crew-demo-v3-cortex.mp4',
   },
   {
     id: 'market',
@@ -201,8 +197,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/market',
-    demoVideo: '/videos/marketplace-posting.mp4',
-    demoCaption: 'Real output — AI-generated FB Marketplace listing with unique copy and images',
+    showcaseVideo: '/videos/crew-demo-v3-market.mp4',
   },
 ];
 
