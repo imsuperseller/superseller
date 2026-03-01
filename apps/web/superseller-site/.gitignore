@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# videos served from R2 CDN
+/public/videos/*.mp4
+/public/videos/*.zip
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
