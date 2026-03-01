@@ -10,6 +10,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CrewHero } from '@/components/crew/CrewHero';
 import { CrewGrid } from '@/components/crew/CrewGrid';
+import { ScrollAnimation } from '@/components/ScrollAnimation';
 import { ROIComparison } from '@/components/marketing/ROIComparison';
 import { PricingSection } from '@/components/pricing/PricingSection';
 import { CreditSlider } from '@/components/pricing/CreditSlider';
@@ -90,6 +91,13 @@ export default function HomePageClient() {
       <main className="min-h-screen" style={{ background: 'var(--superseller-bg-primary)' }}>
         {/* 1. Hero */}
         <CrewHero />
+
+        {/* 1b. Crew Reveal — scroll-synced animation */}
+        <ScrollAnimation
+          videoSrc="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-reveal.mp4"
+          scrollHeight={3}
+          className="bg-[#0d1b2e]"
+        />
 
         {/* 2. The Crew — 6 product cards */}
         <section className="py-24 px-4">

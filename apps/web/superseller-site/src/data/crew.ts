@@ -47,7 +47,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/forge',
-    showcaseVideo: '/videos/crew-demo-v3-forge.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-forge.mp4',
   },
   {
     id: 'spoke',
@@ -72,7 +72,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/spoke',
-    showcaseVideo: '/videos/crew-demo-v3-spoke.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-spoke.mp4',
   },
   {
     id: 'frontdesk',
@@ -97,7 +97,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/frontdesk',
-    showcaseVideo: '/videos/crew-demo-v3-frontdesk.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-frontdesk.mp4',
   },
   {
     id: 'scout',
@@ -122,7 +122,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/scout',
-    showcaseVideo: '/videos/crew-demo-v3-scout.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-scout.mp4',
   },
   {
     id: 'buzz',
@@ -147,7 +147,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/buzz',
-    showcaseVideo: '/videos/crew-demo-v3-buzz.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-buzz.mp4',
   },
   {
     id: 'cortex',
@@ -172,7 +172,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'coming-soon',
     href: '/crew/cortex',
-    showcaseVideo: '/videos/crew-demo-v3-cortex.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-cortex.mp4',
   },
   {
     id: 'market',
@@ -197,7 +197,7 @@ export const CREW_MEMBERS: CrewMember[] = [
     ],
     status: 'live',
     href: '/crew/market',
-    showcaseVideo: '/videos/crew-demo-v3-market.mp4',
+    showcaseVideo: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-demo-v3-market.mp4',
   },
 ];
 
