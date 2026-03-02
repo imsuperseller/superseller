@@ -83,7 +83,7 @@ export async function analyzeFloorplan(
     logger.info({ msg: "Analyzing floorplan", url: floorplanUrl });
 
     try {
-        const { content, cost } = await visionAnalysis(floorplanUrl, prompt);
+        const { content, cost } = await visionAnalysis(floorplanUrl, prompt, { reasoning_effort: "high" });
 
         try {
             let jsonStr = content.trim();

@@ -7,13 +7,15 @@
 import { query } from "../db/client";
 import { logger } from "../utils/logger";
 
-// Cost rates (USD) — synced with INFRA_SSOT §5b and cost-tracker skill
+// Cost rates (USD) — fallback rates if observatory is unavailable
+// Primary pricing comes from ai_models table via model-selector.ts
 const COST_RATES: Record<string, Record<string, number>> = {
   kie: {
     kling_clip_pro: 0.10,
     kling_clip_std: 0.03,
-    suno_music: 0.02,
-    nano_banana: 0.05,
+    suno_music: 0.06,   // Corrected: actual Kie.ai rate (was 0.02)
+    nano_banana: 0.09,  // Corrected: actual Kie.ai rate (was 0.05)
+    flux_image: 0.025,  // Flux 2 Pro text-to-image (V3 pipeline)
     elevenlabs_tts: 0.02,
     avatar_pro: 0.10,
     infinitalk: 0.08,

@@ -9,7 +9,7 @@
 ## SUPERSELLER AI CREDENTIALS (Shai Friedman — own business)
 
 **Business Address**: 309 S. Jupiter Rd, Allen, TX 75002
-**LLC**: Rensto LLC (DBA SuperSeller Agency)
+**LLC**: Rensto LLC (DBA SuperSeller Agency) — legal entity name; all branding uses SuperSeller AI
 
 ### Infrastructure
 
@@ -76,8 +76,9 @@
 | **GitHub (SuperSeller AI)** | `GITHUB_PAT` | `social app/.env` | SuperSeller AI PAT: `github_pat_11AZ2TTMQ0...`. Different from UAD's. |
 | **Notion** | `NOTION_TOKEN` | `social app/.env` | `ntn_1307683232...`. Internal integration |
 | **Aitable.ai** | `AITABLE_API_KEY` | `social app/.env` | Dashboard only, not production |
-| **X/Twitter** | Client ID + Secret | `social app/.env` | Not used in active products |
-| **TikTok** | Client ID + Secret | `social app/.env` | Not used in active products |
+| **X/Twitter** | `X_ACCOUNT_ID`, `X_USERNAME`, `X_API_KEY`, `X_API_KEY_SECRET`, `X_CLIENT_ID`, `X_CLIENT_SECRET` | `apps/web/superseller-site/.env.local`, `social app/.env` | Account: `@iamsupersel`. API Key: `v6UJ1...`. Client ID: `MXhuMj...`. SocialHub. |
+| **YouTube** | `YOUTUBE_API_KEY`, `YOUTUBE_OAUTH_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` | `apps/web/superseller-site/.env.local`, `social app/.env` | API Key: `AIzaSyBm...`. OAuth Client: `10651066...`. SocialHub. |
+| **TikTok** | Client ID + Secret | `social app/.env` | Developer app ID: `7611282302357899276`. Status: Pending approval. SocialHub Phase 2. |
 | **Apify** | `APIFY_API_TOKEN` | `apps/worker/.env` | Zillow scraping for TourReel. User ID: `wjz2NfU1Y0MdMxeey`. Key: `apify_api_gQw...` |
 
 ### Auth / OAuth (SuperSeller AI)
@@ -194,4 +195,36 @@ Workiz's API has undocumented auth requirements for POST/write operations:
 6. **`social app/.env.master` is committed to git** — this is a security risk. Should be deleted from git history.
 
 ---
-*Updated: 2026-02-22. Canonical source for credential locations.*
+
+## TAX4US CREDENTIALS (Tax4Us LLC — separate client system)
+
+**CRITICAL**: These credentials belong to Tax4Us LLC (tax4us.co.il). They are COMPLETELY SEPARATE from SuperSeller AI and UAD/MissParty. NEVER mix them. Tax4Us runs on its own n8n cloud instance and has its own accounts for every service.
+
+**Credential file**: `tax4us/.env` (dedicated directory, NOT in superseller-site or social app)
+
+| Service | Key Name | Value Prefix / Identifier | Notes |
+|---------|----------|--------------------------|-------|
+| **n8n Cloud** | `N8N_API_TOKEN` | `eyJhbGci...` (sub: `7b60f61d`) | Instance: `tax4usllc.app.n8n.cloud` |
+| **n8n MCP Server** | `N8N_MCP_TOKEN` | `eyJhbGci...` (jti: `38940138`) | MCP endpoint: `tax4usllc.app.n8n.cloud/mcp-server/http` |
+| **Captivate.fm** | `CAPTIVATE_USER_ID`, `CAPTIVATE_API_KEY` | User: `655c0354...`, Key: `cJ3zT4...` | Podcast hosting (docs.captivate.fm) |
+| **Airtable** | `AIRTABLE_TOKEN` | `patnvGcDy...` | Tax4Us Airtable (NOT SuperSeller's Aitable.ai) |
+| **OpenRouter** | `OPENROUTER_API_KEY` | `sk-or-v1-7f4fd...` | Tax4Us's own OpenRouter key |
+| **Tavily** | `TAVILY_API_KEY` | `tvly-dev-JnJm...` | Web search API |
+| **Apify** | `APIFY_USER_ID`, `APIFY_TOKEN` | User: `JpAAvL7...`, Token: `apify_api_hehe...` | Tax4Us's own Apify (NOT SuperSeller's) |
+| **WordPress** | `WP_USER`, `WP_APP_PASSWORD` | User: `n8n integration`, Token: `tvFc 8gY1...` | tax4us.co.il WP site |
+| **Claude API** | `ANTHROPIC_API_KEY` | `sk-ant-api03-KKELu5...` | Tax4Us's own Claude key (NOT SuperSeller's) |
+| **SerpAPI** | `SERPAPI_KEY` | `23a725585c...` | Tax4Us's own SerpAPI |
+| **Slack** | `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET`, `SLACK_BOT_TOKEN` | Client: `940735...`, Bot: `xoxp-9407...` | Tax4Us Slack workspace |
+| **ElevenLabs** | `ELEVENLABS_VOICE_ID`, `ELEVENLABS_API_KEY` | Voice: `ZT9u07...`, Key: `sk_1eff0d...` | Tax4Us's own ElevenLabs (voice + API) |
+| **AssemblyAI** | `ASSEMBLYAI_API_KEY` | `6cfb6cea...` | Tax4Us's own AssemblyAI |
+| **Kie.ai** | `KIE_API_KEY` | `3ca74c96...` | Tax4Us's own Kie.ai key (NOT SuperSeller's) |
+| **Google AI Studio** | `GOOGLE_AI_API_KEY` | `AIzaSyCm2v...` | Tax4Us's own Gemini key |
+| **UploadPost** | `UPLOADPOST_API_KEY` | `eyJhbGci...` (email: `ai@tax4us.co.il`) | Social posting API |
+| **Facebook** | `FB_PAGE_ID` | `61571773396514` | Tax4Us Facebook page |
+| **LinkedIn** | `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET` | Client: `867fvsh...`, Secret: `WPL_AP1.Ga7T...` | Tax4Us LinkedIn OAuth |
+| **GitHub** | `GITHUB_PAT` | `github_pat_11BV56LQA0...` | Tax4Us's own GitHub PAT |
+| **Vercel** | `VERCEL_TOKEN` | `vcp_6bqbOW...` | Tax4Us's own Vercel token |
+| **Stitch** | `STITCH_API_KEY` | `AQ.Ab8RN6...` | Tax4Us's own Stitch API |
+
+---
+*Updated: 2026-02-26. Canonical source for credential locations.*

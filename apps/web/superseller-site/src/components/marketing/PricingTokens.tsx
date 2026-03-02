@@ -1,7 +1,7 @@
 'use client';
 
 import { Check, Zap, ArrowRight, Info } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
 import {

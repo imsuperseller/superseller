@@ -33,6 +33,17 @@ export const claudeclawQueue = new Queue("claudeclaw", {
     },
 });
 
+// FB Marketplace listing replenishment queue
+export const marketplaceReplenisherQueue = new Queue("marketplace-replenisher", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: "exponential", delay: 60000 },
+        removeOnComplete: { age: 86400 * 3 }, // Keep 3 days
+        removeOnFail: { age: 86400 * 7 },      // Keep 7 days
+    },
+});
+
 export interface ClaudeClawJobData {
     chatId: string;              // WhatsApp chatId (972...@c.us)
     messageBody: string;         // User's text message
@@ -68,4 +79,49 @@ export interface ClipGenerationJobData {
     endFrameUrl: string | null;
     modelPreference: string;
     durationSeconds: number;
+}
+
+export interface MarketplaceJobData {
+    productId: string;       // 'uad' or 'missparty'
+    count: number;           // How many listings to generate
+}
+
+// ─── REMOTION COMPOSITION QUEUE ───
+export const remotionQueue = new Queue("remotion-composition", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 2,
+        backoff: { type: "exponential", delay: 15000 },
+        removeOnComplete: { age: 86400 * 7 },
+        removeOnFail: { age: 86400 * 30 },
+    },
+});
+
+export interface RemotionJobData {
+    jobId: string;           // video_jobs.id
+    listingId: string;       // listings.id
+    userId: string;          // users.id
+    aspectRatios?: ("16x9" | "9x16" | "1x1" | "4x5")[];
+}
+
+// ─── CREW VIDEO BATCH RENDER + APPROVAL QUEUE ───
+export const crewVideoQueue = new Queue("crew-video", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 2,
+        backoff: { type: "exponential", delay: 30000 },
+        removeOnComplete: { age: 86400 * 7 },
+        removeOnFail: { age: 86400 * 30 },
+    },
+});
+
+export interface CrewVideoJobData {
+    batchId: string;
+    trigger: "manual" | "schedule";
+    notifyPhone?: string;        // WhatsApp phone for approval notification (e.g. "972501234567")
+    compositions?: string[];     // Specific crew IDs (e.g. ["forge","spoke"]), or all if omitted
+    /** V3: AI-generated full-screen video per scene (Kling + Flux pipeline) */
+    v3?: boolean;
+    /** V3: force all clips to std mode (cheaper for testing, ~$0.24/agent vs $0.44) */
+    forceStdMode?: boolean;
 }

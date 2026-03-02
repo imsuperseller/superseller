@@ -1,4 +1,4 @@
-# 🎯 RENSTO MASTER DOCUMENTATION — Technical Router
+# 🎯 SUPERSELLER MASTER DOCUMENTATION — Technical Router
 
 **Current Era**: Self-Serving SaaS (Programmatic Stack)
 **Main Engine**: Antigravity (Node.js/Postgres/R2)
@@ -19,8 +19,10 @@
 
 > [!WARNING]
 > **Pivots & Deprecations**:
-> - **n8n** is backup for NEW automation. Antigravity is primary. Existing production n8n workflows (FB Bot lead pipeline) still run.
-> - **Firestore/Airtable.com** are retired. **PostgreSQL** is the only transactional DB truth.
+> - **n8n** is backup for NEW automation. Antigravity is primary. Existing production n8n workflows (**Telnyx voice lead analysis** for UAD + MissParty) still run.
+> - **Firestore** is retired for web/worker. **Exception**: FB Marketplace Bot (`platforms/marketplace/saas-engine/lib/firebase.js`) still uses Firestore for posting schedule — pending migration to PostgreSQL.
+> - **Airtable.com** retired. **Aitable.ai** for dashboards only. **PostgreSQL** is the only transactional DB truth.
+> - **Stripe** migrated to **PayPal** (Feb 2026). DB columns keep `stripe*` names but store PayPal IDs. See `findings.md`.
 > - **Webflow/BMAD** are retired. The system is 100% programmatic.
 
 > [!CAUTION]
@@ -56,9 +58,9 @@
 
 **Store in PostgreSQL**: Service instances, customers, payments, leads, fulfillment.  
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
-**Retired**: Firestore (fully removed Feb 2026 — zero runtime usage), Airtable.com. **Aitable.ai** for dashboards only. `firebase-admin` kept for Storage only (onboarding secrets).
+**Retired**: Firestore mostly removed Feb 2026. **Exception**: FB Marketplace Bot still uses Firestore (`platforms/marketplace/saas-engine/lib/firebase.js`) — pending Postgres migration. Airtable.com retired. **Aitable.ai** for dashboards only. `firebase-admin` kept for Storage only (onboarding secrets).
 
-**Active production n8n workflows (DO NOT disable)**: Telnyx polling UAD, Telnyx polling MissParty, FB Bot lead analysis UAD (U6EZ2iLQ4zCGg31H), FB Bot lead analysis MissParty (9gfvZo9sB4b3pMWQ).
+**Active production n8n workflows (DO NOT disable)**: Telnyx voice lead analysis UAD (U6EZ2iLQ4zCGg31H), Telnyx voice lead analysis MissParty (9gfvZo9sB4b3pMWQ). These are **Telnyx voice call pipelines**, not FB Bot workflows. The FB Marketplace Bot runs on Antigravity (webhook-server + fb-scheduler on PM2).
 
 ---
 
@@ -67,7 +69,7 @@
 | Layer | Stack |
 |-------|-------|
 | **Web** | Next.js 14+ (superseller-site), Vercel |
-| **Worker** | Node.js, BullMQ, FFmpeg (Auto-updated), Kie.ai (Kling 3.0 & Nano Banana), R2 |
+| **Worker** | Node.js, BullMQ, Remotion 4.0 (photo composition), FFmpeg (utility), Kie.ai (Kling 3.0 AI clips), R2 |
 | **RAG** | Ollama nomic-embed-text (768-dim) + pgvector 0.8.1 HNSW |
 | **Automation** | Antigravity (primary), n8n (backup) |
 | **Database** | PostgreSQL + pgvector (Prisma + Drizzle), Redis |
@@ -100,7 +102,7 @@
 | **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
 | Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
 | **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
-| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.02, Nano $0.05, Gemini $0.001 — see tourreel-pipeline SKILL.md |
+| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.09, Gemini $0.001 — see tourreel-pipeline SKILL.md |
 | FB Bot Config | `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
 | FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
 
@@ -115,15 +117,17 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 
 | Product | Status | Notes |
 |---------|--------|-------|
-| **TourReel** | ✅ Live | 25+ videos generated, full pipeline working |
-| **Winner Studio** | ✅ Live | Customer deployed (Mivnim/Yossi), avatar-pro + fallback |
-| **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting, 96%/94% feature complete |
-| **Lead Landing Pages** | ✅ Complete | `/lp/[slug]` infrastructure done, WAHA + email notifications |
-| **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant working, eSignatures not started |
-| **AgentForge** | ⚠️ Spec only | Internal tool decision made, code not started |
-| **SocialHub** | ⏳ Phase 2 | Spec complete (7 docs), code not started |
+| **TourReel** | ✅ Live | 25+ AI videos + Remotion photo composition, dual-path pipeline |
+| **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting daily, webhook-server + fb-scheduler on PM2 |
+| **SocialHub/Buzz** | ✅ Live | Text+image→WhatsApp approval→FB publish pipeline working |
+| **Winner Studio** | ⚠️ Built, not active | Code verified end-to-end, Yossi not actively using |
+| **Lead Landing Pages** | ⚠️ Infrastructure only | `/lp/[slug]` code ready, no active customer pages |
+| **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant works, webhook migration pending, eSignatures not started |
+| **ClaudeClaw** | ⚠️ Built, disabled | WhatsApp→Claude Code bridge committed, not deployed |
+| **RAG/pgvector** | ⚠️ Infrastructure only | Ollama + pgvector + API endpoints ready, zero products connected |
+| **AgentForge** | ❌ Spec only | Internal tool decision made, code not started |
 
-**Infrastructure ✅ Done**: Firestore→Postgres migration, PayPal checkout (migrated from Stripe Feb 2026), credits schema, worker gating, Phase 2 credit-based SaaS.
+**Infrastructure ✅ Done**: Firestore→Postgres migration (except FB Bot posting schedule), PayPal checkout (migrated from Stripe Feb 2026), credits schema, worker gating, Remotion rendering, Model Observatory (34 models).
 
 ---
 

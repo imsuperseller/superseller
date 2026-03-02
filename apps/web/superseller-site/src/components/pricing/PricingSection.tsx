@@ -2,11 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import { Check, ArrowRight, Zap } from 'lucide-react';
-import Link from 'next/link';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { PRICING_PLANS } from '@/data/pricing';
 import type { PricingPlan } from '@/data/pricing';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import * as framer from 'framer-motion';
 const { motion, useMotionValue, useTransform, animate, useInView } = framer;
 
@@ -36,6 +37,8 @@ function AnimatedNumber({ value, duration = 1.5 }: { value: number; duration?: n
 }
 
 export function PricingSection({ showHeader = true, className = '' }: PricingSectionProps) {
+  const t = useTranslations('pricing');
+
   return (
     <section className={`py-24 px-4 relative overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--superseller-bg-primary)] to-transparent opacity-80 -z-10" />
@@ -50,17 +53,16 @@ export function PricingSection({ showHeader = true, className = '' }: PricingSec
             transition={{ duration: 0.6 }}
           >
             <Badge className="bg-[var(--superseller-accent-cyan)]/10 text-[var(--superseller-accent-cyan)] border-[var(--superseller-accent-cyan)]/20 px-4 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
-              Simple Credit Pricing
+              {t('badge')}
             </Badge>
             <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-none">
-              ONE CREW.{' '}
-              <span style={{ color: 'var(--superseller-accent-cyan)' }}>ONE PLAN.</span>
+              {t('heading1')}{' '}
+              <span style={{ color: 'var(--superseller-accent-cyan)' }}>{t('heading2')}</span>
               <br />
-              UNLIMITED POTENTIAL.
+              {t('heading3')}
             </h2>
             <p className="text-xl text-[var(--superseller-text-secondary)] max-w-2xl mx-auto font-medium leading-relaxed">
-              Buy credits, use them on any crew member. No per-tool subscriptions.
-              No hidden fees. Mix and match however you need.
+              {t('description')}
             </p>
           </motion.div>
         )}
@@ -81,14 +83,14 @@ export function PricingSection({ showHeader = true, className = '' }: PricingSec
         >
           <div className="text-center mb-6">
             <h3 className="text-xl font-black text-white uppercase tracking-tight">
-              What Do Credits Buy?
+              {t('creditRef')}
             </h3>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
             <div className="grid grid-cols-3 p-4 bg-white/5 border-b border-white/10 font-bold text-[10px] uppercase tracking-[0.2em] text-[var(--superseller-text-muted)]">
-              <div>Crew Member</div>
-              <div className="text-center">Credits</div>
-              <div className="text-right">Per</div>
+              <div>{t('colCrewMember')}</div>
+              <div className="text-center">{t('colCredits')}</div>
+              <div className="text-right">{t('colPer')}</div>
             </div>
             {PRICING_PLANS[0].creditExamples.map((ex, j) => (
               <motion.div
@@ -116,6 +118,12 @@ export function PricingSection({ showHeader = true, className = '' }: PricingSec
 }
 
 function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
+  const t = useTranslations('pricing');
+  const planT = useTranslations(`pricing.plans.${plan.id}`);
+
+  // Get features from translations
+  const features = plan.features.map((_, i) => planT(`features.${i}`));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -154,7 +162,7 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
         <div className="h-8 mb-2">
           {plan.popular && (
             <Badge className="bg-[var(--superseller-accent-cyan)]/10 text-[var(--superseller-accent-cyan)] border-[var(--superseller-accent-cyan)]/20 text-[10px] font-black uppercase tracking-[0.2em]">
-              Most Popular
+              {t('mostPopular')}
             </Badge>
           )}
         </div>
@@ -168,11 +176,11 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
           <span className="text-5xl font-black text-white">
             $<AnimatedNumber value={plan.price} duration={1.2} />
           </span>
-          <span className="text-[var(--superseller-text-muted)] font-medium">{plan.period}</span>
+          <span className="text-[var(--superseller-text-muted)] font-medium">{t('month')}</span>
         </div>
 
         <p className="text-sm text-[var(--superseller-text-secondary)] mb-6">
-          {plan.tagline}
+          {planT('tagline')}
         </p>
 
         {/* Credits highlight with animated number */}
@@ -182,17 +190,17 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
           </div>
           <div>
             <div className="font-black text-white text-lg">
-              <AnimatedNumber value={plan.credits} /> Credits
+              <AnimatedNumber value={plan.credits} /> {t('credits')}
             </div>
             <div className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--superseller-accent-cyan)' }}>
-              Monthly Capacity
+              {t('monthlyCapacity')}
             </div>
           </div>
         </div>
 
         {/* Features with staggered checkmarks */}
         <ul className="space-y-3 mb-8 flex-1">
-          {plan.features.map((feature, i) => (
+          {features.map((feature, i) => (
             <motion.li
               key={i}
               className="flex items-start gap-3 text-sm text-[var(--superseller-text-secondary)]"
@@ -208,7 +216,7 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
         </ul>
 
         {/* CTA */}
-        <Link href="/login" className="mt-auto block">
+        <Link href="/pricing" className="mt-auto block">
           <Button
             className={`w-full font-black text-lg h-14 rounded-2xl uppercase tracking-[0.1em] cursor-pointer ${
               plan.popular
@@ -223,7 +231,7 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
                 : undefined
             }
           >
-            {plan.cta}
+            {planT('cta')}
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </Link>

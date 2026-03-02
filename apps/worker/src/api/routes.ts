@@ -1,12 +1,13 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { query, queryOne } from "../db/client";
-import { videoPipelineQueue, VideoPipelineJobData } from "../queue/queues";
+import { videoPipelineQueue, VideoPipelineJobData, remotionQueue, RemotionJobData, crewVideoQueue, CrewVideoJobData } from "../queue/queues";
 import { logger } from "../utils/logger";
 import { scrapeZillowListing } from "../services/apify";
 import { uploadToR2, uploadBufferToR2, buildR2Key } from "../services/r2";
 import { existsSync } from "fs";
 import { join } from "path";
+import { randomUUID } from "crypto";
 
 function mapPropertyType(raw: string | undefined): string {
     const v = (raw || "").toLowerCase();
@@ -127,7 +128,7 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
 
         const { addressOrUrl, userId, floorplanPath, floorplanBase64, floorplanContentType, realtorBase64, realtorContentType } = parsed.data;
 
-        const user = await queryOne("SELECT id, avatar_url FROM users WHERE id = $1", [userId]);
+        const user = await queryOne('SELECT id, avatar_url FROM "User" WHERE id = $1', [userId]);
         if (!user) return res.status(404).json({ error: "User not found" });
         const hasAvatar = !!user.avatar_url && user.avatar_url.length > 0;
         if (!hasAvatar && !realtorBase64) return res.status(400).json({
@@ -157,7 +158,7 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
                 const buf = Buffer.from(realtorBase64, "base64");
                 const r2Key = `${userId}/avatar/avatar.png`;
                 const avatarUrl = await uploadBufferToR2(buf, r2Key, safeImageType(realtorContentType));
-                await query("UPDATE users SET avatar_url = $1 WHERE id = $2", [avatarUrl, userId]);
+                await query('UPDATE "User" SET avatar_url = $1 WHERE id = $2', [avatarUrl, userId]);
                 logger.info({ msg: "Realtor avatar set from web upload", userId });
             } catch (e) {
                 logger.warn({ msg: "Realtor avatar upload failed", error: (e as Error).message });
@@ -231,16 +232,150 @@ apiRouter.post("/jobs/from-zillow", async (req: Request, res: Response) => {
     }
 });
 
+// ─── CREATE REMOTION COMPOSITION JOB ───
+const remotionJobSchema = z.object({
+    listingId: z.string().uuid(),
+    userId: z.string(),
+    aspectRatios: z.array(z.enum(["16x9", "9x16", "1x1", "4x5"])).optional(),
+});
+
+apiRouter.post("/jobs/remotion", async (req: Request, res: Response) => {
+    try {
+        const parsed = remotionJobSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const { listingId, userId, aspectRatios } = parsed.data;
+
+        // Verify listing exists
+        const listing = await queryOne("SELECT id, address FROM listings WHERE id = $1", [listingId]);
+        if (!listing) return res.status(404).json({ error: "Listing not found" });
+
+        // Create job record
+        const [job] = await query(
+            `INSERT INTO video_jobs (listing_id, user_id, status, model_preference)
+             VALUES ($1, $2, 'pending', 'remotion')
+             RETURNING *`,
+            [listingId, userId]
+        );
+
+        // Enqueue Remotion composition
+        const jobData: RemotionJobData = { jobId: job.id, listingId, userId, aspectRatios };
+        await remotionQueue.add(`remotion-${job.id}`, jobData);
+
+        logger.info({ msg: "Enqueued Remotion composition job", jobId: job.id, listingId, ratios: aspectRatios });
+        res.status(201).json({ job, pipeline: "remotion" });
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /jobs/remotion", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CREATE REMOTION JOB FROM ZILLOW (scrape → listing → Remotion composition) ───
+const remotionFromZillowSchema = z.object({
+    addressOrUrl: z.string().min(1),
+    userId: z.string().uuid(),
+    aspectRatios: z.array(z.enum(["16x9", "9x16", "1x1", "4x5"])).optional(),
+});
+
+apiRouter.post("/jobs/remotion/from-zillow", async (req: Request, res: Response) => {
+    try {
+        const parsed = remotionFromZillowSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const { addressOrUrl, userId, aspectRatios } = parsed.data;
+
+        const user = await queryOne('SELECT id FROM "User" WHERE id = $1', [userId]);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        const scraped = await scrapeZillowListing(addressOrUrl, 30);
+        if (!scraped.photos?.length) return res.status(400).json({ error: "No photos found for listing" });
+
+        const exteriorPhoto = scraped.photos[0];
+        const additionalPhotos = scraped.photos.slice(1);
+        const amenitiesJson = Array.isArray(scraped.amenities) ? JSON.stringify(scraped.amenities) : JSON.stringify([]);
+        const resoFactsJson = scraped.resoFacts ? JSON.stringify(scraped.resoFacts) : null;
+
+        const [listing] = await query(
+            `INSERT INTO listings (user_id, address, city, state, zip, property_type, bedrooms, bathrooms, sqft, listing_price, exterior_photo_url, additional_photos, description, amenities, reso_facts)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+             RETURNING *`,
+            [
+                userId,
+                scraped.address,
+                scraped.city ?? null,
+                scraped.state ?? null,
+                scraped.zip ?? null,
+                mapPropertyType(scraped.property_type),
+                scraped.bedrooms ?? null,
+                scraped.bathrooms ?? null,
+                scraped.sqft ?? null,
+                scraped.price ?? null,
+                exteriorPhoto,
+                JSON.stringify(additionalPhotos),
+                scraped.description ?? null,
+                amenitiesJson,
+                resoFactsJson,
+            ]
+        );
+
+        const [job] = await query(
+            `INSERT INTO video_jobs (listing_id, user_id, status, model_preference)
+             VALUES ($1, $2, 'pending', 'remotion')
+             RETURNING *`,
+            [listing.id, userId]
+        );
+
+        const jobData: RemotionJobData = { jobId: job.id, listingId: listing.id, userId, aspectRatios };
+        await remotionQueue.add(`remotion-${job.id}`, jobData);
+
+        logger.info({ msg: "Enqueued Remotion from-zillow job", jobId: job.id, listingId: listing.id });
+        res.status(201).json({ job, listing, pipeline: "remotion" });
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /jobs/remotion/from-zillow", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── RENDER CREW COMPOSITION (CrewReveal or CrewDemo) ───
+const crewRenderSchema = z.object({
+    compositionId: z.enum(["CrewReveal-16x9", "CrewReveal-9x16", "CrewDemo-16x9", "CrewDemo-9x16"]),
+    inputProps: z.record(z.string(), z.unknown()).optional(),
+});
+apiRouter.post("/jobs/remotion/crew", async (req: Request, res: Response) => {
+    try {
+        const parsed = crewRenderSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const { compositionId, inputProps } = parsed.data;
+
+        // Enqueue as a Remotion job with composition override
+        const jobData = {
+            jobId: `crew-${Date.now()}`,
+            listingId: 0,
+            userId: "system",
+            compositionId,
+            inputProps: inputProps || {},
+        };
+        await remotionQueue.add(`crew-${compositionId}-${Date.now()}`, jobData);
+
+        logger.info({ msg: "Enqueued crew composition render", compositionId });
+        res.status(201).json({ queued: true, compositionId });
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /jobs/remotion/crew", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ─── DEV: Ensure test user (for E2E only) ───
 apiRouter.post("/dev/ensure-test-user", async (_req: Request, res: Response) => {
     const clerkId = "e2e-test-user";
-    const existing = await queryOne("SELECT id, avatar_url FROM users WHERE clerk_id = $1", [clerkId]);
+    const existing = await queryOne('SELECT id, avatar_url FROM "User" WHERE clerk_id = $1', [clerkId]);
     if (existing) return res.json({
         userId: existing.id,
         hasAvatar: !!existing.avatar_url && existing.avatar_url.length > 0,
     });
     const [u] = await query(
-        `INSERT INTO users (clerk_id, email, full_name) VALUES ($1, $2, $3) RETURNING id`,
+        'INSERT INTO "User" (id, clerk_id, email, name) VALUES (gen_random_uuid()::text, $1, $2, $3) RETURNING id',
         [clerkId, "e2e@test.local", "E2E Test User"]
     );
     res.status(201).json({ userId: u.id, hasAvatar: false });
@@ -502,6 +637,19 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             return res.json({ status: "ignored", reason: "empty" });
         }
 
+        // Intercept crew video approval/rejection from owner phone
+        if (mode === "personal" && body) {
+            try {
+                const { handleWhatsAppCrewApproval } = await import("../queue/workers/crew-video.worker");
+                const handled = await handleWhatsAppCrewApproval(body);
+                if (handled) {
+                    return res.json({ status: "handled", handler: "crew-video-approval" });
+                }
+            } catch {
+                // Non-critical — fall through to ClaudeClaw
+            }
+        }
+
         // Extract WAHA target from query params (set by webhook URL config)
         const wahaUrl = (req.query.waha_url as string) || undefined;
         const wahaSession = (req.query.waha_session as string) || undefined;
@@ -532,6 +680,119 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
 
 apiRouter.post("/whatsapp/claude", (req, res) => handleClaudeClawWebhook(req, res, "personal"));
 apiRouter.post("/whatsapp/claude/superseller", (req, res) => handleClaudeClawWebhook(req, res, "business"));
+
+// ─── CREW VIDEO BATCH RENDER + APPROVAL ───
+const crewVideoSchema = z.object({
+    notifyPhone: z.string().optional(),
+    compositions: z.array(z.string()).optional(),
+    trigger: z.enum(["manual", "schedule"]).default("manual"),
+});
+
+apiRouter.post("/crew-videos", async (req: Request, res: Response) => {
+    try {
+        const parsed = crewVideoSchema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const batchId = randomUUID();
+        const jobData: CrewVideoJobData = {
+            batchId,
+            trigger: parsed.data.trigger,
+            notifyPhone: parsed.data.notifyPhone,
+            compositions: parsed.data.compositions,
+        };
+
+        await crewVideoQueue.add(`crew-batch-${batchId}`, jobData);
+        logger.info({ msg: "Crew video batch enqueued", batchId, trigger: parsed.data.trigger });
+        res.status(201).json({ batchId, queued: true });
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /crew-videos", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CREW VIDEO V3 — AI-GENERATED FULL-SCREEN VIDEO PER SCENE ───
+const crewVideoV3Schema = z.object({
+    notifyPhone: z.string().optional(),
+    compositions: z.array(z.string()).optional(),
+    trigger: z.enum(["manual", "schedule"]).default("manual"),
+    forceStdMode: z.boolean().optional(),
+});
+
+apiRouter.post("/crew-videos/v3", async (req: Request, res: Response) => {
+    try {
+        const parsed = crewVideoV3Schema.safeParse(req.body);
+        if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+
+        const batchId = randomUUID();
+        const jobData: CrewVideoJobData = {
+            batchId,
+            trigger: parsed.data.trigger,
+            notifyPhone: parsed.data.notifyPhone,
+            compositions: parsed.data.compositions,
+            v3: true,
+            forceStdMode: parsed.data.forceStdMode,
+        };
+
+        await crewVideoQueue.add(`crew-v3-${batchId}`, jobData);
+        logger.info({ msg: "Crew video V3 batch enqueued", batchId, trigger: parsed.data.trigger, compositions: parsed.data.compositions });
+
+        // Estimate cost
+        const agentCount = parsed.data.compositions?.length || 7;
+        const costPerAgent = parsed.data.forceStdMode ? 0.24 : 0.44;
+        const estimatedCost = agentCount * costPerAgent;
+
+        res.status(201).json({
+            batchId,
+            queued: true,
+            version: "v3",
+            estimatedCost: `$${estimatedCost.toFixed(2)}`,
+            agents: agentCount,
+        });
+    } catch (err: any) {
+        logger.error({ msg: "API Error in /crew-videos/v3", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+apiRouter.post("/crew-videos/:batchId/approve", async (req: Request, res: Response) => {
+    try {
+        const batchId = req.params.batchId as string;
+        const { approveCrewBatch } = await import("../queue/workers/crew-video.worker");
+        const result = await approveCrewBatch(batchId);
+        res.json({ success: true, published: result.published });
+    } catch (err: any) {
+        logger.error({ msg: "Crew video approve failed", error: err.message });
+        res.status(400).json({ error: err.message });
+    }
+});
+
+apiRouter.post("/crew-videos/:batchId/reject", async (req: Request, res: Response) => {
+    try {
+        const batchId = req.params.batchId as string;
+        const reason = req.body?.reason as string | undefined;
+        const { rejectCrewBatch } = await import("../queue/workers/crew-video.worker");
+        await rejectCrewBatch(batchId, reason);
+        res.json({ success: true });
+    } catch (err: any) {
+        logger.error({ msg: "Crew video reject failed", error: err.message });
+        res.status(400).json({ error: err.message });
+    }
+});
+
+apiRouter.get("/crew-videos/status", async (req: Request, res: Response) => {
+    try {
+        const { redisConnection } = await import("../queue/connection");
+        const pendingBatchId = await redisConnection.get("crew-batch:latest-pending");
+        if (!pendingBatchId) {
+            return res.json({ pending: false });
+        }
+        const raw = await redisConnection.get(`crew-batch:${pendingBatchId}`);
+        if (!raw) return res.json({ pending: false });
+        res.json({ pending: true, batch: JSON.parse(raw) });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // ─── HEALTH ───
 apiRouter.get("/health", async (req, res) => {

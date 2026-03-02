@@ -14,9 +14,6 @@ export async function geminiChatCompletion(
     messages: any[],
     options?: {
         model?: string;
-        temperature?: number;
-        max_tokens?: number;
-        response_format?: { type: "json_object" | "json_schema"; json_schema?: any };
         reasoning_effort?: "low" | "high";
     }
 ): Promise<{ content: string; cost: number }> {
@@ -33,6 +30,8 @@ export async function geminiChatCompletion(
     return await withRetry(
         async () => {
             try {
+                // Kie.ai Chat API only supports: messages, stream, reasoning_effort, tools
+                // temperature, max_tokens, response_format are NOT supported and silently ignored
                 const response = await axios.post(
                     `${KIE_BASE}/${model}/v1/chat/completions`,
                     {
@@ -82,7 +81,8 @@ export async function geminiChatCompletion(
 
 export async function geminiVisionAnalysis(
     imageUrl: string,
-    prompt: string
+    prompt: string,
+    options?: { reasoning_effort?: "low" | "high" }
 ): Promise<{ content: string; cost: number }> {
     const apiKey = config.kie.apiKey;
     const model = DEFAULT_VISION_MODEL.replace("google/", "");
@@ -103,7 +103,7 @@ export async function geminiVisionAnalysis(
                             }
                         ],
                         stream: false,
-                        reasoning_effort: "low",
+                        reasoning_effort: options?.reasoning_effort ?? "low",
                     },
                     {
                         headers: {

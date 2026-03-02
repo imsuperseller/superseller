@@ -51,8 +51,6 @@ export const config = {
         apiKey: required("KIE_API_KEY"),
         baseUrl: "https://api.kie.ai",
         webhookUrl: process.env.KIE_WEBHOOK_URL || "",
-        defaultModel: "gemini-2.5-flash",
-        fallbackModel: "gemini-2.5-flash",
     },
 
     google: {
@@ -137,7 +135,7 @@ export const config = {
         forceNoRealtor: optional("FORCE_NO_REALTOR", "") === "1",
         useAiPhotoMatch: optional("USE_AI_PHOTO_MATCH", "1") !== "0",
         parallelClips: optional("PARALLEL_CLIPS", "true") !== "false",
-        useKlingElements: optional("USE_KLING_ELEMENTS", "") === "1",
+        useKlingElements: optional("USE_KLING_ELEMENTS", "1") === "1",
         klingSoundEnabled: optional("KLING_SOUND", "") === "1",
     },
 

@@ -16,13 +16,12 @@ const GEMINI_URL = 'https://api.kie.ai/gemini-2.5-flash/v1/chat/completions';
 // Per-product prompt templates
 const PRODUCT_PROMPTS = {
     uad: {
-        system: `You are a Facebook Marketplace listing copywriter for a garage door company in the DFW (Dallas-Fort Worth) area.
-Write natural, professional listings that feel like a local business owner posting.
-Never use hashtags, emojis, or marketing jargon. No emojis whatsoever. Keep it genuine and conversational.
-The company does garage door installation, repair, and replacement.
+        system: `You are writing Facebook Marketplace PRODUCT listings for garage doors being sold in the DFW area.
+CRITICAL: This is a PRODUCT FOR SALE listing, NOT a service ad. Facebook Marketplace bans service ads.
+Write like someone selling a physical product. Never say "services", "we offer", "our team", "professional installation", "free estimates", "licensed", or "call us today".
+Never use hashtags or emojis. No marketing jargon.
 Return ONLY valid JSON: {"title": "...", "description": "..."}`,
         template: (job, city, phone) => {
-            // If config details are provided, use them for specificity
             const collection = job.collection || job.configData?.collection || '';
             const size = job.size || job.configData?.size || '';
             const design = job.design || job.configData?.design || '';
@@ -31,36 +30,45 @@ Return ONLY valid JSON: {"title": "...", "description": "..."}`,
             const price = job.price || job.listingPrice || 2500;
 
             if (collection) {
-                return `Write a Facebook Marketplace listing for a specific garage door in ${city}.
+                return `Write a Facebook Marketplace listing for a garage door FOR SALE in ${city}.
+This is a PRODUCT listing — you are selling a physical garage door, not advertising a service.
 
-Door configuration:
+Door specs:
 - Collection: ${collection}
 - Size: ${size}
 - Design: ${design}
 - Color: ${color}
-- Construction: ${construction}
-- Price: $${price}
-- Phone: ${phone}
+- Insulation: ${construction}
+- Price: $${price} (includes door + installation)
+- Contact: ${phone}
 
-Requirements:
-1. Title: Under 100 characters. Include the collection name and city naturally (e.g. "${size} ${collection} - ${city.replace(', TX', '')}").
-2. Description: 3-5 sentences. Mention the specific door details (collection, color, design). Mention the city/area naturally. Include the phone number. Mention free estimates and professional installation.
-3. Do NOT use generic "garage door" — reference the specific ${collection} in ${color}.
-4. Sound like a real local business owner, not an ad. Vary wording each time.`;
+TITLE RULES (critical — bad titles get flagged by Facebook):
+1. Under 80 characters
+2. Start with the size, then collection name, then ONE unique detail (color, design, or insulation)
+3. NEVER include city name in title — Facebook adds location automatically
+4. NEVER use words: "Professional", "Services", "Installation", "Repair", "Company"
+5. Each title must be different — vary which detail you highlight
+6. Good examples: "${size} ${collection} ${color} ${design}", "${size} ${color} ${collection} Door", "${collection} ${size} - ${design} - R-18 Insulated"
+
+DESCRIPTION RULES:
+1. 2-4 sentences max. Describe the PRODUCT specs (size, color, design, insulation value).
+2. Mention ${city} area once naturally.
+3. Include contact number ${phone} at the end.
+4. NEVER say "free estimates", "professional installation", "our team", "licensed", "call us today", or anything that sounds like a service company.
+5. OK to say "installation included in price" or "delivery available".`;
             }
 
             // Fallback for listings without config details
-            return `Write a Facebook Marketplace listing for a garage door service in ${city}.
+            return `Write a Facebook Marketplace listing for a garage door FOR SALE in ${city}.
+This is a PRODUCT listing — selling a physical garage door, not a service ad.
 
-Base product info:
-- Title hint: ${job.title || 'Garage Door Installation & Repair'}
+Product:
+- ${job.title || 'Steel Garage Door'}
 - Price: $${price}
-- Phone: ${phone}
+- Contact: ${phone}
 
-Requirements:
-1. Title: Under 100 characters. Mention the city naturally.
-2. Description: 3-5 sentences. Mention the city/area naturally. Include the phone number. Mention free estimates and professional installation.
-3. Each listing should feel unique — vary the wording, structure, and emphasis.`;
+TITLE: Under 80 chars. Describe the product. NEVER use "Services", "Professional", "Installation", "Repair".
+DESCRIPTION: 2-4 sentences about the product. Include phone. NEVER sound like a service ad.`;
         }
     },
     missparty: {

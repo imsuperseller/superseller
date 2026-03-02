@@ -1,12 +1,13 @@
 ---
 name: tourreel-pipeline
 description: >-
-  TourReel real estate video pipeline automation. Covers Zillow scraping, floorplan analysis,
-  Kling 3.0 video generation, FFmpeg assembly, clip regeneration, and deployment on RackNerd.
+  TourReel real estate video pipeline automation. Dual-path: (1) Kling 3.0 AI clip generation +
+  FFmpeg assembly, (2) Remotion photo composition (Ken Burns, transitions, branding). Covers Zillow
+  scraping, floorplan analysis, clip generation, Remotion rendering, and deployment on RackNerd.
   Use when working on TourReel, real estate video, property video, listing video, video pipeline,
-  Kie.ai, Kling, clip generation, or video worker code. Not for UI/UX design, n8n workflows,
-  WhatsApp bots, or non-video backend code.
-  Example: "Fix the double realtor bug in the video pipeline".
+  Kie.ai, Kling, Remotion, composition, Ken Burns, clip generation, or video worker code.
+  Not for UI/UX design, n8n workflows, WhatsApp bots, or non-video backend code.
+  Example: "Fix the double realtor bug in the video pipeline" or "Update the Remotion intro card".
 autoTrigger:
   - "TourReel"
   - "video pipeline"
@@ -14,6 +15,9 @@ autoTrigger:
   - "Kie.ai"
   - "clip generation"
   - "FFmpeg"
+  - "Remotion"
+  - "Ken Burns"
+  - "composition"
   - "real estate video"
   - "listing video"
   - "Zillow scrape"
@@ -52,9 +56,21 @@ negativeTrigger:
 
 ## Pipeline Overview
 
+**Two generation paths** (both live):
+
 ```
+PATH 1 — AI Clips (Kling):
 Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen → FFmpeg Assembly → R2 Upload
+
+PATH 2 — Remotion Composition (Photos):
+Zillow Scrape → Photo extraction → Remotion renderMedia() (Ken Burns, transitions, intro/outro, branding) → H.264 MP4 → R2 Upload
 ```
+
+**When to use which:**
+- **Kling path**: AI-generated cinematic clips with motion, realtor compositing, Kling Elements identity
+- **Remotion path**: Photo-based tours with Ken Burns animation, zero API cost, deterministic, ~60s render time
+- **Remotion Bible**: `docs/REMOTION_BIBLE.md` — canonical reference for Remotion composition
+- **Remotion code**: `apps/worker/remotion/` (11 components, 4 compositions, renderer at `src/services/remotion-renderer.ts`)
 
 ### Pipeline Stages (12 steps)
 
@@ -88,6 +104,11 @@ Zillow Scrape → Floorplan Analysis → Prompt Generation → Kling Clip Gen �
 | `apps/worker/src/services/regen-clips.ts` | Clip regeneration (191 lines) |
 | `apps/worker/src/services/apify.ts` | Zillow scraping (190 lines) |
 | `apps/worker/src/api/routes.ts` | API endpoints (295 lines) |
+| `apps/worker/src/services/remotion-renderer.ts` | Remotion SSR (renderPropertyTour, ensureBundle) |
+| `apps/worker/remotion/src/PropertyTourComposition.tsx` | Main Remotion composition (rooms, transitions, branding) |
+| `apps/worker/remotion/src/components/` | IntroCard, OutroCard, RoomLabel, KenBurnsSlide |
+| `apps/worker/remotion/src/config/timing.ts` | FPS, durations, room timing constants |
+| `docs/REMOTION_BIBLE.md` | Canonical Remotion reference (15 sections) |
 
 ### API Endpoints
 

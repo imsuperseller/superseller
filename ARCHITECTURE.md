@@ -10,7 +10,7 @@
 | Path | Purpose |
 |------|---------|
 | **apps/web/superseller-site/** | Main Next.js app (superseller.agency, admin.superseller.agency, api.superseller.agency) |
-| **apps/worker/** | Video pipeline worker (TourReel: Nano Banana, Kling, R2) |
+| **apps/worker/** | Video pipeline worker (TourReel: Remotion composition + Kling AI clips, R2) |
 | **apps/web/superseller-site/src/app/** | Pages and API routes |
 | **apps/web/superseller-site/src/app/(main)/admin/** | Admin dashboard (served via admin.superseller.agency) |
 | **apps/web/superseller-site/src/app/api/** | API endpoints |

@@ -11,7 +11,11 @@
 import { config } from "../config";
 import { logger } from "../utils/logger";
 import { withRetry } from "../utils/retry";
+import { uploadToR2, buildR2Key } from "./r2";
 import axios from "axios";
+import { writeFileSync, unlinkSync } from "fs";
+import { join } from "path";
+import { tmpdir } from "os";
 
 const KIE_BASE = "https://api.kie.ai/api";
 
@@ -67,7 +71,7 @@ export async function classifyListingPhotos(
 ): Promise<ClassifiedPhoto[]> {
     if (!photoR2Urls.length) return [];
 
-    const batchSize = 10;
+    const batchSize = 5; // Reduced from 10: Gemini via Kie.ai proxy times out with too many images
     const results: ClassifiedPhoto[] = [];
 
     for (let batchStart = 0; batchStart < photoR2Urls.length; batchStart += batchSize) {
@@ -128,7 +132,7 @@ Array must have exactly ${urls.length} elements, one per image in order.`,
     try {
         const response = await withRetry(
             async () => axios.post(
-                `${KIE_BASE.replace("/api", "")}/gemini-3-flash/v1/chat/completions`,
+                `${KIE_BASE.replace(/\/api$/, "")}/gemini-3-flash/v1/chat/completions`,
                 {
                     messages: [{ role: "user", content }],
                     stream: false,
@@ -139,7 +143,7 @@ Array must have exactly ${urls.length} elements, one per image in order.`,
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${config.kie.apiKey}`,
                     },
-                    timeout: 60_000,
+                    timeout: 120_000, // 2 min — Kie.ai proxy + Gemini vision needs time for multi-image
                 }
             ),
             { label: "classifyBatch", maxAttempts: 2, initialDelayMs: 2000 }
@@ -186,16 +190,10 @@ Array must have exactly ${urls.length} elements, one per image in order.`,
             };
         });
     } catch (err: any) {
-        logger.error({ msg: "Photo classification batch failed", error: err.message, batchStart: startIndex });
-        return urls.map((url, i) => ({
-            originalUrl: url,
-            r2Url: url,
-            originalIndex: startIndex + i,
-            type: "interior_other" as PhotoType,
-            confidence: 0.1,
-            description: "classification error",
-            upscaledUrl: null,
-        }));
+        // NO SILENT DOWNGRADES: classification failure means wrong photos in clips.
+        // Throw so the pipeline can retry or fail cleanly — never silently classify everything as interior_other.
+        logger.error({ msg: "Photo classification batch FAILED — propagating error", error: err.message, batchStart: startIndex });
+        throw new Error(`Photo classification failed (batch ${startIndex}): ${err.message}. Cannot proceed without reliable photo types.`);
     }
 }
 
@@ -350,10 +348,11 @@ export function mapPhotosToRooms(
 // ─── Recraft Crisp Upscale ─────────────────────────────────────
 /**
  * Upscale a single photo using Recraft Crisp Upscale via Kie.ai.
- * Cost: ~$0.004 per image. Returns the upscaled image URL or null on failure.
+ * Cost: ~$0.004 per image.
+ * If r2KeyPrefix is provided, downloads the result and re-uploads to R2 with proper .jpg extension.
+ * Recraft CDN URLs (tempfile.aiquickdraw.com) have NO file extension, which causes Kling 422 rejection.
  */
-export async function upscalePhoto(imageUrl: string): Promise<string | null> {
-    if (process.env.SKIP_UPSCALE === "1") return null;
+export async function upscalePhoto(imageUrl: string, r2KeyPrefix?: string): Promise<string | null> {
 
     const KIE_KEY = config.kie.apiKey;
     const headers = {
@@ -413,12 +412,42 @@ export async function upscalePhoto(imageUrl: string): Promise<string | null> {
             const state = (statusData.state || statusData.status || "").toUpperCase();
             if (state === "SUCCESS" || state === "COMPLETED" || statusData.successFlag === 1) {
                 // Extract result URL
-                const resultUrls = statusData.resultUrls || statusData.response?.resultUrls;
+                // resultUrls can be directly on statusData, on response, or inside resultJson string
+                let resultUrls = statusData.resultUrls || statusData.response?.resultUrls;
+                if (!resultUrls && statusData.resultJson) {
+                    try {
+                        const parsed = typeof statusData.resultJson === "string" ? JSON.parse(statusData.resultJson) : statusData.resultJson;
+                        resultUrls = parsed.resultUrls || parsed.result_urls;
+                    } catch { /* ignore parse errors */ }
+                }
                 if (resultUrls) {
                     const urls = typeof resultUrls === "string" ? JSON.parse(resultUrls) : resultUrls;
                     const first = Array.isArray(urls) ? urls[0] : urls;
                     const url = typeof first === "string" ? first : first?.url;
                     if (url) {
+                        // Recraft CDN URLs (tempfile.aiquickdraw.com) have no file extension.
+                        // Kling rejects extensionless URLs with 422 "Only jpeg/jpg/png supported".
+                        // Re-upload to R2 with proper .jpg extension for compatibility.
+                        if (r2KeyPrefix && !/\.(jpg|jpeg|png)(\?.*)?$/i.test(url)) {
+                            logger.info({ msg: "Upscale result has no extension — downloading for R2 re-upload", taskId, url: url.slice(0, 80) });
+                            try {
+                                const dlResp = await fetch(url, { signal: AbortSignal.timeout(30_000) });
+                                if (dlResp.ok) {
+                                    const buf = Buffer.from(await dlResp.arrayBuffer());
+                                    const tmpPath = join(tmpdir(), `upscale_${taskId}.jpg`);
+                                    writeFileSync(tmpPath, buf);
+                                    const r2Key = `${r2KeyPrefix}_upscaled.jpg`;
+                                    const r2Url = await uploadToR2(tmpPath, r2Key);
+                                    try { unlinkSync(tmpPath); } catch {}
+                                    logger.info({ msg: "Upscaled photo re-uploaded to R2", taskId, r2Url: r2Url.slice(0, 80) });
+                                    return r2Url;
+                                } else {
+                                    logger.warn({ msg: "Failed to download upscaled photo (will use original R2 URL)", taskId, status: dlResp.status, url: url.slice(0, 80) });
+                                }
+                            } catch (reupErr: any) {
+                                logger.warn({ msg: "Exception downloading upscaled photo", taskId, error: reupErr.message });
+                            }
+                        }
                         logger.info({ msg: "Photo upscaled successfully", taskId, url: url.slice(0, 80) });
                         return url;
                     }
@@ -450,22 +479,23 @@ export async function upscalePhoto(imageUrl: string): Promise<string | null> {
  */
 export async function upscaleUsablePhotos(
     photos: ClassifiedPhoto[],
-    concurrency: number = 3
+    concurrency: number = 3,
+    r2KeyBase?: string
 ): Promise<number> {
-    if (process.env.SKIP_UPSCALE === "1") {
-        logger.info({ msg: "Skipping photo upscale (SKIP_UPSCALE=1)" });
-        return 0;
-    }
+    // Photo upscaling is mandatory for quality output — no skip option.
 
     let successCount = 0;
-    const queue = [...photos];
+    const queue = photos.map((p, i) => ({ photo: p, index: i }));
 
     const worker = async () => {
         while (queue.length > 0) {
-            const photo = queue.shift();
-            if (!photo) break;
+            const item = queue.shift();
+            if (!item) break;
+            const { photo, index } = item;
 
-            const upscaledUrl = await upscalePhoto(photo.r2Url);
+            // Build R2 key prefix for re-upload (e.g. userId/jobId/frames/photo_3)
+            const r2Prefix = r2KeyBase ? `${r2KeyBase}/photo_${index}` : undefined;
+            const upscaledUrl = await upscalePhoto(photo.r2Url, r2Prefix);
             if (upscaledUrl) {
                 photo.upscaledUrl = upscaledUrl;
                 successCount++;
@@ -481,8 +511,12 @@ export async function upscaleUsablePhotos(
 }
 
 /**
- * Get the best URL for a classified photo (upscaled if available, otherwise R2 original).
+ * Get the best URL for a classified photo (upscaled R2 if available, otherwise original R2).
+ * Safety: only accept URLs ending in .jpg/.jpeg/.png (Kling rejects .webp and extensionless URLs with 422).
  */
 export function getBestPhotoUrl(photo: ClassifiedPhoto): string {
-    return photo.upscaledUrl || photo.r2Url;
+    if (photo.upscaledUrl && /\.(jpg|jpeg|png)(\?.*)?$/i.test(photo.upscaledUrl)) {
+        return photo.upscaledUrl;
+    }
+    return photo.r2Url;
 }

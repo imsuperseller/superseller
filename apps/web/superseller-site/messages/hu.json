@@ -1,0 +1,296 @@
+{
+  "nav": {
+    "home": "Kezdőlap",
+    "crew": "A Csapat",
+    "pricing": "Árak",
+    "contact": "Kapcsolat",
+    "industries": "Iparágak",
+    "hireCrew": "Béreld Fel a Csapatot",
+    "clientLogin": "Ügyfél Belépés",
+    "getStarted": "Kezdd El"
+  },
+  "hero": {
+    "badge": "Az AI Csapatod Készen Áll",
+    "headline1": "Elég a gürcölésből.",
+    "headline2": "Ideje eladni.",
+    "headline3": "Az AI Csapatod",
+    "headline4": "intézi a többit.",
+    "subheading": "Hét AI ágens, akik videókat gyártanak, posztolnak a közösségi médiába, fogadják a hívásokat, leadeket szereznek és uralják a piacodat — így válhatsz Super Seller-ré. Már $79/hó-tól.",
+    "primaryCta": "Béreld Fel a Csapatot",
+    "secondaryCta": "Ismerd Meg az Ágenseket",
+    "trust": "Éttermek, vállalkozók, lakatosok és ingatlanosok bíznak bennünk. Nincs szerződés. Bármikor lemondható."
+  },
+  "crewSection": {
+    "badge": "Az AI Csapatod",
+    "heading": "Hét ágens. Nulla rezsi.",
+    "description": "Minden csapattag egy drága alkalmazottat vagy ügynökséget vált ki — így te az üzletedre fókuszálhatsz, míg ők intézik a melót.",
+    "seeSolutions": "Megoldások"
+  },
+  "crew": {
+    "forge": {
+      "role": "Videó Produkció",
+      "tagline": "Dobj be egy linket. Kapj egy filmes videót.",
+      "description": "Ne fizess $500+-t egy videóért. Illeszd be bármilyen üzleti URL-t — ingatlan hirdetés, éttermi menü, portfólió oldal — és Forge moziminőségű AI videót készít az arcoddal, zenével és feliratokkal. Percek alatt kész, nem napok alatt.",
+      "features": [
+        "Bármilyen üzleti URL-ből videó percek alatt",
+        "AI arc-kompozitálás minden jelenetben",
+        "Minden formátum: 16:9, 9:16, 1:1, 4:5",
+        "Zenei aláfestés + feliratok",
+        "Jelenet szintű újragenerálás",
+        "Prioritásos feldolgozás Pro+ csomagnál"
+      ]
+    },
+    "spoke": {
+      "role": "Szóvivő",
+      "tagline": "Az AI szóvivőd. Hang be, videó ki.",
+      "description": "Rögzíts egy hangjegyzetet, tölts fel egy fotót, és kapsz egy profi szóvivő videót közvetlenül a WhatsApp-odra. Spoke megírja a szöveget és egy szinkronizált avatart készít rólad. Hirdess akciókat, mutasd be szolgáltatásaidat, győzd meg az ügyfeleket — anélkül, hogy kamera elé állnál.",
+      "features": [
+        "Hangjegyzetből + fotóból szóvivő videó",
+        "AI forgatókönyv-írás",
+        "Szájszinkronos avatar (Kling AI)",
+        "WhatsApp kézbesítés",
+        "Márka hangvételének testreszabása",
+        "Automatikus tartalék modellek"
+      ]
+    },
+    "frontdesk": {
+      "role": "AI Recepciós",
+      "tagline": "Soha ne maradj le hívásról. Az AI 0-24 fogad.",
+      "description": "Minden nem fogadott hívás egy elveszett ügyfél. FrontDesk természetes hangú AI-val fogad minden hívást, rögzíti a lead adatokat, időpontot foglal, és sürgős esetben átirányít hozzád. A nem fogadott hívásokból lefoglalt időpontok — éjjel-nappal.",
+      "features": [
+        "0-24 természetes hangú AI telefonos",
+        "Lead rögzítés és minősítés",
+        "Időpont-foglalás",
+        "Hívás rögzítés + átirat",
+        "Sürgős hívás átirányítás",
+        "Egyedi üdvözlés és személyiség"
+      ]
+    },
+    "scout": {
+      "role": "Lead Vadász",
+      "tagline": "Minősített leadek egyenesen a WhatsApp-odra.",
+      "description": "Ne hagyatkozz csak a szájreklámra. Scout megtalálja a potenciális ügyfeleket a piaci résedben, AI pontozással minősíti őket, és meleg leadeket szállít a WhatsApp-odra vagy a CRM-edbe. Az ajánlás-hajszolástól a kiszámítható lead-folyamig.",
+      "features": [
+        "Célzott lead-szerzés a réspiacon",
+        "AI minősítési pontozás",
+        "Közvetlen WhatsApp kézbesítés",
+        "CRM integráció",
+        "Landing oldal készítő",
+        "Lead analitikai dashboard"
+      ]
+    },
+    "buzz": {
+      "role": "Tartalomgyártó",
+      "tagline": "Robotpilóta a közösségi médiádhoz.",
+      "description": "A nulláról profi közösségi média jelenlét. Buzz márkád stílusában AI szöveget és képeket generál, WhatsApp-ra küldi egyetlen koppintásos jóváhagyásra, majd automatikusan publikál Facebook-ra és Instagram-ra. Te jóváhagyod. Buzz intézi a többit.",
+      "features": [
+        "AI tartalomkészítés (szöveg + képek)",
+        "WhatsApp jóváhagyási folyamat",
+        "Facebook + Instagram publikálás",
+        "Aitable analitikai dashboard",
+        "Blog tartalom generálás",
+        "Márkához illeszkedő üzenetek"
+      ]
+    },
+    "cortex": {
+      "role": "Elemző",
+      "tagline": "Az üzleti agyad, mindig naprakészen.",
+      "description": "Ne válaszolgass újra és újra ugyanazokra a kérdésekre. Cortex feldolgozza a dokumentumaidat, folyamatleírásaidat és márkanyagaidat, majd pontos, forrásmegjelölt válaszokat ad a csapatodnak vagy ügyfeleidnek. A teljes üzleti tudásod, bármikor elérhető.",
+      "features": [
+        "Dokumentum-feldolgozás (PDF, dokumentumok, web)",
+        "RAG-alapú kérdés-válasz",
+        "Több bérlős adatelkülönítés",
+        "Márkát ismerő válaszok",
+        "Csapat tudásbázis",
+        "API hozzáférés integrációkhoz"
+      ]
+    },
+    "market": {
+      "role": "Piactér Automatizálás",
+      "tagline": "Robotpilóta a Facebook Marketplace-hez.",
+      "description": "Egy hirdetésből naponta akár százakat — miközben alszol. Market egyedi termékhirdetéseket generál AI szöveggel, profi képekkel és helyszínváltogatással 30+ városban. Tökéletes fizikai termékeket értékesítő vállalkozásoknak, akik uralni akarják a Facebook Marketplace-t.",
+      "features": [
+        "AI-generált szöveg hirdetésenként",
+        "3× egyedi kép telefon-kerettel",
+        "GoLogin munkamenet-kezelés",
+        "Helyszínváltogatás (30+ város)",
+        "Több termékes katalógus",
+        "Automatizált 0-24 ütemezés"
+      ]
+    }
+  },
+  "industries": {
+    "badge": "Az Üzletedre Szabva",
+    "heading": "A Te iparágad. A Te csapatod.",
+    "description": "A túlterhelt vállalkozóból domináns piaci szereplő. Egyedi AI megoldások a réspicodra."
+  },
+  "roi": {
+    "badge": "A Matek",
+    "heading1": "A régi módszer",
+    "heading2": "10x többe kerül",
+    "description": "SuperSeller AI kiváltja a drága ügynökségeket, szabadúszókat és alkalmazottakat AI ágensekkel, akik gyorsabbak és a költségek töredékébe kerülnek.",
+    "colTask": "Feladat",
+    "colOldCost": "Régi költség",
+    "colOldTime": "Régi idő",
+    "colAiCost": "SuperSeller AI költség",
+    "colAiTime": "SuperSeller AI idő",
+    "rows": [
+      {
+        "task": "Bemutató videó (60mp)",
+        "oldCost": "$300–$800",
+        "oldTime": "3–7 nap",
+        "aiCost": "~50 kredit",
+        "aiTime": "~10 perc"
+      },
+      {
+        "task": "Recepciós (0-24)",
+        "oldCost": "$2,500–$4,000/hó",
+        "oldTime": "Felvétel + betanítás",
+        "aiCost": "~5 kredit/hívás",
+        "aiTime": "Azonnali"
+      },
+      {
+        "task": "Közösségi média poszt",
+        "oldCost": "$50–$150/poszt",
+        "oldTime": "1–3 nap",
+        "aiCost": "~10 kredit",
+        "aiTime": "~2 perc"
+      },
+      {
+        "task": "Minősített lead",
+        "oldCost": "$25–$75/lead",
+        "oldTime": "Folyamatos",
+        "aiCost": "~15 kredit",
+        "aiTime": "Kézbesítve"
+      },
+      {
+        "task": "Bemutatkozó videó",
+        "oldCost": "$500–$2,000",
+        "oldTime": "1–2 hét",
+        "aiCost": "~50 kredit",
+        "aiTime": "~5 perc"
+      }
+    ],
+    "summary": "Példa: Egy ingatanos, aki havi 10 bemutató videót készít, ~$5,000-t takarít meg egy videós stúdióhoz képest.",
+    "summaryCta": "SuperSeller AI Starter: $79/hó"
+  },
+  "pricing": {
+    "badge": "Egyszerű Kredit Árazás",
+    "heading1": "EGY CSAPAT.",
+    "heading2": "EGY CSOMAG.",
+    "heading3": "KORLÁTLAN LEHETŐSÉG.",
+    "description": "Vegyél krediteket, használd bármelyik csapattagra. Nincs eszközönkénti előfizetés. Nincs rejtett díj. Kombinálj kedved szerint.",
+    "creditRef": "Mire Elég a Kredit?",
+    "colCrewMember": "Csapattag",
+    "colCredits": "Kreditek",
+    "colPer": "Per",
+    "mostPopular": "Legnépszerűbb",
+    "month": "/hó",
+    "credits": "Kredit",
+    "monthlyCapacity": "Havi Kapacitás",
+    "plans": {
+      "starter": {
+        "tagline": "Tökéletes az AI csapattal való ismerkedéshez",
+        "cta": "Kezdd a Starter-rel",
+        "features": [
+          "Havi 5 videó",
+          "Havi 500 kredit",
+          "Minden csapattag elérhető",
+          "Minden videó formátum (16:9, 9:16, 1:1, 4:5)",
+          "WhatsApp kézbesítés",
+          "E-mail támogatás"
+        ]
+      },
+      "pro": {
+        "tagline": "Vállalkozásoknak, akik készen állnak a növekedésre AI-val",
+        "cta": "Válts Pro-ra",
+        "features": [
+          "Havi 15 videó",
+          "Havi 1,500 kredit",
+          "Minden csapattag elérhető",
+          "Minden videó formátum (16:9, 9:16, 1:1, 4:5)",
+          "Prioritásos feldolgozás",
+          "WhatsApp kézbesítés",
+          "Feliratok a videókon",
+          "Kiemelt támogatás"
+        ]
+      },
+      "team": {
+        "tagline": "Teljes AI részleg a vállalkozásodnak",
+        "cta": "Növekedj Velünk",
+        "features": [
+          "Havi 50 videó",
+          "Havi 4,000 kredit",
+          "Minden csapattag elérhető",
+          "Minden videó formátum (16:9, 9:16, 1:1, 4:5)",
+          "Prioritásos feldolgozás",
+          "WhatsApp kézbesítés",
+          "Feliratok a videókon",
+          "Csapattagok hozzáférése",
+          "Dedikált fiókkezelő",
+          "Egyedi integrációk"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "heading": "Kérdésed van?",
+    "items": [
+      {
+        "q": "Mik azok a kreditek és hogyan működnek?",
+        "a": "A kreditek az univerzális fizetőeszközöd az összes csapattagnál. Minden feladatnak fix kredit ára van — például egy bemutató videó ~50 kredit, egy piactéri hirdetés ~25 kredit, egy telefonhívás ~5 kredit. Válassz csomagot, és használd a krediteket bármilyen szolgáltatásra."
+      },
+      {
+        "q": "Minden csapattagot kell használnom?",
+        "a": "Nem. Használd azokat az ágenseket, amelyek a legnagyobb problémádat oldják meg. Egy ingatanos lehet, hogy csak Forge-ot és FrontDesk-et használ. Egy vállalkozó Market-re és Scout-ra fókuszálhat. A kreditjeid mindegyiknél felhasználhatók."
+      },
+      {
+        "q": "Miben más ez, mint szabadúszókat alkalmazni?",
+        "a": "A szabadúszók többe kerülnek, napokig tart, és állandó egyeztetést igényel. Az AI csapatod percek alatt dolgozik, 0-24, nulla projektmenedzsment. Egy bemutató videó, ami stúdióban $300–$800, itt ~50 kreditbe kerül."
+      },
+      {
+        "q": "Ki tudom próbálni, mielőtt elkötelezem magam?",
+        "a": "Lépj velünk kapcsolatba egy demóért a saját üzleti adataiddal. Megmutatjuk, pontosan mit készít minden csapattag a te iparágadban."
+      },
+      {
+        "q": "Mi történik a fel nem használt kreditekkel?",
+        "a": "A kreditek nem járnak le, amíg aktív előfizetésed van. Hónapról hónapra átvihetők."
+      },
+      {
+        "q": "Biztonságban vannak az adataim?",
+        "a": "Igen. Minden vállalkozás elkülönített adatokat kap. Vállalati szintű PostgreSQL-t használunk sorszintű biztonsággal, titkosított Cloudflare R2 tárolással, és soha nem osztjuk meg a tartalmaidat vagy üzleti adataidat."
+      },
+      {
+        "q": "Melyik csapattagok működnek már most?",
+        "a": "Forge (videó producer), Spoke (szóvivő), Buzz (tartalomgyártó) és Market (piactér automatizálás) teljesen működik és ma is tartalmakat készít. FrontDesk, Scout és Cortex hamarosan indul — csatlakozz most, hogy az elsők között legyél."
+      },
+      {
+        "q": "Az enyém a készült tartalom?",
+        "a": "Igen. Minden videó, poszt és anyag, amit az AI csapatod készít, 100%-ban a tiéd. Töltsd le bármilyen formátumban, használd bárhol, nincs vízjel."
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Válj",
+    "headingHighlight": "Super Seller",
+    "description": "Az AI csapatod készen áll. $79/hó-ért videókat, közösségi médiát, leadeket és még többet kapsz. Nincs szerződés. Bármikor lemondható.",
+    "primaryBtn": "Kezdd El",
+    "secondaryBtn": "Beszéljünk"
+  },
+  "footer": {
+    "description": "Hét AI ágens, akik videókat gyártanak, fogadják a hívásokat, leadeket szereznek és viszik az üzleted — már $79/hó-tól.",
+    "navigation": "Navigáció",
+    "industries": "Iparágak",
+    "clientAccess": "Ügyfél Hozzáférés",
+    "privacyPolicy": "Adatvédelmi Irányelvek",
+    "termsOfService": "Felhasználási Feltételek",
+    "copyright": "© {year} SuperSeller AI. Minden jog fenntartva."
+  },
+  "meta": {
+    "title": "SuperSeller AI | Változtasd az üzleted értékesítő gépezetté",
+    "description": "Hét AI ágens, akik videókat gyártanak, posztolnak a közösségi médiába, fogadják a hívásokat és leadeket szereznek — kisvállalkozókból Super Seller-eket csinálnak. Már $79/hó-tól."
+  },
+  "languageSwitcher": {
+    "label": "Nyelv"
+  }
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { ArrowLeft, ArrowRight, Check, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Button } from '@/components/ui/button-enhanced';

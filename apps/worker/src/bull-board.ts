@@ -3,7 +3,7 @@ import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
 import { ExpressAdapter } from "@bull-board/express";
 import { Queue } from "bullmq";
 import { Request, Response, NextFunction } from "express";
-import { videoPipelineQueue, clipGenerationQueue } from "./queue/queues";
+import { videoPipelineQueue, clipGenerationQueue, remotionQueue, crewVideoQueue } from "./queue/queues";
 import { redisConnection } from "./queue/connection";
 import { logger } from "./utils/logger";
 
@@ -61,6 +61,8 @@ export function setupBullBoard(): { router: any; basicAuth: typeof basicAuth } |
             new BullMQAdapter(videoPipelineQueue),
             new BullMQAdapter(clipGenerationQueue),
             new BullMQAdapter(frontdeskPollerQueue),
+            new BullMQAdapter(remotionQueue),
+            new BullMQAdapter(crewVideoQueue),
         ],
         serverAdapter,
     });

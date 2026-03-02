@@ -395,9 +395,11 @@ data/*.db-*
 claude_desktop_config.json
 scripts/node_modules/
 apps/web/rensto-site/service-account.json
+apps/web/superseller-site/service-account.json
 
 # Secrets / credentials
 infra/rensto-svc.json
+infra/superseller-svc.json
 docs/vault/FINANCIAL_VAULT.md
 **/service-account*.json
 **/*-svc.json
@@ -432,8 +434,20 @@ infra/.n8n-auth.env
 # Claude Code worktrees (internal)
 .claude/worktrees/
 
+# MCP config (contains credentials)
+.mcp.json
+
 # Experiment projects (not part of monorepo)
 Celebrity Selfie Generator/
+claude-ollama-bridge/
+ollama-mcp-local/
+
+# Customer projects (live in separate repos, not in monorepo)
+ac-&-c-llc-hvac/
+yoram-friedman-insurance/
+rensto/
+wonder.care/
+tax4us/
 
 # Temporary assets (screenshots, test media)
 assets/screenshots/

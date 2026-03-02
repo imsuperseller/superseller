@@ -8,6 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseApprovalResponse, sendPublishNotification } from "@/lib/services/social/approval-flow";
 import { publishToFacebook, publishToInstagram } from "@/lib/services/social/facebook-publisher";
+import { publishToX } from "@/lib/services/social/x-publisher";
+import { publishToLinkedIn } from "@/lib/services/social/linkedin-publisher";
+import { publishToYouTube } from "@/lib/services/social/youtube-publisher";
 import { findRecordByPostgresId, updateContentRecord } from "@/lib/services/social/aitable-sync";
 
 export async function POST(req: NextRequest) {
@@ -33,14 +36,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: "not an approval response" });
     }
 
-    // Find the most recent pending post
-    const pendingPost = await prisma.contentPost.findFirst({
+    // Find the most recent pending post — prefer one assigned to this approver
+    let pendingPost = await prisma.contentPost.findFirst({
       where: {
         approvalStatus: "pending",
         status: "pending_approval",
+        metadata: { path: ["approverPhone"], equals: from },
       },
       orderBy: { createdAt: "desc" },
     });
+
+    // Fallback: any pending post (backwards compat for posts without approverPhone)
+    if (!pendingPost) {
+      pendingPost = await prisma.contentPost.findFirst({
+        where: {
+          approvalStatus: "pending",
+          status: "pending_approval",
+        },
+        orderBy: { createdAt: "desc" },
+      });
+    }
 
     if (!pendingPost) {
       return NextResponse.json({ ok: true, skipped: "no pending posts" });
@@ -98,6 +113,46 @@ export async function POST(req: NextRequest) {
             accessToken: account.accessToken,
             caption: content,
             imageUrl: mediaUrls[0],
+          });
+        } else if (pendingPost.platform === "twitter") {
+          const acctMeta = (account.metadata as Record<string, string>) || {};
+          if (acctMeta.authType === "oauth2" && account.accessToken) {
+            publishResult = await publishToX({
+              text: content,
+              mediaUrl: mediaUrls[0],
+              bearerToken: account.accessToken,
+              username: acctMeta.username,
+              apiKey: "", apiKeySecret: "", accessToken: "", accessTokenSecret: "",
+            });
+          } else {
+            const apiKey = acctMeta.apiKey || process.env.X_API_KEY || "";
+            const apiKeySecret = acctMeta.apiKeySecret || process.env.X_API_KEY_SECRET || "";
+            const xAccessTokenSecret = acctMeta.accessTokenSecret || process.env.X_ACCESS_TOKEN_SECRET || "";
+            if (apiKey && apiKeySecret && xAccessTokenSecret) {
+              publishResult = await publishToX({
+                text: content,
+                mediaUrl: mediaUrls[0],
+                apiKey,
+                apiKeySecret,
+                accessToken: account.accessToken,
+                accessTokenSecret: xAccessTokenSecret,
+              });
+            }
+          }
+        } else if (pendingPost.platform === "linkedin" && account.accountId) {
+          publishResult = await publishToLinkedIn({
+            accessToken: account.accessToken,
+            authorUrn: account.accountId,
+            text: content,
+            imageUrl: mediaUrls[0],
+          });
+        } else if (pendingPost.platform === "youtube") {
+          const postMeta = (pendingPost.metadata as Record<string, string>) || {};
+          publishResult = await publishToYouTube({
+            accessToken: account.accessToken,
+            title: postMeta.title || content.slice(0, 100),
+            description: content,
+            videoUrl: mediaUrls[0],
           });
         }
 

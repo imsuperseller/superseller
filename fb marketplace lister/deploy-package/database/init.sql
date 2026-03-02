@@ -4,10 +4,11 @@
 -- Main listings table
 CREATE TABLE IF NOT EXISTS fb_listings (
     id SERIAL PRIMARY KEY,
+    customer_id VARCHAR(50),
     unique_hash VARCHAR(255) UNIQUE NOT NULL,
     client_id VARCHAR(50) NOT NULL,
     status VARCHAR(50) DEFAULT 'queued',
-    
+
     -- Product details
     product_name VARCHAR(255),
     product_type VARCHAR(100),
@@ -16,30 +17,34 @@ CREATE TABLE IF NOT EXISTS fb_listings (
     design VARCHAR(100),
     color VARCHAR(50),
     construction VARCHAR(255),
-    
+
     -- Pricing
     price INTEGER DEFAULT 0,
     listing_price INTEGER DEFAULT 0,
-    
+
     -- Location & Contact
     phone_number VARCHAR(20),
     location VARCHAR(100),
-    
+
     -- Content
     listing_title VARCHAR(255),
     listing_description TEXT,
-    
+
     -- Media URLs
     image_url TEXT,
     image_url2 TEXT,
     image_url3 TEXT,
     video_url TEXT,
-    
+
     -- Miss Party specific
     rental_period VARCHAR(50),
     includes TEXT,
     delivery TEXT,
-    
+
+    -- Config & posting
+    config_data JSONB,
+    facebook_url TEXT,
+
     -- Metadata
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -1,21 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { NICHES } from '@/data/niches';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [industriesOpen, setIndustriesOpen] = useState(false);
+  const t = useTranslations('nav');
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'The Crew', href: '/crew' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Contact', href: '/contact' },
+    { name: t('home'), href: '/' as const },
+    { name: t('crew'), href: '/crew' as const },
+    { name: t('pricing'), href: '/pricing' as const },
+    { name: t('contact'), href: '/contact' as const },
   ];
 
   return (
@@ -68,7 +71,7 @@ export function Header() {
               onMouseLeave={() => setIndustriesOpen(false)}
             >
               <button className="flex items-center gap-1 text-sm font-medium text-white/70 hover:text-white transition-colors cursor-pointer">
-                Industries
+                {t('industries')}
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
@@ -78,7 +81,7 @@ export function Header() {
                     {NICHES.map((niche) => (
                       <Link
                         key={niche.slug}
-                        href={`/${niche.slug}`}
+                        href={`/${niche.slug}` as any}
                         className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                       >
                         {niche.name}
@@ -90,8 +93,9 @@ export function Header() {
             </div>
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop CTA + Language Switcher */}
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <Link href="/pricing">
               <Button
                 size="sm"
@@ -102,13 +106,14 @@ export function Header() {
                   boxShadow: '0 0 20px rgba(244, 121, 32, 0.4)',
                 }}
               >
-                Hire The Crew
+                {t('hireCrew')}
               </Button>
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSwitcher />
             <Button
               variant="ghost"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -141,13 +146,13 @@ export function Header() {
               {/* Industries in mobile */}
               <div className="px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2">
-                  Industries
+                  {t('industries')}
                 </p>
                 <div className="grid grid-cols-2 gap-1">
                   {NICHES.map((niche) => (
                     <Link
                       key={niche.slug}
-                      href={`/${niche.slug}`}
+                      href={`/${niche.slug}` as any}
                       className="block px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-md"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -168,7 +173,7 @@ export function Header() {
                     boxShadow: '0 0 20px rgba(244, 121, 32, 0.4)',
                   }}
                 >
-                  Hire The Crew
+                  {t('hireCrew')}
                 </Button>
               </Link>
             </div>

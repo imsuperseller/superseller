@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button-enhanced';
 import { Input } from '@/components/ui/input-enhanced';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 interface Message {
     id: string;

@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { FileText, ClipboardCheck, ArrowRight, Zap, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { trackEvent } from './analytics/GTMProvider';
 
 export function LeadMagnetSection() {

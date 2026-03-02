@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+
 import { PRICING_PLANS } from '@/data/pricing';
 import { CREDIT_COSTS } from '@/data/pricing';
 import { CREW_MEMBERS } from '@/data/crew';
@@ -46,7 +47,7 @@ export function CreditSlider() {
 
   return (
     <motion.div
-      className="max-w-2xl mx-auto rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl p-8"
+      className="max-w-2xl mx-auto rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl p-4 md:p-8"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -67,11 +68,11 @@ export function CreditSlider() {
 
           return (
             <div key={slider.crewId} className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm gap-1 sm:gap-2">
                 <span className="text-white font-medium">{slider.label}</span>
-                <span className="text-[var(--superseller-text-muted)] tabular-nums">
+                <span className="text-[var(--superseller-text-muted)] tabular-nums text-xs sm:text-sm flex-shrink-0">
                   {val} {slider.unit}{' '}
-                  <span className="text-xs opacity-50">({credits} cr)</span>
+                  <span className="opacity-50">({credits} cr)</span>
                 </span>
               </div>
               <input
@@ -86,7 +87,7 @@ export function CreditSlider() {
                     [slider.crewId]: Number(e.target.value),
                   }))
                 }
-                className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                className="w-full h-2 rounded-full appearance-none cursor-pointer superseller-slider"
                 style={{
                   background: `linear-gradient(to right, ${member?.accentColor ?? 'var(--superseller-accent-cyan)'} 0%, ${member?.accentColor ?? 'var(--superseller-accent-cyan)'} ${((val - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.1) ${((val - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.1) 100%)`,
                 }}

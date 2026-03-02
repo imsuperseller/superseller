@@ -305,6 +305,54 @@ function getProductMockup(member: CrewMember) {
         </div>
       );
 
+    case 'market':
+      return (
+        <div className="space-y-4">
+          {/* Listing queue */}
+          <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: `rgba(${accentColorRgb}, 0.06)`, border: `1px solid rgba(${accentColorRgb}, 0.12)` }}>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div className="w-3 h-3 rounded-full" style={{ background: accentColor }} />
+                <div className="absolute inset-0 w-3 h-3 rounded-full animate-ping" style={{ background: accentColor, opacity: 0.4 }} />
+              </div>
+              <span className="text-xs font-bold" style={{ color: accentColor }}>24/7 Auto-Posting</span>
+            </div>
+            <span className="text-[10px] text-white/30">147 listed today</span>
+          </div>
+          {/* Listing cards */}
+          {[
+            { title: 'Professional Garage Door Repair', city: 'Dallas, TX', status: 'posted' },
+            { title: 'Emergency Lockout Service 24/7', city: 'Plano, TX', status: 'posting' },
+            { title: 'Custom Kitchen Renovation', city: 'Frisco, TX', status: 'queued' },
+          ].map((listing, i) => (
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02]">
+              <div className="w-10 h-10 rounded-lg" style={{ background: `rgba(${accentColorRgb}, ${0.08 + i * 0.04})` }} />
+              <div className="flex-1">
+                <div className="text-[11px] font-bold text-white">{listing.title}</div>
+                <div className="text-[10px] text-white/30">{listing.city}</div>
+              </div>
+              <div
+                className="px-2 py-0.5 rounded text-[9px] font-bold uppercase"
+                style={{
+                  background: listing.status === 'posted' ? 'rgba(34,197,94,0.1)' : `rgba(${accentColorRgb}, 0.1)`,
+                  color: listing.status === 'posted' ? '#22c55e' : accentColor,
+                }}
+              >
+                {listing.status}
+              </div>
+            </div>
+          ))}
+          {/* Location rotation */}
+          <div className="flex flex-wrap gap-1.5">
+            {['Dallas', 'Fort Worth', 'Plano', 'Arlington', 'Frisco', '+25'].map((city) => (
+              <span key={city} className="px-2 py-1 rounded-md text-[9px] text-white/30 border border-white/5 bg-white/[0.02]">
+                {city}
+              </span>
+            ))}
+          </div>
+        </div>
+      );
+
     default:
       return null;
   }

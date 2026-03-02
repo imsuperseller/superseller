@@ -30,9 +30,12 @@ ALTER TABLE "usage_events"
 
 CREATE INDEX IF NOT EXISTS "usage_events_model_id_idx" ON "usage_events"("model_id");
 
-ALTER TABLE "usage_events"
-    ADD CONSTRAINT IF NOT EXISTS "usage_events_model_id_fkey"
-    FOREIGN KEY ("model_id") REFERENCES "llm_model_configs"("id") ON DELETE SET NULL;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'usage_events_model_id_fkey') THEN
+        ALTER TABLE "usage_events" ADD CONSTRAINT "usage_events_model_id_fkey"
+            FOREIGN KEY ("model_id") REFERENCES "llm_model_configs"("id") ON DELETE SET NULL;
+    END IF;
+END $$;
 
 -- 3. Notifications table (in-app, WhatsApp, email, push)
 CREATE TABLE IF NOT EXISTS "notifications" (
@@ -57,9 +60,12 @@ CREATE INDEX IF NOT EXISTS "notifications_read_idx"       ON "notifications"("re
 CREATE INDEX IF NOT EXISTS "notifications_channel_idx"    ON "notifications"("channel");
 CREATE INDEX IF NOT EXISTS "notifications_created_at_idx" ON "notifications"("created_at");
 
-ALTER TABLE "notifications"
-    ADD CONSTRAINT IF NOT EXISTS "notifications_user_id_fkey"
-    FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'notifications_user_id_fkey') THEN
+        ALTER TABLE "notifications" ADD CONSTRAINT "notifications_user_id_fkey"
+            FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE;
+    END IF;
+END $$;
 
 -- 4. Seed: Initial LLM Model Config Registry
 INSERT INTO "llm_model_configs" ("id","provider","display_name","used_in","is_active","input_cost_per_1m","output_cost_per_1m","supports_vision","supports_tools","context_window_k","notes")

@@ -1,0 +1,296 @@
+{
+  "nav": {
+    "home": "Home",
+    "crew": "The Crew",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "industries": "Industries",
+    "hireCrew": "Hire The Crew",
+    "clientLogin": "Client Login",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "badge": "Your AI Crew Is Ready",
+    "headline1": "Stop Hustling.",
+    "headline2": "Start Selling.",
+    "headline3": "Your AI Crew",
+    "headline4": "Handles the Rest.",
+    "subheading": "Seven AI agents that produce videos, post your social media, answer calls, generate leads, and dominate your market — so you become a Super Seller. Starting at $79/mo.",
+    "primaryCta": "Hire The Crew",
+    "secondaryCta": "Meet Each Agent",
+    "trust": "Trusted by restaurants, contractors, locksmiths, and realtors. No contracts. Cancel anytime."
+  },
+  "crewSection": {
+    "badge": "Your AI Crew",
+    "heading": "Seven Agents. Zero Overhead.",
+    "description": "Each crew member replaces an expensive hire or agency — so you focus on your craft while they handle the grind.",
+    "seeSolutions": "See solutions"
+  },
+  "crew": {
+    "forge": {
+      "role": "Video Producer",
+      "tagline": "Drop a link. Get a cinematic video.",
+      "description": "Stop paying $500+ per video. Paste any business URL — a property listing, a restaurant menu, a portfolio page — and Forge creates a cinematic AI video with your face composited in, music, and text overlays. Ready to post in minutes, not days.",
+      "features": [
+        "Any business URL to video in minutes",
+        "AI face compositing in every scene",
+        "All formats: 16:9, 9:16, 1:1, 4:5",
+        "Music overlay + text captions",
+        "Scene-level regeneration",
+        "Priority processing on Pro+"
+      ]
+    },
+    "spoke": {
+      "role": "Spokesperson",
+      "tagline": "Your AI spokesperson. Voice in, video out.",
+      "description": "Record a voice note, upload a photo, and get a professional spokesperson video delivered to your WhatsApp. Spoke writes the script and creates a lip-synced avatar of you speaking. Announce specials, explain services, pitch customers — without ever stepping in front of a camera.",
+      "features": [
+        "Voice note + photo to spokesperson video",
+        "AI script generation",
+        "Lip-synced avatar (Kling AI)",
+        "WhatsApp delivery",
+        "Brand voice customization",
+        "Automatic fallback models"
+      ]
+    },
+    "frontdesk": {
+      "role": "AI Receptionist",
+      "tagline": "Never miss a call. AI answers 24/7.",
+      "description": "Every missed call is a lost customer. FrontDesk answers every call with natural voice AI, captures lead details, books appointments, and routes urgent calls to you. From missed calls to booked appointments — around the clock.",
+      "features": [
+        "24/7 natural voice AI answering",
+        "Lead capture and qualification",
+        "Appointment booking",
+        "Call recording + transcripts",
+        "Urgent call routing",
+        "Custom greeting and personality"
+      ]
+    },
+    "scout": {
+      "role": "Lead Hunter",
+      "tagline": "Qualified leads delivered to your WhatsApp.",
+      "description": "Stop relying on word-of-mouth alone. Scout finds potential customers in your niche, qualifies them with AI scoring, and delivers warm leads straight to your WhatsApp or CRM. From chasing referrals to a predictable lead pipeline.",
+      "features": [
+        "Niche-targeted lead sourcing",
+        "AI qualification scoring",
+        "Direct WhatsApp delivery",
+        "CRM integration",
+        "Landing page builder",
+        "Lead analytics dashboard"
+      ]
+    },
+    "buzz": {
+      "role": "Content Creator",
+      "tagline": "Auto-pilot for your social media.",
+      "description": "From zero posts to a professional social media presence. Buzz generates on-brand content with AI text and images, sends it to your WhatsApp for one-tap approval, and publishes to Facebook and Instagram automatically. You approve. Buzz handles the rest.",
+      "features": [
+        "AI content creation (text + images)",
+        "WhatsApp approval workflow",
+        "Facebook + Instagram publishing",
+        "Aitable analytics dashboard",
+        "Blog content generation",
+        "Brand-consistent messaging"
+      ]
+    },
+    "cortex": {
+      "role": "Analyst",
+      "tagline": "Your business brain, always up to date.",
+      "description": "Stop answering the same questions over and over. Cortex ingests your documents, SOPs, and brand materials, then answers questions from your team or customers with accurate, sourced responses. Your entire business knowledge, always available.",
+      "features": [
+        "Document ingestion (PDF, docs, web)",
+        "RAG-powered Q&A",
+        "Multi-tenant isolation",
+        "Brand-aware responses",
+        "Team knowledge base",
+        "API access for integrations"
+      ]
+    },
+    "market": {
+      "role": "Marketplace Automation",
+      "tagline": "Auto-pilot for Facebook Marketplace.",
+      "description": "From one listing a day to hundreds while you sleep. Market generates unique product listings with AI copy, professional images, and location rotation across 30+ cities. Perfect for businesses selling physical products who want to dominate Facebook Marketplace.",
+      "features": [
+        "AI-generated copy per listing",
+        "3× unique images with phone overlay",
+        "GoLogin session management",
+        "Location rotation (30+ cities)",
+        "Multi-product catalog support",
+        "Automated 24/7 scheduling"
+      ]
+    }
+  },
+  "industries": {
+    "badge": "Built For Your Business",
+    "heading": "Your Industry. Your Crew.",
+    "description": "From overwhelmed operator to dominant market presence. Custom AI solutions for your niche."
+  },
+  "roi": {
+    "badge": "The Math",
+    "heading1": "The Old Way Costs",
+    "heading2": "10x More",
+    "description": "SuperSeller AI replaces expensive agencies, freelancers, and staff with AI agents that work faster and cost a fraction.",
+    "colTask": "Task",
+    "colOldCost": "Old Cost",
+    "colOldTime": "Old Time",
+    "colAiCost": "SuperSeller AI Cost",
+    "colAiTime": "SuperSeller AI Time",
+    "rows": [
+      {
+        "task": "Listing video (60s)",
+        "oldCost": "$300–$800",
+        "oldTime": "3–7 days",
+        "aiCost": "~50 credits",
+        "aiTime": "~10 min"
+      },
+      {
+        "task": "Receptionist (24/7)",
+        "oldCost": "$2,500–$4,000/mo",
+        "oldTime": "Hire + train",
+        "aiCost": "~5 credits/call",
+        "aiTime": "Instant"
+      },
+      {
+        "task": "Social media post",
+        "oldCost": "$50–$150/post",
+        "oldTime": "1–3 days",
+        "aiCost": "~10 credits",
+        "aiTime": "~2 min"
+      },
+      {
+        "task": "Qualified lead",
+        "oldCost": "$25–$75/lead",
+        "oldTime": "Ongoing",
+        "aiCost": "~15 credits",
+        "aiTime": "Delivered"
+      },
+      {
+        "task": "Explainer video",
+        "oldCost": "$500–$2,000",
+        "oldTime": "1–2 weeks",
+        "aiCost": "~50 credits",
+        "aiTime": "~5 min"
+      }
+    ],
+    "summary": "Example: A realtor creating 10 listing videos/mo saves ~$5,000 compared to a video studio.",
+    "summaryCta": "SuperSeller AI Starter: $79/mo"
+  },
+  "pricing": {
+    "badge": "Simple Credit Pricing",
+    "heading1": "ONE CREW.",
+    "heading2": "ONE PLAN.",
+    "heading3": "UNLIMITED POTENTIAL.",
+    "description": "Buy credits, use them on any crew member. No per-tool subscriptions. No hidden fees. Mix and match however you need.",
+    "creditRef": "What Do Credits Buy?",
+    "colCrewMember": "Crew Member",
+    "colCredits": "Credits",
+    "colPer": "Per",
+    "mostPopular": "Most Popular",
+    "month": "/month",
+    "credits": "Credits",
+    "monthlyCapacity": "Monthly Capacity",
+    "plans": {
+      "starter": {
+        "tagline": "Perfect for getting started with your AI crew",
+        "cta": "Start with Starter",
+        "features": [
+          "5 videos per month",
+          "500 credits per month",
+          "All crew members available",
+          "All video formats (16:9, 9:16, 1:1, 4:5)",
+          "WhatsApp delivery",
+          "Email support"
+        ]
+      },
+      "pro": {
+        "tagline": "For businesses ready to scale with AI",
+        "cta": "Go Pro",
+        "features": [
+          "15 videos per month",
+          "1,500 credits per month",
+          "All crew members available",
+          "All video formats (16:9, 9:16, 1:1, 4:5)",
+          "Priority processing",
+          "WhatsApp delivery",
+          "Text overlays on videos",
+          "Priority support"
+        ]
+      },
+      "team": {
+        "tagline": "A full AI department for your business",
+        "cta": "Scale Up",
+        "features": [
+          "50 videos per month",
+          "4,000 credits per month",
+          "All crew members available",
+          "All video formats (16:9, 9:16, 1:1, 4:5)",
+          "Priority processing",
+          "WhatsApp delivery",
+          "Text overlays on videos",
+          "Team access",
+          "Dedicated account manager",
+          "Custom integrations"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "heading": "Questions?",
+    "items": [
+      {
+        "q": "What are credits and how do they work?",
+        "a": "Credits are your universal currency across all crew members. Each task costs a set number of credits — for example, a listing video costs ~50 credits, a marketplace listing costs ~25 credits, a phone call costs ~5 credits. Buy a plan, use credits on any combination of services you need."
+      },
+      {
+        "q": "Do I need to use all crew members?",
+        "a": "No. Use whichever agents solve your biggest problems. A realtor might only use Forge and FrontDesk. A contractor might focus on Market and Scout. Your credits work across all of them."
+      },
+      {
+        "q": "How is this different from hiring freelancers?",
+        "a": "Freelancers cost more, take days, and require back-and-forth. Your AI crew works in minutes, 24/7, with zero project management overhead. A single listing video that costs $300–$800 from a studio costs ~50 credits here."
+      },
+      {
+        "q": "Can I try before I commit?",
+        "a": "Contact us for a demo with your actual business data. We'll show you exactly what each crew member produces for your specific industry."
+      },
+      {
+        "q": "What happens to unused credits?",
+        "a": "Credits never expire as long as you maintain an active subscription. They roll over month to month."
+      },
+      {
+        "q": "Is my data secure?",
+        "a": "Yes. Each business gets isolated data. We use enterprise-grade PostgreSQL with row-level security, encrypted storage on Cloudflare R2, and never share your content or business data."
+      },
+      {
+        "q": "Which crew members are live right now?",
+        "a": "Forge (video producer), Spoke (spokesperson), Buzz (content creator), and Market (marketplace automation) are fully live and producing content today. FrontDesk, Scout, and Cortex are launching soon — join now to be first in line."
+      },
+      {
+        "q": "Do I own the content that's created?",
+        "a": "Yes. Every video, post, and asset created by your AI crew is 100% yours. Download in any format, use anywhere, no watermarks."
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Become a",
+    "headingHighlight": "Super Seller",
+    "description": "Your AI Crew is ready. $79/mo gets you videos, social media, leads, and more. No contracts. Cancel anytime.",
+    "primaryBtn": "Get Started",
+    "secondaryBtn": "Talk to Us"
+  },
+  "footer": {
+    "description": "Seven AI agents that produce videos, answer calls, generate leads, and run your business — starting at $79/mo.",
+    "navigation": "Navigation",
+    "industries": "Industries",
+    "clientAccess": "Client Access",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "© {year} SuperSeller AI. All rights reserved."
+  },
+  "meta": {
+    "title": "SuperSeller AI | Turn Your Business into a Selling Machine",
+    "description": "Seven AI agents that produce videos, post your social media, answer calls, and generate leads — turning small business owners into Super Sellers. Starting at $79/mo."
+  },
+  "languageSwitcher": {
+    "label": "Language"
+  }
+}

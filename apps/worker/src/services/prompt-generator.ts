@@ -213,7 +213,9 @@ CRITICAL - OPENING CLIP (Exterior → Front Door, always Clip 1):
 - Opening MUST show the front door area, walkway, or approach—NOT pool, backyard, or interior.
 - NEVER: aerial, drone, wide shot from above. Ground-level, personal, as if you (the buyer) are being shown in.
 
-Return a JSON array of clip prompts. 80-150 words each.`;
+RESPONSE FORMAT (MANDATORY):
+Return ONLY a raw JSON object with a "clips" key containing an array of clip objects. No markdown, no explanation, no greeting, no commentary. Each clip object has: clip_number, from_room, to_room, prompt (80-150 words), duration_seconds, negative_prompt (optional).
+Example: {"clips":[{"clip_number":1,"from_room":"Exterior","to_room":"Front Door","prompt":"...","duration_seconds":10}]}`;
 
 const LEGACY_SYSTEM_PROMPT = `You are a world-class real estate cinematographer directing an AI video generation model. Your job is to write detailed video prompts for a property tour WITHOUT any people.
 
@@ -223,7 +225,9 @@ CINEMATIC RULES:
 3. NO PEOPLE: Empty property—no realtor, no humans. Focus on architecture, light, and space.
 4. SPATIAL LOGIC: Every property has HERO MOMENTS (top 3 selling points). When pool exists: pool is the FINALE. When no pool: elevate kitchen island, fireplace, view, master suite, or other notable features as hero focus.
 
-Return a JSON array of clip prompts. 80-150 words each. Each object: clip_number, from_room, to_room, prompt, duration_seconds (${config.video.defaultClipDuration}), negative_prompt (optional).`;
+RESPONSE FORMAT (MANDATORY):
+Return ONLY a raw JSON object with a "clips" key containing an array of clip objects. No markdown, no explanation, no greeting, no commentary. Each clip object has: clip_number, from_room, to_room, prompt (80-150 words), duration_seconds (${config.video.defaultClipDuration}), negative_prompt (optional).
+Example: {"clips":[{"clip_number":1,"from_room":"Exterior","to_room":"Front Door","prompt":"...","duration_seconds":5}]}`;
 
 export async function generateClipPrompts(
     tourSequence: TourRoom[],
@@ -234,16 +238,28 @@ export async function generateClipPrompts(
         description?: string;
         exterior_description?: string;
         includeRealtor?: boolean;
+        /** When true, Kling Elements is active — prompts should reference @realtor instead of "the person from the reference photo" */
+        useElements?: boolean;
         resoFacts?: any;
         amenities?: string[];
         heroFeatures?: string[];
     }
 ): Promise<ClipPrompt[]> {
     const includeRealtor = propertyDetails.includeRealtor ?? true;
+    const useElements = propertyDetails.useElements ?? false;
     const rawStyle = propertyDetails.style?.toLowerCase() || propertyDetails.architectural_style?.toLowerCase() || "modern";
     const styleKey = rawStyle.replace(/\s+/g, " ").trim();
     const selectedStyle = STYLE_MODIFIERS[styleKey] || STYLE_MODIFIERS[styleKey.replace(/\s+/g, "_")] || STYLE_MODIFIERS["modern"];
-    const systemPrompt = includeRealtor ? REALTOR_SYSTEM_PROMPT : LEGACY_SYSTEM_PROMPT;
+    let systemPrompt = includeRealtor ? REALTOR_SYSTEM_PROMPT : LEGACY_SYSTEM_PROMPT;
+    // When Kling Elements is active, tell Gemini to use @realtor syntax directly
+    if (useElements && includeRealtor) {
+        systemPrompt = systemPrompt
+            .replace(/the person from the reference photo \(Visual Identity Anchor\)\. Describe them ONLY as "the person from the reference photo"/g,
+                "the person referenced as @realtor. ALWAYS refer to them as @realtor in every prompt — this is a required token for AI video generation")
+            .replace(/Describe them ONLY as "the person from the reference photo"/g,
+                "ALWAYS refer to them as @realtor — this is a required token")
+            .replace(/"the person from the reference photo"/g, "@realtor");
+    }
     const baseNegative = includeRealtor ? REALTOR_NEGATIVE : UNIVERSAL_NEGATIVE;
 
     const tourDescription = tourSequence.map((t, i) => {
@@ -261,8 +277,8 @@ export async function generateClipPrompts(
     const userMessage = `Property: ${propertyDetails.property_type}
 Style: ${styleKey}
 Description: ${propertyDetails.description}${factsNote}${amenitiesNote}${heroNote}
-Realtor: ${includeRealtor ? "YES (Identity Anchor: use reference photo)" : "NO"}
-${includeRealtor ? "Clip 1 (Exterior → Front Door): Realtor ON the pathway/walkway, walking TOWARD the front door. Approach walk. Ground-level, personal. NEVER aerial, drone, or wide shot." : ""}
+Realtor: ${includeRealtor ? (useElements ? "YES (use @realtor token in EVERY prompt to reference the agent)" : "YES (Identity Anchor: use reference photo)") : "NO"}
+${includeRealtor ? "Clip 1 (Exterior → Front Door): " + (useElements ? "@realtor" : "Realtor") + " ON the pathway/walkway, walking TOWARD the front door. Approach walk. Ground-level, personal. NEVER aerial, drone, or wide shot." : ""}
 
 Tour sequence:
 ${tourDescription}
@@ -275,22 +291,72 @@ Generate one cinematic prompt per transition. Focus on natural guiding behavior.
         const { content } = await chatCompletion(
             [
                 { role: "system", content: systemPrompt },
-                { role: "user", content: userMessage },
+                { role: "user", content: userMessage + "\n\nCRITICAL: Output ONLY a raw JSON object. Your response must start with { and end with }. No greeting, no explanation, no markdown, no commentary. ONLY JSON." },
             ],
             {
-                temperature: 0.4,
-                max_tokens: 8192,
+                reasoning_effort: "high",
             }
         );
 
         try {
             let jsonStr = content.trim();
+            // Strip markdown code fences
             if (jsonStr.startsWith("```")) {
                 jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
             }
+            // Strip leading text before first { or [
+            const firstBrace = jsonStr.indexOf("{");
+            const firstBracket = jsonStr.indexOf("[");
+            const jsonStart = firstBrace >= 0 && (firstBracket < 0 || firstBrace < firstBracket) ? firstBrace : firstBracket;
+            if (jsonStart > 0) {
+                logger.warn({ msg: "Gemini returned leading text before JSON, stripping", stripped: jsonStr.substring(0, jsonStart) });
+                jsonStr = jsonStr.substring(jsonStart);
+            }
+            // Strip trailing text after last } or ]
+            const lastBrace = jsonStr.lastIndexOf("}");
+            const lastBracket = jsonStr.lastIndexOf("]");
+            const jsonEnd = Math.max(lastBrace, lastBracket);
+            if (jsonEnd >= 0 && jsonEnd < jsonStr.length - 1) {
+                jsonStr = jsonStr.substring(0, jsonEnd + 1);
+            }
+
+            logger.info({ msg: "Gemini raw response", contentLength: content.length, jsonLength: jsonStr.length, preview: jsonStr.substring(0, 300) });
 
             let parsed = JSON.parse(jsonStr);
-            const clips: any[] = Array.isArray(parsed) ? parsed : (parsed.clips || parsed.prompts || []);
+            // Flexible key lookup — Gemini may use different key names or formats
+            let clips: any[] = [];
+
+            if (Array.isArray(parsed)) {
+                clips = parsed;
+            } else if (parsed.clips || parsed.prompts || parsed.clip_prompts || parsed.tour_clips || parsed.sequences) {
+                clips = parsed.clips || parsed.prompts || parsed.clip_prompts || parsed.tour_clips || parsed.sequences;
+            } else {
+                // If parsed is an object with one array-valued key, use it
+                const arrayKey = Object.keys(parsed).find(k => Array.isArray(parsed[k]));
+                if (arrayKey) {
+                    clips = parsed[arrayKey];
+                } else {
+                    // Handle numbered key format: {"transition_1": "prompt text", "transition_2": "...", ...}
+                    // or {"clip_1": {...}, "clip_2": {...}, ...}
+                    const numberedKeys = Object.keys(parsed).filter(k => /^(transition|clip|prompt|scene|shot)_?\d+$/i.test(k)).sort();
+                    if (numberedKeys.length > 0) {
+                        logger.info({ msg: "Gemini used numbered key format, converting", keys: numberedKeys });
+                        clips = numberedKeys.map((k, i) => {
+                            const val = parsed[k];
+                            if (typeof val === "string") {
+                                // Raw prompt string
+                                return { clip_number: i + 1, prompt: val };
+                            } else if (typeof val === "object" && val !== null) {
+                                // Object with prompt inside
+                                return { clip_number: i + 1, ...val };
+                            }
+                            return { clip_number: i + 1, prompt: String(val) };
+                        });
+                    }
+                }
+            }
+
+            logger.info({ msg: "Parsed Gemini clips", clipCount: clips.length, keys: Object.keys(parsed) });
 
             return clips.map((clip, index) => {
                 const fromRoom = clip.from_room || tourSequence[index]?.from || "Exterior";

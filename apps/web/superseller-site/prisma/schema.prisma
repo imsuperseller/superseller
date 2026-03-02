@@ -64,7 +64,7 @@ model TenantUser {
 /// Primary user/client record. Standardized to native UUID.
 model User {
   id                     String    @id @default(dbgenerated("(gen_random_uuid())::text"))
-  email                  String
+  email                  String    @unique
   name                   String?
   phone                  String?
   image                  String?
@@ -652,13 +652,14 @@ model ContentPost {
   aiModel           String?
   aiPrompt          String?
   hashtags          Json?
-  platformAccountId String?   @db.Uuid
-  brandId           String?   @db.Uuid
+  platformAccountId String?          @db.Uuid
+  platformAccount   PlatformAccount? @relation(fields: [platformAccountId], references: [id])
+  brandId           String?          @db.Uuid
 }
 
 /// Connected social media accounts (OAuth tokens)
 model PlatformAccount {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId       String
   tenantId     String?   @db.Uuid
   platform     String
@@ -668,10 +669,13 @@ model PlatformAccount {
   refreshToken String?
   tokenExpiry  DateTime? @db.Timestamptz(6)
   scope        String?
-  isActive     Boolean   @default(true)
+  isActive     Boolean       @default(true)
   metadata     Json?
-  createdAt    DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @updatedAt @db.Timestamptz(6)
+  contentPosts ContentPost[]
+
+  @@unique([userId, platform, accountId], name: "userId_platform_accountId")
 }
 
 /// Knowledge-base indexed documents (PDF, URL, text)

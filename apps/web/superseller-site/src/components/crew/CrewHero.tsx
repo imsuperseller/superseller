@@ -1,16 +1,18 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { AnimatedGridBackground } from '@/components/AnimatedGridBackground';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import * as framer from 'framer-motion';
 const { motion, useScroll, useTransform } = framer;
 
 export function CrewHero() {
   const heroRef = useRef<HTMLElement>(null);
+  const t = useTranslations('hero');
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
@@ -66,17 +68,17 @@ export function CrewHero() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
             <Badge className="bg-[var(--superseller-accent-cyan)]/10 text-[var(--superseller-accent-cyan)] border-[var(--superseller-accent-cyan)]/20 px-5 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
-              Your AI Crew Is Ready
+              {t('badge')}
             </Badge>
           </motion.div>
 
           {/* Headline — each line staggers in with 3D perspective */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase leading-[0.9]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase leading-[0.9]">
             {[
-              { text: 'Stop Hustling.', className: 'text-white' },
-              { text: 'Start Selling.', style: { color: 'var(--superseller-primary)' } },
-              { text: 'Your AI Crew', className: 'text-white/40' },
-              { text: 'Handles the Rest.', style: { color: 'var(--superseller-accent-cyan)' } },
+              { text: t('headline1'), className: 'text-white' },
+              { text: t('headline2'), style: { color: 'var(--superseller-primary)' } },
+              { text: t('headline3'), className: 'text-white/40' },
+              { text: t('headline4'), style: { color: 'var(--superseller-accent-cyan)' } },
             ].map((line, i) => (
               <motion.span
                 key={i}
@@ -94,16 +96,12 @@ export function CrewHero() {
 
           {/* Sub — fades in after headline */}
           <motion.p
-            className="text-xl md:text-2xl text-[var(--superseller-text-secondary)] max-w-2xl mx-auto font-medium leading-relaxed"
+            className="text-lg sm:text-xl md:text-2xl text-[var(--superseller-text-secondary)] max-w-2xl mx-auto font-medium leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5, ease: 'easeOut' }}
           >
-            Seven AI agents that produce videos, post your social media, answer
-            calls, generate leads, and dominate your market
-            &mdash; so you become a{' '}
-            <span className="text-white font-black">Super Seller</span>.
-            Starting at <span className="text-white font-black">$79/mo</span>.
+            {t('subheading')}
           </motion.p>
 
           {/* CTAs — slide up with spring */}
@@ -121,7 +119,7 @@ export function CrewHero() {
                   backgroundImage: 'linear-gradient(135deg, var(--superseller-primary) 0%, var(--superseller-secondary) 100%)',
                 }}
               >
-                Hire The Crew
+                {t('primaryCta')}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -131,7 +129,7 @@ export function CrewHero() {
                 size="xl"
                 className="rounded-2xl font-black uppercase tracking-[0.15em] cursor-pointer"
               >
-                Meet Each Agent
+                {t('secondaryCta')}
               </Button>
             </Link>
           </motion.div>
@@ -143,7 +141,7 @@ export function CrewHero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.55, duration: 0.5 }}
           >
-            Trusted by restaurants, contractors, locksmiths, and realtors. No contracts. Cancel anytime.
+            {t('trust')}
           </motion.p>
         </div>
       </motion.div>

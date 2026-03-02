@@ -13,7 +13,7 @@ Central index for agent skill selection. When a task arrives, use this file to d
 
 | # | Skill | Purpose | Trigger Keywords | Status |
 |---|-------|---------|-----------------|--------|
-| 1 | **tourreel-pipeline** | Real estate video pipeline -- Zillow scraping, Kling 3.0, FFmpeg assembly, clip regen | TourReel, video pipeline, Kling, Kie.ai, clip generation, FFmpeg, listing video, Zillow, floorplan, Nano Banana, Suno | Active |
+| 1 | **tourreel-pipeline** | Real estate video pipeline -- Zillow scraping, Kling 3.0 AI clips, Remotion photo composition, FFmpeg utility, clip regen | TourReel, video pipeline, Kling, Kie.ai, clip generation, FFmpeg, Remotion, Ken Burns, composition, listing video, Zillow, floorplan, Nano Banana, Suno | Active |
 | 2 | **winner-studio** | AI avatar video for Mivnim/Yossi -- Gemini brain, avatar-pro, lip-sync, WhatsApp delivery | Winner Studio, Spoke, avatar, lip-sync, infinitalk, avatar-pro, Mivnim, Yossi, studio.superseller.agency | Active |
 | 3 | **marketplace-saas** | FB Marketplace bot SaaS -- multi-tenant posting, GoLogin, Kie.ai image gen, customer isolation | FB Marketplace, marketplace bot, UAD, MissParty, GoLogin, listing generation, marketplace SaaS | Active |
 | 4 | **lead-pages** | Dynamic lead landing pages -- /lp/[slug], per-customer branding, lead capture, RTL/LTR | landing page, lead page, /lp/, lead capture, customer branding, lead form, RTL | Active |
@@ -55,7 +55,7 @@ Central index for agent skill selection. When a task arrives, use this file to d
 |---|-------|---------|-----------------|--------|
 | 21 | **notebooklm-hub** | NotebookLM knowledge management -- 36 notebooks, query patterns, auth flow, conflict resolution | NotebookLM, notebook, research, spec, methodology, B.L.A.S.T, query notebook | Active |
 | 22 | **rag-pgvector** | RAG stack -- pgvector + Ollama + LiteLLM, HNSW indexing, multi-tenant document stores | RAG, pgvector, vector search, embedding, Ollama, LiteLLM, semantic search, HNSW | Active |
-| 23 | **model-observatory** | AI model tracking -- capability matrix, cost/quality benchmarks, model selection guidance | model comparison, Kling version, model selection, AI model, benchmark, model cost | Planned |
+| 23 | **model-observatory** | AI model tracking -- 31+ models, 7 categories, cost/quality benchmarks, pipeline recommendations, decision audit | model comparison, Kling version, model selection, AI model, benchmark, model cost, Kie.ai, fal.ai | Active |
 
 ### Customer and Portal Skills
 
@@ -86,10 +86,14 @@ Use this tree to map incoming tasks to the correct skill(s).
 
 ```
 "Generate a video" / "TourReel" / "real estate video"
-  --> tourreel-pipeline (pipeline logic)
+  --> tourreel-pipeline (pipeline logic — Kling AI clips OR Remotion composition)
     + cost-tracker (MANDATORY: log every API call cost)
     + model-observatory (model selection, when available)
     + deploy-ops (if deploying worker changes)
+
+"Remotion" / "Ken Burns" / "video composition" / "property tour composition"
+  --> tourreel-pipeline (Remotion path — see docs/REMOTION_BIBLE.md)
+    + deploy-ops (Chrome Headless Shell required on VPS)
 
 "Avatar video" / "Winner Studio" / "Spoke" / "lip-sync"
   --> winner-studio (studio pipeline)
@@ -380,7 +384,7 @@ These skills have specifications written but no production code. Use them for pl
 |-------|--------|-------------|---------------|
 | **agentforge** | Spec only | SKILL.md with full architecture, pipeline stages, credit pricing | No app code, no API routes, no UI |
 | **socialhub** | Spec only | SKILL.md with 7 spec docs, multi-platform architecture | No app code, no API routes, no UI |
-| **model-observatory** | Planned | Not yet created | No SKILL.md, no code |
+| **model-observatory** | Active | 31+ models, 7 categories, daily sync, seed script | SKILL.md (381 lines), seed-initial-models.mjs, daily-sync.ts |
 
 When working on these products, load the skill for architectural guidance but expect to write all implementation code from scratch.
 

@@ -18,7 +18,7 @@ async function main() {
     const publicUrl = await uploadToR2(localPath, r2Key, "image/jpeg");
     console.log(`R2 URL: ${publicUrl}`);
 
-    await query("UPDATE users SET avatar_url = $1 WHERE id = $2", [publicUrl, userId]);
+    await query('UPDATE "User" SET avatar_url = $1 WHERE id = $2', [publicUrl, userId]);
     console.log(`Updated avatar_url for user ${userId}`);
 
     process.exit(0);

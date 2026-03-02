@@ -1,11 +1,12 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Link from 'next/link';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { CrewIcon } from './CrewIcon';
 import { CrewCardVisual } from './CrewCardVisual';
 import type { CrewMember } from '@/data/crew';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import * as framer from 'framer-motion';
 const { motion, useMotionValue, useTransform, useSpring } = framer;
 
@@ -17,6 +18,7 @@ interface CrewMemberCardProps {
 export function CrewMemberCard({ member, index = 0 }: CrewMemberCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const t = useTranslations(`crew.${member.id}`);
 
   // Mouse position tracking for 3D tilt
   const mouseX = useMotionValue(0);
@@ -58,7 +60,7 @@ export function CrewMemberCard({ member, index = 0 }: CrewMemberCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       style={{ perspective: 800 }}
     >
-      <Link href={member.href} className="group block cursor-pointer">
+      <Link href={member.href as any} className="group block cursor-pointer">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
@@ -71,7 +73,7 @@ export function CrewMemberCard({ member, index = 0 }: CrewMemberCardProps) {
             ['--card-accent' as string]: member.accentColor,
             ['--card-accent-rgb' as string]: member.accentColorRgb,
           }}
-          className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl p-8 transition-colors duration-500 hover:border-opacity-30"
+          className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl p-5 md:p-8 transition-colors duration-500 hover:border-opacity-30"
         >
           {/* Mouse-following spotlight */}
           <motion.div
@@ -136,12 +138,12 @@ export function CrewMemberCard({ member, index = 0 }: CrewMemberCardProps) {
             className="text-sm font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: member.accentColor }}
           >
-            {member.role}
+            {t('role')}
           </p>
 
           {/* Tagline */}
           <p className="text-sm text-white/60 leading-relaxed mb-6 min-h-[2.5rem]">
-            {member.tagline}
+            {t('tagline')}
           </p>
 
           {/* Credits badge + CTA */}

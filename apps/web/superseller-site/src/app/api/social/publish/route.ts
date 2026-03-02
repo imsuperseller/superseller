@@ -9,6 +9,9 @@ import {
   publishToFacebook,
   publishToInstagram,
 } from "@/lib/services/social/facebook-publisher";
+import { publishToX } from "@/lib/services/social/x-publisher";
+import { publishToLinkedIn } from "@/lib/services/social/linkedin-publisher";
+import { publishToYouTube } from "@/lib/services/social/youtube-publisher";
 import { sendPublishNotification } from "@/lib/services/social/approval-flow";
 import { findRecordByPostgresId, updateContentRecord } from "@/lib/services/social/aitable-sync";
 
@@ -106,12 +109,80 @@ export async function POST(req: NextRequest) {
         });
         break;
 
-      case "linkedin":
-      case "twitter":
+      case "twitter": {
+        const xMeta = (account.metadata as Record<string, string>) || {};
+
+        // Prefer OAuth 2.0 Bearer token (from PKCE connect flow)
+        if (xMeta.authType === "oauth2" && account.accessToken) {
+          result = await publishToX({
+            text: content,
+            mediaUrl: mediaUrls[0],
+            bearerToken: account.accessToken,
+            username: xMeta.username,
+            apiKey: "",
+            apiKeySecret: "",
+            accessToken: "",
+            accessTokenSecret: "",
+          });
+        } else {
+          // Fallback: OAuth 1.0a from metadata or env
+          const apiKey = xMeta.apiKey || process.env.X_API_KEY || "";
+          const apiKeySecret = xMeta.apiKeySecret || process.env.X_API_KEY_SECRET || "";
+          const xAccessTokenSecret = xMeta.accessTokenSecret || process.env.X_ACCESS_TOKEN_SECRET || "";
+
+          if (!apiKey || !apiKeySecret || !xAccessTokenSecret) {
+            return NextResponse.json(
+              { error: "X/Twitter credentials not configured. Connect your X account first." },
+              { status: 400 }
+            );
+          }
+
+          result = await publishToX({
+            text: content,
+            mediaUrl: mediaUrls[0],
+            apiKey,
+            apiKeySecret,
+            accessToken: account.accessToken,
+            accessTokenSecret: xAccessTokenSecret,
+          });
+        }
+        break;
+      }
+
+      case "linkedin": {
+        // LinkedIn uses OAuth 2.0 — authorUrn stored in accountId
+        const authorUrn = account.accountId;
+        if (!authorUrn) {
+          return NextResponse.json(
+            { error: "LinkedIn author URN not configured. Link your LinkedIn account first." },
+            { status: 400 }
+          );
+        }
+
+        result = await publishToLinkedIn({
+          accessToken: account.accessToken,
+          authorUrn,
+          text: content,
+          imageUrl: mediaUrls[0],
+        });
+        break;
+      }
+
+      case "youtube": {
+        // YouTube uses OAuth 2.0 — video upload or comment
+        const title = (post.metadata as Record<string, string>)?.title || content.slice(0, 100);
+        result = await publishToYouTube({
+          accessToken: account.accessToken,
+          title,
+          description: content,
+          videoUrl: mediaUrls[0],
+        });
+        break;
+      }
+
       case "tiktok":
-      case "youtube":
         return NextResponse.json(
-          { error: `${post.platform} publishing not yet implemented. Coming soon.` },
+          { error: "TikTok publishing pending developer app approval. Coming soon." },
           { status: 501 }
         );
 

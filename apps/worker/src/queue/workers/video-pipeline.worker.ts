@@ -7,7 +7,7 @@ import { logger } from "../../utils/logger";
 import { scrapeZillowListing } from "../../services/apify";
 import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } from "../../services/floorplan-analyzer";
 import { generateClipPrompts } from "../../services/prompt-generator";
-import { normalizeClip, stitchClips, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, type TextOverlaySpec } from "../../services/ffmpeg";
+import { normalizeClip, stitchClips, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, detectPoolHeuristic, type TextOverlaySpec } from "../../services/ffmpeg";
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
@@ -167,7 +167,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             // 3b. Generate Prompts (skip if resuming with existing clips)
             await updateJobStatus(jobId, isResume ? "generating_clips" : "generating_prompts", 15);
-            const user = await queryOne("SELECT avatar_url FROM users WHERE id = $1", [userId]);
+            const user = await queryOne("SELECT avatar_url FROM \"User\" WHERE id = $1", [userId]);
             const avatarUrlRaw = user?.avatar_url;
             let avatarPublic: string | null = null;
             if (avatarUrlRaw && avatarUrlRaw.startsWith("http")) {
@@ -197,21 +197,26 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             let includeRealtor = forceNoRealtor !== "1" && forceNoRealtor !== "true" && !!avatarPublic;
 
             // Kling Elements: native character reference (replaces Nano Banana when enabled).
-            // Set USE_KLING_ELEMENTS=1 to enable. Requires avatar_url as the reference image.
-            // When enabled, realtor appears via @realtor prompt reference — no composite needed.
-            const useKlingElements = (process.env.USE_KLING_ELEMENTS ?? "").toLowerCase() === "1"
-                || (process.env.USE_KLING_ELEMENTS ?? "").toLowerCase() === "true";
+            // Toggle via USE_KLING_ELEMENTS=1 env var. Avatar must be uploaded to Kie.ai CDN first
+            // (direct R2 URLs cause 422 "Only jpeg/jpg/png"). uploadToKieaiCDN handles this.
+            const useKlingElements = process.env.USE_KLING_ELEMENTS === "1";
             let realtorElements: KlingElement[] | undefined;
             if (useKlingElements && includeRealtor && avatarPublic) {
-                // Kling 3.0 Elements requires 2-4 reference images per element.
-                // When only 1 avatar available, duplicate the URL to satisfy the minimum.
-                realtorElements = [{
-                    name: "realtor",
-                    description: "Professional real estate agent showing the property. The only person in the scene.",
-                    element_input_urls: [avatarPublic, avatarPublic],
-                }];
-                logger.info({ msg: "Using Kling Elements for realtor reference", avatarUrl: avatarPublic });
+                try {
+                    const { uploadToKieaiCDN } = await import("../../services/kie");
+                    const cdnAvatarUrl = await uploadToKieaiCDN(avatarPublic);
+                    realtorElements = [{
+                        name: "realtor",
+                        description: "Professional real estate agent showing the property. The only person in the scene.",
+                        element_input_urls: [cdnAvatarUrl, cdnAvatarUrl],
+                    }];
+                    logger.info({ msg: "Using Kling Elements for realtor reference (CDN upload)", avatarUrl: cdnAvatarUrl.slice(0, 80) });
+                } catch (elemErr: any) {
+                    logger.warn({ msg: "Kling Elements CDN upload failed, falling back to Nano Banana", error: elemErr.message });
+                    // Fall through to Nano Banana mode
+                }
             }
+            logger.info({ msg: "Realtor mode", useKlingElements, includeRealtor, hasAvatar: !!avatarPublic, mode: realtorElements ? "elements" : (includeRealtor ? "nano_opening_only" : "no_realtor") });
 
             // Enrich property context with deep data (skip if resuming)
             let trimmedPrompts: any[] = [];
@@ -221,6 +226,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     description: listing.description || listing.address,
                     style: listing.music_style,
                     includeRealtor,
+                    useElements: !!realtorElements,
                     resoFacts: listing.floorplan_analysis?.property_characteristics || {},
                     amenities: listing.floorplan_analysis?.rooms?.map((r: any) => r.name) || [],
                     heroFeatures: heroResult.heroFeatures,
@@ -345,31 +351,88 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     .map(p => `[${p.originalIndex}] ${p.type}`),
             });
 
-            // Step 4: Upscale usable photos with Recraft Crisp Upscale ($0.004/image)
-            const upscaleCount = await upscaleUsablePhotos(usablePhotos, 3);
-            if (upscaleCount > 0) {
-                await trackExpense({
-                    service: "kie", operation: "recraft_upscale", jobId, userId,
-                    metadata: { step: "photo_upscale", count: upscaleCount, costEach: 0.004 },
-                });
+            // Step 4: Skip Recraft upscale — it uses Kie.ai credits ($0.004/img) and outputs WebP
+            // that Kling rejects (422). Original Zillow photos on R2 are already high quality.
+            logger.info({ msg: "Skipping Recraft upscale — using original R2 photos", count: usablePhotos.length });
+
+            // Step 5: Select opening photo — MUST be front approach, NEVER pool/backyard
+            // Pool/backyard photos as opening shot is a critical UX bug (user expects front of house first)
+            const POOL_BACKYARD_TYPES = ["exterior_pool", "exterior_back", "exterior_backyard", "interior_pool", "pool"];
+            let lastFrameUrl: string | null = null;
+
+            // Detect classification failure: if >70% of photos have the same type, AI likely failed
+            const typeDistribution = usablePhotos.reduce((acc, p) => {
+                acc[p.type] = (acc[p.type] || 0) + 1;
+                return acc;
+            }, {} as Record<string, number>);
+            const maxTypeCount = Math.max(...Object.values(typeDistribution), 0);
+            const classificationFailed = maxTypeCount > usablePhotos.length * 0.7 && usablePhotos.length > 3;
+            if (classificationFailed) {
+                // NO SILENT DOWNGRADES: unreliable classification means wrong photos in clips.
+                throw new UnrecoverableError(`Photo classification unreliable — ${maxTypeCount}/${usablePhotos.length} photos classified as same type. Distribution: ${JSON.stringify(typeDistribution)}. Cannot proceed with potentially misclassified photos.`);
             }
 
-            // Step 5: Select opening photo — deterministic from classified type
-            const frontPhotos = usablePhotos.filter(p => p.type === "exterior_front");
-            let lastFrameUrl: string | null;
-            if (frontPhotos.length > 0) {
-                // Use the front-of-house photo (classified, not guessed)
-                lastFrameUrl = getBestPhotoUrl(frontPhotos[0]);
-                logger.info({ msg: "Opening photo: classified exterior_front", index: frontPhotos[0].originalIndex });
-            } else {
-                // Fallback: ask Gemini to pick from all exterior + first few interior
+            // PRIORITY 1: Zillow hero image (MLS index 0 = always front exterior by industry standard)
+            // This is the most reliable signal — doesn't depend on AI classification.
+            // Only skip if classification explicitly (and successfully) identified it as pool.
+            if (exteriorPublic) {
+                const exteriorClassified = classifiedPhotos.find(p => p.r2Url === exteriorPublic);
+                const classifiedAsPool = exteriorClassified && POOL_BACKYARD_TYPES.includes(exteriorClassified.type) && !classificationFailed;
+
+                if (!classifiedAsPool) {
+                    // HSV safety net: check if exterior photo is actually a pool (zero-cost, no AI needed)
+                    const exteriorLocalPath = join(workDir, "_fetch_exterior.jpg");
+                    const exteriorLocalAlt = join(workDir, "_fetch_exterior.jpeg");
+                    const exteriorLocalPng = join(workDir, "_fetch_exterior.png");
+                    const localPath = existsSync(exteriorLocalPath) ? exteriorLocalPath :
+                                     existsSync(exteriorLocalAlt) ? exteriorLocalAlt :
+                                     existsSync(exteriorLocalPng) ? exteriorLocalPng : null;
+
+                    let isPool = false;
+                    if (localPath) {
+                        isPool = await detectPoolHeuristic(localPath);
+                        if (isPool) logger.warn({ msg: "HSV detected pool in Zillow hero photo — skipping MLS index 0" });
+                    }
+
+                    if (!isPool) {
+                        lastFrameUrl = exteriorPublic;
+                        logger.info({ msg: "Opening photo: Zillow hero (MLS index 0 = front exterior)", url: exteriorPublic.slice(0, 80) });
+                    }
+                } else {
+                    logger.info({ msg: "Zillow hero classified as pool — skipping", type: exteriorClassified?.type });
+                }
+            }
+
+            // PRIORITY 2: Classified exterior_front photo (AI classification)
+            if (!lastFrameUrl) {
+                const frontPhotos = usablePhotos.filter(p => p.type === "exterior_front");
+                if (frontPhotos.length > 0) {
+                    lastFrameUrl = getBestPhotoUrl(frontPhotos[0]);
+                    logger.info({ msg: "Opening photo: classified exterior_front", index: frontPhotos[0].originalIndex });
+                }
+            }
+
+            // PRIORITY 3: Any non-pool exterior photo
+            if (!lastFrameUrl) {
+                const safeFrontFallbacks = usablePhotos.filter(p =>
+                    (p.type.startsWith("exterior") || p.type === "exterior_front") && !POOL_BACKYARD_TYPES.includes(p.type)
+                );
+                if (safeFrontFallbacks.length > 0) {
+                    lastFrameUrl = getBestPhotoUrl(safeFrontFallbacks[0]);
+                    logger.info({ msg: "Opening photo: non-pool exterior fallback", type: safeFrontFallbacks[0].type, index: safeFrontFallbacks[0].originalIndex });
+                }
+            }
+
+            // PRIORITY 4: Gemini pick or first non-pool usable photo
+            if (!lastFrameUrl) {
                 const openingCandidates = usablePhotos
-                    .filter(p => p.type.startsWith("exterior") || p.type === "interior_hallway")
+                    .filter(p => (p.type.startsWith("exterior") && !POOL_BACKYARD_TYPES.includes(p.type)) || p.type === "interior_hallway")
                     .slice(0, 5)
                     .map(p => getBestPhotoUrl(p));
                 if (openingCandidates.length === 0) {
-                    // No exterior at all — use first usable photo
-                    lastFrameUrl = getBestPhotoUrl(usablePhotos[0]);
+                    // No non-pool exterior — use first usable photo (interior is better than pool for opening)
+                    const nonPool = usablePhotos.filter(p => !POOL_BACKYARD_TYPES.includes(p.type));
+                    lastFrameUrl = getBestPhotoUrl(nonPool[0] || usablePhotos[0]);
                 } else if (openingCandidates.length === 1) {
                     lastFrameUrl = openingCandidates[0];
                 } else {
@@ -381,7 +444,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         lastFrameUrl = openingCandidates[0];
                     }
                 }
-                logger.info({ msg: "Opening photo: fallback selection", url: lastFrameUrl?.slice(0, 80) });
+                logger.info({ msg: "Opening photo: fallback selection (pool excluded)", url: lastFrameUrl?.slice(0, 80) });
             }
             // Also set exteriorPublic for downstream use (Nano Banana, etc.)
             if (!exteriorPublic && lastFrameUrl) exteriorPublic = lastFrameUrl;
@@ -393,9 +456,21 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const MEDIA_FETCH_TIMEOUT_MS = 60_000;
             const uploadNanoBananaResult = async (imageUrl: string, label: string): Promise<string> => {
                 const imgResp = await fetch(imageUrl, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
-                const imgPath = join(workDir, `${label}.png`);
-                writeFileSync(imgPath, Buffer.from(await imgResp.arrayBuffer()));
-                return uploadToR2(imgPath, buildR2Key(userId, jobId, `frames/${label}.png`));
+                const pngPath = join(workDir, `${label}.png`);
+                writeFileSync(pngPath, Buffer.from(await imgResp.arrayBuffer()));
+                // Convert PNG→JPEG: Nano Banana outputs ~34MB PNGs; Kling rejects images >10MB (422).
+                // JPEG at quality 95 = ~3-5MB, perfectly safe for Kling.
+                const jpgPath = join(workDir, `${label}.jpg`);
+                const { execFile: execFileCb } = await import("child_process");
+                const { promisify } = await import("util");
+                const execFileP = promisify(execFileCb);
+                await execFileP("ffmpeg", [
+                    "-y", "-i", pngPath,
+                    "-q:v", "2", // High quality JPEG (scale 1-31, lower=better)
+                    jpgPath,
+                ], { timeout: 30000 });
+                logger.info({ msg: "Nano Banana PNG→JPEG conversion", label, pngSize: `${(existsSync(pngPath) ? require("fs").statSync(pngPath).size / 1024 / 1024 : 0).toFixed(1)}MB` });
+                return uploadToR2(jpgPath, buildR2Key(userId, jobId, `frames/${label}.jpg`));
             };
 
             // Photo–room alignment: V2 uses classified photos; legacy uses AI vision + heuristic
@@ -426,21 +501,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             // Track per-clip composite status: true = Nano Banana composite in start frame
             const clipHasComposite: boolean[] = new Array(clips.length).fill(false);
 
-            // Nano Banana: Only composite opening (clip 1) and closing (last clip).
-            // Interior clips use property-only camera moves (no person in frame).
-            // This saves credits and avoids "realtor in every room" artifacts.
-            const nanoTargetClips = [0, clips.length - 1]; // opening + closing indices
-            const nanoTotal = nanoTargetClips.length + 1;
-            let nanoDone = 0;
-            const updateNanoProgress = () => {
-                nanoDone++;
-                const pct = 20 + Math.floor(15 * nanoDone / nanoTotal);
-                updateJobStatus(jobId, "generating_clips", Math.min(pct, 34));
-            };
-
+            // Nano Banana: ONLY opening composite (clip 1). Realtor approaches house.
+            // NO closing composite — it broke seamless continuity (injected a different image as last clip's start).
+            // Interior + closing clips use sequential last-frame technique for smooth one-shot walkthrough.
             if (includeRealtor && avatarPublic && !realtorElements) {
                 // Opening composite (clip 1): realtor on pathway approaching door
-                // Skip when using kling_elements — Kling handles person natively via @realtor reference
                 if (lastFrameUrl) {
                     try {
                         const taskId = await createNanoBananaTask({
@@ -450,57 +515,43 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                             resolution: config.video.nanoBananaResolution,
                             output_format: "png",
                         });
-                        // Credit deduction removed - 50 credits charged upfront by web app
-                        // await CreditManager.deductCredits(userId, 2, "nano_banana_opening", jobId, { taskId });
 
                         const { image_url } = await waitForNanoBananaTask(taskId);
                         await trackExpense({ service: "kie", operation: "nano_banana", jobId, userId, metadata: { step: "opening_composite" } });
                         frameUrls[0] = await uploadNanoBananaResult(image_url, "realtor_opening");
                         lastFrameUrl = frameUrls[0];
                         clipHasComposite[0] = true;
-                        updateNanoProgress();
+                        logger.info({ msg: "Opening composite created (realtor approaching)", url: frameUrls[0]?.slice(0, 80) });
                     } catch (nanoErr: any) {
-                        logger.warn({ msg: "Nano Banana opening failed, clip 1 will be property-only", error: nanoErr.message });
-                        frameUrls[0] = lastFrameUrl; // fallback to exterior
+                        // NO SILENT DOWNGRADES: If user requested realtor, deliver realtor or fail.
+                        // Never silently disable the realtor feature the customer paid for.
+                        logger.error({ msg: "Nano Banana opening FAILED — retrying once", error: nanoErr.message });
+                        try {
+                            // Retry once with slightly different parameters
+                            const retryTaskId = await createNanoBananaTask({
+                                prompt: NANO_BANANA_OPENING_PROMPT,
+                                image_input: [avatarPublic, lastFrameUrl],
+                                aspect_ratio: "16:9",
+                                resolution: config.video.nanoBananaResolution,
+                                output_format: "png",
+                            });
+                            const retryResult = await waitForNanoBananaTask(retryTaskId);
+                            await trackExpense({ service: "kie", operation: "nano_banana", jobId, userId, metadata: { step: "opening_composite_retry" } });
+                            frameUrls[0] = await uploadNanoBananaResult(retryResult.image_url, "realtor_opening");
+                            lastFrameUrl = frameUrls[0];
+                            clipHasComposite[0] = true;
+                            logger.info({ msg: "Opening composite created on RETRY", url: frameUrls[0]?.slice(0, 80) });
+                        } catch (retryErr: any) {
+                            throw new Error(`Realtor composite failed after retry. Cannot deliver video without the selected realtor. Original: ${nanoErr.message}. Retry: ${retryErr.message}`);
+                        }
                     }
                 } else {
                     frameUrls[0] = null;
                 }
 
-                // Closing composite (last clip): realtor in backyard/pool/finale room
-                const lastIdx = clips.length - 1;
-                if (lastIdx > 0) {
-                    try {
-                        const lastClip = clips[lastIdx];
-                        const roomPhoto = getPhotoForRoom((lastClip as any).to_room, lastIdx) || lastFrameUrl;
-                        if (roomPhoto) {
-                            const roomPrompt = getNanoBananaRoomPrompt((lastClip as any).to_room || "Backyard", heroResult.hasPool, heroResult);
-                            const taskId = await createNanoBananaTask({
-                                prompt: roomPrompt,
-                                image_input: [avatarPublic, roomPhoto],
-                                aspect_ratio: "16:9",
-                                resolution: config.video.nanoBananaResolution,
-                                output_format: "png",
-                            });
-                            // Credit deduction removed - 50 credits charged upfront by web app
-                            // await CreditManager.deductCredits(userId, 2, "nano_banana_room", jobId, { taskId, clipIdx: lastIdx + 1 });
-
-                            const { image_url } = await waitForNanoBananaTask(taskId);
-                            await trackExpense({ service: "kie", operation: "nano_banana", jobId, userId, metadata: { step: "closing_composite", clipIdx: lastIdx } });
-                            frameUrls[lastIdx + 1] = await uploadNanoBananaResult(image_url, `realtor_room_${lastIdx + 1}`);
-                            updateNanoProgress();
-                            // Note: clipHasComposite[lastIdx] is set later when this frame becomes the start frame
-                        }
-                    } catch (nanoErr: any) {
-                        logger.warn({ msg: "Nano Banana closing failed, last clip will be property-only", error: nanoErr.message });
-                    }
-                }
-
-                // If opening composite failed, don't include realtor at all
+                // If opening composite failed, FAIL the job — never silently remove the realtor
                 if (!clipHasComposite[0]) {
-                    logger.warn({ msg: "Opening composite failed, disabling realtor for entire video" });
-                    includeRealtor = false;
-                    lastFrameUrl = exteriorBeforeNano;
+                    throw new Error("Opening composite was not created. Cannot deliver realtor video without realtor composite.");
                 }
             }
             if (realtorElements) {
@@ -554,14 +605,28 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     let klingPrompt: string;
                     let clipElements: KlingElement[] | undefined;
 
+                    const storedPrompt = ((clip as any).prompt || "").trim();
+
                     if (realtorElements && includeRealtor) {
-                        const storedPrompt = ((clip as any).prompt || "").trim();
-                        klingPrompt = storedPrompt.includes("@realtor") ? storedPrompt : buildElementsKlingPrompt(clip);
+                        // Use Gemini-generated prompt with @realtor substitution for Elements
+                        if (storedPrompt) {
+                            klingPrompt = storedPrompt
+                                .replace(/the person from the reference photo/gi, "@realtor")
+                                .replace(/\bthe realtor\b/gi, "@realtor");
+                            // Ensure @realtor appears at least once
+                            if (!klingPrompt.includes("@realtor")) {
+                                klingPrompt = `@realtor in the scene. ${klingPrompt}`;
+                            }
+                        } else {
+                            klingPrompt = buildElementsKlingPrompt(clip);
+                        }
                         clipElements = realtorElements;
                     } else if (thisClipHasComposite) {
-                        klingPrompt = buildRealtorOnlyKlingPrompt(clip);
+                        // Use Gemini prompt if available, fall back to template
+                        klingPrompt = storedPrompt || buildRealtorOnlyKlingPrompt(clip);
                     } else {
-                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
+                        // Use Gemini prompt if available, fall back to template
+                        klingPrompt = storedPrompt || buildPropertyOnlyKlingPrompt(clip);
                     }
 
                     return { startFrame, endFrame, klingPrompt, clipElements, thisClipHasComposite };
@@ -571,7 +636,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     const { startFrame, endFrame, klingPrompt, clipElements, thisClipHasComposite } = prepareClip(clip);
                     await query("UPDATE clips SET status = 'generating', start_frame_url = $1 WHERE id = $2", [startFrame, clip.id]);
 
-                    const taskId = await withRetry(() => createKlingTask({
+                    const taskId = await createKlingTask({
                         prompt: klingPrompt,
                         image_url: startFrame,
                         // End frame = next room's photo → Kling morphs toward it for seamless transitions
@@ -585,7 +650,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         model: "kling-3.0/video",
                         duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
                         to_room: (clip as any).to_room,
-                    }), { label: `createKlingTask clip ${clip.clip_number}` });
+                    });
 
                     await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
                     logger.info({ msg: "Kling task created", clip: clip.clip_number, taskId });
@@ -655,16 +720,17 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
 
                     const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
-                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number } });
-                    logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number });
+                    const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
+                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number } });
+                    logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number, cost: clipCost });
 
                     const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
                     const response = await fetch(status.result.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
                     writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
 
                     await query(
-                        "UPDATE clips SET status = 'complete', video_url = $1, duration_seconds = $2 WHERE id = $3",
-                        [status.result.video_url, clip.duration_seconds, clip.id]
+                        "UPDATE clips SET status = 'complete', video_url = $1, duration_seconds = $2, api_cost = $3 WHERE id = $4",
+                        [status.result.video_url, clip.duration_seconds, clipCost, clip.id]
                     );
 
                     return { clip, videoPath, videoUrl: status.result.video_url };
@@ -724,14 +790,14 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         continue;
                     }
 
+                    // Sequential one-shot: clip 1 uses opening composite, ALL other clips
+                    // use the previous clip's last frame for seamless walkthrough continuity.
+                    // Never inject a different image (closing composite) — it breaks the one-shot feel.
                     let startFrame: string | null;
                     if (clipIdx === 0) {
                         startFrame = frameUrls[0] ?? lastFrameUrl;
-                    } else if (isLastClip && frameUrls[clipIdx + 1]) {
-                        startFrame = frameUrls[clipIdx + 1]!;
-                        clipHasComposite[clipIdx] = true;
                     } else {
-                        startFrame = lastFrameUrl;
+                        startFrame = lastFrameUrl; // Always: previous clip's last frame
                     }
 
                     if (!startFrame) {
@@ -747,20 +813,27 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     const thisClipHasComposite = clipHasComposite[clipIdx];
                     let klingPrompt: string;
                     let clipElements: KlingElement[] | undefined;
+                    const storedPrompt = ((clip as any).prompt || "").trim();
 
                     if (realtorElements && includeRealtor) {
-                        const storedPrompt = ((clip as any).prompt || "").trim();
-                        klingPrompt = storedPrompt.includes("@realtor")
-                            ? storedPrompt
-                            : buildElementsKlingPrompt(clip);
+                        if (storedPrompt) {
+                            klingPrompt = storedPrompt
+                                .replace(/the person from the reference photo/gi, "@realtor")
+                                .replace(/\bthe realtor\b/gi, "@realtor");
+                            if (!klingPrompt.includes("@realtor")) {
+                                klingPrompt = `@realtor in the scene. ${klingPrompt}`;
+                            }
+                        } else {
+                            klingPrompt = buildElementsKlingPrompt(clip);
+                        }
                         clipElements = realtorElements;
                     } else if (thisClipHasComposite) {
-                        klingPrompt = buildRealtorOnlyKlingPrompt(clip);
+                        klingPrompt = storedPrompt || buildRealtorOnlyKlingPrompt(clip);
                     } else {
-                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
+                        klingPrompt = storedPrompt || buildPropertyOnlyKlingPrompt(clip);
                     }
 
-                    const taskId = await withRetry(() => createKlingTask({
+                    const taskId = await createKlingTask({
                         prompt: klingPrompt,
                         image_url: startFrame,
                         realtor_in_frame: thisClipHasComposite,
@@ -771,7 +844,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         model: "kling-3.0/video",
                         duration: (clip as any).duration_seconds ?? config.video.defaultClipDuration,
                         to_room: (clip as any).to_room,
-                    }), { label: `createKlingTask clip ${clip.clip_number}` });
+                    });
 
                     await query("UPDATE clips SET external_task_id = $1 WHERE id = $2", [taskId, clip.id]);
                     const status = await waitForTask(taskId, "kling");
@@ -779,8 +852,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     result = { video: { url: status.result.video_url } };
                     modelUsed = "kling-3.0/video";
                     const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
-                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, metadata: { clip: clip.clip_number, model: modelUsed } });
-                    logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed });
+                    const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
+                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number, model: modelUsed } });
+                    logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed, cost: clipCost });
 
                     const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
                     const response = await fetch(result.video.url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
@@ -801,8 +875,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     actualClipDurations.set(clip.clip_number, measuredDur);
 
                     await query(
-                        "UPDATE clips SET status = 'complete', video_url = $1, end_frame_url = $2, duration_seconds = $3 WHERE id = $4",
-                        [result.video.url, lastFrameUrl, measuredDur, clip.id]
+                        "UPDATE clips SET status = 'complete', video_url = $1, end_frame_url = $2, duration_seconds = $3, api_cost = $4 WHERE id = $5",
+                        [result.video.url, lastFrameUrl, measuredDur, clipCost, clip.id]
                     );
 
                     const progress = 20 + Math.floor((clip.clip_number / clips.length) * 50);
@@ -810,15 +884,13 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
 
-            // 6. Stitching — seamless concat with boundary frames
-            // Kling end frames ensure each clip morphs toward the next room's photo,
-            // so hard cuts are seamless. Boundary frames provide frame-perfect continuity.
+            // 6. Stitching — dissolve crossfade transitions (0.3s) between clips
+            // Dissolve hides seams between clips, especially in parallel mode where start frames differ.
+            // Replaces hard concat which showed visible jumps between room transitions.
             await updateJobStatus(jobId, "stitching", 75);
             const outputName = "master_silent.mp4";
             const masterSilentPath = join(workDir, outputName);
-            await stitchClipsConcat(clipFiles, masterSilentPath, {
-                boundaryFramePaths: boundaryFramePaths.length >= clipFiles.length - 1 ? boundaryFramePaths : undefined,
-            });
+            await stitchClips(clipFiles, masterSilentPath, "dissolve", 0.3);
 
             // 7. Add Music (Suno as PRIMARY, database fallback only on failure)
             await updateJobStatus(jobId, "adding_music", 85);
@@ -834,54 +906,53 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
 
             // Path 2: PRIMARY — Generate fresh music via Suno for each video (unless explicitly selected above)
+            // NO FALLBACKS TO LOW-QUALITY TRACKS. If Suno fails, the job fails (with refund).
+            // Delivering a video with generic/public-domain music degrades the product quality.
             if (!musicUrl) {
-                try {
-                    logger.info({ msg: "Generating fresh music via Kie Suno (primary path)", style: listing.music_style });
-                    const { createSunoTask, waitForTask } = await import("../../services/kie");
-                    const taskId = await withRetry(() => createSunoTask({
-                        prompt: `Cinematic real estate background music, ${listing.music_style || "elegant modern"}, high-end production quality, no vocals, instrumental only`,
-                        instrumental: true,
-                        model: "V3_5",
-                    }), { label: "createSunoTask" });
+                const { createSunoTask, waitForTask } = await import("../../services/kie");
+                const sunoStyles = [
+                    listing.music_style || "elegant modern",
+                    "luxury cinematic piano ambient",  // retry with different style
+                ];
 
-                    // Credit deduction removed - 50 credits charged upfront by web app
-                    // await CreditManager.deductCredits(userId, 5, "suno_music", jobId, { taskId });
+                for (let attempt = 0; attempt < sunoStyles.length; attempt++) {
+                    try {
+                        const style = sunoStyles[attempt];
+                        logger.info({ msg: `Generating music via Suno (attempt ${attempt + 1}/${sunoStyles.length})`, style });
+                        const taskId = await withRetry(() => createSunoTask({
+                            prompt: `Cinematic real estate background music, ${style}, high-end production quality, no vocals, instrumental only`,
+                            instrumental: true,
+                            model: "V5",
+                        }), { label: "createSunoTask" });
+                        logger.info({ msg: "Suno task created, waiting for completion", taskId, attempt: attempt + 1 });
 
-                    const status = await waitForTask(taskId, "suno");
-                    musicUrl = (status as any).result?.audio_url || null;
+                        const status = await waitForTask(taskId, "suno");
+                        musicUrl = (status as any).result?.audio_url || null;
 
-                    if (musicUrl) {
-                        await trackExpense({ service: "kie", operation: "suno_music", jobId, userId, metadata: { step: "music_generation" } });
-                        logger.info({ msg: "Suno music generated successfully", taskId });
+                        if (musicUrl) {
+                            await trackExpense({ service: "kie", operation: "suno_music", jobId, userId, metadata: { step: "music_generation", attempt: attempt + 1 } });
+                            logger.info({ msg: "Suno music generated successfully", taskId, musicUrl: musicUrl.slice(0, 100), attempt: attempt + 1 });
+                            break; // Success — stop retrying
+                        } else {
+                            logger.error({
+                                msg: "Suno task completed but NO audio_url extracted!",
+                                taskId,
+                                attempt: attempt + 1,
+                                resultKeys: status.result ? Object.keys(status.result) : "no result",
+                                result: JSON.stringify(status.result).slice(0, 500),
+                            });
+                        }
+                    } catch (err: any) {
+                        logger.error({ msg: `Suno generation FAILED (attempt ${attempt + 1})`, error: err.message });
+                        // NO SILENT DOWNGRADES: no fallback to pre-recorded tracks.
+                        // Each video must have fresh, custom-generated Suno music.
                     }
-                } catch (err: any) {
-                    logger.error({ msg: "Kie Suno generation failed (primary path), falling back to database", error: err.message });
+                }
+
+                if (!musicUrl) {
+                    throw new Error("Music generation failed after all attempts. Job cannot be delivered without quality music.");
                 }
             }
-
-            // Path 3: Database fallback (only if Suno fails or credits exhausted)
-            if (!musicUrl) {
-                try {
-                    const fallbackTrack = await queryOne(
-                        "SELECT r2_url FROM music_tracks WHERE is_active = true ORDER BY play_count ASC LIMIT 1",
-                        []
-                    );
-                    if (fallbackTrack?.r2_url) {
-                        musicUrl = fallbackTrack.r2_url;
-                        logger.warn({ msg: "Using database track as fallback (Suno unavailable)" });
-                    }
-                } catch (_) {
-                    logger.warn({ msg: "Database track fallback also failed" });
-                }
-            }
-
-            // Path 4: Final fallback (public domain track)
-            if (!musicUrl) {
-                musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-                logger.warn({ msg: "Using SoundHelix public domain track (all generation paths failed)" });
-            }
-
-            if (!musicUrl) throw new Error("Could not acquire or generate music via Kie AI.");
 
             const musicPath = join(workDir, "music.mp3");
             const mResp = await fetch(musicUrl, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
@@ -983,8 +1054,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const masterForExport = overlaySpecs.length > 0 ? masterWithOverlaysPath : masterPath;
 
             // 8. Generate Variants & Upload
+            // Pass overlaySpecs so variants apply text AFTER crop (prevents text cutoff on vertical/square)
             await updateJobStatus(jobId, "exporting", 90);
-            const variants = await generateVariants(masterForExport, workDir);
+            const variants = await generateVariants(masterPath, workDir, overlaySpecs);
 
             const masterUrl = await uploadToR2(masterForExport, buildR2Key(userId, jobId, "master.mp4"));
             const verticalUrl = await uploadToR2(variants.vertical, buildR2Key(userId, jobId, "vertical.mp4"));
@@ -1003,7 +1075,13 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
             logger.info({ msg: "Production verification passed", duration: `${masterDuration.toFixed(1)}s`, clips: clipFiles.length, variants: ["master", "vertical", "square", "portrait", "thumb"] });
 
-            // 10. Complete
+            // 10. Complete — rollup total cost from api_expenses
+            const costRow = await queryOne<{ total: string }>(
+                "SELECT COALESCE(SUM(estimated_cost), 0) as total FROM api_expenses WHERE job_id = $1",
+                [jobId]
+            );
+            const totalCost = parseFloat(costRow?.total || "0");
+
             await query(
                 `UPDATE video_jobs SET
           status = 'complete',
@@ -1014,16 +1092,19 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
           video_duration_seconds = $4,
           square_video_url = $5,
           portrait_video_url = $6,
+          total_api_cost = $7,
+          total_clips = $8,
           completed_at = NOW()
-         WHERE id = $7`,
-                [masterUrl, verticalUrl, thumbUrl, masterDuration, squareUrl, portraitUrl, jobId]
+         WHERE id = $9`,
+                [masterUrl, verticalUrl, thumbUrl, masterDuration, squareUrl, portraitUrl, totalCost, clipFiles.length, jobId]
             );
+            logger.info({ msg: "Total API cost for job", jobId, totalCost: `$${totalCost.toFixed(4)}`, clips: clipFiles.length });
 
             logger.info({ msg: "Video pipeline complete", jobId });
 
             // 11. Notify customer (email)
             try {
-                const userRow = await queryOne("SELECT email FROM users WHERE id = $1", [userId]);
+                const userRow = await queryOne("SELECT email FROM \"User\" WHERE id = $1", [userId]);
                 if (userRow?.email) {
                     await NotificationService.notifyVideoComplete({
                         userId,
@@ -1065,7 +1146,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             // Notify customer about failure (email)
             try {
-                const userRow = await queryOne("SELECT email FROM users WHERE id = $1", [userId]);
+                const userRow = await queryOne("SELECT email FROM \"User\" WHERE id = $1", [userId]);
                 const listingRow = await queryOne("SELECT address FROM listings WHERE id = $1", [listingId]);
                 if (userRow?.email) {
                     await NotificationService.notifyVideoFailed({

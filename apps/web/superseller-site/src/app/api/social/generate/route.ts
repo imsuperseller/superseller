@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
           contentType,
           generationCost: imageCost,
           generatedAt: new Date().toISOString(),
+          ...(approverPhone ? { approverPhone } : {}),
         },
       },
     });

@@ -169,6 +169,31 @@ NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agen
 
 ---
 
+## Pre-Deploy Trace Rule (MANDATORY)
+
+Before deploying ANY code change to RackNerd (rsync, scp, deploy script), you MUST:
+
+1. **Trace the data flow** through every code path you changed. Don't just verify syntax — follow the actual runtime values:
+   - What URLs/formats will hit external APIs? (e.g., Kling only accepts jpg/png — NOT webp)
+   - What parameters are passed? Are they the right type, format, and within API limits?
+   - What does the API return, and does your code handle all response shapes?
+
+2. **Document the trace** in your response before deploying:
+   ```
+   PRE-DEPLOY TRACE:
+   - Changed: [file:function]
+   - Data flow: [source] → [transform] → [API call]
+   - External API input: [exact format/values that will be sent]
+   - Expected response: [what comes back]
+   - Failure modes: [what could go wrong]
+   ```
+
+3. **Verify no credit burn** — if the change touches any path that calls Kie.ai/Kling/Suno/Recraft/Nano, confirm with the user before deploying.
+
+**Origin**: Feb 28, 2026 — five test jobs ($8.60+) burned debugging a WebP→Kling 422 error that a pre-deploy trace would have caught in seconds.
+
+---
+
 ## When in Doubt
 
 About to send instructions when you could execute? **Stop.** Do the work. Work until it works.

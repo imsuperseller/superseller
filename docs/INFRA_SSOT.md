@@ -16,7 +16,8 @@
 | **Storage** | Video Exports / Product Media | **Cloudflare R2** | ✅ Active |
 | **Server/Worker**| Long-running video/bot tasks | **RackNerd VPS** | ✅ Active |
 | **LLM** | Prompt Gen / Intelligence | **Gemini Flash (Primary)** | ✅ Active |
-| **Video AI** | Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
+| **Video AI** | AI Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
+| **Video Composition** | Photo-based tours (Ken Burns, transitions, branding) | **Remotion 4.0.429** (Chrome Headless Shell + FFmpeg) | ✅ Active |
 | **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook / Resend | ⚠️ WAHA active (sessions need periodic QR re-scan), Telnyx active (FB Bot lead pipeline + FrontDesk) |
 | **Embeddings** | Vector embeddings for RAG | **Ollama** (nomic-embed-text, RackNerd) | ✅ Active |
 | **LightRAG** | Graph-based RAG retrieval | RackNerd (env: `LIGHTRAG_BASE_URL`) | ⚠️ Referenced in health-check but undocumented |
@@ -43,9 +44,11 @@
     *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `superseller-whatsapp` (future website chatbot with knowledge base)
     *   **Dashboard**: `http://172.245.56.50:3000/dashboard`
 *   **LightRAG**: `LIGHTRAG_BASE_URL` (referenced in admin health-check)
-*   **Finance**:
-    *   `STRIPE_SECRET_KEY`
-    *   `STRIPE_WEBHOOK_SECRET`
+*   **Finance** (PayPal — migrated from Stripe Feb 2026):
+    *   `PAYPAL_CLIENT_ID`
+    *   `PAYPAL_CLIENT_SECRET`
+    *   `PAYPAL_WEBHOOK_ID`
+    *   Note: DB columns retain `stripe*` names but store PayPal IDs.
 
 ---
 
@@ -131,8 +134,8 @@ npm audit --audit-level=high
 |---------|-----------|------|-------|
 | Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
 | Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
-| Kie.ai | Suno music | $0.02 | Per track |
-| Kie.ai | Nano Banana composite | $0.05 | Realtor + photo |
+| Kie.ai | Suno music | $0.06 | Per track |
+| Kie.ai | Nano Banana composite | $0.09 | Realtor + photo |
 | Kie.ai | ElevenLabs TTS | $0.02 | Per generation |
 | FakeYou | TTS (any model) | $0.00 | Free |
 | Gemini | Flash prompt | $0.001 | Per call |

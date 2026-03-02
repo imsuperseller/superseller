@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import Image from 'next/image';
 import {
   Facebook,
@@ -11,11 +11,14 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { NICHES } from '@/data/niches';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 const CONTACT_WHATSAPP = '12144362102';
 
 export function Footer() {
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -29,19 +32,19 @@ export function Footer() {
 
   const navigation = {
     main: [
-      { name: 'Home', href: '/' },
-      { name: 'The Crew', href: '/crew' },
-      { name: 'Pricing', href: '/pricing' },
-      { name: 'Contact', href: '/contact' },
+      { name: t('nav.home'), href: '/' as const },
+      { name: t('nav.crew'), href: '/crew' as const },
+      { name: t('nav.pricing'), href: '/pricing' as const },
+      { name: t('nav.contact'), href: '/contact' as const },
     ],
     industries: NICHES.map((n) => ({ name: n.name, href: `/${n.slug}` })),
     business: [
-      { name: 'Client Login', href: '/login' },
-      { name: 'Get Started', href: '/pricing' },
+      { name: t('nav.clientLogin'), href: '/login' as const },
+      { name: t('nav.getStarted'), href: '/pricing' as const },
     ],
     legal: [
-      { name: 'Privacy Policy', href: '/legal/privacy' },
-      { name: 'Terms of Service', href: '/legal/terms' },
+      { name: t('footer.privacyPolicy'), href: '/legal/privacy' as const },
+      { name: t('footer.termsOfService'), href: '/legal/terms' as const },
     ],
     social: [
       {
@@ -108,21 +111,20 @@ export function Footer() {
               <span className="text-xl font-bold">SuperSeller AI</span>
             </div>
             <p className="text-[var(--superseller-text-secondary)] mb-4 max-w-md leading-relaxed">
-              Six AI agents that produce videos, answer calls, generate leads,
-              and run your business — starting at $79/mo.
+              {t('footer.description')}
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-1">
               {navigation.social.map((item) => (
-                <Link
+                <NextLink
                   key={item.name}
                   href={item.href}
-                  className="text-[var(--superseller-text-muted)] hover:text-white transition-colors"
+                  className="p-2.5 text-[var(--superseller-text-muted)] hover:text-white transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span className="sr-only">{item.name}</span>
                   <item.icon className="h-5 w-5" />
-                </Link>
+                </NextLink>
               ))}
             </div>
           </div>
@@ -130,14 +132,14 @@ export function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--superseller-text-muted)] mb-4">
-              Navigation
+              {t('footer.navigation')}
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-1">
               {navigation.main.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
+                    className="block py-1.5 text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -149,14 +151,14 @@ export function Footer() {
           {/* Industries */}
           <div>
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--superseller-text-muted)] mb-4">
-              Industries
+              {t('footer.industries')}
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-1">
               {navigation.industries.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href={item.href}
-                    className="text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
+                    href={item.href as any}
+                    className="block py-1.5 text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -168,14 +170,14 @@ export function Footer() {
           {/* Client Access */}
           <div>
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--superseller-text-muted)] mb-4">
-              Client Access
+              {t('footer.clientAccess')}
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-1">
               {navigation.business.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
+                    className="block py-1.5 text-sm text-[var(--superseller-text-secondary)] hover:text-white transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -188,19 +190,19 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-white/5">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex space-x-6">
+            <div className="flex space-x-4">
               {navigation.legal.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-[var(--superseller-text-muted)] hover:text-white transition-colors text-sm"
+                  className="py-2 text-[var(--superseller-text-muted)] hover:text-white transition-colors text-sm"
                 >
                   {item.name}
                 </Link>
               ))}
             </div>
             <p className="text-[var(--superseller-text-muted)] text-sm">
-              &copy; {currentYear} SuperSeller AI. All rights reserved.
+              {t('footer.copyright', { year: currentYear })}
             </p>
           </div>
         </div>

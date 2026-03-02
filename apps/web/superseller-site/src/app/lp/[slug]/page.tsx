@@ -10,13 +10,14 @@ interface Props {
 async function getLandingPage(slug: string) {
   const page = await prisma.landingPage.findUnique({
     where: { slug, active: true },
+    include: { brand: true },
   });
   if (!page) return null;
 
   // Increment view count (fire-and-forget)
   prisma.landingPage
     .update({ where: { id: page.id }, data: { views: { increment: 1 } } })
-    .catch(() => {});
+    .catch(() => { });
 
   return page;
 }
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: page.metaTitle || page.heroHeadline,
-    description: page.metaDescription || page.heroSubheadline || page.tagline || "",
+    description: page.metaDescription || page.heroSubheadline || page.brand?.tagline || "",
     robots: { index: true, follow: true },
   };
 }

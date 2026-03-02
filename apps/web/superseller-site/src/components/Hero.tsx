@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import NextImage from 'next/image';
 import { gsap } from 'gsap';
 import { Shield, Clock, X, Check, ArrowRight } from 'lucide-react';

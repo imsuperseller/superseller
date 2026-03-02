@@ -3,7 +3,7 @@ import { Outfit } from 'next/font/google';
 import './globals.css';
 
 const outfit = Outfit({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-outfit',
   display: 'optional', // Prevents font-load reflow flash (swap causes visible jump)
@@ -12,7 +12,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   title: 'SuperSeller AI | Your AI Crew for Business',
-  description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
+  description: 'Seven AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
   keywords: ['AI business automation', 'AI video production', 'AI receptionist', 'AI lead generation', 'small business AI', 'realtor video'],
   authors: [{ name: 'SuperSeller AI Team' }],
   creator: 'SuperSeller AI',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'SuperSeller AI | Your AI Crew for Business',
-    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
+    description: 'Seven AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
     url: 'https://superseller.agency',
     siteName: 'SuperSeller AI',
     images: [
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SuperSeller AI | Your AI Crew for Business',
-    description: 'Six AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
+    description: 'Seven AI agents that produce videos, answer calls, generate leads, create content, and run your knowledge base — starting at $79/mo.',
     images: ['/opengraph-image.png'],
     creator: '@iamsuperseller',
   },
@@ -91,7 +91,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#0d1b2e' }}>
+    <html suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#0d1b2e' }}>
       <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif', backgroundColor: '#0d1b2e' }}>
         {children}
       </body>

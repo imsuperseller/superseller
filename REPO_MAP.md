@@ -58,6 +58,22 @@
 | `room-photo-mapper.ts` | `assignPhotosToClips()`, `resolveOpeningPhoto()` | Photo-to-room assignment |
 | `nano-banana.ts` | `NanoBananaRequest`, `NanoBananaResult` | Realtor composite gen |
 | `regen-clips.ts` | Clip regeneration logic | Re-generate individual clips |
+| `remotion-renderer.ts` | `renderPropertyTour()`, `ensureBundle()` | Remotion SSR composition |
+
+### Remotion Compositions (`apps/worker/remotion/src/`)
+
+| File | Purpose |
+|------|---------|
+| `PropertyTourComposition.tsx` | Main property tour (intro → rooms → outro) |
+| `components/IntroCard.tsx` | Address, stats, price overlay on hero image |
+| `components/OutroCard.tsx` | Agent card, contact, CTA |
+| `components/RoomLabel.tsx` | Room name pill overlay |
+| `components/KenBurnsSlide.tsx` | Photo pan/zoom animation |
+| `config/timing.ts` | FPS, durations, room timing constants |
+| `config/ken-burns-patterns.ts` | Per-room pan/zoom configurations |
+| `config/fonts.ts` | Google Fonts loading (Montserrat, Platypi) |
+| `types/composition-props.ts` | Zod schemas for composition input |
+| `Root.tsx` | 4 composition declarations (16:9, 9:16, 1:1, 4:5) |
 | `credits.ts` | `CreditManager` (class) | Worker-side credit checks |
 | `apify.ts` | `ZillowListingData` | Zillow scraping |
 | `r2.ts` | `buildR2Key()` | R2 storage paths |
@@ -69,7 +85,10 @@
 | File | Lines | Export | Purpose |
 |------|-------|--------|---------|
 | `video-pipeline.worker.ts` | 783 | `videoPipelineWorker`, `initWorkers()` | TourReel 12-stage pipeline |
-| `frontdesk-poller.worker.ts` | 233 | `frontdeskPollerWorker`, `initFrontDeskPoller()` | Telnyx conversation polling |
+| `crew-video.worker.ts` | — | `crewVideoWorker` | Crew showcase video generation |
+| `remotion.worker.ts` | — | `remotionWorker` | Remotion photo composition rendering |
+| `marketplace-replenisher.worker.ts` | — | `marketplaceReplenisher` | FB Marketplace listing replenishment |
+| `LeadWorker.ts` | — | `leadWorker` | Lead processing pipeline |
 
 ---
 

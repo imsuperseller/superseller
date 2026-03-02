@@ -46,7 +46,9 @@ All products must align with one of these tactical pillars:
 ### 🎥 TourReel (Property Video Walkthrough)
 *   **Target**: Real Estate agents / Zillow listings.
 *   **Logic**: `apps/worker/src/queue/workers/video-pipeline.worker.ts`
-*   **Architecture**: Kie.ai Kling 3.0 (Video, start+end frame continuity) + Suno (Music) + Kling Elements (Identity). Kling Elements (USE_KLING_ELEMENTS=1) is the active approach for realtor identity in video clips. Nano Banana is PAUSED (per DECISIONS.md) -- kept in codebase as fallback but not used in production pipeline.
+*   **Architecture (dual-path)**:
+    *   **AI Clip Path**: Kie.ai Kling 3.0 (Video, start+end frame continuity) + Suno (Music) + Kling Elements (Identity). Kling Elements (USE_KLING_ELEMENTS=1) is the active approach for realtor identity in video clips. Nano Banana is PAUSED (per DECISIONS.md) -- kept in codebase as fallback.
+    *   **Remotion Composition Path (NEW Feb 2026)**: React-based programmatic video engine. Photos → Ken Burns animation → branded intro/outro → TransitionSeries → 4 native aspect ratios → H.264 MP4. Zero API cost, deterministic, ~60s render for 55s video. See `docs/REMOTION_BIBLE.md`.
 *   **Production optimizations (Feb 2026)**: Force 1920x1080 normalization, floorplan exclusion from photo pool, Kling `last_frame` for inter-clip continuity, seamless concat (no crossfade), actual-duration text overlays, sentinel clip credit probe, CTA min 4s.
 *   **Source of Truth**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` + NotebookLM 0baf5f36.
 
@@ -87,11 +89,11 @@ All products must align with one of these tactical pillars:
 *   **Architecture**: Multi-stage AI research pipeline (business discovery → design analysis → market research → deliverable packaging).
 *   **Status**: Spec only. Decision: keep internal, not customer-facing.
 
-### 📱 SocialHub (Multi-Platform Social Media Management)
+### 📱 SocialHub / Buzz (Social Media Management)
 *   **Target**: All existing customers + new market.
-*   **Logic**: `social app/` (spec only — 7 detailed docs)
-*   **Architecture**: AI content creation (Claude + Kie.ai) → WhatsApp approval → 6-platform publishing → analytics → competitive intelligence.
-*   **Status**: Spec COMPLETE, code NOT STARTED. Phase 2 product.
+*   **Logic**: `apps/web/superseller-site/src/app/api/social/` (generate, publish, webhook/approval routes)
+*   **Architecture**: AI content creation (Claude text + Kie.ai images) → WhatsApp approval (WAHA) → Facebook + Instagram publishing (Graph API) → Aitable analytics sync.
+*   **Status**: LIVE — Phase 1 operational (text+image generation, WhatsApp approval, FB/IG publish). Phase 2 (LinkedIn, X, TikTok, YouTube, competitive intelligence, smart scheduling) not started.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §7, `.claude/skills/socialhub/SKILL.md`.
 
 ---
@@ -113,7 +115,7 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 | **TourReel** (regen clip) | 10 credits/scene |
 | **FB Autoposter** | Credits per listing activation |
 
-*Self-serving top-ups allow users to buy additional Credits. Stripe checkout handles subscriptions via `/api/video/subscribe`.*
+*Self-serving top-ups allow users to buy additional Credits. PayPal checkout handles subscriptions via `/api/video/subscribe` (migrated from Stripe Feb 2026).*
 
 ---
 
@@ -126,7 +128,7 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 ---
 
 ## 5. Deployment & Health
-*   **Uptime**: Monitored via `HealthCheckSchema` (app, database, worker, stripe).
+*   **Uptime**: Monitored via `HealthCheckSchema` (app, database, worker, paypal).
 *   **Tenant Isolation**: All runs strictly isolated by `tenantId` in Postgres.
 *   **Self-Healing**: Workers auto-retry failed Kling tasks; n8n alerts for critical engine failures.
 
@@ -136,14 +138,14 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 
 | Type | Price | Status |
 |------|-------|--------|
-| **Marketplace** | $29-$3,500+ | Stripe LIVE |
-| **Ready Solutions** | $890-$2,990+ | Stripe LIVE |
-| **Subscriptions** | $79-$299/mo | Stripe LIVE |
-| **Custom Solutions** | $3,500-$8,000+ | Stripe LIVE |
+| **Marketplace** | $29-$3,500+ | PayPal LIVE |
+| **Ready Solutions** | $890-$2,990+ | PayPal LIVE |
+| **Subscriptions** | $79-$299/mo | PayPal LIVE |
+| **Custom Solutions** | $3,500-$8,000+ | PayPal LIVE |
 | **Content AI** | $297-$1,997/mo | In development |
 
 ### Customer Journey (4 Stages)
-1. Awareness → Purchase (SEO, Stripe) ✅ LIVE
+1. Awareness → Purchase (SEO, PayPal) ✅ LIVE
 2. Purchase → Onboarding (Webhook, partial automation) ⚠️ 40–60%
 3. Onboarding → Active (Portal) ❌ Not built
 4. Active → Retention (Lifecycle) ❌ Not built

@@ -147,8 +147,8 @@ export async function stitchClipsConcat(
     return { duration };
 }
 
-// ─── STITCH CLIPS WITH XFADE (LEGACY - VISIBLE TRANSITIONS) ───
-/** @deprecated Use stitchClipsConcat for seamless walkthrough. */
+// ─── STITCH CLIPS WITH XFADE (DISSOLVE CROSSFADE) ───
+/** Stitch clips with smooth crossfade transitions. dissolve/fade hides seams between clips. */
 export async function stitchClips(
     clipPaths: string[],
     outputPath: string,
@@ -324,49 +324,92 @@ export async function addTextOverlays(
         return `drawtext=text='${sanitizedText}'${fontParam}:fontcolor=white:fontsize=${fontSize}:box=1:boxcolor=black@0.5:boxborderw=18:x=(w-text_w)/2:y=${yPos}:enable='between(t\\,${start}\\,${end})'${alphaExpr}`;
     }).join(",");
 
-    await execFileAsync("ffmpeg", [
-        "-i", inputPath,
-        "-vf", drawtextFilters,
-        "-c:v", "libx264",
-        "-preset", "medium",
-        "-crf", "18",
-        "-c:a", "copy",
-        "-movflags", "+faststart",
-        "-y",
-        outputPath,
-    ], { timeout: 180000 });
-
-    logger.info({ msg: "Applied text overlays", count: overlays.length, output: outputPath });
+    try {
+        await execFileAsync("ffmpeg", [
+            "-i", inputPath,
+            "-vf", drawtextFilters,
+            "-c:v", "libx264",
+            "-preset", "medium",
+            "-crf", "18",
+            "-c:a", "copy",
+            "-movflags", "+faststart",
+            "-y",
+            outputPath,
+        ], { timeout: 180000 });
+        logger.info({ msg: "Applied text overlays", count: overlays.length, output: outputPath });
+    } catch (err: any) {
+        // NO SILENT DOWNGRADES: text overlays (address, price, room labels, CTA) are essential
+        // for property marketing videos. Skipping them degrades the product.
+        throw new Error(`Text overlay failed: ${err.message?.slice(0, 200)}. Cannot deliver video without marketing text.`);
+    }
 }
 
 // ─── GENERATE FORMAT VARIANTS ───
+// Applies text overlays AFTER cropping so text is never cut off at edges.
 export async function generateVariants(
     masterPath: string,
-    outputDir: string
+    outputDir: string,
+    overlaySpecs: TextOverlaySpec[] = []
 ): Promise<{ vertical: string; square: string; portrait: string; thumbnail: string }> {
     const vertical = join(outputDir, "vertical.mp4");
     const square = join(outputDir, "square.mp4");
     const portrait = join(outputDir, "portrait.mp4");
     const thumbnail = join(outputDir, "thumb.jpg");
 
+    // Build overlay filter string for appending after crop+scale
+    const buildOverlayFilter = (overlays: TextOverlaySpec[]): string => {
+        if (overlays.length === 0) return "";
+
+        const fontCandidates = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        ];
+        const fontFile = fontCandidates.find((f) => existsSync(f));
+        const fontParam = fontFile ? `:fontfile='${fontFile}'` : "";
+
+        const FONT_SIZES: Record<string, string> = {
+            small: "(h/30)", medium: "(h/22)", large: "(h/16)", xlarge: "(h/12)",
+        };
+
+        const filters = overlays.map((o) => {
+            const start = o.startSeconds;
+            const end = start + o.durationSeconds;
+            const fadeIn = o.fadeInSeconds ?? 0.5;
+            const fadeOut = o.fadeOutSeconds ?? 0.5;
+            const sanitizedText = o.text.replace(/'/g, "\\\\\\'").replace(/:/g, "\\:").replace(/,/g, "\\,");
+            const fontSize = FONT_SIZES[o.fontSize ?? "medium"] || FONT_SIZES.medium;
+            let yPos = "(h-text_h)/2";
+            if (o.position === "bottom") yPos = "h-(h/8)-text_h";
+            if (o.position === "top") yPos = "h/8";
+            const fi = Math.max(fadeIn, 0.001);
+            const fo = Math.max(fadeOut, 0.001);
+            const alphaExpr = `:alpha='if(lt(t-${start}\\,${fi})\\,(t-${start})/${fi}\\,if(gt(t-(${end}-${fo})\\,0)\\,(${end}-t)/${fo}\\,1))'`;
+            return `drawtext=text='${sanitizedText}'${fontParam}:fontcolor=white:fontsize=${fontSize}:box=1:boxcolor=black@0.5:boxborderw=18:x=(w-text_w)/2:y=${yPos}:enable='between(t\\,${start}\\,${end})'${alphaExpr}`;
+        });
+        return "," + filters.join(",");
+    };
+
+    const overlayFilter = buildOverlayFilter(overlaySpecs);
+
     // Use -threads 2 and -preset veryfast to prevent OOM on low-memory VPS (5.8G RAM)
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
-        "-vf", "crop=ih*9/16:ih:(iw-ih*9/16)/2:0,scale=1080:1920",
+        "-vf", `crop=ih*9/16:ih:(iw-ih*9/16)/2:0,scale=1080:1920${overlayFilter}`,
         "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", vertical,
     ], { timeout: 300000 });
 
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
-        "-vf", "crop=ih:ih:(iw-ih)/2:0,scale=1080:1080",
+        "-vf", `crop=ih:ih:(iw-ih)/2:0,scale=1080:1080${overlayFilter}`,
         "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", square,
     ], { timeout: 300000 });
 
     await execFileAsync("ffmpeg", [
         "-i", masterPath,
-        "-vf", "crop=ih*4/5:ih:(iw-ih*4/5)/2:0,scale=1080:1350",
+        "-vf", `crop=ih*4/5:ih:(iw-ih*4/5)/2:0,scale=1080:1350${overlayFilter}`,
         "-c:v", "libx264", "-crf", "22", "-preset", "veryfast", "-threads", "2", "-c:a", "copy",
         "-movflags", "+faststart", "-y", portrait,
     ], { timeout: 300000 });
@@ -379,9 +422,46 @@ export async function generateVariants(
         "-y", thumbnail,
     ], { timeout: 30000 });
 
-    logger.info({ msg: "All format variants generated" });
+    logger.info({ msg: "All format variants generated", withOverlays: overlaySpecs.length > 0 });
 
     return { vertical, square, portrait, thumbnail };
+}
+
+// ─── HSV POOL DETECTION HEURISTIC ───
+/**
+ * Detect pool photos without AI using color analysis.
+ * Crops the bottom half of the image (where water appears), averages to 1x1 pixel,
+ * and checks if blue/cyan dominates. Returns true if likely a pool photo.
+ * Cost: zero (FFmpeg only). Latency: <1s.
+ */
+export async function detectPoolHeuristic(imagePath: string): Promise<boolean> {
+    try {
+        const tmpPixel = imagePath + "_pool_check.raw";
+        await execFileAsync("ffmpeg", [
+            "-y", "-i", imagePath,
+            "-vf", "crop=iw:ih/2:0:ih/2,scale=1:1:flags=area",
+            "-frames:v", "1",
+            "-f", "rawvideo", "-pix_fmt", "rgb24",
+            tmpPixel,
+        ], { timeout: 10000 });
+
+        const { readFileSync, unlinkSync } = await import("fs");
+        const buf = readFileSync(tmpPixel);
+        try { unlinkSync(tmpPixel); } catch {}
+
+        if (buf.length < 3) return false;
+
+        const r = buf[0], g = buf[1], b = buf[2];
+        // Pool detection: blue/cyan dominant in bottom half
+        // Typical pool: R=80-140, G=140-200, B=200-255 (cyan/turquoise)
+        const isBlue = b > r + 30 && b > g && b > 120;
+        const isCyan = g > r + 20 && b > r + 20 && g > 120 && b > 120;
+
+        logger.debug({ msg: "Pool heuristic check", r, g, b, isBlue, isCyan });
+        return isBlue || isCyan;
+    } catch {
+        return false; // If detection fails, assume not pool (safe default)
+    }
 }
 
 // ─── EXTRACT LAST FRAME ───

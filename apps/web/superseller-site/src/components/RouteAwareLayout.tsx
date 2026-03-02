@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
@@ -14,11 +14,11 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Skip routes: return immediately, no mounted delay (avoids re-render flash)
-  const isDashboardRoute = pathname?.startsWith('/ortal-dashboard') || pathname?.startsWith('/workflow-dashboard') || pathname?.startsWith('/dashboard');
+  const isDashboardRoute = pathname?.startsWith('/portal-dashboard') || pathname?.startsWith('/workflow-dashboard') || pathname?.startsWith('/dashboard');
   const isAdminRoute = pathname?.startsWith('/admin');
   const isAppRoute = pathname?.startsWith('/app');
   const isPortalRoute = pathname?.startsWith('/portal');
-  const isCustomerPortalRoute = pathname?.startsWith('/ortal') || pathname?.startsWith('/portal-') || pathname?.startsWith('/portal/');
+  const isCustomerPortalRoute = pathname?.startsWith('/portal-') || pathname?.startsWith('/portal/');
   const isProductRoute = pathname?.startsWith('/products/');
   const isVideoRoute = pathname?.startsWith('/video');
 
@@ -31,7 +31,7 @@ export function RouteAwareLayout({ children }: { children: React.ReactNode }) {
     pathname?.startsWith('/niches') ||
     pathname?.startsWith('/docs') ||
     pathname?.startsWith('/subscriptions') ||
-    pathname === '/superseller.agencyponents' ||
+    pathname === '/components' ||
     pathname === '/solutions' ||
     pathname === '/offers' ||
     pathname === '/contact' ||

@@ -6,7 +6,7 @@ import { NichePainPoints } from './NichePainPoints';
 import { PricingSection } from '@/components/pricing/PricingSection';
 import { Button } from '@/components/ui/button-enhanced';
 import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { Niche } from '@/data/niches';
 import * as framer from 'framer-motion';
 const { motion } = framer;

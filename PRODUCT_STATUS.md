@@ -10,7 +10,7 @@
 
 1. Winner Video Studio → Yossi (Mivnim) — ✅ PIPELINE WORKING (avatar-pro verified, fallback ready)
 2. FB Marketplace Bot → Miss Party + UAD — LIVE (posting + lead pipeline both operational)
-3. TourReel → Realtors — LIVE (production quality overhaul complete Feb 24)
+3. TourReel → Realtors — LIVE (Kling AI clips + Remotion photo composition, dual-path)
 4. Lead Landing Pages → Generic infrastructure complete, customer implementations in separate repos — DONE (100%)
 5. RAG Integration → All products — ENABLER (built but unused)
 6. AgentForge → Internal only — LOW (spec only, powers our dev)
@@ -207,11 +207,12 @@
 **Customers**: Realtors (general market)
 **What it does**: Zillow URL → AI generates cinematic property tour video with realtor compositing
 
-**Status**: LIVE and WORKING (kling-3.0/video)
+**Status**: LIVE and WORKING (dual-path: Kling 3.0 AI clips + Remotion composition)
 
 **What works**:
-- Full pipeline: Zillow scrape → Gemini floorplan analysis → clip prompts → Kling Elements (identity) → Kling 3.0 video (with end-frame continuity) → force 1920x1080 normalize → seamless concat → R2 upload
-- 25+ completed videos exist
+- **AI clip path**: Zillow scrape → Gemini floorplan analysis → clip prompts → Kling Elements (identity) → Kling 3.0 video (with end-frame continuity) → force 1920x1080 normalize → seamless concat → R2 upload
+- **Remotion composition path (NEW Feb 2026)**: Zillow photos → Ken Burns pan/zoom animation → branded intro/outro cards → TransitionSeries (fade/slide/wipe/flip) → 4 native aspect ratios → H.264 MP4 → R2 upload. Zero API cost, deterministic output. See `docs/REMOTION_BIBLE.md`.
+- 25+ completed videos exist (AI path), first Remotion render successful
 - Auth + credits (50/video, 10/regen)
 - Video player with 4 format downloads (16:9, 9:16, 1:1, 4:5)
 

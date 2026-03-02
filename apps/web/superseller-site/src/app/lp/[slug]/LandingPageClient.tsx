@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import type { LandingPage } from "@prisma/client";
+import type { LandingPage, Brand } from "@prisma/client";
 import {
   motion,
   AnimatePresence,
@@ -208,7 +208,7 @@ function CredentialCard({
 // ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
-export function LandingPageClient({ page }: { page: LandingPage }) {
+export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand | null } }) {
   const [formState, setFormState] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
@@ -216,7 +216,8 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
 
   const sections = (page.sections || {}) as Sections;
   const isRTL = page.direction === "rtl";
-  const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(page.fontFamily)}:wght@400;500;700;900&display=swap`;
+  const fontFamily = page.brand?.fontFamily || "Heebo";
+  const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;500;700;900&display=swap`;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -271,7 +272,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
       <div
         dir={page.direction}
         style={
-          { fontFamily: `'${page.fontFamily}', sans-serif` } as React.CSSProperties
+          { fontFamily: `'${fontFamily}', sans-serif` } as React.CSSProperties
         }
         className="min-h-screen bg-slate-50 text-slate-800 antialiased overflow-x-hidden"
       >
@@ -279,14 +280,14 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
         {/* HERO — staggered text reveal with blur-up animation            */}
         {/* ============================================================= */}
         <header
-          style={{ backgroundColor: page.primaryColor }}
+          style={{ backgroundColor: page.brand?.primaryColor || "#1e3a8a" }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
           {/* Subtle animated gradient overlay */}
           <div
             className="absolute inset-0 opacity-20"
             style={{
-              background: `radial-gradient(ellipse at 50% 0%, ${page.accentColor}, transparent 70%)`,
+              background: `radial-gradient(ellipse at 50% 0%, ${page.brand?.accentColor || "#2563eb"}, transparent 70%)`,
             }}
           />
 
@@ -296,10 +297,10 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
             initial="hidden"
             animate="visible"
           >
-            {page.logoUrl && (
+            {page.brand?.logoUrl && (
               <motion.img
-                src={page.logoUrl}
-                alt={page.businessName}
+                src={page.brand.logoUrl}
+                alt={page.brand.name}
                 className="h-16 w-auto mb-6 object-contain"
                 variants={scaleIn}
               />
@@ -318,12 +319,12 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                 {page.heroSubheadline}
               </motion.p>
             )}
-            {page.tagline && (
+            {page.brand?.tagline && (
               <motion.p
                 className="text-base opacity-75 mt-2"
                 variants={fadeUp}
               >
-                {page.tagline}
+                {page.brand.tagline}
               </motion.p>
             )}
           </motion.div>
@@ -415,7 +416,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                           className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:border-transparent transition-all duration-200 outline-none"
                           style={
                             {
-                              "--tw-ring-color": page.accentColor,
+                              "--tw-ring-color": page.brand?.accentColor || "#2563eb",
                             } as React.CSSProperties
                           }
                         />
@@ -439,7 +440,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                           className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:border-transparent transition-all duration-200 outline-none"
                           style={
                             {
-                              "--tw-ring-color": page.accentColor,
+                              "--tw-ring-color": page.brand?.accentColor || "#2563eb",
                             } as React.CSSProperties
                           }
                         />
@@ -463,7 +464,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                           className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:border-transparent transition-all duration-200 outline-none"
                           style={
                             {
-                              "--tw-ring-color": page.accentColor,
+                              "--tw-ring-color": page.brand?.accentColor || "#2563eb",
                             } as React.CSSProperties
                           }
                         />
@@ -485,16 +486,15 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                       <motion.button
                         type="submit"
                         disabled={formState === "submitting"}
-                        style={{ backgroundColor: page.ctaColor }}
-                        className="w-full text-white font-bold py-4 rounded-lg shadow-lg transition-all mt-4 text-lg cursor-pointer disabled:opacity-60"
                         whileHover={{
                           scale: 1.02,
-                          boxShadow: `0 10px 40px -10px ${page.ctaColor}80`,
+                          boxShadow: `0 10px 40px -10px ${(page.brand?.ctaColor || "#f97316")}80`,
                         }}
                         whileTap={{ scale: 0.98 }}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.8 }}
+                        style={{ backgroundColor: page.brand?.ctaColor || "#f97316" }}
                       >
                         {formState === "submitting"
                           ? isRTL
@@ -541,7 +541,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                   {/* Timeline connector */}
                   <div className="flex flex-col items-center">
                     <motion.div
-                      style={{ backgroundColor: page.accentColor }}
+                      style={{ backgroundColor: page.brand?.accentColor || "#2563eb" }}
                       className="w-11 h-11 rounded-full text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-md"
                       whileHover={{ scale: 1.15 }}
                       transition={{
@@ -555,7 +555,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                     {i < (sections.steps?.length ?? 0) - 1 && (
                       <motion.div
                         className="w-0.5 h-10 mt-1"
-                        style={{ backgroundColor: `${page.accentColor}30` }}
+                        style={{ backgroundColor: `${page.brand?.accentColor || "#2563eb"}30` }}
                         initial={{ scaleY: 0 }}
                         whileInView={{ scaleY: 1 }}
                         viewport={{ once: true }}
@@ -605,7 +605,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                       <span className="font-semibold text-sm">{t.name}</span>
                       {t.savings && (
                         <span
-                          style={{ color: page.ctaColor }}
+                          style={{ color: page.brand?.ctaColor || "#f97316" }}
                           className="font-bold text-sm"
                         >
                           {t.savings}
@@ -647,7 +647,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                       }}
                     >
                       <motion.div
-                        style={{ color: page.primaryColor }}
+                        style={{ color: page.brand?.primaryColor || "#1e3a8a" }}
                         className="w-14 h-14 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-slate-50 group-hover:shadow-md transition-shadow duration-300"
                         whileHover={{ rotate: [0, -5, 5, 0] }}
                         transition={{ duration: 0.5 }}
@@ -683,7 +683,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
                   key={i}
                   label={c.label}
                   value={c.value}
-                  primaryColor={page.primaryColor}
+                  primaryColor={page.brand?.primaryColor || "#1e3a8a"}
                   index={i}
                 />
               ))}
@@ -702,7 +702,7 @@ export function LandingPageClient({ page }: { page: LandingPage }) {
           transition={{ duration: 0.5 }}
         >
           <p className="font-semibold text-slate-700 mb-1">
-            {page.businessName}
+            {page.brand?.name || "SuperSeller Client"}
           </p>
           {page.phone && (
             <p className="flex items-center justify-center gap-1">

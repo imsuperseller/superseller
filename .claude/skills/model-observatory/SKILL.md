@@ -65,13 +65,15 @@ fal.ai/models ──┘                          │                        for 
 |-------|------|---------|
 | L0 | This SKILL.md | Routing doc |
 | L1 | `apps/web/superseller-site/prisma/schema.prisma` (AIModel, AIModelRecommendation, AIModelDecision) | Schema -- 3 tables, 60+ fields |
-| L1 | `tools/model-observatory/seed-initial-models.mjs` | Seed 31 models with full structured data |
+| L1 | `tools/model-observatory/seed-initial-models.mjs` | Seed 34 models with full structured data |
 | L1 | `tools/model-observatory/daily-sync.ts` | Auto-update from Kie.ai/fal.ai (1194 lines) |
 | L1 | `tools/model-observatory/README.md` | Original spec and architecture overview |
+| **L1** | **`apps/worker/src/services/model-selector.ts`** | **Runtime observatory query — bridges DB to pipeline** |
 | L2 | `apps/worker/src/services/kie.ts` | Kie.ai API client (Kling 3.0, Suno, Nano Banana) |
+| L2 | `apps/worker/src/services/nano-banana.ts` | Nano Banana client — queries observatory for model name |
 | L2 | `apps/worker/src/services/gemini.ts` | Gemini API client (vision, prompts) |
-| L2 | `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Pipeline worker that should query observatory |
-| L2 | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` | Cost tracking (pairs with observatory pricing) |
+| L2 | `apps/worker/src/queue/workers/video-pipeline.worker.ts` | Pipeline worker (Nano Banana wired to observatory) |
+| L2 | `apps/worker/src/services/expense-tracker.ts` | Cost tracking (fallback rates, observatory-primary) |
 
 ## Database Schema
 
@@ -115,7 +117,7 @@ useCase, recommendedModelId, fallbackModelId, reasoning, costPerUnit, qualitySco
 useCase, chosenModelId, alternativesConsidered[], reasoning, createdAt, createdBy
 ```
 
-## Model Inventory (31 models, 7 categories)
+## Model Inventory (34 models, 7 categories)
 
 ### Video Generation (13 models)
 
@@ -153,11 +155,12 @@ useCase, chosenModelId, alternativesConsidered[], reasoning, createdAt, createdB
 | ESRGAN | fal.ai | $0.001 | 8x | Cheapest. Batch/budget use. |
 | Clarity Upscaler | fal.ai | $0.03 | 4x | Prompt-guided creative upscaling. |
 
-### Compositing (3 models)
+### Compositing (4 models)
 
 | Model | Provider | Cost/Image | Notes |
 |-------|----------|------------|-------|
-| **Nano Banana Pro** | Kie.ai | $0.09 | Primary. Realtor composite in opening/closing clips. |
+| **Nano Banana 2** | Kie.ai | $0.09 | **Primary.** Upgraded model: up to 14 input images, better quality. |
+| Nano Banana Pro | Kie.ai | $0.09 | Deprecated. Fallback for Nano Banana 2. |
 | Easel AI Face+Body | fal.ai | $0.03 | Full body swap. 1/3 cost of Nano Banana. |
 | FLUX.2 Pro Edit | fal.ai | $0.05 | Multi-reference compositing with natural language. |
 
@@ -168,21 +171,23 @@ useCase, chosenModelId, alternativesConsidered[], reasoning, createdAt, createdB
 | **Suno V5** | Kie.ai | $0.02 | Primary. Luxury real estate piano/ambient. |
 | Suno V4.5 Plus | Kie.ai | $0.02 | Fallback for V5. |
 
-### LLM / Vision (5 models)
+### LLM / Vision (6 models)
 
 | Model | Provider | Input/1M | Output/1M | Notes |
 |-------|----------|----------|-----------|-------|
 | **Gemini 3 Flash** | Kie.ai | $0.15 | $0.90 | Primary vision. Photo classify, room detect, floorplan. |
 | Gemini 2.5 Flash | Kie.ai | $0.15 | $0.60 | Fallback for Gemini 3. |
+| **GPT-5.2 Chat** | Kie.ai | TBD | TBD | Available via Kie.ai Chat API. Potential alternative for prompt gen. |
 | Claude Opus 4.6 | Anthropic | $15.00 | $75.00 | Top reasoning. Used for code/planning. |
 | Claude Sonnet 4.6 | Anthropic | $3.00 | $15.00 | Balanced reasoning + cost. |
 | GPT-4o | OpenAI | $2.50 | $10.00 | Vision + text. |
 
-### Image Generation (2 models)
+### Image Generation (3 models)
 
 | Model | Provider | Cost/Image | Notes |
 |-------|----------|------------|-------|
 | Seedream 4.0 | Kie.ai | $0.0175 | FB Bot listing variations. |
+| **Seedream 5 Lite** | Kie.ai | $0.01 | Newer generation. Text-to-image + image-to-image. Up to 2048x2048. |
 | GPT-Image-1 | Kie.ai | $0.04 | OpenAI image generation via Kie.ai. |
 
 ## Pipeline Recommendations (7 use cases)
@@ -194,7 +199,7 @@ useCase, chosenModelId, alternativesConsidered[], reasoning, createdAt, createdB
 | `photo_upscale` | Recraft Crisp | ESRGAN (fal.ai) | $0.004/img | Recraft preserves architecture. ESRGAN $0.001 budget fallback. |
 | `music_generation` | Suno V5 | Suno V4.5+ | $0.02/track | Latest Suno quality at same price. |
 | `photo_classify` | Gemini 3 Flash | Gemini 2.5 Flash | ~$0.001/call | 15% better accuracy for photo classification. |
-| `realtor_compositing` | Nano Banana Pro | Easel AI | $0.09/img | Nano Banana integrated. Easel 1/3 cost as fallback. |
+| `realtor_compositing` | **Nano Banana 2** | Nano Banana Pro | $0.09/img | Upgraded model, up to 14 input images. Pro as fallback. |
 | `avatar_talking_head` | Kling Avatar v2 Pro | InfiniteTalk | $0.08/s | Winner Studio primary. InfiniteTalk as budget option. |
 
 ## Querying Models

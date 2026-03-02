@@ -21,9 +21,20 @@ export interface KieTaskResponse {
     result?: {
         video_url?: string;
         audio_url?: string;
+        image_url?: string;
+        resultUrls?: string[];
         duration: number;
     };
     error?: string;
+}
+
+export interface KieImageRequest {
+    prompt: string;
+    model?: "flux-2/pro-text-to-image" | "seedream/4.5-edit";
+    image_urls?: string[]; // For Seedream Edit
+    aspect_ratio?: "1:1" | "16:9" | "9:16";
+    quality?: "basic" | "hd";
+    resolution?: "1K" | "2K";
 }
 
 export interface KlingElement {
@@ -201,6 +212,48 @@ function isPublicFetchableUrl(url: string): boolean {
     return true;
 }
 
+/**
+ * Upload an image URL to Kie.ai's CDN so it can be used in kling_elements.
+ * Kling Elements requires Kie.ai-hosted URLs — direct R2/external URLs cause 422.
+ * Caches results to avoid re-uploading the same URL.
+ */
+const kieaiCdnCache = new Map<string, string>();
+export async function uploadToKieaiCDN(imageUrl: string): Promise<string> {
+    const cached = kieaiCdnCache.get(imageUrl);
+    if (cached) return cached;
+
+    const uploadUrl = `${KIE_BASE}/v1/file/upload-url`;
+    logger.info({ msg: "Uploading image to Kie.ai CDN for Elements", url: imageUrl.slice(0, 80) });
+
+    const response = await withRetry(
+        async () => {
+            const resp = await fetch(uploadUrl, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ url: imageUrl }),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!resp.ok) {
+                const errText = await resp.text();
+                throw new Error(`Kie.ai CDN upload failed (${resp.status}): ${errText}`);
+            }
+            return resp.json();
+        },
+        { label: "uploadToKieaiCDN", maxAttempts: 2, initialDelayMs: 2000 }
+    );
+
+    // Extract CDN URL from response (may be in data.downloadUrl, data.url, or data.fileUrl)
+    const cdnUrl = response?.data?.downloadUrl || response?.data?.url || response?.data?.fileUrl;
+    if (!cdnUrl) {
+        logger.warn({ msg: "Kie.ai CDN upload returned no URL, using original", response: JSON.stringify(response).slice(0, 300) });
+        return imageUrl; // fallback to original URL
+    }
+
+    kieaiCdnCache.set(imageUrl, cdnUrl);
+    logger.info({ msg: "Image uploaded to Kie.ai CDN", cdnUrl: cdnUrl.slice(0, 80) });
+    return cdnUrl;
+}
+
 export async function createKlingTask(request: KieKlingRequest): Promise<string> {
     if (!isPublicFetchableUrl(request.image_url)) {
         throw new Error(`Kie.ai Kling requires a public fetchable URL for image_url. Got non-public or Zillow URL (Kie 500).`);
@@ -254,7 +307,13 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
     };
 
     const url = `${KIE_BASE}/v1/jobs/createTask`;
-    logger.info({ msg: "kie.ai Kling task creating", url, model: body.model, duration, inputKeys: Object.keys(input) });
+    logger.info({
+        msg: "kie.ai Kling task creating",
+        url, model: body.model, duration,
+        image_urls: imageUrls.map(u => u.slice(0, 100)),
+        has_last_frame: !!request.last_frame,
+        has_elements: !!(request.kling_elements?.length),
+    });
 
     return await withRetry(
         async () => {
@@ -284,8 +343,69 @@ export async function createKlingTask(request: KieKlingRequest): Promise<string>
 
             return data.data.taskId;
         },
-        { label: "createKlingTask", maxAttempts: 3, initialDelayMs: 2000 }
+        { label: "createKlingTask", maxAttempts: 5, initialDelayMs: 5000 }
     );
+}
+
+/** Generate image via Kie (sync: create + poll until done). */
+export async function generateImageKie(request: KieImageRequest): Promise<{ url: string }> {
+    const input: any = {
+        prompt: request.prompt,
+        aspect_ratio: request.aspect_ratio || "1:1",
+    };
+
+    if (request.model === "seedream/4.5-edit") {
+        input.image_urls = request.image_urls;
+        input.quality = request.quality || "basic";
+    } else {
+        input.resolution = request.resolution || "1K";
+    }
+
+    const body = {
+        model: request.model || "flux-2/pro-text-to-image",
+        input,
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai image task creating", model: body.model, prompt: request.prompt.slice(0, 50) });
+
+    const taskId = await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Kie.ai Image failed (${response.status}): ${errText}`);
+            }
+
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Kie.ai Image API error (code ${data.code}): ${data.msg}`);
+            }
+
+            return data.data.taskId;
+        },
+        { label: "createImageTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+
+    const status = await waitForTask(taskId, "kling"); // Image status uses same recordInfo endpoint
+
+    // Parse image URL from result
+    // getTaskStatus puts resultUrls[0] into video_url, so check that too
+    const res = status.result;
+    const imageUrl = res?.image_url || res?.video_url || res?.resultUrls?.[0] || (status as any).resultJson?.resultUrls?.[0];
+
+    if (!imageUrl) {
+        logger.error({ msg: "Kie image completed but no URL", status });
+        throw new Error("Kie image completed but no URL");
+    }
+
+    return { url: imageUrl };
 }
 
 export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kling"): Promise<KieTaskResponse> {
@@ -319,30 +439,71 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
 
             let result = undefined;
             if (status === "completed") {
+                // Debug: log full raw statusData for completed tasks to diagnose URL extraction
+                logger.info({ msg: "Kie.ai task completed raw statusData", type, taskId, statusDataKeys: Object.keys(statusData), statusData: JSON.stringify(statusData).slice(0, 2000) });
+
                 const res = statusData.response || statusData.resultJson;
                 const rawResultUrls = statusData.resultUrls || (res && (typeof res === 'string' ? res : (res as any)?.resultUrls));
                 let videoUrl: string | undefined;
                 let audioUrl: string | undefined;
+
+                // Direct extraction from statusData (Suno often puts URLs here directly)
+                audioUrl = statusData.audioUrl || statusData.audio_url || statusData.musicUrl || statusData.music_url;
+                if (!audioUrl && Array.isArray(statusData.data)) {
+                    // Suno V5 may return data array with song objects
+                    const song = statusData.data[0];
+                    if (song) {
+                        audioUrl = song.audioUrl || song.audio_url || song.musicUrl || song.sourceAudioUrl || song.url;
+                    }
+                }
+                // Suno V5 actual format: response.sunoData[0].audioUrl
+                // The response object contains sunoData array, NOT a data array
+                if (!audioUrl && statusData.response) {
+                    const resp = typeof statusData.response === "string" ? JSON.parse(statusData.response) : statusData.response;
+                    if (Array.isArray(resp.sunoData) && resp.sunoData.length > 0) {
+                        const song = resp.sunoData[0];
+                        audioUrl = song.audioUrl || song.sourceAudioUrl || song.streamAudioUrl || song.audio_url;
+                        if (audioUrl) {
+                            logger.info({ msg: "Suno V5 audio extracted from response.sunoData", audioUrl: audioUrl.slice(0, 80), duration: song.duration });
+                        }
+                    }
+                }
 
                 if (rawResultUrls) {
                     try {
                         const urls = typeof rawResultUrls === 'string' ? JSON.parse(rawResultUrls) : rawResultUrls;
                         const first = Array.isArray(urls) ? urls[0] : urls;
                         videoUrl = typeof first === 'string' ? first : (first?.url ?? first?.videoUrl ?? first?.resultUrl);
+                        // Also check if resultUrls contains audio (for Suno)
+                        if (!audioUrl && typeof first === 'string' && (first.endsWith('.mp3') || first.endsWith('.wav') || first.includes('audio') || first.includes('suno'))) {
+                            audioUrl = first;
+                        }
                     } catch (_) {
                         videoUrl = undefined;
                     }
                 }
 
-                if (!videoUrl && res) {
+                if ((!videoUrl && !audioUrl) && res) {
                     try {
                         const parsedRes = typeof res === 'string' ? JSON.parse(res) : res;
                         videoUrl = parsedRes.videoUrl ||
                             parsedRes.url ||
                             (Array.isArray(parsedRes.resultUrls) ? parsedRes.resultUrls[0] : undefined) ||
                             (parsedRes.data && (parsedRes.data[0]?.videoUrl || parsedRes.data[0]?.url || parsedRes.data[0]?.resultUrl));
-                        audioUrl = parsedRes.audioUrl ||
-                            (parsedRes.data && (parsedRes.data[0]?.audioUrl || parsedRes.data[0]?.musicUrl || parsedRes.data.find((item: any) => item.type === "audio" || item.type === "music")?.url));
+                        if (!audioUrl) {
+                            audioUrl = parsedRes.audioUrl || parsedRes.audio_url || parsedRes.musicUrl ||
+                                (parsedRes.data && (parsedRes.data[0]?.audioUrl || parsedRes.data[0]?.audio_url || parsedRes.data[0]?.musicUrl || parsedRes.data[0]?.sourceAudioUrl || parsedRes.data.find((item: any) => item.type === "audio" || item.type === "music")?.url));
+                            // Suno V5: sunoData array inside parsed response
+                            if (!audioUrl && Array.isArray(parsedRes.sunoData) && parsedRes.sunoData.length > 0) {
+                                const song = parsedRes.sunoData[0];
+                                audioUrl = song.audioUrl || song.sourceAudioUrl || song.streamAudioUrl || song.audio_url;
+                            }
+                            // Check if resultUrls has audio
+                            if (!audioUrl && Array.isArray(parsedRes.resultUrls)) {
+                                const audioItem = parsedRes.resultUrls.find((u: string) => typeof u === 'string' && (u.endsWith('.mp3') || u.endsWith('.wav') || u.includes('audio') || u.includes('suno')));
+                                if (audioItem) audioUrl = audioItem;
+                            }
+                        }
                     } catch (e) {
                         logger.warn({ msg: "Failed to parse Kie.ai response", response: res });
                     }
@@ -351,7 +512,7 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
                 // Ensure video_url is a string (Kling can return {url: "..."} or array of objects)
                 const videoUrlStr = typeof videoUrl === "string" ? videoUrl
                     : (videoUrl && typeof videoUrl === "object" && (videoUrl as any).url) ? (videoUrl as any).url
-                    : undefined;
+                        : undefined;
                 if (videoUrlStr || audioUrl) {
                     result = { video_url: videoUrlStr, audio_url: audioUrl, duration: 8 };
                 }
@@ -382,7 +543,8 @@ export async function waitForTask(
         logger.info({ msg: `Kie.ai ${type} polling`, taskId, status: status.status });
 
         if (status.status === "completed") {
-            if (!status.result?.video_url) {
+            const hasUrl = type === "suno" ? (status.result?.audio_url || status.result?.video_url) : status.result?.video_url;
+            if (!hasUrl) {
                 logger.warn({ msg: `Kie.ai ${type} completed but result missing URL`, data: status });
             }
             return status;

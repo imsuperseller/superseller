@@ -13,6 +13,10 @@ fi
 HOST="172.245.56.50"
 REMOTE_DIR="/opt/tourreel-worker"
 
+echo "Building TypeScript..."
+cd "$REPO_ROOT/apps/worker" && npx tsc
+cd "$REPO_ROOT"
+
 echo "Deploying worker from $REPO_ROOT to root@$HOST:$REMOTE_DIR..."
 sshpass -p "$PASS" rsync -avz --delete \
   --exclude node_modules \
