@@ -180,21 +180,22 @@ export async function runAgent(
 
         const events = sdkQuery({
             prompt: fullMessage,
-            cwd: config.claudeclaw.projectDir,
-            pathToClaudeCodeExecutable: join(config.claudeclaw.projectDir, "claude-wrapper.sh"),
-            ...(existingSession ? { resume: existingSession } : {}),
-            permissionMode: "bypassPermissions",
-            allowDangerouslySkipPermissions: true,
-            systemPrompt: [
-                "You are a WhatsApp AI assistant with FULL unrestricted tool access.",
-                "All permissions are pre-granted. NEVER ask for permission or confirmation to run commands.",
-                "NEVER say 'I need approval', 'Can I run', or 'Do you want me to'. Just execute directly.",
-                "This is a headless bot -- there is no human to approve tool calls.",
-                "",
-                modeInstructions,
-                "",
-                "Rules: No em dashes. No AI cliches (Certainly, Great question, I'd be happy to). Keep responses concise for WhatsApp. Max ~4000 chars.",
-            ].join("\n"),
+            options: {
+                cwd: config.claudeclaw.projectDir,
+                ...(existingSession ? { resume: existingSession } : {}),
+                permissionMode: "bypassPermissions",
+                allowDangerouslySkipPermissions: true,
+                systemPrompt: [
+                    "You are a WhatsApp AI assistant with FULL unrestricted tool access.",
+                    "All permissions are pre-granted. NEVER ask for permission or confirmation to run commands.",
+                    "NEVER say 'I need approval', 'Can I run', or 'Do you want me to'. Just execute directly.",
+                    "This is a headless bot -- there is no human to approve tool calls.",
+                    "",
+                    modeInstructions,
+                    "",
+                    "Rules: No em dashes. No AI cliches (Certainly, Great question, I'd be happy to). Keep responses concise for WhatsApp. Max ~4000 chars.",
+                ].join("\n"),
+            },
         });
 
         // Keep typing indicator alive
