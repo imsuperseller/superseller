@@ -4,11 +4,11 @@
  * WAHA MCP Server
  * MCP server for WAHA (WhatsApp HTTP API) — send messages, list chats, read conversations.
  *
- * WAHA instance: http://172.245.56.50:3004
+ * WAHA instance: http://172.245.56.50:3000
  * Default session: superseller-whatsapp
  *
  * Environment variables (optional overrides):
- *   WAHA_BASE_URL  — default http://172.245.56.50:3004
+ *   WAHA_BASE_URL  — default http://172.245.56.50:3000
  *   WAHA_API_KEY   — sent as X-Api-Key header when set
  *   WAHA_SESSION   — default session name (superseller-whatsapp)
  */
@@ -24,7 +24,7 @@ import {
 // Config
 // ---------------------------------------------------------------------------
 
-const BASE_URL = process.env.WAHA_BASE_URL || "http://172.245.56.50:3004";
+const BASE_URL = process.env.WAHA_BASE_URL || "http://172.245.56.50:3000";
 const API_KEY = process.env.WAHA_API_KEY || "";
 const DEFAULT_SESSION = process.env.WAHA_SESSION || "superseller-whatsapp";
 

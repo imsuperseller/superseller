@@ -9,9 +9,10 @@ import SystemMonitoring from './SystemMonitoring';
 // import QuickBooksDashboard from './QuickBooksDashboard';
 import N8nMaintenanceControl from './N8nMaintenanceControl';
 import MarketplaceManagement from './MarketplaceManagement';
+import ProgressHub from './ProgressHub';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('n8n-control'); // Default to our new control center for now
+  const [activeTab, setActiveTab] = useState('progress');
 
   return (
     <div className="container mx-auto p-6">
@@ -23,7 +24,8 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7 h-12 bg-white/5 border border-white/5 p-1 rounded-2xl">
+        <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 h-auto md:h-12 bg-white/5 border border-white/5 p-1 rounded-2xl">
+          <TabsTrigger value="progress" className="rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">Progress</TabsTrigger>
           <TabsTrigger value="ai-agents" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">AI Agents</TabsTrigger>
           <TabsTrigger value="customers" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Customers</TabsTrigger>
           <TabsTrigger value="marketplace" className="rounded-xl data-[state=active]:bg-orange-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">FB Bot</TabsTrigger>
@@ -32,6 +34,10 @@ export default function AdminDashboard() {
           <TabsTrigger value="n8n-control" className="rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">N8N Mission</TabsTrigger>
           <TabsTrigger value="system" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">System</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="progress" className="space-y-6">
+          <ProgressHub />
+        </TabsContent>
 
         <TabsContent value="ai-agents" className="space-y-6">
           <AIAgentManagement />
