@@ -1,15 +1,7 @@
 import * as React from "react"
-import { cva } from "class-variance-authority"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { SuperSellerLogo } from '@/components/ui/superseller-logo';
-import { SuperSellerProgress } from '@/components/ui/superseller-progress';
-import { SuperSellerStatusIndicator } from '@/components/ui/superseller-status';
-import { SplitText, Typewriter, FadeInText } from 'react-bits';
-import { MagneticCursor, CustomCursor, CursorFollower } from 'react-bits';
-import { GlassCard, GradientCard, HoverCard } from 'react-bits';
-import { GradientButton, RippleButton, IconButton } from 'react-bits';
-import { SkeletonLoader, Spinner, ProgressBar } from 'react-bits';
 
 const alertVariants = cva(
   "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",

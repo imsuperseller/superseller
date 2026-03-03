@@ -1,0 +1,7 @@
+{
+  "name": "superseller-support",
+  "description": "SuperSeller AI customer support — ticket triage, customer health, WhatsApp support, and knowledge base",
+  "version": "1.0.0",
+  "author": { "name": "SuperSeller AI" },
+  "homepage": "https://superseller.agency"
+}

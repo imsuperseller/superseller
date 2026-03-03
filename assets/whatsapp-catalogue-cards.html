@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperSeller AI — WhatsApp Catalogue Product Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: #0a0718;
+    color: #fffff3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    padding: 60px 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 300;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .instructions {
+    max-width: 700px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: -40px;
+  }
+
+  /* Each card is exactly 1080x1080 for WhatsApp catalogue */
+  .product-card {
+    width: 1080px;
+    height: 1080px;
+    background: #110d28;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 80px 70px 60px;
+  }
+
+  /* Subtle grid pattern overlay */
+  .product-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(95, 251, 253, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(95, 251, 253, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orb background */
+  .product-card::after {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(180px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .product-card.starter::after {
+    background: #fe3d51;
+    top: -200px; right: -200px;
+  }
+  .product-card.pro::after {
+    background: #5ffbfd;
+    top: -100px; right: -150px;
+  }
+  .product-card.team::after {
+    background: linear-gradient(135deg, #fe3d51, #5ffbfd);
+    bottom: -200px; left: -100px;
+  }
+
+  .product-card > * { position: relative; z-index: 1; }
+
+  /* ---- TOP SECTION ---- */
+  .card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-name {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fffff3;
+  }
+
+  .brand-name span {
+    font-weight: 300;
+    color: #b0bec5;
+  }
+
+  .badge-popular {
+    background: linear-gradient(135deg, #fe3d51, #bf5700);
+    color: #fffff3;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px 24px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .divider-line {
+    width: 80px;
+    height: 3px;
+    border-radius: 2px;
+  }
+  .starter .divider-line { background: #fe3d51; }
+  .pro .divider-line { background: #5ffbfd; }
+  .team .divider-line { background: linear-gradient(90deg, #fe3d51, #5ffbfd); }
+
+  .plan-name {
+    font-size: 72px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    line-height: 1;
+  }
+  .starter .plan-name { color: #fe3d51; }
+  .pro .plan-name { color: #5ffbfd; }
+  .team .plan-name {
+    background: linear-gradient(135deg, #fe3d51, #5ffbfd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .plan-tagline {
+    font-size: 22px;
+    font-weight: 300;
+    color: #b0bec5;
+    line-height: 1.4;
+  }
+
+  /* ---- MIDDLE SECTION ---- */
+  .card-middle {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .price-dollar {
+    font-size: 32px;
+    font-weight: 600;
+    color: #b0bec5;
+    align-self: flex-start;
+    margin-top: 12px;
+  }
+
+  .price-amount {
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 1;
+    color: #fffff3;
+  }
+
+  .price-period {
+    font-size: 28px;
+    font-weight: 300;
+    color: #94a3b8;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 40px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+  }
+  .starter .stat-value { color: #fe3d51; }
+  .pro .stat-value { color: #5ffbfd; }
+  .team .stat-value {
+    background: linear-gradient(135deg, #fe3d51, #5ffbfd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 16px;
+    font-weight: 400;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ---- FEATURES ---- */
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    list-style: none;
+  }
+
+  .features-list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 20px;
+    font-weight: 400;
+    color: #b0bec5;
+  }
+
+  .features-list li .check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #110d28;
+  }
+  .starter .features-list li .check { background: #fe3d51; }
+  .pro .features-list li .check { background: #5ffbfd; }
+  .team .features-list li .check { background: linear-gradient(135deg, #fe3d51, #5ffbfd); }
+
+  /* ---- BOTTOM SECTION ---- */
+  .card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cta-button {
+    width: 100%;
+    padding: 22px;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .starter .cta-button {
+    background: linear-gradient(135deg, #fe3d51, #bf5700);
+    color: #fffff3;
+  }
+  .pro .cta-button {
+    background: linear-gradient(135deg, #1eaef7, #5ffbfd);
+    color: #110d28;
+  }
+  .team .cta-button {
+    background: linear-gradient(135deg, #fe3d51, #5ffbfd);
+    color: #110d28;
+  }
+
+  .bottom-tagline {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 300;
+    color: #94a3b8;
+    letter-spacing: 1px;
+  }
+
+  .bottom-tagline em {
+    font-style: normal;
+    color: #5ffbfd;
+  }
+
+  /* ---- ACCENT BORDER ---- */
+  .product-card.starter { border-top: 4px solid #fe3d51; }
+  .product-card.pro { border-top: 4px solid #5ffbfd; }
+  .product-card.team { border-top: 4px solid transparent; border-image: linear-gradient(90deg, #fe3d51, #5ffbfd) 1; }
+
+  /* Crew icons row */
+  .crew-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .crew-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #b0bec5;
+  }
+  .crew-icon.active {
+    border-color: rgba(95, 251, 253, 0.3);
+    color: #5ffbfd;
+    background: rgba(95, 251, 253, 0.08);
+  }
+  .starter .crew-icon.active {
+    border-color: rgba(254, 61, 81, 0.3);
+    color: #fe3d51;
+    background: rgba(254, 61, 81, 0.08);
+  }
+
+  /* Corner accent */
+  .corner-accent {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    z-index: 0;
+  }
+  .starter .corner-accent {
+    background: linear-gradient(315deg, rgba(254,61,81,0.08) 0%, transparent 70%);
+  }
+  .pro .corner-accent {
+    background: linear-gradient(315deg, rgba(95,251,253,0.08) 0%, transparent 70%);
+  }
+  .team .corner-accent {
+    background: linear-gradient(315deg, rgba(254,61,81,0.06) 0%, rgba(95,251,253,0.06) 50%, transparent 70%);
+  }
+</style>
+</head>
+<body>
+
+<h1>SuperSeller AI — WhatsApp Catalogue Cards</h1>
+<p class="instructions">
+  Each card below is exactly 1080 &times; 1080px. To export: right-click &rarr; Inspect &rarr; select the
+  <code>.product-card</code> element &rarr; Screenshot node. Or use a browser extension to capture each card.
+  On macOS, you can also zoom to 100% and use Shift+Cmd+4 to manually capture each card area.
+</p>
+
+<!-- ============================================ -->
+<!-- STARTER PLAN -->
+<!-- ============================================ -->
+<div class="product-card starter">
+  <div class="corner-accent"></div>
+  <div class="card-top">
+    <div class="brand-row">
+      <div class="brand-name">SUPERSELLER <span>AI</span></div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="plan-name">Starter</div>
+    <div class="plan-tagline">Perfect for getting started with your AI crew</div>
+  </div>
+
+  <div class="card-middle">
+    <div class="price-block">
+      <span class="price-dollar">$</span>
+      <span class="price-amount">79</span>
+      <span class="price-period">/mo</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">500</span>
+        <span class="stat-label">Credits / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">~5</span>
+        <span class="stat-label">Videos / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">6</span>
+        <span class="stat-label">AI Agents</span>
+      </div>
+    </div>
+    <ul class="features-list">
+      <li><span class="check">&#10003;</span> All 6 AI crew members included</li>
+      <li><span class="check">&#10003;</span> All video formats (16:9, 9:16, 1:1, 4:5)</li>
+      <li><span class="check">&#10003;</span> WhatsApp delivery</li>
+      <li><span class="check">&#10003;</span> Email support</li>
+    </ul>
+    <div class="crew-row">
+      <div class="crew-icon active" title="Forge">F</div>
+      <div class="crew-icon active" title="FrontDesk">FD</div>
+      <div class="crew-icon active" title="Scout">S</div>
+      <div class="crew-icon active" title="Buzz">B</div>
+      <div class="crew-icon active" title="Cortex">C</div>
+      <div class="crew-icon active" title="Market">M</div>
+    </div>
+  </div>
+
+  <div class="card-bottom">
+    <div class="cta-button">Start with Starter</div>
+    <div class="bottom-tagline"><em>Your AI Crew.</em> Always working.</div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- PRO PLAN -->
+<!-- ============================================ -->
+<div class="product-card pro">
+  <div class="corner-accent"></div>
+  <div class="card-top">
+    <div class="brand-row">
+      <div class="brand-name">SUPERSELLER <span>AI</span></div>
+      <div class="badge-popular">MOST POPULAR</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="plan-name">Pro</div>
+    <div class="plan-tagline">For businesses ready to scale with AI</div>
+  </div>
+
+  <div class="card-middle">
+    <div class="price-block">
+      <span class="price-dollar">$</span>
+      <span class="price-amount">149</span>
+      <span class="price-period">/mo</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">1,500</span>
+        <span class="stat-label">Credits / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">~15</span>
+        <span class="stat-label">Videos / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">6</span>
+        <span class="stat-label">AI Agents</span>
+      </div>
+    </div>
+    <ul class="features-list">
+      <li><span class="check">&#10003;</span> All 6 AI crew members included</li>
+      <li><span class="check">&#10003;</span> Priority processing</li>
+      <li><span class="check">&#10003;</span> Text overlays on videos</li>
+      <li><span class="check">&#10003;</span> WhatsApp delivery</li>
+      <li><span class="check">&#10003;</span> Priority support</li>
+    </ul>
+    <div class="crew-row">
+      <div class="crew-icon active" title="Forge">F</div>
+      <div class="crew-icon active" title="FrontDesk">FD</div>
+      <div class="crew-icon active" title="Scout">S</div>
+      <div class="crew-icon active" title="Buzz">B</div>
+      <div class="crew-icon active" title="Cortex">C</div>
+      <div class="crew-icon active" title="Market">M</div>
+    </div>
+  </div>
+
+  <div class="card-bottom">
+    <div class="cta-button">Go Pro</div>
+    <div class="bottom-tagline"><em>Your AI Crew.</em> Always working.</div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- TEAM PLAN -->
+<!-- ============================================ -->
+<div class="product-card team">
+  <div class="corner-accent"></div>
+  <div class="card-top">
+    <div class="brand-row">
+      <div class="brand-name">SUPERSELLER <span>AI</span></div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="plan-name">Team</div>
+    <div class="plan-tagline">A full AI department for your business</div>
+  </div>
+
+  <div class="card-middle">
+    <div class="price-block">
+      <span class="price-dollar">$</span>
+      <span class="price-amount">299</span>
+      <span class="price-period">/mo</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">4,000</span>
+        <span class="stat-label">Credits / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">~50</span>
+        <span class="stat-label">Videos / mo</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">6</span>
+        <span class="stat-label">AI Agents</span>
+      </div>
+    </div>
+    <ul class="features-list">
+      <li><span class="check">&#10003;</span> All 6 AI crew members included</li>
+      <li><span class="check">&#10003;</span> Priority processing</li>
+      <li><span class="check">&#10003;</span> Text overlays on videos</li>
+      <li><span class="check">&#10003;</span> Team access & custom integrations</li>
+      <li><span class="check">&#10003;</span> Dedicated account manager</li>
+    </ul>
+    <div class="crew-row">
+      <div class="crew-icon active" title="Forge">F</div>
+      <div class="crew-icon active" title="FrontDesk">FD</div>
+      <div class="crew-icon active" title="Scout">S</div>
+      <div class="crew-icon active" title="Buzz">B</div>
+      <div class="crew-icon active" title="Cortex">C</div>
+      <div class="crew-icon active" title="Market">M</div>
+    </div>
+  </div>
+
+  <div class="card-bottom">
+    <div class="cta-button">Scale Up</div>
+    <div class="bottom-tagline"><em>Your AI Crew.</em> Always working.</div>
+  </div>
+</div>
+
+</body>
+</html>

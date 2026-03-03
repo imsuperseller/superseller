@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
 
     // Find the landing page + owner email for fallback notification
     let landingPage;
+    let landingPageUser: { email: string; name: string | null } | null = null;
     try {
       landingPage = await prisma.landingPage.findFirst({
         where: { slug, active: true },
-        include: { user: { select: { email: true, name: true } } },
       });
     } catch (dbErr: any) {
       console.error("Landing page query error:", dbErr.message, dbErr.code);
@@ -33,6 +33,17 @@ export async function POST(req: NextRequest) {
 
     if (!landingPage) {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
+    }
+
+    // Fetch the landing page owner for notification fallback
+    try {
+      const ownerUser = await prisma.user.findUnique({
+        where: { id: landingPage.userId },
+        select: { email: true, name: true },
+      });
+      landingPageUser = ownerUser ?? null;
+    } catch {
+      // Non-fatal — notification will fall back to page.email
     }
 
     // Create the lead linked to the landing page owner
@@ -62,7 +73,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Notify page owner (fire-and-forget): WAHA WhatsApp first, Resend email fallback
-    notifyPageOwner(landingPage, { name, phone, email }).catch(
+    notifyPageOwner({ ...landingPage, user: landingPageUser }, { name, phone, email }).catch(
       (err) => console.error("Lead notification failed:", err)
     );
 
@@ -80,12 +91,13 @@ async function notifyPageOwner(
   page: {
     whatsappNumber: string | null;
     email: string | null;
-    businessName: string;
+    businessName?: string | null;
     slug: string;
     user: { email: string; name: string | null } | null;
   },
   lead: { name: string; phone: string; email: string }
 ) {
+  const businessName = page.businessName || page.slug;
   const message = [
     `*ליד חדש מדף הנחיתה* (${page.slug})`,
     ``,
@@ -131,7 +143,7 @@ async function notifyPageOwner(
   const ownerEmail = page.email || page.user?.email;
   if (ownerEmail) {
     try {
-      await emails.newLead(ownerEmail, page.businessName, lead.name, lead.phone, lead.email);
+      await emails.newLead(ownerEmail, businessName, lead.name, lead.phone, lead.email);
       console.log(`[Lead Notification] Email sent to ${ownerEmail} for ${page.slug}`);
     } catch (err) {
       console.warn(`[Lead Notification] Email failed for ${page.slug}:`, err instanceof Error ? err.message : err);
@@ -140,7 +152,7 @@ async function notifyPageOwner(
 
   if (!whatsappSent && !ownerEmail) {
     console.log(
-      `[Lead Notification] No delivery channel for ${page.businessName} (${page.slug}):`,
+      `[Lead Notification] No delivery channel for ${businessName} (${page.slug}):`,
       `${lead.name} | ${lead.phone} | ${lead.email}`
     );
   }

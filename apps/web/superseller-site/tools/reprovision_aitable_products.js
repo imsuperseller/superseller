@@ -18,10 +18,10 @@ envContent.split('\n').forEach(line => {
 
 const AITABLE_API_TOKEN = envVars.AITABLE_API_TOKEN;
 const SPACE_ID = envVars.AITABLE_SPACE_ID;
-const PRODUCTS_DATASHEET_ID = envVars.AITABLE_RENSTO_MASTER_REGISTRY_ID;
+const PRODUCTS_DATASHEET_ID = envVars.AITABLE_SUPERSELLER_MASTER_REGISTRY_ID;
 
 if (!AITABLE_API_TOKEN || !SPACE_ID || !PRODUCTS_DATASHEET_ID) {
-    console.error("❌ Missing AITable credentials (AITABLE_API_TOKEN, AITABLE_SPACE_ID, or AITABLE_RENSTO_MASTER_REGISTRY_ID).");
+    console.error("❌ Missing AITable credentials (AITABLE_API_TOKEN, AITABLE_SPACE_ID, or AITABLE_SUPERSELLER_MASTER_REGISTRY_ID).");
     process.exit(1);
 }
 

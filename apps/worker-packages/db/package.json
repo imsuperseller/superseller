@@ -1,5 +1,5 @@
 {
-    "name": "@zillow-to-video/db",
+    "name": "@superseller/db",
     "version": "0.1.0",
     "private": true,
     "main": "src/index.ts",

@@ -247,14 +247,14 @@ export default function ApprovalsPage() {
                         {approval.status === 'pending' && (
                           <>
                             <Button
-                              variant="supersellerSuccess"
+                              variant="supersellerPrimary"
                               size="sm"
                               onClick={() => handleApprove(approval.id)}
                             >
                               <CheckCircle className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="supersellerError"
+                              variant="destructive"
                               size="sm"
                               onClick={() => handleReject(approval.id)}
                             >

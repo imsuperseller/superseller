@@ -1,0 +1,10 @@
+{
+  "name": "superseller-marketing",
+  "description": "SuperSeller AI marketing — content strategy, social publishing, brand voice, and competitor intelligence",
+  "version": "1.0.0",
+  "author": {
+    "name": "SuperSeller AI"
+  },
+  "homepage": "https://superseller.agency",
+  "repository": "https://github.com/superseller-ai/plugins"
+}

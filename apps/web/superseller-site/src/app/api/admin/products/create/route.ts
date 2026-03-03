@@ -49,10 +49,11 @@ export async function POST(request: NextRequest) {
 
         await prisma.serviceInstance.create({
             data: {
-                slug,
+                clientId: slug,
+                clientEmail: '',
                 productName: name,
                 status: 'active',
-                metadata: manifest as any,
+                configuration: manifest as any,
             },
         }).catch((err: any) => {
             console.warn('Could not save to ServiceInstance table:', err.message);

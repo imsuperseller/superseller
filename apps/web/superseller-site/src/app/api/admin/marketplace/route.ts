@@ -21,7 +21,6 @@ export async function GET(req: NextRequest) {
     try {
         const customers = await prisma.marketplaceCustomer.findMany({
             include: {
-                user: { select: { email: true, name: true } },
                 products: {
                     orderBy: { createdAt: 'desc' },
                 },
@@ -57,8 +56,8 @@ export async function GET(req: NextRequest) {
                 subscription: c.subscription,
                 status: c.status,
                 createdAt: c.createdAt,
-                user: c.user,
-                products: c.products.map(p => ({
+                userId: c.userId,
+                products: c.products.map((p: any) => ({
                     id: p.id,
                     name: p.name,
                     productType: p.productType,
@@ -66,7 +65,7 @@ export async function GET(req: NextRequest) {
                     config: p.config,
                     schedule: p.schedule,
                 })),
-                sessions: c.sessions.map(s => ({
+                sessions: c.sessions.map((s: any) => ({
                     id: s.id,
                     profileId: s.profileId,
                     status: s.status,

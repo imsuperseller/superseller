@@ -1237,15 +1237,15 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 ### Instruction Hierarchy + Alignment Audit (Session 2)
 
-- **Authority Precedence enforced across codebase + NotebookLM**: brain.md is Tier 1. Previously, NotebookLM 5811a372 had NotebookLM as Rank 1 and brain.md as Rank 2. Fixed by pushing compliance override sources to 6 notebooks.
+- **Authority Precedence enforced across codebase + NotebookLM**: brain.md is Tier 1. Previously, NotebookLM 1dc7ce26 had NotebookLM as Rank 1 and brain.md as Rank 2. Fixed by pushing compliance override sources to 6 notebooks.
 - **NotebookLM compliance sources pushed (6 notebooks)**:
-  - 5811a372 (B.L.A.S.T.): Authority override — brain.md = Tier 1, gemini.md superseded, Veo/Firestore/learning.log deprecated
+  - 1dc7ce26 (B.L.A.S.T.): Authority override — brain.md = Tier 1, gemini.md superseded, Veo/Firestore/learning.log deprecated
   - 0baf5f36 (Zillow-to-Video): Authority override — brain.md wins over "NotebookLM wins over local"
   - fc048ba8 (n8n workflows): n8n = backup only, Antigravity primary, Firestore retired
   - 743744d5 (Marketplace): Firestore, Airtable.com, BMAD, Webflow = retired
   - 98b120fa (Aitable.ai): Dashboards-only scope restriction
   - 3e820274 (KIE.AI): Kling 3.0 only for SuperSeller AI production
-- **Verified**: Queried 5811a372 post-push — now correctly returns brain.md as Tier 1, NotebookLM as Tier 7.
+- **Verified**: Queried 1dc7ce26 post-push — now correctly returns brain.md as Tier 1, NotebookLM as Tier 7.
 - **Stripe publishable key**: Rotated to `pk_live_...xQM`, added to Vercel production + preview via CLI.
 - **Codebase fixes (committed earlier this session)**:
   - docs/operations/BIBLE.md: Removed broad SSOT claim, added brain.md ref
@@ -1337,10 +1337,10 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 - **Full SaaS + NotebookLM cross-reference audit**: 4-agent codebase audit + 7-notebook deep query. Found 13 cross-notebook contradictions, 6 notebook-vs-codebase mismatches, 4 redundancies. Key fixes applied:
   - **Pricing conflict**: 3 notebooks had different pricing models (tokens vs credits vs per-video). Canonical: "credits" at 50/video. Override sources added to 719854ee, 0baf5f36.
-  - **Veo deprecated but referenced**: 5811a372 promoted Veo 3.1 as viable. Override added marking Veo deprecated, Kling 3.0 only.
-  - **fal.ai deprecated but referenced**: 5811a372 said "Kling via fal.ai". Override added. NOTEBOOKLM_INDEX updated to mark fal.ai notebook deprecated.
-  - **Clerk/Supabase never implemented**: 5811a372 listed Clerk auth and Supabase DB. Override added — actual stack is magic-link + direct PostgreSQL.
-  - **learning.log retired**: 5811a372 and 12c80d7d referenced learning.log. Override sources added → use findings.md.
+  - **Veo deprecated but referenced**: 1dc7ce26 promoted Veo 3.1 as viable. Override added marking Veo deprecated, Kling 3.0 only.
+  - **fal.ai deprecated but referenced**: 1dc7ce26 said "Kling via fal.ai". Override added. NOTEBOOKLM_INDEX updated to mark fal.ai notebook deprecated.
+  - **Clerk/Supabase never implemented**: 1dc7ce26 listed Clerk auth and Supabase DB. Override added — actual stack is magic-link + direct PostgreSQL.
+  - **learning.log retired**: 1dc7ce26 and 12c80d7d referenced learning.log. Override sources added → use findings.md.
   - **f0747c8b (prd template) is different product**: Voice-note-to-video for "Mivnim", not TourReel. Override source added marking it LEGACY. Added to NOTEBOOKLM_INDEX.
   - **CLAUDE.md fixes**: Firestore changed from "fallback reads only" to "deprecated Feb 2026". Worker stack specified "Kie.ai Kling 3.0".
   - **CODEBASE_VS_NOTEBOOKLM.md**: Added missing notebooks (719854ee, b906e69f, f0747c8b).
@@ -1353,7 +1353,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
     - 0baf5f36: "Architectural Blueprint for Zillow Drone Tour Automation" (Veo core) — deleted
     - 0baf5f36: "Cinematic Video Pipeline Runtime Configurations" (legacy credit costs 1-3) — deleted
     - 0baf5f36: "Zillow-to-Drone-Tour System Implementation Specification" (Veo + fal.ai) — deleted
-    - 5811a372: "Architecting an AI Real Estate Video SaaS with Veo 3.1" (OBSOLETE by own OVERRIDE) — deleted
+    - 1dc7ce26: "Architecting an AI Real Estate Video SaaS with Veo 3.1" (OBSOLETE by own OVERRIDE) — deleted
   - **Pricing page fixed**: Corrected tiers from $49/$99/$199 to canonical $299/$699/$1499 with 500/1500/4000 credits. Replaced `alert()` placeholder with real Stripe checkout via new `/api/video/subscribe` route.
   - **Subscribe API route created**: `apps/web/superseller-site/src/app/api/video/subscribe/route.ts` — creates Stripe subscription checkout session with correct metadata for credit provisioning.
   - **Webflow references purged**: All stale "Matching Webflow Brand System" comments removed from globals.css.

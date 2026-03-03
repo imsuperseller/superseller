@@ -49,7 +49,7 @@
 - **packages/** — Does not exist. Use `apps/web/superseller-site/src/` or `infra/`.
 - **scripts/** — Exists but in .cursorignore. Use `infra/n8n-scripts/` for automation scripts.
 - **archives/** — Does not exist. Use `infra/archive/` or `docs/archive/` for archived material.
-- **directives/** — Deleted. n8n governance in NotebookLM 5811a372.
+- **directives/** — Deleted. n8n governance in NotebookLM 1dc7ce26.
 - **legal-pages/** — Deleted. Legal content in superseller-site or external.
 - **apps/api**, **apps/gateway-worker**, **apps/marketplace** — Deleted from repo.
 - **apps/web/admin-dashboard** — Deleted. Admin lives in `superseller-site/src/app/admin`.

@@ -1,0 +1,32 @@
+{
+  "remove_big_box_stores": [
+    "home depot",
+    "lowes",
+    "menards",
+    "walmart",
+    "costco",
+    "sears",
+    "ace hardware",
+    "harbor freight"
+  ],
+  "minimum_rating": 3.0,
+  "required_fields": [
+    "title",
+    "website",
+    "phone",
+    "address"
+  ],
+  "exclude_categories": [
+    "furniture store",
+    "appliance store",
+    "hardware store"
+  ],
+  "target_categories": [
+    "kitchen remodeler",
+    "bathroom remodeler",
+    "general contractor",
+    "construction company",
+    "home builder",
+    "remodeler"
+  ]
+}

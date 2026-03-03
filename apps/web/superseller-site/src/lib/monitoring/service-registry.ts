@@ -92,7 +92,7 @@ export const SERVICE_REGISTRY: MonitoredService[] = [
     healthCheck: async () => {
       const start = Date.now();
       try {
-        const key = process.env.KIE_API_KEY;
+        const key = process.env.KIE_API_KEY || process.env.KIE_AI_API_KEY;
         if (!key) return { status: 'unknown', latencyMs: 0, message: 'KIE_API_KEY not set' };
         const res = await fetch('https://api.kie.ai/api/v1/user/balance', {
           headers: { Authorization: `Bearer ${key}` },

@@ -4,7 +4,7 @@
 
 | # | Notebook ID | Title | Sources | Purpose | Status |
 |---|-------------|-------|---------|---------|--------|
-| 1 | 5811a372-2d18-4f46-b421-9d026a57205b | Project Template | 18 | B.L.A.S.T. methodology, agent behavior, reference hierarchy | Active |
+| 1 | 1dc7ce26-2d18-4f46-b421-9d026a57205b | Project Template | 18 | B.L.A.S.T. methodology, agent behavior, reference hierarchy | Active |
 | 2 | 3e820274-6839-4921-aa83-ad003dd2fb93 | KIE.AI | 39 | Kie.ai API docs, Kling 3.0 video/Suno music generation | Active |
 | 3 | 0baf5f36-7ff0-4550-a878-923dbf59de5c | Zillow-to-Video | 22 | TourReel pipeline spec (canonical) | Active |
 | 4 | fc048ba8-12b7-432a-b8d9-65baae62d529 | Master: Automation & Core Infra | 37 | Master domain: Antigravity, n8n, automation workflows | Active |

@@ -2,15 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
+type RouteContext = { params: Promise<{ productId: string }> };
+
 /**
  * GET /api/marketplace/customer/products/[productId]
  * Get a specific product
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: RouteContext
 ) {
   try {
+    const { productId } = await params;
     const session = await verifySession();
     if (!session.isValid || !session.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -18,7 +21,7 @@ export async function GET(
 
     const product = await prisma.marketplaceProduct.findFirst({
       where: {
-        id: params.productId,
+        id: productId,
         customer: { userId: session.userId },
       },
       include: {
@@ -67,9 +70,10 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: RouteContext
 ) {
   try {
+    const { productId } = await params;
     const session = await verifySession();
     if (!session.isValid || !session.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -81,7 +85,7 @@ export async function PATCH(
     // Verify ownership
     const existing = await prisma.marketplaceProduct.findFirst({
       where: {
-        id: params.productId,
+        id: productId,
         customer: { userId: session.userId },
       },
     });
@@ -92,7 +96,7 @@ export async function PATCH(
 
     // Update product
     const product = await prisma.marketplaceProduct.update({
-      where: { id: params.productId },
+      where: { id: productId },
       data: {
         ...(name && { name }),
         ...(config && { config }),
@@ -131,9 +135,10 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: RouteContext
 ) {
   try {
+    const { productId } = await params;
     const session = await verifySession();
     if (!session.isValid || !session.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -142,7 +147,7 @@ export async function DELETE(
     // Verify ownership
     const existing = await prisma.marketplaceProduct.findFirst({
       where: {
-        id: params.productId,
+        id: productId,
         customer: { userId: session.userId },
       },
     });
@@ -153,7 +158,7 @@ export async function DELETE(
 
     // Soft delete (set status to DELETED)
     await prisma.marketplaceProduct.update({
-      where: { id: params.productId },
+      where: { id: productId },
       data: { status: 'DELETED' },
     });
 

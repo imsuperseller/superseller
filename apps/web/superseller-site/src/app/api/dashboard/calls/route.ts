@@ -101,9 +101,9 @@ export async function GET(request: NextRequest) {
             missed: callLogs.filter((c) => c.outcome === 'missed').length,
             avgDuration:
                 callLogs.length > 0
-                    ? Math.round(callLogs.reduce((acc, c) => acc + c.duration, 0) / callLogs.length)
+                    ? Math.round(callLogs.reduce((acc, c) => acc + (c.duration ?? 0), 0) / callLogs.length)
                     : 0,
-            totalCreditsUsed: callLogs.reduce((acc, c) => acc + c.creditsCharged, 0),
+            totalCreditsUsed: callLogs.reduce((acc, c) => acc + (c.creditsCharged ?? 0), 0),
         };
 
         return NextResponse.json({

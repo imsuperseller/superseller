@@ -38,7 +38,7 @@ portal.superseller.agency   → Vercel (customer portals - planned)
 13) **After implementation**: Update CLAUDE.md and optimization plans as needed.
 
 ## SuperSeller AI Brand Guidelines
-15) **Use SuperSeller AI brand colors**: #fe3d51 (primary), #bf5700 (secondary), #1eaef7 (accent), #5ffbfd (highlight), #110d28 (dark).
+15) **Use SuperSeller AI brand colors**: #f47920 (orange/primary), #4ecdc4 (teal/accent), #0d1b2e (navy/dark). Font: Outfit. See memory/brand-identity.md for full palette.
 16) **Include SuperSeller AI logo** in all design outputs and avoid using the weird K letter.
 17) **Use GSAP animations** and Shadcn components consistently throughout the codebase.
 18) **Follow modern JavaScript/TypeScript best practices** with async/await for asynchronous code.

@@ -2,7 +2,7 @@
 # Place this file at /etc/systemd/system/cloudflared.service
 
 [Unit]
-Description=Cloudflare Tunnel for Rensto
+Description=Cloudflare Tunnel for SuperSeller AI
 After=network.target
 Wants=network-online.target
 Before=docker.service

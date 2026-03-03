@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const config = {
       customerId: customer.id,
       businessName: customer.businessName,
-      status: customer.status.toLowerCase(),
+      status: (customer.status ?? 'active').toLowerCase(),
       products: customer.products.map(p => ({
         productId: p.id,
         productType: p.productType,

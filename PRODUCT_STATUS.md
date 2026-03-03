@@ -8,13 +8,15 @@
 
 ## Priority Order (Deliver to customers FIRST, then self-serve SaaS)
 
-1. Winner Video Studio → Yossi (Mivnim) — ✅ PIPELINE WORKING (avatar-pro verified, fallback ready)
-2. FB Marketplace Bot → Miss Party + UAD — LIVE (posting + lead pipeline both operational)
-3. TourReel → Realtors — LIVE (Kling AI clips + Remotion photo composition, dual-path)
-4. Lead Landing Pages → Generic infrastructure complete, customer implementations in separate repos — DONE (100%)
-5. RAG Integration → All products — ENABLER (built but unused)
-6. AgentForge → Internal only — LOW (spec only, powers our dev)
-7. SocialHub → All customers — PHASE 2 (spec complete, distribution layer for all products)
+1. FB Marketplace Bot → Miss Party + UAD — ✅ LIVE (posting + lead pipeline both operational)
+2. TourReel → Realtors — ✅ LIVE (Kling AI clips + Remotion photo composition, dual-path)
+3. SocialHub/Buzz → All customers — ✅ PHASE 1 LIVE (text+image→WhatsApp approval→FB publish)
+4. Winner Video Studio → Yossi (Mivnim) — ⚠️ BUILT, NOT ACTIVE (pipeline verified, Yossi not using)
+5. Lead Landing Pages → Generic infrastructure complete — DONE (100%)
+6. FrontDesk Voice AI → SuperSeller AI — ⚠️ PARTIAL (voice works, webhook migration pending)
+7. ClaudeClaw → Internal — ⚠️ BUILT, DISABLED (code committed, not deployed)
+8. RAG Integration → All products — ENABLER (built but unused)
+9. AgentForge → Internal only — LOW (spec only)
 
 ---
 
@@ -26,7 +28,7 @@
 **What it does**: Business uploads audio + reference photo → AI generates short-form video with lip-synced avatar
 **Brand voice**: "Poscas Winner" (hardcoded in Gemini brain)
 
-**Status**: PIPELINE FULLY WORKING — End-to-end verified Feb 19, 2026
+**Status**: ⚠️ BUILT, NOT ACTIVELY USED — Pipeline verified end-to-end Feb 19, 2026. Yossi (Mivnim) not actively using.
 
 **What works**:
 - Auth (WhatsApp OTP + magic link)
@@ -315,25 +317,29 @@
 
 ---
 
-## 7. SocialHub (Social Media Management Platform)
+## 7. SocialHub / Buzz (Social Media Management)
 
-**Customer**: All existing customers + new market
-**What it does**: AI content creation → WhatsApp approval → 6-platform publishing → analytics → competitive intelligence → social inbox
-**Location**: `social app/` (spec only — 7 detailed docs: blueprint, API contracts, DB schema, frontend spec, integrations spec, worker spec, CLAUDE.md)
+**Customer**: All existing customers + new market (SuperSeller AI dogfooding first)
+**What it does**: AI content creation → WhatsApp approval → multi-platform publishing
+**Location**: `apps/web/superseller-site/src/lib/services/social/` (publishers), `apps/web/superseller-site/src/app/api/social/` (API routes)
 
-**Status**: Spec COMPLETE, code NOT STARTED
+**Status**: ✅ PHASE 1 LIVE (Feb 26, 2026)
 
-**What the spec covers**:
-- AI content creation (Claude Sonnet/Haiku + kie.ai for media)
-- 3 creation modes: AI, Manual, Hybrid
-- WhatsApp approval loop (WAHA Pro, 2-level approval)
-- Multi-platform publishing (Facebook, Instagram, LinkedIn, Twitter/X, TikTok, YouTube)
-- Analytics engine (own metrics + competitor scraping via Apify)
-- Competitive intelligence (Meta Ad Library winning ads)
-- Social inbox (unified comments, AI-suggested replies)
-- Smart scheduling (optimal posting times from engagement data)
-- SEO optimization module
-- 23 DB tables, 45+ API endpoints, 15+ BullMQ job queues
+**What works (Phase 1)**:
+- AI text generation (Claude) — content creation working
+- AI image generation (Kie.ai) — integrated
+- Facebook publishing — posts to SuperSeller AI page (294290977372290) via Graph API
+- WAHA approval workflow — WhatsApp-based content approval before publishing
+- Aitable sync — content posts synced to Aitable dashboard
+- 7 blog posts live (5 seeded + 2 from SocialHub pipeline tests)
+
+**What's NOT in Phase 1 (future phases)**:
+- Instagram publishing (account connected, code written, not active)
+- LinkedIn, Twitter/X, TikTok, YouTube publishing
+- Analytics engine, competitive intelligence
+- Social inbox (unified comments)
+- Smart scheduling
+- Multi-platform simultaneous publishing
 
 **Strategic role**: Content distribution layer for ALL products:
 - Winner Studio videos → distribute across social channels
@@ -341,25 +347,56 @@
 - Lead Pages → social content drives traffic to landing pages
 - FB Bot handles Marketplace, SocialHub handles organic social
 
-**Architecture decision**: Build as `apps/socialhub/` (like `apps/studio/`), NOT standalone
-- Reuse existing auth (WhatsApp OTP + magic link, NOT Clerk)
-- Same PostgreSQL instance (new tables)
-- BullMQ worker on RackNerd alongside tourreel-worker
-- New admin dashboard tab "Social"
-
 **SaaS pricing** (future):
 - Free: 1 org, 3 posts/mo, 1 platform
 - Pro ($49/mo): 3 orgs, 50 posts, 4 platforms, smart scheduling
 - Business ($199/mo): Unlimited, all platforms, competitive intelligence
 
-**Priority**: Phase 2 — build AFTER existing customer products are delivered and validated
-
 **Next actions**:
-- [ ] Decision: first customer (Yossi/Mivnim? SuperSeller AI dogfooding?)
-- [ ] Decision: auth system (reuse existing vs Clerk for org-switching)
-- [ ] Create `apps/socialhub/` scaffold when ready
-- [ ] Migrate DB schema from spec to Prisma/Drizzle
-- [ ] Build core content creation pipeline first
+- [ ] Instagram publishing activation
+- [ ] Multi-platform scheduling
+- [ ] Analytics dashboard
+- [ ] Content calendar UI
+
+---
+
+## 8. FrontDesk Voice AI
+
+**Customer**: SuperSeller AI (sales) + future customer deployment
+**What it does**: AI-powered phone answering — Telnyx AI Assistant handles inbound calls, qualifies leads, answers FAQs
+**Status**: ⚠️ Partial — Voice assistant works, webhook migration pending
+
+**What works**:
+- Telnyx AI Assistant "Superseller FrontDesk" (Llama 3.3 70B, KokoroTTS, Deepgram Nova 3)
+- Phone: +14699299314
+- Outbound test calls verified (MOS 4.50 excellent)
+- System message updated to superseller.agency URLs
+- Active API key: `KEY019CACA6A...` (old key disabled)
+
+**What's missing**:
+- [ ] Webhook URL switch from n8n to worker (requires Telnyx Mission Control portal)
+- [ ] Inbound call handling via Antigravity worker
+- [ ] Lead storage bridge to PostgreSQL
+- [ ] eSignatures integration
+
+---
+
+## 9. ClaudeClaw (WhatsApp AI Bridge)
+
+**Customer**: SuperSeller AI (internal tool)
+**What it does**: WhatsApp/Telegram → Claude Code CLI bridge — remote control AI from phone
+**Status**: ⚠️ Built, DISABLED — code committed but not deployed
+
+**What exists**:
+- Code committed (commit `f29c48f`, 9 files, 810 insertions)
+- Rebuild prompt in `REBUILD_PROMPT.md`
+- WhatsApp message → ClaudeClaw → Claude Code → executes tasks
+
+**What's missing**:
+- [ ] Deployment to RackNerd
+- [ ] PM2 process setup
+- [ ] Testing end-to-end flow
+- [ ] Security: command allowlist, rate limiting
 
 ---
 
@@ -392,4 +429,4 @@
 
 ---
 
-*Updated: 2026-02-22. Update after every task.*
+*Updated: 2026-03-02. Update after every task.*

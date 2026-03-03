@@ -25,14 +25,12 @@ export async function GET(req: NextRequest) {
         if (clientId) {
             const config = await prisma.secretaryConfig.findFirst({
                 where: { clientId },
-                include: { user: { select: { id: true, email: true, name: true } } },
             });
             return NextResponse.json({ config });
         }
 
         const configs = await prisma.secretaryConfig.findMany({
             where: { telnyxAssistantId: { not: null } },
-            include: { user: { select: { id: true, email: true, name: true } } },
             orderBy: { createdAt: 'desc' },
         });
         return NextResponse.json({ configs });

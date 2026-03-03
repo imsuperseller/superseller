@@ -17,7 +17,7 @@ envContent.split('\n').forEach(line => {
 });
 
 const AITABLE_API_TOKEN = envVars.AITABLE_API_TOKEN;
-const PRODUCTS_DATASHEET_ID = envVars.AITABLE_RENSTO_MASTER_REGISTRY_ID;
+const PRODUCTS_DATASHEET_ID = envVars.AITABLE_SUPERSELLER_MASTER_REGISTRY_ID;
 
 if (!AITABLE_API_TOKEN || !PRODUCTS_DATASHEET_ID) {
     console.error("❌ Missing AITable credentials in .env.local");

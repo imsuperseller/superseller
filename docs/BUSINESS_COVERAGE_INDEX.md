@@ -1,5 +1,5 @@
 # 🧠 SuperSeller AI: Business Coverage Master Index
-> **Last Updated**: February 2026 | **Authority**: Tier 3 (see `brain.md`) | **Owned by**: Admin Operations
+> **Last Updated**: March 2026 | **Authority**: Tier 3 (see `brain.md`) | **Owned by**: Admin Operations
 
 This document defines the **Source of Truth** for every tracked business and technical element in the SuperSeller AI ecosystem.
 
@@ -11,7 +11,7 @@ For the full interactive version with automation details, see the [Antigravity A
 
 | Symbol | Store | Managed By |
 |:---:|:---|:---|
-| 🐘 | **PostgreSQL** | Auto-logged; Stripe webhooks; n8n/Antigravity outputs |
+| 🐘 | **PostgreSQL** | Auto-logged; PayPal webhooks; n8n/Antigravity outputs |
 | 📋 | **Aitable.ai** | Human-editable; AI-summary syncs; business tracking |
 | 📚 | **NotebookLM** | Deep-context specs, methodology, creative briefs |
 | 💻 | **Codebase** | Config, schemas, CI/CD, agent skills |
@@ -80,7 +80,7 @@ For the full interactive version with automation details, see the [Antigravity A
 | Parameters (pricing tiers, limits) | 💻🐘 | Product Factory |
 | Reports (financial, performance) | 📋🆕 | Analytics |
 | LTV / Customer value predictions | 🆕 | Analytics |
-| Stripe product/price catalog | 🐘💻 | Product Factory |
+| PayPal product/plan catalog | 🐘💻 | Product Factory |
 
 ---
 
@@ -164,7 +164,7 @@ For the full interactive version with automation details, see the [Antigravity A
 | **Client CRM** | Full customer timeline, messages, assets | All `userId`-linked tables |
 | **Projects** | Kanban synced from Aitable + GitHub | Aitable API + GitHub API |
 | **Landing Content** | Design tokens, SEO, sitemap preview | `globals.css` + `sitemap.ts` + NotebookLM Stitch |
-| **Product Factory** | Wizard, manifest editor, Stripe sync | `Template` + `ServiceManifest` + Stripe |
+| **Product Factory** | Wizard, manifest editor, PayPal sync | `Template` + `ServiceManifest` + PayPal |
 | **System Monitor** | Health pings, logs, error rates, MCP | Postgres logs + RackNerd API |
 | **Vault & Infra** | Credential map, scripts, server inventory | `CREDENTIAL_REFERENCE.md` + Postgres |
 | **Treasury** | Revenue, expenses, AI costs, profits | `Payment` table + Aitable expense table |

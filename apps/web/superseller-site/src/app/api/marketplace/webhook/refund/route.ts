@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
           await emails.marketplacePosted(
             user.email,
             post.product.name,
-            post.price || undefined,
+            post.price != null ? Number(post.price) : undefined,
             post.location || undefined,
             facebookUrl || undefined
           );

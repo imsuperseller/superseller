@@ -1,0 +1,10 @@
+{
+  "name": "superseller-sales",
+  "description": "SuperSeller AI sales operations — lead pipeline, CRM, outreach, and billing for AI automation SaaS",
+  "version": "1.0.0",
+  "author": {
+    "name": "SuperSeller AI"
+  },
+  "homepage": "https://superseller.agency",
+  "repository": "https://github.com/superseller-ai/plugins"
+}

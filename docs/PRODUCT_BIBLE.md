@@ -66,7 +66,7 @@ All products must align with one of these tactical pillars:
 *   **Logic**: `apps/studio/` (standalone Next.js app)
 *   **Architecture**: Audio upload → Gemini Brain (5-in-1: script, prompt, model router, music, quality) → Kie.ai (`avatar-pro` primary, `kling-3.0/video` fallback) → R2 storage → WhatsApp delivery via WAHA.
 *   **Credit Cost**: 50 credits/video (same as TourReel).
-*   **Status**: LIVE — pipeline verified Feb 19, 2026. `studio.superseller.agency`.
+*   **Status**: BUILT, NOT ACTIVELY USED — pipeline verified Feb 19, 2026. Yossi (Mivnim) not actively using. `studio.superseller.agency`.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §1, `.claude/skills/winner-studio/SKILL.md`.
 
 ### 📄 Lead Landing Pages
@@ -93,7 +93,7 @@ All products must align with one of these tactical pillars:
 *   **Target**: All existing customers + new market.
 *   **Logic**: `apps/web/superseller-site/src/app/api/social/` (generate, publish, webhook/approval routes)
 *   **Architecture**: AI content creation (Claude text + Kie.ai images) → WhatsApp approval (WAHA) → Facebook + Instagram publishing (Graph API) → Aitable analytics sync.
-*   **Status**: LIVE — Phase 1 operational (text+image generation, WhatsApp approval, FB/IG publish). Phase 2 (LinkedIn, X, TikTok, YouTube, competitive intelligence, smart scheduling) not started.
+*   **Status**: LIVE — Phase 1 operational (text+image generation, WhatsApp approval, FB publish). Instagram code written but not active. Phase 2 (LinkedIn, X, TikTok, YouTube, competitive intelligence, smart scheduling) not started.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §7, `.claude/skills/socialhub/SKILL.md`.
 
 ---
@@ -142,12 +142,12 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 | **Ready Solutions** | $890-$2,990+ | PayPal LIVE |
 | **Subscriptions** | $79-$299/mo | PayPal LIVE |
 | **Custom Solutions** | $3,500-$8,000+ | PayPal LIVE |
-| **Content AI** | $297-$1,997/mo | In development |
+| **SocialHub/Buzz** | $49-$199/mo (future) | Phase 1 LIVE (FB publish) |
 
 ### Customer Journey (4 Stages)
 1. Awareness → Purchase (SEO, PayPal) ✅ LIVE
 2. Purchase → Onboarding (Webhook, partial automation) ⚠️ 40–60%
-3. Onboarding → Active (Portal) ❌ Not built
+3. Onboarding → Active (Portal) ⚠️ Multi-tenant portal scaffolded (Feb 26), middleware + routes live
 4. Active → Retention (Lifecycle) ❌ Not built
 
 ### Admin Portal

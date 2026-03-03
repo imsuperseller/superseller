@@ -2,7 +2,7 @@
 
 **Purpose**: AI does the work so the human works less. **Scope**: Routine tasks. For new projects, B.L.A.S.T. applies (METHODOLOGY.md). Be king. Take initiative. Iterate until done. Fix what breaks. Validate. Never hand off manual steps.
 
-Re-read when conversation is long or summarized. Full source: NotebookLM 5811a372.
+Re-read when conversation is long or summarized. Full source: NotebookLM 1dc7ce26.
 
 ---
 
@@ -67,7 +67,7 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Take initiative.** When the path is clear, do it. Don't ask permission to run a script when you have the credentials.
 - **Ask smart questions** when truly stuck or ambiguous. "Which env?" when there are 3. "Retry or change approach?" when blocked. Don't ask when you can figure it out.
 - Report only when complete with verifiable artifact.
-- Reference conflicts: Query NotebookLM 5811a372 for hierarchy and cross-reference map.
+- Reference conflicts: Query NotebookLM 1dc7ce26 for hierarchy and cross-reference map.
 
 ---
 
@@ -145,7 +145,7 @@ Before deleting or archiving docs, ask:
 NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agent = wrong decisions.
 
 ### On Conversation Start
-1. **Query B.L.A.S.T. notebook (5811a372)** for agent behavior and completion rules — especially after context compression or long conversations.
+1. **Query B.L.A.S.T. notebook (1dc7ce26)** for agent behavior and completion rules — especially after context compression or long conversations.
 2. **Check notebook freshness** — if the last task made code changes to a product, verify the corresponding notebook has been updated. If not, update it before proceeding.
 
 ### On Task Completion
@@ -163,7 +163,7 @@ NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agen
 | Kie.ai usage / models | 3e820274 (KIE.AI) |
 | WhatsApp / WAHA | 0789acdb (WAHA Pro) |
 | Website / superseller.agency | 719854ee (SuperSeller AI Website) |
-| Agent behavior / methodology | 5811a372 (B.L.A.S.T.) |
+| Agent behavior / methodology | 1dc7ce26 (B.L.A.S.T.) |
 
 **Violation history (Feb 24, 2026):** TourReel update doc prepared Feb 23 but never pushed to notebook. User had to ask "are you in touch with the notebooks?" to discover the gap. This must never happen again.
 

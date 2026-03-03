@@ -33,7 +33,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
-- **n8n** (RackNerd): Backup for new automation. Existing production workflows (FB Bot lead pipeline) still run on n8n.
+- **n8n** (RackNerd): Backup for new automation. Existing production workflows (Telnyx voice lead analysis for UAD + MissParty) still run on n8n.
 - **Kie.ai**: Creative AI (Kling 3.0, Suno, Nano Banana) — credit-based APIs. Veo and FAL are deprecated.
 - **Remotion 4.0**: Programmatic video composition (Ken Burns, transitions, branding, multi-format) — zero API cost. See `docs/REMOTION_BIBLE.md`.
 - **PayPal**: Payments, subscriptions, credit ledger (migrated from Stripe Feb 2026).
@@ -44,70 +44,70 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 
 ## 🧠 KNOWLEDGE HIERARCHY (NotebookLM Index)
 
-NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks via `notebooklm-mcp`. **36 notebooks total** (32 active, 4 empty).
+NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks via `notebooklm-mcp`. **27 notebooks total** (audited Mar 3, 2026; 4 junk deleted, 4 merged & deleted, B.L.A.S.T. recreated).
 
-### Core SuperSeller AI (8 notebooks)
+> **B.L.A.S.T. notebook recreated** (Mar 2, 2026): New ID `1dc7ce26` replaces old `1dc7ce26`. 3 sources: METHODOLOGY.md, Agent Behavior rules, B.L.A.S.T. Antigravity Protocol.
 
-| # | Notebook | Purpose |
-|---|----------|---------|
-| 1 | [5811a372-2d18-4f46-b421-9d026a57205b](https://notebooklm.google.com/notebook/5811a372-2d18-4f46-b421-9d026a57205b) | **B.L.A.S.T. canonical** — Project Template, Agentic Brand Identity, Antigravity Integration, System Blueprint, Skill Engineering, Error Handling. ALL SuperSeller AI work MUST follow this notebook. Use `notebooklm_notebook_query` to align. |
-| 2 | [0baf5f36-7ff0-4550-a878-923dbf59de5c](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video** — TourReel pipeline spec (23 sources). Canonical for pipeline (Nano Banana Pro + Kling 3, no FAL/Veo). |
-| 3 | [3e820274-6839-4921-aa83-ad003dd2fb93](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | **KIE.AI** — API docs, models, usage (40 sources) |
-| 4 | [fc048ba8-12b7-432a-b8d9-65baae62d529](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **Master: Automation & Core Infra** — Antigravity, n8n, automation workflows (39 sources) |
-| 5 | [cb99e6aa-967f-40d4-9580-c02b3250bc78](https://notebooklm.google.com/notebook/cb99e6aa-967f-40d4-9580-c02b3250bc78) | **Master: Social Media, Lead Gen & Marketing** — FB Bot, social (50 sources) **AT MAX (50/50)** |
-| 6 | [719854ee-b94e-4555-9b2b-48ae136335b8](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **superseller website** — Site content (30 sources) |
-| 7 | [12724368-e4af-488c-a8a3-ce04da043d60](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | **SuperSeller AI Product Changelog** — Feature releases (3 sources) |
-| 8 | [b906e69f-7b8c-4e31-88b8-4939c830604c](https://notebooklm.google.com/notebook/b906e69f-7b8c-4e31-88b8-4939c830604c) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling (10 sources) |
-
-### Customer / Business (6 notebooks)
+### Core SuperSeller AI (9 notebooks)
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 9 | [e109bcb2-d29e-44d5-bd4a-f67b88929be6](https://notebooklm.google.com/notebook/e109bcb2-d29e-44d5-bd4a-f67b88929be6) | **mivnim (yossi laham)** — Winner Studio customer (38 sources) |
-| 10 | [b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46](https://notebooklm.google.com/notebook/b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46) | **AC & C HVAC** — SuperSeller AI Pitch for Eliran Matzrafi, prospect (2 sources) |
-| 11 | [6a4eb203-9479-4919-869f-7a83489ff0af](https://notebooklm.google.com/notebook/6a4eb203-9479-4919-869f-7a83489ff0af) | **לידים יורם פרידמן** — Leads (10 sources) |
-| 12 | [8df32896-d93b-4a32-961f-40c6fa3ccf7a](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | **SuperSeller AI Market Intelligence** — Competitor research, pricing trends (3 sources) |
-| 13 | [02c3946b-c69b-423b-b188-9b79ecdd1629](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | **SuperSeller AI AI Cost & Performance** — LLM benchmarks, cost budgets (3 sources) |
-| 14 | [7630d154-341b-40a7-9a10-6f9e1f3ddc7d](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | **SuperSeller AI Legal & Compliance** — TOS, GDPR, domain ownership (3 sources) |
+| 1 | [1dc7ce26](https://notebooklm.google.com/notebook/1dc7ce26-492c-4902-8541-6aff766257de) | **B.L.A.S.T. canonical** — Methodology, Agent Behavior, Antigravity Protocol (3 sources). Recreated Mar 2, 2026. |
+| 2 | [0baf5f36](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video** — TourReel pipeline spec (30 sources). Canonical for pipeline. |
+| 3 | [3e820274](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | **KIE.AI** — API docs, models, Kling 3.0 prompt engineering (47 sources). Merged from Kling 3.0 notebook. |
+| 4 | [fc048ba8](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **Master: Automation & Core Infra** — Antigravity, n8n, infra ledger (45 sources). Merged from stack notebook. |
+| 5 | [cb99e6aa](https://notebooklm.google.com/notebook/cb99e6aa-967f-40d4-9580-c02b3250bc78) | **Master: Social Media, Lead Gen & Marketing** — FB Bot, SocialHub, Instagram API (50 sources) **AT MAX**. Merged from Instagram notebook. |
+| 6 | [719854ee](https://notebooklm.google.com/notebook/719854ee-b94e-4555-9b2b-48ae136335b8) | **superseller website** — Site content, i18n, pricing (36 sources) |
+| 7 | [12724368](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | **Product Changelog** — Feature releases (8 sources). ⚠️ Has stale Rensto entries. |
+| 8 | [b906e69f](https://notebooklm.google.com/notebook/b906e69f-7b8c-4e31-88b8-4939c830604c) | **Claude Code** — Agent behavior, brain.md hierarchy, tooling (12 sources) |
+| 9 | [f67b6668](https://notebooklm.google.com/notebook/f67b6668-edbf-4173-88fd-9a4535f7433e) | **Remotion** — Remotion 4.0 docs + SuperSeller video engine (50 sources) **AT MAX** |
 
-### Tools & APIs (7 notebooks)
-
-| # | Notebook | Purpose |
-|---|----------|---------|
-| 15 | [f54f121b-97b1-45b2-8a05-156d1c8ad3f7](https://notebooklm.google.com/notebook/f54f121b-97b1-45b2-8a05-156d1c8ad3f7) | **Apify** — Scraping, actors (23 sources) |
-| 16 | [0789acdb-2485-43ec-9b4a-6dc227fcaead](https://notebooklm.google.com/notebook/0789acdb-2485-43ec-9b4a-6dc227fcaead) | **WAHA Pro** — WhatsApp API (14 sources) |
-| 17 | [286f3e4a-a3a2-40ab-9c45-d198e91b27f4](https://notebooklm.google.com/notebook/286f3e4a-a3a2-40ab-9c45-d198e91b27f4) | **Google Stitch** — Stitch API, assets (9 sources) |
-| 18 | [6bb5f16d-22b8-42c4-a479-0bcf60aa314d](https://notebooklm.google.com/notebook/6bb5f16d-22b8-42c4-a479-0bcf60aa314d) | **Kling 3.0** — Cinematic prompt engineering (2 sources) |
-| 19 | [98b120fa-bc5e-466a-a8d2-7a609c044283](https://notebooklm.google.com/notebook/98b120fa-bc5e-466a-a8d2-7a609c044283) | **aitable.ai** — Dashboards, syncs (9 sources) |
-| 20 | [f39b9a6b-5225-4287-a591-7a99b601dae3](https://notebooklm.google.com/notebook/f39b9a6b-5225-4287-a591-7a99b601dae3) | **higgsfield.ai** — Video AI reference (18 sources) |
-| 21 | [f540f799-8346-4756-b560-352183e51f1b](https://notebooklm.google.com/notebook/f540f799-8346-4756-b560-352183e51f1b) | **sora2** — Sora video AI (21 sources) |
-
-### Learning & Reference (11 notebooks)
+### Customer / Business (7 notebooks)
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 22 | [749832c6-a85d-49a4-98da-1585ee7e325a](https://notebooklm.google.com/notebook/749832c6-a85d-49a4-98da-1585ee7e325a) | **design prompts** — UI/UX design (49 sources) |
-| 23 | [44494df5-e465-4ed7-bcc7-41898fe8e396](https://notebooklm.google.com/notebook/44494df5-e465-4ed7-bcc7-41898fe8e396) | **Mastering Claude Code: AntiGravity Workflows** (4 sources) |
-| 24 | [9222cc37-caf6-4ca6-8d28-924c16af82bc](https://notebooklm.google.com/notebook/9222cc37-caf6-4ca6-8d28-924c16af82bc) | **Mastering Claude Code: Agentic Workflows and Skills** (5 sources) |
-| 25 | [e1acc83c-978f-4601-b98a-d4c4b4b9ff50](https://notebooklm.google.com/notebook/e1acc83c-978f-4601-b98a-d4c4b4b9ff50) | **Resources** — Reference materials (6 sources) |
-| 26 | [f0747c8b-1dd1-4451-8a02-9b1231c82dac](https://notebooklm.google.com/notebook/f0747c8b-1dd1-4451-8a02-9b1231c82dac) | **prd template** — PRD templates (6 sources) |
-| 27 | [7d06c748-49ce-4801-be5c-672a56a420a2](https://notebooklm.google.com/notebook/7d06c748-49ce-4801-be5c-672a56a420a2) | **AgentForge** — AI research pipeline (7 sources) |
-| 28 | [382e5982-ef37-4fe8-bbc0-e16abfd4b755](https://notebooklm.google.com/notebook/382e5982-ef37-4fe8-bbc0-e16abfd4b755) | **Instagram** (7 sources) |
-| 29 | [b666ec88-6fbd-4dc7-b24a-c5720c0bd1e7](https://notebooklm.google.com/notebook/b666ec88-6fbd-4dc7-b24a-c5720c0bd1e7) | **Rentahuman** (4 sources) |
-| 30 | [e99673f2-32b2-4759-9cc5-90694cd18f2f](https://notebooklm.google.com/notebook/e99673f2-32b2-4759-9cc5-90694cd18f2f) | **joinsecret worthy deals?** (8 sources) |
-| 31 | [0996f6ab-a403-4d21-93f5-d1737ccb8f17](https://notebooklm.google.com/notebook/0996f6ab-a403-4d21-93f5-d1737ccb8f17) | **stack** (1 source) |
-| 32 | [e419bca1-17d8-4edf-a1ac-ff1d37cd67ea](https://notebooklm.google.com/notebook/e419bca1-17d8-4edf-a1ac-ff1d37cd67ea) | **Israeli Expatriates in Dallas** (1 source) |
+| 10 | [e109bcb2](https://notebooklm.google.com/notebook/e109bcb2-d29e-44d5-bd4a-f67b88929be6) | **mivnim (yossi laham)** — Winner Studio customer (39 sources) |
+| 11 | [b42dabb0](https://notebooklm.google.com/notebook/b42dabb0-62d5-4381-aa9c-ccd4fa9b1f46) | **AC & C HVAC** — Eliran Matzrafi (47 sources). ⚠️ Has "Rensto Pitch" doc with old pricing. |
+| 12 | [6a4eb203](https://notebooklm.google.com/notebook/6a4eb203-9479-4919-869f-7a83489ff0af) | **Yoram Friedman leads** — Insurance agent leads (10 sources) |
+| 13 | [8df32896](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | **Market Intelligence** — Competitor research (4 sources). ⚠️ Rensto residue in source docs. |
+| 14 | [02c3946b](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | **Cost & Performance** — LLM benchmarks, cost budgets (5 sources). ⚠️ Rensto residue. |
+| 15 | [7630d154](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | **Legal & Compliance** — TOS, GDPR, domain ownership (4 sources). ⚠️ Heavy Rensto residue. |
+| 16 | [720eb7e6](https://notebooklm.google.com/notebook/720eb7e6-ec27-4f58-b032-0a52ca92073d) | **Kedem Real Estate** — Daniel Arbel, customer/prospect (41 sources) |
 
-### Empty Notebooks (4 notebooks -- EMPTY, populate or delete)
+### Tools & APIs (4 notebooks)
 
 | # | Notebook | Purpose |
 |---|----------|---------|
-| 33 | [b4974f45-5809-4a2f-b7be-8c4a3eddd98e](https://notebooklm.google.com/notebook/b4974f45-5809-4a2f-b7be-8c4a3eddd98e) | **Master: SuperSeller AI Business Operations** — EMPTY (0 sources, created Feb 20) |
-| 34 | [df1029dd-7dc0-4466-8f93-6111d99a3526](https://notebooklm.google.com/notebook/df1029dd-7dc0-4466-8f93-6111d99a3526) | **Master: Templates & Design** — EMPTY (0 sources, created Feb 20) |
-| 35 | [2b5ed4df-6ef2-4a45-8e06-7ccaf8d26d50](https://notebooklm.google.com/notebook/2b5ed4df-6ef2-4a45-8e06-7ccaf8d26d50) | **Master: AI Media APIs** — EMPTY (0 sources, created Feb 20) |
-| 36 | [8ace0529-3819-4325-8013-d7127f3053bc](https://notebooklm.google.com/notebook/8ace0529-3819-4325-8013-d7127f3053bc) | **tiktok** — EMPTY (0 sources, created Feb 20) |
+| 17 | [f54f121b](https://notebooklm.google.com/notebook/f54f121b-97b1-45b2-8a05-156d1c8ad3f7) | **Apify** — Scraping, actors (24 sources) |
+| 18 | [0789acdb](https://notebooklm.google.com/notebook/0789acdb-2485-43ec-9b4a-6dc227fcaead) | **WAHA Pro** — WhatsApp API (15 sources) |
+| 19 | [98b120fa](https://notebooklm.google.com/notebook/98b120fa-bc5e-466a-a8d2-7a609c044283) | **aitable.ai** — Dashboards, syncs (10 sources) |
+| 20 | [98127573](https://notebooklm.google.com/notebook/98127573-81a9-47bf-a2b9-1c82d18fee15) | **Workiz** — CRM API docs (2 sources) |
 
-*Map notebook IDs to purpose in `docs/NOTEBOOKLM_INDEX.md`. Use `source_get_content` to extract key modules as Markdown to save tokens.*
+### Learning & Reference (7 notebooks)
+
+| # | Notebook | Purpose |
+|---|----------|---------|
+| 21 | [749832c6](https://notebooklm.google.com/notebook/749832c6-a85d-49a4-98da-1585ee7e325a) | **design prompts** — UI/UX design (50 sources) **AT MAX** |
+| 22 | [c204ed6d](https://notebooklm.google.com/notebook/c204ed6d-9b84-4407-a87e-351b00c28e27) | **Google AG/Stitch/Claude Code** — Stitch docs, MCP, Agent Skills (13 sources). Merged from Google Stitch. |
+| 23 | [e1acc83c](https://notebooklm.google.com/notebook/e1acc83c-978f-4601-b98a-d4c4b4b9ff50) | **Resources** — Reference materials (7 sources) |
+| 24 | [f0747c8b](https://notebooklm.google.com/notebook/f0747c8b-1dd1-4451-8a02-9b1231c82dac) | **prd template** — PRD templates (7 sources). ⚠️ Heavy Rensto residue + old pricing. |
+| 25 | [7d06c748](https://notebooklm.google.com/notebook/7d06c748-49ce-4801-be5c-672a56a420a2) | **AgentForge** — AI research pipeline (8 sources) |
+| 26 | [e419bca1](https://notebooklm.google.com/notebook/e419bca1-17d8-4edf-a1ac-ff1d37cd67ea) | **Israeli Expatriates in Dallas** — ICP community research (1 source) |
+| 27 | [d25475c7](https://notebooklm.google.com/notebook/d25475c7-8130-4367-a516-90b64c592d95) | **Bounce House Rental Directory** — Market research (2 sources) |
+
+### Audit Actions Log (Mar 2-3, 2026)
+
+| Action | Status | Details |
+|--------|--------|---------|
+| ✅ **RECREATE** B.L.A.S.T. | Done | New ID `1dc7ce26` with 3 sources (METHODOLOGY, Agent Behavior, B.L.A.S.T. Protocol) |
+| ✅ **DELETE** 4 junk | Done | higgsfield, sora2, Rentahuman, joinsecret — zero production use |
+| ✅ **MERGE** Kling 3.0 → KIE.AI | Done | 2 sources (prompt handbook + API guide) added to 3e820274 |
+| ✅ **MERGE** Instagram → Social Media | Done | 5 Instagram API URLs added to cb99e6aa (now at 50/50) |
+| ✅ **MERGE** stack → Infra | Done | Subscription ledger added to fc048ba8 |
+| ✅ **MERGE** Stitch → AG/Stitch/Claude | Done | 3 sources (Stitch docs, compliance, forum) added to c204ed6d |
+| ⚠️ **Low-pri**: Rensto residue | Deferred | AC&C, Legal, PRD template, Cost, Market Intel have rebrand notices — content is contextualized |
+
+*Previously deleted: 4 empty notebooks, 2 Claude Code duplicates. 34 → 27 notebooks after full audit.*
 
 **Codebase vs NotebookLM**: See [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md). Codebase = IDE essentials (paths, env, routers). NotebookLM = specs, methodology, references. When in doubt → query notebooks.
 
@@ -115,7 +115,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 ## ⚡ EXECUTIVE OPERATING PROTOCOL
 
-**Before every response:** If the conversation has been summarized or spans many messages, query NotebookLM 5811a372 for agent behavior and completion rules.
+**Before every response:** If the conversation has been summarized or spans many messages, query NotebookLM 1dc7ce26 (B.L.A.S.T.) for agent behavior and completion rules.
 
 - **Mode: Executive**. Do not ask permission for small technical fixes. Propose a **Plan Artifact**, then execute. When the user gives access (credentials, APIs), USE it — do not ask clarifying questions or send instructions back.
 - **Conflict Resolution Rule**: When NotebookLM (The Vision) and local code (The Reality) disagree:
@@ -126,7 +126,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 - **Anti-Disorganization Guardrail**: Never start a new feature until the current one has a "Working Demo" or verifiable Artifact. No zombie half-finished files.
 - **Data-First Rule**: When writing *new* scripts in `tools/`, define JSON schema first (B.L.A.S.T. Blueprint). For routine fixes to existing tools, use Agent Behavior—no HALT.
 
-### Agent Completion Rules (from NotebookLM 5811a372)
+### Agent Completion Rules (from NotebookLM 1dc7ce26)
 
 - **Test everything** before declaring done. Verification in terminal or browser. No claims without evidence.
 - **Document everything**. Update `progress.md`, `findings.md`; record root causes in findings.md so issues never repeat.
@@ -230,7 +230,7 @@ Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprin
 
 ## 📚 CANONICAL REFERENCES
 
-**Reference hierarchy**: Query NotebookLM 5811a372 — hierarchy, cross-reference map, sync discipline.
+**Reference hierarchy**: Query NotebookLM 1dc7ce26 — hierarchy, cross-reference map, sync discipline.
 
 | Topic | Location |
 |-------|----------|

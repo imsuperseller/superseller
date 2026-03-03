@@ -67,7 +67,7 @@
 |---------|----------|----------|-------|
 | **WAHA (WhatsApp)** | API Key in URL | `http://172.245.56.50:3000/dashboard?apiKey=4fc7e008...` | Pro license on RackNerd. Shared by SuperSeller AI + FB Bot |
 | **Resend** | `RESEND_API_KEY` | `social app/.env` | `re_XQi...`. Email delivery. Sender verification pending. |
-| **Telnyx (SuperSeller AI)** | `TELNYX_API_KEY` | `social app/.env`, n8n credentials | Voice AI "Hope" (1 number: +14699299314). Key: `KEY019B6800DE...` |
+| **Telnyx (SuperSeller AI)** | `TELNYX_API_KEY` | `apps/worker/.env`, `apps/web/superseller-site/.env.local` | Voice AI "Superseller FrontDesk" (1 number: +14699299314). Key: `KEY019CACA6A...`. **Old key `KEY019B6800DE...` is on DISABLED account (D17 block) — do NOT use.** |
 
 ### Platforms / Social (SuperSeller AI)
 
@@ -227,4 +227,4 @@ Workiz's API has undocumented auth requirements for POST/write operations:
 | **Stitch** | `STITCH_API_KEY` | `AQ.Ab8RN6...` | Tax4Us's own Stitch API |
 
 ---
-*Updated: 2026-02-26. Canonical source for credential locations.*
+*Updated: 2026-03-02. Canonical source for credential locations.*

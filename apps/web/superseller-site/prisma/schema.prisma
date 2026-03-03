@@ -68,7 +68,7 @@ model User {
   name                   String?
   phone                  String?
   image                  String?
-  dashboardToken         String?
+  dashboardToken         String?   @unique
   businessName           String?
   businessType           String?
   businessSize           String?
@@ -424,12 +424,15 @@ model Solution {
   workflowTemplateId    String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+
+  instances             SolutionInstance[]
 }
 
 /// Client-specific solution instance with deployment tracking
 model SolutionInstance {
   id                   String    @id @default(dbgenerated("(gen_random_uuid())::text"))
   solutionId           String
+  solution             Solution  @relation(fields: [solutionId], references: [id])
   clientId             String
   clientEmail          String
   model                String    @default("builder")
@@ -964,7 +967,7 @@ model N8nAgentMemory {
 /// SSOT: Aligned with Drizzle entitlementsTable and CreditService
 model Entitlement {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId         String    @map("user_id") @db.Uuid
+  userId         String    @unique @map("user_id") @db.Uuid
   creditsBalance Int       @default(0) @map("credits_balance")
   plan           String    @default("starter") @db.VarChar(50)
   status         String    @default("active") @db.VarChar(50)
@@ -1007,7 +1010,7 @@ model Analytics {
 model BusinessNiche {
   id               String   @id @default(dbgenerated("(gen_random_uuid())::text"))
   name             String
-  slug             String
+  slug             String   @unique
   category         String
   painPoints       Json?
   commonServices   Json?
@@ -1029,6 +1032,8 @@ model VaultItem {
   metadata  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([category, key])
 }
 
 /// Customer-facing notification model (in-app, WhatsApp, email)
@@ -1114,69 +1119,83 @@ model LandingPage {
 
 /// Marketplace customer profile (1 per user, manages multiple products)
 model MarketplaceCustomer {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id       String    @db.Uuid
-  business_name String
-  subscription  String?   @default("TRIAL")
-  credits       Int?      @default(100)
-  status        String?   @default("ACTIVE")
-  created_at    DateTime? @default(now()) @db.Timestamp(6)
-  updated_at    DateTime? @default(now()) @db.Timestamp(6)
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  businessName String    @map("business_name")
+  subscription String?   @default("TRIAL")
+  credits      Int?      @default(100)
+  status       String?   @default("ACTIVE")
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
 
+  products     MarketplaceProduct[]
+  posts        MarketplacePost[]
+  sessions     FacebookSession[]
+
+  @@unique([userId])
   @@map("marketplace_customers")
 }
 
 /// FB Marketplace product (UAD doors, bounce houses, etc.)
 model MarketplaceProduct {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customer_id  String    @db.Uuid
-  product_type String
-  name         String
-  status       String?   @default("ACTIVE")
-  config       Json
-  pricing      Json
-  schedule     Json?
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId  String    @map("customer_id") @db.Uuid
+  productType String    @map("product_type")
+  name        String
+  status      String?   @default("ACTIVE")
+  config      Json
+  pricing     Json
+  schedule    Json?
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  customer    MarketplaceCustomer @relation(fields: [customerId], references: [id])
+  posts       MarketplacePost[]
 
   @@map("marketplace_products")
 }
 
 /// GoLogin/Facebook session per product
 model FacebookSession {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customer_id String    @db.Uuid
-  product_id  String    @db.Uuid
-  profile_id  String
-  cookies     String
-  status      String?   @default("ACTIVE")
-  last_used   DateTime? @db.Timestamp(6)
-  expires_at  DateTime? @db.Timestamp(6)
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String    @map("customer_id") @db.Uuid
+  productId  String    @map("product_id") @db.Uuid
+  profileId  String    @map("profile_id")
+  cookies    String
+  status     String?   @default("ACTIVE")
+  lastUsed   DateTime? @map("last_used") @db.Timestamp(6)
+  expiresAt  DateTime? @map("expires_at") @db.Timestamp(6)
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
 
+  customer   MarketplaceCustomer @relation(fields: [customerId], references: [id])
+
+  @@unique([customerId, productId])
   @@map("facebook_sessions")
 }
 
 /// FB Marketplace post record
 model MarketplacePost {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customer_id         String    @db.Uuid
-  product_id          String    @db.Uuid
-  status              String?   @default("queued")
-  facebook_url        String?
-  config_data         Json?
-  image_url           String?
-  image_url2          String?
-  image_url3          String?
-  video_url           String?
-  listing_title       String?
-  listing_description String?
-  price               Decimal?  @db.Decimal
-  location            String?
-  phone_number        String?
-  created_at          DateTime? @default(now()) @db.Timestamp(6)
-  posted_at           DateTime? @db.Timestamp(6)
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId         String    @map("customer_id") @db.Uuid
+  productId          String    @map("product_id") @db.Uuid
+  status             String?   @default("queued")
+  facebookUrl        String?   @map("facebook_url")
+  configData         Json?     @map("config_data")
+  imageUrl           String?   @map("image_url")
+  imageUrl2          String?   @map("image_url2")
+  imageUrl3          String?   @map("image_url3")
+  videoUrl           String?   @map("video_url")
+  listingTitle       String?   @map("listing_title")
+  listingDescription String?   @map("listing_description")
+  price              Decimal?  @db.Decimal
+  location           String?
+  phoneNumber        String?   @map("phone_number")
+  createdAt          DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  postedAt           DateTime? @map("posted_at") @db.Timestamp(6)
+
+  customer           MarketplaceCustomer @relation(fields: [customerId], references: [id])
+  product            MarketplaceProduct  @relation(fields: [productId], references: [id])
 
   @@map("marketplace_posts")
 }

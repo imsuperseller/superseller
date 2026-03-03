@@ -1,0 +1,12 @@
+{
+  "name": "aitable-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.mjs",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  }
+}

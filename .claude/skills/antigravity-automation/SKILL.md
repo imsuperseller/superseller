@@ -59,7 +59,7 @@ When replacing an n8n workflow with programmatic code:
 | Notebook | ID | Purpose |
 |----------|-----|---------|
 | Antigravity | 12c80d7d | Platform docs, MCP integration |
-| B.L.A.S.T. | 5811a372 | Methodology, agent behavior |
+| B.L.A.S.T. | 1dc7ce26 | Methodology, agent behavior |
 | n8n workflows | fc048ba8 | Legacy workflow catalog |
 | n8n superseller | f360003f | Instance-specific patterns |
 
@@ -69,7 +69,7 @@ When replacing an n8n workflow with programmatic code:
 ```typescript
 // Use notebooklm-mcp tools
 notebook_query({
-  notebook_id: "5811a372-2d18-4f46-b421-9d026a57205b",
+  notebook_id: "1dc7ce26-2d18-4f46-b421-9d026a57205b",
   query: "What is the agent behavior protocol?"
 });
 ```

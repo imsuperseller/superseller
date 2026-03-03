@@ -230,15 +230,15 @@ export default function AgentsPage() {
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <div className="flex-shrink-0 text-superseller-cyan">
-                          {getTypeIcon(agent.serviceId)}
+                          {getTypeIcon(agent.serviceId ?? '')}
                         </div>
                         <div>
-                          <div className="font-medium text-superseller-text-primary capitalize">{agent.serviceId.replace(/-/g, ' ')}</div>
+                          <div className="font-medium text-superseller-text-primary capitalize">{(agent.serviceId ?? '').replace(/-/g, ' ')}</div>
                           <div className="text-sm text-superseller-text-tertiary">ID: {agent.id.substring(0, 8)}...</div>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{getTypeBadge(agent.serviceId)}</TableCell>
+                    <TableCell>{getTypeBadge(agent.serviceId ?? '')}</TableCell>
                     <TableCell>{getStatusBadge(agent.status)}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1 text-superseller-text-secondary">

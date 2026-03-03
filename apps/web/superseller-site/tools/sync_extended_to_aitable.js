@@ -28,10 +28,10 @@ envContent.split('\n').forEach(line => {
 
 const {
     AITABLE_API_TOKEN,
-    AITABLE_RENSTO_TESTIMONIALS_ID,
-    AITABLE_RENSTO_PAYMENTS_ID,
-    AITABLE_RENSTO_SOLUTIONS_ID,
-    AITABLE_RENSTO_CAMPAIGNS_ID
+    AITABLE_SUPERSELLER_TESTIMONIALS_ID,
+    AITABLE_SUPERSELLER_PAYMENTS_ID,
+    AITABLE_SUPERSELLER_SOLUTIONS_ID,
+    AITABLE_SUPERSELLER_CAMPAIGNS_ID
 } = envVars;
 
 const prisma = new PrismaClient();
@@ -81,7 +81,7 @@ async function main() {
     try {
         // 1. Testimonials
         const testimonials = await prisma.testimonial.findMany();
-        await syncToAITable('testimonials', AITABLE_RENSTO_TESTIMONIALS_ID,
+        await syncToAITable('testimonials', AITABLE_SUPERSELLER_TESTIMONIALS_ID,
             testimonials.map(t => ({
                 fields: {
                     "Author": t.author || t.name || "",
@@ -95,7 +95,7 @@ async function main() {
 
         // 2. Payments
         const payments = await prisma.payment.findMany({ orderBy: { createdAt: 'desc' }, take: 100 });
-        await syncToAITable('payments', AITABLE_RENSTO_PAYMENTS_ID,
+        await syncToAITable('payments', AITABLE_SUPERSELLER_PAYMENTS_ID,
             payments.map(p => ({
                 fields: {
                     "Payment ID": p.id,
@@ -109,7 +109,7 @@ async function main() {
 
         // 3. Solutions
         const solutions = await prisma.solution.findMany();
-        await syncToAITable('solutions', AITABLE_RENSTO_SOLUTIONS_ID,
+        await syncToAITable('solutions', AITABLE_SUPERSELLER_SOLUTIONS_ID,
             solutions.map(s => ({
                 fields: {
                     "Solution Name": s.name || "",
@@ -123,7 +123,7 @@ async function main() {
 
         // 4. Outreach Campaigns
         const campaigns = await prisma.outreachCampaign.findMany();
-        await syncToAITable('campaigns', AITABLE_RENSTO_CAMPAIGNS_ID,
+        await syncToAITable('campaigns', AITABLE_SUPERSELLER_CAMPAIGNS_ID,
             campaigns.map(c => ({
                 fields: {
                     "Campaign Name": c.name || "",

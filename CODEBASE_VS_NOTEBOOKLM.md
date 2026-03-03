@@ -76,7 +76,7 @@ Operational intelligence for each product/tool domain.
 ### Methodology
 | ID | Title |
 |----|-------|
-| `5811a372` | B.L.A.S.T. — Agent behavior, methodology |
+| `1dc7ce26` | B.L.A.S.T. — Agent behavior, methodology |
 | `12724368` | Product Changelog |
 | `02c3946b` | Cost & Performance |
 
@@ -103,4 +103,4 @@ Per `brain.md` Authority Precedence:
 1. **brain.md is Tier 1** — final authority on all conflicts
 2. **Methodology** → METHODOLOGY.md (Tier 4)
 3. **Code vs NotebookLM disagree** → brain.md decides
-4. **NotebookLM sources conflict** → 5811a372 Reference Alignment rules apply
+4. **NotebookLM sources conflict** → 1dc7ce26 Reference Alignment rules apply

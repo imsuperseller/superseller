@@ -7,7 +7,7 @@ alwaysApply: true
 
 **Purpose**: AI does the work so the human works less. **Scope**: Routine tasks. For new projects, B.L.A.S.T. applies (METHODOLOGY.md). Be king. Take initiative. Iterate until done. Fix what breaks. Validate. Never hand off manual steps.
 
-Re-read when conversation is long or summarized. Full source: NotebookLM 5811a372.
+Re-read when conversation is long or summarized. Full source: NotebookLM 1dc7ce26.
 
 ---
 
@@ -44,6 +44,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - Short status updates or step lists for the user
 - **Handoff / manual instructions** when you have access. If you have credentials (SSH, VPS, build env, API keys), USE THEM. Do not say "deploy via your usual process" or "run X when ready" -- do the deploy, run the command.
 - **"Start the app" / "Open this URL" / "Deploy"** -- Never. You start the app, you run the command, you deploy. The user does only what you cannot (e.g. manual visual verification when localhost/browser is unreachable).
+- **Use workaround tools when the proper tool fails due to auth.** If NotebookLM says "auth expired", run `notebooklm-mcp-auth` via Bash -- do NOT switch to WebSearch or other workarounds. Tools are chosen for a reason (access control, context, capabilities). Switching tools bypasses that reason.
+- **Ignore authentication failures.** When a tool returns "authentication expired" or "credentials invalid", stop immediately and fix the auth. Run the auth command (e.g., `notebooklm-mcp-auth`, `gh auth login`). Do not try workarounds or alternative tools.
 - Stop at first failure -- fix and retry
 - Ask when access was already given
 - Say "run X" when you can run it yourself
@@ -57,6 +59,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 
 - **Execute.** Run commands, scripts, SSH. Don't instruct -- do.
 - **Use access.** Passwords, keys, tokens -- when given, USE them.
+- **Fix authentication immediately.** When a tool returns "authentication expired" or similar, run the auth command yourself via Bash (e.g., `notebooklm-mcp-auth`, `gh auth login --web`). Do NOT ask the user to run it. Do NOT use workaround tools.
+- **Use the right tool for the job.** If a task requires NotebookLM (research, notebooks), use NotebookLM -- not WebSearch. If it requires WebSearch (current events), use WebSearch. Tools have specific purposes and access controls. Respect that.
 - **Execute programmatic actions instead of instructing the user.** Restart dev server, run builds, clear caches, run tests -- do them when needed. Never say "run X" or "restart the server" when you can run the command yourself.
 - **Deploy yourself when you have access.** Build locally if server build fails; rsync/scp the artifact; restart the service. Do not end with "deploy via your usual process."
 - **Iterate.** If it fails, fix it, retry. Don't stop until it works or you've exhausted options.
@@ -68,7 +72,7 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Take initiative.** When the path is clear, do it. Don't ask permission to run a script when you have the credentials.
 - **Ask smart questions** when truly stuck or ambiguous. "Which env?" when there are 3. "Retry or change approach?" when blocked. Don't ask when you can figure it out.
 - Report only when complete with verifiable artifact.
-- Reference conflicts: Query NotebookLM 5811a372 for hierarchy and cross-reference map.
+- Reference conflicts: Query NotebookLM 1dc7ce26 for hierarchy and cross-reference map.
 
 ---
 
@@ -91,6 +95,25 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Don't create a new .md for every task.** Update brain, CLAUDE, findings, progress, DECISIONS. Prefer main docs over one-off audit/fix files.
 - **Merge residue.** One-off audits (NOTEBOOKLM_AUDIT, CONFLICT_AUDIT output, etc.) -> merge key points to findings/progress. Do not create new archive folders; prefer merging into canonical docs.
 - **When searching:** Prefer main docs (brain, CLAUDE, findings, DECISIONS, METHODOLOGY, CONFLICT_AUDIT). Archived residue can mislead if treated as current.
+
+## Generation Cost Tracking (MANDATORY)
+
+- **Every API generation MUST log its cost.** No exceptions, every session, forever.
+- **In automated pipeline** (video-pipeline.worker.ts): Call `trackExpense()` after each Kling/Suno/Nano/Gemini API call.
+- **In manual/ad-hoc sessions**: Add a cost table to the session's progress entry in `progress.md` before closing.
+- **Rate table**: See `INFRA_SSOT.md` §5b or `.claude/skills/tourreel-pipeline/SKILL.md`.
+- **Format**: `| Operation | Count | Unit Cost | Total |` with session total row.
+
+---
+
+## Product-Thinking Mindset (ALWAYS)
+
+Every experiment, test, bug fix, or creative exploration is a potential product feature. When trying something new (new API capability, creative prompt technique, workflow optimization), always ask:
+1. **Could this become a feature?** If a technique works (e.g., Kling Elements character reference, furniture-from-sky animation, AI room detection without floorplan), document it as a potential product offering.
+2. **Which product does it fit?** TourReel, Winner Studio, AgentForge, FrontDesk — map the discovery to an existing product or note it as a new product seed.
+3. **Log it immediately.** Add to findings.md or PRODUCT_BIBLE.md under "Feature Discovery" so it doesn't get lost in session noise.
+
+**Never just solve the task at hand — always think about what the solution means for the product roadmap.**
 
 ---
 
@@ -119,6 +142,60 @@ Before deleting or archiving docs, ask:
 | **Small** | 1-2 files | Execute immediately |
 | **Medium** | 3-5 files | Brief plan in response, then execute |
 | **Large** | 6+ files or new system | Full B.L.A.S.T. Blueprint, HALT until approved |
+
+---
+
+## NotebookLM Sync (MANDATORY)
+
+NotebookLM is the spec/methodology source of truth. Stale notebooks = stale agent = wrong decisions.
+
+### On Conversation Start
+1. **Query B.L.A.S.T. notebook (1dc7ce26)** for agent behavior and completion rules — especially after context compression or long conversations.
+2. **Check notebook freshness** — if the last task made code changes to a product, verify the corresponding notebook has been updated. If not, update it before proceeding.
+
+### On Task Completion
+3. **Push updates to relevant notebooks** — if you changed TourReel code, update Zillow-to-Video (0baf5f36). If you changed infra, update Automation & Core Infra (fc048ba8). If you changed FB Bot, update Social Media & Lead Gen (cb99e6aa). No exceptions.
+4. **If notebook is at 50/50 sources** — identify the least relevant source and ask the user before deleting to make room.
+5. **Never leave "pending upload" items** — if an update doc was prepared (e.g., `docs/notebooklm-updates/`), push it in the same session. Do not defer to "next time."
+
+### Notebook-to-Product Map
+| Product Changed | Notebook to Update |
+|-----------------|-------------------|
+| TourReel / video pipeline | 0baf5f36 (Zillow-to-Video) |
+| Winner Studio | e109bcb2 (Mivnim/Yossi) |
+| FB Bot | cb99e6aa (Social Media & Lead Gen) |
+| Infrastructure / deploy | fc048ba8 (Automation & Core Infra) |
+| Kie.ai usage / models | 3e820274 (KIE.AI) |
+| WhatsApp / WAHA | 0789acdb (WAHA Pro) |
+| Website / superseller.agency | 719854ee (SuperSeller AI Website) |
+| Agent behavior / methodology | 1dc7ce26 (B.L.A.S.T.) |
+
+**Violation history (Feb 24, 2026):** TourReel update doc prepared Feb 23 but never pushed to notebook. User had to ask "are you in touch with the notebooks?" to discover the gap. This must never happen again.
+
+---
+
+## Pre-Deploy Trace Rule (MANDATORY)
+
+Before deploying ANY code change to RackNerd (rsync, scp, deploy script), you MUST:
+
+1. **Trace the data flow** through every code path you changed. Don't just verify syntax — follow the actual runtime values:
+   - What URLs/formats will hit external APIs? (e.g., Kling only accepts jpg/png — NOT webp)
+   - What parameters are passed? Are they the right type, format, and within API limits?
+   - What does the API return, and does your code handle all response shapes?
+
+2. **Document the trace** in your response before deploying:
+   ```
+   PRE-DEPLOY TRACE:
+   - Changed: [file:function]
+   - Data flow: [source] → [transform] → [API call]
+   - External API input: [exact format/values that will be sent]
+   - Expected response: [what comes back]
+   - Failure modes: [what could go wrong]
+   ```
+
+3. **Verify no credit burn** — if the change touches any path that calls Kie.ai/Kling/Suno/Recraft/Nano, confirm with the user before deploying.
+
+**Origin**: Feb 28, 2026 — five test jobs ($8.60+) burned debugging a WebP→Kling 422 error that a pre-deploy trace would have caught in seconds.
 
 ---
 

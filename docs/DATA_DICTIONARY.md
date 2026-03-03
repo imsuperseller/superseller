@@ -1,7 +1,7 @@
 # Data Dictionary — Where Everything Lives
 
 > **Authority**: This document is the single reference for "where does X data live?" across all SuperSeller AI systems.
-> **Last updated**: 2026-02-19
+> **Last updated**: 2026-03-02
 > **Rule**: PostgreSQL is the SSOT for all transactional data. External stores are mirrors or caches.
 
 ---
@@ -18,7 +18,7 @@
 | **Ollama** | Stateless compute | Nothing persistent — embedding requests only | Data (vectors stored in Postgres pgvector) |
 | **NotebookLM** | Reference docs | Specs, methodology, pipeline docs, B.L.A.S.T. | Runtime data, configs, credentials |
 | **n8n** | Backup automation | Webhook receivers, reference workflows | Primary automation (use Antigravity) |
-| **Stripe** | Billing SSOT | Payment intents, subscriptions, invoices, refunds | Customer profiles (mirrored to Postgres) |
+| **PayPal** | Billing SSOT | Subscriptions, payments, invoices, refunds | Customer profiles (mirrored to Postgres). Note: DB columns keep `stripe*` names but store PayPal IDs (intentional — avoids migration risk). |
 
 ---
 
@@ -27,7 +27,7 @@
 | Direction | Trigger | Frequency | Failure Handling |
 |-----------|---------|-----------|-----------------|
 | **Postgres -> Aitable** | Sync scripts (`tools/sync_leads_to_aitable.js`, etc.) | Manual / scheduled (needs cron) | `Lead.syncedToAITable` flag tracks state |
-| **Stripe -> Postgres** | Webhook (`/api/webhooks/stripe`) | Real-time on payment events | Webhook retry (Stripe built-in) |
+| **PayPal -> Postgres** | Webhook (`/api/paypal/webhook`) | Real-time on payment events | PayPal IPN retry (built-in) |
 | **Worker -> Postgres** | Direct DB writes (Drizzle) | Real-time during job processing | Job marked `failed` with error |
 | **Postgres -> R2** | Upload during video pipeline | Per-job | `jobs.finalR2Key` stores URL |
 | **Postgres -> Redis** | BullMQ `queue.add()` | Per-job creation | Job metadata persists in Postgres |
@@ -59,20 +59,20 @@
 
 ### Group 2: Payments & Purchases
 
-| Entity | Postgres Table | Stripe | Aitable | Notes |
+| Entity | Postgres Table | PayPal | Aitable | Notes |
 |--------|---------------|--------|---------|-------|
-| Payment Event | `Payment` | Checkout Session (SSOT) | `PAYMENTS` (mirror) | Postgres mirrors Stripe via webhook |
+| Payment Event | `Payment` | Payment (SSOT) | `PAYMENTS` (mirror) | Postgres mirrors PayPal via webhook. DB column `stripeSessionId` stores PayPal payment ID. |
 | Purchase | `Purchase` | -- | -- | Marketplace download tokens |
 | Download Event | `Download` | -- | -- | Analytics tracking |
 
 ### Group 3: Services & Subscriptions
 
-| Entity | Postgres Table | Stripe | n8n | Notes |
+| Entity | Postgres Table | PayPal | n8n | Notes |
 |--------|---------------|--------|-----|-------|
 | Service Instance | `ServiceInstance` | -- | `n8nWorkflowId` ref | Active service deployments |
-| Subscription | `Subscription` | Subscription (SSOT) | -- | Stripe owns lifecycle; Postgres mirrors |
+| Subscription | `Subscription` | Subscription (SSOT) | -- | PayPal owns lifecycle; Postgres mirrors. DB column `stripeSubscriptionId` stores PayPal subscription ID. |
 | Care Plan | `CarePlanDeliverable` | -- | -- | Monthly deliverable tracking |
-| Service Blueprint | `ServiceManifest` | `stripe.productId` ref | `n8n.webhookId` ref | Reusable templates |
+| Service Blueprint | `ServiceManifest` | `stripeProductId` ref (stores PayPal product ID) | `n8n.webhookId` ref | Reusable templates |
 
 ### Group 4: Marketplace & Solutions
 
@@ -199,7 +199,7 @@
 
 | External System | Where Referenced | ID Field |
 |----------------|-----------------|----------|
-| **Stripe** | `User.stripeCustomerId`, `Payment.stripeSessionId`, `Subscription.stripeSubscriptionId`, `Template.stripeProductId` | `cus_*`, `cs_*`, `sub_*`, `prod_*`, `price_*` |
+| **PayPal** | `User.stripeCustomerId` (stores PayPal ID), `Payment.stripeSessionId` (stores PayPal payment ID), `Subscription.stripeSubscriptionId` (stores PayPal sub ID), `Template.stripeProductId` (stores PayPal product ID) | PayPal IDs (`I-*` subscriptions, `PROD-*` products, `P-*` plans). Note: DB columns retain `stripe*` names — this is intentional per DECISIONS.md #19. |
 | **n8n** | `ServiceInstance.n8nWorkflowId`, `SecretaryConfig.n8nWebhookId`, `Template.n8nWorkflowId`, `WhatsAppInstance.n8nWorkflowId` | n8n workflow/webhook IDs |
 | **WAHA** | `WhatsAppInstance.wahaInstanceId` | WAHA instance ID |
 | **Kie.ai** | `clips.kieTaskId`, `jobs.musicTaskId` | Kie task IDs |
@@ -229,10 +229,10 @@
 |----------|--------|
 | Where is customer data? | `User` table (Prisma + Drizzle). Mirrored to Aitable `CLIENTS`. |
 | Where are credits/balance? | `entitlements` table (Prisma `Entitlement` + Drizzle `entitlementsTable`). |
-| Where are payments? | Stripe (SSOT) + `Payment` table (Postgres mirror) + Aitable `PAYMENTS` (dashboard). |
+| Where are payments? | PayPal (SSOT) + `Payment` table (Postgres mirror) + Aitable `PAYMENTS` (dashboard). |
 | Where are leads? | `Lead` table (Postgres SSOT). Mirrored to Aitable `LEADS` via sync script. |
 | Where are videos? | R2 (media files). `jobs` + `clips` + `assets` tables (metadata, Drizzle only). |
-| Where are subscriptions? | Stripe (lifecycle SSOT) + `Subscription` table (Postgres mirror). |
+| Where are subscriptions? | PayPal (lifecycle SSOT) + `Subscription` table (Postgres mirror). DB column `stripeSubscriptionId` stores PayPal subscription ID. |
 | Where are templates? | `Template` table (Postgres). Mirrored to Aitable `MASTER_PRODUCTS`. |
 | Where are API costs? | `api_expenses` table (Postgres). Mirrored to Aitable `EXPENSES`. |
 | Where are LLM configs? | `llm_model_configs` table (Postgres). Mirrored to Aitable `LLM_REGISTRY`. |

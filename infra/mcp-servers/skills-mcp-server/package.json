@@ -1,0 +1,14 @@
+{
+  "name": "skills-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server that exposes Claude Code skills to Claude Desktop cowork",
+  "type": "module",
+  "main": "index.mjs",
+  "bin": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  }
+}

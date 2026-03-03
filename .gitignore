@@ -456,3 +456,22 @@ assets/floor-plans/
 
 # Generated docs
 ClaudeClaw_Visual_Guide.pdf
+
+# Customer-specific directories (private repos)
+kedem developments/
+ortal pilates/
+
+# Local dev / scratch
+iconnect-dallas.txt
+notebooklm-mcp-local/
+superseller-orbita/
+screencapture-*.png
+*.screencapture*.png
+
+# Hebrew scratch files
+הפרלמנט*.txt
+
+# Agent state (ephemeral)
+apps/worker/.agent/
+apps/worker/.agents/
+apps/worker/.claude/

@@ -9,7 +9,7 @@
 > 1. **Master Index**: [`docs/BUSINESS_COVERAGE_INDEX.md`](docs/BUSINESS_COVERAGE_INDEX.md) — Unified mapping of all business matters to SoTs.
 > 2. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
 > 3. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
-> 4. **Notebook Hub**: Brain 5811a372 (B.L.A.S.T.), 0baf5f36 (TourReel), 12724368 (Changelog).
+> 4. **Notebook Hub**: Brain 1dc7ce26 (B.L.A.S.T.), 0baf5f36 (TourReel), 12724368 (Changelog).
 
 > [!NOTE]
 > **Database Stack**: 
@@ -43,7 +43,7 @@
 
 - **Methodology (single system)**: [`METHODOLOGY.md`](METHODOLOGY.md) — B.L.A.S.T. vs Agent Behavior, no conflicts.
 - **Codebase vs NotebookLM**: [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md) — What lives in codebase vs notebooks. Codebase = IDE essentials; NotebookLM = specs, methodology.
-- **Reference Alignment**: NotebookLM 5811a372 — Hierarchy, cross-reference map, sync discipline. Consult when sources conflict.
+- **Reference Alignment**: NotebookLM 1dc7ce26 — Hierarchy, cross-reference map, sync discipline. Consult when sources conflict.
 - **Mission Control**: [`brain.md`](brain.md) — North Star, Agent protocol.
 - **This file**: Technical router. For full context, read the Bibles above.
 - **Architecture**: [`ARCHITECTURE.md`](ARCHITECTURE.md), [`REPO_MAP.md`](REPO_MAP.md).

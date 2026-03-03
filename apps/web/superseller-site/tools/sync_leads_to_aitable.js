@@ -31,12 +31,12 @@ console.log('🔑 AITABLE_API_TOKEN status:', process.env.AITABLE_API_TOKEN ? 'L
 
 const prisma = new PrismaClient();
 const AITABLE_API_TOKEN = process.env.AITABLE_API_TOKEN;
-const LEADS_ID = process.env.AITABLE_RENSTO_LEADS_ID;
-const CLIENTS_ID = process.env.AITABLE_RENSTO_CLIENTS_ID;
+const LEADS_ID = process.env.AITABLE_SUPERSELLER_LEADS_ID;
+const CLIENTS_ID = process.env.AITABLE_SUPERSELLER_CLIENTS_ID;
 
 async function syncLeads(datasheetId) {
     if (!datasheetId) {
-        console.warn('⚠️ Skipping leads: AITABLE_RENSTO_LEADS_ID missing.');
+        console.warn('⚠️ Skipping leads: AITABLE_SUPERSELLER_LEADS_ID missing.');
         return;
     }
 
@@ -91,7 +91,7 @@ async function syncLeads(datasheetId) {
 
 async function syncClients(datasheetId) {
     if (!datasheetId) {
-        console.warn('⚠️ Skipping clients: AITABLE_RENSTO_CLIENTS_ID missing.');
+        console.warn('⚠️ Skipping clients: AITABLE_SUPERSELLER_CLIENTS_ID missing.');
         return;
     }
 

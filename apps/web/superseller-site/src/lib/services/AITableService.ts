@@ -26,7 +26,7 @@ type DatasheetId = typeof AITABLE_DATASHEETS[keyof typeof AITABLE_DATASHEETS];
 
 // ── NotebookLM Notebooks (Knowledge Layer) ───────────────────────
 export const NOTEBOOKLM_NOTEBOOKS = {
-    BLAST_CANONICAL: '5811a372-2d18-4f46-b421-9d026a57205b',
+    BLAST_CANONICAL: '1dc7ce26-2d18-4f46-b421-9d026a57205b',
     MARKET_INTELLIGENCE: '8df32896-d93b-4a32-961f-40c6fa3ccf7a',  // created 2026-02-19
     LEGAL_COMPLIANCE: '7630d154-341b-40a7-9a10-6f9e1f3ddc7d',  // created 2026-02-19
     PRODUCT_CHANGELOG: '12724368-e4af-488c-a8a3-ce04da043d60',  // created 2026-02-19

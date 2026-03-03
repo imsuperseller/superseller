@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
 
       // Deduct 25 credits from unified balance
       await CreditService.deductCredits(
-        session.userId,
+        session.userId!,
         LISTING_COST,
         'marketplace_listing',
         newPost.id,

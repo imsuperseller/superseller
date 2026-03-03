@@ -223,7 +223,7 @@
 |----------|--------|
 | **Mandate** | "Every time you come up with a different pricing model when we work on something instead of knowing there is a center" |
 | **Canonical Pricing** | Starter $79/mo (5 videos, 500 credits), Pro $149/mo (15 videos, 1500 credits), Team $299/mo (50 videos, 4000 credits), Pay-per-video $29-39 |
-| **Source** | B.L.A.S.T. notebook (5811a372) |
+| **Source** | B.L.A.S.T. notebook (1dc7ce26) |
 | **Fixed in** | 20 files across codebase (Feb 24, 2026) — replaced all $299/$699/$1499 references |
 
 ---

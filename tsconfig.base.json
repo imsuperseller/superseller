@@ -9,10 +9,10 @@
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@zillow-to-video/db": [
+            "@superseller/db": [
                 "./apps/worker-packages/db/src"
             ],
-            "@zillow-to-video/db/*": [
+            "@superseller/db/*": [
                 "./apps/worker-packages/db/src/*"
             ]
         }

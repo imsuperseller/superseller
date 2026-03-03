@@ -2,7 +2,7 @@
 
 **Purpose**: Execution logs, error tracking, test results. Updated by agents after each task.
 
-**Drift guard:** If you are about to send a short status, steps, or a question when the user gave access—stop. Query NotebookLM 5811a372 for agent behavior. Do the work instead.
+**Drift guard:** If you are about to send a short status, steps, or a question when the user gave access—stop. Query NotebookLM 1dc7ce26 for agent behavior. Do the work instead.
 
 ---
 
@@ -170,7 +170,7 @@
 - Renamed "Enterprise" tier to "Team" everywhere
 - Fixed video counts: Starter 5, Pro 15, Team 50
 - Updated: pricing.ts, Schema.tsx, pricing page, layout.tsx, homepage, footer, CrewHero, CrewMemberDetail, ROIComparison, NichePage, contact page, video pricing page, 3 skill files, 4 docs files
-- Source of truth: B.L.A.S.T. notebook (5811a372)
+- Source of truth: B.L.A.S.T. notebook (1dc7ce26)
 
 **Kie.ai Capability Gap Analysis**:
 - Audited ALL Kie.ai endpoints available vs. used in codebase
@@ -1749,7 +1749,7 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 ### Notebook-Level Fixes (DONE)
 - Stitch (286f3e4a): Added compliance source — v0.dev is PRIMARY, Stitch is secondary
 - Zillow-to-Video (0baf5f36): Added compliance source — deployment path is /opt/tourreel-worker
-- Project Template (5811a372): Added compliance source — cyan-500 primary, tokens in tailwind.config.ts
+- Project Template (1dc7ce26): Added compliance source — cyan-500 primary, tokens in tailwind.config.ts
 
 ### FB Marketplace Bot — Phase 1 Fix (IN PROGRESS)
 
@@ -1994,7 +1994,7 @@ Awaiting approval before implementation.
 
 ### NotebookLM Compliance Sources (DONE)
 - 6 override sources pushed to fix authority hierarchy inversion
-- Verified: 5811a372 now returns brain.md as Tier 1, NotebookLM as Tier 7
+- Verified: 1dc7ce26 now returns brain.md as Tier 1, NotebookLM as Tier 7
 
 ### Vercel Operations (DONE)
 - STRIPE_PUBLISHABLE_KEY added to production + preview
@@ -2053,11 +2053,11 @@ Awaiting approval before implementation.
 
 - **Video production gate fix**: Deployed superseller-site via `vercel --prod` (token from .env). superseller.agency now returns "fetch failed" (worker reach) instead of "Video creation is not available in production yet." Production gate removed. Deploy: superseller-site-gf5fw4fnl. Aliased superseller.agency.
 
-- **NotebookLM audit**: Audited 5811a372, 0baf5f36, 719854ee, 286f3e4a. Found contradictions in 5811a372 (learning.log, AGENT_BEHAVIOR.md, architecture/) and gaps (METHODOLOGY.md, Data-First scope). Added sync sources to 5811a372 and 719854ee.
+- **NotebookLM audit**: Audited 1dc7ce26, 0baf5f36, 719854ee, 286f3e4a. Found contradictions in 1dc7ce26 (learning.log, AGENT_BEHAVIOR.md, architecture/) and gaps (METHODOLOGY.md, Data-First scope). Added sync sources to 1dc7ce26 and 719854ee.
 
 - **Doc hygiene cleanup**: Merged 6 residue .md files (NOTEBOOKLM_CONFLICTS, NOTEBOOKLM_AUDIT, INFRASTRUCTURE_AND_CODEBASE_ANALYSIS, LOCAL_TO_NOTEBOOKLM_MIGRATION, QUESTIONS_FOR_USER, AUDIT_STRAY_AND_LEARNING) into findings, DECISIONS, progress. Renamed CONFLICT_AUDIT_2026-02-15 → CONFLICT_AUDIT.md. Updated all refs to main docs. Added doc hygiene rule to findings + agent-behavior.mdc.
 
-- **NotebookLM conflict fix**: Audited 5811a372, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 5811a372; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in TourReel stack) — keep for now.
+- **NotebookLM conflict fix**: Audited 1dc7ce26, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 1dc7ce26; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in TourReel stack) — keep for now.
 
 - **User decisions applied**: Created DECISIONS.md from QUESTIONS_FOR_USER answers. Removed video production gate — video create works in prod (VIDEO_WORKER_URL required). REALTOR_PLACEMENT added to 0baf5f36, archived. CREDENTIAL_REFERENCE, NOTEBOOKLM_SCOPE, EXECUTION_PLAN created. QuickBooks: quickbooks-online-mcp-server canonical; docs updated. Credential rotation: no (per user). Infra→NotebookLM: NOTEBOOKLM_SCOPE clarifies what goes where.
 
@@ -2125,7 +2125,7 @@ Awaiting approval before implementation.
 
 - **Video product page** (commit 3312acb): /video/[jobId], /dashboard/[clientId]/video, API proxy /api/video/jobs/[id], VideoGeneration, CSP for R2. Pushed to main. Set VIDEO_WORKER_URL in Vercel for job data.
 - **Agent drift prevention**: AGENT_BEHAVIOR.md created; .cursorrules, brain.md, progress.md updated; .cursor/rules/agent-behavior.mdc added (alwaysApply). Drift guard checkpoints in place.
-- **B.L.A.S.T. alignment**: brain.md, .cursorrules updated with NotebookLM 5811a372 as canonical source. Agent completion rules codified.
+- **B.L.A.S.T. alignment**: brain.md, .cursorrules updated with NotebookLM 1dc7ce26 as canonical source. Agent completion rules codified.
 - **Memory files**: findings.md, progress.md created at repo root.
 - **Video pipeline** (commit 4555169): Pushed to main. Default tour, hero features from description/amenities, realtor R2, Kling model logging.
 

@@ -1,0 +1,37 @@
+{
+  "name": "superseller-plugins",
+  "description": "SuperSeller AI plugin collection — sales, marketing, ops, product, support, finance",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "superseller-sales",
+      "path": "superseller-sales",
+      "description": "Lead pipeline, CRM, outreach, and billing for AI automation SaaS"
+    },
+    {
+      "name": "superseller-marketing",
+      "path": "superseller-marketing",
+      "description": "Content strategy, social publishing, brand voice, and competitor intelligence"
+    },
+    {
+      "name": "superseller-ops",
+      "path": "superseller-ops",
+      "description": "Deployment, monitoring, cost tracking, and infrastructure management"
+    },
+    {
+      "name": "superseller-product",
+      "path": "superseller-product",
+      "description": "Video pipeline, AI models, feature specs, and database operations"
+    },
+    {
+      "name": "superseller-support",
+      "path": "superseller-support",
+      "description": "Ticket triage, customer health, WhatsApp support, and knowledge base"
+    },
+    {
+      "name": "superseller-finance",
+      "path": "superseller-finance",
+      "description": "Billing, cost tracking, credit ledger, and revenue reporting"
+    }
+  ]
+}

@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 
                 <div
                     className="prose prose-invert prose-cyan max-w-none text-gray-300 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: post.content?.replace(/\n/g, '<br/>') }}
+                    dangerouslySetInnerHTML={{ __html: post.content?.replace(/\n/g, '<br/>') ?? '' }}
                 />
 
                 <footer className="mt-20 pt-10 border-t border-white/10 text-center">

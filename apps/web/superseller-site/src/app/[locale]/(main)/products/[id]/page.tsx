@@ -49,8 +49,5 @@ export default async function ProductPage({ params }: Props) {
         notFound();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { icon, ...serializableProduct } = product;
-
-    return <ProductPresentation product={serializableProduct as any} />;
+    return <ProductPresentation product={product as any} />;
 }

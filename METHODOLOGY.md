@@ -94,7 +94,7 @@ Use Sonnet for each teammate. Require plan approval before implementation.
 4. **S**tylize: UI/UX, present for feedback.
 5. **T**rigger: Deploy, activate.
 
-**Full framework**: `docs/frameworks/blast-framework.md` (Antigravity-oriented). Also NotebookLM 5811a372.
+**Full framework**: `docs/frameworks/blast-framework.md` (Antigravity-oriented). Also NotebookLM 1dc7ce26.
 
 **brain.md** Protocol 0 = initialization for new projects. HALT there. For routine tasks, skip Protocol 0—go straight to Agent Behavior.
 
@@ -128,7 +128,7 @@ python3 .claude/skills/ui-ux-pro-max-skill/src/ui-ux-pro-max/scripts/search.py "
 | UI/UX Skill | .claude/skills/ui-ux-pro-max-skill/ | Design intelligence, auto-loaded |
 | B.L.A.S.T. phases | brain.md § B.L.A.S.T. PROTOCOL | High-level |
 | B.L.A.S.T. full framework | docs/frameworks/blast-framework.md | Antigravity, detailed |
-| NotebookLM B.L.A.S.T. | 5811a372 | Query for alignment |
+| NotebookLM B.L.A.S.T. | 1dc7ce26 | Query for alignment |
 | Architecture | .cursorrules, CLAUDE.md | Domain, stack, Stripe |
 | Conflict audit | CONFLICT_AUDIT.md | Run when asked "conflicts?" |
 

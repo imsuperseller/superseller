@@ -69,6 +69,7 @@ export async function verifySession(): Promise<{
     isValid: boolean;
     email?: string;
     clientId?: string;
+    userId?: string;
     role?: 'admin' | 'client';
     entitlements?: any;
     businessName?: string;
@@ -100,6 +101,7 @@ export async function verifySession(): Promise<{
                 isValid: true,
                 email: pgUser.email,
                 clientId: pgUser.id,
+                userId: pgUser.id,
                 role: ADMIN_EMAILS.includes(email) ? 'admin' : 'client',
                 entitlements: (pgUser.entitlements as any) || { pillars: [] },
                 businessName: pgUser.businessName || pgUser.name || '',

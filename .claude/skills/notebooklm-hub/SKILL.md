@@ -30,7 +30,7 @@ negativeTrigger:
 - **36 notebooks are the spec/methodology source of truth** — codebase has implementation, notebooks have specs.
 - **Auth expires frequently** — when you get auth errors, run `notebooklm-mcp-auth` via Bash. Never use workaround tools.
 - **Never use WebSearch when NotebookLM is the right tool** — tools are chosen for access control and context.
-- **Conflict resolution**: When sources conflict, query NotebookLM 5811a372 for hierarchy and cross-reference map.
+- **Conflict resolution**: When sources conflict, query NotebookLM 1dc7ce26 for hierarchy and cross-reference map.
 - **Some notebooks are empty** — check source_count before querying.
 
 ## Auth Flow
@@ -48,7 +48,7 @@ notebooklm-mcp-auth
 ### Core System (5)
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
-| 5811a372 | Project Template (B.L.A.S.T.) | 19 | Methodology, hierarchy, conflict resolution |
+| 1dc7ce26 | Project Template (B.L.A.S.T.) | 19 | Methodology, hierarchy, conflict resolution |
 | b906e69f | Claude Code | 10 | Agent behavior, brain.md, codebase rules |
 | 9222cc37 | Agentic Workflows & Skill Creation | 5 | Skill creation patterns |
 | 44494df5 | AntiGravity Workflows & Ollama | 4 | Automation patterns |
@@ -144,7 +144,7 @@ Params: { notebook_id: "uuid" }
 |--------|----------|--------------|
 | TourReel spec | 0baf5f36 | "What are the 12 pipeline stages?" |
 | Kie.ai API limits | 3e820274 | "What is the rate limit for Kling 3.0 Pro?" |
-| Methodology | 5811a372 | "What is the B.L.A.S.T. framework?" |
+| Methodology | 1dc7ce26 | "What is the B.L.A.S.T. framework?" |
 | Client context | e109bcb2 | "What characters does Yossi use?" |
 | WhatsApp API | 0789acdb | "How to send a video via WAHA?" |
 | Pricing research | 8df32896 | "What do competitors charge?" |
@@ -153,7 +153,7 @@ Params: { notebook_id: "uuid" }
 ## Conflict Resolution
 
 When codebase and NotebookLM disagree:
-1. Query NotebookLM 5811a372 for **authority precedence**
+1. Query NotebookLM 1dc7ce26 for **authority precedence**
 2. Hierarchy: brain.md > CLAUDE.md > INFRA_SSOT > PRODUCT_BIBLE > notebooks
 3. If still unclear, **ask the user**
 

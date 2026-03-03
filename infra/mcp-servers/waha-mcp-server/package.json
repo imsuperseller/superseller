@@ -1,0 +1,14 @@
+{
+  "name": "waha-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.mjs",
+  "bin": "index.mjs",
+  "description": "MCP server for WAHA (WhatsApp HTTP API) — send messages, list chats, read conversations",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  }
+}

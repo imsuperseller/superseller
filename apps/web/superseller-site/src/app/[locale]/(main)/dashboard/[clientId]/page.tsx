@@ -81,7 +81,7 @@ async function getClientData(clientId: string): Promise<{ project: ProjectData; 
         clientName: user.name || user.businessName || user.email || 'Valued Client',
         packageName,
         startDate: (user.createdAt || new Date()).toLocaleDateString(),
-        status: csc?.status || (csc?.contractStatus === 'signed' ? 'build' : 'discovery'),
+        status: (csc?.status || (csc?.contractStatus === 'signed' ? 'build' : 'discovery')) as ProjectData['status'],
         progress: Math.min((csc?.qualificationScore ?? 15), 100),
         deliverables: (csc as any)?.deliverables || DEFAULT_DELIVERABLES,
         invoices: (csc?.amountPaid ?? 0) > 0
@@ -113,7 +113,6 @@ async function getLeadsData(clientId: string) {
             take: 100,
         });
         return leads.map((l) => ({
-            id: l.id,
             ...l,
             createdAt: l.createdAt.toISOString(),
             deliveredAt: l.deliveredAt?.toISOString(),
@@ -133,7 +132,6 @@ async function getOutreachData(clientId: string) {
         });
         return {
             campaigns: campaigns.map((c) => ({
-                id: c.id,
                 ...c,
                 stats: (c.metrics as any) || { sent: 0, delivered: 0, opened: 0, replied: 0 },
             })),
@@ -182,7 +180,6 @@ async function getSecretaryData(clientId: string) {
             })),
             whatsappThreads: [],
             bookings: bookings.map((b) => ({
-                id: b.id,
                 ...b,
                 dateTime: b.appointmentDate?.toISOString(),
             })),
@@ -220,7 +217,7 @@ async function getContentData(clientId: string) {
             orderBy: { createdAt: 'desc' },
             take: 20,
         });
-        return posts.map((p) => ({ id: p.id, ...p }));
+        return posts.map((p) => ({ ...p }));
     } catch (err) {
         console.error('Error fetching content data:', err);
         return [];
@@ -240,7 +237,7 @@ async function getKnowledgeData(clientId: string) {
                 ? documents[0].indexedAt.toISOString()
                 : new Date().toISOString();
         return {
-            documents: documents.map((d) => ({ id: d.id, ...d })),
+            documents: documents.map((d) => ({ ...d })),
             stats: {
                 totalDocuments: documents.length,
                 totalChunks,
