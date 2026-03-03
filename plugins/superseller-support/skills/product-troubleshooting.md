@@ -96,8 +96,8 @@ Diagnosis and resolution steps for common issues across all SuperSeller AI produ
 - **Symptom**: Incoming calls not triggering AI assistant, or calls drop immediately
 - **Root cause**: Webhook URL pointing to wrong endpoint, or Telnyx API key issues
 - **Fix**:
-  1. Verify active API key: `KEY019CACA6A6B497527825DA06E7375C45_13zneaiNWCdWaoRKKmoiaM`
-  2. Check assistant config: assistant ID `assistant-f2838322-edfa-4c22-9997-ca53b151175f`
+  1. Verify active API key (stored in worker .env as TELNYX_API_KEY)
+  2. Check assistant config (stored in worker .env as TELNYX_ASSISTANT_ID)
   3. Verify webhook URL in Telnyx Mission Control portal
   4. Test with outbound call to verify connectivity
   5. Check worker voice webhook handler: `/api/telnyx/voice-webhook`
