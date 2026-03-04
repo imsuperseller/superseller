@@ -17,7 +17,7 @@ import { writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 
-const KIE_BASE = "https://api.kie.ai/api";
+const KIE_BASE = config.kie.baseUrl;
 
 // ─── Photo Types ───────────────────────────────────────────────
 export type PhotoType =
@@ -119,6 +119,7 @@ TYPES (pick the most specific match):
 
 CRITICAL RULES:
 - If you see WATER or a POOL anywhere in the image (even in background), classify as "pool".
+- A photo showing a swimming pool, hot tub, or water feature is NEVER "exterior_front". The exterior front photo shows the FRONT of the house as seen from the street/driveway — no pool is visible from the front approach. Classify pool photos as "pool".
 - If it's a bird's-eye/drone shot, classify as "aerial" even if it shows the house.
 - If it contains MULTIPLE photos in a grid/collage, classify as "marketing".
 - If it's a drawn/digital floor layout with room labels, classify as "floorplan".
@@ -310,25 +311,35 @@ export function mapPhotosToRooms(
     }
 
     // Pass 2: fill unassigned rooms with nearest available interior photo
+    // POOL SAFETY: Never assign pool photos to non-pool rooms (prevents pool appearing as kitchen, etc.)
+    const POOL_TYPES: PhotoType[] = ["pool"];
+    const POOL_ROOM_KEYWORDS = ["pool", "backyard", "patio", "deck", "spa", "hot tub"];
+
     for (let roomIdx = 0; roomIdx < rooms.length; roomIdx++) {
         if (result.has(roomIdx)) continue;
 
-        // Find any unassigned interior photo
+        const roomName = rooms[roomIdx].toLowerCase();
+        const isPoolRoom = POOL_ROOM_KEYWORDS.some(kw => roomName.includes(kw));
+
+        // Find any unassigned interior photo (exclude pool photos for non-pool rooms)
         const available = usable.findIndex((p, idx) =>
-            !assigned.has(idx) && p.type.startsWith("interior_")
+            !assigned.has(idx) && p.type.startsWith("interior_") && (isPoolRoom || !POOL_TYPES.includes(p.type))
         );
         if (available >= 0) {
             result.set(roomIdx, available);
             assigned.add(available);
         } else {
-            // Desperate fallback: any unassigned photo
-            const any = usable.findIndex((_, idx) => !assigned.has(idx));
+            // Desperate fallback: any unassigned photo (but still exclude pool for non-pool rooms)
+            const any = usable.findIndex((p, idx) =>
+                !assigned.has(idx) && (isPoolRoom || !POOL_TYPES.includes(p.type))
+            );
             if (any >= 0) {
                 result.set(roomIdx, any);
                 assigned.add(any);
             } else {
-                // All photos assigned — reuse the best match
-                result.set(roomIdx, 0);
+                // All non-pool photos assigned — reuse the best match (still prefer non-pool)
+                const bestReuse = usable.findIndex(p => !POOL_TYPES.includes(p.type));
+                result.set(roomIdx, bestReuse >= 0 ? bestReuse : 0);
             }
         }
     }
@@ -438,7 +449,7 @@ export async function upscalePhoto(imageUrl: string, r2KeyPrefix?: string): Prom
                                     writeFileSync(tmpPath, buf);
                                     const r2Key = `${r2KeyPrefix}_upscaled.jpg`;
                                     const r2Url = await uploadToR2(tmpPath, r2Key);
-                                    try { unlinkSync(tmpPath); } catch {}
+                                    try { unlinkSync(tmpPath); } catch { }
                                     logger.info({ msg: "Upscaled photo re-uploaded to R2", taskId, r2Url: r2Url.slice(0, 80) });
                                     return r2Url;
                                 } else {

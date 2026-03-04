@@ -1,9 +1,10 @@
 import { execFile } from "child_process";
 import { promisify } from "util";
-import { existsSync } from "fs";
+import { existsSync, writeFileSync, unlinkSync } from "fs";
 import { join, resolve } from "path";
 import { logger } from "../utils/logger";
 import { config } from "../config";
+import type { TransitionType } from "./transition-planner";
 
 const execFileAsync = promisify(execFile);
 
@@ -53,11 +54,13 @@ export async function normalizeClip(
 
     await execFileAsync("ffmpeg", [
         "-i", inputPath,
-        "-vf", `scale=${evenW}:${evenH}:force_original_aspect_ratio=decrease,pad=${evenW}:${evenH}:(ow-iw)/2:(oh-ih)/2:black`,
+        "-vf", `scale=${evenW}:${evenH}:force_original_aspect_ratio=increase,crop=${evenW}:${evenH},format=yuv420p`,
         "-r", String(fps),
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "18",
+        "-profile:v", "high",
+        "-level", "4.0",
         "-an",
         "-movflags", "+faststart",
         "-y",
@@ -102,17 +105,21 @@ export async function stitchClipsConcat(
             const oneFrameVideo = join(outDir, `_boundary_${i}.mp4`);
             await execFileAsync("ffmpeg", [
                 "-y", "-loop", "1", "-i", framePath,
-                "-c:v", "libx264", "-t", String(1 / fps), "-r", String(fps),
-                "-pix_fmt", "yuv420p",
-                "-vf", `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
+                "-t", String(1 / fps), "-r", String(fps),
+                "-vf", `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black,format=yuv420p`,
+                "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+                "-profile:v", "high", "-level", "4.0",
+                "-an",
                 oneFrameVideo,
             ], { timeout: 30000 });
             segments.push(oneFrameVideo);
             const trimmed = join(outDir, `_clip${i}_trim.mp4`);
             await execFileAsync("ffmpeg", [
                 "-y", "-i", clipPaths[i],
-                "-vf", `select=gte(n\\,1),setpts=PTS-STARTPTS`, "-r", String(fps),
-                "-c:v", "libx264", "-crf", "18", "-an", trimmed,
+                "-vf", `select=gte(n\\,1),setpts=PTS-STARTPTS,format=yuv420p`, "-r", String(fps),
+                "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+                "-profile:v", "high", "-level", "4.0",
+                "-an", trimmed,
             ], { timeout: 120000 });
             segments.push(trimmed);
         }
@@ -204,7 +211,7 @@ export async function stitchClips(
         "-map", `[${finalLabel}]`,
         "-c:v", "libx264",
         "-preset", "medium",
-        "-crf", "18",
+        "-crf", "16",  // CRF 16 for dissolve xfade — higher quality since re-encoding is unavoidable
         "-movflags", "+faststart",
         "-y",
         outputPath,
@@ -216,6 +223,118 @@ export async function stitchClips(
     logger.info({ msg: "Stitch complete", duration: `${duration.toFixed(1)}s` });
 
     return { duration };
+}
+
+// ─── STITCH CLIPS MIXED (SEAMLESS + DISSOLVE PER BOUNDARY) ───
+/**
+ * Mixed stitching: groups consecutive clips that share 'seamless' transitions,
+ * concats each group with stitchClipsConcat, then joins groups with dissolve xfade.
+ *
+ * This gives walkthrough continuity within adjacent rooms while using dissolve
+ * only where needed (floor changes, distant rooms).
+ *
+ * @param clipPaths - Ordered normalized clip file paths
+ * @param outputPath - Output master video path
+ * @param transitionMap - Per-boundary transition type ('seamless' | 'dissolve')
+ * @param boundaryFramePaths - Optional boundary frame images for seamless concat
+ * @returns Duration of final stitched video
+ */
+export async function stitchClipsMixed(
+    clipPaths: string[],
+    outputPath: string,
+    transitionMap: TransitionType[],
+    boundaryFramePaths?: string[]
+): Promise<{ duration: number }> {
+    if (clipPaths.length === 0) throw new Error("No clips to stitch");
+    if (clipPaths.length === 1) {
+        await execFileAsync("ffmpeg", ["-i", clipPaths[0], "-c", "copy", "-y", outputPath]);
+        return { duration: await getVideoDuration(outputPath) };
+    }
+    if (transitionMap.length !== clipPaths.length - 1) {
+        throw new Error(`Transition map length (${transitionMap.length}) must equal clips-1 (${clipPaths.length - 1})`);
+    }
+
+    // Check if all same type — use optimized single-pass
+    const allSeamless = transitionMap.every((t) => t === "seamless");
+    const allDissolve = transitionMap.every((t) => t === "dissolve");
+
+    if (allSeamless) {
+        logger.info({ msg: "All transitions seamless — using pure concat" });
+        return stitchClipsConcat(clipPaths, outputPath, {
+            boundaryFramePaths: boundaryFramePaths,
+        });
+    }
+    if (allDissolve) {
+        logger.info({ msg: "All transitions dissolve — using pure xfade" });
+        return stitchClips(clipPaths, outputPath, "dissolve", 0.3);
+    }
+
+    // Mixed mode: group consecutive seamless clips into segments
+    logger.info({
+        msg: "Mixed stitching",
+        transitions: transitionMap.join(","),
+        clipCount: clipPaths.length,
+    });
+
+    const outDir = join(outputPath, "..");
+    const segments: string[] = [];
+    let groupStart = 0;
+
+    for (let i = 0; i <= transitionMap.length; i++) {
+        // End of clips OR hit a dissolve boundary → close current group
+        const isEnd = i === transitionMap.length;
+        const isDissolve = !isEnd && transitionMap[i] === "dissolve";
+
+        if (isEnd || isDissolve) {
+            const groupEnd = i; // inclusive
+            const groupClips = clipPaths.slice(groupStart, groupEnd + 1);
+
+            if (groupClips.length === 1) {
+                // Single clip segment — no stitching needed
+                segments.push(groupClips[0]);
+            } else {
+                // Multiple clips in seamless group — concat them
+                const segPath = join(outDir, `_segment_${segments.length}.mp4`);
+                // Extract boundary frames for this group
+                const groupBoundaryFrames = boundaryFramePaths
+                    ? boundaryFramePaths.slice(groupStart, groupEnd)
+                    : undefined;
+
+                await stitchClipsConcat(groupClips, segPath, {
+                    boundaryFramePaths: groupBoundaryFrames,
+                });
+                segments.push(segPath);
+            }
+
+            if (isDissolve) {
+                groupStart = i + 1; // Next group starts after the dissolve boundary
+            }
+        }
+    }
+
+    // Now stitch segments together with dissolve transitions
+    let result: { duration: number };
+    if (segments.length === 1) {
+        await execFileAsync("ffmpeg", ["-i", segments[0], "-c", "copy", "-y", outputPath]);
+        result = { duration: await getVideoDuration(outputPath) };
+    } else {
+        result = await stitchClips(segments, outputPath, "dissolve", 0.3);
+    }
+
+    // Clean up temporary segment files
+    for (const seg of segments) {
+        if (seg.includes("_segment_")) {
+            try { unlinkSync(seg); } catch (_) { }
+        }
+    }
+
+    logger.info({
+        msg: "Mixed stitch complete",
+        segmentCount: segments.length,
+        duration: `${result.duration.toFixed(1)}s`,
+    });
+
+    return result;
 }
 
 // ─── ADD MUSIC OVERLAY ───
@@ -447,7 +566,7 @@ export async function detectPoolHeuristic(imagePath: string): Promise<boolean> {
 
         const { readFileSync, unlinkSync } = await import("fs");
         const buf = readFileSync(tmpPixel);
-        try { unlinkSync(tmpPixel); } catch {}
+        try { unlinkSync(tmpPixel); } catch { }
 
         if (buf.length < 3) return false;
 

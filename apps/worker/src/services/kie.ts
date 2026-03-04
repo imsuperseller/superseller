@@ -2,7 +2,7 @@ import { config } from "../config";
 import { logger } from "../utils/logger";
 import { withRetry } from "../utils/retry";
 
-const KIE_BASE = "https://api.kie.ai/api";
+const KIE_BASE = config.kie.baseUrl;
 const KIE_KEY = config.kie.apiKey;
 
 const headers = {
@@ -112,9 +112,11 @@ const SPATIAL_NEGATIVE = "person walking through walls, person walking through f
 const KLING_REALTOR_NEGATIVE =
     "cartoon, anime, CGI, duplicate person, two people, double figure, clone, extra person, bystander, crowd, multiple people, invented furniture, added furnishings, changed decor, low quality, blurry, distorted, morphing, talking, mouth moving, lips moving, wall penetration, object clipping, floating person";
 
-/** Negative for property-only clips (no person). Stricter: ban all people. */
+/** Negative for property-only clips (no person). Stricter: ban ALL human presence.
+ * Must be aggressive — Kling may invent people from ambiguous prompts.
+ * Combined with buildPropertyOnlyKlingPrompt() which ends with "No people, empty property." */
 const KLING_PROPERTY_NEGATIVE =
-    "cartoon, anime, CGI, people, person, human, figure, hand, face, pet, animal, low quality, blurry, distorted, morphing, invented furniture, added furnishings, changed decor, wall penetration, object clipping, floating objects";
+    "cartoon, anime, CGI, people, person, human, figure, hand, face, silhouette, shadow of person, walking person, standing person, sitting person, body, torso, legs, pet, animal, bystander, crowd, visitor, realtor, agent, low quality, blurry, distorted, morphing, invented furniture, added furnishings, changed decor, wall penetration, object clipping, floating objects";
 
 /** Negative for kling_elements clips. Person is referenced via @element, so we protect identity. */
 const KLING_ELEMENTS_NEGATIVE =

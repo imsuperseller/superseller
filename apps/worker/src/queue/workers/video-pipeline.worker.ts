@@ -7,7 +7,8 @@ import { logger } from "../../utils/logger";
 import { scrapeZillowListing } from "../../services/apify";
 import { analyzeFloorplan, buildTourSequence, getDefaultSequence, buildTourSequenceFromRoomNames, isSingleStory } from "../../services/floorplan-analyzer";
 import { generateClipPrompts } from "../../services/prompt-generator";
-import { normalizeClip, stitchClips, stitchClipsConcat, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, detectPoolHeuristic, type TextOverlaySpec } from "../../services/ffmpeg";
+import { normalizeClip, stitchClips, stitchClipsConcat, stitchClipsMixed, addMusicOverlay, addTextOverlays, generateVariants, extractLastFrame, getVideoDuration, detectPoolHeuristic, type TextOverlaySpec } from "../../services/ffmpeg";
+import { buildTransitionMap, getXfadeDuration, type TransitionMap } from "../../services/transition-planner";
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
@@ -351,7 +352,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     .map(p => `[${p.originalIndex}] ${p.type}`),
             });
 
-            // Step 4: Skip Recraft upscale — it uses Kie.ai credits ($0.004/img) and outputs WebP
+            // Step 4: Skip Recraft upscale — it uses Kie.ai credits ($0.0025/img) and outputs WebP
             // that Kling rejects (422). Original Zillow photos on R2 are already high quality.
             logger.info({ msg: "Skipping Recraft upscale — using original R2 photos", count: usablePhotos.length });
 
@@ -385,8 +386,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     const exteriorLocalAlt = join(workDir, "_fetch_exterior.jpeg");
                     const exteriorLocalPng = join(workDir, "_fetch_exterior.png");
                     const localPath = existsSync(exteriorLocalPath) ? exteriorLocalPath :
-                                     existsSync(exteriorLocalAlt) ? exteriorLocalAlt :
-                                     existsSync(exteriorLocalPng) ? exteriorLocalPng : null;
+                        existsSync(exteriorLocalAlt) ? exteriorLocalAlt :
+                            existsSync(exteriorLocalPng) ? exteriorLocalPng : null;
 
                     let isPool = false;
                     if (localPath) {
@@ -607,8 +608,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                     const storedPrompt = ((clip as any).prompt || "").trim();
 
-                    if (realtorElements && includeRealtor) {
-                        // Use Gemini-generated prompt with @realtor substitution for Elements
+                    if (realtorElements && includeRealtor && clipIdx === 0) {
+                        // Elements mode: ONLY clip 0 (opening approach) gets @realtor
+                        // Interior clips are property-only to prevent changing realtor appearance
                         if (storedPrompt) {
                             klingPrompt = storedPrompt
                                 .replace(/the person from the reference photo/gi, "@realtor")
@@ -622,11 +624,15 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         }
                         clipElements = realtorElements;
                     } else if (thisClipHasComposite) {
-                        // Use Gemini prompt if available, fall back to template
+                        // Clip 0 with Nano Banana composite — realtor is baked into the start frame
                         klingPrompt = storedPrompt || buildRealtorOnlyKlingPrompt(clip);
                     } else {
-                        // Use Gemini prompt if available, fall back to template
-                        klingPrompt = storedPrompt || buildPropertyOnlyKlingPrompt(clip);
+                        // Property-only clip: ALWAYS use property-only prompt template.
+                        // Never use storedPrompt here — Gemini generates prompts with
+                        // REALTOR_SYSTEM_PROMPT that references "the person walking through",
+                        // which contradicts KLING_PROPERTY_NEGATIVE (bans all people).
+                        // This contradiction caused Kling to invent random people.
+                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
                     }
 
                     return { startFrame, endFrame, klingPrompt, clipElements, thisClipHasComposite };
@@ -815,7 +821,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     let clipElements: KlingElement[] | undefined;
                     const storedPrompt = ((clip as any).prompt || "").trim();
 
-                    if (realtorElements && includeRealtor) {
+                    if (realtorElements && includeRealtor && clipIdx === 0) {
+                        // Elements mode: ONLY clip 0 gets @realtor (see prepareClip for rationale)
                         if (storedPrompt) {
                             klingPrompt = storedPrompt
                                 .replace(/the person from the reference photo/gi, "@realtor")
@@ -830,7 +837,8 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     } else if (thisClipHasComposite) {
                         klingPrompt = storedPrompt || buildRealtorOnlyKlingPrompt(clip);
                     } else {
-                        klingPrompt = storedPrompt || buildPropertyOnlyKlingPrompt(clip);
+                        // Property-only: force template, never use storedPrompt (may reference realtor)
+                        klingPrompt = buildPropertyOnlyKlingPrompt(clip);
                     }
 
                     const taskId = await createKlingTask({
@@ -884,13 +892,21 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
             }
 
-            // 6. Stitching — dissolve crossfade transitions (0.3s) between clips
-            // Dissolve hides seams between clips, especially in parallel mode where start frames differ.
-            // Replaces hard concat which showed visible jumps between room transitions.
+            // 6. Smart Stitching — seamless concat for adjacent rooms, dissolve only for floor changes / distant rooms
+            // Uses floorplan adjacency data to determine per-boundary transition type.
+            // Adjacent rooms = seamless walkthrough (no re-encoding, no dissolve). Floor/distant = 0.3s dissolve.
             await updateJobStatus(jobId, "stitching", 75);
             const outputName = "master_silent.mp4";
             const masterSilentPath = join(workDir, outputName);
-            await stitchClips(clipFiles, masterSilentPath, "dissolve", 0.3);
+
+            // Build per-boundary transition map from floorplan adjacency
+            const transitionMapResult = buildTransitionMap(
+                clips.map((c: any) => ({ clip_number: c.clip_number, from_room: c.from_room, to_room: c.to_room })),
+                listing.floorplan_analysis || null
+            );
+
+            // Stitch using the appropriate method based on transition map
+            await stitchClipsMixed(clipFiles, masterSilentPath, transitionMapResult.transitions, boundaryFramePaths);
 
             // 7. Add Music (Suno as PRIMARY, database fallback only on failure)
             await updateJobStatus(jobId, "adding_music", 85);
@@ -910,10 +926,10 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             // Delivering a video with generic/public-domain music degrades the product quality.
             if (!musicUrl) {
                 const { createSunoTask, waitForTask } = await import("../../services/kie");
-                const sunoStyles = [
-                    listing.music_style || "elegant modern",
-                    "luxury cinematic piano ambient",  // retry with different style
-                ];
+                const { pickMusicStyle } = await import("../../services/music-style-picker");
+                const musicStyleResult = pickMusicStyle(listing);
+                logger.info({ msg: "Music style selected", ...musicStyleResult });
+                const sunoStyles = musicStyleResult.styles;
 
                 for (let attempt = 0; attempt < sunoStyles.length; attempt++) {
                     try {
@@ -963,6 +979,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             // 7b. Text Overlays — property address, room labels, CTA
             // Use ACTUAL measured durations (not DB values) for precise timing
+            // Per-boundary xfade duration from transition map (seamless=0, dissolve=0.3)
             const masterWithOverlaysPath = join(workDir, "master_with_overlays.mp4");
             const overlaySpecs: TextOverlaySpec[] = [];
             let cumSec = 0;
@@ -971,7 +988,13 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const start = cumSec;
                 // Use measured duration from actual clip video when available, fallback to DB
                 const dur = actualClipDurations?.get(c.clip_number) || parseFloat(c.duration_seconds) || config.video.defaultClipDuration;
-                cumSec += dur;
+
+                // Per-boundary xfade: seamless boundaries have 0 overlap, dissolve has 0.3s
+                const xfadeDur = i < transitionMapResult.transitions.length
+                    ? getXfadeDuration(transitionMapResult.transitions[i])
+                    : 0;
+                cumSec += (dur - xfadeDur);
+
                 const isOpening = i === 0;
                 const isClosing = i === clips.length - 1 && clips.length > 1;
 
@@ -1006,20 +1029,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         }
                     }
                 } else if (isClosing) {
-                    // Room label FIRST (bottom, appears early)
-                    const roomName = c.to_room;
-                    if (roomName && roomName !== "Exterior") {
-                        overlaySpecs.push({
-                            text: roomName,
-                            startSeconds: start + 0.3,
-                            durationSeconds: Math.min(dur * 0.4, 2.5),
-                            position: "bottom",
-                            fontSize: "medium",
-                            fadeInSeconds: 0.5,
-                            fadeOutSeconds: 0.5,
-                        });
-                    }
-                    // CTA on closing clip — ensure at LEAST 4s visible, start early enough
+                    // CTA on closing clip — NO room label (per-room labels removed: they
+                    // frequently mismatched the AI-generated content, adding visual noise.
+                    // Professional real estate videos don't label every room.)
                     const ctaStart = start + Math.max(dur * 0.15, 0.5);
                     const ctaDuration = Math.max(dur - 1.5, 4);
                     overlaySpecs.push({
@@ -1032,22 +1044,11 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         fadeOutSeconds: 1.0,
                     });
                 } else {
-                    // Middle clips: room label — alternate position for visual variety
-                    const roomName = c.to_room || "";
-                    if (roomName) {
-                        // Hero rooms get larger text; alternate between bottom-left style positions
-                        const roomType = roomName.toLowerCase();
-                        const isHero = roomType.includes("kitchen") || roomType.includes("primary") || roomType.includes("master") || roomType.includes("living");
-                        overlaySpecs.push({
-                            text: roomName,
-                            startSeconds: start + 0.5,
-                            durationSeconds: Math.min(dur * 0.5, 3),
-                            position: "bottom",
-                            fontSize: isHero ? "large" : "medium",
-                            fadeInSeconds: 0.5,
-                            fadeOutSeconds: 0.7,
-                        });
-                    }
+                    // Middle clips: NO per-room text labels.
+                    // Removed because: (1) labels used floorplan to_room which often
+                    // didn't match the AI-generated visual, (2) professional real estate
+                    // videos showcase rooms without labeling every one, (3) reduces visual
+                    // noise and lets the property speak for itself.
                 }
             }
             await addTextOverlays(masterPath, masterWithOverlaysPath, overlaySpecs);

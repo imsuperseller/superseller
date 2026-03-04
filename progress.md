@@ -6,6 +6,72 @@
 
 ---
 
+## 2026-03-04: TourReel Quality Fix — ALL 6 PHASES IMPLEMENTED ✅
+
+### Audit & Plan
+- **Full code audit**: Read all 7 pipeline files against 7 user-reported quality issues.
+- **Plan created**: `TOURREEL_FIX_PLAN.md` — 6 phases in dependency order.
+
+### Phase 1: Smart Transitions ✅ (stitching & transitions)
+- Created `services/transition-planner.ts` (165 lines): `buildTransitionMap()` uses floorplan `connects_to` adjacency to decide seamless vs dissolve per clip boundary.
+- Created `stitchClipsMixed()` in `ffmpeg.ts`: processes mixed transition types — seamless concat for adjacent rooms, dissolve xfade only for floor changes / non-adjacent rooms.
+- Wired into pipeline at line ~893 of `video-pipeline.worker.ts`.
+
+### Phase 2: Pool Exclusion ✅
+- Hardened Gemini classifier prompt: explicit pool exclusion instructions.
+- Added safety in `room-photo-mapper.ts`: pool photos restricted to pool/backyard/deck clips only.
+
+### Phase 3: Realtor Consistency ✅ (Root cause: prompt contradiction)
+- **Bug found**: In Nano Banana mode with `includeRealtor=true`, Gemini generated prompts using REALTOR_SYSTEM_PROMPT for ALL clips. For non-composite clips (2+), the code sent `storedPrompt` (mentioning "the person walking through") with `KLING_PROPERTY_NEGATIVE` (banning all people). This contradiction caused Kling to invent random people.
+- **Fix 1**: Kling Elements mode (`USE_KLING_ELEMENTS=1`) now limited to clip 0 only (was all clips). Added `&& clipIdx === 0` to condition.
+- **Fix 2**: Non-composite clips ALWAYS use `buildPropertyOnlyKlingPrompt(clip)` — never `storedPrompt`. Eliminates prompt/negative contradiction.
+- **Fix 3**: Strengthened `KLING_PROPERTY_NEGATIVE` in kie.ts: added silhouette, shadow of person, walking/standing/sitting person, body, torso, legs, bystander, visitor, realtor, agent.
+- **Applied to BOTH code paths**: `prepareClip()` (~line 611) AND sequential fallback (~line 819).
+
+### Phase 4: Remove Per-Room Text Labels ✅
+- Removed per-room text labels from middle clips and closing clip room label.
+- Kept: opening address+price overlay, closing CTA ("Schedule Your Tour Today").
+- Reason: labels frequently mismatched AI-generated visuals; pro RE videos don't label every room.
+
+### Phase 5: Music Style Picker ✅
+- Created `services/music-style-picker.ts` (~176 lines): `pickMusicStyle(listing)` returns `[primary, fallback]` styles.
+- Selection priority: (1) user-specified, (2) 10 keyword styles (beach→tropical, mountain→acoustic, urban→electronic, etc.), (3) 12 architectural style mappings, (4) 4 price bracket tiers ($2M+→orchestral, $1M+→piano, $500K+→cinematic, <$500K→upbeat pop), (5) deterministic-random from diverse defaults via address hash.
+- Wired into pipeline at line ~929 of `video-pipeline.worker.ts`, replacing hardcoded sunoStyles.
+
+### Phase 6: CRF 16 for Dissolve Xfade ✅
+- Changed CRF from 18 to 16 in `ffmpeg.ts` `stitchClips` function — higher quality for dissolve re-encodes.
+
+### Build Verification ✅
+- `npx tsc --noEmit` exits 0 — all changes compile cleanly.
+
+### Status
+- **All code changes complete.** Ready for deploy to RackNerd + one end-to-end test job (~$1.50) to validate.
+- **Pending**: Deploy + test requires user confirmation (credit burn + Pre-Deploy Trace Rule).
+
+---
+
+## 2026-03-03: FB Bot — Pipeline trace (bottleneck detection)
+
+- **End-to-end pipeline:** Added `PIPELINE_END_TO_END.md` and `scripts/pipeline-trace.js` so we detect bottlenecks by looking at the whole process from absolute start to finish. Pipeline steps: 1 Scheduler → 2 Cleanup → 3 Bot spawn → 4 Get job → 5/6 Replenishment → 7 Launch browser (GoLogin) → 8–10 Facebook/session/marketplace → 11 Publish → 12 Update status. The script reports scheduler lock, queue counts, replenish lock, getJob result, cookie file; then prints a bottleneck hint (e.g. "Job + cookie OK → bottleneck likely GoLogin or marketplace"). Run on server: `node scripts/pipeline-trace.js`.
+
+## 2026-03-03: FB Bot — Duplicate image/title fixes (Miss Party + UAD)
+
+- **Same image on multiple listings (Miss Party + UAD)**: Root cause: same prompt → Kie.ai returned the same image. Fixes: (1) **Prompt variation** in `product-configs.js`: UAD and Miss Party now add a random lighting/variation phrase to every image prompt (e.g. "bright morning light", "golden hour") so each generation is visually different. (2) **DB guards** in `webhook-server.js`: before INSERT we skip if `image_url` is already used for this client (queued or posted); if `listing_title` already exists in last 14 days we append " — [location]" so titles stay unique. (3) **Queue cleanup** in `scripts/cleanup-fb-queue.js`: delete queued rows that share the same `image_url` (keep one per image per client). Deployed to RackNerd; cleanup run; webhook-server and fb-scheduler restarted.
+- **Earlier (same day)**: Miss Party static fallback removed (no same static image on failure). UAD automated login not possible (no form in DOM); manual-login script and cookie save on login deployed.
+- **Manual-login script fix**: `manual-login-uad.js` had `fb = cookiesForSave.filter(...)` without `const` (introduced by sed). Fixed on server; script passes `node -c`. Verified: noVNC 200, webhook healthy, UAD cookies still 0 c_user; Miss Party 126 posted, 127/128 queued.
+- **UAD session preservation (user: do not lose session; never ask to manual login again)**: (1) **Bot** `saveCookiesToFile`: For UAD, never overwrite existing `cookies_uad.json` when it contains `c_user` with cookies that lack `c_user`; before overwriting when we do save, backup existing session to `cookies_uad.json.bak`. (2) **Manual-login script** (server): Before writing, if existing file has `c_user`, copy to `cookies_uad.json.bak`. (3) Docs updated: UAD session is one-time manual login; preserve at all costs; do not ask user to run manual login again unless session is confirmed lost.
+- **UAD manual-login: fix "ask three times" (server script)**: Script was doing one check after 10 min and often reporting "Not logged in" even when user had logged in. Fixed: (1) After navigating to /me, wait 5s before reading URL/cookies. (2) Gather cookies from **all** browser tabs (getAllFacebookCookies) so login in any tab is detected. (3) **3 retry attempts** 15s apart before giving up. One successful login should now be detected and saved so we do not ask again. Server: `/opt/fb-marketplace-bot/scripts/manual-login-uad.js`.
+
+---
+
+## 2026-03-03: Audit — Business, Project, Infrastructure, Documents
+
+- **Created**: `docs/AUDIT_2026_03.md` — Business (priority, customers, decisions), project (apps, schema, deploy), infrastructure (RackNerd, Vercel, DB, Redis, domains), documents (SSOT alignment, stale refs).
+- **Findings**: Business/docs aligned. Stale: VERCEL_PROJECT_MAP (main site still "manual"), REPO_MAP (Stripe wording). Schema sentinel: User.id String vs uuid, Drizzle role column.
+- **Updates applied**: VERCEL_PROJECT_MAP — superseller.agency now "Yes" auto-deploy via deploy-main-site.yml; runbook and Phase 3 text updated. REPO_MAP — stripe.ts, ProvisioningService, webhooks row updated to PayPal/legacy.
+
+---
+
 ## 2026-02-25 (cont.): Stripe → PayPal Migration + PayPal Webhook Setup
 
 ### What was done

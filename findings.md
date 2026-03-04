@@ -1,8 +1,84 @@
-# Findings
+---
 
-**Purpose**: Research, discoveries, constraints, root causes. Updated by agents after each meaningful task. **Use for "never repeat"**: When an issue is fixed, add the root cause here so it does not recur. (Historical lessons: `apps/worker/legacy_archive/lessons.md`.)
+## 2026-03-04: TourReel — 7 Recurring Quality Issues Deep Audit
 
-**Doc hygiene**: Don't create a new .md for every task. Update brain, CLAUDE, findings, progress, DECISIONS. Archive one-off audits after merging key points to main docs. Delete empty or obsolete .md. When searching, prefer main docs (brain, CLAUDE, findings, DECISIONS, METHODOLOGY, CONFLICT_AUDIT) — not archived residue.
+### Issue #3 (CRITICAL): stitchClipsConcat NEVER CALLED
+**Root cause**: `stitchClipsConcat` (seamless boundary-frame concat, no re-encoding) is imported at line 10 of `video-pipeline.worker.ts` but NEVER used. Line 893 always calls `stitchClips(clipFiles, masterSilentPath, "dissolve", 0.3)` — every clip boundary gets a jarring dissolve transition that also re-encodes all video, losing quality.
+**Fix**: Build a transition map from floorplan `connects_to` adjacency. Adjacent rooms = seamless concat. Floor changes / distant rooms only = dissolve. New functions: `buildTransitionMap()`, `stitchClipsMixed()`.
+**Rule**: `stitchClipsConcat` is the DEFAULT. `stitchClips` (xfade) is the EXCEPTION for floor changes and non-adjacent rooms only.
+
+### Issue #1 (HIGH): Pool appearing as opening scene
+**Root cause**: `pickBestApproachPhotoForOpening()` relies on Gemini Vision photo classification, which can misidentify pool/outdoor as `exterior_front`. HSV `detectPoolHeuristic()` fallback is unreliable.
+**Fix**: (1) Never allow `type === 'pool'` or `type === 'outdoor'` as opening. (2) Add explicit pool exclusion to classifier prompt. (3) Post-selection validation with pool heuristic. (4) Pool photos restricted to pool/backyard/deck clips only in `room-photo-mapper.ts`.
+
+### Issue #2 (HIGH): Multiple realtors / changing appearance
+**Root cause (refined during implementation)**: TWO bugs working together:
+1. **Prompt contradiction**: When `includeRealtor=true` in Nano mode, Gemini generates ALL clip prompts using REALTOR_SYSTEM_PROMPT (which says "the person walking through the property"). For non-composite clips (2+), the code sent this `storedPrompt` (mentioning the realtor walking) BUT with `KLING_PROPERTY_NEGATIVE` (which bans all people). Kling received contradictory instructions and resolved by inventing random, inconsistent people.
+2. **Elements mode over-applied**: When `USE_KLING_ELEMENTS=1`, ALL clips received `clipElements = realtorElements` and `@realtor` prompts, not just clip 0. This caused the realtor to appear in every room with changing appearance.
+**Fix**: (1) Elements mode limited to `clipIdx === 0` only. (2) Non-composite clips ALWAYS use `buildPropertyOnlyKlingPrompt(clip)` — never `storedPrompt`. Eliminates the prompt/negative contradiction. (3) `KLING_PROPERTY_NEGATIVE` strengthened with 12 additional human-banning terms. (4) Both fixes applied to BOTH code paths (prepareClip + sequential fallback).
+**Key lesson**: NEVER send a text prompt that mentions people with a negative prompt that bans people. Kling resolves this contradiction unpredictably.
+
+### Issue #4 (MED): No transition intelligence
+**Root cause**: No logic differentiates adjacent vs. distant room transitions. Everything gets same 0.3s dissolve.
+**Fix**: `buildTransitionMap()` uses floorplan `connects_to` adjacency. Solved together with Issue #3.
+
+### Issue #5 (MED): Text labels don't match rooms
+**Root cause**: Labels use `clip.to_room` from floorplan analysis, but Kling generates content that may not match the original room photo. No validation step.
+**Fix**: Remove per-room labels entirely. Professional real estate videos don't label every room. Keep only: property address + price (opening), hero feature labels when confident, CTA (closing).
+
+### Issue #6 (MED): Same music every time
+**Root cause**: Suno V5 is now primary (DB fallback removed ✅), but only 2 style options exist: `listing.music_style || "elegant modern"` and `"luxury cinematic piano ambient"`. Both sound similar.
+**Fix**: New `pickMusicStyle()` function that varies style based on property_type, price bracket, architectural_style.
+
+### Issue #7 (MED): Video quality loss in transitions
+**Root cause**: Dissolve transitions re-encode ALL clips through FFmpeg, losing quality even at CRF 18. Phase 1's switch to `stitchClipsConcat` solves most of this. Remaining: lower CRF to 16 for the few dissolve segments.
+
+### Implementation Status (2026-03-04): ALL 6 PHASES COMPLETE ✅
+All code changes implemented. TypeScript compiles cleanly (`tsc --noEmit` exits 0).
+- Phase 1 ✅: `transition-planner.ts` + `stitchClipsMixed()` — smart transitions
+- Phase 2 ✅: Pool exclusion in classifier + photo mapper
+- Phase 3 ✅: Realtor consistency — prompt contradiction fix + Elements limited to clip 0
+- Phase 4 ✅: Per-room text labels removed (kept opening address/price + closing CTA)
+- Phase 5 ✅: `music-style-picker.ts` — 10 keywords, 12 architecture, 4 price brackets
+- Phase 6 ✅: CRF 16 for dissolve xfade quality
+**Next**: Deploy to RackNerd + ONE end-to-end test job (~$1.50) to validate all fixes together.
+
+---
+
+## 2026-03-02: Rensto Favicon Residue on superseller.agency
+
+### Favicon / Apple Touch
+**Root cause**: `public/favicon.ico`, `public/apple-touch-icon.png`, and `public/favicon-*.png` (and `src/app/favicon.ico`) were still Rensto-branded assets; metadata pointed to them, so the tab showed the old favicon.
+**Fix**: (1) Removed all favicon/apple-touch files from `public/` and `src/app/`. (2) Added `rewrites()` in `next.config.mjs` so `/favicon.ico`, `/apple-touch-icon.png`, `/favicon-16x16.png`, `/favicon-32x32.png` serve `/superseller-logo.png`. (3) Layout and manifest now use SuperSeller logo for all icon/shortcut/apple references.
+**Check**: If social previews (e.g. link unfurls) still show old branding, replace `public/opengraph-image.png` with a SuperSeller-branded 1200×630 asset — the file content is not editable in code.
+
+---
+
+## 2026-03-03: Deep Re-Audit (Reality vs. Documentation)
+
+### FB Marketplace: Same image = duplicate listing (Miss Party + UAD)
+**Root cause**: Identical image prompts caused Kie.ai to return the same image for different listings; Facebook then flagged "duplicate listing" and "Needs attention." Same title also caused duplicate warnings.
+**Fix**: (1) Add random prompt variation per listing (lighting/scene phrase) so each image is unique. (2) Before insert: skip if `image_url` already used for client; if `listing_title` exists in 14 days, append " — [location]". (3) Cleanup script: remove queued rows that share the same `image_url` (keep one per image). See product-configs.js (UAD_PROMPT_VARIATIONS, MISSPARTY_PROMPT_VARIATIONS), webhook-server.js (dupImage/dupTitle checks), scripts/cleanup-fb-queue.js.
+
+### FB Marketplace UAD: Login form not in DOM on server
+**Root cause**: On RackNerd, loading facebook.com/login results in a page with 0 `<input>` and 0 `<button>` elements when queried. Automated credential login cannot proceed without that form.
+**Workaround**: One-time manual login via noVNC; `node scripts/manual-login-uad.js` then log in at http://172.245.56.50:6080/vnc.html; script saves cookies.
+**Session preservation (mandatory)**: UAD session is obtained once via manual login; do not lose it and do not ask the user to do manual login again unless the session is confirmed lost. Bot must never overwrite `cookies_uad.json` when it already has `c_user` with cookies that lack `c_user`. Always backup existing session to `cookies_uad.json.bak` before any overwrite. See facebook-bot-final.js `saveCookiesToFile` and scripts/manual-login-uad.js.
+**Detection fix (no "ask three times")**: Manual-login script must reliably detect when the user has logged in. Server script updated: wait 5s after goto(/me) before reading cookies; gather cookies from all browser tabs; retry up to 3 times (15s apart) before reporting "Not logged in". So one login is enough.
+
+### Forge 0% Success Rate Uncovered
+**Root Cause**: Hardcoded Kie.ai endpoint paths in `apps/worker/src/services/gemini.ts` used `https://api.kie.ai/api`, which resulted in double `/api` prefixes or 404s for the Gemini proxy. Additionally, missing Google Gemini API keys caused silent failures in the vision analysis phase.
+**Fix**: Remove `/api` from base URL and configure valid Gemini keys.
+**Rule**: External API base URLs must be verified against the provider's exact proxy structure (Kie.ai uses different prefixes for Kling vs Gemini).
+
+### TourReel Quality Regressions
+**Root Cause**: Video resolution normalization was defaulting to input resolution instead of forcing 1920x1080, leading to near-square outputs. Text overlay timing drifted because it relied on requested duration rather than actual measured file duration from the Kie.ai output.
+**Fix**: Use `ffprobe` to measure actual clip duration before calculating overlay timestamps.
+**Rule**: Never trust requested AI duration; always measure the physical file before assembly.
+
+### Header Regression: Hidden Blog Link
+**Root Cause**: The "Blog" link in `src/components/Header.tsx` was hardcoded out of the `navigation` array, effectively disabling a core SEO and content feature while the pages remained live.
+**Fix**: Restored `{ name: t('blog'), href: '/blog' as const }` to the navigation array.
 
 ---
 
@@ -803,6 +879,9 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 **Current status (Feb 22):**
 - ✅ UAD workflow (U6EZ2iLQ4zCGg31H): Active, 5 triggers, Schedule firing every 15 min
 - ✅ MissParty workflow (9gfvZo9sB4b3pMWQ): Active, 5 triggers, Schedule firing every 15 min
+
+**Telnyx assistants deep audit (2026-03-03):** Fetched both assistants via Telnyx API (UAD/MissParty account). UAD: model Qwen3-235B-A22B, voice Telnyx.NaturalHD.Esther, STT deepgram/nova-2, noise krisp, telephony+messaging on, 30 min limit — all as expected. Miss Party: same model, voice Telnyx.NaturalHD.astra, STT deepgram/flux, noise deepfilternet, deliveryCalculator webhook — all as expected. **Webhook URLs**: All point to **n8n.rensto.com** (UAD dynamic_variables, Miss Party dynamic_variables, Miss Party deliveryCalculator). Earlier fix had set UAD to n8n.superseller.agency; current config uses rensto. Confirm which n8n host should receive Telnyx callbacks. Lead analysis workflows (polling) run on n8n.superseller.agency.
+**Telnyx all on n8n.superseller.agency (2026-03-03):** Per user request, all Telnyx webhooks moved to n8n.superseller.agency. (1) UAD dynamic_variables_webhook_url → https://n8n.superseller.agency/webhook/telnyx-call. (2) Miss Party dynamic_variables_webhook_url → https://n8n.superseller.agency/webhook/2b9f3fbf-2b43-49b5-9e6d-367af0c436ab. (3) Miss Party deliveryCalculator: **routed through existing registered path** 2b9f3fbf-2b43-49b5-9e6d-367af0c436ab (Receive WAV Files1 in workflow 9gfvZo9sB4b3pMWQ). Added IF node "Is Delivery Request" (condition: $json.target_address notEmpty) and "Delivery Stub" Code + "Respond Delivery" nodes; true branch → Delivery Stub → Respond to Webhook; false branch → existing Workflow Configuration1. Webhook set to responseMode responseNode → Respond Delivery. **Telnyx tool URL** → https://n8n.superseller.agency/webhook/2b9f3fbf-2b43-49b5-9e6d-367af0c436ab. **Tests run**: UAD telnyx-call → 200. Delivery (POST with target_address to 2b9f3fbf...) → 200. All three endpoints on superseller; delivery response body may be empty (Respond node); stub returns 10 miles/$10 — replace with real distance logic if needed.
 - ✅ Email notifications: Working — shai@superseller.agency receiving lead emails
 - ✅ 3 historical UAD conversations found (1 real lead from +14695885133 on Jan 20, 2 test calls from Jan 2)
 - ✅ Workiz CRM: FIXED — `auth_secret` must go INSIDE the JSON body (not URL, not headers). PascalCase field names (`FirstName`, `LastName`, `Phone`, `Email`, `Address`, `JobType`, `JobSource`). Discovery: Pipedream SDK source code revealed the pattern. 401 was caused by missing `auth_secret` in body + Workiz server rejects `Content-Type: application/json` without it.
@@ -1172,7 +1251,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Service registry pattern**: Each monitored service has id, name, category, healthCheck function, and alertThreshold. Categories: infrastructure (PostgreSQL, Worker, Vercel, Ollama), api (Kie.ai, Gemini, Resend, Stripe), database (Prisma migrations), backup (n8n). n8n is intentionally in "backup" category with highest failure tolerance.
 - **Health checker runs concurrent checks**: All services checked in parallel via `Promise.allSettled`. Results persisted to `service_health` table. Uptime calculated from historical checks.
 - **Alert engine with cooldown**: Prevents alert storm. Each rule has `cooldownMinutes` (default 30). `lastFiredAt` tracked per rule. Auto-resolve fires when service recovers.
-- **Expense tracker uses known rates**: Kling Pro $0.10/clip, Kling Std $0.03/clip, Suno $0.02/music, Gemini Flash $0.001/prompt. Anomaly = daily spend > 2x rolling 7-day average.
+- **Expense tracker uses known rates**: Kling Pro $0.10/clip, Kling Std $0.03/clip, Suno $0.06/music (12 credits), Nano Banana $0.09/composite (4K), Recraft $0.0025/img, Gemini Flash $0.001/prompt. Anomaly = daily spend > 2x rolling 7-day average.
 - **DB tables created via raw SQL** (not `prisma db push`): Pre-existing schema drift (UUID type mismatches on existing tables) prevents `db push`. New monitoring tables created safely via direct SQL.
 - **Admin role check pattern**: Use `session.role !== 'admin'` (lowercase) not `'ADMIN'` (uppercase). The verifySession() returns lowercase role strings.
 
