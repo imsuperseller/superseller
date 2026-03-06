@@ -27,7 +27,7 @@ This document provides a comprehensive side-by-side analysis of the two Facebook
 
 | Field | UAD Logic | Miss Party Logic |
 | :--- | :--- | :--- |
-| **Pricing** | Dynamic (based on dimensions/model) | Fixed ($75 flat rate) |
+| **Pricing** | Dynamic (based on dimensions/model) | Fixed ($49.99 flat rate) |
 | **Media Handling** | Static master video (`video.mp4`) | Dynamic Kie.ai video URLs |
 | **Image Count** | Up to 10 (from n8n logic) | 3 distinct prompts per listing |
 | **Copywriting** | Professional/Technical (Claude 4.5) | Festive/Parent-focused (Claude 4.5) |

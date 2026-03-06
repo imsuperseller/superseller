@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lenis smooth scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 /* Critical: prevent white flash before full hydration (video/create, all dark pages) */
 html,
 body {

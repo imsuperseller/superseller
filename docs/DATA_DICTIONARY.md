@@ -16,7 +16,7 @@
 | **Cloudflare R2** | Media storage | Videos, clips, frames, thumbnails, generated images | Metadata (stored in Postgres with R2 URLs) |
 | **Firebase Storage** | Legacy (storage only) | Onboarding certificates (deprecated — migrate to R2) | Everything else (Firestore fully removed Feb 2026) |
 | **Ollama** | Stateless compute | Nothing persistent — embedding requests only | Data (vectors stored in Postgres pgvector) |
-| **NotebookLM** | Reference docs | Specs, methodology, pipeline docs, B.L.A.S.T. | Runtime data, configs, credentials |
+| **NotebookLM** | Reference docs | Specs, methodology, pipeline docs, BLAST | Runtime data, configs, credentials |
 | **n8n** | Backup automation | Webhook receivers, reference workflows | Primary automation (use Antigravity) |
 | **PayPal** | Billing SSOT | Subscriptions, payments, invoices, refunds | Customer profiles (mirrored to Postgres). Note: DB columns keep `stripe*` names but store PayPal IDs (intentional — avoids migration risk). |
 

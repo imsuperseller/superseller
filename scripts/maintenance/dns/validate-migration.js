@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CLOUDFLARE_API_TOKEN = 'UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1';
+const CLOUDFLARE_API_TOKEN = '${CLOUDFLARE_API_TOKEN}';
 const DOMAIN = 'superseller.agency';
 const API_BASE = 'https://api.cloudflare.com/client/v4';
 const BACKUP_FILE = path.join(__dirname, '../../data/dns/cloudflare-backup.json');

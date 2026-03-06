@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Outfit } from 'next/font/google';
 import './globals.css';
+import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 
 const outfit = Outfit({
   subsets: ['latin', 'latin-ext'],
@@ -19,11 +20,12 @@ export const metadata: Metadata = {
   publisher: 'SuperSeller AI',
   icons: {
     icon: [
+      { url: '/superseller-logo.png', sizes: 'any' },
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/superseller-logo.png',
     apple: '/superseller-logo.png',
   },
   formatDetection: {
@@ -93,7 +95,9 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning className={`${outfit.variable} dark`} style={{ backgroundColor: '#0d1b2e' }}>
       <body className={outfit.className} suppressHydrationWarning style={{ fontFamily: 'var(--font-outfit), sans-serif', backgroundColor: '#0d1b2e' }}>
-        {children}
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );

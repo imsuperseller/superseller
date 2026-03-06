@@ -23,7 +23,7 @@ process.env.MCP_MODE = 'stdio';
 process.env.LOG_LEVEL = 'error';
 process.env.DISABLE_CONSOLE_OUTPUT = 'true';
 process.env.N8N_API_URL = 'http://172.245.56.50:5678';
-process.env.N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjRhMzI1MS0yNmY2LTQ2MTctYmNmOS1lMDdmM2NhOTY4YTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTE2NzEwfQ.JbIeOnRil3E3_P44LjAWhiY9KRcAHkuuVhJghABz3aQ';
+process.env.N8N_API_KEY = '${N8N_API_KEY}';
 process.env.N8N_INSTANCE_ID = 'superseller-selfhosted';
 process.env.ENABLE_ALL_TOOLS = 'true';
 

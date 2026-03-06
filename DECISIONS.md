@@ -42,7 +42,7 @@
 |----------|--------|
 | **Infra folders** | User asked: shouldn't these be in NotebookLM, not codebase? |
 
-**Clarification**: Per CODEBASE_VS_NOTEBOOKLM:
+**Clarification**:
 - **Codebase** = Paths, env, routers, deploy runbooks — what builds and runs.
 - **NotebookLM** = Specs, methodology, research, reference content.
 
@@ -211,7 +211,7 @@
 7. Skills — if capabilities changed
 8. brain.md / CLAUDE.md — if architecture changed
 
-**Trigger map**: Code change → progress + notebook + status. Bug fix → progress + findings + notebook. User decision → DECISIONS + notebook. Brainstorm/insight → findings + notebook + memory. Pricing → PRODUCT_BIBLE + skills + B.L.A.S.T. notebook.
+**Trigger map**: Code change → progress + notebook + status. Bug fix → progress + findings + notebook. User decision → DECISIONS + notebook. Brainstorm/insight → findings + notebook + memory. Pricing → PRODUCT_BIBLE + skills + BLAST notebook.
 
 **Non-negotiable**: This runs EVERY session. Not "when I remember." EVERY time.
 
@@ -223,7 +223,7 @@
 |----------|--------|
 | **Mandate** | "Every time you come up with a different pricing model when we work on something instead of knowing there is a center" |
 | **Canonical Pricing** | Starter $79/mo (5 videos, 500 credits), Pro $149/mo (15 videos, 1500 credits), Team $299/mo (50 videos, 4000 credits), Pay-per-video $29-39 |
-| **Source** | B.L.A.S.T. notebook (1dc7ce26) |
+| **Source** | BLAST notebook (1dc7ce26) |
 | **Fixed in** | 20 files across codebase (Feb 24, 2026) — replaced all $299/$699/$1499 references |
 
 ---

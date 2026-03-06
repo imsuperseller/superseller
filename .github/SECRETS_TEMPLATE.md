@@ -9,10 +9,12 @@ NEXTAUTH_SECRET=generate-with-openssl-rand-base64-32
 CREDENTIAL_ENCRYPTION_KEY=generate-with-openssl-rand-hex-64
 
 # ============================================
-# 💳 PAYMENTS (Stripe)
+# 💳 PAYMENTS (PayPal — migrated from Stripe Feb 2026)
 # ============================================
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+PAYPAL_CLIENT_ID=your-paypal-client-id
+PAYPAL_CLIENT_SECRET=your-paypal-client-secret
+PAYPAL_WEBHOOK_ID=your-paypal-webhook-id
+# Note: DB columns retain `stripe*` names but store PayPal IDs (intentional)
 
 # ============================================
 # 🗄️ DATABASE & CACHE

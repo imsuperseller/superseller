@@ -8,7 +8,7 @@ This project manages the entire documentation layer of SuperSeller AI. It mainta
 
 ### Tier 1 — North Star
 - `brain.md` — Mission, agent protocol, authority precedence table
-- `METHODOLOGY.md` — B.L.A.S.T. framework
+- `METHODOLOGY.md` — BLAST framework
 
 ### Tier 2 — Technical Reference
 - `CLAUDE.md` — Technical router (architecture, stack, commands)
@@ -39,11 +39,11 @@ This project manages the entire documentation layer of SuperSeller AI. It mainta
 1. After code changes to a product, update the corresponding notebook
 2. If notebook is at 50/50 sources, ask user before deleting to make room
 3. Never leave "pending upload" items — push in same session
-4. On conversation start, query B.L.A.S.T. notebook for agent behavior rules
+4. On conversation start, query BLAST notebook for agent behavior rules
 
 ### 30 Notebooks (as of Mar 2, 2026)
 - 5 newly tracked in brain.md (Remotion, Kedem, Workiz, AG/Stitch/Claude, Bounce House)
-- B.L.A.S.T. (5811a372) needs recreation
+- BLAST (5811a372) needs recreation
 - 4 pending merges identified
 - 5 with Rensto residue (varying severity)
 

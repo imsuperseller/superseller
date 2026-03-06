@@ -135,7 +135,7 @@ npm audit --audit-level=high
 | Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
 | Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
 | Kie.ai | Suno music | $0.06 | Per track |
-| Kie.ai | Nano Banana composite | $0.09 | Realtor + photo |
+| Kie.ai | Nano Banana composite | $0.02 | Realtor + photo (4 credits × $0.005) |
 | Kie.ai | ElevenLabs TTS | $0.02 | Per generation |
 | FakeYou | TTS (any model) | $0.00 | Free |
 | Gemini | Flash prompt | $0.001 | Per call |
@@ -197,7 +197,7 @@ Legacy reference. Old base IDs archived: Operations app6saCaH88uK3kCO, Core app4
 
 ### Aitable.ai (Dashboards)
 - **Space**: `spc63cnXLdMYc` (migrated from spc4tjiuDMjfY)
-- **API Token**: `uskBpO7SVJC8RMDSSOSs7tM`
+- **API Token**: `${AITABLE_TOKEN}`
 - **Role**: Read-only dashboards mirroring PostgreSQL data. Never write back.
 - **Datasheets**: See `docs/DATA_DICTIONARY.md` §Aitable.ai Datasheets for full ID list.
 

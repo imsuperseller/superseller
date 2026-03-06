@@ -37,6 +37,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
+  // Serve SuperSeller logo for all favicon/apple-touch requests (no Rensto residue)
+  async rewrites() {
+    return [
+      { source: '/favicon.ico', destination: '/superseller-logo.png' },
+      { source: '/apple-touch-icon.png', destination: '/superseller-logo.png' },
+      { source: '/favicon-16x16.png', destination: '/superseller-logo.png' },
+      { source: '/favicon-32x32.png', destination: '/superseller-logo.png' },
+    ];
+  },
+
   // Legacy route redirects
   async redirects() {
     return [
@@ -228,6 +238,7 @@ const nextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         'gsap': false,
+        'lenis': false,
         '@stripe/stripe-js': false,
       };
     } else {

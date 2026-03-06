@@ -9,9 +9,9 @@
 | System | Access Level | Who |
 | :--- | :--- | :--- |
 | PostgreSQL + Redis | Admin | Founder, Developer (primary) |
-| Firestore | Admin | Founder, Developer (legacy; migration in progress) |
+| Firestore | Admin | Founder, Developer (legacy; migration complete Feb 2026, exception: FB Bot posting schedule) |
 | n8n | Admin | Founder, Developer (backup; Antigravity primary) |
-| Stripe | Full | Founder |
+| PayPal | Full | Founder |
 | Vercel | Deploy | Founder, Developer |
 | VPS (SSH) | Root | Founder, Developer |
 
@@ -28,8 +28,8 @@
 
 ## Data Protection
 
-- **PostgreSQL**: Row-level security; app backends and marketplace. **Firestore**: Legacy; migration in progress.
-- **Stripe**: PCI compliance handled by Stripe.
+- **PostgreSQL**: Row-level security; app backends and marketplace. **Firestore**: Legacy; migration complete (Feb 2026), exception: FB Bot posting schedule.
+- **PayPal**: PCI compliance handled by PayPal. DB columns retain `stripe*` names but store PayPal IDs (intentional, migrated Feb 2026).
 - **GDPR**: User data deleted on request.
 
 ---

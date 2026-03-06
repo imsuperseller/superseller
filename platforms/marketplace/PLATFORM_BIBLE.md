@@ -3,12 +3,12 @@
 > For overall authority precedence, see [`brain.md`](../../brain.md).
 
 > [!NOTE]
-> **STATUS UPDATE (Feb 20, 2026)**: The marketplace bot is LIVE and posting for both customers. The system now runs on **PostgreSQL** (not Firestore) with a local webhook-server on port 8082. The canonical production code lives at `fb marketplace lister/deploy-package/` and deploys to `/opt/fb-marketplace-bot/` on RackNerd (172.245.56.50).
+> **STATUS UPDATE (Feb 20, 2026)**: The marketplace bot is LIVE and posting for both customers. The system now runs on **PostgreSQL** (not Firestore) with a local webhook-server on port 8082. The canonical production code lives at `fb-marketplace-lister/deploy-package/` and deploys to `/opt/fb-marketplace-bot/` on RackNerd (172.245.56.50).
 
 ## Architecture
 
 ```
-fb marketplace lister/deploy-package/   ← Canonical source code
+fb-marketplace-lister/deploy-package/   ← Canonical source code
 ├── facebook-bot-final.js               ← Main GoLogin + Puppeteer posting bot
 ├── webhook-server.js                   ← Job server (port 8082) + AI content + overlay + image pool
 ├── content-generator.js                ← AI listing copy via Kie.ai Gemini 2.5 Flash
@@ -29,6 +29,9 @@ fb marketplace lister/deploy-package/   ← Canonical source code
 **Database**: PostgreSQL `fb_listings` table in `app_db`
 **Image server**: nginx port 8080 serving static + variations + dynamic overlay images
 **AI API**: Kie.ai (`KIE_API_KEY`) — Gemini 2.5 Flash for copy, Seedream 4.5 Edit for image variations
+
+### UAD session (cookies_uad.json)
+UAD cannot use automated Facebook login on the server (login form not in DOM). Session is obtained **once** via manual login: run `node scripts/manual-login-uad.js`, then log in at noVNC (http://172.245.56.50:6080/vnc.html) within the 10-minute wait. **Do not lose this session and do not ask the user to run manual login again** unless the session is confirmed lost. The bot never overwrites `cookies_uad.json` when it already contains `c_user` with cookies that lack `c_user`. Before any overwrite, existing session is backed up to `cookies_uad.json.bak`.
 
 ## Clients
 
@@ -64,9 +67,9 @@ Each posting gets a different DFW city from the configured array. Bot converts `
 
 ## Legacy Reference
 
-The `platforms/marketplace/` directory contains legacy architecture docs, n8n workflow exports, and old `saas-engine/` code that predates the current system. The canonical production code is in `fb marketplace lister/deploy-package/`. The `saas-engine/` and `scripts/seed-configs.ts` reference Firestore which is fully retired.
+The `platforms/marketplace/` directory contains legacy architecture docs, n8n workflow exports, and old `saas-engine/` code that predates the current system. The canonical production code is in `fb-marketplace-lister/deploy-package/`. The `saas-engine/` and `scripts/seed-configs.ts` reference Firestore which is fully retired.
 
-### n8n Workflows (reference only — not primary automation)
+### n8n Workflows (legacy reference only — Antigravity is primary)
 - `master-orchestrator.json` — Legacy central hub
 - `full-complex-marketplace.json` — Legacy FB Lister logic
 - `lead-analysis-supervisor.json` — Lead routing (workflows are active in n8n but DORMANT — 0 executions)
@@ -76,7 +79,7 @@ The `platforms/marketplace/` directory contains legacy architecture docs, n8n wo
 
 ```bash
 # Sync code to server
-rsync -avz --exclude node_modules "fb marketplace lister/deploy-package/" root@172.245.56.50:/opt/fb-marketplace-bot/
+rsync -avz --exclude node_modules "fb-marketplace-lister/deploy-package/" root@172.245.56.50:/opt/fb-marketplace-bot/
 
 # Restart PM2 services
 ssh root@172.245.56.50 "cd /opt/fb-marketplace-bot && pm2 restart webhook-server fb-scheduler image-pool cookie-monitor"
@@ -86,4 +89,4 @@ curl -s http://172.245.56.50:8082/health
 ```
 
 ---
-*Updated: 2026-02-20. Canonical config: `fb marketplace lister/deploy-package/bot-config.json`.*
+*Updated: 2026-03-03. Canonical config: `fb-marketplace-lister/deploy-package/bot-config.json`. UAD session preservation: progress.md, findings.md.*

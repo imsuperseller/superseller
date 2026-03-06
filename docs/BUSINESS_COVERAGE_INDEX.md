@@ -15,8 +15,6 @@ For the full interactive version with automation details, see the [Antigravity A
 | 📋 | **Aitable.ai** | Human-editable; AI-summary syncs; business tracking |
 | 📚 | **NotebookLM** | Deep-context specs, methodology, creative briefs |
 | 💻 | **Codebase** | Config, schemas, CI/CD, agent skills |
-| 🆕 | **Missing** | Gap — needs to be created |
-
 ---
 
 ## I. Infrastructure & Deployments
@@ -33,7 +31,7 @@ For the full interactive version with automation details, see the [Antigravity A
 | Structure (repo map, folder layout) | 💻 | Brain Docs |
 | Stack (tech decisions, versions) | 💻📚 | Brain Docs |
 | Ports, health endpoints | 💻🐘 | System Monitor |
-| Error budgets / SLOs | 🆕 | System Monitor |
+| Error budgets / SLOs | 💻 | System Monitor |
 
 ---
 
@@ -58,14 +56,14 @@ For the full interactive version with automation details, see the [Antigravity A
 | Item | SoT | Admin Tab |
 |:---|:---:|:---|
 | Prompts (system, user, CoT) | 💻📚 | AI Agents |
-| LLM models in use (versions, configs) | 💻📋🆕 | AI Agents |
+| LLM models in use (versions, configs) | 💻📋 | AI Agents |
 | Internal agents (Terry, SEO, Pipeline) | 💻📚 | AI Agents |
 | Pipelines (video, lead, content) | 💻📚🐘 | Workflows |
 | Skills (agent capabilities) | 💻 | AI Agents |
 | MCP tools (available functions) | 💻📚 | AI Agents |
-| AI usage logs (tokens, cost, latency) | 🐘🆕 | Treasury |
+| AI usage logs (tokens, cost, latency) | 🐘💻 | Treasury |
 | RAG / embeddings (pgvector) | 🐘💻 | AI Agents |
-| Model cost tracking | 🐘📋🆕 | Treasury |
+| Model cost tracking | 🐘📋💻 | Treasury |
 
 ---
 
@@ -73,13 +71,13 @@ For the full interactive version with automation details, see the [Antigravity A
 
 | Item | SoT | Admin Tab |
 |:---|:---:|:---|
-| Expenses | 📋🐘🆕 | Treasury |
+| Expenses | 📋🐘💻 | Treasury |
 | Profits / Revenue | 🐘📋 | Treasury |
 | Invoices | 🐘📋 | Treasury |
-| Summaries (monthly, quarterly) | 📋🆕 | Treasury |
+| Summaries (monthly, quarterly) | 📋💻 | Treasury |
 | Parameters (pricing tiers, limits) | 💻🐘 | Product Factory |
-| Reports (financial, performance) | 📋🆕 | Analytics |
-| LTV / Customer value predictions | 🆕 | Analytics |
+| Reports (financial, performance) | 📋💻 | Analytics |
+| LTV / Customer value predictions | 🐘💻 | Analytics |
 | PayPal product/plan catalog | 🐘💻 | Product Factory |
 
 ---
@@ -93,7 +91,7 @@ For the full interactive version with automation details, see the [Antigravity A
 | Messages (WhatsApp, email, chat) | 🐘 | Client CRM |
 | Customer assets (videos, leads) | 🐘 | Client CRM |
 | Onboarding requests | 🐘 | Client CRM |
-| Insights (behavior, churn risk) | 🐘📋🆕 | Analytics |
+| Insights (behavior, churn risk) | 🐘📋💻 | Analytics |
 | Support / Issues | 🐘 | Support Queue |
 | Consultations | 🐘 | Client CRM |
 | Voice call logs | 🐘 | Client CRM |
@@ -120,11 +118,11 @@ For the full interactive version with automation details, see the [Antigravity A
 
 | Item | SoT | Admin Tab |
 |:---|:---:|:---|
-| Legal (ToS, Privacy, contracts) | 📚📋🆕 | Vault & Infra |
+| Legal (ToS, Privacy, contracts) | 📚📋💻 | Vault & Infra |
 | Rules & instructions (agent rules) | 💻📚 | Brain Docs |
 | Security policies | 💻 | Vault & Infra |
-| Credential rotation schedule | 📋🆕 | Vault & Infra |
-| Compliance checklist | 🆕📋 | Vault & Infra |
+| Credential rotation schedule | 📋💻 | Vault & Infra |
+| Compliance checklist | 💻📋 | Vault & Infra |
 
 ---
 
@@ -133,13 +131,13 @@ For the full interactive version with automation details, see the [Antigravity A
 | Item | SoT | Admin Tab |
 |:---|:---:|:---|
 | Statuses (workflow, service, customer) | 🐘 | System Monitor |
-| Alerts (workflow errors, SLA breach) | 🐘📋🆕 | System Monitor |
-| Notifications (customer-facing) | 🐘🆕 | Support Queue |
-| Updates (changelog, release notes) | 📋💻🆕 | Launch Control |
+| Alerts (workflow errors, SLA breach) | 🐘📋💻 | System Monitor |
+| Notifications (customer-facing) | 🐘💻 | Support Queue |
+| Updates (changelog, release notes) | 📋💻 | Launch Control |
 | Projects | 📋🐘 | Projects |
 | Tasks | 📋🐘 | Projects |
-| Research (market, technical) | 📚📋🆕 | Brain Docs |
-| Insights (business, product) | 📋🆕 | Analytics |
+| Research (market, technical) | 📚📋 | Brain Docs |
+| Insights (business, product) | 📋💻 | Analytics |
 
 ---
 

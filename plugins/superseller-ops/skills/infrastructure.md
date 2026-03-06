@@ -41,7 +41,7 @@ ssh root@172.245.56.50 'pm2 restart all'
 | `n8n_superseller` | n8n | 5678 | Automation (backup) |
 | `browserless_superseller` | browserless/chrome | 3000 | Headless browser for scraping |
 | `ollama` | ollama/ollama | 11434 | Local LLM (nomic-embed-text) |
-| `waha` | devlikeapro/waha-plus | 3004 | WhatsApp API |
+| `waha` | devlikeapro/waha-plus | 3000 | WhatsApp API |
 
 ### Docker Commands
 ```bash
@@ -77,7 +77,7 @@ ssh root@172.245.56.50 'docker logs postgres_db --tail 20'
 | Redis | — | 6379 | Docker on RackNerd |
 | n8n | — | 5678 | Docker on RackNerd |
 | Browserless | — | 3000 | Docker on RackNerd |
-| WAHA | — | 3004 | Docker on RackNerd |
+| WAHA | — | 3000 | Docker on RackNerd |
 | FB Bot | — | 8082 | PM2 on RackNerd |
 
 ## Key Environment Variables

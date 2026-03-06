@@ -128,3 +128,105 @@ export async function isSessionAlive(): Promise<boolean> {
 export function isWahaConfigured(): boolean {
     return !!(config.waha.url && config.waha.apiKey);
 }
+
+// --- Group Management ---
+
+export interface CreateGroupOptions {
+    name: string;
+    participants: string[]; // phone numbers or chatIds
+    target?: WahaTarget;
+}
+
+/** Create a WhatsApp group and return its groupId (xxx@g.us) */
+export async function createGroup(options: CreateGroupOptions): Promise<string | null> {
+    const baseUrl = options.target?.url || config.waha.url;
+    const session = options.target?.session || config.waha.session;
+
+    // WAHA Pro API: POST /api/{session}/groups
+    // participants must be [{id: "xxx@c.us"}]
+    const participants = options.participants.map((p) => ({
+        id: p.includes("@") ? p : phoneToChatId(p),
+    }));
+
+    try {
+        const res = await fetch(`${baseUrl}/api/${session}/groups`, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({
+                name: options.name,
+                participants,
+            }),
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            logger.error({ msg: "WAHA createGroup failed", status: res.status, body: text });
+            return null;
+        }
+        const data = await res.json();
+        const groupId = data.id || data.gid?._serialized || data.groupId;
+        logger.info({ msg: "WhatsApp group created", groupId, name: options.name });
+        return groupId;
+    } catch (err: any) {
+        logger.error({ msg: "WAHA createGroup error", error: err.message });
+        return null;
+    }
+}
+
+/** Set group profile picture from a URL (WAHA Plus feature) */
+export async function setGroupIcon(groupId: string, imageUrl: string, target?: WahaTarget): Promise<boolean> {
+    const baseUrl = target?.url || config.waha.url;
+    const session = target?.session || config.waha.session;
+    // WAHA Pro API: PUT /api/{session}/groups/{id}/picture
+    try {
+        const res = await fetch(`${baseUrl}/api/${session}/groups/${groupId}/picture`, {
+            method: "PUT",
+            headers: getHeaders(),
+            body: JSON.stringify({
+                file: { url: imageUrl },
+            }),
+        });
+        return res.ok;
+    } catch (err: any) {
+        logger.error({ msg: "WAHA setGroupIcon error", error: err.message });
+        return false;
+    }
+}
+
+/** Set group description */
+export async function setGroupDescription(groupId: string, description: string, target?: WahaTarget): Promise<boolean> {
+    const baseUrl = target?.url || config.waha.url;
+    const session = target?.session || config.waha.session;
+    // WAHA Pro API: PUT /api/{session}/groups/{groupId}/description
+    try {
+        const res = await fetch(`${baseUrl}/api/${session}/groups/${groupId}/description`, {
+            method: "PUT",
+            headers: getHeaders(),
+            body: JSON.stringify({ description }),
+        });
+        return res.ok;
+    } catch (err: any) {
+        logger.error({ msg: "WAHA setGroupDescription error", error: err.message });
+        return false;
+    }
+}
+
+/** Add participant to group */
+export async function addGroupParticipant(groupId: string, phone: string, target?: WahaTarget): Promise<boolean> {
+    const baseUrl = target?.url || config.waha.url;
+    const session = target?.session || config.waha.session;
+    const chatId = phone.includes("@") ? phone : phoneToChatId(phone);
+    // WAHA Pro API: POST /api/{session}/groups/{groupId}/participants/add
+    try {
+        const res = await fetch(`${baseUrl}/api/${session}/groups/${groupId}/participants/add`, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({
+                participants: [{ id: chatId }],
+            }),
+        });
+        return res.ok;
+    } catch (err: any) {
+        logger.error({ msg: "WAHA addGroupParticipant error", error: err.message });
+        return false;
+    }
+}

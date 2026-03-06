@@ -28,12 +28,13 @@ negativeTrigger:
   - "admin portal"
 ---
 
-# SocialHub (Phase 2 — Spec Complete, Code Not Started)
+# SocialHub (Phase 1 LIVE — Phase 2 Spec Complete)
 
 ## Critical
-- **Spec exists, code does NOT** — 7 spec docs, 23 DB tables defined, 45+ API endpoints planned.
+- **Phase 1 LIVE**: Text+image AI content creation → WhatsApp approval workflow → Facebook publishing pipeline working.
+- **Phase 2 spec exists, code NOT started** — 7 spec docs, 23 DB tables defined, 45+ API endpoints planned.
 - **Phase 2 priority** — Build AFTER existing products (Winner Studio, TourReel, FB Bot) are validated.
-- **Architecture**: A.N.T. 3-layer (SOPs → Navigation → Tools). Self-contained app at `apps/socialhub/`.
+- **Architecture**: A.N.T. 3-layer (SOPs → Navigation → Tools). Planned as self-contained app at `apps/socialhub/` (not yet created).
 - **Auth**: Reuse existing (WhatsApp OTP + magic-link), NOT Clerk. Decision made.
 - **Database**: New tables in existing PostgreSQL (not a separate DB).
 - **Worker**: BullMQ on RackNerd (alongside tourreel-worker).
@@ -157,7 +158,7 @@ apps/socialhub/           (Next.js app, like apps/studio/)
 
 ## Implementation Order (When Started)
 
-1. Scaffold `apps/socialhub/` (Next.js)
+1. Scaffold `apps/socialhub/` (Next.js) — not yet created
 2. Migrate DB schema from spec to Prisma
 3. Build content creation pipeline first
 4. Add single-platform publishing (Facebook)

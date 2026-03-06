@@ -6,40 +6,9 @@
  * Memory: last N turns stored in PostgreSQL, injected as context.
  */
 
-import { readFileSync, readdirSync } from "fs";
-import { join } from "path";
 import { config } from "../config";
 import { query, queryOne } from "../db/client";
 import { logger } from "../utils/logger";
-
-// ─── Knowledge Base Loader ────────────────────────────────────
-
-let _knowledgeCache: string | null = null;
-
-function loadKnowledgeBase(): string {
-    if (_knowledgeCache) return _knowledgeCache;
-
-    const kbDir = join(config.claudeclaw.projectDir, "knowledge");
-    try {
-        const files = readdirSync(kbDir).filter((f) => f.endsWith(".md")).sort();
-        const sections = files.map((f) => {
-            const content = readFileSync(join(kbDir, f), "utf-8");
-            return content;
-        });
-        _knowledgeCache = sections.join("\n\n---\n\n");
-        logger.info({ msg: "Knowledge base loaded", files: files.length, chars: _knowledgeCache.length });
-        return _knowledgeCache;
-    } catch {
-        logger.warn({ msg: "No knowledge base found at " + kbDir });
-        return "";
-    }
-}
-
-/** Call to reload knowledge after editing files on disk */
-export function reloadKnowledge(): void {
-    _knowledgeCache = null;
-    loadKnowledgeBase();
-}
 
 // ─── Database Init ────────────────────────────────────────────
 
@@ -151,20 +120,16 @@ export async function runAgent(
         return { text: "ClaudeClaw is not configured on this server. Install @anthropic-ai/claude-agent-sdk." };
     }
 
-    // Build context from recent turns with channel mode tag and knowledge
-    const modeTag = mode === "business" ? "[BUSINESS]" : "[PERSONAL]";
-    const knowledge = loadKnowledgeBase();
+    // Build context using RAG-based enrichment (ClaudeClaw 2.0)
+    const { buildEnhancedPrompt } = await import("./claudeclaw-router");
     const memoryContext = await getRecentTurns(chatId);
 
-    const parts: string[] = [modeTag];
-    if (knowledge) {
-        parts.push(`[Knowledge Base]\n${knowledge}`);
-    }
-    if (memoryContext) {
-        parts.push(`[Recent conversation context]\n${memoryContext}`);
-    }
-    parts.push(`[Current message]\n${message}`);
-    const fullMessage = parts.join("\n\n");
+    const { enrichedMessage, systemPrompt } = await buildEnhancedPrompt(message, mode);
+
+    // Prepend conversation memory to enriched message
+    const fullMessage = memoryContext
+        ? `[Recent conversation context]\n${memoryContext}\n\n${enrichedMessage}`
+        : enrichedMessage;
 
     // Get existing session for continuity
     const existingSession = await getSession(chatId);
@@ -173,11 +138,6 @@ export async function runAgent(
     let newSessionId: string | undefined;
 
     try {
-        // Build mode-specific system prompt
-        const modeInstructions = mode === "business"
-            ? "You are SuperSeller AI's customer-facing WhatsApp assistant. Be warm, professional, and helpful. Answer questions about products, pricing, and features using the knowledge base provided. Never expose internal details (server IPs, code, architecture). For complex requests, say 'Let me connect you with Shai' and note the request."
-            : "You are Shai's personal technical assistant on WhatsApp. Be direct, technical, efficient. Execute tasks, don't explain plans.";
-
         const events = sdkQuery({
             prompt: fullMessage,
             options: {
@@ -185,16 +145,7 @@ export async function runAgent(
                 ...(existingSession ? { resume: existingSession } : {}),
                 permissionMode: "bypassPermissions",
                 allowDangerouslySkipPermissions: true,
-                systemPrompt: [
-                    "You are a WhatsApp AI assistant with FULL unrestricted tool access.",
-                    "All permissions are pre-granted. NEVER ask for permission or confirmation to run commands.",
-                    "NEVER say 'I need approval', 'Can I run', or 'Do you want me to'. Just execute directly.",
-                    "This is a headless bot -- there is no human to approve tool calls.",
-                    "",
-                    modeInstructions,
-                    "",
-                    "Rules: No em dashes. No AI cliches (Certainly, Great question, I'd be happy to). Keep responses concise for WhatsApp. Max ~4000 chars.",
-                ].join("\n"),
+                systemPrompt,
             },
         });
 
@@ -331,6 +282,7 @@ export function isCommand(text: string): boolean {
 
 export async function handleCommand(chatId: string, text: string): Promise<string> {
     const cmd = text.split(" ")[0].toLowerCase();
+    const args = text.slice(cmd.length).trim();
 
     switch (cmd) {
         case "/newchat":
@@ -346,9 +298,30 @@ export async function handleCommand(chatId: string, text: string): Promise<strin
             const session = await getSession(chatId);
             return `Session: ${session ? "active" : "none"}\nProject: ${config.claudeclaw.projectDir}`;
 
+        case "/health": {
+            const { getHealthSnapshot, formatHealthSummary } = await import("./health-monitor");
+            const snapshot = await getHealthSnapshot();
+            return formatHealthSummary(snapshot);
+        }
+
+        case "/approvals": {
+            const { getPendingApprovalsSummary } = await import("./approval-service");
+            return getPendingApprovalsSummary();
+        }
+
+        case "/rag": {
+            if (!args) return "Usage: /rag <query>\nExample: /rag video pipeline";
+            const { searchForContext } = await import("./rag");
+            const results = await searchForContext(args, config.rag.systemTenant, 5);
+            return results || "No matching documents found.";
+        }
+
         case "/help":
             return [
                 "*ClaudeClaw Commands*",
+                "/health — System health summary",
+                "/approvals — Pending approval requests",
+                "/rag [query] — Search system knowledge",
                 "/newchat — Clear session, start fresh",
                 "/memory — Show recent context",
                 "/status — Show session info",

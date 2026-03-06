@@ -71,8 +71,8 @@ Stage 4: ACTIVE → RETENTION
 | `apps/web/superseller-site/src/lib/services/ProvisioningService.ts` | 3-path provisioning orchestrator (150+ lines) |
 | `apps/web/superseller-site/src/lib/auth.ts` | Magic-link session auth (AES-256-GCM) |
 | `apps/web/superseller-site/src/lib/email.ts` | Email templates (11 types) via Resend (80+ lines) |
-| `apps/web/superseller-site/src/app/(main)/dashboard/[clientId]/page.tsx` | Customer dashboard page |
-| `apps/web/superseller-site/src/app/(main)/dashboard/[clientId]/ClientDashboardClient.tsx` | Dashboard client (100+ lines) |
+| `apps/web/superseller-site/src/app/[locale]/(main)/dashboard/[clientId]/page.tsx` | Customer dashboard page |
+| `apps/web/superseller-site/src/app/[locale]/(main)/dashboard/[clientId]/ClientDashboardClient.tsx` | Dashboard client (100+ lines) |
 
 ## Provisioning Flows
 

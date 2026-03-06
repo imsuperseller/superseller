@@ -40,9 +40,9 @@ LEFT JOIN jobs j ON j.id = ue.job_id
 WHERE ue.job_id IS NOT NULL AND j.id IS NULL;
 ```
 
-### Stripe: Payment Mirror Integrity
+### PayPal: Payment Mirror Integrity
 ```sql
--- Find payments without matching Stripe session
+-- Find payments without matching PayPal session (DB columns still named stripe* — store PayPal IDs)
 SELECT id, amount, status, "stripeSessionId", "createdAt"
 FROM "Payment"
 WHERE "stripeSessionId" IS NULL AND status = 'completed'

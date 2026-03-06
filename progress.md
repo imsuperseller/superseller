@@ -6,6 +6,127 @@
 
 ---
 
+## 2026-03-06: Codebase Cleanup — Tasks 3 & 4 Complete ✅
+
+### Task 3: Rename stripe-credits → billing-credits (COMPLETE)
+- Created `.claude/skills/billing-credits/SKILL.md` with PayPal integration (migrated Feb 2026)
+- Deprecated `.claude/skills/stripe-credits/SKILL.md` with deprecation notice
+- Updated SKILL_ROUTER.md (line 42): stripe-credits → billing-credits
+- Updated README.md (line 34): stripe-credits → billing-credits
+- **All references updated**: Skill system now reflects PayPal migration
+
+### Task 4: Clean up references to CLAUDE_CODE_WORKFLOW.md and CODEBASE_VS_NOTEBOOKLM.md (COMPLETE)
+**Files overwritten with deprecation notices:**
+1. `/CODEBASE_VS_NOTEBOOKLM.md` — "This file is no longer used. See CLAUDE.md for current references."
+2. `/CLAUDE_CODE_WORKFLOW.md` — "This file is no longer used. See CLAUDE.md for current references."
+
+**Files updated to remove/update references:**
+- ✅ CLAUDE.md (removed 2 lines in Canonical Docs section)
+- ✅ DECISIONS.md (removed "Per CODEBASE_VS_NOTEBOOKLM" prefix)
+- ✅ PROJECTS.md (removed 2 file references from index)
+- ✅ projects/7-strategy-docs/CLAUDE.md (removed 2 file references)
+- ✅ .claude/skills/notebooklm-hub/SKILL.md (removed CODEBASE_VS_NOTEBOOKLM reference)
+- ✅ brain.md (removed deprecation file link)
+- ✅ findings.md (4 references updated: marked as deprecated, replaced with brain.md refs)
+- ✅ progress.md (4 references updated: replaced with direct descriptions)
+- ✅ CODEBASE_REFERENCE_AUDIT.md (updated purpose statement to note deprecation)
+- ✅ docs/AUDIT_2026_03.md (replaced CODEBASE_VS_NOTEBOOKLM reference with brain.md)
+
+**Final verification**: No active references remain (grep confirms only deprecation file itself and archived residue remain).
+
+### Task 2: Audit plugins/ Directory (COMPLETE)
+**Audit findings:**
+- 43 markdown files across 6 plugin subdirectories (superseller-sales, superseller-ops, superseller-marketing, superseller-finance, superseller-product, superseller-support)
+- **Content assessment**: All 43 files contain information already documented in canonical sources:
+  - Product catalog → `docs/PRODUCT_BIBLE.md`
+  - Video pipeline → `docs/PRODUCT_BIBLE.md` + `.claude/skills/tourreel-pipeline/`
+  - Revenue model → `docs/PRODUCT_BIBLE.md`
+  - All other content → Individual SKILL.md files
+- **Unique content to merge**: ZERO. No new information not already in PRODUCT_BIBLE.md or skills.
+- **Decision**: Mark plugins/ for removal. Added note to CLAUDE.md §7 documenting the deprecation.
+- **Physical deletion**: Requires bash (currently broken). Scheduled for future cleanup when bash is available.
+
+### Cost table (this session)
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| (No API calls this session) | — | — | **$0.00** |
+
+---
+
+## 2026-03-05: Elite Pro Remodeling Demo Video V1 + V2 — COMPLETE ✅
+
+### V2: Continuous Shot (frame-chaining technique)
+- **Technique**: Last frame of Scene N = first frame of Scene N+1 (easy-peasy.ai movie set selfie method)
+- Scene 1: Mor in before-fireplace → Mor in after-fireplace (transformation reveal)
+- Scenes 2-5: Walking through finished rooms (after→after chaining = one continuous shot)
+- 6 Nano Banana composites (1 before + 5 after) + 5 Kling 3.0 clips + reused V1 music
+- Seamless concat (no dissolve transitions — frames match at boundaries)
+- **R2**: `https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/elite-pro-demo/elite-pro-demo-v2-final.mp4`
+
+### V1: Dissolve transitions (individual scenes)
+- 5 independent before→after scenes with dissolve transitions
+- **R2**: `https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/elite-pro-demo/elite-pro-demo-final.mp4`
+
+### Cost table (MANDATORY)
+
+| Operation | Count | Unit Cost | Total | Notes |
+|-----------|-------|-----------|-------|-------|
+| **V1 run** | | | | |
+| Nano Banana 2 (V1 composites) | 5 | $0.02 | $0.10 | Before scenes |
+| Nano Banana 2 (V1 wasted) | ~7 | $0.02 | $0.14 | Auth debugging |
+| Kling 3.0 Pro (V1 clips) | 5 | $0.10 | $0.50 | All 5 scenes |
+| Kling 3.0 Pro (V1 wasted) | 1 | $0.10 | $0.10 | Attempt 4 sentinel |
+| Suno V5 (music) | 1 | $0.06 | $0.06 | Instrumental cinematic track |
+| **V2 run** | | | | |
+| Nano Banana 2 (V2 composites) | 6 | $0.02 | $0.12 | 1 before + 5 after |
+| Kling 3.0 Pro (V2 clips) | 5 | $0.10 | $0.50 | Frame-chained scenes |
+| Suno V5 (V2 music) | 0 | — | $0.00 | Reused from V1 |
+| **Total** | | | **$1.52** | V1 $0.90 + V2 $0.62 |
+
+### Key files
+- `apps/worker/src/scripts/elite-pro-demo.ts` — V1 pipeline
+- `apps/worker/src/scripts/elite-pro-demo-v2.ts` — V2 continuous shot pipeline
+- VPS `/opt/tourreel-worker/apps/worker/.env` — API key fix
+
+### Technique learned: Frame chaining (product feature)
+- **Source**: easy-peasy.ai / media.io movie set selfie technique
+- **How**: Nano Banana composites person into BOTH first and last frames, Kling morphs between them, last frame of clip N = first frame of clip N+1
+- **Result**: Seamless continuous shot illusion when concatenated (no transitions needed)
+- **Product fit**: TourReel — can offer "continuous walkthrough" as premium video style
+
+---
+
+## 2026-03-04: ClaudeClaw 2.0 + RAG Integration — DEPLOYED ✅
+
+### What was done
+- **All 5 phases implemented and deployed**: WAHA session manager, health monitor, RAG ingestor, approval system, ClaudeClaw 2.0 enhancement, scheduler
+- **RAG ingestion**: 88 system docs chunked and inserted into PostgreSQL `documents` table (13 source files: CLAUDE.md, brain.md, PRODUCT_STATUS.md, etc.)
+- **Embeddings**: Ollama nomic-embed-text (768-dim) embeddings added via background script (~88 docs processed)
+- **Text search fallback**: Added `textSearch()` to `rag.ts` — PostgreSQL full-text search when Ollama unavailable
+- **API route**: `/api/rag/search` tries vector search first, supplements with text search (dedup by id)
+- **Health monitor confirmed working**: User received WhatsApp alert about disk at 92% — proof the system works end-to-end
+
+### Key files
+- `apps/worker/src/services/rag.ts` — textSearch + searchForContext fallback
+- `apps/worker/src/services/health-monitor.ts` — 11-service health checks
+- `apps/worker/src/services/waha-session-manager.ts` — multi-session WAHA management
+- `apps/worker/src/services/approval-service.ts` — generic approval workflow
+- `apps/worker/src/services/claudeclaw-router.ts` — RAG context enrichment for ClaudeClaw
+- `apps/worker/src/services/scheduler.ts` — daily RAG re-ingestion, hourly approval expiry
+- `apps/worker/src/api/routes.ts` — ops webhook, approval endpoints, enhanced RAG search
+
+### OOM investigation (findings)
+- Python processes on 6GB VPS consistently OOM-killed (5+GB RSS) even with 5GB free RAM
+- Ollama nomic-embed-text: 261MB on disk, 565MB loaded — not the culprit
+- Workaround: generate SQL locally, execute on server; embed one-at-a-time via shell script
+- Root cause unclear — possibly cgroup, swap thrashing, or Python memory allocator behavior
+
+### Disk cleanup
+- Removed old ffmpeg tarballs, cleaned logs, freed ~3GB (92% → 89%)
+- Docker images still consuming ~12GB — consider pruning unused ones
+
+---
+
 ## 2026-03-04: TourReel Quality Fix — ALL 6 PHASES IMPLEMENTED ✅
 
 ### Audit & Plan
@@ -236,7 +357,7 @@
 - Renamed "Enterprise" tier to "Team" everywhere
 - Fixed video counts: Starter 5, Pro 15, Team 50
 - Updated: pricing.ts, Schema.tsx, pricing page, layout.tsx, homepage, footer, CrewHero, CrewMemberDetail, ROIComparison, NichePage, contact page, video pricing page, 3 skill files, 4 docs files
-- Source of truth: B.L.A.S.T. notebook (1dc7ce26)
+- Source of truth: BLAST notebook (1dc7ce26)
 
 **Kie.ai Capability Gap Analysis**:
 - Audited ALL Kie.ai endpoints available vs. used in codebase
@@ -1178,7 +1299,7 @@ Full investigation and repair of the dormant Telnyx Voice AI → n8n lead analys
 
 ### Key Discoveries
 - **Telnyx AI Assistants are autonomous voice agents** — They handle calls natively on Telnyx (Qwen3-235B model), NOT via n8n webhooks. n8n polls for completed conversations every 15 min.
-- **Two separate Telnyx accounts**: UAD/MissParty (`KEY019B52B283A906F6B2150BD499B7BD99`) has 5 numbers; SuperSeller AI (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`) has 1 number for "Hope" sales agent.
+- **Two separate Telnyx accounts**: UAD/MissParty (`${TELNYX_KEY_ID_1}`) has 5 numbers; SuperSeller AI (`${TELNYX_KEY_ID_2}`) has 1 number for "Hope" sales agent.
 - **3 historical conversations found** — 1 real customer lead from +14695885133 (Jan 20, requesting same-day garage door quote) + 2 test SIP calls from Jan 2. All were never processed.
 
 ### 10 Bugs Fixed
@@ -1402,15 +1523,15 @@ All marketplace-related docs updated to reflect current reality: bot LIVE, Postg
 1. `PRODUCT_STATUS.md` — Section 2 rewritten: "BLOCKED on 2FA" → "LIVE AND POSTING" with full feature list
 2. `docs/PRODUCT_BIBLE.md` — FB Autoposter entry: updated logic path, stack, features, status
 3. `platforms/marketplace/PLATFORM_BIBLE.md` — Complete rewrite: removed "LEGACY ISLAND" Firestore warning, now documents current PostgreSQL + webhook-server architecture
-4. `platforms/marketplace/README.md` — Complete rewrite: marks directory as legacy reference, points to canonical code at `fb marketplace lister/deploy-package/`
+4. `platforms/marketplace/README.md` — Complete rewrite: marks directory as legacy reference, points to canonical code at `fb-marketplace-lister/deploy-package/`
 5. `platforms/marketplace/CLIENT_ONBOARDING.md` — Complete rewrite: removed Firebase steps, now documents PostgreSQL + GoLogin + webhook-server onboarding
-6. `fb marketplace lister/deploy-package/COMPREHENSIVE_TECHNICAL_SUMMARY.md` — Added resolution banner, replaced "bot didn't post" with current working architecture
-7. `fb marketplace lister/deploy-package/CONFLICTS_AND_CLEANUP_REQUIRED.md` — Added "ALL RESOLVED" banner with resolution table
-8. `fb marketplace lister/.agent/skills/facebook-marketplace-posting/SKILL.md` — v2.0: removed n8n workflow code, documents actual GoLogin+Puppeteer flow
-9. `fb marketplace lister/.agent/skills/managing-marketplace-listings/SKILL.md` — Updated: 30/20 DFW cities, PostgreSQL operations, dynamic overlay details
-10. `fb marketplace lister/.agent/skills/facebook-bot-server-management/SKILL.md` — Updated: PM2 services (webhook-server + fb-scheduler), correct paths
-11. `fb marketplace lister/.agent/skills/gologin-profile-management/SKILL.md` — v2.0: per-profile cookies, session refresh, critical rules from findings.md
-12. `fb marketplace lister/.agent/skills/fixing-database-schema/SKILL.md` — Marked DEPRECATED, replaced n8n Data Table schema with PostgreSQL fb_listings
+6. `fb-marketplace-lister/deploy-package/COMPREHENSIVE_TECHNICAL_SUMMARY.md` — Added resolution banner, replaced "bot didn't post" with current working architecture
+7. `fb-marketplace-lister/deploy-package/CONFLICTS_AND_CLEANUP_REQUIRED.md` — Added "ALL RESOLVED" banner with resolution table
+8. `fb-marketplace-lister/.agent/skills/facebook-marketplace-posting/SKILL.md` — v2.0: removed n8n workflow code, documents actual GoLogin+Puppeteer flow
+9. `fb-marketplace-lister/.agent/skills/managing-marketplace-listings/SKILL.md` — Updated: 30/20 DFW cities, PostgreSQL operations, dynamic overlay details
+10. `fb-marketplace-lister/.agent/skills/facebook-bot-server-management/SKILL.md` — Updated: PM2 services (webhook-server + fb-scheduler), correct paths
+11. `fb-marketplace-lister/.agent/skills/gologin-profile-management/SKILL.md` — v2.0: per-profile cookies, session refresh, critical rules from findings.md
+12. `fb-marketplace-lister/.agent/skills/fixing-database-schema/SKILL.md` — Marked DEPRECATED, replaced n8n Data Table schema with PostgreSQL fb_listings
 13. `progress.md` — Updated DFW location counts (4-6 → 30/20 cities)
 14. `findings.md` — Updated DFW location counts, added city-vibe gap note
 
@@ -1474,11 +1595,11 @@ All marketplace-related docs updated to reflect current reality: bot LIVE, Postg
 - **Workflow**: `UAD Garage Doors Facebook Marketplace Audio Lead Analysis` (n8n ID: U6EZ2iLQ4zCGg31H)
 
 ### Files changed
-- `fb marketplace lister/deploy-package/facebook-bot-final.js` — V13 flow, category fix, per-profile cookies
-- `fb marketplace lister/deploy-package/bot-config.json` — categories: "Inflatable Bouncers" / "Miscellaneous"
-- `fb marketplace lister/deploy-package/generate-overlay-images.js` — NEW: per-product phone overlay with ImageMagick
-- `fb marketplace lister/deploy-package/webhook-server.js` — UPGRADED: dynamic phone overlay per job request
-- `fb marketplace lister/deploy-package/scheduler.js` — NEW: PM2 continuous cycle scheduler
+- `fb-marketplace-lister/deploy-package/facebook-bot-final.js` — V13 flow, category fix, per-profile cookies
+- `fb-marketplace-lister/deploy-package/bot-config.json` — categories: "Inflatable Bouncers" / "Miscellaneous"
+- `fb-marketplace-lister/deploy-package/generate-overlay-images.js` — NEW: per-product phone overlay with ImageMagick
+- `fb-marketplace-lister/deploy-package/webhook-server.js` — UPGRADED: dynamic phone overlay per job request
+- `fb-marketplace-lister/deploy-package/scheduler.js` — NEW: PM2 continuous cycle scheduler
 - Server: `ecosystem.config.js`, diagnostic scripts (`probe-form.js`, `probe-categories.js`, `test-post.js`)
 
 ---
@@ -1884,7 +2005,7 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 - `REPO_MAP.md`: Added monitoring path, tools path, skills path (9 skills)
 - `ARCHITECTURE.md`: Added Monitoring & Observability Layer section (8 paths), fixed skills list from "n8n, Tax4Us, workflow generator" to actual current skills
 - `DECISIONS.md`: Added §9 n8n Paradigm, §10 Monitoring Strategy, §11 UI Design Workflow
-- `CODEBASE_VS_NOTEBOOKLM.md`: Added monitoring, agent skills, tools to "What Belongs in Codebase" table
+- Codebase organization: Added monitoring, agent skills, tools to "What Belongs in Codebase" table
 
 **Skill ghost references fixed (15 broken → 0):**
 - `tourreel-pipeline`: Replaced `references/prompting-rules.md`, `troubleshooting.md`, `kling-api-patterns.md`, `scene-management.md` with actual file paths
@@ -2056,7 +2177,7 @@ Awaiting approval before implementation.
 
 ### Codebase Fixes (DONE)
 - 9 instruction files updated to establish brain.md as Tier 1 authority (commit 138b74c)
-- 6 secondary alignment fixes: BIBLE.md, MODEL.md, PLATFORM_BIBLE.md, credential redaction, CODEBASE_VS_NOTEBOOKLM.md, brain.md notebook additions (commit 98d8b7f)
+- 6 secondary alignment fixes: BIBLE.md, MODEL.md, PLATFORM_BIBLE.md, credential redaction, codebase org, brain.md notebook additions (commit 98d8b7f)
 
 ### NotebookLM Compliance Sources (DONE)
 - 6 override sources pushed to fix authority hierarchy inversion
@@ -2127,11 +2248,11 @@ Awaiting approval before implementation.
 
 - **User decisions applied**: Created DECISIONS.md from QUESTIONS_FOR_USER answers. Removed video production gate — video create works in prod (VIDEO_WORKER_URL required). REALTOR_PLACEMENT added to 0baf5f36, archived. CREDENTIAL_REFERENCE, NOTEBOOKLM_SCOPE, EXECUTION_PLAN created. QuickBooks: quickbooks-online-mcp-server canonical; docs updated. Credential rotation: no (per user). Infra→NotebookLM: NOTEBOOKLM_SCOPE clarifies what goes where.
 
-- **Methodology doc fixes**: REPO_MAP, CODEBASE_AUDIT now point to METHODOLOGY.md (not "B.L.A.S.T. only"). brain.md Data-First Rule scoped to new scripts (routine fixes = no HALT). .cursorrules: superseller-site deploy corrected (manual, not auto). CLAUDE_CODE_WORKFLOW: Vercel deploy clarified. CONFLICT_AUDIT: added Data-First + methodology-pointers check.
+- **Methodology doc fixes**: REPO_MAP, CODEBASE_AUDIT now point to METHODOLOGY.md (not "BLAST only"). brain.md Data-First Rule scoped to new scripts (routine fixes = no HALT). .cursorrules: superseller-site deploy corrected (manual, not auto). Vercel deploy clarified in CLAUDE.md. CONFLICT_AUDIT: added Data-First + methodology-pointers check.
 
 - **Phase 2–3 restructuring**: Merged one-time audits (AUDIT_REPORT_2026-02, LOCAL_TO_NOTEBOOKLM_MIGRATION_AUDIT, DEPLOY_VIDEO_PAGE_FIX) into findings, VERCEL_PROJECT_MAP, progress. DOC_UPDATE_PLAN marked executed. VERCEL_PROJECT_MAP: superseller project = legacy; deploy unification options (A/B/C) documented. REALTOR_PLACEMENT_INDUSTRY_RESEARCH tagged for NotebookLM migration when MCP available.
 
-- **Methodology consolidation**: Created METHODOLOGY.md (single system SSOT). Resolved B.L.A.S.T. "HALT" vs Agent Behavior "one output" conflict by scoping: B.L.A.S.T. = new projects (phase gates); Agent Behavior = routine tasks (one final message). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior.mdc, .claude/rules/agent-behavior.md, CLAUDE.md, CODEBASE_VS_NOTEBOOKLM, AGENT_CONTEXT. When asked "conflicts?", run CONFLICT_AUDIT.md (now includes methodology check).
+- **Methodology consolidation**: Created METHODOLOGY.md (single system SSOT). Resolved BLAST "HALT" vs Agent Behavior "one output" conflict by scoping: BLAST = new projects (phase gates); Agent Behavior = routine tasks (one final message). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior.mdc, .claude/rules/agent-behavior.md, CLAUDE.md, AGENT_CONTEXT. When asked "conflicts?", run CONFLICT_AUDIT.md (now includes methodology check).
 - **Pipeline config SSOT**: TOURREEL_REALTOR_HANDOFF_SPEC §0b added. config.ts = single source for defaultClipDuration (5), maxClipsPerVideo (15). kie.ts, prompt-generator, video-pipeline, regen-clips now read from config; no hardcoded 5 or 15. Clip count unchanged: 12 for 1531 Home Park (4bed+pool); MAX_CLIPS=1 was debug-only.
 - **Port reference audit**: Created PORT_REFERENCE.md (SSOT). Fixed conflicts: README (3001→3002, dev:3001 removed), VIDEO_APP_USER_GUIDE (3000→3002), e2e-from-zillow default 3002→3001, run-1clip-validation, DEPLOYMENT_AND_ACCESS, ZILLOW_VIDEO_PRODUCT_STATUS, agent-behavior. All port refs now point to PORT_REFERENCE.md or match it.
 - **Conflict audit**: Full audit run. Created CONFLICT_AUDIT.md. Git: clean. Ports: worker 3002 conflicts with superseller-site 3002—use PORT=3001 for worker when both run. run-smoke default changed 3002→3001 (must hit worker). PIPELINE_RESEARCH_OUTPUT §1.2 Veo: deprecation notice added.
@@ -2191,7 +2312,7 @@ Awaiting approval before implementation.
 
 - **Video product page** (commit 3312acb): /video/[jobId], /dashboard/[clientId]/video, API proxy /api/video/jobs/[id], VideoGeneration, CSP for R2. Pushed to main. Set VIDEO_WORKER_URL in Vercel for job data.
 - **Agent drift prevention**: AGENT_BEHAVIOR.md created; .cursorrules, brain.md, progress.md updated; .cursor/rules/agent-behavior.mdc added (alwaysApply). Drift guard checkpoints in place.
-- **B.L.A.S.T. alignment**: brain.md, .cursorrules updated with NotebookLM 1dc7ce26 as canonical source. Agent completion rules codified.
+- **BLAST alignment**: brain.md, .cursorrules updated with NotebookLM 1dc7ce26 as canonical source. Agent completion rules codified.
 - **Memory files**: findings.md, progress.md created at repo root.
 - **Video pipeline** (commit 4555169): Pushed to main. Default tour, hero features from description/amenities, realtor R2, Kling model logging.
 
@@ -2342,7 +2463,7 @@ When Kie.ai Vision API went into maintenance mode (returned 500 errors), the ENT
 **ACTUAL Root Cause**: Wrong Gemini API endpoint path in `apps/worker/src/services/gemini.ts`
 - **Bug**: `const KIE_BASE = "https://api.kie.ai/api"` → resulted in `/api/gemini-3-flash/v1/chat/completions` (HTTP 404)
 - **Fix**: Changed to `const KIE_BASE = "https://api.kie.ai"` → now `/gemini-3-flash/v1/chat/completions` ✅
-- **Reference**: FB Marketplace bot (`fb marketplace lister/deploy-package/content-generator.js`) had working pattern without `/api` prefix
+- **Reference**: FB Marketplace bot (`fb-marketplace-lister/deploy-package/content-generator.js`) had working pattern without `/api` prefix
 - **Why I was wrong**: Assumed ALL Kie.ai endpoints follow same pattern. Reality: Kling uses `/api/kling-3.0/...`, Gemini uses `/gemini-3-flash/...`
 
 **Actions Taken**:

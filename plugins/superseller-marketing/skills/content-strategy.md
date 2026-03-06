@@ -104,7 +104,7 @@ This is the live production pipeline (SocialHub / Buzz product):
 ### Pipeline Technical Details
 - **Text generation**: Claude (via direct API or cowork session)
 - **Image generation**: Kie.ai API -- Recraft model for graphic/illustration style, Nano Banana Pro ($0.09/image) for photorealistic
-- **WhatsApp**: WAHA Pro API (session: superseller-whatsapp) on RackNerd 172.245.56.50:3004
+- **WhatsApp**: WAHA Pro API (session: superseller-whatsapp) on RackNerd 172.245.56.50:3000
 - **Facebook**: Graph API v19.0, permanent page access token, POST /{page-id}/photos for image posts
 - **Instagram**: Graph API v19.0, POST /{ig-id}/media + POST /{ig-id}/media_publish (requires public image URL)
 - **Aitable**: REST API, token auth, Space spc63cnXLdMYc

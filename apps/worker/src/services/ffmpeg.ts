@@ -419,10 +419,17 @@ export async function addTextOverlays(
         const fadeIn = overlay.fadeInSeconds ?? 0.5;
         const fadeOut = overlay.fadeOutSeconds ?? 0.5;
 
+        // FFmpeg drawtext escaping: strip problematic chars, escape filter-syntax chars
         const sanitizedText = overlay.text
-            .replace(/'/g, "\\\\\\'")
-            .replace(/:/g, "\\:")
-            .replace(/,/g, "\\,");
+            .replace(/'/g, "")       // strip apostrophes (cannot appear inside single-quoted filter value)
+            .replace(/#/g, "")       // strip hash (causes parser issues with filter graph)
+            .replace(/\\/g, "")      // strip backslashes
+            .replace(/:/g, "\\:")    // escape colon (filter key-value separator)
+            .replace(/,/g, "\\,")    // escape comma (filter separator)
+            .replace(/;/g, "\\;")    // escape semicolon (filter chain separator)
+            .replace(/\[/g, "\\[")   // escape brackets (filter link labels)
+            .replace(/\]/g, "\\]")
+            .trim();
 
         const fontSize = FONT_SIZES[overlay.fontSize ?? "medium"] || FONT_SIZES.medium;
 
@@ -430,7 +437,9 @@ export async function addTextOverlays(
         if (overlay.position === "bottom") yPos = "h-(h/8)-text_h";
         if (overlay.position === "top") yPos = "h/8";
 
-        const fontParam = fontFile ? `:fontfile='${fontFile}'` : "";
+        // FFmpeg drawtext fontfile: escape path separators, NO wrapping quotes
+        // (single quotes conflict with text='...' and alpha='...' quoting)
+        const fontParam = fontFile ? `:fontfile=${fontFile.replace(/:/g, "\\:")}` : "";
 
         // Alpha expression for smooth fade in/out
         let alphaExpr = "";
@@ -459,7 +468,7 @@ export async function addTextOverlays(
     } catch (err: any) {
         // NO SILENT DOWNGRADES: text overlays (address, price, room labels, CTA) are essential
         // for property marketing videos. Skipping them degrades the product.
-        throw new Error(`Text overlay failed: ${err.message?.slice(0, 200)}. Cannot deliver video without marketing text.`);
+        throw new Error(`Text overlay failed: ${err.message?.slice(0, 500)}. Cannot deliver video without marketing text.`);
     }
 }
 
@@ -485,7 +494,8 @@ export async function generateVariants(
             "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
         ];
         const fontFile = fontCandidates.find((f) => existsSync(f));
-        const fontParam = fontFile ? `:fontfile='${fontFile}'` : "";
+        // FFmpeg drawtext fontfile: escape path separators, NO wrapping quotes
+        const fontParam = fontFile ? `:fontfile=${fontFile.replace(/:/g, "\\:")}` : "";
 
         const FONT_SIZES: Record<string, string> = {
             small: "(h/30)", medium: "(h/22)", large: "(h/16)", xlarge: "(h/12)",
@@ -496,7 +506,10 @@ export async function generateVariants(
             const end = start + o.durationSeconds;
             const fadeIn = o.fadeInSeconds ?? 0.5;
             const fadeOut = o.fadeOutSeconds ?? 0.5;
-            const sanitizedText = o.text.replace(/'/g, "\\\\\\'").replace(/:/g, "\\:").replace(/,/g, "\\,");
+            const sanitizedText = o.text
+                .replace(/'/g, "").replace(/#/g, "").replace(/\\/g, "")
+                .replace(/:/g, "\\:").replace(/,/g, "\\,").replace(/;/g, "\\;")
+                .replace(/\[/g, "\\[").replace(/\]/g, "\\]").trim();
             const fontSize = FONT_SIZES[o.fontSize ?? "medium"] || FONT_SIZES.medium;
             let yPos = "(h-text_h)/2";
             if (o.position === "bottom") yPos = "h-(h/8)-text_h";

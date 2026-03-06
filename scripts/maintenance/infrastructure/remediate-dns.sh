@@ -3,7 +3,7 @@
 # Purpose: Align DNS records with the SuperSeller AI System Blueprint
 
 ZONE_ID="031333b77c859d1dd4d4fd4afdc1b9bc"
-TOKEN="UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1"
+TOKEN="${CLOUDFLARE_API_TOKEN}"
 VPS_IP="172.245.56.50"
 
 echo "🚀 Starting DNS Remediation for superseller.agency..."

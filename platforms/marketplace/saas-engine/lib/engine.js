@@ -150,7 +150,7 @@ async function executePosting(credentials, listing, options = {}) {
         };
 
         await typeLabel("Title", listing.ListingTitle || listing.title);
-        await typeLabel("Price", (listing.Price || 75).toString());
+        await typeLabel("Price", (listing.Price || 49.99).toString());
         await typeLabel("Description", listing.ListingDescription || "Contact for info!");
 
         currentStep = "Selecting Category";

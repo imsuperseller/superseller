@@ -9,20 +9,23 @@
 
 GitHub detected the following secrets in your repository. You need to unblock each one:
 
-### **1. Stripe API Key**
+### **1. Stripe API Key (DEPRECATED — migrated to PayPal Feb 2026)**
 - **Location**: `webflow/IMMEDIATE_FIX_STEPS.md:18`, `webflow/STRIPE_TEST_MODE_VERIFICATION.md:16`
 - **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5QC1NDfPBtp1ZsxGBOcfvw2
 - **Action**: Choose "I'll fix it later"
+- **Note**: Stripe replaced by PayPal (Feb 2026). These are legacy references in retired webflow/ files. DB columns retain `stripe*` names but store PayPal IDs.
 
-### **2. Stripe Test API Restricted Key**
+### **2. Stripe Test API Restricted Key (DEPRECATED — migrated to PayPal Feb 2026)**
 - **Location**: `webflow/STRIPE_TEST_MODE_FIX.md:22`
 - **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5NcRspRmvzf2WLCpNR1oBk7
 - **Action**: Choose "I'll fix it later"
+- **Note**: Legacy Stripe key in retired webflow/ files. No longer in active use.
 
-### **3. Stripe Test API Secret Key**
+### **3. Stripe Test API Secret Key (DEPRECATED — migrated to PayPal Feb 2026)**
 - **Location**: Multiple files in `webflow/` directory
 - **Unblock URL**: https://github.com/imsuperseller/superseller/security/secret-scanning/unblock-secret/34uH5R98AgVEq2Qcdn7w9y9WGHE
 - **Action**: Choose "I'll fix it later"
+- **Note**: Legacy Stripe key in retired webflow/ files. No longer in active use.
 
 ### **4. Airtable Personal Access Token**
 - **Location**: `claude_desktop_config.json:93`, `docs/security/CREDENTIAL_ROTATION_CHECKLIST.md:75` (now redacted)

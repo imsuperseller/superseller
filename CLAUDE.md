@@ -9,7 +9,7 @@
 > 1. **Master Index**: [`docs/BUSINESS_COVERAGE_INDEX.md`](docs/BUSINESS_COVERAGE_INDEX.md) — Unified mapping of all business matters to SoTs.
 > 2. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
 > 3. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
-> 4. **Notebook Hub**: Brain 1dc7ce26 (B.L.A.S.T.), 0baf5f36 (TourReel), 12724368 (Changelog).
+> 4. **Notebook Hub**: Brain 1dc7ce26 (BLAST), 0baf5f36 (TourReel), 12724368 (Changelog).
 
 > [!NOTE]
 > **Database Stack**: 
@@ -22,7 +22,7 @@
 > - **n8n** is backup for NEW automation. Antigravity is primary. Existing production n8n workflows (**Telnyx voice lead analysis** for UAD + MissParty) still run.
 > - **Firestore** is retired for web/worker. **Exception**: FB Marketplace Bot (`platforms/marketplace/saas-engine/lib/firebase.js`) still uses Firestore for posting schedule — pending migration to PostgreSQL.
 > - **Airtable.com** retired. **Aitable.ai** for dashboards only. **PostgreSQL** is the only transactional DB truth.
-> - **Stripe** migrated to **PayPal** (Feb 2026). DB columns keep `stripe*` names but store PayPal IDs. See `findings.md`.
+> - **Stripe** migrated to **PayPal** (Feb 2026) for SuperSeller. DB columns keep `stripe*` names but store PayPal IDs. Stripe keys preserved dormant for potential rensto.com use. See `findings.md`.
 > - **Webflow/BMAD** are retired. The system is 100% programmatic.
 
 > [!CAUTION]
@@ -41,13 +41,11 @@
 
 ## 📖 Canonical Docs
 
-- **Methodology (single system)**: [`METHODOLOGY.md`](METHODOLOGY.md) — B.L.A.S.T. vs Agent Behavior, no conflicts.
-- **Codebase vs NotebookLM**: [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md) — What lives in codebase vs notebooks. Codebase = IDE essentials; NotebookLM = specs, methodology.
+- **Methodology (single system)**: [`METHODOLOGY.md`](METHODOLOGY.md) — BLAST vs Agent Behavior, no conflicts.
 - **Reference Alignment**: NotebookLM 1dc7ce26 — Hierarchy, cross-reference map, sync discipline. Consult when sources conflict.
 - **Mission Control**: [`brain.md`](brain.md) — North Star, Agent protocol.
 - **This file**: Technical router. For full context, read the Bibles above.
 - **Architecture**: [`ARCHITECTURE.md`](ARCHITECTURE.md), [`REPO_MAP.md`](REPO_MAP.md).
-- **Terminal workflow**: [`CLAUDE_CODE_WORKFLOW.md`](CLAUDE_CODE_WORKFLOW.md).
 - **Business context**: [`.cursor/AGENT_CONTEXT.md`](.cursor/AGENT_CONTEXT.md).
 
 ---
@@ -74,7 +72,7 @@
 | **Automation** | Antigravity (primary), n8n (backup) |
 | **Database** | PostgreSQL + pgvector (Prisma + Drizzle), Redis |
 
-**Key paths**: `apps/web/superseller-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`, `fb marketplace lister/deploy-package/`.
+**Key paths**: `apps/web/superseller-site/`, `apps/worker/`, `apps/worker-packages/db/`, `platforms/marketplace/`, `fb-marketplace-lister/deploy-package/`.
 
 ---
 
@@ -102,9 +100,19 @@
 | **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
 | Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
 | **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
-| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.09, Gemini $0.001 — see tourreel-pipeline SKILL.md |
-| FB Bot Config | `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
+| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.02, Gemini $0.001 — see tourreel-pipeline SKILL.md |
+| FB Bot Config | `fb-marketplace-lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
 | FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
+| **API Documentation** | `docs/API_DOCUMENTATION.md` — All 94 API endpoints, auth patterns, response formats |
+| **Testing Strategy** | `docs/TESTING_STRATEGY.md` — Test plans, CI pipeline, coverage targets |
+| **Runbooks** | `docs/RUNBOOKS.md` — 12 incident response procedures |
+| **Monitoring** | `docs/MONITORING.md` — Alerting, health checks, expense tracking setup |
+| **Developer Onboarding** | `docs/DEVELOPER_ONBOARDING.md` — Zero-to-productive new developer guide |
+| **Security & Compliance** | `docs/SECURITY_COMPLIANCE.md` — Auth, credentials, data protection, compliance checklist |
+| **Changelog** | `docs/CHANGELOG.md` — Release process, platform changelog, versioning |
+| **SLOs & Error Budgets** | `docs/SLO_ERROR_BUDGETS.md` — SLO targets, error budgets, latency thresholds |
+| **AI Model Registry** | `docs/AI_MODEL_REGISTRY.md` — 50+ models, categories, pipeline mappings |
+| **Financial Reporting** | `docs/FINANCIAL_REPORTING.md` — Revenue, costs, credits, profitability, reporting procedures |
 
 ### Credentials
 API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
@@ -123,8 +131,8 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 | **Winner Studio** | ⚠️ Built, not active | Code verified end-to-end, Yossi not actively using |
 | **Lead Landing Pages** | ⚠️ Infrastructure only | `/lp/[slug]` code ready, no active customer pages |
 | **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant works, webhook migration pending, eSignatures not started |
-| **ClaudeClaw** | ⚠️ Built, disabled | WhatsApp→Claude Code bridge committed, not deployed |
-| **RAG/pgvector** | ⚠️ Infrastructure only | Ollama + pgvector + API endpoints ready, zero products connected |
+| **ClaudeClaw** | ✅ Deployed | WhatsApp→Claude bridge + Group Agent with 3-tier memory + guardrails |
+| **RAG/pgvector** | ✅ Connected | Ollama + pgvector powering ClaudeClaw context + Group Agent memory |
 | **AgentForge** | ❌ Spec only | Internal tool decision made, code not started |
 
 **Infrastructure ✅ Done**: Firestore→Postgres migration (except FB Bot posting schedule), PayPal checkout (migrated from Stripe Feb 2026), credits schema, worker gating, Remotion rendering, Model Observatory (34 models).
@@ -159,6 +167,14 @@ npm run build            # tsc
 *(Handles rsync, npm install, PM2 restarts, and installs the daily FFmpeg update cron job automatically).*
 Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.245.56.50:/opt/tourreel-worker/apps/worker/`
 
+### Code Quality Tools
+```bash
+npx tsx tools/schema-sentinel.ts          # Prisma <-> Drizzle drift check
+npx tsx tools/consistency-checker.ts      # Brand/stale ref/contradiction scanner
+npx tsx tools/consistency-checker.ts --strict  # CI mode (exit 1 on CRITICAL/HIGH)
+npx tsx tools/consistency-checker.ts --json    # Machine-readable output
+```
+
 ### Health Checks
 ```bash
 curl -s https://superseller.agency/api/health          # Web
@@ -166,6 +182,16 @@ curl -s http://172.245.56.50:3002/api/health   # Worker
 curl -s http://172.245.56.50:11434/api/tags    # Ollama
 curl -s http://172.245.56.50:8082/health       # FB Marketplace Bot
 ```
+
+---
+
+## 7. Deprecated & Cleanup
+
+### plugins/ Directory (Cowork Layer)
+- **Status**: DEPRECATED — Marked for removal (March 6, 2026)
+- **Contents**: 43 markdown files for Claude Desktop/Web plugins (superseller-sales, superseller-ops, superseller-marketing, superseller-finance, superseller-product, superseller-support)
+- **Issue**: Content duplicates PRODUCT_BIBLE.md and individual .claude/skills/ SKILL.md files. No unique content to merge.
+- **Action**: Scheduled for deletion. Bash required for physical removal (`rm -rf plugins/`). Until then, directory remains as reference for Cowork layer configuration.
 
 ---
 

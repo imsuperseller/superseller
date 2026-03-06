@@ -45,7 +45,7 @@ export const marketplaceReplenisherQueue = new Queue("marketplace-replenisher", 
 });
 
 export interface ClaudeClawJobData {
-    chatId: string;              // WhatsApp chatId (972...@c.us)
+    chatId: string;              // WhatsApp chatId (972...@c.us or xxx@g.us for groups)
     messageBody: string;         // User's text message
     hasMedia: boolean;
     mediaUrl?: string;           // WAHA media URL if present
@@ -54,6 +54,8 @@ export interface ClaudeClawJobData {
     wahaUrl?: string;            // Which WAHA instance to respond through
     wahaSession?: string;        // Which WAHA session to use
     mode?: "personal" | "business";  // Channel mode for personality
+    isGroup?: boolean;           // True if message came from a group chat
+    senderChatId?: string;       // Original sender in group (participant@c.us)
 }
 
 export async function initQueues() {

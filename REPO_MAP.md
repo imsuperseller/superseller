@@ -1,6 +1,6 @@
 # Repo Map — Codebase Structure Index
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 **Purpose**: Directed search index — find any key file in 1 lookup instead of 3+ Glob attempts.
 
 ---
@@ -24,7 +24,7 @@
 | `prisma.ts` | `prisma` (PrismaClient singleton) | DB client |
 | `rate-limiter.ts` | `RateLimiter`, `withRateLimit()`, `apiRateLimiter`, `authRateLimiter` | IP-based rate limiting |
 | `schemas.ts` | `PlanSchema`, `UserSchema`, `AgentDefinitionSchema` + 20 more Zod schemas | Shared validation |
-| `stripe.ts` | `getStripeAdmin()`, `StripeApi` (class) | Stripe integration |
+| `stripe.ts` | `getStripeAdmin()`, `StripeApi` (class) | Legacy Stripe helpers (PayPal is live Feb 2026) |
 | `utils.ts` | `cn()`, `formatCurrency()` | Helpers |
 
 ### Monitoring (`src/lib/monitoring/`)
@@ -40,7 +40,7 @@
 
 | File | Main Exports | Purpose |
 |------|-------------|---------|
-| `ProvisioningService.ts` | `ProvisioningService` (class) | Stripe subscription → credit grant |
+| `ProvisioningService.ts` | `ProvisioningService` (class) | PayPal subscription → credit grant |
 | `UsageService.ts` | `UsageService` (class) | Usage event queries |
 | `AITableService.ts` | `AITableService` (class), `AITABLE_DATASHEETS` | Aitable sync |
 
@@ -123,7 +123,7 @@
 | **billing/** | portal, status | Session |
 | **video/** | credits, jobs, subscribe, usage | Session+Credits |
 | **marketplace/** | templates, [id], customize, download | Public/Token |
-| **webhooks/** | stripe, usage | Signature/Secret |
+| **webhooks/** | paypal, usage (stripe route legacy name) | Signature/Secret |
 | **cron/** | sync-aitable | Cron secret |
 | **Other** | contact, checkout, fulfillment, health/check, leads, secretary, support | Varies |
 
@@ -143,6 +143,8 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 | `niche/` | Vertical page components | |
 | `pricing/` | Pricing page components | |
 | `crew/` | Crew/team page | |
+| `providers/` | Context providers | `SmoothScrollProvider.tsx` (Lenis + GSAP ScrollTrigger bridge) |
+| `animations/` | Reusable scroll animation components | `ScrollReveal.tsx`, `TextReveal.tsx`, `ParallaxLayer.tsx` |
 | (root) | Shared layout components | `Header.tsx`, `Footer.tsx`, `AppShell.tsx`, `Hero.tsx`, `CTA.tsx`, `ContactForm.tsx` |
 
 ---
@@ -162,7 +164,10 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 | migration-validator | schema change, deploy | migration-checklist |
 | data-integrity | schema drift, sync | reconciliation-queries, sync-architecture |
 | rag-pgvector | RAG, vector, embedding | — |
-| ui-design-workflow | v0, Stitch, rebrand | brand-token-map |
+| ui-design-workflow | v0, Stitch, rebrand, scroll animations | brand-token-map |
+| video-to-website | video to scroll website, GSAP canvas | — |
+| excalidraw-diagram | Excalidraw, architecture diagrams | — |
+| nano-banana-image | Nano Banana 2, realistic images | — |
 | antigravity-automation | automation, n8n backup | migration-from-n8n |
 
 ---

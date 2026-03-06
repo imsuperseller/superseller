@@ -130,7 +130,7 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 |---------|----------|----------|-------|
 | **Telnyx (UAD/MissParty)** | `TELNYX_API_KEY` | n8n credential `uadgaragedoors` | Key: `KEY019B52B283...`. 5 numbers (4 UAD + 1 MissParty). Two AI Assistants: UAD (`assistant-5515bf13`), MissParty (`assistant-f1708158`). DIFFERENT account from SuperSeller AI's Telnyx. |
 | **Workiz (UAD CRM)** | `WORKIZ_API_TOKEN`, `WORKIZ_API_SECRET` | n8n UAD workflow (HTTP Request node) | Token: `api_uj4t1r0msb...`, Secret: `sec_258867...`. **POST auth: `auth_secret` goes INSIDE JSON body.** PascalCase fields. WORKING. |
-| **GoLogin** | `GOLOGIN_TOKEN` | `fb marketplace lister/deploy-package/bot-config.json` | JWT token. Profiles: UAD `694b5e53...`, Miss Party `6949a854...` |
+| **GoLogin** | `GOLOGIN_TOKEN` | `fb-marketplace-lister/deploy-package/bot-config.json` | JWT token. Profiles: UAD `694b5e53...`, Miss Party `6949a854...` |
 | **Claude (UAD)** | `ANTHROPIC_API_KEY` | Client provides | Key: `sk-ant-api03-Ghts...`. DIFFERENT from SuperSeller AI's Claude key. |
 | **Vercel (UAD)** | Vercel token | Client provides | Token: `vcp_4l6...`. DIFFERENT from SuperSeller AI's Vercel. |
 | **GitHub (UAD)** | `GITHUB_PAT` | Client provides | PAT: `github_pat_11B6FT76I...`. DIFFERENT from SuperSeller AI's GitHub. |
@@ -141,8 +141,8 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
-| **FB Credentials (UAD)** | `fbEmail`, `fbPass` | `fb marketplace lister/deploy-package/bot-config.json` | `uad.garage.doors@gmail.com` — NOTE: may not be connected to FB account |
-| **FB Credentials (Miss Party)** | `fbEmail`, `fbPass` | `fb marketplace lister/deploy-package/bot-config.json` | `michalkacher2006@gmail.com` |
+| **FB Credentials (UAD)** | `fbEmail`, `fbPass` | `fb-marketplace-lister/deploy-package/bot-config.json` | `1shaifriedman@gmail.com` — Shai's personal Facebook (managed by GoLogin profile "uad (shai fb)") |
+| **FB Credentials (Miss Party)** | `fbEmail`, `fbPass` | `fb-marketplace-lister/deploy-package/bot-config.json` | `michalkacher2006@gmail.com` |
 | **Telnyx Phone Numbers (UAD)** | N/A | `bot-config.json` → `phoneRotation` | 4 numbers: `+1-972-954-2407`, `+1-972-628-3587`, `+1-469-625-0960`, `+1-469-535-7538` |
 | **Telnyx Phone Numbers (Miss Party)** | N/A | `bot-config.json` → `phoneRotation` | 1 number: `+1-469-283-9855` |
 | **WAHA (FB Bot)** | `wahaApiKey` | `bot-config.json` | Same WAHA instance as SuperSeller AI (`4fc7e008...`). Notification target: `14695885133@c.us` |
@@ -165,8 +165,8 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 | `.env.racknerd` | VPS_PASSWORD only | SuperSeller AI | SSH access |
 | `social app/.env` | 50+ keys (SuperSeller AI credential dump) | SuperSeller AI | NONE actively — reference only |
 | `social app/.env.master` | Same as above (COMMITTED TO GIT — security risk) | SuperSeller AI | NONE |
-| `fb marketplace lister/.env` | DB, Redis, GoLogin | UAD/MissParty | FB Bot |
-| `fb marketplace lister/deploy-package/bot-config.json` | GoLogin, FB creds, phone rotation, WAHA, webhook URLs | UAD/MissParty | FB Marketplace Bot |
+| `fb-marketplace-lister/.env` | DB, Redis, GoLogin | UAD/MissParty | FB Bot |
+| `fb-marketplace-lister/deploy-package/bot-config.json` | GoLogin, FB creds, phone rotation, WAHA, webhook URLs | UAD/MissParty | FB Marketplace Bot |
 | `/opt/fb-marketplace-bot/.env` | Kie.ai (UAD key), DB connection | UAD/MissParty | FB Bot (server) |
 | `~/.cursor/mcp.json` | n8n, NotebookLM MCP configs | SuperSeller AI | Claude Code MCP tools |
 

@@ -26,7 +26,7 @@ negativeTrigger:
   - "schema migration"
   - "landing page"
   - "admin portal"
-  - "Stripe billing"
+  - "PayPal billing"
 ---
 
 # Resilience Patterns
@@ -44,7 +44,7 @@ negativeTrigger:
 |---------|---------|---------------|
 | Kie.ai (Kling, Suno, Nano, Avatar) | TourReel, Winner Studio | Total pipeline failure |
 | Gemini (Flash, Vision) | TourReel, Winner Studio, FB Bot | No AI analysis/prompts |
-| Stripe | All products | No payments, no provisioning |
+| PayPal | All products | No payments, no provisioning |
 | Resend | All products | No email notifications |
 | WAHA | Winner Studio, Lead Pages | No WhatsApp delivery |
 | Apify | TourReel | No Zillow scraping |
@@ -178,7 +178,7 @@ const FALLBACK_CHAINS = {
 |---------|-------|---------|-------------------|---------------|----------|
 | Kie.ai | 3 | 2s/4s/8s | 5 failures | 60s | Degrade quality/model |
 | Gemini | 2 | 1s/3s | 3 failures | 30s | Hardcoded defaults |
-| Stripe | 3 | 1s/2s/4s | 5 failures | 120s | Queue for retry |
+| PayPal | 3 | 1s/2s/4s | 5 failures | 120s | Queue for retry |
 | Resend | 2 | 1s/3s | 5 failures | 60s | Log, skip notification |
 | WAHA | 1 | 2s | 3 failures | 30s | Email fallback |
 | Apify | 2 | 5s/15s | 3 failures | 300s | Manual URL input |
@@ -202,7 +202,7 @@ interface ErrorBudget {
 }
 
 // Alert when success rate drops below threshold
-// PostgreSQL: 99.9%, Kie.ai: 99%, Gemini: 99%, Stripe: 99.5%
+// PostgreSQL: 99.9%, Kie.ai: 99%, Gemini: 99%, PayPal: 99.5%
 ```
 
 ## Implementation Priority

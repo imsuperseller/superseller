@@ -32,8 +32,8 @@ portal.superseller.agency   → Vercel (customer portals - planned)
 9) **If a function you're writing computes or fetches a record**, add a deterministic `dedupe_key` and call `upsert_by_identity(...)`.
 10) **On pull requests**: fail CI if any file violates rules above or if duplicate keys are detected by the duplicate scanner.
 
-## B.L.A.S.T. Methodology
-11) **B.L.A.S.T.** for new projects; **Agent Behavior** for routine tasks. Single system: [METHODOLOGY.md](../METHODOLOGY.md). See .cursorrules for architecture.
+## BLAST Methodology
+11) **BLAST** for new projects; **Agent Behavior** for routine tasks. Single system: [METHODOLOGY.md](../METHODOLOGY.md). See .cursorrules for architecture.
 12) **Before implementing**: Check CLAUDE.md and existing docs for similar implementations.
 13) **After implementation**: Update CLAUDE.md and optimization plans as needed.
 

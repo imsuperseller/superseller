@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || 'UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1';
+const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || '${CLOUDFLARE_API_TOKEN}';
 const DOMAIN = 'superseller.agency';
 const API_BASE = 'https://api.cloudflare.com/client/v4';
 

@@ -18,16 +18,16 @@ negativeTrigger:
   - "video pipeline"
   - "UI design"
   - "n8n workflow"
-  - "stripe billing"
+  - "paypal billing"
 ---
 
 # Data Integrity
 
 ## When to Use
-Use when detecting, preventing, or fixing data inconsistencies across SuperSeller AI's storage systems (PostgreSQL, Aitable.ai, Redis, R2, Stripe). Covers schema drift between Prisma and Drizzle, unsynced records, orphaned data, and cross-store reconciliation. Not for video pipeline logic, UI design, n8n workflows, or Stripe billing code.
+Use when detecting, preventing, or fixing data inconsistencies across SuperSeller AI's storage systems (PostgreSQL, Aitable.ai, Redis, R2, PayPal). Covers schema drift between Prisma and Drizzle, unsynced records, orphaned data, and cross-store reconciliation. Not for video pipeline logic, UI design, n8n workflows, or PayPal billing code.
 
 ## Critical Rules
-1. **PostgreSQL is ALWAYS the SSOT.** If data differs between Postgres and any external store (Aitable, Stripe, n8n), Postgres wins.
+1. **PostgreSQL is ALWAYS the SSOT.** If data differs between Postgres and any external store (Aitable, PayPal, n8n), Postgres wins.
 2. **All syncs are one-way: Postgres -> Aitable.** Never write from Aitable back to Postgres.
 3. **Run Schema Sentinel before any schema change.** `npx tsx tools/schema-sentinel.ts --strict` must pass.
 4. **Update DATA_DICTIONARY.md when adding tables/stores.** No table should exist without a dictionary entry.
@@ -54,7 +54,7 @@ Use when detecting, preventing, or fixing data inconsistencies across SuperSelle
 | Aitable.ai | Dashboard mirror | Postgres -> Aitable (one-way) |
 | Redis | Ephemeral cache | Job metadata backed in Postgres |
 | Cloudflare R2 | Media storage | URLs stored in Postgres |
-| Stripe | Billing SSOT | Stripe -> Postgres (via webhook) |
+| PayPal | Billing SSOT | PayPal -> Postgres (via webhook) |
 | Firebase Storage | Legacy onboarding certs | Deprecated |
 
 ### Shared Tables (Prisma <-> Drizzle)

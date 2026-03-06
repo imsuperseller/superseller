@@ -154,8 +154,8 @@ Zillow Scrape → Photo extraction → Remotion renderMedia() (Ken Burns, transi
 |---------|-----------|------|-------|
 | Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
 | Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
-| Kie.ai | Suno music | $0.02 | Per track |
-| Kie.ai | Nano Banana composite | $0.05 | Realtor + photo merge |
+| Kie.ai | Suno music | $0.06 | Per track (12 credits) |
+| Kie.ai | Nano Banana composite | $0.02 | Realtor + photo merge. 4 credits. |
 | Kie.ai | ElevenLabs TTS (turbo-2-5) | $0.02 | Per generation |
 | Kie.ai | ElevenLabs TTS (multilingual-v2) | $0.02 | Per generation |
 | FakeYou | TTS (any model) | $0.00 | Free, no API key |

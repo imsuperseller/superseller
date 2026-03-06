@@ -54,7 +54,7 @@ All products must align with one of these tactical pillars:
 
 ### 🤖 Facebook Marketplace Autoposter
 *   **Target**: High-volume marketplace sellers (UAD Garage Doors, Miss Party Rentals).
-*   **Logic**: `fb marketplace lister/deploy-package/` (canonical), server at `/opt/fb-marketplace-bot/`
+*   **Logic**: `fb-marketplace-lister/deploy-package/` (canonical), server at `/opt/fb-marketplace-bot/`
 *   **Stack**: GoLogin SDK + Puppeteer 19 + ImageMagick phone overlays + PostgreSQL (`fb_listings`).
 *   **Features**: AI-generated city-specific copy (Kie.ai Gemini 2.5 Flash), image variation pool (Kie.ai Seedream 4.5 Edit), DFW location rotation (30/20 cities), Telnyx phone rotation, dynamic phone overlay, price jitter (±10%), schedule randomization (±15min), per-profile cookies, cookie health monitoring, PM2 automated scheduler (60-min cycles).
 *   **Lead Pipeline**: Telnyx Voice AI → Claude Sonnet analysis → Workiz CRM (UAD), email (MissParty). **LIVE AND ACTIVE** — n8n workflows executing successfully, Telnyx AI Assistants handling inbound calls autonomously. Updated Feb 2026: Pipeline active for UAD + MissParty via n8n workflows.

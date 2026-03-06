@@ -7,13 +7,12 @@
 
 ## Service-Specific Rotation
 
-### Stripe
-1. Go to https://dashboard.stripe.com/apikeys
-2. Roll the secret key (Stripe keeps old key active for 24h)
-3. Update in: Vercel env, RackNerd `.env`, `~/.cursor/mcp.json`
-4. Update webhook secret if regenerating webhook endpoint
-5. Verify: `curl https://api.stripe.com/v1/balance -H "Authorization: Bearer $NEW_KEY"`
-6. Deploy both apps
+### PayPal (migrated from Stripe Feb 2026)
+1. Go to https://developer.paypal.com/dashboard/applications
+2. Regenerate client secret or create new app
+3. Update in: Vercel env (PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_WEBHOOK_ID), RackNerd `.env`
+4. Verify: `curl -v https://api-m.paypal.com/v1/oauth2/token -u "$PAYPAL_CLIENT_ID:$PAYPAL_CLIENT_SECRET" -d "grant_type=client_credentials"`
+5. Deploy both apps
 
 ### Kie.ai
 1. Go to kie.ai dashboard -> API Keys

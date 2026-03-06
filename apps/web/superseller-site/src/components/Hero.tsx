@@ -15,39 +15,59 @@ export function Hero() {
 
   useEffect(() => {
     if (!heroRef.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const tl = gsap.timeline();
+    let cleanup: (() => void) | undefined;
 
-    tl.fromTo(
-      titleRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }
-    )
-      .fromTo(
-        subtitleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
+    const init = async () => {
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
+
+      const hero = heroRef.current;
+      if (!hero) return;
+
+      // Entrance animation
+      const tl = gsap.timeline();
+      tl.fromTo(
+        titleRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }
       )
-      .fromTo(
-        ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.4"
-      );
+        .fromTo(
+          subtitleRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          ctaRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        );
 
-    // Parallax effect on scroll
-    const handleScroll = () => {
-      const scrolled = window.pageYOffset;
-      const rate = scrolled * -0.5;
+      // Parallax via ScrollTrigger (works with Lenis)
+      const parallax = gsap.to(hero, {
+        y: () => -window.innerHeight * 0.3,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
 
-      if (heroRef.current) {
-        gsap.set(heroRef.current, { y: rate });
-      }
+      cleanup = () => {
+        tl.kill();
+        parallax.scrollTrigger?.kill();
+        parallax.kill();
+      };
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    init();
+
+    return () => cleanup?.();
   }, []);
 
   return (

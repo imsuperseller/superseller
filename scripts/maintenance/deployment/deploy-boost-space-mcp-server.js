@@ -17,7 +17,7 @@ class BoostSpaceMCPServerDeployer {
             host: '172.245.56.50',
             port: 22,
             user: 'root',
-            password: '05ngBiq2pTA8XSF76x'
+            password: '${VPS_PASSWORD}'
         };
     }
 

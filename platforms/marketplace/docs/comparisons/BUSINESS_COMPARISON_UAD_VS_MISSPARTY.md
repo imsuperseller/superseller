@@ -5,7 +5,7 @@ This table compares the fundamental business "Why" behind each product branch.
 | Dimension | UAD (Universal Action Doors) | Miss Party (Bounce House Rentals) |
 | :--- | :--- | :--- |
 | **Core Customer Need** | **Security & Necessity**: Homeowners need a functional, safe entry point to protect vehicles and property. | **Joy & Experience**: Parents/planners need a "wow" factor for a celebration and a way to keep kids entertained. |
-| **Primary Purpose** | **High-Value Acquisition**: Converting a one-time high-ticket lead ($1k - $5k+) into a completed installation/repair. | **Volume & Recurring Revenue**: Building a fleet of rentals that generate cash flow through repeat event bookings ($75-$200). |
+| **Primary Purpose** | **High-Value Acquisition**: Converting a one-time high-ticket lead ($1k - $5k+) into a completed installation/repair. | **Volume & Recurring Revenue**: Building a fleet of rentals that generate cash flow through repeat event bookings ($49.99-$200). |
 | **Usage Pattern** | **Fixed / Long-Term**: The product is installed and used daily for 15+ years. Usage is passive and utility-driven. | **Transient / Event-Based**: The product is used intensely for 24-48 hours. Usage is active and leisure-driven. |
 | **Decision Drivers** | **Reliability & Trust**: "Will it work? Is it secure? Is the tech experienced?" | **Aesthetics & Safety**: "Does it look clean/modern? Is it safe for my kids? Is the delivery reliable?" |
 | **Lead Psychology** | **Corrective / Urgent**: Often prompted by a breakdown (broken spring) or home purchase. High intent, low patience. | **Planned / Emotional**: Prompted by a deadline (birthday). High emotional investment, seeks "The Best" look for the party. |

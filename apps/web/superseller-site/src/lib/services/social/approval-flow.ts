@@ -4,7 +4,7 @@
  */
 
 const WAHA_BASE = process.env.WAHA_BASE_URL || "http://172.245.56.50:3000";
-const WAHA_KEY = process.env.WAHA_API_KEY || "4fc7e008d7d24fc995475029effc8fa8";
+const WAHA_KEY = process.env.WAHA_API_KEY || "${WAHA_API_KEY}";
 const WAHA_SESSION = process.env.WAHA_SESSION || "superseller-whatsapp";
 
 export interface ApprovalRequest {

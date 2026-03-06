@@ -13,9 +13,9 @@
 | Route | Method | Auth | Input | Output |
 |-------|--------|------|-------|--------|
 | `/api/billing/status` | GET | Session | None | `{ billing: { currentPeriod, invoices[], usageBreakdown, paymentMethod } }` |
-| `/api/video/subscribe` | POST | Session | `{ plan: 'starter' \| 'pro' \| 'team' }` | `{ url: string }` (Stripe checkout URL) |
+| `/api/video/subscribe` | POST | Session | `{ plan: 'starter' \| 'pro' \| 'team' }` | `{ url: string }` (PayPal checkout URL) |
 | `/api/checkout` | POST | Rate-limited | `{ flowType, productId, tier?, customerEmail, metadata? }` | `{ url: string }` |
-| `/api/webhooks/stripe` | POST | Stripe sig | Raw body (Stripe event) | `{ received: true }` |
+| `/api/webhooks/paypal` | POST | PayPal sig | Raw body (PayPal event) | `{ received: true }` |
 
 ### Video Pipeline
 | Route | Method | Auth | Input | Output |

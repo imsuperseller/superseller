@@ -10,11 +10,15 @@
 
 import pg from "pg";
 
-const DB_URL = process.env.DATABASE_URL || "postgresql://admin:a1efbcd564b928d3ef1d7cae@172.245.56.50:5432/app_db";
+const DB_URL = process.env.DATABASE_URL || "postgresql://admin:${POSTGRES_PASSWORD}@172.245.56.50:5432/app_db";
+
+// Kie.ai credit rate: 1 credit = $0.005 USD
+const CREDIT_RATE = 0.005;
 
 // ═══════════════════════════════════════════════════════════
-// COMPLETE MODEL DATABASE — Feb 2026
+// COMPLETE MODEL DATABASE — Mar 2026
 // Sources: kie.ai/market, fal.ai/explore, provider docs
+// Credit-to-USD: credits × CREDIT_RATE ($0.005)
 // ═══════════════════════════════════════════════════════════
 
 const MODELS = [
@@ -26,6 +30,7 @@ const MODELS = [
     model_family: "kling", version: "3.0", developer: "Kuaishou",
     release_date: "2026-02-05", category: "video", subcategory: "image_to_video",
     kie_model_param: "kling-3.0/video",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/kling-video/v3/pro/image-to-video",
     cost_per_second_usd: 0.135, cost_per_5s_usd: 0.675, cost_per_10s_usd: 1.35,
     pricing_notes: "Pro no-audio. With audio: $0.20/s. Kie.ai flat ~$0.10/clip (bulk rate).",
@@ -49,6 +54,7 @@ const MODELS = [
     model_family: "kling", version: "3.0-std", developer: "Kuaishou",
     release_date: "2026-02-05", category: "video", subcategory: "image_to_video",
     kie_model_param: "kling-3.0/video",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_second_usd: 0.10, cost_per_5s_usd: 0.50, cost_per_10s_usd: 1.00,
     pricing_notes: "Std no-audio. With audio: $0.15/s. 720p native, blurs at 1080p.",
     supports_image_to_video: true, supports_text_to_video: true,
@@ -66,6 +72,7 @@ const MODELS = [
     model_family: "kling", version: "2.6", developer: "Kuaishou",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "kling-2.6/video",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_5s_usd: 0.28, cost_per_10s_usd: 0.55,
     supports_image_to_video: true, supports_native_audio: true,
     max_resolution: "1080p", max_duration_sec: 10, min_duration_sec: 5,
@@ -73,13 +80,14 @@ const MODELS = [
     status: "active",
   },
   {
-    provider: "kie.ai", model_name: "Veo 3.1", model_id: "veo-3.1/video",
-    model_family: "veo", version: "3.1", developer: "Google",
+    provider: "kie.ai", model_name: "Veo 3.1 Fast", model_id: "veo-3.1-fast/video",
+    model_family: "veo", version: "3.1-fast", developer: "Google",
     release_date: "2026-01-15", category: "video", subcategory: "image_to_video",
-    kie_model_param: "veo-3.1",
+    kie_model_param: "veo-3.1-fast",
+    kie_endpoint: "/api/v1/veo/generate",
     fal_endpoint: "fal-ai/veo3.1/first-last-frame-to-video",
-    cost_per_call_usd: 1.25, cost_per_5s_usd: 1.25,
-    pricing_notes: "Quality mode: $1.25/video. Fast mode: $0.30/video. Max 8s clips.",
+    cost_per_call_usd: 0.40, cost_per_5s_usd: 0.40,
+    pricing_notes: "Fast mode: 80 credits ($0.40/video). Max 8s clips.",
     pricing_source: "https://kie.ai/veo-3-1",
     supports_image_to_video: true, supports_text_to_video: true,
     supports_start_end_frame: true, supports_native_audio: true,
@@ -96,6 +104,7 @@ const MODELS = [
     model_family: "seedance", version: "2.0", developer: "ByteDance",
     release_date: "2026-02-10", category: "video", subcategory: "image_to_video",
     kie_model_param: "seedance-2.0",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/seedance-2.0",
     pricing_notes: "Pricing TBD on Kie.ai (new model). Free trial credits available.",
     supports_image_to_video: true, supports_text_to_video: true,
@@ -114,6 +123,7 @@ const MODELS = [
     model_family: "seedance", version: "1.5-pro", developer: "ByteDance",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "seedance-1.5-pro",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
     cost_per_second_usd: 0.035, cost_per_5s_usd: 0.175, cost_per_10s_usd: 0.35,
     pricing_notes: "720p: $0.07/4s, $0.14/8s, $0.21/12s. Audio doubles cost.",
@@ -131,6 +141,7 @@ const MODELS = [
     model_family: "wan", version: "2.6", developer: "Alibaba",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "wan-2.6",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/wan-i2v",
     cost_per_5s_usd: 0.53, cost_per_10s_usd: 1.05,
     pricing_notes: "720p: $0.35/5s. 1080p: $0.53/5s. Reference-to-video mode for consistency.",
@@ -149,6 +160,7 @@ const MODELS = [
     model_family: "sora", version: "2.0", developer: "OpenAI",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "sora-2",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_second_usd: 0.015, cost_per_5s_usd: 0.075, cost_per_10s_usd: 0.15,
     pricing_notes: "Cheapest video model. 720p. Watermark-free audio.",
     pricing_source: "https://kie.ai/sora-2",
@@ -165,6 +177,7 @@ const MODELS = [
     model_family: "hailuo", version: "2.3", developer: "MiniMax",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "hailuo-2.3",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/minimax/hailuo-2.3/pro/image-to-video",
     cost_per_5s_usd: 0.15, cost_per_10s_usd: 0.26,
     pricing_notes: "6s 768P: $0.15, 10s 768P: $0.26. NO 10s@1080p.",
@@ -180,6 +193,7 @@ const MODELS = [
     model_family: "runway", version: "gen4-turbo", developer: "Runway",
     category: "video", subcategory: "image_to_video",
     kie_model_param: "runway-gen4-turbo",
+    kie_endpoint: "/api/v1/runway/generate",
     fal_endpoint: "fal-ai/runway/gen4/turbo/image-to-video",
     cost_per_5s_usd: 0.06,
     pricing_notes: "5s@720p: $0.06, 10s@720p or 5s@1080p: $0.15. Fast ~1 min generation.",
@@ -247,6 +261,7 @@ const MODELS = [
     model_family: "kling", version: "avatar-v2-pro", developer: "Kuaishou",
     category: "avatar", subcategory: "talking_head",
     kie_model_param: "kling-avatar-v2-pro",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/kling-video/ai-avatar/v2/pro",
     cost_per_second_usd: 0.08, cost_per_5s_usd: 0.40,
     pricing_notes: "Pro 1080p: $0.08/s. Standard 720p: $0.04/s. Up to 15s.",
@@ -264,6 +279,7 @@ const MODELS = [
     model_family: "infinitetalk", developer: "MeiGen-AI",
     category: "avatar", subcategory: "talking_head",
     kie_model_param: "infinitetalk",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_second_usd: 0.06, cost_per_5s_usd: 0.30,
     pricing_notes: "720p: $0.06/s. 480p: $0.015/s. Precise lip sync, head motion.",
     pricing_source: "https://kie.ai/infinitalk",
@@ -283,9 +299,10 @@ const MODELS = [
     model_family: "recraft", developer: "Recraft",
     category: "upscale", subcategory: "crisp_upscale",
     kie_model_param: "recraft/crisp-upscale",
+    kie_endpoint: "/api/v1/jobs/createTask",
     fal_endpoint: "fal-ai/recraft/upscale/crisp",
-    cost_per_image_usd: 0.004,
-    pricing_notes: "Was $0.04, reduced to $0.004 (10x cheaper). Best for architectural photos.",
+    cost_per_image_usd: 0.0025,
+    pricing_notes: "0.5 credits ($0.0025). Best for architectural photos.",
     pricing_source: "https://kie.ai/recraft-crisp-upscale",
     supports_upscale: true,
     max_upscale_factor: 4,
@@ -300,6 +317,7 @@ const MODELS = [
     model_family: "topaz", developer: "Topaz Labs",
     category: "upscale", subcategory: "ai_upscale",
     kie_model_param: "topaz/image-upscale",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_image_usd: 0.05,
     pricing_notes: "Up to 8x. Max side*factor <= 20000px. Multiple model types.",
     pricing_source: "https://kie.ai/topaz-image-upscale",
@@ -345,8 +363,9 @@ const MODELS = [
     model_family: "nano-banana", developer: "Kie.ai",
     category: "compositing", subcategory: "person_placement",
     kie_model_param: "nano-banana-pro",
-    cost_per_image_usd: 0.09,
-    pricing_notes: "1K-2K: $0.09. 4K: $0.12. Places person into scene with prompt control.",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.02,
+    pricing_notes: "4 credits ($0.02). Places person into scene with prompt control.",
     pricing_source: "https://kie.ai/nano-banana-pro",
     supports_compositing: true,
     max_resolution: "4K",
@@ -361,8 +380,9 @@ const MODELS = [
     model_family: "nano-banana", version: "2.0", developer: "Kie.ai",
     release_date: "2026-02-27", category: "compositing", subcategory: "person_placement",
     kie_model_param: "nano-banana-2",
-    cost_per_image_usd: 0.09,
-    pricing_notes: "1K-2K: ~$0.09. 4K: ~$0.12. Successor to Nano Banana Pro. Supports up to 14 input images, 1K/2K/4K resolution, flexible aspect ratios.",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.02,
+    pricing_notes: "4 credits ($0.02). Successor to Nano Banana Pro. Supports up to 14 input images, 1K/2K/4K resolution, flexible aspect ratios.",
     pricing_source: "https://kie.ai/nano-banana-2",
     supports_compositing: true,
     max_resolution: "4K",
@@ -404,8 +424,9 @@ const MODELS = [
     model_family: "suno", version: "5.0", developer: "Suno",
     category: "music", subcategory: "music_generation",
     kie_model_param: "V5",
-    cost_per_call_usd: 0.02,
-    pricing_notes: "$0.02/track. Instrumental + vocals. Custom style prompts.",
+    kie_endpoint: "/api/v1/generate",
+    cost_per_call_usd: 0.06,
+    pricing_notes: "12 credits ($0.06/track). Instrumental + vocals. Custom style prompts.",
     pricing_source: "https://kie.ai/suno",
     supports_native_audio: true,
     quality_overall: 88,
@@ -418,7 +439,9 @@ const MODELS = [
     model_family: "suno", version: "4.5-plus", developer: "Suno",
     category: "music", subcategory: "music_generation",
     kie_model_param: "V4_5PLUS",
-    cost_per_call_usd: 0.02,
+    kie_endpoint: "/api/v1/generate",
+    cost_per_call_usd: 0.06,
+    pricing_notes: "12 credits ($0.06/track).",
     quality_overall: 82,
     fallback_for: "suno-v5",
     status: "active",
@@ -432,6 +455,7 @@ const MODELS = [
     model_family: "gemini", version: "3.0-flash", developer: "Google",
     release_date: "2026-02-01", category: "llm", subcategory: "vision_text",
     kie_model_param: "gemini-3-flash",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_1m_input_usd: 0.15, cost_per_1m_output_usd: 0.90,
     pricing_notes: "Vision + text. 1M context. 15% better accuracy than 2.5-flash.",
     pricing_source: "https://kie.ai/gemini-3-flash",
@@ -445,6 +469,7 @@ const MODELS = [
     model_family: "gemini", version: "2.5-flash", developer: "Google",
     category: "llm", subcategory: "vision_text",
     kie_model_param: "gemini-2.5-flash",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_1m_input_usd: 0.15, cost_per_1m_output_usd: 0.60,
     quality_overall: 78,
     fallback_for: "gemini-3-flash",
@@ -479,6 +504,7 @@ const MODELS = [
     model_family: "gpt", version: "5.2", developer: "OpenAI",
     release_date: "2026-02-27", category: "llm", subcategory: "reasoning",
     kie_model_param: "gpt-5.2",
+    kie_endpoint: "/api/v1/jobs/createTask",
     pricing_notes: "Available via Kie.ai Chat API. Supports messages, stream, reasoning_effort (low/high), tools. No response_format/temperature/max_tokens.",
     pricing_source: "https://kie.ai/gpt-5.2",
     quality_overall: 94,
@@ -493,9 +519,10 @@ const MODELS = [
     provider: "kie.ai", model_name: "Seedream 4.0", model_id: "seedream-4.0",
     model_family: "seedream", developer: "ByteDance",
     category: "image", subcategory: "text_to_image",
-    kie_model_param: "seedream-4.0",
-    cost_per_image_usd: 0.0175,
-    pricing_notes: "~3.5 credits ($0.0175) per image. Used for FB Bot listing variations.",
+    kie_model_param: "seedream/4.0",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.025,
+    pricing_notes: "5 credits ($0.025) per image. Used for FB Bot listing variations.",
     used_in_pipeline: true, pipeline_role: "image_variation",
     status: "active",
   },
@@ -504,6 +531,7 @@ const MODELS = [
     model_family: "gpt", developer: "OpenAI",
     category: "image", subcategory: "text_to_image",
     kie_model_param: "gpt-image-1",
+    kie_endpoint: "/api/v1/gpt4o-image/generate",
     cost_per_image_usd: 0.04,
     status: "active",
   },
@@ -512,6 +540,7 @@ const MODELS = [
     model_family: "seedream", version: "5-lite", developer: "ByteDance",
     release_date: "2026-02-27", category: "image", subcategory: "text_to_image",
     kie_model_param: "seedream-5-lite",
+    kie_endpoint: "/api/v1/jobs/createTask",
     cost_per_image_usd: 0.01,
     pricing_notes: "Text-to-image and image-to-image. Supports resolution up to 2048x2048, aspect ratios, seed control, prompt enhancement toggle.",
     pricing_source: "https://kie.ai/seedream-5-lite",
@@ -519,6 +548,360 @@ const MODELS = [
     max_resolution: "2048x2048",
     quality_overall: 85,
     walkthrough_notes: "Newer Seedream generation. Potential replacement for Seedream 4.0 for FB Bot images if quality matches.",
+    status: "active",
+  },
+
+  // ─────────────────────────────────────────
+  // NEW MODELS — Mar 2026
+  // ─────────────────────────────────────────
+
+  // Veo 3 Quality (separate from Fast)
+  {
+    provider: "kie.ai", model_name: "Veo 3.1 Quality", model_id: "veo-3.1-quality/video",
+    model_family: "veo", version: "3.1-quality", developer: "Google",
+    release_date: "2026-01-15", category: "video", subcategory: "image_to_video",
+    kie_model_param: "veo-3.1-quality",
+    kie_endpoint: "/api/v1/veo/generate",
+    cost_per_call_usd: 2.00, cost_per_5s_usd: 2.00,
+    pricing_notes: "Quality mode: 400 credits ($2.00/video). Max 8s clips. 4K output.",
+    pricing_source: "https://kie.ai/veo-3-1",
+    supports_image_to_video: true, supports_text_to_video: true,
+    supports_start_end_frame: true, supports_native_audio: true,
+    max_resolution: "4K", max_duration_sec: 8, min_duration_sec: 4,
+    quality_overall: 97, quality_realism: 98, quality_motion: 93,
+    quality_consistency: 90, quality_architecture: 96, speed_score: 15,
+    real_estate_score: 90,
+    walkthrough_notes: "Premium hero shots only. 4K cinema quality. $2/video — use sparingly.",
+    best_for_rooms: ["exterior", "pool"],
+    status: "active",
+  },
+
+  // Veo 3 (original)
+  {
+    provider: "kie.ai", model_name: "Veo 3", model_id: "veo-3/video",
+    model_family: "veo", version: "3.0", developer: "Google",
+    category: "video", subcategory: "text_to_video",
+    kie_model_param: "veo-3",
+    kie_endpoint: "/api/v1/veo/generate",
+    cost_per_call_usd: 1.50,
+    pricing_notes: "300 credits ($1.50). Text-to-video with native audio.",
+    supports_text_to_video: true, supports_native_audio: true,
+    max_resolution: "1080p", max_duration_sec: 8,
+    quality_overall: 94, quality_realism: 95,
+    status: "active",
+  },
+
+  // Runway Aleph
+  {
+    provider: "kie.ai", model_name: "Runway Aleph", model_id: "runway-aleph/video",
+    model_family: "runway", version: "aleph", developer: "Runway",
+    category: "video", subcategory: "video_to_video",
+    kie_model_param: "runway-aleph",
+    kie_endpoint: "/api/v1/aleph/generate",
+    cost_per_5s_usd: 0.20,
+    pricing_notes: "Video-to-video editing. Post-production transforms. Max 5s.",
+    supports_video_to_video: true,
+    max_resolution: "1080p", max_duration_sec: 5,
+    quality_overall: 80,
+    status: "active",
+  },
+
+  // Flux Kontext Pro
+  {
+    provider: "kie.ai", model_name: "Flux Kontext Pro", model_id: "flux-kontext-pro",
+    model_family: "flux", version: "kontext-pro", developer: "Black Forest Labs",
+    category: "image", subcategory: "image_editing",
+    kie_model_param: "flux-kontext/pro",
+    kie_endpoint: "/api/v1/flux/kontext/generate",
+    cost_per_image_usd: 0.025,
+    pricing_notes: "5 credits ($0.025). Cheapest high-quality image editing. Natural language edits.",
+    supports_image_edit: true, supports_inpainting: true,
+    max_resolution: "2048x2048",
+    quality_overall: 90,
+    walkthrough_notes: "Best value for image editing tasks. Text-guided edits, style transfer, object removal.",
+    status: "active",
+  },
+
+  // Flux Kontext Max
+  {
+    provider: "kie.ai", model_name: "Flux Kontext Max", model_id: "flux-kontext-max",
+    model_family: "flux", version: "kontext-max", developer: "Black Forest Labs",
+    category: "image", subcategory: "image_editing",
+    kie_model_param: "flux-kontext/max",
+    kie_endpoint: "/api/v1/flux/kontext/generate",
+    cost_per_image_usd: 0.05,
+    pricing_notes: "10 credits ($0.05). Higher quality editing than Pro.",
+    supports_image_edit: true, supports_inpainting: true,
+    max_resolution: "2048x2048",
+    quality_overall: 93,
+    fallback_for: "flux-kontext-pro",
+    status: "active",
+  },
+
+  // GPT Image 1.5
+  {
+    provider: "kie.ai", model_name: "GPT Image 1.5", model_id: "gpt-image-1.5",
+    model_family: "gpt", developer: "OpenAI",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "gpt-image-1.5",
+    kie_endpoint: "/api/v1/gpt4o-image/generate",
+    cost_per_image_usd: 0.04,
+    pricing_notes: "8 credits ($0.04). Latest GPT image generation.",
+    supports_image_edit: true,
+    quality_overall: 88,
+    status: "active",
+  },
+
+  // Seedream 4.5
+  {
+    provider: "kie.ai", model_name: "Seedream 4.5", model_id: "seedream-4.5",
+    model_family: "seedream", version: "4.5", developer: "ByteDance",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "seedream/4.5",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.032,
+    pricing_notes: "6.5 credits ($0.032). 4K capable. Multimodal reasoning.",
+    supports_image_edit: true,
+    max_resolution: "4K",
+    quality_overall: 88,
+    status: "active",
+  },
+
+  // Google Imagen 4
+  {
+    provider: "kie.ai", model_name: "Google Imagen 4 Fast", model_id: "imagen-4-fast",
+    model_family: "imagen", version: "4-fast", developer: "Google",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "imagen-4/fast",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.02,
+    pricing_notes: "4 credits ($0.02). Fast generation.",
+    quality_overall: 85,
+    status: "active",
+  },
+  {
+    provider: "kie.ai", model_name: "Google Imagen 4 Standard", model_id: "imagen-4-standard",
+    model_family: "imagen", version: "4-standard", developer: "Google",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "imagen-4/standard",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.04,
+    pricing_notes: "8 credits ($0.04). Higher quality.",
+    quality_overall: 90,
+    status: "active",
+  },
+
+  // Midjourney V7
+  {
+    provider: "kie.ai", model_name: "Midjourney V7", model_id: "midjourney-v7",
+    model_family: "midjourney", version: "7", developer: "Midjourney",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "midjourney/v7",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.01,
+    pricing_notes: "~2 credits ($0.01). $0.04 for 4 variants. Best artistic quality.",
+    quality_overall: 95,
+    walkthrough_notes: "Best creative/artistic quality. Not ideal for photorealism — use for marketing graphics.",
+    status: "active",
+  },
+
+  // ElevenLabs TTS Turbo 2.5
+  // Pricing: 6 credits/1K chars (~$0.03/1K chars). 150+ voices. Speed: 0.7-1.2x.
+  {
+    provider: "kie.ai", model_name: "ElevenLabs TTS Turbo 2.5", model_id: "elevenlabs-tts-turbo-2.5",
+    model_family: "elevenlabs", version: "turbo-2.5", developer: "ElevenLabs",
+    category: "audio", subcategory: "text_to_speech",
+    kie_model_param: "elevenlabs/text-to-speech-turbo-2-5",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.03,
+    pricing_notes: "6 credits/1K chars ($0.03/1K). Fast low-latency TTS. 150+ voices. Max 5K chars.",
+    supports_native_audio: true,
+    quality_overall: 88,
+    walkthrough_notes: "Fast TTS for voiceovers. Lower quality than Multilingual V2 but faster. Language enforcement available.",
+    status: "active",
+  },
+
+  // ElevenLabs TTS Multilingual V2
+  // Pricing: 12 credits/1K chars (~$0.06/1K chars). 150+ voices. 70+ languages.
+  {
+    provider: "kie.ai", model_name: "ElevenLabs TTS Multilingual V2", model_id: "elevenlabs-tts-multilingual-v2",
+    model_family: "elevenlabs", version: "multilingual-v2", developer: "ElevenLabs",
+    category: "audio", subcategory: "text_to_speech",
+    kie_model_param: "elevenlabs/text-to-speech-multilingual-v2",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.06,
+    pricing_notes: "12 credits/1K chars ($0.06/1K). Higher quality, 70+ languages, 150+ voices. Max 5K chars.",
+    supports_native_audio: true,
+    quality_overall: 92,
+    walkthrough_notes: "Best ElevenLabs TTS quality. Use for luxury videos, multi-language. Voice param: Rachel, Aria, Roger, etc.",
+    status: "active",
+  },
+
+  // ElevenLabs Text-to-Dialogue V3
+  // Pricing: 14 credits/1K chars (~$0.07/1K chars). Multi-speaker. Inline audio tags.
+  {
+    provider: "kie.ai", model_name: "ElevenLabs Text-to-Dialogue V3", model_id: "elevenlabs-dialogue-v3",
+    model_family: "elevenlabs", version: "dialogue-v3", developer: "ElevenLabs",
+    category: "audio", subcategory: "text_to_dialogue",
+    kie_model_param: "elevenlabs/text-to-dialogue-v3",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.07,
+    pricing_notes: "14 credits/1K chars ($0.07/1K). Multi-speaker dialogue. Tags: [whispers], [laughs], [sarcastic]. Max 5K chars.",
+    supports_native_audio: true,
+    quality_overall: 95,
+    walkthrough_notes: "Most expressive ElevenLabs model. Multi-speaker with realistic turn-taking. 70+ languages. Use ... for pauses, -- for interruptions.",
+    status: "active",
+  },
+
+  // ElevenLabs Sound Effect V2
+  // Pricing: 0.24 credits/sec (~$0.0012/sec, ~14 credits/min).
+  {
+    provider: "kie.ai", model_name: "ElevenLabs Sound Effect V2", model_id: "elevenlabs-sfx-v2",
+    model_family: "elevenlabs", version: "sfx-v2", developer: "ElevenLabs",
+    category: "audio", subcategory: "sound_effects",
+    kie_model_param: "elevenlabs/sound-effect-v2",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.0012,
+    pricing_notes: "0.24 credits/sec ($0.0012/sec). Max 22s, 450 chars prompt. Loop mode available. 48kHz professional output.",
+    supports_native_audio: true,
+    quality_overall: 85,
+    walkthrough_notes: "Custom sound FX for video production — door creaks, footsteps, ambience. Royalty-free output.",
+    status: "active",
+  },
+
+  // ElevenLabs Audio Isolation
+  // Pricing: 0.20 credits/sec (~$0.001/sec, ~12 credits/min).
+  {
+    provider: "kie.ai", model_name: "ElevenLabs Audio Isolation", model_id: "elevenlabs-audio-isolation",
+    model_family: "elevenlabs", version: "audio-isolation", developer: "ElevenLabs",
+    category: "audio", subcategory: "audio_processing",
+    kie_model_param: "elevenlabs/audio-isolation",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.001,
+    pricing_notes: "0.20 credits/sec ($0.001/sec). Removes background noise/music, preserves speech. Max 500MB/1hr.",
+    supports_native_audio: true,
+    quality_overall: 90,
+    walkthrough_notes: "Extract clean voice from noisy recordings. Use for voice cloning prep, call cleanup. Accepts MPEG/WAV/AAC/MP4/OGG.",
+    status: "active",
+  },
+
+  // ElevenLabs Speech-to-Text (Scribe v1)
+  // Pricing: 3.5 credits/min (~$0.0175/min). 99 languages.
+  {
+    provider: "kie.ai", model_name: "ElevenLabs Speech-to-Text", model_id: "elevenlabs-stt",
+    model_family: "elevenlabs", version: "scribe-v1", developer: "ElevenLabs",
+    category: "audio", subcategory: "speech_to_text",
+    kie_model_param: "elevenlabs/speech-to-text",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.0175,
+    pricing_notes: "3.5 credits/min ($0.0175/min). WER 3.3% English. Speaker diarization up to 32. Max 200MB.",
+    supports_native_audio: true,
+    quality_overall: 93,
+    walkthrough_notes: "Best transcription on Kie.ai. Use for call recordings, voice notes, video subtitles. Returns word-level timestamps + speaker IDs.",
+    status: "active",
+  },
+
+  // Wan 2.2 Speech-to-Video Turbo
+  // Pricing: 12-24 credits/sec by resolution (480p=$0.06/s, 580p=$0.09/s, 720p=$0.12/s).
+  {
+    provider: "kie.ai", model_name: "Wan 2.2 Speech-to-Video Turbo", model_id: "wan-speech-to-video-turbo",
+    model_family: "wan", version: "2.2-a14b", developer: "Alibaba",
+    category: "video", subcategory: "speech_to_video",
+    kie_model_param: "wan/2-2-a14b-speech-to-video-turbo",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_call_usd: 0.06,
+    pricing_notes: "12 credits/sec at 480p ($0.06/s). 580p: 18 credits/s ($0.09). 720p: 24 credits/s ($0.12). 14B MoE model.",
+    supports_native_audio: true,
+    quality_overall: 88,
+    walkthrough_notes: "Lip-synced talking head from image + audio. Perfect for agent intros, property narrations. 20-48s generation time at 720p.",
+    status: "active",
+  },
+
+  // Suno Extend
+  {
+    provider: "kie.ai", model_name: "Suno Extend", model_id: "suno-extend",
+    model_family: "suno", version: "extend", developer: "Suno",
+    category: "music", subcategory: "music_extension",
+    kie_model_param: "suno-extend",
+    kie_endpoint: "/api/v1/generate",
+    cost_per_call_usd: 0.06,
+    pricing_notes: "12 credits ($0.06). Extends existing Suno tracks.",
+    supports_native_audio: true,
+    quality_overall: 85,
+    walkthrough_notes: "Extend tracks to match video length. Seamless continuation.",
+    status: "active",
+  },
+
+  // Suno Vocal Removal
+  {
+    provider: "kie.ai", model_name: "Suno Vocal Removal", model_id: "suno-vocal-removal",
+    model_family: "suno", version: "vocal-removal", developer: "Suno",
+    category: "music", subcategory: "audio_processing",
+    kie_model_param: "suno-vocal-removal",
+    kie_endpoint: "/api/v1/vocal-removal/generate",
+    cost_per_call_usd: 0.02,
+    pricing_notes: "4 credits ($0.02). Isolate vocals from instrumentals.",
+    supports_native_audio: true,
+    quality_overall: 80,
+    walkthrough_notes: "Isolate vocals or instrumentals from tracks.",
+    status: "active",
+  },
+
+  // Topaz Video Upscale
+  {
+    provider: "kie.ai", model_name: "Topaz Video Upscale", model_id: "topaz/video-upscale",
+    model_family: "topaz", developer: "Topaz Labs",
+    category: "upscale", subcategory: "video_upscale",
+    kie_model_param: "topaz/video-upscale",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_second_usd: 0.04,
+    pricing_notes: "2x: $0.04/s, 4x: $0.07/s. Video upscaling — could upscale Kling 720p to 4K.",
+    supports_upscale: true, supports_video_to_video: true,
+    max_upscale_factor: 4,
+    quality_overall: 93,
+    walkthrough_notes: "Upscale Kling 720p std to 1080p/4K. Worth it for hero clips at $0.04/s.",
+    status: "active",
+  },
+
+  // Grok Imagine
+  {
+    provider: "kie.ai", model_name: "Grok Imagine", model_id: "grok-imagine",
+    model_family: "grok", developer: "xAI",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "grok-imagine",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.02,
+    pricing_notes: "4 credits ($0.02). xAI image generation.",
+    quality_overall: 82,
+    status: "active",
+  },
+
+  // Ideogram V3
+  {
+    provider: "kie.ai", model_name: "Ideogram V3", model_id: "ideogram-v3",
+    model_family: "ideogram", version: "3", developer: "Ideogram",
+    category: "image", subcategory: "text_to_image",
+    kie_model_param: "ideogram/v3",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_image_usd: 0.025,
+    pricing_notes: "5 credits ($0.025). Best text rendering in images.",
+    quality_overall: 87,
+    walkthrough_notes: "Best for images that need readable text — logos, signs, marketing materials.",
+    status: "active",
+  },
+
+  // Luma Dream Machine
+  {
+    provider: "kie.ai", model_name: "Luma Dream Machine 2.0", model_id: "luma-2.0/video",
+    model_family: "luma", version: "2.0", developer: "Luma AI",
+    category: "video", subcategory: "image_to_video",
+    kie_model_param: "luma-2.0",
+    kie_endpoint: "/api/v1/jobs/createTask",
+    cost_per_5s_usd: 0.15,
+    pricing_notes: "5s: $0.15. Modify mode available for video-to-video editing.",
+    supports_image_to_video: true, supports_text_to_video: true, supports_video_to_video: true,
+    max_resolution: "1080p", max_duration_sec: 9,
+    quality_overall: 80,
     status: "active",
   },
 ];
@@ -599,11 +982,21 @@ async function main() {
     const recs = [
       { use_case: "video_clip_generation", model_id: "kling-3.0/video", fallback: "seedance-2.0/video", reasoning: "Best real estate quality + Elements for realtor. Proven in 25+ videos." },
       { use_case: "room_transition_flf", model_id: "kling-3.0/video", fallback: "fal-ai/wan-flf2v", reasoning: "Kling start+end frame at $0.10/clip via kie.ai. Wan FLF2V as $0.40 fallback." },
-      { use_case: "photo_upscale", model_id: "recraft/crisp-upscale", fallback: "fal-ai/esrgan", reasoning: "Recraft $0.004/img preserves architecture. ESRGAN $0.001 as budget fallback." },
-      { use_case: "music_generation", model_id: "suno-v5", fallback: "suno-v4.5-plus", reasoning: "Suno V5 latest quality at $0.02/track." },
+      { use_case: "photo_upscale", model_id: "recraft/crisp-upscale", fallback: "fal-ai/esrgan", reasoning: "Recraft $0.0025/img (0.5 credits) preserves architecture. ESRGAN $0.001 as budget fallback." },
+      { use_case: "music_generation", model_id: "suno-v5", fallback: "suno-v4.5-plus", reasoning: "Suno V5 latest quality at $0.06/track (12 credits)." },
       { use_case: "photo_classify", model_id: "gemini-3-flash", fallback: "gemini-2.5-flash", reasoning: "Gemini 3 Flash: 15% better accuracy for photo classification." },
-      { use_case: "realtor_compositing", model_id: "nano-banana-pro", fallback: "nano-banana-2", reasoning: "nano-banana-pro is proven on Kie.ai. nano-banana-2 needs model name verification (returned 'Models task execute failed')." },
+      { use_case: "realtor_compositing", model_id: "nano-banana-2", fallback: "nano-banana-pro", reasoning: "Nano Banana 2: upgraded model, 14 input images, $0.02 (4 credits). Pro as fallback." },
       { use_case: "avatar_talking_head", model_id: "kling-avatar-v2-pro", fallback: "infinitetalk", reasoning: "Kling Avatar Pro for Winner Studio. InfiniteTalk as budget option." },
+      // New recommendations
+      { use_case: "image_generation", model_id: "seedream-4.5", fallback: "flux-kontext-pro", reasoning: "Seedream 4.5: $0.032, 4K capable, multimodal reasoning. Flux Kontext Pro as editing fallback." },
+      { use_case: "image_editing", model_id: "flux-kontext-pro", fallback: "gpt-image-1", reasoning: "Flux Kontext Pro: cheapest high-quality editing at $0.025 (5 credits). GPT-4o Image as fallback." },
+      { use_case: "voice_narration", model_id: "elevenlabs-tts-multilingual-v2", fallback: "elevenlabs-tts-turbo-2.5", reasoning: "ElevenLabs Multilingual V2: best quality TTS at $0.06/1K chars. Turbo 2.5 for fast/cheap at $0.03/1K." },
+      { use_case: "multi_voice_dialogue", model_id: "elevenlabs-dialogue-v3", fallback: "elevenlabs-tts-multilingual-v2", reasoning: "Dialogue V3: $0.07/1K chars. Multi-speaker with inline audio tags. Use for testimonials, walkthroughs." },
+      { use_case: "audio_isolation", model_id: "elevenlabs-audio-isolation", fallback: null, reasoning: "Audio Isolation: $0.001/sec. Extract clean voice from noisy recordings. Voice cloning prep, call cleanup." },
+      { use_case: "speech_to_text", model_id: "elevenlabs-stt", fallback: null, reasoning: "Scribe v1: $0.0175/min. Best transcription on Kie.ai. Speaker diarization, word timestamps, 99 languages." },
+      { use_case: "talking_head_video", model_id: "wan-speech-to-video-turbo", fallback: null, reasoning: "Wan 2.2: image+audio→lip-synced video. $0.06-0.12/sec. Agent intros, property narrations." },
+      { use_case: "video_upscale", model_id: "topaz/video-upscale", fallback: "recraft/crisp-upscale", reasoning: "Topaz Video: $0.04/s for video upscaling (720p→4K). Recraft Crisp for still images." },
+      { use_case: "sound_effects", model_id: "elevenlabs-sfx-v2", fallback: null, reasoning: "ElevenLabs SFX V2: $0.0012/sec. Royalty-free sound effects from text. Max 22s." },
     ];
 
     for (const rec of recs) {

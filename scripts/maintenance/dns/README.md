@@ -36,7 +36,7 @@ const VERCEL_DNS = {
 ### **3. Set Environment Variable (Optional)**
 
 ```bash
-export CLOUDFLARE_API_TOKEN="UH1jMzVfPgk2NxMkrmucvgIK5xv4Q_tTvtb3zvo1"
+export CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN}"
 ```
 
 Or the script will use the token from the code (hardcoded).

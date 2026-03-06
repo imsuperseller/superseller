@@ -29,7 +29,7 @@ import {
 export const claudeclawWorker = new Worker<ClaudeClawJobData>(
     "claudeclaw",
     async (job: Job<ClaudeClawJobData>) => {
-        const { chatId, messageBody, hasMedia, mediaUrl, mediaType, wahaUrl, wahaSession, mode } = job.data;
+        const { chatId, messageBody, hasMedia, mediaUrl, mediaType, wahaUrl, wahaSession, mode, isGroup, senderChatId } = job.data;
         const target: WahaTarget | undefined = wahaUrl ? { url: wahaUrl, session: wahaSession } : undefined;
 
         logger.info({
@@ -37,14 +37,128 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             chatId,
             bodyLength: messageBody.length,
             hasMedia,
+            isGroup: isGroup || false,
             wahaUrl: wahaUrl || "default",
         });
+
+        // ─── Group Message Handling (with 3-tier memory + guardrails) ──
+        if (isGroup) {
+            const {
+                handleGroupMessage, getGroupConfig, buildGroupSystemPrompt,
+                finalizeGroupResponse,
+            } = await import("../../services/group-agent");
+            const {
+                logGroupMessage, assembleGroupContext, maybeExtractMemories,
+            } = await import("../../services/group-memory");
+
+            const senderPhone = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
+
+            // Try quick handlers first (slash commands, feedback, approvals)
+            const result = await handleGroupMessage(chatId, senderChatId || "", messageBody, target);
+
+            if (result.handled && result.response) {
+                await sendText(chatId, result.response, target);
+                // Log both the user message and the quick-handler response
+                const groupConfig = getGroupConfig(chatId);
+                if (groupConfig) {
+                    await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: messageBody });
+                    await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, content: result.response, isAgent: true });
+                }
+                return { handled: result.handler, isGroup: true };
+            }
+
+            // Not handled by quick handlers — use Claude with memory context + guardrails
+            const groupConfig = getGroupConfig(chatId);
+            if (groupConfig) {
+                // Log incoming message
+                await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: messageBody });
+
+                await startTyping(chatId, target);
+
+                // Assemble 3-tier memory context
+                const memoryContext = await assembleGroupContext(chatId, groupConfig.tenantId, messageBody);
+
+                // Trigger background memory extraction if interval reached
+                await maybeExtractMemories(chatId, groupConfig.tenantId);
+
+                let sdkQuery: any;
+                try {
+                    const sdk = await import("@anthropic-ai/claude-agent-sdk");
+                    sdkQuery = sdk.query;
+                } catch {
+                    await sendText(chatId, "Agent not available on this server.", target);
+                    return { handled: "error", isGroup: true };
+                }
+
+                const groupSystemPrompt = buildGroupSystemPrompt(groupConfig, memoryContext);
+                const events = sdkQuery({
+                    prompt: messageBody,
+                    options: {
+                        cwd: config.claudeclaw.projectDir,
+                        permissionMode: "bypassPermissions",
+                        allowDangerouslySkipPermissions: true,
+                        systemPrompt: groupSystemPrompt,
+                    },
+                });
+
+                let text: string | null = null;
+                const typingInterval = setInterval(() => startTyping(chatId, target), 4000);
+                try {
+                    for await (const event of events) {
+                        if (event.type === "result") text = event.result;
+                    }
+                } finally {
+                    clearInterval(typingInterval);
+                }
+
+                await stopTyping(chatId, target);
+
+                if (text) {
+                    // Apply guardrails before sending
+                    const { text: safeText, blocked } = await finalizeGroupResponse(
+                        chatId, groupConfig.tenantId, text,
+                    );
+
+                    const formatted = formatForWhatsApp(safeText);
+                    const chunks = splitMessage(formatted, config.claudeclaw.maxResponseLength);
+                    for (const chunk of chunks) {
+                        await sendText(chatId, chunk, target);
+                        if (chunks.length > 1) await new Promise((r) => setTimeout(r, 500));
+                    }
+
+                    return {
+                        handled: blocked ? "group-claude-guardrailed" : "group-claude",
+                        isGroup: true,
+                        responseLength: safeText.length,
+                    };
+                }
+
+                return { handled: "group-claude", isGroup: true, responseLength: 0 };
+            }
+
+            return { handled: "ignored", isGroup: true };
+        }
+
+        // ─── Direct Message Handling (existing flow) ─────────
 
         // Handle slash commands locally (no Claude needed)
         if (isCommand(messageBody)) {
             const response = await handleCommand(chatId, messageBody);
             await sendText(chatId, response, target);
             return { handled: "command", command: messageBody.split(" ")[0] };
+        }
+
+        // Check for approval responses (approve/reject) before sending to Claude
+        if (mode === "personal") {
+            try {
+                const { handleApprovalResponse } = await import("../../services/approval-service");
+                const handled = await handleApprovalResponse(chatId, messageBody);
+                if (handled) {
+                    return { handled: "approval" };
+                }
+            } catch {
+                // Non-critical — fall through to Claude
+            }
         }
 
         // Start typing indicator
@@ -143,6 +257,14 @@ export async function initClaudeClaw(): Promise<void> {
 
     // Create database tables
     await initClaudeClawTables();
+
+    // Init group agent tables + load registered groups
+    const { initGroupAgentTables } = await import("../../services/group-agent");
+    await initGroupAgentTables();
+
+    // Init group memory tables (3-tier memory + message archive)
+    const { initGroupMemoryTables } = await import("../../services/group-memory");
+    await initGroupMemoryTables();
 
     // Clean up expired sessions
     await cleanExpiredSessions();

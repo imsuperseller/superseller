@@ -6,7 +6,7 @@ echo "🚀 Deploying Ortal's Portal..."
 # Server details
 SERVER_IP="172.245.56.50"
 SERVER_USER="root"
-SERVER_PASS="05ngBiq2pTA8XSF76x"
+SERVER_PASS="${VPS_PASSWORD}"
 
 # Create a simple deployment package
 echo "📦 Creating deployment package..."

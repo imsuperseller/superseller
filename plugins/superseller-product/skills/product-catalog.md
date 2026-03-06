@@ -19,7 +19,7 @@ description: All SuperSeller AI products with status, revenue model, and tech st
 - **Customers**: UAD Garage Doors, MissParty Rentals
 - **Revenue**: Per listing activation
 - **Tech**: GoLogin + Kie.ai image gen + Firestore (pending Postgres migration)
-- **Code**: `platforms/marketplace/`, `fb marketplace lister/deploy-package/`
+- **Code**: `platforms/marketplace/`, `fb-marketplace-lister/deploy-package/`
 
 ### SocialHub/Buzz — Social Content AI
 - **Status**: LIVE Phase 1

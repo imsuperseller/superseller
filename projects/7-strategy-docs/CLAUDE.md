@@ -23,8 +23,6 @@ VERCEL_PROJECT_MAP.md
 CREDENTIAL_REFERENCE.md
 PORT_REFERENCE.md
 README.md
-CLAUDE_CODE_WORKFLOW.md
-CODEBASE_VS_NOTEBOOKLM.md
 PROJECTS.md
 ```
 
@@ -89,7 +87,7 @@ elite pro remodeling/**           → Project 6 (Customer Projects)
 ## NotebookLM Notebook Map
 | Notebook | ID | Purpose |
 |----------|----|---------|
-| B.L.A.S.T. | 5811a372 (needs recreation) | Agent behavior, methodology |
+| BLAST | 5811a372 (needs recreation) | Agent behavior, methodology |
 | TourReel | 0baf5f36 | Video pipeline spec |
 | Mivnim/Yossi | e109bcb2 | Winner Studio |
 | Social Media & Lead Gen | cb99e6aa | FB Bot, SocialHub |

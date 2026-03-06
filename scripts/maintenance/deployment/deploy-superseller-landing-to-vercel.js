@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-console.log('🚀 DEPLOYING RENSTO LANDING PAGE TO VERCEL');
+console.log('🚀 DEPLOYING SUPERSELLER LANDING PAGE TO VERCEL');
 
 class VercelDeployer {
     constructor() {
@@ -181,7 +181,7 @@ async function main() {
         const success = await deployer.deploy();
 
         if (success) {
-            console.log('\n🎉 RENSTO LANDING PAGE DEPLOYMENT COMPLETED!');
+            console.log('\n🎉 SUPERSELLER LANDING PAGE DEPLOYMENT COMPLETED!');
             console.log('🎨 Your professional SuperSeller AI landing page is now live');
             console.log('🔗 The redirect loop issue will be resolved once DNS propagates');
         } else {

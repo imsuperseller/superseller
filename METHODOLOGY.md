@@ -102,46 +102,21 @@ Use Sonnet for each teammate. Require plan approval before implementation.
 
 ## 5. UI/UX Skill (Pro Max)
 
-**When**: Any UI/UX work — designing pages, choosing palettes, reviewing components, building dashboards.
+**When**: Any UI/UX work — designing pages, choosing palettes, reviewing components.
 
-**Location**: `.claude/skills/ui-ux-pro-max-skill/` — auto-loaded by Claude Code.
-
-**What it provides**: 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, 25 chart types across 9 tech stacks. BM25 search engine over CSV databases.
-
-**Usage**: The skill activates automatically when UI/UX work is detected. For explicit use:
-```bash
-python3 .claude/skills/ui-ux-pro-max-skill/src/ui-ux-pro-max/scripts/search.py "SaaS dark mode dashboard" --design-system -p "SuperSeller AI"
-```
-
-**SuperSeller AI-specific**: Our stack is Next.js + Tailwind + shadcn/ui. Use `--stack nextjs` or `--stack shadcn` for implementation guidelines.
+**Location**: `.claude/skills/ui-ux-pro-max-skill/` — auto-loaded. Provides 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines. Stack: Next.js + Tailwind + shadcn/ui.
 
 ---
 
 ## 6. Canonical References
 
-| Topic | Location | Notes |
-|-------|----------|-------|
-| Methodology (this doc) | METHODOLOGY.md | Single system, no conflicts |
-| Agent Behavior | .claude/rules/agent-behavior.md | Execution discipline |
-| Work Method | .cursor/rules/work-method-accountability.mdc | Verification before handoff |
-| Agent Teams | ~/.claude/settings.json | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` |
-| UI/UX Skill | .claude/skills/ui-ux-pro-max-skill/ | Design intelligence, auto-loaded |
-| B.L.A.S.T. phases | brain.md § B.L.A.S.T. PROTOCOL | High-level |
-| B.L.A.S.T. full framework | docs/frameworks/blast-framework.md | Antigravity, detailed |
-| NotebookLM B.L.A.S.T. | 1dc7ce26 | Query for alignment |
-| Architecture | .cursorrules, CLAUDE.md | Domain, stack, Stripe |
-| Conflict audit | CONFLICT_AUDIT.md | Run when asked "conflicts?" |
+| Topic | Location |
+|-------|----------|
+| Methodology (this doc) | METHODOLOGY.md |
+| Agent Behavior | .claude/rules/agent-behavior.md |
+| Agent Teams | ~/.claude/settings.json |
+| UI/UX Skill | .claude/skills/ui-ux-pro-max-skill/ |
+| Architecture | CLAUDE.md, brain.md |
+| Conflict audit | CONFLICT_AUDIT.md |
 
----
-
-## 7. When User Asks "Do You Have Conflicts?"
-
-**Run**: CONFLICT_AUDIT.md. Execute checks. Do not confirm without executing.
-
----
-
-## 8. What Was Consolidated (Feb 2026)
-
-- Agent behavior duplicated in .cursor and .claude → kept in sync, same content. `.claude/rules/agent-behavior.md` is canonical; `.cursor/rules/agent-behavior.mdc` mirrors it.
-- B.L.A.S.T. "HALT" vs Agent "one output" → scoped to different contexts (new project vs routine).
-- Multiple methodology sources → this doc covers process methodology. For overall authority, see `brain.md`.
+**Note**: When user asks "Do you have conflicts?", run CONFLICT_AUDIT.md. For overall authority, see `brain.md`.

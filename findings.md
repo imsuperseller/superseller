@@ -43,6 +43,26 @@ All code changes implemented. TypeScript compiles cleanly (`tsc --noEmit` exits 
 - Phase 6 ✅: CRF 16 for dissolve xfade quality
 **Next**: Deploy to RackNerd + ONE end-to-end test job (~$1.50) to validate all fixes together.
 
+### 2026-03-04 (late): FFmpeg drawtext `#` escaping bug
+**Root cause**: The `#` character in addresses like `320 N Maple Dr #Penthouse 605` breaks FFmpeg's drawtext filter because `#` is used for hex color notation (e.g., `#FFFFFF`). The text sanitization in `ffmpeg.ts` escaped `'`, `:`, and `,` but not `#`.
+**Impact**: Test job 56163c67 got ALL 11 clips generated ✅, seamless transitions working ✅, Suno music applied ✅ — then FAILED at the final text overlay stage (85% complete). The video was almost done.
+**Fix**: Added `.replace(/#/g, "\\#")` in both text sanitization locations in `ffmpeg.ts` (lines 422-425 and line 500). Commit de8b6e9.
+**Rule**: When adding new FFmpeg drawtext text, ALWAYS check for special characters: `'`, `:`, `,`, `#`, `%`, `\`. These all have special meaning in FFmpeg filter syntax.
+
+### 2026-03-04 (late): Test job validation — partial success
+Job 56163c67 (320 N Maple Dr, Beverly Hills) confirmed these fixes WORKING:
+- **Phase 2 ✅**: "Zillow hero classified as pool — skipping" — pool exclusion working
+- **Phase 1 ✅**: "Transition map built: 10 seamless, 0 dissolve" — smart transitions working
+- **Phase 1 ✅**: "All transitions seamless — using pure concat" — no unnecessary dissolves
+- **Phase 3 ✅**: Nano Banana composite created for clip 1 only
+- **Phase 5 ✅**: Music style selection running (Suno task created)
+- **FFmpeg #escaping ✅**: Fixed and deployed (commit de8b6e9)
+**NOT YET VALIDATED** (credits exhausted before full completion):
+- Final video playback quality (Phase 6, Phase 7)
+- No random people in interior clips (Phase 3 negative prompts — needs visual check)
+- Text overlay accuracy (Phase 4 — only address/CTA, no room labels)
+- Music variety vs previous videos (Phase 5)
+**Blocker**: Kie.ai credits exhausted mid-batch. Need ~$1.50 for another full test run (11 Kling Pro clips + Nano Banana + Suno).
 ---
 
 ## 2026-03-02: Rensto Favicon Residue on superseller.agency
@@ -228,7 +248,7 @@ All code changes implemented. TypeScript compiles cleanly (`tsc --noEmit` exits 
 **ACTUAL Root Cause**: **Wrong Kie.ai Gemini endpoint path** in `apps/worker/src/services/gemini.ts`
 - **Bug**: `KIE_BASE = "https://api.kie.ai/api"` → resulted in `/api/gemini-3-flash/v1/chat/completions` (404)
 - **Fix**: Changed to `KIE_BASE = "https://api.kie.ai"` → now `/gemini-3-flash/v1/chat/completions` (correct)
-- **Reference**: FB Marketplace bot (`fb marketplace lister/deploy-package/content-generator.js`) had working pattern
+- **Reference**: FB Marketplace bot (`fb-marketplace-lister/deploy-package/content-generator.js`) had working pattern
 - **Why I blamed Kie.ai initially**: Lazy debugging — saw 500 errors, assumed outage instead of investigating endpoint structure
 
 **Impact**:
@@ -383,7 +403,7 @@ cumSec += dur;  // Now arithmetic addition
 - **Scheduler DISPLAY env**: `spawn()` in scheduler.js wasn't passing `DISPLAY` to child processes. Added `env: { ...process.env, DISPLAY: ':100' }`.
 
 **Key FB bot facts (V2 — Feb 23 rewrite)**:
-- Bot config: `fb marketplace lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server)
+- Bot config: `fb-marketplace-lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server)
 - DB: `fb_listings` table in `app_db` on RackNerd (same Postgres as worker), `config_data` JSONB column for dedup
 - Webhook server V2: port 8082, unique config generation, Kie.ai images, non-blocking replenishment
 - Scheduler V2: 20min cycles, 6am-10pm CST, postLimit (5 UAD, 3 MissParty), cooldownMinutes (15 UAD, 30 MissParty)
@@ -663,7 +683,7 @@ cumSec += dur;  // Now arithmetic addition
 
 1. **INFRA_SSOT.md says Telnyx "DORMANT"** — Actually ACTIVE for UAD/MissParty (n8n workflows firing every 15 min). **STALE — needs update.**
 2. **brain.md + DECISIONS.md say n8n is "backup only"** — But UAD/MissParty lead pipeline runs production n8n workflows. **CONFLICT — needs clarification.**
-3. **CLAUDE_CODE_WORKFLOW.md referenced but doesn't exist** — Dead reference in CLAUDE.md line 47.
+3. **CLAUDE_CODE_WORKFLOW.md deprecated** — Removed as reference. Terminal workflow patterns no longer maintained in codebase.
 4. **NotebookLM 18, 19, 20 deprecated/empty** — Still listed in NOTEBOOKLM_INDEX.md.
 
 #### Admin Dashboard Gaps (from background audit)
@@ -854,8 +874,8 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 **Telnyx / Voice AI / Lead Pipeline — FIXED (2026-02-22):**
 
 **Architecture (discovered Feb 22):** The Telnyx numbers are connected to **Telnyx AI Assistants** — fully autonomous voice agents that handle calls natively on Telnyx (not via n8n webhooks). Two separate Telnyx accounts:
-- **UAD/MissParty account** (`KEY019B52B283A906F6B2150BD499B7BD99`): 5 numbers (4 UAD + 1 MissParty)
-- **SuperSeller AI account** (`KEY019B6800DE1DD2DEF3FADD55DF7946F8`): 1 number (Voice AI "Hope")
+- **UAD/MissParty account** (`${TELNYX_KEY_ID_1}`): 5 numbers (4 UAD + 1 MissParty)
+- **SuperSeller AI account** (`${TELNYX_KEY_ID_2}`): 1 number (Voice AI "Hope")
 
 **Telnyx AI Assistants:**
 - **UAD "Sarah"** (`assistant-5515bf13`): Qwen3-235B, Deepgram Nova-2, Telnyx.NaturalHD.Esther voice. Greets callers, collects lead info, books garage door appointments, explains $49 trip charge. 4 numbers routed to it.
@@ -1080,7 +1100,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - POST `/browser/{profileId}/cookies` — upload cookies
 - No PATCH support → 404
 
-**Proxy**: `geo.floppydata.com:10080` with `VtQPhDQtDugSO8av/Lekbt1ZQ7x4oCOVa`. NEVER change it. It's part of the fingerprint.
+**Proxy**: `geo.floppydata.com:10080` with `${PROXY_USERNAME}/${PROXY_PASSWORD}`. NEVER change it. It's part of the fingerprint.
 
 **Profiles**:
 - UAD: `694b5e53fcacf3fe4b4ff79c` — c_user=732694166... in GoLogin API
@@ -1096,7 +1116,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 **Rate Limits**: MAX 2-3 GoLogin login attempts per day. Each attempt sends notification to client. NEVER do rapid trial-and-error with login scripts.
 
-**Local codebase**: `fb marketplace lister/deploy-package/` has the same files. Sync with server via `rsync` or `scp`.
+**Local codebase**: `fb-marketplace-lister/deploy-package/` has the same files. Sync with server via `rsync` or `scp`.
 
 ---
 
@@ -1154,7 +1174,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Never repeat**: When using GoLogin SDK on a headless Linux server, always set `DISPLAY=:100` and never pass `--no-proxy-server` or `--single-process` in extra_params.
 
 **GoLogin proxy:**
-- `geo.floppydata.com:10080` with auth (VtQPhDQtDugSO8av / Lekbt1ZQ7x4oCOVa) — intermittent. Rotates IPs.
+- `geo.floppydata.com:10080` with auth (${PROXY_USERNAME} / ${PROXY_PASSWORD}) — intermittent. Rotates IPs.
 - Proxy has 3.3GB bandwidth. Recent IPs: 70.114.107.211, 184.92.253.193, 172.108.160.74.
 - GoLogin's internal proxy check uses a 13s timeout and fails intermittently. Just retry.
 
@@ -1196,7 +1216,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Never repeat**: Check proxy connectivity (`curl -x http://proxy:port ...`) before assuming browser issues.
 
 **GoLogin API — Token and Update Errors (Feb 2026):**
-- Used a hardcoded JWT token from conversation context (exp: 2025-04-25, EXPIRED) instead of reading the live token from `bot-config.json`. CREDENTIAL_REFERENCE.md explicitly says `GOLOGIN_TOKEN` lives at `fb marketplace lister/deploy-package/bot-config.json`. On server: `/opt/fb-marketplace-bot/bot-config.json`.
+- Used a hardcoded JWT token from conversation context (exp: 2025-04-25, EXPIRED) instead of reading the live token from `bot-config.json`. CREDENTIAL_REFERENCE.md explicitly says `GOLOGIN_TOKEN` lives at `fb-marketplace-lister/deploy-package/bot-config.json`. On server: `/opt/fb-marketplace-bot/bot-config.json`.
 - Tried `PATCH /browser/{profileId}` — GoLogin API doesn't support PATCH, only GET and PUT → 404.
 - Tried `PUT /browser/{profileId}` with only proxy field — API validation requires ALL fields (name, browserType, os, navigator) → error.
 - Correct approach: GET full profile → modify only the proxy field → PUT entire profile back.
@@ -1318,7 +1338,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 - **Authority Precedence enforced across codebase + NotebookLM**: brain.md is Tier 1. Previously, NotebookLM 1dc7ce26 had NotebookLM as Rank 1 and brain.md as Rank 2. Fixed by pushing compliance override sources to 6 notebooks.
 - **NotebookLM compliance sources pushed (6 notebooks)**:
-  - 1dc7ce26 (B.L.A.S.T.): Authority override — brain.md = Tier 1, gemini.md superseded, Veo/Firestore/learning.log deprecated
+  - 1dc7ce26 (BLAST): Authority override — brain.md = Tier 1, gemini.md superseded, Veo/Firestore/learning.log deprecated
   - 0baf5f36 (Zillow-to-Video): Authority override — brain.md wins over "NotebookLM wins over local"
   - fc048ba8 (n8n workflows): n8n = backup only, Antigravity primary, Firestore retired
   - 743744d5 (Marketplace): Firestore, Airtable.com, BMAD, Webflow = retired
@@ -1331,7 +1351,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
   - platforms/marketplace/PLATFORM_BIBLE.md: Added brain.md reference
   - docs/operations/business/MODEL.md: Firestore → PostgreSQL
   - security/CREDENTIAL_ROTATION_CHECKLIST.md: Redacted Stripe live key
-  - CODEBASE_VS_NOTEBOOKLM.md: Fixed "NotebookLM wins" → "brain.md is Tier 1"
+  - brain.md: Fixed "NotebookLM wins" → "brain.md is Tier 1"
   - brain.md: Added 2 missing notebooks (Claude Code b906e69f, Kling 3.0 6bb5f16d)
 
 ### Vercel Token — Root Cause for Repeated "Invalid Token" (NEVER REPEAT)
@@ -1357,7 +1377,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 ### Remaining Technical Debt
 
-- **8 docs/frameworks/ files** (~5,900 lines) identified as candidates for NotebookLM migration per CODEBASE_VS_NOTEBOOKLM boundary rules. Not migrated yet.
+- **8 docs/frameworks/ files** (~5,900 lines) identified as candidates for NotebookLM migration per codebase vs NotebookLM boundary rules. Not migrated yet.
 - **Stripe live secret key in git history** — redacted in file but still in git history. Needs BFG Repo-Cleaner or key rotation.
 - **Prisma ↔ Drizzle schema sync** — manual process, no automated check. Enum representations differ between ORMs.
 
@@ -1422,7 +1442,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
   - **learning.log retired**: 1dc7ce26 and 12c80d7d referenced learning.log. Override sources added → use findings.md.
   - **f0747c8b (prd template) is different product**: Voice-note-to-video for "Mivnim", not TourReel. Override source added marking it LEGACY. Added to NOTEBOOKLM_INDEX.
   - **CLAUDE.md fixes**: Firestore changed from "fallback reads only" to "deprecated Feb 2026". Worker stack specified "Kie.ai Kling 3.0".
-  - **CODEBASE_VS_NOTEBOOKLM.md**: Added missing notebooks (719854ee, b906e69f, f0747c8b).
+  - **brain.md**: Added missing notebooks (719854ee, b906e69f, f0747c8b).
   - **Admin API routes P0**: All `/api/admin/*` routes lacked auth. Adding verifySession() + admin role check.
   - **Orphaned payment routes deleted**: `/api/payment/create` and `/api/payment/confirm` — zero callers, Firestore imports, no auth. Removed.
   - **56 Firestore imports**: Remain in codebase as stubs (throw at runtime). Documented for future cleanup.
@@ -1454,7 +1474,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - **Image/room mismatch, invented stairs, invented furniture, extra people**: (1) **Stairs**: Default sequences and floorplan included Stairs for 4+ bed homes; single-story ranches got invented stairs. Fix: `isSingleStory(listing)` parses description/amenities/reso_facts for "ranch", "1 story", etc.; `getDefaultSequence` and `buildTourSequence` filter out Stairs when single-story. Floorplan prompt: "Add Stairs ONLY if floorplan CLEARLY shows multiple floors." (2) **Photo–room mismatch**: Heuristic used index (pool=last, foyer=second). Fix: `matchPhotosToRoomsWithVision` (Gemini) when USE_AI_PHOTO_MATCH≠false; assigns best photo per room by content. (3) **Invented furniture**: Kling was inferring from listing (e.g. 70s) and adding period furniture. Fix: KLING_REALTOR_NEGATIVE + "invented furniture, added furnishings, staged furniture, remodeled room"; buildRealtorOnlyKlingPrompt: "CRITICAL: Preserve the EXACT room, furniture, decor. Do NOT add, remove, or change furnishings." (4) **Extra people**: Strengthened negative: "bystander, stranger, family member, guest, crowd, multiple people." See kie.ts for buildRealtorOnlyKlingPrompt
 - **Video "extra low quality" (all recent runs)**: Root cause: **Kling Standard = 720p output**. Pipeline used `mode: "std"` then upscaled to 1080p → blur. Fix: (1) Kling `mode: "pro"` (1080p native). Env `KIE_KLING_MODE=std` to revert if Kie 500. (2) Nano Banana `resolution: "4K"` (was 2K) for sharper composites. Env `NANO_BANANA_RESOLUTION=2K` to revert. (3) FFmpeg preset `medium` (was `fast`). See kie.ts for buildRealtorOnlyKlingPrompt
 - **Worker status overwritten by retry**: Job `deb73ec3` had `master_video_url` populated but `status` remained `generating_clips`. Root cause: Run 1 completed successfully (UPDATE set status=complete); BullMQ retried (e.g. throw after UPDATE, process kill); Run 2 called `updateJobStatus(jobId, "generating_clips", 26)` which overwrote status/progress but NOT master_video_url. Fix: (1) Idempotent start: if `master_video_url` exists, sync status to complete and return. (2) `updateJobStatus` never overwrites when `status='complete' AND master_video_url IS NOT NULL`.
-- **Methodology consolidation**: Multiple working methods (B.L.A.S.T., agent behavior, work-method) had conflicting guidance—B.L.A.S.T. "HALT" vs agent "one output." Created METHODOLOGY.md as single SSOT: B.L.A.S.T. for new projects (phase gates), Agent Behavior for routine tasks (one final output). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior rules to reference METHODOLOGY.md. No more conflicts.
+- **Methodology consolidation**: Multiple working methods (BLAST, agent behavior, work-method) had conflicting guidance—BLAST "HALT" vs agent "one output." Created METHODOLOGY.md as single SSOT: BLAST for new projects (phase gates), Agent Behavior for routine tasks (one final output). Updated brain.md, .cursorrules, CONFLICT_AUDIT, agent-behavior rules to reference METHODOLOGY.md. No more conflicts.
 - **Full video + regen workflow**: Generate FULL video first. Quality issues (cartoon, style drift) can appear in any scene (2, 3, 4+). To fix bad clips only: `JOB_ID=xxx CLIP_NUMBERS=2,3 npx tsx tools/regen-clips.ts`. MAX_CLIPS=1 is DEBUG ONLY—never for quality validation.
 - **Smoke "stuck"**: Job can sit behind others in BullMQ queue. Run `npx tsx tools/smoke-preflight.ts --drain` first to clear waiting jobs + ensure credits. Worker must have MAX_CLIPS=1 for fast (1-clip) smoke.
 - **Video quality regression (realtor robotic, zero listing focus)**: Adding "Person moves FORWARD through the space" to `buildRealtorOnlyKlingPrompt` caused Kling to produce robotic straight-line motion—realtor "going straight", "looking for something", no room engagement. Fix: remove "Person moves FORWARD"; add room-as-star and production guidance ("The [room] is the focus. Reveal the space... Natural real estate tour. Cinematic."). Keep KLING_REALTOR_NEGATIVE. Add talking/lips to neg. See kie.ts for buildRealtorOnlyKlingPrompt
@@ -1478,7 +1498,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 - **Real-data video page flow**: When worker running + VIDEO_WORKER_URL set + valid job ID: page shows real address (1531 Home Park Dr), real listing, status from DB. Job `68fc0ba2-4415-4841-a7a9-b47288b38b43` showed FAILED (credits). Mock only when worker 404/unreachable in dev.
 
-- **Reference alignment**: Agent was mixing references (Cursor rules vs CLAUDE vs brain vs NotebookLM vs Antigravity vs Aitable vs Postgres) because no canonical hierarchy existed. Created REFERENCE_ALIGNMENT.md: precedence order, topic→SSOT map, sync discipline, anti-patterns. Ensures B.L.A.S.T. and other methods are taken seriously via explicit hierarchy.
+- **Reference alignment**: Agent was mixing references (Cursor rules vs CLAUDE vs brain vs NotebookLM vs Antigravity vs Aitable vs Postgres) because no canonical hierarchy existed. Created REFERENCE_ALIGNMENT.md: precedence order, topic→SSOT map, sync discipline, anti-patterns. Ensures BLAST and other methods are taken seriously via explicit hierarchy.
 
 - **Work method accountability**: User repeatedly finds issues before agent. Root causes: no browser verification before handoff; reactive fixes; ignoring feedback. Created work-method-accountability.mdc (alwaysApply) with mandatory: open URL in browser for user-facing flows; run dry-run for pipeline changes; acknowledge work-method failure when user reports.
 
@@ -1496,7 +1516,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 ## Security & Operations (from Feb 2026 audits)
 
-- **Git history / VPS credentials**: Old password `05ngBiq2pTA8XSF76x` may appear in git history (deleted deploy-to-racknerd.js, execute script). Rotate on VPS; never hardcode. Use `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD` env vars.
+- **Git history / VPS credentials**: Old password `${VPS_PASSWORD}` may appear in git history (deleted deploy-to-racknerd.js, execute script). Rotate on VPS; never hardcode. Use `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD` env vars.
 - **library/solution-data/uad.csv**: URLs point to 172.245.56.50:8080. Update if server changes.
 - **docs/templates/tourreel vs apps/worker/legacy_archive**: Verify which is canonical for TourReel templates when updating.
 - **Realtor placement research**: Industry standard is PiP/overlay; in-scene (Nano+Kling) has limits. Full research → NotebookLM 0baf5f36 when MCP available.

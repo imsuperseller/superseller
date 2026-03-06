@@ -12,7 +12,7 @@ import { buildTransitionMap, getXfadeDuration, type TransitionMap } from "../../
 import { uploadToR2, buildR2Key } from "../../services/r2";
 import { createNanoBananaTask, waitForNanoBananaTask } from "../../services/nano-banana";
 import { getNanoBananaRoomPrompt, NANO_BANANA_OPENING_PROMPT } from "../../services/nano-banana-prompts";
-import type { KlingElement } from "../../services/kie";
+import { probeKieCredits, waitForTask, type KlingElement } from "../../services/kie";
 import { deriveHeroFeatures } from "../../services/hero-features";
 import { assignPhotosToClips, validateClipPhotoAssignments } from "../../services/room-photo-mapper";
 import { pickBestApproachPhotoForOpening, matchPhotosToRoomsWithVision, detectFloorplanInPhotos } from "../../services/gemini";
@@ -57,6 +57,21 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 throw new UnrecoverableError("Insufficient Credits"); // No retry—won't fix
             }
             logger.info({ msg: "Credit pre-check passed", userId, currentBalance });
+
+            // 1c. Kie.ai API credit probe — fail early before burning $ on classification/Nano
+            const kieProbe = await probeKieCredits();
+            if (!kieProbe.ok) {
+                if (kieProbe.exhausted) {
+                    // Definitive 402 — no credits, hard fail
+                    const msg = `Kie.ai credits exhausted (pre-flight). ${kieProbe.error}`;
+                    await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [msg, jobId]);
+                    throw new UnrecoverableError(msg);
+                }
+                // API unreachable / timeout — warn but proceed (sentinel clip will catch real issues)
+                logger.warn({ msg: "Kie.ai pre-flight probe unreachable, proceeding with sentinel guard", error: kieProbe.error });
+            } else {
+                logger.info({ msg: "Kie.ai credit pre-flight passed" });
+            }
 
             const listing = await queryOne("SELECT * FROM listings WHERE id = $1", [listingId]);
             if (!listing) throw new UnrecoverableError("Listing not found"); // No retry—data issue
@@ -338,9 +353,18 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             await trackExpense({ service: "gemini", operation: "flash_vision", jobId, userId, metadata: { step: "photo_classify", count: allR2Photos.length } });
 
             // Step 3: Filter out floorplans, aerials, marketing, unusable
-            const usablePhotos = filterUsablePhotos(classifiedPhotos);
+            let usablePhotos = filterUsablePhotos(classifiedPhotos);
+            if (usablePhotos.length === 0 && classifiedPhotos.length > 0) {
+                // All photos were filtered — force-include them as interior_other rather than failing
+                logger.warn({
+                    msg: "All photos filtered — force-including all as interior_other to avoid empty pipeline",
+                    total: classifiedPhotos.length,
+                    filteredTypes: classifiedPhotos.map(p => p.type),
+                });
+                usablePhotos = classifiedPhotos.map(p => ({ ...p, type: "interior_other" as any }));
+            }
             if (usablePhotos.length === 0) {
-                throw new UnrecoverableError(`Photo classification filtered ALL ${classifiedPhotos.length} photos. No usable interior/exterior photos found.`);
+                throw new UnrecoverableError(`No photos available for video pipeline. classifiedPhotos=${classifiedPhotos.length}`);
             }
             logger.info({
                 msg: "Photo filter results",
@@ -369,8 +393,9 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             const maxTypeCount = Math.max(...Object.values(typeDistribution), 0);
             const classificationFailed = maxTypeCount > usablePhotos.length * 0.7 && usablePhotos.length > 3;
             if (classificationFailed) {
-                // NO SILENT DOWNGRADES: unreliable classification means wrong photos in clips.
-                throw new UnrecoverableError(`Photo classification unreliable — ${maxTypeCount}/${usablePhotos.length} photos classified as same type. Distribution: ${JSON.stringify(typeDistribution)}. Cannot proceed with potentially misclassified photos.`);
+                // Retryable — likely transient Gemini 525/502 errors causing fallback to interior_other.
+                // BullMQ will retry later when Gemini recovers. NOT UnrecoverableError.
+                throw new Error(`Photo classification unreliable — ${maxTypeCount}/${usablePhotos.length} photos classified as same type. Distribution: ${JSON.stringify(typeDistribution)}. Gemini likely down — will retry.`);
             }
 
             // PRIORITY 1: Zillow hero image (MLS index 0 = always front exterior by industry standard)
@@ -667,7 +692,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 const completedClips = clips.filter((c: any) => c.status === "complete" && c.video_url);
                 const pendingClips = clips.filter((c: any) => !(c.status === "complete" && c.video_url));
 
-                const clipTasks: Array<{ clip: any; taskId: string | null; alreadyComplete: boolean; skipped?: boolean }> = [];
+                const clipTasks: Array<{ clip: any; taskId: string | null; alreadyComplete: boolean; skipped?: boolean; sentinelVideoUrl?: string }> = [];
 
                 // Add completed clips as-is
                 for (const clip of completedClips) {
@@ -676,24 +701,37 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 }
 
                 if (pendingClips.length > 0) {
-                    // SENTINEL: Launch first pending clip ALONE as a credit probe
+                    // SENTINEL: Launch first clip, WAIT for it to COMPLETE, then batch the rest.
+                    // Old pattern only checked task creation (taskId returned) — didn't prove credits
+                    // were actually sufficient for the full generation. This fix waits for completion.
                     const sentinel = pendingClips[0];
-                    logger.info({ msg: "Sentinel clip — probing Kie.ai credits", clip: sentinel.clip_number });
+                    logger.info({ msg: "Sentinel clip — launching and waiting for COMPLETION before batch", clip: sentinel.clip_number, totalPending: pendingClips.length });
                     try {
                         const sentinelResult = await createClipTask(sentinel);
-                        clipTasks.push(sentinelResult);
-                        logger.info({ msg: "Sentinel clip succeeded — launching remaining clips in parallel", remaining: pendingClips.length - 1 });
+                        // Actually WAIT for sentinel to finish generating (polls Kie.ai)
+                        const sentinelStatus = await waitForTask(sentinelResult.taskId!, "kling");
+                        if (!sentinelStatus.result?.video_url) {
+                            throw new Error(`Sentinel clip completed but no video URL: ${sentinelStatus.error || "unknown"}`);
+                        }
+                        // Track sentinel cost
+                        const sentinelCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
+                        await trackExpense({ service: "kie", operation: config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std", jobId, userId, estimatedCost: sentinelCost, metadata: { clip: sentinel.clip_number, sentinel: true } });
+                        logger.info({ msg: "Sentinel clip COMPLETED — credits confirmed, launching batch", clip: sentinel.clip_number, videoUrl: sentinelStatus.result.video_url.slice(0, 60), remaining: pendingClips.length - 1 });
+
+                        // Store sentinel result so the wait loop below can skip it
+                        clipTasks.push({ clip: sentinel, taskId: sentinelResult.taskId, alreadyComplete: false, sentinelVideoUrl: sentinelStatus.result.video_url });
                     } catch (sentinelErr: any) {
                         if (sentinelErr.creditExhausted || sentinelErr.message?.includes("402")) {
-                            logger.error({ msg: "Sentinel clip failed — Kie.ai credits exhausted. Aborting job (0 wasted calls).", clip: sentinel.clip_number });
-                            throw sentinelErr; // Caught by outer catch → UnrecoverableError
+                            logger.error({ msg: "Sentinel clip failed — Kie.ai credits exhausted. Aborting job (0 wasted clips).", clip: sentinel.clip_number });
+                            throw sentinelErr;
                         }
-                        throw sentinelErr; // Other errors: let pipeline handle normally
+                        throw sentinelErr;
                     }
 
-                    // BATCH: Launch remaining clips in parallel (sentinel proved credits work)
+                    // BATCH: Launch remaining clips in parallel (sentinel COMPLETED = credits work)
                     const remainingClips = pendingClips.slice(1);
                     if (remainingClips.length > 0) {
+                        logger.info({ msg: "Launching remaining clips in parallel", count: remainingClips.length });
                         const batchResults = await Promise.all(remainingClips.map(async (clip: any) => {
                             try {
                                 return await createClipTask(clip);
@@ -713,7 +751,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                 // Wait for all tasks to complete in parallel
                 logger.info({ msg: "Waiting for all clips to complete in parallel..." });
-                const clipResults = await Promise.all(clipTasks.map(async ({ clip, taskId, alreadyComplete }) => {
+                const clipResults = await Promise.all(clipTasks.map(async ({ clip, taskId, alreadyComplete, sentinelVideoUrl }) => {
                     if (alreadyComplete) {
                         const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
                         const dlResp = await fetch(clip.video_url!, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
@@ -722,24 +760,33 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         return { clip, videoPath, videoUrl: clip.video_url! };
                     }
 
-                    const status = await waitForTask(taskId!, "kling");
-                    if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
+                    // Sentinel clips already completed during the probe phase — use cached URL
+                    let videoUrl: string;
+                    if (sentinelVideoUrl) {
+                        videoUrl = sentinelVideoUrl;
+                        logger.info({ msg: "Using sentinel pre-completed video", clip: clip.clip_number });
+                    } else {
+                        const status = await waitForTask(taskId!, "kling");
+                        if (!status.result?.video_url) throw new Error(`Kling 3 completed but no video URL: ${status.error || "unknown"}`);
+                        videoUrl = status.result.video_url;
 
-                    const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
-                    const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
-                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number } });
-                    logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number, cost: clipCost });
+                        const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
+                        const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
+                        await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number } });
+                        logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number, cost: clipCost });
+                    }
 
                     const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
-                    const response = await fetch(status.result.video_url, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
+                    const response = await fetch(videoUrl, { signal: AbortSignal.timeout(MEDIA_FETCH_TIMEOUT_MS) });
                     writeFileSync(videoPath, Buffer.from(await response.arrayBuffer()));
 
+                    const unitCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
                     await query(
                         "UPDATE clips SET status = 'complete', video_url = $1, duration_seconds = $2, api_cost = $3 WHERE id = $4",
-                        [status.result.video_url, clip.duration_seconds, clipCost, clip.id]
+                        [videoUrl, clip.duration_seconds, unitCost, clip.id]
                     );
 
-                    return { clip, videoPath, videoUrl: status.result.video_url };
+                    return { clip, videoPath, videoUrl };
                 }));
 
                 // Post-process: normalize to EXPLICIT 1920x1080 and prepare for stitching

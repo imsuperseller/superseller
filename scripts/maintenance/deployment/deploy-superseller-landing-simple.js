@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-console.log('🚀 DEPLOYING RENSTO LANDING PAGE TO VERCEL (SIMPLE)');
+console.log('🚀 DEPLOYING SUPERSELLER LANDING PAGE TO VERCEL (SIMPLE)');
 
 class SimpleVercelDeployer {
     constructor() {
@@ -155,7 +155,7 @@ async function main() {
         const success = await deployer.deploy();
 
         if (success) {
-            console.log('\n🎉 RENSTO LANDING PAGE READY FOR DEPLOYMENT!');
+            console.log('\n🎉 SUPERSELLER LANDING PAGE READY FOR DEPLOYMENT!');
             console.log('🎨 Your professional SuperSeller AI landing page is ready');
             console.log('🔗 Choose one of the deployment options above');
             console.log('🌐 Once deployed, update DNS to fix superseller.agency');

@@ -10,17 +10,17 @@
 
 ### **🔴 HIGH PRIORITY - Rotate Immediately**
 
-- [ ] **Airtable Personal Access Token**: `pat0dxG1HQcAUz2Kr.*`
-  - Go to: https://airtable.com/create/tokens
+- [ ] **Aitable.ai API Token** (migrated from Airtable.com):
+  - Go to Aitable.ai dashboard → API settings
   - Revoke old token
   - Generate new token
   - Update in environment variables
 
-- [ ] **Stripe API Keys**
-  - Go to: https://dashboard.stripe.com/apikeys
-  - Roll keys (Developers > API Keys > Roll Secret Key)
-  - Update STRIPE_SECRET_KEY in environment
-  - Regenerate webhook secret
+- [ ] **PayPal API Credentials** (migrated from Stripe Feb 2026)
+  - Go to: https://developer.paypal.com/dashboard/applications
+  - Regenerate client secret or create new app
+  - Update PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_WEBHOOK_ID in environment
+  - Note: DB columns retain `stripe*` names but store PayPal IDs
 
 - [ ] **Anthropic API Key**: `sk-ant-*`
   - Go to: https://console.anthropic.com/settings/keys
@@ -105,13 +105,15 @@ For each service:
 After rotating each key:
 
 ```bash
-# Test Airtable
-curl -H "Authorization: Bearer NEW_AIRTABLE_PAT" \
-  https://api.airtable.com/v0/meta/bases
+# Test Aitable.ai
+curl -H "Authorization: Bearer NEW_AITABLE_TOKEN" \
+  https://aitable.ai/fusion/v1/spaces
 
-# Test Stripe
-curl -u "NEW_STRIPE_SECRET_KEY:" \
-  https://api.stripe.com/v1/customers
+# Test PayPal
+curl -v https://api-m.paypal.com/v1/oauth2/token \
+  -H "Accept: application/json" \
+  -u "NEW_PAYPAL_CLIENT_ID:NEW_PAYPAL_CLIENT_SECRET" \
+  -d "grant_type=client_credentials"
 
 # Test OpenAI
 curl -H "Authorization: Bearer NEW_OPENAI_KEY" \
@@ -129,7 +131,9 @@ curl -H "x-api-key: NEW_ANTHROPIC_KEY" \
 - [ ] **Update Vercel Environment Variables**
   ```bash
   vercel env add AIRTABLE_PAT production
-  vercel env add STRIPE_SECRET_KEY production
+  vercel env add PAYPAL_CLIENT_ID production
+  vercel env add PAYPAL_CLIENT_SECRET production
+  vercel env add PAYPAL_WEBHOOK_ID production
   vercel env add OPENAI_API_KEY production
   # ... etc
   ```
@@ -151,7 +155,7 @@ curl -H "x-api-key: NEW_ANTHROPIC_KEY" \
 
 - [ ] **Review Access Logs**
   - Check Airtable access logs
-  - Review Stripe API logs
+  - Review PayPal API logs
   - Check OpenAI usage logs
   - Look for suspicious activity
 
@@ -193,8 +197,8 @@ curl -H "x-api-key: NEW_ANTHROPIC_KEY" \
 
 If you discover suspicious activity:
 
-- **Stripe Support**: https://support.stripe.com/
-- **Airtable Support**: support@airtable.com
+- **PayPal Support**: https://www.paypal.com/us/smarthelp/contact-us
+- **Aitable.ai Support**: support@aitable.ai
 - **OpenAI Support**: https://help.openai.com/
 - **Anthropic Support**: support@anthropic.com
 
@@ -204,4 +208,4 @@ If you discover suspicious activity:
 **Priority**: 🔥 **CRITICAL**  
 **Deadline**: **IMMEDIATE**
 
-**Start with Airtable, Stripe, and OpenAI - these are the most critical!**
+**Start with Airtable, PayPal, and OpenAI - these are the most critical!**

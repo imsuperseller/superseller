@@ -26,7 +26,7 @@ MCP (Model Context Protocol) servers provide Claude Code with direct access to e
 | Server | Image | Status | Purpose |
 |--------|-------|--------|---------|
 | **n8n-mcp** | npx -y n8n-mcp | ✅ Configured | Access n8n workflows via npx (Docker doesn't work) |
-| **stripe-mcp** | mcp/stripe | ✅ Configured | Stripe API operations |
+| **stripe-mcp** | mcp/stripe | ❌ **DEPRECATED** — migrated to PayPal (Feb 2026) | Stripe API operations (no longer active) |
 
 **Note**: n8n-mcp moved to npx (Docker had stdin issues). Working config is in this file and in Cursor MCP settings.
 
@@ -125,6 +125,28 @@ bash /.cursor/scripts/mcp-docker-cleanup.sh
 - **Node.js not installed**: Check with `node --version`
 - **NPX package unavailable**: Check internet connection
 - **File permissions**: Check script is executable
+
+### **Issue 5: Redis MCP — "Server disconnected"**
+
+**Cause**: The Redis MCP (`plugin-superseller-ops-redis`, shown as "redis" in Cursor) cannot reach Redis or the MCP process crashed. Common reasons: Redis unreachable (RackNerd 172.245.56.50), wrong `REDIS_URL`/`REDIS_PASSWORD` in the MCP env, network/firewall, or MCP transport closed (Cursor bug).
+
+**Debugging steps**:
+
+1. **Verify Redis is reachable** (from your machine):
+   ```bash
+   redis-cli -h 172.245.56.50 -p 6379 -a "${REDIS_PASSWORD}" ping
+   ```
+   Expect `PONG`. If this fails, Redis is down or unreachable (VPN/firewall/credentials). See `plugins/superseller-ops/commands/health-check.md` and `CREDENTIAL_REFERENCE.md` for `REDIS_*` locations.
+
+2. **Check MCP env**: In **Cursor Settings → MCP**, ensure the Redis server has `REDIS_URL` or `REDIS_PASSWORD` (and optionally `REDIS_HOST`/`REDIS_PORT`) set. Format: `redis://:PASSWORD@172.245.56.50:6379`.
+
+3. **Restart Cursor**: Fully quit (File → Exit) and reopen. MCP servers start at launch; toggling the Redis server off/on in Settings can also help.
+
+4. **Run the server manually** to see real errors: In `~/.cursor/mcp.json` find the `redis` (or `plugin-superseller-ops-redis`) entry and run the same `command` + `args` in a terminal, with the same `env`. Any connection or auth error will appear in stderr.
+
+5. **If you don’t need Redis MCP**: Disable the Redis server in Cursor Settings → MCP. App/worker Redis usage is unchanged; only Cursor’s Redis MCP tools are affected.
+
+**Reference**: Cursor debugging docs (link in the disconnect message); project health check: `plugins/superseller-ops/commands/health-check.md` (Redis step).
 
 ---
 

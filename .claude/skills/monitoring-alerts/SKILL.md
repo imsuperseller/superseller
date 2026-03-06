@@ -81,7 +81,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 | Kie.ai | `https://api.kie.ai/api/v1/user/balance` (Bearer) | 10000ms | 3 consecutive |
 | Gemini | `generativelanguage.googleapis.com/v1beta/models` | 10000ms | 3 consecutive |
 | Resend | `https://api.resend.com/domains` (Bearer) | 5000ms | 3 consecutive |
-| Stripe | `https://api.stripe.com/v1/balance` (Bearer) | 5000ms | 2 consecutive |
+| PayPal | `https://api-m.paypal.com/v1/oauth2/token` (Basic) | 5000ms | 2 consecutive |
 | Aitable Sync | `aitable.ai/fusion/v1/spaces` (counts unsynced, 50+ = degraded) | 10000ms | 3 consecutive |
 | n8n Backup | `https://n8n.superseller.agency/healthz` | 10000ms | 5 consecutive |
 
@@ -98,7 +98,7 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 | Worker down | 2 failures | 15 min | email + audit |
 | Kie.ai down | 3 failures | 30 min | audit |
 | Gemini down | 3 failures | 30 min | audit |
-| Stripe down | 3 failures | 30 min | audit |
+| PayPal down | 3 failures | 30 min | audit |
 | Ollama down | 3 failures | 60 min | audit |
 | n8n down | 5 failures | 120 min | audit |
 | PostgreSQL slow | >2000ms | 30 min | audit |

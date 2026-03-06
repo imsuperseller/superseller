@@ -63,8 +63,8 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
 
 | File | Purpose |
 |------|---------|
-| `src/app/(main)/admin/page.tsx` | Admin page entry (121 lines) |
-| `src/app/(main)/admin/AdminDashboardClient.tsx` | Client component wrapper |
+| `src/app/[locale]/(main)/admin/page.tsx` | Admin page entry (121 lines) |
+| `src/app/[locale]/(main)/admin/AdminDashboardClient.tsx` | Client component wrapper |
 | `src/components/admin/AdminLayout.tsx` | Sidebar + header layout (239 lines) |
 | `src/components/admin/AdminDashboard.tsx` | Tab orchestrator (65 lines) |
 

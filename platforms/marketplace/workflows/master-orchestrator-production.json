@@ -148,7 +148,7 @@
                     "parameters": [
                         {
                             "name": "Authorization",
-                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                            "value": "Bearer ${N8N_BEARER_TOKEN}"
                         },
                         {
                             "name": "Content-Type",
@@ -189,7 +189,7 @@
                     "parameters": [
                         {
                             "name": "Authorization",
-                            "value": "Bearer 6bb5a5733b79dc30f42ea4ab6a95b9a0"
+                            "value": "Bearer ${N8N_BEARER_TOKEN}"
                         }
                     ]
                 },

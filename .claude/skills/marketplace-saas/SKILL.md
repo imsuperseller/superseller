@@ -42,13 +42,13 @@ Use this skill when working on FB Marketplace bot automation, listing generation
 ### Key Files
 | File | Purpose |
 |------|---------|
-| `fb marketplace lister/deploy-package/webhook-server.js` | Job serving, replenishment, status updates |
-| `fb marketplace lister/deploy-package/scheduler.js` | 20min cycles, operating hours, cooldowns |
-| `fb marketplace lister/deploy-package/product-configs.js` | UAD/MissParty configs, pricing, scenarios |
-| `fb marketplace lister/deploy-package/image-generator.js` | Kie.ai image gen (Seedream 4.5, Flux 2), overlay |
-| `fb marketplace lister/deploy-package/content-generator.js` | Gemini AI copy generation |
-| `fb marketplace lister/deploy-package/facebook-bot-final.js` | GoLogin automation, posting |
-| `fb marketplace lister/deploy-package/bot-config.json` | Phones, locations, schedules, GoLogin profiles |
+| `fb-marketplace-lister/deploy-package/webhook-server.js` | Job serving, replenishment, status updates |
+| `fb-marketplace-lister/deploy-package/scheduler.js` | 20min cycles, operating hours, cooldowns |
+| `fb-marketplace-lister/deploy-package/product-configs.js` | UAD/MissParty configs, pricing, scenarios |
+| `fb-marketplace-lister/deploy-package/image-generator.js` | Kie.ai image gen (Seedream 4.5, Flux 2), overlay |
+| `fb-marketplace-lister/deploy-package/content-generator.js` | Gemini AI copy generation |
+| `fb-marketplace-lister/deploy-package/facebook-bot-final.js` | GoLogin automation, posting |
+| `fb-marketplace-lister/deploy-package/bot-config.json` | Phones, locations, schedules, GoLogin profiles |
 
 ### Database (PostgreSQL)
 **Current**: Single `fb_listings` table (no multi-tenancy)
@@ -126,13 +126,13 @@ setInterval(async () => {
 - `GET /api/marketplace/posts` — List posts with Facebook links
 - `POST /api/marketplace/session` — Upload GoLogin cookies
 
-**UI** (`apps/web/superseller-site/src/app/(main)/dashboard/marketplace/`):
+**UI** (`apps/web/superseller-site/src/app/[locale]/(main)/dashboard/marketplace/`):
 - Product management: add/edit/pause products
 - Post history: calendar view, Facebook links, status
 - Session status: connected/disconnected, reconnect button
 
 ### Phase 3: Billing (Week 3)
-**Stripe Integration** (reuse TourReel credit system):
+**PayPal Integration** (reuse unified billing-credits system):
 - Subscription tiers: DEPRECATED standalone pricing. Uses unified SaaS tiers: Starter ($79/mo), Pro ($149/mo), Team ($299/mo)
 - Post limits: 100/500/unlimited per month
 - Credit-based: $0.30-$0.50 per post (includes Kie.ai generation)
@@ -246,7 +246,7 @@ const listings = await db.query(`
 ```bash
 # Deploy FB bot
 rsync -avz --exclude node_modules \
-  "fb marketplace lister/deploy-package/" \
+  "fb-marketplace-lister/deploy-package/" \
   root@172.245.56.50:/opt/fb-marketplace-bot/
 
 # Restart services
@@ -263,7 +263,7 @@ curl -s http://172.245.56.50:8082/health | jq
 curl -s http://172.245.56.50:8082/health
 
 # PostgreSQL
-ssh root@172.245.56.50 "PGPASSWORD='a1efbcd564b928d3ef1d7cae' psql -U admin -h localhost -d app_db -c 'SELECT COUNT(*) FROM fb_listings WHERE status = '\''queued'\'';'"
+ssh root@172.245.56.50 "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U admin -h localhost -d app_db -c 'SELECT COUNT(*) FROM fb_listings WHERE status = '\''queued'\'';'"
 
 # PM2 processes
 ssh root@172.245.56.50 "pm2 list"
@@ -278,7 +278,7 @@ ssh root@172.245.56.50 "pm2 list"
 
 ### Other
 - NotebookLM cb99e6aa — FB Marketplace, social media, lead gen
-- Codebase: `fb marketplace lister/deploy-package/`
+- Codebase: `fb-marketplace-lister/deploy-package/`
 - `/tmp/saas-gap-analysis.md` — Full SaaS productization analysis (Option A/B/C)
 - `platforms/marketplace/PLATFORM_BIBLE.md` — Product specs, features
 - `PRODUCT_STATUS.md` §2 — Feature matrix, implementation status

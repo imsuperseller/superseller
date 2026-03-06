@@ -9,7 +9,7 @@ const COST_RATES: Record<string, Record<string, number>> = {
     kling_clip_pro: 0.10,
     kling_clip_std: 0.03,
     suno_music: 0.06,   // Corrected: actual Kie.ai rate (was 0.02)
-    nano_banana: 0.09,  // Corrected: actual Kie.ai rate (was 0.05)
+    nano_banana: 0.02,  // 4 credits × $0.005 = $0.02 per image
     flux_image: 0.025,  // Flux 2 Pro text-to-image
   },
   gemini: {

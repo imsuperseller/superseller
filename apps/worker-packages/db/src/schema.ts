@@ -200,6 +200,110 @@ export const usageEvents = pgTable("usage_events", {
     createdAtIdx: index("idx_usage_events_created").on(table.createdAt),
 }));
 
+// --- Instagram Autopilot: Content Reference Database ---
+export const contentStyleEnum = ["cinematic", "raw", "polished", "documentary"] as const;
+export const contentAestheticEnum = ["dark_moody", "bright_clean", "warm_luxury", "industrial"] as const;
+export const introHookEnum = ["question", "stat", "reveal", "direct", "curiosity"] as const;
+export const ctaTypeEnum = ["call", "dm", "save", "link", "none"] as const;
+export const cameraAngleEnum = ["drone", "pov", "wide", "macro", "timelapse", "stabilized"] as const;
+export const contentTypeEnum = ["reel", "story", "carousel", "post"] as const;
+
+export const contentEntries = pgTable("content_entries", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(), // e.g. "elite-pro"
+    type: text("type").notNull(), // reel | story | carousel | post
+    style: text("style"), // cinematic | raw | polished | documentary
+    aesthetic: text("aesthetic"), // dark_moody | bright_clean | warm_luxury | industrial
+    introHook: text("intro_hook"), // question | stat | reveal | direct | curiosity
+    ctaType: text("cta_type"), // call | dm | save | link | none
+    cameraAngle: text("camera_angle"), // drone | pov | wide | macro | timelapse | stabilized
+    cameraType: text("camera_type"), // phone_feel | cinematic | stabilized_walkthrough
+    projectType: text("project_type"), // kitchen | bathroom | full_home | concrete | patio | painting
+    actors: jsonb("actors").default([]), // array of actor IDs used
+    musicStyle: text("music_style"), // upbeat | cinematic | ambient | none
+    captionLength: text("caption_length"), // short | medium | long
+    captionText: text("caption_text"),
+    hashtagSet: jsonb("hashtag_set").default([]),
+    contentLength: integer("content_length"), // seconds for video, slides for carousel
+    r2Key: text("r2_key"),
+    mediaUrl: text("media_url"),
+    thumbnailUrl: text("thumbnail_url"),
+    igPostId: text("ig_post_id"), // Instagram post ID after publishing
+    postedAt: timestamp("posted_at", { withTimezone: true }),
+    dayOfWeek: text("day_of_week"),
+    timeSlot: text("time_slot"), // morning | afternoon | evening | night
+    // Engagement metrics (populated from IG Insights API)
+    impressions: integer("impressions").default(0),
+    reach: integer("reach").default(0),
+    likes: integer("likes").default(0),
+    comments: integer("comments").default(0),
+    shares: integer("shares").default(0),
+    saves: integer("saves").default(0),
+    engagementRate: doublePrecision("engagement_rate"),
+    performanceScore: doublePrecision("performance_score"),
+    // Approval workflow
+    status: text("status").default("draft"), // draft | pending_approval | approved | rejected | revision_requested | published
+    approvedBy: text("approved_by"),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    // Metadata
+    meta: jsonb("meta").default({}), // extensible — new fields go here first
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantIdx: index("idx_content_entries_tenant").on(table.tenantId),
+    typeIdx: index("idx_content_entries_type").on(table.type),
+    statusIdx: index("idx_content_entries_status").on(table.tenantId, table.status),
+    postedAtIdx: index("idx_content_entries_posted").on(table.postedAt),
+    perfIdx: index("idx_content_entries_perf").on(table.tenantId, table.performanceScore),
+}));
+
+// --- Instagram Autopilot: Actor / Cameo Database ---
+export const contentActors = pgTable("content_actors", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(),
+    name: text("name").notNull(),
+    role: text("role").notNull(), // owner | pm | crew | model
+    soraCameoUrl: text("sora_cameo_url"),
+    thumbnailUrl: text("thumbnail_url"),
+    voiceId: text("voice_id"), // ElevenLabs voice ID
+    appearanceNotes: text("appearance_notes"),
+    availableFor: jsonb("available_for").default(["reel", "story", "carousel"]),
+    usageCount: integer("usage_count").default(0),
+    avgEngagement: doublePrecision("avg_engagement"),
+    meta: jsonb("meta").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantIdx: index("idx_content_actors_tenant").on(table.tenantId),
+    roleIdx: index("idx_content_actors_role").on(table.tenantId, table.role),
+}));
+
+// --- Instagram Autopilot: Competitor Ad Research ---
+export const competitorAds = pgTable("competitor_ads", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(),
+    adId: text("ad_id"), // Meta Ad Library ID
+    pageName: text("page_name"),
+    adUrl: text("ad_url"),
+    adText: text("ad_text"),
+    adTitle: text("ad_title"),
+    imageUrl: text("image_url"),
+    videoUrl: text("video_url"),
+    ctaText: text("cta_text"),
+    startDate: text("start_date"),
+    platforms: jsonb("platforms").default([]),
+    // Client feedback
+    liked: boolean("liked"), // null = not reviewed, true = liked, false = disliked
+    feedbackNote: text("feedback_note"),
+    feedbackBy: text("feedback_by"), // who gave feedback
+    feedbackAt: timestamp("feedback_at", { withTimezone: true }),
+    meta: jsonb("meta").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantIdx: index("idx_competitor_ads_tenant").on(table.tenantId),
+    likedIdx: index("idx_competitor_ads_liked").on(table.tenantId, table.liked),
+}));
+
 export const systemSettings = pgTable("system_settings", {
     key: text("key").primaryKey(),
     value: jsonb("value").notNull().default(true),

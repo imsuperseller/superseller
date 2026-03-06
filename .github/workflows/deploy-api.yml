@@ -35,7 +35,7 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.API_PROJECT_ID }}
         run: |
           cd apps/web/superseller-site
-          vercel deploy --prod --token "$VERCEL_TOKEN" --confirm
+          vercel deploy --prod --token "$VERCEL_TOKEN" --yes
 
       - name: Assign Domain Alias
         if: always()

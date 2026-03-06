@@ -18,7 +18,7 @@ interface RetryOptions {
   label?: string;
 }
 
-const TRANSIENT_STATUS_CODES = new Set([429, 500, 502, 503]);
+const TRANSIENT_STATUS_CODES = new Set([429, 500, 502, 503, 504, 524, 525, 526]);
 
 function isTransient(err: any): boolean {
   // Network / timeout errors

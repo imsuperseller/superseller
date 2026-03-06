@@ -11,6 +11,9 @@ import { marketplaceReplenisherWorker, initMarketplaceReplenisher } from "./queu
 import { remotionWorker, initRemotionWorker } from "./queue/workers/remotion.worker";
 import { crewVideoWorker, initCrewVideoWorker } from "./queue/workers/crew-video.worker";
 import { setupBullBoard } from "./bull-board";
+import { initWahaSessions } from "./services/waha-session-manager";
+import { startHealthMonitor } from "./services/health-monitor";
+import { startScheduler } from "./services/scheduler";
 
 async function bootstrap() {
     logger.info("🚀 Starting TourReel Worker Service...");
@@ -41,6 +44,15 @@ async function bootstrap() {
     await initCrewVideoWorker();
     logger.info("✅ Workers initialized");
 
+    // 5. WAHA Multi-Session Bootstrap
+    await initWahaSessions().catch((err) =>
+        logger.error({ msg: "WAHA session bootstrap failed", error: err.message })
+    );
+
+    // 6. Health Monitor + Scheduler
+    startHealthMonitor();
+    startScheduler();
+
     // 5. Start Server
     const port = config.port;
     app.listen(port, () => {
@@ -52,6 +64,10 @@ async function bootstrap() {
     // Handle termination
     process.on("SIGTERM", async () => {
         logger.info("Shutting down...");
+        const { stopHealthMonitor } = await import("./services/health-monitor");
+        const { stopScheduler } = await import("./services/scheduler");
+        stopHealthMonitor();
+        stopScheduler();
         await videoPipelineWorker.close();
         await leadWorker.close();
         await claudeclawWorker.close();

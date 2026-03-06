@@ -15,10 +15,10 @@
    - Connects to: RackNerd VPS (172.245.56.50:5678)
    - Status: ✅ Running
 
-2. **stripe** - Stripe payment APIs
+2. **stripe** - Stripe payment APIs (DEPRECATED — migrated to PayPal Feb 2026)
    - Image: `mcp/stripe:latest`
-   - API Key: Live key configured
-   - Status: ✅ Running
+   - API Key: No longer active — payments now via PayPal
+   - Status: ❌ DEPRECATED — DB columns retain `stripe*` names but store PayPal IDs
 
 ### **NPX-Based MCPs** (5)
 3. **context7** - Context management
@@ -63,8 +63,8 @@ This allows you to:
    - Setup needed: REFRESH_TOKEN, COMPANY_ID, ENV
 
 2. **Local credentials from backup**:
-   - CLIENT_ID: `ABCqMFH2hc4AoEbcx9UzJBSruOKTKtLeosq4XZIqxm3Af9uV0f`
-   - CLIENT_SECRET: `Cf2WeEhdIZLoJCKs60YrR17yMeqLJmth2WaSuK3j`
+   - CLIENT_ID: `${QB_CLIENT_ID}`
+   - CLIENT_SECRET: `${QB_CLIENT_SECRET}`
    - CODE: `XAB1755764793Z2QJzE5k26QgBhaBySZss4LgqV2uNXLIkyGgG`
 
 ### Incomplete Servers

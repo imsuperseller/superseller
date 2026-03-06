@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 
-console.log('🚀 DEPLOYING RENSTO LEGAL PAGES TO NETLIFY');
+console.log('🚀 DEPLOYING SUPERSELLER LEGAL PAGES TO NETLIFY');
 console.log('===========================================');
 
 // Create a simple deployment package
@@ -61,7 +61,7 @@ const indexContent = `<!DOCTYPE html>
 </head>
 <body>
     <div class="container">
-        <h1>RENSTO</h1>
+        <h1>SUPERSELLER</h1>
         <h2>Legal Documents</h2>
         <p class="description">Choose a legal document to view:</p>
         <a href="/privacy-policy.html" class="link">Privacy Policy</a>

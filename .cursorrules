@@ -8,6 +8,6 @@ This file is a legacy pointer. Do not add rules here.
 - **Technical routing** (paths, URLs, stack): [`CLAUDE.md`](CLAUDE.md)
 - **Agent behavior** (execution rules): [`.cursor/rules/agent-behavior.mdc`](.cursor/rules/agent-behavior.mdc)
 - **Cursor-specific rules** (architecture, principles): [`.cursor/rules.md`](.cursor/rules.md)
-- **Methodology** (B.L.A.S.T. vs Agent Behavior): [`METHODOLOGY.md`](METHODOLOGY.md)
+- **Methodology** (BLAST vs Agent Behavior): [`METHODOLOGY.md`](METHODOLOGY.md)
 - **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md)
 - **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md)

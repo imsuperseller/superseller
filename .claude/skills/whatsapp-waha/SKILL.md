@@ -33,9 +33,10 @@ negativeTrigger:
 - **WAHA is the WhatsApp HTTP API** — not the official Meta Business API. It runs its own session.
 - **Chat ID format**: `{phoneWithCountryCode}@c.us` (e.g., `972501234567@c.us`). Never include `+` or dashes.
 - **Session must be alive** — check `isSessionAlive()` before critical sends. Session name: `WAHA_SESSION` env var.
-- **Two sessions**: `internalBoss` (business notifications/approvals to owner — functions like Slack for the business) and `superseller-whatsapp` (future website chatbot with full knowledge base — big project, not yet started).
+- **Four sessions**: `internalBoss` (WORKING — business notifications/approvals to owner), `superseller-whatsapp` (WORKING — group agent + webhook receiver), `superseller-ops` (FAILED), `superseller-biz` (FAILED).
+- **Group agent integration**: `superseller-whatsapp` session has a webhook pointing to `/api/whatsapp/claude/superseller` for ClaudeClaw group processing. See `whatsapp-group-agent` skill for The Method.
 - **All sends are best-effort** — catch errors, log, return null. Never fail a pipeline because WhatsApp is down.
-- **WAHA is used by all products** — Studio (`WAHA_URL`), Lead Pages (`WAHA_BASE_URL`), FB Bot (`config.shared.wahaUrl`). Env var names differ per app.
+- **WAHA is used by all products** — Studio (`WAHA_URL`), Lead Pages (`WAHA_BASE_URL`), FB Bot (`config.shared.wahaUrl`), Worker/ClaudeClaw (`WAHA_BASE_URL`). Env var names differ per app.
 - **OTP TTL is 5 minutes**, max 3 attempts. Stored in Redis key `otp:{phone}`.
 
 ## Architecture
@@ -45,10 +46,11 @@ WAHA Pro Server (self-hosted or cloud)
     ↓
 apps/studio/src/lib/waha.ts (124 lines)
     ↓
-Three consumers:
+Four consumers:
   1. Winner Studio → video delivery + error notifications (env: WAHA_URL)
   2. Lead Pages → lead capture notifications (env: WAHA_BASE_URL)
   3. FB Bot → session alerts + post notifications (env: config.shared.wahaUrl)
+  4. ClaudeClaw Worker → group agent "The Method" (webhook: /api/whatsapp/claude/superseller)
 ```
 
 ## Key Files
@@ -117,7 +119,7 @@ All products use WAHA Pro. Env var names differ by app (historical reasons, not 
 | `WAHA_BASE_URL` | superseller-site (`apps/web/superseller-site`) | WAHA server base URL (lead pages, health check) |
 | `WAHA_API_KEY` | Studio, superseller-site | WAHA Bearer token |
 | `WAHA_SESSION` | Studio, superseller-site | Session name (default: superseller-whatsapp) |
-| `config.shared.wahaUrl` | FB Bot (`fb marketplace lister/`) | WAHA server URL (read from bot-config.json) |
+| `config.shared.wahaUrl` | FB Bot (`fb-marketplace-lister/`) | WAHA server URL (read from bot-config.json) |
 
 **Note**: `WAHA_URL` and `WAHA_BASE_URL` point to the same server (`http://172.245.56.50:3000`). The naming differs per app but the value is identical.
 

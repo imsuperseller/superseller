@@ -194,6 +194,53 @@ See `references/brand-token-map.md` for the complete mapping table.
 | **Screenshot+Claude** | React/Tailwind | Yes | Manual | N/A | Cloning existing UI |
 | **Aceternity/Magic UI** | React | Yes | Via CSS vars | N/A | Animated components |
 
+## Workflow 6: Scroll-Driven Animation Pipeline
+
+### Stack
+- **Lenis** — smooth scroll (single rAF via GSAP ticker, no separate loop)
+- **GSAP ScrollTrigger** — scroll-linked animations (parallax, reveals, scrub)
+- **Framer Motion** — interaction-based animations (hover, click, accordion)
+
+### Reusable Components
+
+| Component | Path | API |
+|-----------|------|-----|
+| `SmoothScrollProvider` | `components/providers/SmoothScrollProvider.tsx` | Wrap `{children}` in layout.tsx. Bridges Lenis → ScrollTrigger. Disables on `prefers-reduced-motion`. |
+| `ScrollReveal` | `components/animations/ScrollReveal.tsx` | `<ScrollReveal direction="up" delay={0.1}>` — GSAP fade+slide on viewport enter |
+| `TextReveal` | `components/animations/TextReveal.tsx` | `<TextReveal splitBy="words" as="h2">` — splits text into spans, staggers in |
+| `ParallaxLayer` | `components/animations/ParallaxLayer.tsx` | `<ParallaxLayer speed={-0.3}>` — depth-based scroll movement |
+
+### Hooks (`hooks/useGsapScrollTrigger.ts`)
+- `useRevealOnScroll(ref, {direction, duration, delay})` — fade+slide on viewport enter
+- `useParallax(ref, {speed})` — depth-based scroll movement (scrubbed)
+- `useSplitTextReveal(ref, {splitBy, stagger})` — split text into spans, animate sequentially
+
+### Brand Token Customization
+
+| Setting | SuperSeller | Rensto | Customer Sites |
+|---------|-------------|--------|---------------|
+| Easing | `power3.out` | `power2.out` | Per brand |
+| Lenis lerp (desktop) | 0.1 | 0.1 | 0.08–0.12 |
+| Lenis lerp (mobile) | 0.06 | 0.1 | 0.06–0.1 |
+| Reveal distance | 40px | 40px | 30–50px |
+| Stagger | 0.04s | 0.04s | 0.03–0.06s |
+
+### Header Scroll Behavior
+Both sites implement:
+- **Hide on scroll down** (after 100px threshold)
+- **Show on scroll up**
+- **Background solidifies** after 100px scroll (transparent → opaque)
+- Uses native `scroll` event listener (passive) — independent of GSAP/Lenis
+
+### Integration Rules
+1. **Lenis + FM `useScroll`**: If FM video scrub breaks, add `data-lenis-prevent` on container
+2. **SSR safety**: All gsap/lenis imports via `await import()` inside `useEffect` — no webpack alias needed for Turbopack
+3. **Keep FM for interactions**: Accordion, hover, modals stay with Framer Motion. Only scroll-triggered effects use GSAP.
+4. **`prefers-reduced-motion`**: All scroll animations disabled when set
+
+### For Customer Sites (`/lp/[slug]`)
+Copy animation components into the customer page. Zero marginal cost (pure code, no API calls). Apply brand tokens from customer config.
+
 ## References
 
 | File | Purpose |

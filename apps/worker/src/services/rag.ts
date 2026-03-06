@@ -206,6 +206,62 @@ export async function listDocuments(
     );
 }
 
+// ─── Text-Only Search (fallback when embeddings unavailable) ───
+
+export async function textSearch(
+    tenantId: string,
+    queryText: string,
+    limit: number = 5,
+): Promise<HybridResult[]> {
+    const rows = await query<HybridResult>(
+        `SELECT id, tenant_id, source, title, content, metadata, created_at,
+                0 as similarity,
+                ts_rank(content_tsv, plainto_tsquery('english', $2)) as text_rank,
+                ts_rank(content_tsv, plainto_tsquery('english', $2)) as combined_score
+         FROM documents
+         WHERE tenant_id = $1
+           AND content_tsv @@ plainto_tsquery('english', $2)
+         ORDER BY text_rank DESC
+         LIMIT $3`,
+        [tenantId, queryText, limit],
+    );
+    return rows;
+}
+
+// ─── Convenience: Search for ClaudeClaw context ───
+
+/**
+ * Search system docs and return formatted markdown string for prompt injection.
+ * Uses hybrid search (vector + text) when embeddings available, falls back to text-only.
+ */
+export async function searchForContext(queryText: string, tenantId: string = "system", limit: number = 5): Promise<string> {
+    let results: HybridResult[];
+    try {
+        results = await hybridSearch(tenantId, queryText, limit);
+    } catch {
+        // Embedding failed (Ollama down, model not loaded, etc.) — use text-only search
+        results = await textSearch(tenantId, queryText, limit);
+    }
+
+    if (results.length === 0) {
+        // Last resort: text-only search even if hybrid returned empty
+        if (results.length === 0) {
+            results = await textSearch(tenantId, queryText, limit);
+        }
+    }
+
+    if (results.length === 0) return "";
+
+    const sections = results.map((r, i) => {
+        const source = r.source || "unknown";
+        const title = r.title || "";
+        const score = (r.combined_score ?? r.similarity ?? 0).toFixed(3);
+        return `[${i + 1}] (${source}${title ? ` — ${title}` : ""}, score: ${score})\n${r.content}`;
+    });
+
+    return sections.join("\n\n---\n\n");
+}
+
 // ─── Delete ───
 
 export async function deleteDocument(id: number): Promise<boolean> {

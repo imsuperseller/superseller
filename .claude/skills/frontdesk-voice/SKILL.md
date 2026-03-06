@@ -70,7 +70,7 @@ negativeTrigger:
 | File | Purpose |
 |------|---------|
 | `apps/worker/src/services/telnyx.ts` | Telnyx API client — CRUD assistants, conversations, outbound calls |
-| `apps/worker/src/queue/workers/frontdesk-poller.worker.ts` | BullMQ poller — ingests conversations every 15 min |
+| `apps/worker/src/queue/workers/frontdesk-poller.worker.ts` | BullMQ poller — ingests conversations every 15 min (PLANNED — not yet created) |
 | `apps/worker/src/config.ts` | `config.telnyx.*` — apiKey, baseUrl, pollInterval, creditsPerCall |
 | `apps/web/superseller-site/src/app/api/admin/frontdesk/route.ts` | Admin CRUD for provisioning |
 | `apps/web/superseller-site/src/app/api/dashboard/calls/route.ts` | Dashboard call log API |

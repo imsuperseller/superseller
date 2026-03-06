@@ -12,7 +12,7 @@ process.env.MCP_MODE = 'stdio';
 process.env.LOG_LEVEL = 'error';
 process.env.DISABLE_CONSOLE_OUTPUT = 'true';
 process.env.N8N_API_URL = 'https://tax4usllc.app.n8n.cloud';
-process.env.N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjYwZjYxZC03ZDFkLTQ5ODAtYWQ1My1iOWM5NTJlNjEzYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NzkzNDIwfQ.FhnGpgBcvWyWZ_KH1PCdmBI_sK08C2hqTY-8GzEQ1Tw';
+process.env.N8N_API_KEY = '${N8N_API_KEY}';
 process.env.N8N_INSTANCE_ID = 'tax4us-cloud';
 process.env.ENABLE_ALL_TOOLS = 'true';
 

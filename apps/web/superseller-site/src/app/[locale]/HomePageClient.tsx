@@ -15,6 +15,8 @@ import { PricingSection } from '@/components/pricing/PricingSection';
 import { CreditSlider } from '@/components/pricing/CreditSlider';
 import { NICHES } from '@/data/niches';
 import { NicheIcon } from '@/components/niche/NicheIcon';
+import { ScrollReveal } from '@/components/animations/ScrollReveal';
+import { TextReveal } from '@/components/animations/TextReveal';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import * as framer from 'framer-motion';
@@ -75,23 +77,17 @@ export default function HomePageClient() {
         {/* 2. The Crew — 7 product cards */}
         <section className="py-24 px-4">
           <div className="container mx-auto max-w-7xl">
-            <motion.div
-              className="text-center mb-16 space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollReveal className="text-center mb-16 space-y-4">
               <Badge className="bg-white/5 text-white/60 border-white/10 px-4 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
                 {t('crewSection.badge')}
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
+              <TextReveal as="h2" className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
                 {t('crewSection.heading')}
-              </h2>
+              </TextReveal>
               <p className="text-lg text-[var(--superseller-text-secondary)] max-w-xl mx-auto">
                 {t('crewSection.description')}
               </p>
-            </motion.div>
+            </ScrollReveal>
             <CrewGrid />
           </div>
         </section>
@@ -102,32 +98,24 @@ export default function HomePageClient() {
         {/* 4. Pick Your Industry */}
         <section className="py-24 px-4">
           <div className="container mx-auto max-w-5xl">
-            <motion.div
-              className="text-center mb-12 space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollReveal className="text-center mb-12 space-y-4">
               <Badge className="bg-[var(--superseller-secondary)]/10 text-[var(--superseller-secondary)] border-[var(--superseller-secondary)]/20 px-4 py-2 uppercase tracking-[0.3em] text-[10px] font-black">
                 {t('industries.badge')}
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
+              <TextReveal as="h2" className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
                 {t('industries.heading')}
-              </h2>
+              </TextReveal>
               <p className="text-lg text-[var(--superseller-text-secondary)] max-w-xl mx-auto">
                 {t('industries.description')}
               </p>
-            </motion.div>
+            </ScrollReveal>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {NICHES.map((niche, i) => (
-                <motion.div
+                <ScrollReveal
                   key={niche.slug}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  delay={i * 0.05}
+                  duration={0.5}
                 >
                   <Link
                     href={`/${niche.slug}` as any}
@@ -149,7 +137,7 @@ export default function HomePageClient() {
                       {t('crewSection.seeSolutions')} &rarr;
                     </span>
                   </Link>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -166,26 +154,18 @@ export default function HomePageClient() {
         {/* 6. FAQ */}
         <section className="py-24 px-4">
           <div className="container mx-auto max-w-3xl">
-            <motion.div
-              className="text-center mb-12 space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
+            <ScrollReveal className="text-center mb-12 space-y-4">
+              <TextReveal as="h2" className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">
                 {t('faq.heading')}
-              </h2>
-            </motion.div>
+              </TextReveal>
+            </ScrollReveal>
 
             <div className="space-y-3">
               {faqItems.map((faq, i) => (
-                <motion.div
+                <ScrollReveal
                   key={i}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  delay={i * 0.04}
+                  duration={0.5}
                 >
                   <div
                     className="rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden"
@@ -221,7 +201,7 @@ export default function HomePageClient() {
                       )}
                     </AnimatePresence>
                   </div>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -230,17 +210,10 @@ export default function HomePageClient() {
         {/* 7. Final CTA */}
         <section className="py-24 px-4">
           <div className="container mx-auto max-w-3xl text-center">
-            <motion.div
-              className="space-y-8"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-tight">
-                {t('cta.heading')}{' '}
-                <span style={{ color: 'var(--superseller-primary)' }}>{t('cta.headingHighlight')}</span>
-              </h2>
+            <ScrollReveal className="space-y-8">
+              <TextReveal as="h2" className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-tight">
+                {t('cta.heading')}
+              </TextReveal>
               <p className="text-xl text-[var(--superseller-text-secondary)] max-w-lg mx-auto">
                 {t('cta.description')}
               </p>
@@ -267,7 +240,7 @@ export default function HomePageClient() {
                   </Button>
                 </Link>
               </div>
-            </motion.div>
+            </ScrollReveal>
           </div>
         </section>
       </main>

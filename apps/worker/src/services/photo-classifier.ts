@@ -64,20 +64,46 @@ const EXCLUDED_TYPES: PhotoType[] = ["floorplan", "aerial", "marketing", "unusab
  * Classify all listing photos using Gemini vision. Returns classified array
  * with types, filtering info, and which photos are usable for tour clips.
  *
- * Sends photos in batches of 10 (Gemini multi-image limit consideration).
+ * Uses parallel single-image requests (concurrency 5) because the Kie.ai
+ * Gemini proxy takes ~40s per image. Batching multiple images in one request
+ * hits the Cloudflare 100s gateway timeout.
  */
 export async function classifyListingPhotos(
     photoR2Urls: string[]
 ): Promise<ClassifiedPhoto[]> {
     if (!photoR2Urls.length) return [];
 
-    const batchSize = 5; // Reduced from 10: Gemini via Kie.ai proxy times out with too many images
-    const results: ClassifiedPhoto[] = [];
+    const CONCURRENCY = 5;
+    const results: ClassifiedPhoto[] = new Array(photoR2Urls.length);
 
-    for (let batchStart = 0; batchStart < photoR2Urls.length; batchStart += batchSize) {
-        const batch = photoR2Urls.slice(batchStart, batchStart + batchSize);
-        const batchResults = await classifyBatch(batch, batchStart);
-        results.push(...batchResults);
+    // Process in waves of CONCURRENCY
+    for (let waveStart = 0; waveStart < photoR2Urls.length; waveStart += CONCURRENCY) {
+        const wave = photoR2Urls.slice(waveStart, waveStart + CONCURRENCY);
+        const waveNum = Math.floor(waveStart / CONCURRENCY) + 1;
+        const totalWaves = Math.ceil(photoR2Urls.length / CONCURRENCY);
+        logger.info({ msg: `Classifying photo wave ${waveNum}/${totalWaves}`, count: wave.length });
+
+        const waveResults = await Promise.allSettled(
+            wave.map((url, i) => classifySinglePhoto(url, waveStart + i))
+        );
+
+        for (let i = 0; i < waveResults.length; i++) {
+            const result = waveResults[i];
+            if (result.status === "fulfilled") {
+                results[waveStart + i] = result.value;
+            } else {
+                logger.warn({ msg: "Single photo classification failed", index: waveStart + i, error: String(result.reason).slice(0, 200) });
+                results[waveStart + i] = {
+                    originalUrl: wave[i],
+                    r2Url: wave[i],
+                    originalIndex: waveStart + i,
+                    type: "interior_other" as PhotoType,
+                    confidence: 0.1,
+                    description: "classification failed",
+                    upscaledUrl: null,
+                };
+            }
+        }
     }
 
     const typeCounts = results.reduce((acc, p) => {
@@ -89,113 +115,87 @@ export async function classifyListingPhotos(
     return results;
 }
 
-async function classifyBatch(
-    urls: string[],
-    startIndex: number
-): Promise<ClassifiedPhoto[]> {
+/**
+ * Classify a single photo via Gemini vision through Kie.ai proxy.
+ * The proxy takes ~40s per image, so we use single-image requests
+ * with parallel concurrency (see classifyListingPhotos) to stay
+ * under Cloudflare's 100s gateway timeout.
+ */
+async function classifySinglePhoto(
+    url: string,
+    index: number
+): Promise<ClassifiedPhoto> {
     const content: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
         {
             type: "text",
-            text: `You are a real estate photo classifier. Analyze each photo and classify it into EXACTLY ONE type.
+            text: `Classify this real estate photo into ONE type.
 
-TYPES (pick the most specific match):
-- exterior_front: Front of house, walkway, driveway, front door approach. Ground level.
-- exterior_back: Backyard, patio, deck WITHOUT pool/water.
-- pool: ANY photo showing a swimming pool, water feature, hot tub — even if partially visible.
-- interior_kitchen: Kitchen area.
-- interior_living: Living room, family room, great room.
-- interior_dining: Dining room or dining area.
-- interior_bedroom: Any bedroom (primary, guest, kids).
-- interior_bathroom: Any bathroom, powder room, en-suite.
-- interior_closet: Walk-in closet, wardrobe area.
-- interior_office: Home office, study, library.
-- interior_laundry: Laundry room, utility room.
-- interior_hallway: Hallway, foyer, entryway, staircase.
-- interior_other: Garage, bonus room, game room, theater, gym.
-- floorplan: Blueprint, floor layout diagram, room labels on a diagram, schematic drawing.
-- aerial: Drone shot, bird's-eye view, satellite view, overhead shot showing roof.
-- marketing: Collage of multiple photos, text overlays, agent branding, photo grid, virtual staging montage.
-- unusable: Too dark, blurry, empty, generic, or clearly not useful for a property tour.
+TYPES: exterior_front, exterior_back, pool, interior_kitchen, interior_living, interior_dining, interior_bedroom, interior_bathroom, interior_closet, interior_office, interior_laundry, interior_hallway, interior_other, floorplan, aerial, marketing, unusable.
 
-CRITICAL RULES:
-- If you see WATER or a POOL anywhere in the image (even in background), classify as "pool".
-- A photo showing a swimming pool, hot tub, or water feature is NEVER "exterior_front". The exterior front photo shows the FRONT of the house as seen from the street/driveway — no pool is visible from the front approach. Classify pool photos as "pool".
-- If it's a bird's-eye/drone shot, classify as "aerial" even if it shows the house.
-- If it contains MULTIPLE photos in a grid/collage, classify as "marketing".
-- If it's a drawn/digital floor layout with room labels, classify as "floorplan".
+RULES:
+- Pool/water visible → "pool" (NEVER "exterior_front")
+- Drone/bird's-eye → "aerial"
+- Multiple photos in grid → "marketing"
+- Floor layout diagram → "floorplan"
+- Front of house from street → "exterior_front"
 
-Reply with ONLY a JSON array. Each element: {"type": "photo_type", "confidence": 0.0-1.0, "description": "brief 5-word description"}.
-Array must have exactly ${urls.length} elements, one per image in order.`,
+Reply ONLY: {"type":"<type>","confidence":<0-1>,"description":"<5 words>"}`,
         },
-        ...urls.map((url) => ({ type: "image_url" as const, image_url: { url } })),
+        { type: "image_url", image_url: { url } },
     ];
 
-    try {
-        const response = await withRetry(
-            async () => axios.post(
-                `${KIE_BASE.replace(/\/api$/, "")}/gemini-3-flash/v1/chat/completions`,
-                {
-                    messages: [{ role: "user", content }],
-                    stream: false,
-                    reasoning_effort: "low",
+    const response = await withRetry(
+        async () => axios.post(
+            `${KIE_BASE.replace(/\/api$/, "")}/gemini-3-flash/v1/chat/completions`,
+            {
+                messages: [{ role: "user", content }],
+                stream: false,
+                reasoning_effort: "none",
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${config.kie.apiKey}`,
                 },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${config.kie.apiKey}`,
-                    },
-                    timeout: 120_000, // 2 min — Kie.ai proxy + Gemini vision needs time for multi-image
-                }
-            ),
-            { label: "classifyBatch", maxAttempts: 2, initialDelayMs: 2000 }
-        );
+                timeout: 150_000, // 150s — single image takes ~40s typical, but can spike to 90s+ under load
+            }
+        ),
+        { label: `classifyPhoto[${index}]`, maxAttempts: 4, initialDelayMs: 8000 }
+    );
 
-        const text = (response.data?.choices?.[0]?.message?.content || "").trim();
-        const jsonMatch = text.match(/\[[\s\S]*\]/);
-        if (!jsonMatch) {
-            logger.warn({ msg: "Photo classification returned no JSON, falling back to heuristic", text: text.slice(0, 200) });
-            return urls.map((url, i) => ({
-                originalUrl: url,
-                r2Url: url,
-                originalIndex: startIndex + i,
-                type: "interior_other" as PhotoType,
-                confidence: 0.1,
-                description: "classification failed",
-                upscaledUrl: null,
-            }));
-        }
+    const text = (response.data?.choices?.[0]?.message?.content || "").trim();
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
 
-        const parsed = JSON.parse(jsonMatch[0]) as Array<{ type: string; confidence: number; description: string }>;
-
-        return urls.map((url, i) => {
-            const entry = parsed[i] || { type: "interior_other", confidence: 0.1, description: "missing" };
-            const validTypes: PhotoType[] = [
-                "exterior_front", "exterior_back", "pool",
-                "interior_kitchen", "interior_living", "interior_dining",
-                "interior_bedroom", "interior_bathroom", "interior_closet",
-                "interior_office", "interior_laundry", "interior_hallway", "interior_other",
-                "floorplan", "aerial", "marketing", "unusable",
-            ];
-            const photoType = validTypes.includes(entry.type as PhotoType)
-                ? (entry.type as PhotoType)
-                : "interior_other";
-
-            return {
-                originalUrl: url,
-                r2Url: url,
-                originalIndex: startIndex + i,
-                type: photoType,
-                confidence: Math.max(0, Math.min(1, entry.confidence || 0.5)),
-                description: entry.description || "",
-                upscaledUrl: null,
-            };
-        });
-    } catch (err: any) {
-        // NO SILENT DOWNGRADES: classification failure means wrong photos in clips.
-        // Throw so the pipeline can retry or fail cleanly — never silently classify everything as interior_other.
-        logger.error({ msg: "Photo classification batch FAILED — propagating error", error: err.message, batchStart: startIndex });
-        throw new Error(`Photo classification failed (batch ${startIndex}): ${err.message}. Cannot proceed without reliable photo types.`);
+    if (!jsonMatch) {
+        logger.warn({ msg: "Single photo classification no JSON", index, text: text.slice(0, 100) });
+        return {
+            originalUrl: url, r2Url: url, originalIndex: index,
+            type: "interior_other" as PhotoType, confidence: 0.1,
+            description: "classification failed", upscaledUrl: null,
+        };
     }
+
+    const entry = JSON.parse(jsonMatch[0]) as { type: string; confidence: number; description: string };
+    const validTypes: PhotoType[] = [
+        "exterior_front", "exterior_back", "pool",
+        "interior_kitchen", "interior_living", "interior_dining",
+        "interior_bedroom", "interior_bathroom", "interior_closet",
+        "interior_office", "interior_laundry", "interior_hallway", "interior_other",
+        "floorplan", "aerial", "marketing", "unusable",
+    ];
+    const photoType = validTypes.includes(entry.type as PhotoType)
+        ? (entry.type as PhotoType)
+        : "interior_other";
+
+    return {
+        originalUrl: url,
+        r2Url: url,
+        originalIndex: index,
+        type: photoType,
+        confidence: Math.max(0, Math.min(1, entry.confidence || 0.5)),
+        description: entry.description || "",
+        upscaledUrl: null,
+    };
 }
 
 // ─── Filter Photos ─────────────────────────────────────────────

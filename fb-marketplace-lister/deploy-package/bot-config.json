@@ -1,0 +1,103 @@
+{
+  "shared": {
+    "gologinToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ5YTg1M2Y0OTk0YjE1MGQ0MzBlOGUiLCJ0eXBlIjoiZGV2Iiwiand0aWQiOiI2OTQ5YWJjNDUyMzViMmEyNDdjYTdmNTgifQ.I6hDVYh0pWqdg8FeJ0tiP6yVPa0Jg6J6quSqOCr5oDQ",
+    "wahaUrl": "http://172.245.56.50:3000",
+    "wahaApiKey": "${WAHA_API_KEY}",
+    "notificationTarget": "14695885133@c.us"
+  },
+  "products": [
+    {
+      "id": "uad",
+      "name": "UAD",
+      "profileId": "694b5e53fcacf3fe4b4ff79c",
+      "getJobsUrl": "http://localhost:8082/webhook/v1-uad-jobs",
+      "updateStatusUrl": "http://localhost:8082/webhook/v1-uad-update",
+      "category": "Miscellaneous",
+      "videoLogic": "static",
+      "videoFilename": "video.mp4",
+      "fbEmail": "uad.garage.doors@gmail.com",
+      "fbPass": "UADGarage2024!",
+      "phoneRotation": [
+        "+1-972-954-2407",
+        "+1-972-628-3587",
+        "+1-469-625-0960",
+        "+1-469-535-7538"
+      ],
+      "locations": [
+        "Dallas, TX",
+        "Fort Worth, TX",
+        "Arlington, TX",
+        "Plano, TX",
+        "Frisco, TX",
+        "McKinney, TX",
+        "Grand Prairie, TX",
+        "Irving, TX",
+        "Garland, TX",
+        "Mesquite, TX",
+        "Carrollton, TX",
+        "Richardson, TX",
+        "Denton, TX",
+        "Allen, TX",
+        "Mansfield, TX",
+        "Keller, TX",
+        "Grapevine, TX",
+        "Cedar Hill, TX",
+        "Rockwall, TX",
+        "Rowlett, TX",
+        "DeSoto, TX",
+        "Southlake, TX",
+        "Wylie, TX",
+        "Burleson, TX",
+        "Midlothian, TX",
+        "Weatherford, TX",
+        "Forney, TX",
+        "Little Elm, TX",
+        "Saginaw, TX",
+        "Waxahachie, TX"
+      ],
+      "stealthLevel": "moderate",
+      "postLimit": 5,
+      "cooldownMinutes": 15
+    },
+    {
+      "id": "missparty",
+      "name": "Miss Party",
+      "profileId": "6949a854f4994b150d430f37",
+      "getJobsUrl": "http://localhost:8082/webhook/v1-miss-party-jobs",
+      "updateStatusUrl": "http://localhost:8082/webhook/v1-miss-party-update",
+      "category": "Inflatable Bouncers",
+      "videoLogic": "dynamic",
+      "videoFilename": "michal_video.mp4",
+      "phoneRotation": [
+        "+1-469-283-9855"
+      ],
+      "locations": [
+        "Dallas, TX",
+        "Richardson, TX",
+        "Garland, TX",
+        "Irving, TX",
+        "Plano, TX",
+        "Frisco, TX",
+        "McKinney, TX",
+        "Allen, TX",
+        "Carrollton, TX",
+        "Grand Prairie, TX",
+        "Mesquite, TX",
+        "Rowlett, TX",
+        "Wylie, TX",
+        "DeSoto, TX",
+        "Cedar Hill, TX",
+        "Arlington, TX",
+        "Rockwall, TX",
+        "Addison, TX",
+        "Murphy, TX",
+        "Sachse, TX"
+      ],
+      "fbEmail": "michalkacher2006@gmail.com",
+      "fbPass": "Szender777",
+      "stealthLevel": "high",
+      "postLimit": 3,
+      "cooldownMinutes": 30
+    }
+  ]
+}

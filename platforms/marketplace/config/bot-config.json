@@ -2,7 +2,7 @@
   "shared": {
     "gologinToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ5YTg1M2Y0OTk0YjE1MGQ0MzBlOGUiLCJ0eXBlIjoiZGV2Iiwiand0aWQiOiI2OTQ5YWJjNDUyMzViMmEyNDdjYTdmNTgifQ.I6hDVYh0pWqdg8FeJ0tiP6yVPa0Jg6J6quSqOCr5oDQ",
     "wahaUrl": "http://localhost:3000",
-    "wahaApiKey": "4fc7e008d7d24fc995475029effc8fa8",
+    "wahaApiKey": "${WAHA_API_KEY}",
     "notificationTarget": "14695885133@c.us"
   },
   "products": [

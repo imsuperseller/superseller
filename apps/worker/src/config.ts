@@ -49,7 +49,7 @@ export const config = {
 
     kie: {
         apiKey: required("KIE_API_KEY"),
-        baseUrl: "https://api.kie.ai",
+        baseUrl: "https://api.kie.ai/api",
         webhookUrl: process.env.KIE_WEBHOOK_URL || "",
     },
 
@@ -63,7 +63,7 @@ export const config = {
         pollIntervalMinutes: parseInt(optional("FRONTDESK_POLL_INTERVAL_MINUTES", "15")),
         creditsPerCall: parseInt(optional("FRONTDESK_CREDITS_PER_CALL", "5")),
         // Voice webhook config
-        elevenLabsApiKeyRef: optional("TELNYX_ELEVENLABS_API_KEY_REF", "rensto"),
+        elevenLabsApiKeyRef: optional("TELNYX_ELEVENLABS_API_KEY_REF", "superseller"),
         defaultVoiceId: optional("TELNYX_DEFAULT_VOICE_ID", "ElevenLabs.eleven_multilingual_v2.tnSpp4vdxKPjI9w0GnoV"),
         defaultLanguage: optional("TELNYX_DEFAULT_LANGUAGE", "en-US"),
         voiceChatModel: optional("TELNYX_VOICE_CHAT_MODEL", "openai/gpt-4o"),
@@ -128,6 +128,24 @@ export const config = {
         projectDir: optional("CLAUDECLAW_PROJECT_DIR", "/opt/claudeclaw"),
         maxResponseLength: parseInt(optional("CLAUDECLAW_MAX_RESPONSE_LENGTH", "4000")),
         sessionTtlDays: parseInt(optional("CLAUDECLAW_SESSION_TTL_DAYS", "7")),
+    },
+
+    wahaSessions: {
+        personal: optional("WAHA_SESSION_PERSONAL", "personal"),
+        ops: optional("WAHA_SESSION_OPS", "superseller-ops"),
+        biz: optional("WAHA_SESSION_BIZ", "superseller-biz"),
+        webhookBase: optional("WAHA_WEBHOOK_BASE", "http://172.245.56.50:3002/api/whatsapp"),
+    },
+
+    healthMonitor: {
+        enabled: optional("HEALTH_CHECK_ENABLED", "false") === "true",
+        alertPhone: process.env.HEALTH_MONITOR_ALERT_PHONE || "",
+        cooldownMinutes: parseInt(optional("HEALTH_COOLDOWN_MINUTES", "15")),
+    },
+
+    rag: {
+        systemTenant: optional("RAG_SYSTEM_TENANT", "system"),
+        codebaseRoot: optional("RAG_CODEBASE_ROOT", process.cwd()),
     },
 
     featureFlags: {

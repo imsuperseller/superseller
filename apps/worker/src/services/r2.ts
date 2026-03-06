@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { createReadStream, statSync } from "fs";
+// @ts-ignore
 import { lookup } from "mime-types";
 import { config } from "../config";
 import { logger } from "../utils/logger";

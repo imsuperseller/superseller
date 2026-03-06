@@ -44,9 +44,9 @@ const API_PATTERNS = [
   { service: 'Cloudflare R2', pattern: 'r2.cloudflarestorage.com', auth: 'apiKey' as const },
   { service: 'Cloudflare R2', pattern: 'R2_ACCESS_KEY', auth: 'apiKey' as const },
 
-  // Stripe
-  { service: 'Stripe', pattern: 'api.stripe.com', auth: 'bearer' as const },
-  { service: 'Stripe', pattern: 'STRIPE_SECRET_KEY', auth: 'bearer' as const },
+  // PayPal (migrated from Stripe Feb 2026)
+  { service: 'PayPal', pattern: 'api.paypal.com', auth: 'bearer' as const },
+  { service: 'PayPal', pattern: 'PAYPAL_CLIENT_SECRET', auth: 'bearer' as const },
 
   // Telnyx
   { service: 'Telnyx', pattern: 'api.telnyx.com', auth: 'bearer' as const },

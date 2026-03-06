@@ -23,11 +23,15 @@ import pg from "pg";
 
 const DB_URL =
   process.env.DATABASE_URL ||
-  "postgresql://admin:a1efbcd564b928d3ef1d7cae@172.245.56.50:5432/app_db";
+  "postgresql://admin:${POSTGRES_PASSWORD}@172.245.56.50:5432/app_db";
 
 const DRY_RUN = process.env.SYNC_DRY_RUN === "1";
 
+// Kie.ai credit rate: 1 credit = $0.005 USD
+const CREDIT_RATE_USD = 0.005;
+
 const KIE_MARKET_URL = "https://kie.ai/market";
+const KIE_LLMS_TXT_URL = "https://docs.kie.ai/llms.txt";
 const FAL_MODELS_URL = "https://fal.ai/models";
 
 const HTTP_TIMEOUT_MS = 30_000;
@@ -216,6 +220,16 @@ function parseKieMarket(html: string): ScrapedModel[] {
     /infinitetalk/gi,
     /seedream[\s-]*(\d[\d.]*)/gi,
     /gpt[\s-]*image/gi,
+    /elevenlabs/gi,
+    /luma[\s-]*(?:dream)?/gi,
+    /grok[\s-]*imagine/gi,
+    /ideogram[\s-]*(?:v)?(\d[\d.]*)/gi,
+    /imagen[\s-]*(\d[\d.]*)/gi,
+    /flux[\s-]*kontext/gi,
+    /midjourney[\s-]*(?:v)?(\d[\d.]*)/gi,
+    /deepseek/gi,
+    /z[\s-]*image/gi,
+    /qwen/gi,
   ];
 
   // Scan entire HTML for known model names + nearby prices
@@ -658,6 +672,110 @@ function stripHtml(html: string): string {
 }
 
 // ═══════════════════════════════════════════════════════════
+// ENDPOINT INFERENCE
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Infer the Kie.ai API endpoint for a model based on its name/id.
+ * Maps known model families to their dedicated endpoints.
+ */
+function inferKieEndpoint(modelName: string, modelId: string): string {
+  const lower = (modelName + " " + modelId).toLowerCase();
+
+  if (lower.includes("veo")) return "/api/v1/veo/generate";
+  if (lower.includes("runway") && lower.includes("aleph")) return "/api/v1/aleph/generate";
+  if (lower.includes("runway")) return "/api/v1/runway/generate";
+  if (lower.includes("suno") && lower.includes("vocal")) return "/api/v1/vocal-removal/generate";
+  if (lower.includes("suno")) return "/api/v1/generate";
+  if (lower.includes("gpt") && lower.includes("image")) return "/api/v1/gpt4o-image/generate";
+  if (lower.includes("flux") && lower.includes("kontext")) return "/api/v1/flux/kontext/generate";
+
+  // Default: most models use createTask
+  return "/api/v1/jobs/createTask";
+}
+
+// ═══════════════════════════════════════════════════════════
+// LLMS.TXT PARSER — Structured model discovery from docs.kie.ai
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Parse docs.kie.ai/llms.txt for structured model listings.
+ * This is more reliable than HTML scraping when available.
+ * Returns additional models that HTML scraping may miss.
+ */
+async function parseLlmsTxt(): Promise<ScrapedModel[]> {
+  const models: ScrapedModel[] = [];
+
+  console.log(`\nFetching ${KIE_LLMS_TXT_URL}...`);
+  const text = await fetchPage(KIE_LLMS_TXT_URL);
+  if (!text) {
+    console.warn("  [llms.txt] Could not fetch — skipping structured source");
+    return models;
+  }
+
+  // llms.txt typically contains lines like:
+  // # Model Name
+  // > Description
+  // - endpoint: /api/v1/...
+  // - pricing: $X.XX
+  // Or simple listings of model names + doc links
+  const lines = text.split("\n");
+  let currentModel: Partial<ScrapedModel> | null = null;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    // Detect model name lines (headers or markdown links)
+    const headerMatch = trimmed.match(/^#{1,3}\s+(.+)/);
+    const linkMatch = trimmed.match(/\[([^\]]+)\]\(([^)]+)\)/);
+
+    if (headerMatch || linkMatch) {
+      // Save previous model
+      if (currentModel?.modelName) {
+        models.push({
+          provider: "kie.ai",
+          modelName: currentModel.modelName,
+          modelId: currentModel.modelId || currentModel.modelName.toLowerCase().replace(/\s+/g, "-"),
+          category: currentModel.category,
+          costPerCallUsd: currentModel.costPerCallUsd,
+          pricingNotes: currentModel.pricingNotes ? `[llms.txt] ${currentModel.pricingNotes}` : "[llms.txt] Discovered via docs.kie.ai/llms.txt",
+        });
+      }
+
+      const name = headerMatch ? headerMatch[1] : linkMatch![1];
+      currentModel = { modelName: name.trim(), modelId: name.trim().toLowerCase().replace(/\s+/g, "-") };
+    }
+
+    // Extract pricing from description lines
+    const priceMatch = trimmed.match(/\$\s*([\d.]+)/);
+    if (priceMatch && currentModel) {
+      currentModel.costPerCallUsd = parseFloat(priceMatch[1]);
+      currentModel.pricingNotes = priceMatch[0];
+    }
+  }
+
+  // Save last model
+  if (currentModel?.modelName) {
+    models.push({
+      provider: "kie.ai",
+      modelName: currentModel.modelName,
+      modelId: currentModel.modelId || currentModel.modelName.toLowerCase().replace(/\s+/g, "-"),
+      category: currentModel.category,
+      costPerCallUsd: currentModel.costPerCallUsd,
+      pricingNotes: currentModel.pricingNotes ? `[llms.txt] ${currentModel.pricingNotes}` : "[llms.txt] Discovered via docs.kie.ai/llms.txt",
+    });
+  }
+
+  if (models.length > 0) {
+    console.log(`  [llms.txt] Extracted ${models.length} model references`);
+  } else {
+    console.log("  [llms.txt] No models extracted (format may not contain structured model listings)");
+  }
+
+  return models;
+}
+
+// ═══════════════════════════════════════════════════════════
 // DATABASE OPERATIONS
 // ═══════════════════════════════════════════════════════════
 
@@ -850,13 +968,16 @@ async function handleNewModel(
     return;
   }
 
+  // Infer kie_endpoint from model name
+  const inferredEndpoint = inferKieEndpoint(scraped.modelName, scraped.modelId);
+
   // Insert minimal record — manual review needed for full field population
   const result = await pool.query(
     `INSERT INTO ai_models (
        provider, model_name, model_id, category,
-       cost_per_call_usd, pricing_notes, raw_pricing_data,
+       kie_endpoint, cost_per_call_usd, pricing_notes, raw_pricing_data,
        status, last_checked
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
      ON CONFLICT (provider, model_id) DO UPDATE SET last_checked = NOW()
      RETURNING id`,
     [
@@ -864,6 +985,7 @@ async function handleNewModel(
       scraped.modelName,
       scraped.modelId,
       scraped.category || "unknown",
+      inferredEndpoint,
       scraped.costPerCallUsd || null,
       scraped.pricingNotes
         ? `[auto_sync] ${scraped.pricingNotes}`
@@ -1106,6 +1228,25 @@ async function main(): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`\nERROR syncing kie.ai: ${message}`);
     providerErrors.push(`kie.ai: ${message}`);
+  }
+
+  // ── Sync Kie.ai llms.txt (supplementary structured source) ──
+  try {
+    const llmsModels = await parseLlmsTxt();
+    if (llmsModels.length > 0) {
+      const existing = await getExistingModels(pool, "kie.ai");
+      for (const scraped_model of llmsModels) {
+        const match = findExistingModel(scraped_model, existing);
+        if (!match) {
+          console.log(`  NEW (llms.txt): ${scraped_model.modelName} (${scraped_model.modelId})`);
+          await handleNewModel(pool, scraped_model);
+          allNewModels.push(scraped_model);
+        }
+      }
+    }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`\nWARN syncing llms.txt: ${message}`);
   }
 
   // ── Sync fal.ai ──

@@ -11,7 +11,7 @@ services:
       WHATSAPP_DEFAULT_ENGINE: "NOWEB"
       
       # API Configuration
-      WAHA_API_KEY: "${WAHA_API_KEY:-4fc7e008d7d24fc995475029effc8fa8}"
+      WAHA_API_KEY: "${WAHA_API_KEY:-${WAHA_API_KEY}}"
       
       # Session Management
       WAHA_SESSION_MODE: "auto"
@@ -24,10 +24,10 @@ services:
       
       # Optional: Dashboard (if needed)
       WAHA_DASHBOARD_USERNAME: "admin"
-      WAHA_DASHBOARD_PASSWORD: "admin123"
+      WAHA_DASHBOARD_PASSWORD: "${WAHA_DASHBOARD_PASSWORD}"
       WHATSAPP_SWAGGER_ENABLED: "true"
       WHATSAPP_SWAGGER_USERNAME: "admin"
-      WHATSAPP_SWAGGER_PASSWORD: "admin123"
+      WHATSAPP_SWAGGER_PASSWORD: "${WAHA_DASHBOARD_PASSWORD}"
       
       # Performance
       NODE_OPTIONS: "--max-old-space-size=4096"

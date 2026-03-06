@@ -12,7 +12,7 @@ autoTrigger:
   - "research"
   - "spec"
   - "methodology"
-  - "B.L.A.S.T"
+  - "BLAST"
   - "query notebook"
   - "notebook_query"
   - "notebooklm-mcp"
@@ -168,6 +168,5 @@ When codebase and NotebookLM disagree:
 
 ## References
 
-- `CODEBASE_VS_NOTEBOOKLM.md` — What lives in codebase vs notebooks
 - `brain.md` — Authority precedence table
 - MCP config: `.cursor/mcp.json` — NotebookLM server config

@@ -12,7 +12,7 @@ process.env.MCP_MODE = 'stdio';
 process.env.LOG_LEVEL = 'error';
 process.env.DISABLE_CONSOLE_OUTPUT = 'true';
 process.env.N8N_API_URL = 'https://shellyins.app.n8n.cloud';
-process.env.N8N_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNjUxZWNkZS04Yzc5LTRiMTktYjEzMC04NTJiY2VkYWViY2YiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1NDk1MDk3fQ.pDpDBUrHJCiPh1xaaq0p9PmRoGp-i36hiR_Ld_EhtZc';
+process.env.N8N_API_KEY = '${N8N_API_KEY}';
 process.env.N8N_INSTANCE_ID = 'shelly-cloud';
 process.env.ENABLE_ALL_TOOLS = 'true';
 

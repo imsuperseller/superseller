@@ -313,12 +313,14 @@ HTTP status codes: `400` (bad input), `401` (unauthorized), `403` (forbidden), `
 
 ---
 
-## Stripe Webhook Events Handled
+## PayPal Webhook Events Handled
 | Event | Action |
 |-------|--------|
-| `checkout.session.completed` | Provision service, create user, add credits |
-| `invoice.paid` | Reset monthly credits |
-| `customer.subscription.deleted` | Suspend service |
+| `CHECKOUT.ORDER.APPROVED` | Provision service, create user, add credits |
+| `PAYMENT.SALE.COMPLETED` | Reset monthly credits |
+| `BILLING.SUBSCRIPTION.CANCELLED` | Suspend service |
+
+> **Note**: DB columns still named `stripe*` (e.g., `stripeSessionId`) but store PayPal IDs. Stripe keys preserved dormant for rensto.com.
 
 ---
 

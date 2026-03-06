@@ -8,15 +8,15 @@
 
 ## Priority Order (Deliver to customers FIRST, then self-serve SaaS)
 
-1. FB Marketplace Bot → Miss Party + UAD — ✅ LIVE (posting + lead pipeline both operational)
-2. TourReel → Realtors — ✅ LIVE (Kling AI clips + Remotion photo composition, dual-path)
+1. FB Marketplace Bot → Miss Party + UAD — 🔴 CRITICAL (GoLogin session failures, VPS X11 missing)
+2. TourReel → Realtors — 🔴 CRITICAL (Video resolution & timing regressions)
 3. SocialHub/Buzz → All customers — ✅ PHASE 1 LIVE (text+image→WhatsApp approval→FB publish)
 4. Winner Video Studio → Yossi (Mivnim) — ⚠️ BUILT, NOT ACTIVE (pipeline verified, Yossi not using)
 5. Lead Landing Pages → Generic infrastructure complete — DONE (100%)
 6. FrontDesk Voice AI → SuperSeller AI — ⚠️ PARTIAL (voice works, webhook migration pending)
-7. ClaudeClaw → Internal — ⚠️ BUILT, DISABLED (code committed, not deployed)
+7. ClaudeClaw → Internal + Customer Groups — ✅ DEPLOYED (Mar 2026) — WhatsApp→Claude bridge with 3-tier memory, guardrails, group agents
 8. RAG Integration → All products — ENABLER (built but unused)
-9. AgentForge → Internal only — LOW (spec only)
+9. AgentForge → Internal only — 🔴 CRITICAL FAILURE (0% success, hardcoded API paths)
 
 ---
 
@@ -196,11 +196,23 @@
 
 ---
 
-**Location**: `fb marketplace lister/deploy-package/` (canonical code)
+**Location**: `fb-marketplace-lister/deploy-package/` (canonical code)
 **Server**: `/opt/fb-marketplace-bot/` on 172.245.56.50
 **Deploy**: `rsync` to RackNerd or `scp` individual files
 **PM2 apps**: `webhook-server`, `fb-scheduler`, `image-pool`, `cookie-monitor`
 **API docs**: NotebookLM 3e820274 (KIE.AI)
+
+### If UAD or Miss Party stop posting (queue empty or duplicates)
+
+1. **On server** (SSH 172.245.56.50):  
+   `cd /opt/fb-marketplace-bot && node scripts/cleanup-fb-queue.js`  
+   - Removes duplicate queued Miss Party listings (same title+location), keeps one.  
+   - Deletes failed jobs older than 48h.  
+2. **Restart webhook** so replenishment runs on startup:  
+   `pm2 restart webhook-server`  
+3. **Optional**: Restart scheduler: `pm2 restart fb-scheduler`  
+4. If queue stays 0, check webhook-server logs for REPLENISH errors (Kie.ai, DB):  
+   `pm2 logs webhook-server --lines 100`
 
 ---
 
@@ -383,20 +395,24 @@
 
 ## 9. ClaudeClaw (WhatsApp AI Bridge)
 
-**Customer**: SuperSeller AI (internal tool)
-**What it does**: WhatsApp/Telegram → Claude Code CLI bridge — remote control AI from phone
-**Status**: ⚠️ Built, DISABLED — code committed but not deployed
+**Customer**: SuperSeller AI (internal tool) + Customer groups
+**What it does**: WhatsApp → Claude bridge — remote control AI from phone (personal) + customer-facing group agents
+**Status**: ✅ DEPLOYED (Mar 2026) — WhatsApp→Claude bridge with RAG context, health monitoring, approval system
 
-**What exists**:
-- Code committed (commit `f29c48f`, 9 files, 810 insertions)
-- Rebuild prompt in `REBUILD_PROMPT.md`
+**What works**:
 - WhatsApp message → ClaudeClaw → Claude Code → executes tasks
+- RAG context integration (pgvector hybrid search)
+- Health monitoring + approval system
+- Deployed to RackNerd, PM2 managed
 
-**What's missing**:
-- [ ] Deployment to RackNerd
-- [ ] PM2 process setup
-- [ ] Testing end-to-end flow
-- [ ] Security: command allowlist, rate limiting
+**Group Agent ("The Method") — Phase 1 BUILT (Mar 6)**:
+- 3-tier memory: short-term buffer (Postgres) + semantic memories (pgvector) + structured profiles
+- 4-layer guardrails: system prompt + output regex filter + input jailbreak detection + RAG tenant isolation
+- Memory extraction: every 15 messages, Claude Haiku extracts facts/preferences/decisions/entities
+- Full message archive in `group_messages` table (never pruned)
+- Quick handlers: competitor ad feedback, content approval, slash commands
+- Multi-tenant: all tables scoped by `tenant_id`, reusable across customer groups
+- Elite Pro group live: `120363408376076110@g.us`, 63 competitor ads scraped
 
 ---
 
@@ -410,8 +426,8 @@
 | Worker | http://172.245.56.50:3002 | LIVE |
 | Ollama | http://172.245.56.50:11434 | LIVE |
 | n8n | https://n8n.superseller.agency | BACKUP |
-| Redis | Docker on RackNerd (auth: 2ea94441a41477c9b8081659) | LIVE |
-| PostgreSQL | Docker on RackNerd (admin/a1efbcd564b928d3ef1d7cae/app_db) | LIVE |
+| Redis | Docker on RackNerd (auth: ${REDIS_PASSWORD}) | LIVE |
+| PostgreSQL | Docker on RackNerd (admin/${POSTGRES_PASSWORD}/app_db) | LIVE |
 
 ---
 

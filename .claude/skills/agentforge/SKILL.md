@@ -24,14 +24,14 @@ negativeTrigger:
 # AgentForge — AI Research Pipeline
 
 ## When to Use
-Use when working on AgentForge research pipeline, adding/modifying pipeline stages, credit integration for reports, deliverable generation, or client intake flows. Not for video pipeline (use tourreel-pipeline), UI design (use ui-ux-pro-max), or billing logic (use stripe-credits for Stripe-specific work).
+Use when working on AgentForge research pipeline, adding/modifying pipeline stages, credit integration for reports, deliverable generation, or client intake flows. Not for video pipeline (use tourreel-pipeline), UI design (use ui-ux-pro-max), or billing logic (use billing-credits for PayPal billing and credit management).
 
 ## Critical Rules
 1. **AgentForge is a RESEARCH product, NOT a web builder.** It generates business intelligence reports (discovery, design analysis, market research). Code generation was deliberately removed — v0/Bolt/Lovable own that space.
 2. **It lives INSIDE `apps/web/superseller-site/`, NOT as a separate app.** Routes at `/dashboard/agentforge/`, API at `/api/agentforge/`. Uses the existing Prisma schema, auth, and credit system. Never create a separate Next.js project.
 3. **All Claude API calls are SERVER-SIDE only.** API routes call Anthropic SDK. Never expose API keys to the browser. The original `agentforge.jsx` had this bug — do not repeat it.
 4. **Use BullMQ for pipeline orchestration.** Same pattern as TourReel: queue job → worker processes stages sequentially → poll for progress. Never run multi-minute pipelines synchronously in API routes.
-5. **Credit-gated.** Every pipeline run deducts credits. Check before starting, deduct on completion. Use existing credit system (`src/lib/credits.ts`).
+5. **Credit-gated.** Every pipeline run deducts credits. Check before starting, deduct on completion. Use existing credit system (`apps/web/superseller-site/src/lib/credits.ts`).
 6. **Haiku for research stages (1-3), Sonnet for synthesis (4+).** Research stages are web search + summarization — Haiku 4.5 handles this at ~80% lower cost. Sonnet for architecture/deliverables where reasoning quality matters.
 
 ## Architecture
@@ -94,5 +94,5 @@ Intake form → POST /api/agentforge/run → Credit check → BullMQ job
 ### Other
 - `agentforge/AgentForge-Prompts-Library-v1.docx` — Original prompt templates (extract into `prompts.ts`)
 - `apps/worker/src/queue/workers/video-pipeline.worker.ts` — TourReel pipeline pattern to follow
-- stripe-credits skill — Credit check/deduct patterns
+- billing-credits skill — Credit check/deduct patterns
 - database-management skill — Schema migration patterns

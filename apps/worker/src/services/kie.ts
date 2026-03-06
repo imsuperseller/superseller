@@ -30,8 +30,11 @@ export interface KieTaskResponse {
 
 export interface KieImageRequest {
     prompt: string;
-    model?: "flux-2/pro-text-to-image" | "seedream/4.5-edit";
-    image_urls?: string[]; // For Seedream Edit
+    /** Known image models on Kie.ai. Use string for new/unknown models. */
+    model?: "flux-2/pro-text-to-image" | "seedream/4.5-edit" | "seedream/4.0" | "seedream/4.5"
+        | "seedream-5-lite" | "gpt-image-1" | "gpt-image-1.5" | "midjourney/v7" | "ideogram/v3"
+        | "imagen-4/fast" | "imagen-4/standard" | "grok-imagine" | string;
+    image_urls?: string[]; // For Seedream Edit / image-to-image
     aspect_ratio?: "1:1" | "16:9" | "9:16";
     quality?: "basic" | "hd";
     resolution?: "1K" | "2K";
@@ -70,23 +73,30 @@ export interface KieKlingRequest {
  * if the API responds (even with "not found"), the key is valid and credits aren't blocked.
  * If 402: credits exhausted. If network error: API unreachable.
  */
-export async function probeKieCredits(): Promise<{ ok: boolean; error?: string }> {
-    try {
-        const response = await fetch(`${KIE_BASE}/v1/jobs/recordInfo?taskId=probe-credit-check`, {
-            headers,
-            signal: AbortSignal.timeout(10_000),
-        });
-        // Any response (including 404 "task not found") means the API is reachable and key is valid
-        if (response.ok) return { ok: true };
-        const data = await response.json().catch(() => ({}));
-        if ((data as any).code === 402) {
-            return { ok: false, error: "Credits exhausted on Kie.ai" };
+export async function probeKieCredits(): Promise<{ ok: boolean; exhausted?: boolean; error?: string }> {
+    // Retry up to 3 times with increasing timeouts (10s, 20s, 30s)
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const timeoutMs = attempt * 10_000;
+            const response = await fetch(`${KIE_BASE}/v1/jobs/recordInfo?taskId=probe-credit-check`, {
+                headers,
+                signal: AbortSignal.timeout(timeoutMs),
+            });
+            // Any response (including 404 "task not found") means the API is reachable and key is valid
+            if (response.ok) return { ok: true };
+            const data = await response.json().catch(() => ({}));
+            if ((data as any).code === 402) {
+                return { ok: false, exhausted: true, error: "Credits exhausted on Kie.ai" };
+            }
+            // Other errors (404 = task not found) mean the API is working
+            return { ok: true };
+        } catch (err: any) {
+            if (attempt < 3) continue; // Retry on timeout
+            // After 3 attempts, return "unreachable" but NOT exhausted
+            return { ok: false, exhausted: false, error: `Kie.ai unreachable after ${attempt} attempts: ${err.message}` };
         }
-        // Other errors (404 = task not found) mean the API is working
-        return { ok: true };
-    } catch (err: any) {
-        return { ok: false, error: `Kie.ai unreachable: ${err.message}` };
     }
+    return { ok: false, exhausted: false, error: "Kie.ai probe failed" };
 }
 
 /** Generate clip via Kie Kling (sync: create + poll until done). */
@@ -410,11 +420,27 @@ export async function generateImageKie(request: KieImageRequest): Promise<{ url:
     return { url: imageUrl };
 }
 
-export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kling"): Promise<KieTaskResponse> {
-    let endpoint = "";
-    if (type === "suno") endpoint = "generate/record-info";
-    else if (type === "kling") endpoint = "jobs/recordInfo";
+/**
+ * Task status endpoint mapping. Each dedicated Kie.ai service has its own record-info URL.
+ * Using the wrong one returns empty data → infinite "pending" loop.
+ *
+ * Mapping derived from https://docs.kie.ai/llms.txt (Mar 2026).
+ */
+export type KieTaskType = "suno" | "kling" | "gpt-image" | "veo" | "runway" | "flux-kontext" | "elevenlabs" | "vocal-removal";
 
+const TASK_STATUS_ENDPOINTS: Record<KieTaskType, string> = {
+    kling: "jobs/recordInfo",
+    suno: "generate/record-info",
+    "gpt-image": "gpt4o-image/record-info",
+    veo: "veo/record-info",
+    runway: "runway/record-info",
+    "flux-kontext": "flux/kontext/record-info",
+    elevenlabs: "jobs/recordInfo",   // ElevenLabs uses the market common endpoint
+    "vocal-removal": "vocal-removal/record-info",
+};
+
+export async function getTaskStatus(taskId: string, type: KieTaskType = "kling"): Promise<KieTaskResponse> {
+    const endpoint = TASK_STATUS_ENDPOINTS[type] || "jobs/recordInfo";
     const url = `${KIE_BASE}/v1/${endpoint}?taskId=${taskId}`;
 
     return await withRetry(
@@ -439,7 +465,7 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
             if (statusData.successFlag === 1 || state === "SUCCESS" || state === "COMPLETED") status = "completed";
             else if (statusData.successFlag === -1 || state === "FAIL" || state === "FAILED") status = "failed";
 
-            let result = undefined;
+            let result: KieTaskResponse["result"] = undefined;
             if (status === "completed") {
                 // Debug: log full raw statusData for completed tasks to diagnose URL extraction
                 logger.info({ msg: "Kie.ai task completed raw statusData", type, taskId, statusDataKeys: Object.keys(statusData), statusData: JSON.stringify(statusData).slice(0, 2000) });
@@ -533,7 +559,7 @@ export async function getTaskStatus(taskId: string, type: "suno" | "kling" = "kl
 
 export async function waitForTask(
     taskId: string,
-    type: "suno" | "kling" = "kling",
+    type: KieTaskType = "kling",
     timeoutMs: number = 1500000, // 25 min — Kling Pro 10s clips can take 17+ min
     pollIntervalMs: number = 10000
 ): Promise<KieTaskResponse> {
@@ -613,5 +639,553 @@ export async function createSunoTask(request: KieSunoRequest): Promise<string> {
             return data.data.taskId;
         },
         { label: "createSunoTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEDICATED ENDPOINT FUNCTIONS — Mar 2026
+// Each Kie.ai model family uses a different API endpoint.
+// ═══════════════════════════════════════════════════════════
+
+export interface VeoRequest {
+    image_url?: string;
+    last_frame_url?: string;
+    aspect_ratio?: "16:9" | "9:16" | "1:1";
+    duration?: number;
+    mode?: "fast" | "quality";
+    sound?: boolean;
+}
+
+/** Create Veo 3/3.1 video task. Endpoint: POST /api/v1/veo/generate */
+export async function createVeoTask(prompt: string, options: VeoRequest = {}): Promise<string> {
+    const body: Record<string, unknown> = {
+        prompt,
+        ...(options.image_url ? { image_url: options.image_url } : {}),
+        ...(options.last_frame_url ? { last_frame_url: options.last_frame_url } : {}),
+        aspect_ratio: options.aspect_ratio || "16:9",
+        duration: options.duration || 8,
+        mode: options.mode || "fast",
+        sound: options.sound ?? false,
+    };
+
+    return await postToKieEndpoint("/api/v1/veo/generate", body, "createVeoTask");
+}
+
+/** Get Veo task status. Endpoint: GET /api/v1/veo/record-info?taskId= */
+export async function getVeoTaskStatus(taskId: string): Promise<KieTaskResponse> {
+    const url = `${KIE_BASE}/v1/veo/record-info?taskId=${taskId}`;
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, { headers, signal: AbortSignal.timeout(15_000) });
+            if (!response.ok) throw new Error(`Veo status failed (${response.status})`);
+            const data = await response.json();
+            const sd = data.data;
+            if (!sd) return { task_id: taskId, status: "pending" };
+            const state = (sd.state || sd.status || "").toUpperCase();
+            let status: KieTaskResponse["status"] = "processing";
+            if (sd.successFlag === 1 || state === "SUCCESS" || state === "COMPLETED") status = "completed";
+            else if (sd.successFlag === -1 || state === "FAIL" || state === "FAILED") status = "failed";
+            const videoUrl = sd.resultUrls?.[0] || sd.response?.videoUrl;
+            return {
+                task_id: taskId,
+                status,
+                result: status === "completed" && videoUrl ? { video_url: videoUrl, duration: 8 } : undefined,
+                error: sd.failMsg || sd.errorMessage,
+            };
+        },
+        { label: "getVeoTaskStatus", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+export interface RunwayRequest {
+    image_url?: string;
+    aspect_ratio?: "16:9" | "9:16" | "1:1";
+    duration?: number;
+    model?: "runway-gen4-turbo" | "runway-gen3-turbo" | string;
+}
+
+/** Create Runway Gen3/Gen4 video task. Endpoint: POST /api/v1/runway/generate */
+export async function createRunwayTask(prompt: string, options: RunwayRequest = {}): Promise<string> {
+    const body: Record<string, unknown> = {
+        prompt,
+        model: options.model || "runway-gen4-turbo",
+        ...(options.image_url ? { image_url: options.image_url } : {}),
+        aspect_ratio: options.aspect_ratio || "16:9",
+        duration: options.duration || 5,
+    };
+
+    return await postToKieEndpoint("/api/v1/runway/generate", body, "createRunwayTask");
+}
+
+export interface FluxKontextRequest {
+    image_url: string;
+    model?: "flux-kontext/pro" | "flux-kontext/max" | string;
+    aspect_ratio?: "1:1" | "16:9" | "9:16";
+}
+
+/** Create Flux Kontext image editing task. Endpoint: POST /api/v1/flux/kontext/generate */
+export async function createFluxKontextTask(prompt: string, options: FluxKontextRequest): Promise<string> {
+    const body: Record<string, unknown> = {
+        prompt,
+        model: options.model || "flux-kontext/pro",
+        image_url: options.image_url,
+        aspect_ratio: options.aspect_ratio || "1:1",
+    };
+
+    return await postToKieEndpoint("/api/v1/flux/kontext/generate", body, "createFluxKontextTask");
+}
+
+export interface GptImageRequest {
+    model?: "gpt-image-1" | "gpt-image-1.5" | string;
+    aspect_ratio?: "1:1" | "16:9" | "9:16";
+    image_url?: string; // For image editing
+}
+
+/** Create GPT-4o / GPT Image task. Endpoint: POST /api/v1/gpt4o-image/generate */
+export async function createGptImageTask(prompt: string, options: GptImageRequest = {}): Promise<string> {
+    const body: Record<string, unknown> = {
+        prompt,
+        model: options.model || "gpt-image-1",
+        aspect_ratio: options.aspect_ratio || "1:1",
+        ...(options.image_url ? { image_url: options.image_url } : {}),
+    };
+
+    return await postToKieEndpoint("/api/v1/gpt4o-image/generate", body, "createGptImageTask");
+}
+
+export interface ElevenLabsTTSRequest {
+    voice_id?: string;
+    model?: "elevenlabs/text-to-speech-multilingual-v2" | "elevenlabs/text-to-speech-turbo-2-5" | string;
+    stability?: number;
+    similarity_boost?: number;
+    speed?: number;
+}
+
+/** Create ElevenLabs TTS task. Uses /api/v1/jobs/createTask with elevenlabs model. */
+export async function createElevenLabsTTSTask(text: string, options: ElevenLabsTTSRequest = {}): Promise<string> {
+    const body = {
+        model: options.model || "elevenlabs/text-to-speech-multilingual-v2",
+        input: {
+            text,
+            voice: options.voice_id || "Rachel",
+            stability: options.stability ?? 0.5,
+            similarity_boost: options.similarity_boost ?? 0.75,
+            speed: options.speed ?? 1,
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai ElevenLabs TTS creating", model: body.model, textLen: text.length });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`ElevenLabs TTS failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`ElevenLabs TTS API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createElevenLabsTTSTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+export interface ElevenLabsSFXRequest {
+    duration_seconds?: number;
+    loop?: boolean;
+    prompt_influence?: number;
+    output_format?: string;
+}
+
+/** Create ElevenLabs Sound Effects task. 0.24 credits/sec (~$0.0012/sec). Max 22s, 450 chars. */
+export async function createElevenLabsSFXTask(text: string, options: ElevenLabsSFXRequest = {}): Promise<string> {
+    const body = {
+        model: "elevenlabs/sound-effect-v2",
+        input: {
+            text,
+            ...(options.duration_seconds ? { duration_seconds: options.duration_seconds } : {}),
+            ...(options.loop !== undefined ? { loop: options.loop } : {}),
+            ...(options.prompt_influence !== undefined ? { prompt_influence: options.prompt_influence } : {}),
+            ...(options.output_format ? { output_format: options.output_format } : {}),
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai ElevenLabs SFX creating", textLen: text.length });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`ElevenLabs SFX failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`ElevenLabs SFX API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createElevenLabsSFXTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// ELEVENLABS — DIALOGUE V3
+// Multi-speaker dialogue with inline audio tags. 14 credits/1K chars (~$0.07/1K).
+// ═══════════════════════════════════════════════════════════
+
+export interface ElevenLabsDialogueRequest {
+    stability?: number;       // 0-1, default 0.5
+    language_code?: string;   // "auto" or ISO code, 70+ languages
+}
+
+/** Create ElevenLabs multi-speaker dialogue. Supports inline tags: [whispers], [laughs], [sarcastic], etc. */
+export async function createElevenLabsDialogueTask(dialogue: string, options: ElevenLabsDialogueRequest = {}): Promise<string> {
+    const body = {
+        model: "elevenlabs/text-to-dialogue-v3",
+        input: {
+            dialogue,
+            stability: options.stability ?? 0.5,
+            language_code: options.language_code || "auto",
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai ElevenLabs Dialogue V3 creating", dialogueLen: dialogue.length });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`ElevenLabs Dialogue failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`ElevenLabs Dialogue API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createElevenLabsDialogueTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// ELEVENLABS — AUDIO ISOLATION
+// Removes background noise/music, preserves speech. 0.20 credits/sec (~$0.001/sec).
+// ═══════════════════════════════════════════════════════════
+
+/** Isolate voice from audio. Input: URL to audio file (MPEG/WAV/AAC/MP4/OGG, max 500MB/1hr). */
+export async function createAudioIsolationTask(audioUrl: string): Promise<string> {
+    const body = {
+        model: "elevenlabs/audio-isolation",
+        input: {
+            audio_url: audioUrl,
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai Audio Isolation creating", audioUrl: audioUrl.slice(0, 80) });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Audio Isolation failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Audio Isolation API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createAudioIsolationTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// ELEVENLABS — SPEECH-TO-TEXT (Scribe v1)
+// Transcription with diarization. 3.5 credits/min (~$0.0175/min). 99 languages.
+// ═══════════════════════════════════════════════════════════
+
+export interface SpeechToTextRequest {
+    language_code?: string;       // ISO code or auto-detect
+    tag_audio_events?: boolean;   // Tag laughter, applause, etc.
+    diarize?: boolean;            // Speaker identification (up to 32 speakers)
+}
+
+/** Transcribe audio to text with optional speaker diarization. Returns structured JSON with word timestamps. */
+export async function createSpeechToTextTask(audioUrl: string, options: SpeechToTextRequest = {}): Promise<string> {
+    const body = {
+        model: "elevenlabs/speech-to-text",
+        input: {
+            audio_url: audioUrl,
+            ...(options.language_code ? { language_code: options.language_code } : {}),
+            ...(options.tag_audio_events !== undefined ? { tag_audio_events: options.tag_audio_events } : {}),
+            ...(options.diarize !== undefined ? { diarize: options.diarize } : {}),
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai Speech-to-Text creating", audioUrl: audioUrl.slice(0, 80) });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Speech-to-Text failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Speech-to-Text API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createSpeechToTextTask", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// WAN — SPEECH-TO-VIDEO TURBO (2.2 A14B)
+// Lip-synced talking head from image + audio. 12-24 credits/sec by resolution.
+// ═══════════════════════════════════════════════════════════
+
+export interface WanSpeechToVideoRequest {
+    prompt: string;
+    image_url: string;            // Reference face image (JPEG/PNG/WEBP, max 10MB)
+    audio_url: string;            // Speech audio (MP3/WAV/OGG/M4A/FLAC/AAC, max 10MB)
+    resolution?: "480p" | "580p" | "720p";  // Default 480p ($0.06/s), 580p ($0.09/s), 720p ($0.12/s)
+    num_frames?: number;          // 40-120, must be multiple of 4
+    frames_per_second?: number;   // 4-60
+    negative_prompt?: string;
+    num_inference_steps?: number;  // 2-40, default 27
+    guidance_scale?: number;       // 1-10, default 3.5
+}
+
+/** Create lip-synced talking head video from image + speech audio. */
+export async function createWanSpeechToVideoTask(options: WanSpeechToVideoRequest): Promise<string> {
+    const body = {
+        model: "wan/2-2-a14b-speech-to-video-turbo",
+        input: {
+            prompt: options.prompt,
+            image_url: options.image_url,
+            audio_url: options.audio_url,
+            resolution: options.resolution || "480p",
+            ...(options.num_frames ? { num_frames: options.num_frames } : {}),
+            ...(options.frames_per_second ? { frames_per_second: options.frames_per_second } : {}),
+            ...(options.negative_prompt ? { negative_prompt: options.negative_prompt } : {}),
+            ...(options.num_inference_steps ? { num_inference_steps: options.num_inference_steps } : {}),
+            ...(options.guidance_scale ? { guidance_scale: options.guidance_scale } : {}),
+        },
+    };
+
+    const url = `${KIE_BASE}/v1/jobs/createTask`;
+    logger.info({ msg: "kie.ai Wan Speech-to-Video creating", resolution: body.input.resolution });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Wan Speech-to-Video failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Wan Speech-to-Video API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "createWanSpeechToVideoTask", maxAttempts: 3, initialDelayMs: 3000 }
+    );
+}
+
+/** Extend an existing Suno track. Endpoint: POST /api/v1/generate (with extend params). */
+export async function extendSunoTrack(audioId: string, continueAt: number, options?: { model?: string }): Promise<string> {
+    const body = {
+        model: options?.model || "V5",
+        audioId,
+        continueAt,
+    };
+
+    const url = `${KIE_BASE}/v1/generate`;
+    logger.info({ msg: "kie.ai Suno extend creating", audioId, continueAt });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Suno extend failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Suno extend API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "extendSunoTrack", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+/** Remove vocals from audio. Endpoint: POST /api/v1/vocal-removal/generate */
+export async function removeSunoVocals(audioUrl: string): Promise<string> {
+    const body = { audioUrl };
+
+    const url = `${KIE_BASE}/v1/vocal-removal/generate`;
+    logger.info({ msg: "kie.ai vocal removal creating", audioUrl: audioUrl.slice(0, 80) });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Vocal removal failed (${response.status}): ${errText}`);
+            }
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                throw new Error(`Vocal removal API error (code ${data.code}): ${data.msg}`);
+            }
+            return data.data.taskId;
+        },
+        { label: "removeSunoVocals", maxAttempts: 3, initialDelayMs: 2000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// GENERIC ENDPOINT DISPATCHER
+// Routes to the correct Kie.ai endpoint based on kie_endpoint from observatory.
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Generic Kie.ai task creator. Posts to any endpoint with model + input payload.
+ * Used by the model selector to route calls to the correct endpoint without
+ * the pipeline needing to know endpoint details.
+ *
+ * @param endpoint - API path from ai_models.kie_endpoint (e.g. "/api/v1/veo/generate")
+ * @param model - Model param from ai_models.kie_model_param
+ * @param input - Request-specific input payload
+ * @returns taskId
+ */
+export async function createKieTask(endpoint: string, model: string, input: Record<string, unknown>): Promise<string> {
+    // Normalize endpoint: strip leading /api prefix if present (KIE_BASE already has base)
+    const path = endpoint.replace(/^\/api/, "");
+    const url = `${KIE_BASE}${path}`;
+
+    const body = { model, input };
+    logger.info({ msg: "kie.ai generic task creating", url, model, inputKeys: Object.keys(input) });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Kie.ai task failed (${response.status}): ${errText}`);
+            }
+
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                const err: any = new Error(`Kie.ai API error (code ${data.code}): ${data.msg}`);
+                err.status = data.code;
+                if (data.code === 402) err.creditExhausted = true;
+                throw err;
+            }
+
+            return data.data.taskId;
+        },
+        { label: `createKieTask(${model})`, maxAttempts: 3, initialDelayMs: 3000 }
+    );
+}
+
+/**
+ * Internal helper: POST to a Kie.ai endpoint and extract taskId.
+ * Used by dedicated endpoint functions.
+ */
+async function postToKieEndpoint(endpointPath: string, body: Record<string, unknown>, label: string): Promise<string> {
+    const path = endpointPath.replace(/^\/api/, "");
+    const url = `${KIE_BASE}${path}`;
+    logger.info({ msg: `kie.ai ${label} creating`, url, bodyKeys: Object.keys(body) });
+
+    return await withRetry(
+        async () => {
+            const response = await fetch(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: AbortSignal.timeout(30_000),
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Kie.ai ${label} failed (${response.status}): ${errText}`);
+            }
+
+            const data = await response.json();
+            if (data.code !== 200 && data.code !== 0) {
+                const err: any = new Error(`Kie.ai ${label} API error (code ${data.code}): ${data.msg}`);
+                err.status = data.code;
+                if (data.code === 402) err.creditExhausted = true;
+                throw err;
+            }
+
+            if (!data.data?.taskId) {
+                throw new Error(`Kie.ai ${label} returned no taskId: ${JSON.stringify(data).slice(0, 300)}`);
+            }
+
+            return data.data.taskId;
+        },
+        { label, maxAttempts: 3, initialDelayMs: 3000 }
     );
 }

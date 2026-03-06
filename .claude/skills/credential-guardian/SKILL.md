@@ -24,7 +24,7 @@ negativeTrigger:
 # Credential Guardian
 
 ## When to Use
-Use when investigating authentication failures, rotating API keys, auditing credential locations, or preventing silent outages from expired tokens. Covers all external service credentials (Stripe, Kie.ai, Gemini, R2, Aitable, Apify, Resend, n8n, Firebase, WAHA, GoLogin). Not for video pipeline logic, UI design, schema changes, or migrations.
+Use when investigating authentication failures, rotating API keys, auditing credential locations, or preventing silent outages from expired tokens. Covers all external service credentials (PayPal, Kie.ai, Gemini, R2, Aitable, Apify, Resend, n8n, Firebase, WAHA, GoLogin). Not for video pipeline logic, UI design, schema changes, or migrations.
 
 ## Critical Rules
 1. **Never commit credentials to git.** Check `.gitignore` before any `.env` file changes.
@@ -42,16 +42,16 @@ Use when investigating authentication failures, rotating API keys, auditing cred
 | RackNerd `/opt/tourreel-worker/.env` | Worker env vars | SSH `root@172.245.56.50` |
 | `~/.cursor/mcp.json` | MCP server tokens | Local file |
 | `infra/.n8n-auth.env` | n8n Docker auth | SSH to RackNerd |
-| `fb marketplace lister/.env` | FB Bot config | Local file (not committed) |
+| `fb-marketplace-lister/.env` | FB Bot config | Local file (not committed) |
 
 ### Active Credentials Inventory
 
 #### Payment & Billing
 | Key | Service | Where Used | Expiry |
 |-----|---------|-----------|--------|
-| `STRIPE_SECRET_KEY` | Stripe | Web + Worker | Never (live key) |
-| `STRIPE_WEBHOOK_SECRET` | Stripe | Web + Worker | Never |
-| `STRIPE_*_PRICE_ID` (3) | Stripe | Worker | Never |
+| `STRIPE_SECRET_KEY` | PayPal | Web + Worker | Never (live key) |
+| `STRIPE_WEBHOOK_SECRET` | PayPal | Web + Worker | Never |
+| `STRIPE_*_PRICE_ID` (3) | PayPal | Worker | Never |
 
 #### AI & Video
 | Key | Service | Where Used | Expiry |
@@ -91,8 +91,8 @@ Use when investigating authentication failures, rotating API keys, auditing cred
 
 ### Verify a Key Works
 ```bash
-# Stripe
-curl -s https://api.stripe.com/v1/balance -H "Authorization: Bearer $STRIPE_SECRET_KEY" | jq .available
+# PayPal
+curl -v https://api-m.paypal.com/v1/oauth2/token -H "Accept: application/json" -u "$PAYPAL_CLIENT_ID:$PAYPAL_CLIENT_SECRET" -d "grant_type=client_credentials"
 
 # Kie.ai
 curl -s https://api.kie.ai/api/v1/user/balance -H "Authorization: Bearer $KIE_API_KEY" | jq .
@@ -120,7 +120,7 @@ curl -s https://api.resend.com/domains -H "Authorization: Bearer $RESEND_API_KEY
 
 ### Check All Services at Once
 ```bash
-# Run full health check (checks Stripe, Gemini, Kie, Resend, Aitable, etc.)
+# Run full health check (checks PayPal, Gemini, Kie, Resend, Aitable, etc.)
 curl -s https://superseller.agency/api/admin/monitoring | jq '.services[] | {name, status}'
 ```
 
@@ -129,7 +129,7 @@ curl -s https://superseller.agency/api/admin/monitoring | jq '.services[] | {nam
 | Error | Probable Cause | Remediation |
 |-------|---------------|-------------|
 | `401 Unauthorized` on Kie.ai | Balance is $0 or API key was regenerated. | `curl -H "Authorization: Bearer $KIE_API_KEY" https://api.kie.ai/api/v1/user/balance`. If 0: top up. If invalid: regenerate key, update BOTH web + worker envs. |
-| `401` on Stripe API | Wrong key mode (test vs live) or key rotated. | Verify key starts with `sk_live_`. Check Vercel + RackNerd both have the same key. |
+| `401` on PayPal API | Wrong key mode (test vs live) or key rotated. | Verify key starts with `sk_live_`. Check Vercel + RackNerd both have the same key. |
 | NotebookLM MCP not responding | OAuth session expired (session-based tokens). | Run `notebooklm-mcp-auth` in terminal. Tokens auto-refresh. |
 | Vercel OIDC token expired | ~12hr TTL, auto-rotates. | `cd apps/web/superseller-site && vercel env pull .env.local`. |
 | Aitable sync 401/403 | Token revoked or space permissions changed. | Test: `curl -H "Authorization: Bearer $TOKEN" https://aitable.ai/fusion/v1/spaces`. Regenerate in Aitable dashboard if invalid. |

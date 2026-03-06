@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 import { withRetry } from "../utils/retry";
 import { getRecommendedModel } from "./model-selector";
 
-const KIE_BASE = "https://api.kie.ai/api";
+const KIE_BASE = config.kie.baseUrl;
 const KIE_KEY = config.kie.apiKey;
 
 const headers = {
@@ -20,7 +20,7 @@ const headers = {
 };
 
 // Hardcoded fallback if observatory is unavailable
-const NANO_BANANA_FALLBACK = { modelId: "nano-banana-pro", kieParam: "nano-banana-pro", cost: 0.09 };
+const NANO_BANANA_FALLBACK = { modelId: "nano-banana-2", kieParam: "nano-banana-2", cost: 0.02 };
 
 export interface NanoBananaRequest {
     prompt: string;

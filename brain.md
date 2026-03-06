@@ -31,6 +31,11 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 
 **The Hook**: "Try for free → See massive ROI → Convert to Premium."
 
+**Identity Clarification**:
+- **SuperSeller AI**: Unified SaaS ecosystem for AI Automations & Leads.
+- **rensto.com**: Separate online construction directory (different brand, domain, business). Never reference from SuperSeller code/docs.
+- **Brand Separation**: Rensto and SuperSeller are fully separate entities. Run `npx tsx tools/consistency-checker.ts` to detect any cross-contamination.
+
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
 - **n8n** (RackNerd): Backup for new automation. Existing production workflows (Telnyx voice lead analysis for UAD + MissParty) still run on n8n.
@@ -109,7 +114,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 *Previously deleted: 4 empty notebooks, 2 Claude Code duplicates. 34 → 27 notebooks after full audit.*
 
-**Codebase vs NotebookLM**: See [`CODEBASE_VS_NOTEBOOKLM.md`](CODEBASE_VS_NOTEBOOKLM.md). Codebase = IDE essentials (paths, env, routers). NotebookLM = specs, methodology, references. When in doubt → query notebooks.
+**Codebase vs NotebookLM**: Codebase = IDE essentials (paths, env, routers). NotebookLM = specs, methodology, references. When in doubt → query notebooks.
 
 ---
 
@@ -217,14 +222,9 @@ For every new marketplace app:
 
 ## 📅 INITIALIZATION (Protocol 0)
 
-Before any code:
-1. **North Star**: Singular desired outcome?
-2. **Integrations**: External keys (PayPal, Kie.ai) ready?
-3. **Source of Truth**: Where does primary data live?
-4. **Delivery Payload**: Where is the final result delivered?
-5. **Behavioral Rules**: Any "Do Not" constraints?
+For new projects, start with BLAST Blueprint phase: define vision, discover integrations, map data flow, and verify the design before coding. **HALT at Blueprint for approval.**
 
-Initialize `task_plan.md`, `findings.md`, `progress.md`. **HALT** until Blueprint is verified. *(For routine tasks, skip Protocol 0—see METHODOLOGY.md.)*
+For routine tasks (fix, deploy, verify), skip Protocol 0 and use Agent Behavior directly—see METHODOLOGY.md.
 
 ---
 

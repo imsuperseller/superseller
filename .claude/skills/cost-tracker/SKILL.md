@@ -5,7 +5,7 @@ description: >-
   cost rates, api_expenses table, anomaly detection, session cost tables in progress.md,
   and monthly budget tracking. MANDATORY per CLAUDE.md — every API generation must log cost.
   Use when logging costs, checking expenses, tracking API spend, or adding cost tracking
-  to new services. Not for health monitoring (see monitoring-alerts), Stripe billing,
+  to new services. Not for health monitoring (see monitoring-alerts), PayPal billing,
   or UI design.
   Example: "Add trackExpense() to the Kling API calls" or "Check today's API spend".
 autoTrigger:
@@ -22,7 +22,7 @@ autoTrigger:
 negativeTrigger:
   - "health check"
   - "alert"
-  - "Stripe billing"
+  - "PayPal billing"
   - "credits"
   - "UI design"
   - "video pipeline logic"
@@ -44,8 +44,8 @@ negativeTrigger:
 |---------|-----------|------|-------|
 | Kie.ai | Kling 3.0 Pro clip (10s) | $0.10 | Hero rooms, transitions |
 | Kie.ai | Kling 3.0 Std clip (5s) | $0.03 | Standard rooms |
-| Kie.ai | Suno music | $0.02 | Per track |
-| Kie.ai | Nano Banana composite | $0.05 | Realtor + photo merge |
+| Kie.ai | Suno music | $0.06 | Per track (12 credits) |
+| Kie.ai | Nano Banana composite | $0.02 | Realtor + photo merge (4 credits × $0.005) |
 | Kie.ai | ElevenLabs TTS (turbo) | $0.02 | Per generation |
 | Kie.ai | ElevenLabs TTS (multilingual) | $0.02 | Per generation |
 | Kie.ai | Avatar Pro | $0.10 | Per avatar video |
@@ -56,7 +56,7 @@ negativeTrigger:
 | Resend | Email | $0.001 | Per email |
 | R2 | Upload | $0.0001 | Per operation |
 | R2 | Storage | $0.015/GB/mo | Monthly |
-| Stripe | Transaction | 2.9% + $0.30 | Per payment |
+| PayPal | Transaction | 2.9% + $0.30 | Per payment (Stripe dormant, reserved for rensto.com) |
 | Ollama | Embeddings | $0.00 | Self-hosted |
 
 ## Key Files
@@ -77,7 +77,7 @@ import { trackExpense } from '@/lib/monitoring/expense-tracker';
 
 // After each API call:
 await trackExpense({
-  service: 'kie',           // 'kie' | 'gemini' | 'resend' | 'r2' | 'stripe' | 'ollama'
+  service: 'kie',           // 'kie' | 'gemini' | 'resend' | 'r2' | 'paypal' | 'ollama'
   operation: 'kling-pro',   // Specific operation name
   estimatedCost: 0.10,      // USD
   jobId: 'uuid',            // Optional: link to job
@@ -91,7 +91,7 @@ await trackExpense({
 ```prisma
 model ApiExpense {
   id            String   @id @default(cuid())
-  service       String   // kie, gemini, resend, r2, stripe
+  service       String   // kie, gemini, resend, r2, paypal
   operation     String   // kling-pro, flash-prompt, email, upload
   estimatedCost Float    // USD
   jobId         String?  // Link to video job
@@ -133,11 +133,11 @@ const total = await getTotalExpenses(30); // {total, byService: {kie: $X, gemini
 |-----------|-------|-----------|-------|
 | Kling 3.0 Pro (hero rooms) | 4 | $0.10 | $0.40 |
 | Kling 3.0 Std (standard) | 8 | $0.03 | $0.24 |
-| Suno music | 1 | $0.02 | $0.02 |
+| Suno music | 1 | $0.06 | $0.06 |
 | Nano Banana composite | 4 | $0.05 | $0.20 |
 | Gemini Flash vision | 12 | $0.002 | $0.024 |
 | Gemini Flash prompt | 6 | $0.001 | $0.006 |
-| **Session Total** | | | **$0.89** |
+| **Session Total** | | | **$0.93** |
 ```
 
 ## Where trackExpense() Must Be Added

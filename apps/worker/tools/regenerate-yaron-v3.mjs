@@ -12,8 +12,8 @@
 import pg from "pg";
 import { Queue } from "bullmq";
 
-const DB_URL = process.env.DATABASE_URL || "postgresql://admin:a1efbcd564b928d3ef1d7cae@localhost:5432/app_db";
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD || "2ea94441a41477c9b8081659";
+const DB_URL = process.env.DATABASE_URL || "postgresql://admin:${POSTGRES_PASSWORD}@localhost:5432/app_db";
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD || "${REDIS_PASSWORD}";
 
 const YARON_USER_ID = "e81973b0-12f3-4d2d-8005-cc97913789bb";
 const LISTING_ID = "003ebb0a-80a3-45e9-a6ed-074aff2c90f8";

@@ -5,7 +5,7 @@ Follow these steps to set up a new client on the Facebook Marketplace posting sy
 ## 1. GoLogin Profile
 - Create a new GoLogin profile for the client via GoLogin desktop app or API.
 - Configure proxy: `geo.floppydata.com:10080` with auth (do NOT change — part of fingerprint).
-- Get the `profileId` and add to `fb marketplace lister/deploy-package/bot-config.json`.
+- Get the `profileId` and add to `fb-marketplace-lister/deploy-package/bot-config.json`.
 
 ## 2. Facebook Account
 - Client needs a Facebook account with Marketplace access.
@@ -14,7 +14,7 @@ Follow these steps to set up a new client on the Facebook Marketplace posting sy
 - After approval, cookies are saved to `cookies_{clientId}.json`.
 
 ## 3. Bot Configuration
-Update `fb marketplace lister/deploy-package/bot-config.json`:
+Update `fb-marketplace-lister/deploy-package/bot-config.json`:
 - Add a new object to the `products` array with:
   - `id`, `name`, `profileId`, `getJobsUrl`, `updateStatusUrl`
   - `category` — MUST be exact Facebook dropdown match (e.g. "Inflatable Bouncers", "Miscellaneous")
@@ -50,7 +50,7 @@ rotationState.newclient = { phone: 0, location: 0 };
 
 ## 7. Deploy & Verify
 ```bash
-rsync -avz --exclude node_modules "fb marketplace lister/deploy-package/" root@172.245.56.50:/opt/fb-marketplace-bot/
+rsync -avz --exclude node_modules "fb-marketplace-lister/deploy-package/" root@172.245.56.50:/opt/fb-marketplace-bot/
 ssh root@172.245.56.50 "cd /opt/fb-marketplace-bot && pm2 restart webhook-server fb-scheduler"
 curl -s http://172.245.56.50:8082/health
 ```

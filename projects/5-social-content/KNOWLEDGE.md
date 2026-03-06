@@ -62,4 +62,4 @@ Social & Content covers three interconnected products:
 - **Meta Graph API**: FB + IG publishing (permanent page token)
 - **Kie.ai**: Image generation for social posts
 - **Claude AI**: Content text generation
-- **Aitable.ai**: Dashboard sync (API token: `uskBpO7SVJC8RMDSSOSs7tM`)
+- **Aitable.ai**: Dashboard sync (API token: `${AITABLE_TOKEN}`)

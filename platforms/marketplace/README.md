@@ -1,16 +1,16 @@
 # Facebook Marketplace Lister & Lead Engine
 
-This folder contains **legacy architecture docs and n8n workflow exports** for the Facebook Marketplace Listing Bot. The canonical production code has moved to `fb marketplace lister/deploy-package/`.
+This folder contains **legacy architecture docs and n8n workflow exports** for the Facebook Marketplace Listing Bot. The canonical production code has moved to `fb-marketplace-lister/deploy-package/`.
 
 > [!IMPORTANT]
-> **Production code**: `fb marketplace lister/deploy-package/` → deploys to `/opt/fb-marketplace-bot/` on RackNerd (172.245.56.50).
+> **Production code**: `fb-marketplace-lister/deploy-package/` → deploys to `/opt/fb-marketplace-bot/` on RackNerd (172.245.56.50).
 > This `platforms/marketplace/` directory is kept for reference (n8n workflows, client data CSVs, comparison docs) but is NOT the active codebase.
 
 ## Current System (Feb 2026)
 
 | Component | Location | Status |
 |-----------|----------|--------|
-| **Bot code** | `fb marketplace lister/deploy-package/` | LIVE |
+| **Bot code** | `fb-marketplace-lister/deploy-package/` | LIVE |
 | **Server** | `/opt/fb-marketplace-bot/` on 172.245.56.50 | LIVE (PM2) |
 | **Database** | PostgreSQL `fb_listings` in `app_db` | LIVE |
 | **Webhook server** | Port 8082 (dynamic overlay + job serving) | LIVE |
@@ -27,7 +27,7 @@ This folder contains **legacy architecture docs and n8n workflow exports** for t
 - `workflows/miss-party-audio-leads.json` — MissParty lead routing (active in n8n, 0 executions)
 - `docs/comparisons/` — UAD vs MissParty business/logistics comparison
 - `scripts/generate_v5.py` — V5 dynamic content pipeline design (SUPERSEDED by `content-generator.js` + `image-pool.js`)
-- `config/bot-config.json` — Old config (outdated, canonical is in `fb marketplace lister/deploy-package/`)
+- `config/bot-config.json` — Old config (outdated, canonical is in `fb-marketplace-lister/deploy-package/`)
 
 ## Customers
 
@@ -39,4 +39,4 @@ This folder contains **legacy architecture docs and n8n workflow exports** for t
 See `platforms/marketplace/PLATFORM_BIBLE.md` and `PRODUCT_STATUS.md` section 2.
 
 ---
-*Updated: 2026-02-20. Legacy directory — canonical code at `fb marketplace lister/deploy-package/`.*
+*Updated: 2026-02-20. Legacy directory — canonical code at `fb-marketplace-lister/deploy-package/`.*

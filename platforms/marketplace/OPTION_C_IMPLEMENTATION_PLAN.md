@@ -15,7 +15,7 @@ Add customer abstraction to existing bot without schema refactor. Each customer 
 ### Tasks
 
 #### 1.1 Customer Config Structure
-**Create**: `fb marketplace lister/deploy-package/customers/`
+**Create**: `fb-marketplace-lister/deploy-package/customers/`
 
 **Structure**:
 ```
@@ -82,7 +82,7 @@ customers/
           {"setting": "outdoors", "kids": "many", "balls": false}
         ],
         "pricing": {
-          "basePrice": 75,
+          "basePrice": 49.99,
           "priceVariation": 0
         }
       },
@@ -138,7 +138,7 @@ customers/
 ```
 
 #### 1.2 Config Loader Service
-**Create**: `fb marketplace lister/deploy-package/config-loader.js`
+**Create**: `fb-marketplace-lister/deploy-package/config-loader.js`
 
 ```javascript
 const fs = require('fs');
@@ -475,7 +475,7 @@ export async function GET(req: Request) {
 ```
 
 #### 2.4 Helper Scripts (RackNerd)
-**Create**: `fb marketplace lister/deploy-package/scripts/add-product.js`
+**Create**: `fb-marketplace-lister/deploy-package/scripts/add-product.js`
 
 ```javascript
 const fs = require('fs');
@@ -671,7 +671,7 @@ Admin tools for monitoring customers, support, and system health.
    - Support actions: regenerate listings, reset session, pause
 
 #### 4.3 System Health Monitor
-**Create**: `fb marketplace lister/deploy-package/health-monitor.js`
+**Create**: `fb-marketplace-lister/deploy-package/health-monitor.js`
 
 ```javascript
 setInterval(async () => {

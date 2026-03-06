@@ -51,23 +51,23 @@ The following credentials were committed to git history and need rotation:
 
 ---
 
-### **3. Stripe API Key** (Line 104) ⚠️ **CRITICAL**
-- **Key**: `sk_live_...[REDACTED — rotate immediately via Stripe dashboard]`
-- **Type**: **LIVE SECRET KEY** (most dangerous!)
-- **Risk**: Can process real payments, access all Stripe data
+### **3. PayPal API Credentials** ⚠️ **CRITICAL**
+- **Keys**: `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`
+- **Type**: **LIVE CREDENTIALS** (most dangerous!)
+- **Risk**: Can process real payments, access all PayPal data
+- **Note**: Migrated from Stripe (Feb 2026). DB columns retain `stripe*` names but store PayPal IDs.
 
 **Rotation Steps**:
 1. ⚠️ **IMMEDIATE ACTION REQUIRED**
-2. Go to https://dashboard.stripe.com/apikeys
-3. Rotate the secret key (create new, then revoke old)
+2. Go to https://developer.paypal.com/dashboard/applications
+3. Rotate the client secret (create new app or regenerate secret)
 4. Update in:
    - Vercel environment variables (all environments)
-   - `~/.cursor/mcp.json` (Docker args)
    - Any local `.env` files
-5. Update webhook endpoints if signing secret changes
+5. Update webhook ID if webhook endpoint changes
 6. Test payment flow immediately after rotation
 
-**Note**: This is a LIVE key - highest priority rotation!
+**Note**: These are LIVE credentials - highest priority rotation!
 
 ---
 
@@ -76,10 +76,9 @@ The following credentials were committed to git history and need rotation:
 - **Risk**: Can access all Airtable bases
 
 **Rotation Steps**:
-1. Go to https://airtable.com/account
-2. API → Personal access tokens
-3. Revoke old token
-4. Create new token with same scopes
+1. Go to Aitable.ai dashboard → API settings
+2. Revoke old token
+3. Create new token with same scopes
 5. Update in:
    - `~/.cursor/mcp.json`
    - Vercel environment variables
@@ -144,7 +143,7 @@ After rotating each credential:
 ---
 
 **Priority Order**:
-1. 🔴 **Stripe LIVE key** (immediate)
+1. 🔴 **PayPal LIVE credentials** (immediate)
 2. 🔴 **n8n API keys** (high - workflow access)
 3. 🟡 **Notion token** (medium - database access)
 4. 🟡 **Airtable PAT** (medium - data access)

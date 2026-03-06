@@ -11,7 +11,7 @@ echo "========================================================"
 # Configuration
 VPS_IP="172.245.56.50"
 VPS_USER="root"
-VPS_PASS="05ngBiq2pTA8XSF76x"
+VPS_PASS="${VPS_PASSWORD}"
 DEPLOY_PATH="/opt/mcp-servers/airtable-mcp-server"
 SERVICE_NAME="airtable-mcp-server-webhook"
 
@@ -67,7 +67,7 @@ class AirtableMCPWebhook {
 
     async start() {
         return new Promise((resolve, reject) => {
-            const env = { ...process.env, AIRTABLE_API_KEY: 'patTR4PhdTjz2fUrg.4bb86ab39b6eda124af3e5a897c215b5113e80e63ccd70b64382027cc71a8e12' };
+            const env = { ...process.env, AIRTABLE_API_KEY: '${AIRTABLE_PAT}' };
             
             this.process = spawn('node', ['dist/index.js'], {
                 cwd: __dirname,
@@ -202,7 +202,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=${DEPLOY_PATH}
-Environment=AIRTABLE_API_KEY=patTR4PhdTjz2fUrg.4bb86ab39b6eda124af3e5a897c215b5113e80e63ccd70b64382027cc71a8e12
+Environment=AIRTABLE_API_KEY=${AIRTABLE_PAT}
 ExecStart=/usr/bin/node webhook-wrapper.js
 Restart=always
 RestartSec=10

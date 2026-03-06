@@ -49,7 +49,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 | Session | `verifySession()` (magic-link based, not NextAuth) | All `/api/app/*`, `/api/video/*`, `/api/billing/*` |
 | Admin Session | Session + `role === 'admin'` check | All `/api/admin/*` |
 | Cron Secret | `?key=CRON_SECRET` query param | `/api/cron/sync-aitable` |
-| Stripe Signature | `stripe.webhooks.constructEvent()` | `/api/webhooks/stripe` |
+| PayPal Signature | PayPal transmission signature verification | `/api/webhooks/paypal` |
 | Token-based | One-time token in URL | `/api/auth/magic-link/verify`, `/api/marketplace/download/[token]` |
 | Rate-limited | IP-based rate limiting middleware | `/api/contact`, `/api/auth/magic-link/send`, `/api/checkout` |
 
@@ -78,9 +78,9 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 | Method | Path | Auth | Purpose |
 |--------|------|------|---------|
 | GET | `/api/billing/status` | Session | Billing period, invoices, usage |
-| POST | `/api/video/subscribe` | Session | Stripe checkout for video plan |
-| POST | `/api/checkout` | Rate-limited | Universal Stripe checkout |
-| POST | `/api/webhooks/stripe` | Stripe sig | Payment event handler |
+| POST | `/api/video/subscribe` | Session | PayPal checkout for video plan |
+| POST | `/api/checkout` | Rate-limited | Universal PayPal checkout |
+| POST | `/api/webhooks/paypal` | PayPal sig | Payment event handler |
 
 ### Video Pipeline (7 routes)
 | Method | Path | Auth | Purpose |
@@ -115,7 +115,7 @@ Use when adding/modifying API routes, reviewing endpoint auth, checking request/
 | GET | `/api/admin/workflows/status` | Admin | n8n workflow status |
 | GET, POST | `/api/admin/n8n` | Admin | n8n diagnostics + actions |
 | GET, POST, PATCH | `/api/admin/launch-tasks` | Admin | Launch checklist |
-| POST | `/api/admin/products/create` | Admin | Create Stripe product |
+| POST | `/api/admin/products/create` | Admin | Create PayPal product |
 | GET, POST | `/api/admin/testimonials` | Admin | Testimonial management |
 
 ### Client Dashboard (6 routes)
@@ -216,7 +216,7 @@ app.post('/api/new-endpoint', async (req, res) => {
 ### Breaking Change Detection
 Before modifying an existing route's response shape:
 1. Search for all consumers: `grep -r "api/the-route" apps/`
-2. Check if any external service calls it (n8n webhooks, Stripe webhooks)
+2. Check if any external service calls it (n8n webhooks, PayPal webhooks)
 3. If consumers exist: add new fields alongside old, deprecate old with deadline
 4. If no consumers: safe to modify
 

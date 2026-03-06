@@ -532,12 +532,28 @@ apiRouter.post("/rag/search", async (req: Request, res: Response) => {
         const parsed = searchSchema.safeParse(req.body);
         if (!parsed.success) return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
 
-        const { search, hybridSearch } = await import("../services/rag");
+        const { search, hybridSearch, textSearch } = await import("../services/rag");
         const limit = parsed.data.limit ?? 5;
 
-        const results = parsed.data.hybrid
-            ? await hybridSearch(parsed.data.tenantId, parsed.data.query, limit)
-            : await search(parsed.data.tenantId, parsed.data.query, limit);
+        // Try vector/hybrid search first, fall back to text-only if it fails or returns empty
+        let results: any[];
+        try {
+            results = parsed.data.hybrid
+                ? await hybridSearch(parsed.data.tenantId, parsed.data.query, limit)
+                : await search(parsed.data.tenantId, parsed.data.query, limit);
+        } catch {
+            results = [];
+        }
+        if (results.length < limit) {
+            // Supplement with text search results (dedup by id)
+            const textResults = await textSearch(parsed.data.tenantId, parsed.data.query, limit);
+            const existingIds = new Set(results.map((r: any) => r.id));
+            for (const tr of textResults) {
+                if (!existingIds.has(tr.id) && results.length < limit) {
+                    results.push(tr);
+                }
+            }
+        }
 
         res.json({ results, count: results.length });
     } catch (err: any) {
@@ -613,9 +629,34 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             return res.json({ status: "ignored", reason: "own_message" });
         }
 
-        // Ignore group messages (only handle direct messages)
+        // Group messages: route to group agent if registered, otherwise ignore
         if (chatId && chatId.includes("@g.us")) {
-            return res.json({ status: "ignored", reason: "group_message" });
+            const { isRegisteredGroup } = await import("../services/group-agent");
+            if (!isRegisteredGroup(chatId)) {
+                return res.json({ status: "ignored", reason: "unregistered_group" });
+            }
+
+            // Extract sender from WAHA payload (participant field in group messages)
+            const senderChatId = payload?.participant || payload?.author || "";
+
+            // Enqueue as group message
+            const { claudeclawQueue } = await import("../queue/queues");
+            await claudeclawQueue.add(`group-${Date.now()}`, {
+                chatId,
+                messageBody: body,
+                hasMedia,
+                mediaUrl: mediaUrl || undefined,
+                mediaType: mediaType !== "chat" ? mediaType : undefined,
+                timestamp: Date.now(),
+                wahaUrl: (req.query.waha_url as string) || undefined,
+                wahaSession: (req.query.waha_session as string) || undefined,
+                mode,
+                isGroup: true,
+                senderChatId,
+            });
+
+            logger.info({ msg: "Group message enqueued", groupId: chatId, sender: senderChatId, bodyLength: body.length });
+            return res.json({ status: "enqueued", type: "group" });
         }
 
         if (!chatId) {
@@ -637,8 +678,18 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             return res.json({ status: "ignored", reason: "empty" });
         }
 
-        // Intercept crew video approval/rejection from owner phone
+        // Intercept approval responses (generic approval system first, then crew-specific)
         if (mode === "personal" && body) {
+            try {
+                const { handleApprovalResponse } = await import("../services/approval-service");
+                const handled = await handleApprovalResponse(chatId, body);
+                if (handled) {
+                    return res.json({ status: "handled", handler: "approval" });
+                }
+            } catch {
+                // Non-critical
+            }
+
             try {
                 const { handleWhatsAppCrewApproval } = await import("../queue/workers/crew-video.worker");
                 const handled = await handleWhatsAppCrewApproval(body);
@@ -680,6 +731,51 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
 
 apiRouter.post("/whatsapp/claude", (req, res) => handleClaudeClawWebhook(req, res, "personal"));
 apiRouter.post("/whatsapp/claude/superseller", (req, res) => handleClaudeClawWebhook(req, res, "business"));
+
+// ─── OPS WEBHOOK (superseller-ops session — approvals only) ───
+apiRouter.post("/whatsapp/ops", async (req: Request, res: Response) => {
+    try {
+        const event = req.body?.event;
+        const payload = req.body?.payload || req.body;
+
+        if (event && event !== "message" && event !== "message.any") {
+            return res.json({ status: "ignored", event });
+        }
+
+        const chatId = payload?.from || payload?.chatId;
+        const body = payload?.body || "";
+        const fromMe = payload?.fromMe ?? false;
+
+        if (fromMe || !chatId || !body) {
+            return res.json({ status: "ignored" });
+        }
+
+        // Only handle approval responses on the ops session
+        const { handleApprovalResponse } = await import("../services/approval-service");
+        const handled = await handleApprovalResponse(chatId, body);
+
+        if (handled) {
+            return res.json({ status: "handled", handler: "approval" });
+        }
+
+        // If not an approval command, ignore (ops session is alerts-only)
+        return res.json({ status: "ignored", reason: "not_approval_command" });
+    } catch (err: any) {
+        logger.error({ msg: "Ops webhook error", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── APPROVALS API ───
+apiRouter.get("/approvals/pending", async (_req: Request, res: Response) => {
+    try {
+        const { getPendingApprovals } = await import("../services/approval-service");
+        const pending = await getPendingApprovals();
+        res.json({ approvals: pending, count: pending.length });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // ─── CREW VIDEO BATCH RENDER + APPROVAL ───
 const crewVideoSchema = z.object({

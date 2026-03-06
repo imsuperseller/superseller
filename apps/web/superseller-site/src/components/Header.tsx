@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button-enhanced';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -12,10 +12,32 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [industriesOpen, setIndustriesOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
   const t = useTranslations('nav');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setScrolled(currentY > 100);
+
+      // Hide on scroll down, show on scroll up (only after 100px)
+      if (currentY > 100) {
+        setHeaderVisible(currentY < lastScrollY.current || currentY < 200);
+      } else {
+        setHeaderVisible(true);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navigation = [
     { name: t('home'), href: '/' as const },
+    { name: t('blog'), href: '/blog' as const },
     { name: t('crew'), href: '/crew' as const },
     { name: t('pricing'), href: '/pricing' as const },
     { name: t('contact'), href: '/contact' as const },
@@ -25,8 +47,9 @@ export function Header() {
     <header
       className="sticky top-0 z-50 backdrop-blur-2xl border-b transition-all duration-300"
       style={{
-        background: 'rgba(10, 10, 10, 0.65)',
-        borderColor: 'rgba(255, 255, 255, 0.05)',
+        background: scrolled ? 'rgba(10, 10, 10, 0.92)' : 'rgba(10, 10, 10, 0.65)',
+        borderColor: scrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+        transform: headerVisible ? 'translateY(0)' : 'translateY(-100%)',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
