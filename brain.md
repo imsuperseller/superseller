@@ -32,9 +32,11 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 **The Hook**: "Try for free → See massive ROI → Convert to Premium."
 
 **Identity Clarification**:
-- **SuperSeller AI**: Unified SaaS ecosystem for AI Automations & Leads.
-- **rensto.com**: Separate online construction directory (different brand, domain, business). Never reference from SuperSeller code/docs.
-- **Brand Separation**: Rensto and SuperSeller are fully separate entities. Run `npx tsx tools/consistency-checker.ts` to detect any cross-contamination.
+- **SuperSeller AI**: Unified SaaS ecosystem for AI Automations & Leads (superseller.agency).
+- **Rensto**: Separate premium contractor directory business (rensto.com). Fully separate brand, codebase (`~/rensto - online directory/`), domain, nginx config, and systemd service (`rensto` on port 3001 RackNerd). NEVER touch rensto's nginx, DNS, or server config from SuperSeller sessions.
+- **Brand Separation**: Two legally separate businesses under Rensto LLC DBA SuperSeller Agency. All code, docs, and infra must treat them as entirely independent.
+- **Cross-Business Relationship** (intentional, not contamination): Contractors who list on Rensto are ideal SuperSeller AI prospects — they need AI video, leads, and automation. SuperSeller sales outreach can use Rensto's contractor DB as a warm lead source. This is a *business strategy*, not a technical dependency. No shared code, DB tables, or domains.
+- Run `npx tsx tools/consistency-checker.ts` to detect any cross-contamination in code.
 
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.

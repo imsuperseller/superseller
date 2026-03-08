@@ -4,445 +4,247 @@
 
 **Rule**: Never ask "what's next?" — read this file. Never ask "where are we?" — read this file.
 
----
-
-## Priority Order (Deliver to customers FIRST, then self-serve SaaS)
-
-1. FB Marketplace Bot → Miss Party + UAD — 🔴 CRITICAL (GoLogin session failures, VPS X11 missing)
-2. TourReel → Realtors — 🔴 CRITICAL (Video resolution & timing regressions)
-3. SocialHub/Buzz → All customers — ✅ PHASE 1 LIVE (text+image→WhatsApp approval→FB publish)
-4. Winner Video Studio → Yossi (Mivnim) — ⚠️ BUILT, NOT ACTIVE (pipeline verified, Yossi not using)
-5. Lead Landing Pages → Generic infrastructure complete — DONE (100%)
-6. FrontDesk Voice AI → SuperSeller AI — ⚠️ PARTIAL (voice works, webhook migration pending)
-7. ClaudeClaw → Internal + Customer Groups — ✅ DEPLOYED (Mar 2026) — WhatsApp→Claude bridge with 3-tier memory, guardrails, group agents
-8. RAG Integration → All products — ENABLER (built but unused)
-9. AgentForge → Internal only — 🔴 CRITICAL FAILURE (0% success, hardcoded API paths)
+**Last Updated**: March 8, 2026
 
 ---
 
-## 1. Winner Video Studio
+## CUSTOMERS — Who They Are & What They're Paying
 
-**Customer**: Yossi (Mivnim — construction/building company)
-**Tenant**: `mivnim`
-**User ID**: `4a2b0683-6d7a-4f55-a5e9-ac6e49a40a6a`
-**What it does**: Business uploads audio + reference photo → AI generates short-form video with lip-synced avatar
-**Brand voice**: "Poscas Winner" (hardcoded in Gemini brain)
+| Customer | Contact | What We Do | Revenue Model | Status |
+|----------|---------|-----------|--------------|--------|
+| **Miss Party** | Michal Kacher Szender | FB Marketplace bot — inflatable bouncy castle rentals | FREE (proving value, no fee to us) | ✅ POSTING |
+| **UAD** | David Szender | FB Marketplace bot — garage doors DFW | Revenue SPLIT on leads that convert | ✅ POSTING |
+| **Elite Pro Remodeling** | Saar Bitton (owner), Mor Dayan (PM) | Daily IG content: 1 reel + 1 story + 1 carousel/day | $2,000/mo SIGNED — NOT started yet | 🔴 BLOCKED |
+| **Yoram** | Shai's father | Landing page / lead gen (family referral) | Lihi pays once Yoram recommends | ⚠️ LOW PRI |
+| **Yossi (Mivnim)** | Yossi | AI avatar videos (Winner Studio) | TBD — one Trump video delivered | ⏸ PAUSED (war in Israel, no parties) |
+| **Shai Personal Brand** | @shaifriedman | Instagram/FB automation — Iran viral persona | Internal — future affiliate / brand | 🔴 NOT BUILT |
 
-**Status**: ⚠️ BUILT, NOT ACTIVELY USED — Pipeline verified end-to-end Feb 19, 2026. Yossi (Mivnim) not actively using.
-
-**What works**:
-- Auth (WhatsApp OTP + magic link)
-- Upload (R2 + file proxy)
-- Gemini Brain (5-in-1: script, prompt, model router, music, quality)
-- kie.ai task creation (clean proxy URLs)
-- Callback handler + DB updates
-- WhatsApp delivery (sendVideo) ✅ Verified working
-- Credit system (atomic ledger, refund on failure)
-- `kling/ai-avatar-pro` model — BACK ONLINE as of Feb 19 evening, lip-sync working
-- `kling-3.0/video` model — working (text+image, no lip-sync)
-- Automatic fallback: avatar model fails → falls back to kling-3.0/video (no lip-sync but produces video)
-- Full pipeline verified: upload → Gemini brain → avatar-pro → R2 download → WhatsApp delivery → COMPLETE
-
-**Bugs fixed (Feb 19)**:
-- Removed invalid `mode` param from avatar-pro input
-- Fixed CALLBACK_BASE_URL newline (printf not echo)
-- Switched presigned URLs to file proxy (clean URLs for kie.ai)
-- Added WAV MIME type inference in upload
-- Replaced `after()` with `waitUntil` + separate process endpoint
-- Added avatar→kling-3.0 automatic fallback in processCallbackFailure
-- Fixed `model_fallback` event_type in DB CHECK constraint
-- studio.superseller.agency alias live (SSL provisioning async)
-
-**Known issues**:
-- ~~R2 bucket not publicly accessible (401 on direct URLs)~~ — RESOLVED: R2 bucket public access enabled Feb 2026 (r2.dev domain working)
-- Resend sender verification pending for magic-link emails
-
-**Next actions**:
-- [ ] R2 public access: Enable in Cloudflare dashboard for winner-video-studio bucket
-- [ ] Resend: Verify studio@superseller.agency sender for magic-link emails
-- [ ] Test with Yossi's real content (real audio recording, his photo)
-- [ ] Gallery page: serve videos via file proxy since R2 isn't public
-
-**Live URLs**: https://studio.superseller.agency | https://studio-teal-eight-38.vercel.app
-**Deploy**: `cd apps/studio && npx vercel --prod --yes`
+**WhatsApp for customer comms**: Use Shai's personal session (14695885133) until confirmed safe to add customer numbers.
 
 ---
 
-## 2. FB Marketplace Bot
+## PRIORITY ORDER (Mar 8, 2026)
 
-**Customers**: Miss Party (Michal Kacher Szender), UAD Garage Doors (David Szender)
-**What it does**: Auto-posts product listings to Facebook Marketplace using GoLogin browser profiles with AI-generated content, dynamic images, and DFW location rotation
-**Status**: LIVE AND POSTING — Both customers verified Feb 20, 2026
-
----
-
-### Feature Readiness Matrix
-
-#### A. Posting Pipeline (Core)
-
-| # | Feature | UAD | MissParty | Notes |
-|---|---------|-----|-----------|-------|
-| A1 | GoLogin browser profile | OK | OK | Profile IDs in bot-config.json |
-| A2 | Per-profile cookie injection | OK | OK | `cookies_uad.json`, `cookies_missparty.json` — no cross-contamination |
-| A3 | Facebook form fill (title, price, desc, phone) | OK | OK | Typed fields + React file chooser |
-| A4 | Category validation (exact dropdown match) | OK "Miscellaneous" | OK "Inflatable Bouncers" | Must match FB dropdown exactly |
-| A5 | Condition field | OK | OK | Hardcoded "New" |
-| A6 | Location entry (city typed + dropdown select) | OK | OK | `, TX` → `, Texas` conversion, char-by-char typing |
-| A7 | Image upload (3 images) | OK | OK | JPEG optimized, React file chooser |
-| A8 | Video upload | OK `video.mp4` | OK `michal_video.mp4` | Static files on server |
-| A9 | Form submission / publish | OK | OK | Verified: posts appear on FB Marketplace |
-| A10 | Status tracking (queued → posted/failed) | OK | OK | PostgreSQL `fb_listings` table |
-| A11 | WhatsApp notification on post | OK | OK | Via WAHA to `14695885133@c.us` |
-
-#### B. Content Uniqueness (Stealth)
-
-| # | Feature | UAD | MissParty | Notes |
-|---|---------|-----|-----------|-------|
-| B1 | AI-generated title per city | OK | OK | Kie.ai Gemini 2.5 Flash, unique per posting |
-| B2 | AI-generated description per city | OK | OK | Professional tone (UAD), fun party tone (MissParty) |
-| B3 | Phone number rotation | OK (4 Telnyx numbers) | N/A (1 fixed) | Sequential rotation |
-| B4 | DFW city rotation | OK (30 cities) | OK (20 cities) | Sequential rotation |
-| B5 | Main image phone overlay | OK | OK | ImageMagick banner with rotated phone + subtitle |
-| B6 | Image 2 variation pool | OK (6 variations) | OK (6 variations) | Kie.ai Seedream 4.5 Edit, random per posting |
-| B7 | Image 3 variation pool | OK (6 variations) | OK (6 variations) | 36 total variations across both clients (6 images × 6 variations) |
-| B8 | Main image (img 0) variation | OK (6 variations) | OK (6 variations) | Overlay applied on random varied base from pool |
-| B9 | Video variation | GAP | GAP | Static video file, same every posting |
-| B10 | Price variation | OK (±10%, $25 rounding) | OK (±10%, $5 rounding) | Random ±10% of base price, rounded to nearest $25 (UAD) or $5 (MissParty) |
-| B11 | AI prompt: no emojis | OK | OK | Both prompts explicitly say "No emojis" — verified clean output |
-| B12 | Posting schedule randomization | OK | OK | ±15 min jitter on cycle interval, ±3 min on product cooldown |
-
-#### C. Scheduling & Rate Limits
-
-| # | Feature | UAD | MissParty | Notes |
-|---|---------|-----|-----------|-------|
-| C1 | PM2 automated scheduler | OK | OK | `fb-scheduler` — 60-min cycle |
-| C2 | Per-product cooldown | OK (15 min) | OK (30 min) | Configured in bot-config.json |
-| C3 | Post limit per cycle | OK (5 posts) | OK (3 posts) | Configured in bot-config.json |
-| C4 | Stealth level config | OK "moderate" | OK "high" | Higher stealth = fewer posts, longer cooldowns |
-| C5 | Random schedule jitter | OK (±15 min cycle, ±3 min cooldown) | OK | Prevents predictable posting patterns |
-
-#### D. Session Management
-
-| # | Feature | UAD | MissParty | Notes |
-|---|---------|-----|-----------|-------|
-| D1 | Cookie persistence after posting | OK | OK | Saved to per-profile file + GoLogin API |
-| D2 | Session refresh (password-only) | OK | OK | `refresh-session.js` — no 2FA needed |
-| D3 | First-time login (2FA) | OK | OK | `interactive_login.js` + noVNC approval |
-| D4 | Cookie staleness detection | OK | OK | `cookie-monitor.js` — checks every 6h: c_user+xs present, file age, last post time, recent failures |
-| D5 | Auto session refresh on stale | OK | OK | Auto-triggers `refresh-session.js` + WhatsApp alert when cookies missing/stale |
-| D6 | GoLogin proxy | OK | OK | `geo.floppydata.com:10080` — part of fingerprint, NEVER change |
-
-#### E. Lead Pipeline (Inbound) — LIVE (Feb 22, 2026)
-
-| # | Feature | UAD | MissParty | Notes |
-|---|---------|-----|-----------|-------|
-| E1 | Telnyx AI Assistant call handling | OK | OK | Autonomous AI assistants ("Sarah") on Telnyx — NOT n8n webhooks. Qwen model, Deepgram STT, NaturalHD voice |
-| E2 | Conversation polling (n8n) | OK | OK | Schedule trigger every 15 min polls Telnyx Conversation API |
-| E3 | Claude AI lead analysis | OK | OK | Claude Sonnet 4.5 analyzes transcripts — urgency, category, caller info extraction |
-| E4 | CRM integration | OK (Workiz) | N/A (email only) | Workiz is UAD-only (auth_secret in JSON body, PascalCase fields). MissParty uses email to shai@superseller.agency — no CRM |
-| E5 | Email lead notification | OK | OK | Outlook email to shai@superseller.agency with full analysis |
-| E8 | Conversation deduplication | OK | OK | "Filter New Conversations" Code node — tracks processed IDs in static data, skips re-processed conversations. No more spam emails. |
-| E6 | Voice AI agent | N/A | N/A | "Hope" agent (MqMYMeA9U9PEX1cH) is for SuperSeller AI sales, NOT for customer calls |
-| E7 | PostgreSQL lead storage | GAP | GAP | No bridge from n8n to PostgreSQL — leads stay in n8n/Workiz/email |
-
-#### F. Infrastructure
-
-| # | Feature | Status | Notes |
-|---|---------|--------|-------|
-| F1 | PM2 `webhook-server` (port 8082) | OK | Job serving + AI content + overlay |
-| F2 | PM2 `fb-scheduler` | OK | 60-min automated cycles |
-| F3 | PM2 `image-pool` | OK | Variation pool — fills on startup, refills every 30 min |
-| F3b | PM2 `cookie-monitor` | OK | Cookie health check every 6h + WhatsApp alert + auto-refresh |
-| F4 | nginx image server (port 8080) | OK | Serves static + variations + overlays |
-| F5 | PostgreSQL `fb_listings` | OK | Job queue + status tracking |
-| F6 | Kie.ai API (`KIE_API_KEY`) | OK | Single key for Gemini Flash + Seedream 4.5 Edit |
-| F7 | WAHA WhatsApp | OK | Notifications to owner |
-| F8 | n8n lead analysis workflows | OK | UAD (U6EZ2iLQ4zCGg31H) + MissParty (9gfvZo9sB4b3pMWQ) — ACTIVE, 5 triggers each, executing successfully |
-| F9 | PM2 dump saved | OK | Survives server restart |
-
-#### G. Productization Gaps (to sell to new customers)
-
-| # | Gap | Impact | Effort |
-|---|-----|--------|--------|
-| G1 | No admin UI — jobs inserted via raw SQL | Can't onboard non-technical customers | HIGH |
-| G2 | No self-serve onboarding — requires SSH + GoLogin + manual config | Every new client needs manual setup | HIGH |
-| G3 | No dashboard/analytics — no visibility into post success rate | Can't show ROI to customers | MEDIUM |
-| G4 | No billing/credits integration | Can't charge customers | MEDIUM |
-| G5 | ~~No automated cookie refresh~~ | ~~CLOSED~~ — `cookie-monitor.js` checks every 6h, auto-triggers `refresh-session.js` + WhatsApp alert | DONE |
-| G6 | No duplicate detection — same listing can be queued multiple times | Wastes posts + risks FB ban | LOW |
-| G7 | No error retry logic — failed posts stay failed | Lost posting opportunities | LOW |
-| G8 | bot-config.json is manual JSON editing for new clients | Error-prone onboarding | LOW |
-| G9 | No multi-account support beyond 2 — untested at scale | Unknown scaling issues | UNKNOWN |
+1. 🔴 **Elite Pro Remodeling** — $2,000/mo waiting. Blocked on IG credentials from Saar.
+2. 🔴 **Shai Personal Brand** — Instagram/Facebook automation system to build.
+3. 🟡 **Miss Party + UAD** — Verify still posting (last confirmed Feb 20). Fix video variation gap.
+4. 🟡 **TourReel** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
+5. 🟡 **ClaudeClaw** — 3 missing service files (group-agent.ts, approval-service.ts, rag-ingestor.ts) breaking group agent.
+6. ⚪ **Yoram** — Landing page when ready.
+7. ⏸ **Yossi (Mivnim)** — Revisit for Pesach campaign (April 2026). No action now.
+8. ⏸ **Rensto.com** — Design audit + business model + traffic strategy. Separate session.
 
 ---
 
-### Summary Scores
+## CRITICAL TECHNICAL BLOCKERS (Fix Before Anything)
 
-| Area | UAD | MissParty |
-|------|-----|-----------|
-| **A. Posting Pipeline** | 11/11 | 11/11 |
-| **B. Content Stealth** | 11/12 | 11/12 |
-| **C. Scheduling** | 5/5 | 5/5 |
-| **D. Session Mgmt** | 6/6 | 6/6 |
-| **E. Lead Pipeline** | 7/8 (1 gap) | 6/8 (1 gap) |
-| **F. Infrastructure** | 10/10 | 10/10 |
-| **TOTAL** | **50/52 (96%)** | **49/52 (94%)** |
-
-**Remaining gaps for current customers:**
-1. B9 — Video variation (static file every posting — complex, would need Kie.ai video-to-video or multiple video files)
-2. E7 — No PostgreSQL lead storage bridge — leads stay in n8n/Workiz/email
-
-**Gaps for productization (G1-G4, G6-G9):** Separate effort — admin UI, billing, onboarding flow. G5 (cookie refresh) is now CLOSED.
+| # | Blocker | Impact | Fix |
+|---|---------|--------|-----|
+| 1 | `group-agent.ts` MISSING — imported in 3 places but file doesn't exist | ClaudeClaw group messages crash at runtime | Rebuild from MEMORY.md spec |
+| 2 | `approval-service.ts` MISSING — imported in 4 places | Scheduler approval expiry job fails | Rebuild |
+| 3 | `rag-ingestor.ts` MISSING — imported in scheduler | Daily RAG ingestion fails | Rebuild |
+| 4 | Worker untracked files not committed | Changes lost on server restart | `git add + commit + push` |
+| 5 | TourReel quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) |
+| 6 | `docs/AI_MODEL_REGISTRY.md` referenced but doesn't exist | Doc conflict, model tracking broken | Create file |
 
 ---
 
-**Location**: `fb-marketplace-lister/deploy-package/` (canonical code)
-**Server**: `/opt/fb-marketplace-bot/` on 172.245.56.50
-**Deploy**: `rsync` to RackNerd or `scp` individual files
-**PM2 apps**: `webhook-server`, `fb-scheduler`, `image-pool`, `cookie-monitor`
-**API docs**: NotebookLM 3e820274 (KIE.AI)
+## 1. FB Marketplace Bot — Miss Party + UAD
 
-### If UAD or Miss Party stop posting (queue empty or duplicates)
+**Status**: Both posting as of Feb 20. Needs live verification (last check was 16+ days ago).
 
-1. **On server** (SSH 172.245.56.50):  
-   `cd /opt/fb-marketplace-bot && node scripts/cleanup-fb-queue.js`  
-   - Removes duplicate queued Miss Party listings (same title+location), keeps one.  
-   - Deletes failed jobs older than 48h.  
-2. **Restart webhook** so replenishment runs on startup:  
-   `pm2 restart webhook-server`  
-3. **Optional**: Restart scheduler: `pm2 restart fb-scheduler`  
-4. If queue stays 0, check webhook-server logs for REPLENISH errors (Kie.ai, DB):  
-   `pm2 logs webhook-server --lines 100`
+**Revenue model clarified (Mar 8)**:
+- Miss Party: $49.99 = RENTAL PRICE in listings. She doesn't pay Shai. Free service.
+- UAD: Revenue split — Shai earns % of actual sales from leads that convert.
 
----
+**Miss Party config**: fbEmail `michalkacher2006@gmail.com`, category "Inflatable Bouncers", 1 phone, 3 posts/30min cooldown
+**UAD config**: category "garage doors", 4 Telnyx phones (972-954-2407, 972-628-3587, 469-625-0960, 469-535-7538), 5 posts/15min cooldown, 30 DFW cities
 
-## 3. TourReel
+**Scores**: UAD 96% (50/52), Miss Party 94% (49/52)
 
-**Customers**: Realtors (general market)
-**What it does**: Zillow URL → AI generates cinematic property tour video with realtor compositing
+**Remaining gaps**:
+- B9: Video variation (static file, same every posting)
+- E7: No PostgreSQL lead bridge (leads stay in n8n/Workiz/email)
 
-**Status**: LIVE and WORKING (dual-path: Kling 3.0 AI clips + Remotion composition)
+**If posting stops** — SSH to RackNerd:
+```bash
+cd /opt/fb-marketplace-bot && node scripts/cleanup-fb-queue.js
+pm2 restart webhook-server && pm2 restart fb-scheduler
+pm2 logs webhook-server --lines 100
+```
 
-**What works**:
-- **AI clip path**: Zillow scrape → Gemini floorplan analysis → clip prompts → Kling Elements (identity) → Kling 3.0 video (with end-frame continuity) → force 1920x1080 normalize → seamless concat → R2 upload
-- **Remotion composition path (NEW Feb 2026)**: Zillow photos → Ken Burns pan/zoom animation → branded intro/outro cards → TransitionSeries (fade/slide/wipe/flip) → 4 native aspect ratios → H.264 MP4 → R2 upload. Zero API cost, deterministic output. See `docs/REMOTION_BIBLE.md`.
-- 25+ completed videos exist (AI path), first Remotion render successful
-- Auth + credits (50/video, 10/regen)
-- Video player with 4 format downloads (16:9, 9:16, 1:1, 4:5)
-
-**Quality fixes applied**:
-- Pool-first → 5 opening candidates
-- Double realtor → DUPLICATE_FIGURE_NEGATIVE
-- Realtor spatial → SPATIAL_ANCHOR
-- 720p blur → Kling Pro 1080p
-- Robotic movement → room-as-star guidance
-- Near-square resolution → force 1920x1080 explicit normalization (Feb 24)
-- Floorplan in video → exclude from photo pool at detection + construction (Feb 24)
-- No inter-clip continuity → Kling `last_frame` end-frame morphing (Feb 24)
-- Crossfade → seamless concat with boundary frames, zero transitions (Feb 24)
-- Overlay timing wrong → actual measured clip durations (Feb 24)
-- CTA too short → minimum 4 seconds visible (Feb 24)
-- Sentinel clip → probe Kie.ai credits before batch (Feb 24)
-
-**Remaining work**:
-- [x] Text overlays (FFmpeg drawtext implemented, dynamic marketing captions active)
-- [ ] Email notifications on completion (Resend partial)
-- [ ] User testing of full flow
-- [x] PayPal checkout integration for pricing tiers (migrated from Stripe Feb 2026)
-
-**Live URL**: https://superseller.agency/video/create
-**Worker**: pm2 `tourreel-worker` on 172.245.56.50:3002
-**Deploy**: `git push` (auto) or `deploy-to-racknerd.sh` (worker)
+**Code**: `fb-marketplace-lister/deploy-package/` | Server: `/opt/fb-marketplace-bot/` | PM2: webhook-server, fb-scheduler, image-pool, cookie-monitor
 
 ---
 
-## 4. Lead Landing Pages
+## 2. Elite Pro Remodeling — $2,000/mo
 
-**Product**: Generic landing page infrastructure for customer lead capture
-**What it does**: Dynamic `/lp/[slug]` landing pages with per-customer branding, lead capture, dual-channel notifications (WhatsApp + email)
+**Contact**: Saar Bitton (owner), Mor Dayan (PM) | Phone: (800) 476-7608
+**Meeting cadence**: Fridays with Saar
+**Voice clones**: Saar `jlOXsp2JeEQ29fkljTTO`, Mor `1prnFNmpCkb2bx39pQSi` (ElevenLabs)
 
-**Status**: 100% Infrastructure Complete — Generic product code ready, customer implementations in separate repos
+**What they want**: Daily Instagram content
+- 1 Reel (1-3 min) + 1 Story + 1 Carousel per day starting Day 7
+- Before/after reveals, project walkthroughs, testimonials
+- WhatsApp approval: Saar + Mor + AI bot
+- Target: visible results in 2-4 weeks, meaningful growth by 3 months
 
-**What exists**:
-- [x] `LandingPage` model in Prisma (`landing_pages` table) with full branding config
-- [x] Dynamic `/lp/[slug]` page — reads branding from DB, renders customer-branded RTL/LTR page
-- [x] `/api/leads/landing-page` POST endpoint — validates, creates Lead, sends notifications
-- [x] Lead records use existing `Lead` model with `source: "landing_page"`, `sourceId: slug`
-- [x] Admin LeadsTab shows landing page leads automatically
-- [x] Per-customer customization: colors, logo, font, headlines, CTA, testimonials, steps, compliance footer, locale/direction (RTL/LTR)
-- [x] Dual-channel notifications: WAHA WhatsApp (primary) + Resend email (fallback)
-- [x] SEO meta tags (customizable title + description, robots: index/follow)
-- [x] Analytics tracking: view counter + submission counter in DB
-- [x] ui-ux-pro-max design system integration for palette + typography recommendations
-- [x] Mobile-responsive with Framer Motion animations
-- [x] WhatsApp floating action button (MicroExpanderFAB component)
+**Demo delivered**: V12 video — `elite-pro-demo/elite-pro-v12-final.mp4` on R2 (25.7s, 1080x1920) ✅
 
-**What's missing**:
-- [ ] Content generation via RAG (niche-specific knowledge)
-- [ ] PayPal billing per landing page
-- [ ] Admin UI to create/edit landing pages (currently DB-seeded via scripts)
+**BLOCKERS**:
+1. IG Meta App ID/Secret from Saar (NOT a paying customer yet — can't request until they pay)
+2. Saar + Mor WhatsApp numbers (use Shai's personal session 14695885133 for now)
+3. Competitor research (Apify script ready, need to run)
+4. Brand asset collection (photos, videos, logo, brand guidelines)
 
-**Location**:
-- Route: `apps/web/superseller-site/src/app/lp/[slug]/page.tsx`
-- Component: `apps/web/superseller-site/src/app/lp/[slug]/LandingPageClient.tsx`
-- API: `apps/web/superseller-site/src/app/api/leads/landing-page/route.ts`
-- Schema: `apps/web/superseller-site/prisma/schema.prisma` (LandingPage + Lead models)
+**Build plan once unblocked**:
+- Phase 1 (Days 1-7): WhatsApp group setup, competitor research, asset collection
+- Phase 2 (Day 7+): Daily: Gemini research → Claude script → Kie.ai generate → WhatsApp approval → auto-publish IG
+- Phase 3: Learning loop — what content performs best, adapt
 
-**Note**: Customer-specific landing page implementations (strategy docs, seed scripts, assets) live in their own private repositories — not in SuperSeller AI. The generic `/lp/[slug]` infrastructure is the SuperSeller AI product.
+**Strategic note**: Saar's wife Ortal = Ortal Pilates. Keep as ready asset for expansion.
 
 ---
 
-## 5. RAG (Ollama + pgvector)
+## 3. Shai Personal Brand — Instagram/Facebook Automation
 
-**Status**: LIVE infrastructure, ZERO products connected
+**Status**: NOT BUILT — planning phase
 
-**What's built**:
-- Ollama nomic-embed-text (768-dim) on RackNerd
-- pgvector 0.8.1 with HNSW indexes
-- 5 API endpoints: ingest, search, list, delete, delete-by-source
-- Multi-tenant isolation via tenant_id
-- Hybrid search (vector 0.7 + full-text 0.3)
-- Chunking: recursive splitter, 400 tokens, 12% overlap
+**Background**: Started Jan 12, 2026 (Iran war). "Inside Iran" / David Starr persona. 15-sec reels, viral content, thousands of likes/shares/followers. Growth has leveled but spikes still happen.
 
-**How it should connect**:
-- **Winner Studio**: Ingest Yossi's brand docs → Gemini brain uses them for script tone
-- **Lead Pages**: Ingest niche knowledge → personalized landing page copy
-- **FB Bot**: Ingest product catalogs → auto-generated marketplace listing descriptions
-- **TourReel**: Ingest listing details beyond Zillow → richer video scripts
+**What needs to be automated**:
+- Prompt writing → content generation (reels, carousels, stories)
+- Caption writing per platform
+- Hashtag research (platform-specific, trending vs. evergreen)
+- Upload timing strategy (when to post what on which platform)
+- KPI dashboard (reach, engagement rate, follower growth, saves, shares)
+- Content type analysis (what's working, what's not)
+- Cross-platform strategy: IG (primary), FB, TikTok, X, YT (research needed)
 
-**Next actions**:
-- [ ] Pick first integration: Winner Studio (Gemini brain context from RAG)
-- [ ] Ingest Mivnim brand materials via /api/rag/ingest
-- [ ] Update Gemini brain prompt to include RAG context
+**Revenue angle**: Explore affiliate marketing integration.
 
-**Health**: `curl http://172.245.56.50:11434/api/tags` (Ollama) + `/api/rag/search` (API)
+**Infrastructure**: Share patterns from SocialHub (SuperSeller). NEVER share accounts, data, or branding. Cross-pollinate techniques only.
+
+**Codebase**: `~/superseller/archives/shai-friedman-social` (2.2GB) → needs own directory `~/shai-friedman-social/`
 
 ---
 
-## 6. AgentForge
+## 4. TourReel — AI Property Videos
 
-**Status**: Spec only (5 Word docs + Prisma schema + seed)
-**Purpose**: Internal AI web development agent — should power SuperSeller AI's own dev workflow, NOT a separate product
-**Location**: `agentforge/`
+**Status**: LIVE but quality unvalidated since fixes. Dual-path (Kling AI + Remotion).
 
-**Decision**: Keep internal. Don't build as customer-facing product.
+**Quality fixes applied (7 phases, Feb-Mar 2026)** — NOT YET VALIDATED END-TO-END:
+- Pool exclusion, double realtor DUPLICATE_FIGURE_NEGATIVE, realtor SPATIAL_ANCHOR
+- Force 1920x1080, exclude floorplan from pool, Kling last_frame continuity
+- Seamless concat (zero transitions), measured clip durations, 4-sec CTA minimum
+- Credit sentinel before batch, per-property music style picker
 
----
+**What's needed**: 1 full test job (~$1-2 Kling credits) to confirm all fixes work together.
 
-## 7. SocialHub / Buzz (Social Media Management)
-
-**Customer**: All existing customers + new market (SuperSeller AI dogfooding first)
-**What it does**: AI content creation → WhatsApp approval → multi-platform publishing
-**Location**: `apps/web/superseller-site/src/lib/services/social/` (publishers), `apps/web/superseller-site/src/app/api/social/` (API routes)
-
-**Status**: ✅ PHASE 1 LIVE (Feb 26, 2026)
-
-**What works (Phase 1)**:
-- AI text generation (Claude) — content creation working
-- AI image generation (Kie.ai) — integrated
-- Facebook publishing — posts to SuperSeller AI page (294290977372290) via Graph API
-- WAHA approval workflow — WhatsApp-based content approval before publishing
-- Aitable sync — content posts synced to Aitable dashboard
-- 7 blog posts live (5 seeded + 2 from SocialHub pipeline tests)
-
-**What's NOT in Phase 1 (future phases)**:
-- Instagram publishing (account connected, code written, not active)
-- LinkedIn, Twitter/X, TikTok, YouTube publishing
-- Analytics engine, competitive intelligence
-- Social inbox (unified comments)
-- Smart scheduling
-- Multi-platform simultaneous publishing
-
-**Strategic role**: Content distribution layer for ALL products:
-- Winner Studio videos → distribute across social channels
-- TourReel videos → publish to realtor's social + YouTube
-- Lead Pages → social content drives traffic to landing pages
-- FB Bot handles Marketplace, SocialHub handles organic social
-
-**SaaS pricing** (future):
-- Free: 1 org, 3 posts/mo, 1 platform
-- Pro ($49/mo): 3 orgs, 50 posts, 4 platforms, smart scheduling
-- Business ($199/mo): Unlimited, all platforms, competitive intelligence
-
-**Next actions**:
-- [ ] Instagram publishing activation
-- [ ] Multi-platform scheduling
-- [ ] Analytics dashboard
-- [ ] Content calendar UI
+**Live URL**: https://superseller.agency/video/create | Worker: pm2 `tourreel-worker` on 172.245.56.50:3002
 
 ---
 
-## 8. FrontDesk Voice AI
+## 5. SocialHub / Buzz
 
-**Customer**: SuperSeller AI (sales) + future customer deployment
-**What it does**: AI-powered phone answering — Telnyx AI Assistant handles inbound calls, qualifies leads, answers FAQs
-**Status**: ⚠️ Partial — Voice assistant works, webhook migration pending
+**Status**: Phase 1 LIVE (text+image → WhatsApp approval → Facebook publish)
 
-**What works**:
-- Telnyx AI Assistant "Superseller FrontDesk" (Llama 3.3 70B, KokoroTTS, Deepgram Nova 3)
-- Phone: +14699299314
-- Outbound test calls verified (MOS 4.50 excellent)
-- System message updated to superseller.agency URLs
-- Active API key: `KEY019CACA6A...` (old key disabled)
+**What works**: Claude content gen, Kie.ai image gen, FB publishing (page 294290977372290), WAHA approval workflow, Aitable sync. 7 posts live.
 
-**What's missing**:
-- [ ] Webhook URL switch from n8n to worker (requires Telnyx Mission Control portal)
-- [ ] Inbound call handling via Antigravity worker
-- [ ] Lead storage bridge to PostgreSQL
-- [ ] eSignatures integration
+**Phase 2 (not built)**: Instagram activation (code exists, needs Meta config), LinkedIn, X, TikTok, YouTube, analytics, scheduling.
+
+**IG for Elite Pro**: Code in `apps/web/superseller-site/src/app/api/social/`. NOT activated. Needs Meta App ID/Secret.
 
 ---
 
-## 9. ClaudeClaw (WhatsApp AI Bridge)
+## 6. ClaudeClaw — WhatsApp AI Bridge
 
-**Customer**: SuperSeller AI (internal tool) + Customer groups
-**What it does**: WhatsApp → Claude bridge — remote control AI from phone (personal) + customer-facing group agents
-**Status**: ✅ DEPLOYED (Mar 2026) — WhatsApp→Claude bridge with RAG context, health monitoring, approval system
+**Status**: Deployed but GROUP AGENT BROKEN (3 missing service files)
 
-**What works**:
-- WhatsApp message → ClaudeClaw → Claude Code → executes tasks
-- RAG context integration (pgvector hybrid search)
-- Health monitoring + approval system
-- Deployed to RackNerd, PM2 managed
+**What works**: Personal mode (WhatsApp → Claude), RAG context, health monitoring, approval system, Elite Pro group registered.
 
-**Group Agent ("The Method") — Phase 1 BUILT (Mar 6)**:
-- 3-tier memory: short-term buffer (Postgres) + semantic memories (pgvector) + structured profiles
-- 4-layer guardrails: system prompt + output regex filter + input jailbreak detection + RAG tenant isolation
-- Memory extraction: every 15 messages, Claude Haiku extracts facts/preferences/decisions/entities
-- Full message archive in `group_messages` table (never pruned)
-- Quick handlers: competitor ad feedback, content approval, slash commands
-- Multi-tenant: all tables scoped by `tenant_id`, reusable across customer groups
-- Elite Pro group live: `120363408376076110@g.us`, 63 competitor ads scraped
+**BROKEN**: `group-agent.ts`, `approval-service.ts`, `rag-ingestor.ts` — imported in code but files missing. Group messages will crash.
+
+**Elite Pro group**: `120363408376076110@g.us`, tenant `elite-pro-remodeling`, 63 competitor ads loaded.
+
+---
+
+## 7. Winner Video Studio — Yossi (Mivnim)
+
+**Status**: BUILT, PAUSED. War in Israel = no parties = no demand for party promo videos.
+
+**Next window**: Pesach (April 2026) — draft campaign angle for Yossi before then.
+
+**What works**: Audio + photo → Gemini brain → Kling avatar-pro lip-sync → R2 → WhatsApp delivery. Full pipeline verified Feb 19.
+
+**Live URL**: https://studio.superseller.agency
+
+---
+
+## 8. Lead Landing Pages
+
+**Status**: Infrastructure 100% complete. No active customer pages.
+
+**What exists**: `/lp/[slug]` dynamic routing, per-customer branding (colors, logo, font, RTL/LTR), lead capture → WhatsApp + email notifications, analytics tracking.
+
+**Yoram**: Family referral. Build landing page when he's ready.
+
+---
+
+## 9. FrontDesk Voice AI
+
+**Status**: Partial. Voice works (+14699299314). Webhook migration n8n → worker PENDING.
+
+---
+
+## 10. Rensto.com — Separate Business
+
+**Status**: LIVE on RackNerd port 3001. Contractor directory with pricing transparency.
+
+**Needs**: Design audit + business model revisit + traffic strategy. Separate dedicated session.
+
+**Cross-business**: Rensto contractors = SuperSeller AI prospects. Use contractor DB for outreach. Zero technical dependency.
+
+**Code**: `~/rensto - online directory/` | GitHub: `imsuperseller/rensto-app` | Server: systemd `rensto`, port 3001
 
 ---
 
 ## Infrastructure Quick Reference
 
-| Service | URL | Status |
-|---------|-----|--------|
-| Web | https://superseller.agency | LIVE |
-| Admin | https://admin.superseller.agency | LIVE |
-| Studio | https://studio-teal-eight-38.vercel.app | LIVE |
-| Worker | http://172.245.56.50:3002 | LIVE |
-| Ollama | http://172.245.56.50:11434 | LIVE |
+| Service | URL/Location | Status |
+|---------|-------------|--------|
+| Web | https://superseller.agency | ✅ LIVE |
+| Admin | https://admin.superseller.agency | ✅ LIVE |
+| Worker | http://172.245.56.50:3002/api/health | ✅ LIVE |
+| Studio | https://studio.superseller.agency | ✅ LIVE |
+| Rensto | https://rensto.com | ✅ LIVE |
+| Ollama | http://172.245.56.50:11434/api/tags | ✅ LIVE |
 | n8n | https://n8n.superseller.agency | BACKUP |
-| Redis | Docker on RackNerd (auth: ${REDIS_PASSWORD}) | LIVE |
-| PostgreSQL | Docker on RackNerd (admin/${POSTGRES_PASSWORD}/app_db) | LIVE |
+| WAHA | http://172.245.56.50:3000 | ✅ LIVE |
+| PostgreSQL | 172.245.56.50:5432/app_db (admin/4b14f16c833eff714a7204ef3df53b01) | ✅ LIVE |
+| Redis | 172.245.56.50:6379 (pw: 8a735bff3ad157a242d68be49172f648) | ✅ LIVE |
 
 ---
 
-## Self-Serve SaaS Conversion Plan
+## Things That Wasted Time — Never Repeat
 
-**Phase 1 (NOW)**: Deliver working products to existing customers. Get them using and validating.
-**Phase 2**: Once validated, add onboarding flows, PayPal billing, self-serve signup.
-**Phase 3**: Marketing — each happy customer becomes a case study + referral source.
-
-**Shared infrastructure to extract**:
-- Auth (magic-link + WhatsApp OTP) → `packages/core/auth`
-- Credits (atomic ledger) → `packages/core/credits`
-- Kie.ai wrapper → `packages/core/kie`
-- WAHA (WhatsApp) → `packages/core/waha`
+- Assuming Vercel team plan = paid. Always check billing via API first.
+- Running cleanup without knowing what each folder is (deleted rensto, deleted 10 customer projects).
+- Deploying video pipeline without tracing data formats (WebP → Kling 422 error burned $8.60+).
+- Declaring quality fixes "done" without running 1 full validation job.
+- Adding customer domains to wrong Vercel project.
+- Creating nginx redirects without explicit user instruction.
+- Documenting things as "complete" without verifying they run in production.
 
 ---
 
-*Updated: 2026-03-02. Update after every task.*
+## What Was Lost / At Risk (Mar 5, 2026 Cleanup)
+
+- rensto-online-directory: RESTORED Mar 8 to `~/rensto - online directory/`, GitHub updated
+- shai-friedman-social: STILL IN `~/superseller/archives/shai-friedman-social/` — needs own directory
+- 10 customer projects deleted from filesystem — most on GitHub, some may be gone
+- rensto.com was redirecting to superseller.agency — FIXED Mar 8
+
+---
+
+*Updated: March 8, 2026 after full audit session. Update after every task.*

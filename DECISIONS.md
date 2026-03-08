@@ -17,6 +17,18 @@
 
 ---
 
+## 1b. RENSTO / SUPERSELLER ENTITY SEPARATION — HARD RULE
+
+**NEVER** redirect rensto.com → superseller.agency or mix these entities in any way.
+**NEVER** add rensto.com as a domain alias on any SuperSeller Vercel project.
+**NEVER** modify nginx configs for rensto.com to point to superseller.agency.
+Rensto LLC and SuperSeller AI are legally separate. DNS, nginx, Vercel domains — keep them 100% isolated.
+Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must stay separate.
+
+**History**: On March 5, 2026, I (Claude Code) incorrectly created `/etc/nginx/sites-available/rensto-redirect` which 301-redirected rensto.com → superseller.agency. Fixed March 8, 2026 — rensto.com now serves a neutral placeholder.
+
+---
+
 ## 2. VERCEL DEPLOY
 
 | Decision | Answer |

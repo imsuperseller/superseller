@@ -15,8 +15,42 @@ import { initWahaSessions } from "./services/waha-session-manager";
 import { startHealthMonitor } from "./services/health-monitor";
 import { startScheduler } from "./services/scheduler";
 
+async function validateConfig() {
+    const errors: string[] = [];
+
+    // Test Redis
+    try {
+        const Redis = (await import("ioredis")).default;
+        const testRedis = new Redis(config.redis.url, { connectTimeout: 5000, maxRetriesPerRequest: 1, retryStrategy: () => null });
+        await testRedis.ping();
+        await testRedis.quit();
+        logger.info({ msg: "Config validation: Redis OK" });
+    } catch (err: any) {
+        errors.push(`Redis: ${err.message}`);
+    }
+
+    // Test PostgreSQL
+    try {
+        const { query } = await import("./db/client");
+        await query("SELECT 1");
+        logger.info({ msg: "Config validation: PostgreSQL OK" });
+    } catch (err: any) {
+        errors.push(`PostgreSQL: ${err.message}`);
+    }
+
+    if (errors.length > 0) {
+        logger.error({ msg: "Config validation FAILED — fix before deploying", errors });
+        throw new Error(`Config validation failed: ${errors.join("; ")}`);
+    }
+
+    logger.info({ msg: "Config validation passed" });
+}
+
 async function bootstrap() {
     logger.info("🚀 Starting TourReel Worker Service...");
+
+    // 0. Validate critical connections before proceeding
+    await validateConfig();
 
     // 1. Express Setup
     const app = express();

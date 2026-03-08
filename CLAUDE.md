@@ -4,6 +4,15 @@
 **Main Engine**: Antigravity (Node.js/Postgres/R2)
 **Authority**: For conflict resolution and precedence, see [`brain.md`](brain.md) Authority Precedence table.
 
+> [!CAUTION]
+> **RENSTO / SUPERSELLER HARD SEPARATION — NEVER VIOLATE**
+> Rensto (rensto.com) and SuperSeller AI (superseller.agency) are TWO SEPARATE BUSINESSES under the same legal entity.
+> - **Rensto codebase**: `~/rensto - online directory/` — NOT inside this repo. Never move, archive, or reference it here.
+> - **Rensto server**: systemd `rensto` service, port 3001, RackNerd. nginx config `/etc/nginx/sites-available/rensto-redirect` proxies rensto.com → port 3001. NEVER touch this nginx block to redirect to superseller.agency.
+> - **No shared code**: No imports, API calls, or DB tables shared between the two apps.
+> - **Business relationship** (strategy only): Rensto contractors = SuperSeller AI prospects. Use Rensto's contractor data for outreach — never merge technically.
+> - **History**: On March 5, 2026, I incorrectly archived the Rensto codebase and redirected rensto.com → superseller.agency. Both were fixed March 8, 2026. Do not repeat.
+
 > [!IMPORTANT]
 > **Key References**:
 > 1. **Master Index**: [`docs/BUSINESS_COVERAGE_INDEX.md`](docs/BUSINESS_COVERAGE_INDEX.md) — Unified mapping of all business matters to SoTs.

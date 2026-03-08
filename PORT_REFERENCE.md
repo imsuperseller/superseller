@@ -62,3 +62,4 @@ API_URL=http://localhost:3001 npx tsx tools/run-smoke.ts
 | n8n (RackNerd) | 5678 |
 | superseller-site dev | 3002 (package.json) |
 | Worker default | 3002 (index.ts) — use PORT=3001 when site runs |
+| **Rensto app (RackNerd)** | **3001** — systemd `rensto`, separate Next.js app at `/var/www/rensto-app`. nginx proxies rensto.com → this port. DO NOT reassign port 3001 on RackNerd to any SuperSeller service. |

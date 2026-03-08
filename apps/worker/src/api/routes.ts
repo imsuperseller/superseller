@@ -9,6 +9,9 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { randomUUID } from "crypto";
 
+// Rate-limit map for unauthorized phone log spam (phone -> last log timestamp)
+const unauthorizedPhoneLog = new Map<string, number>();
+
 function mapPropertyType(raw: string | undefined): string {
     const v = (raw || "").toLowerCase();
     if (v.includes("condo")) return "condo";
@@ -668,7 +671,13 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             const phone = chatId.replace("@c.us", "").replace("@s.whatsapp.net", "");
             const allowed = appConfig.claudeclaw.allowedPhones;
             if (allowed.length > 0 && !allowed.some((p: string) => phone.includes(p) || p.includes(phone))) {
-                logger.warn({ msg: "ClaudeClaw: unauthorized phone", phone });
+                // Rate-limit unauthorized phone logs: 1 per 60s per phone
+                const now = Date.now();
+                const lastLog = unauthorizedPhoneLog.get(phone) || 0;
+                if (now - lastLog > 60_000) {
+                    logger.warn({ msg: "ClaudeClaw: unauthorized phone", phone });
+                    unauthorizedPhoneLog.set(phone, now);
+                }
                 return res.status(403).json({ error: "Unauthorized" });
             }
         }
