@@ -626,6 +626,9 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
         const hasMedia = payload?.hasMedia ?? false;
         const mediaUrl = payload?.mediaUrl || payload?.media?.url || null;
         const mediaType = payload?.type || "chat"; // chat, image, video, audio, document
+        // Message ID for reactions/replies + sender display name
+        const messageId = payload?.id?._serialized || payload?.id?.id || payload?.messageId || null;
+        const senderName = payload?.notifyName || payload?.pushName || null;
 
         // Ignore our own messages
         if (fromMe) {
@@ -637,6 +640,21 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             const { isRegisteredGroup } = await import("../services/group-agent");
             if (!isRegisteredGroup(chatId)) {
                 return res.json({ status: "ignored", reason: "unregistered_group" });
+            }
+
+            // Only respond (text) to slash commands or explicit @mentions.
+            // BUT: always ingest media — Saar's team may send photos without addressing the agent.
+            const isSlashCommand = body.startsWith("/");
+            const mentionedIds: string[] = payload?.mentionedIds || [];
+            const botJid = appConfig.claudeclaw.botJid;
+            const isMentioned =
+                (botJid && mentionedIds.some((id: string) => id.includes(botJid))) ||
+                body.toLowerCase().includes("@superseller");
+            const needsTextResponse = isSlashCommand || isMentioned;
+
+            if (!needsTextResponse && !hasMedia) {
+                // Pure text not addressed to agent — ignore
+                return res.json({ status: "ignored", reason: "not_addressed" });
             }
 
             // Extract sender from WAHA payload (participant field in group messages)
@@ -656,6 +674,8 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
                 mode,
                 isGroup: true,
                 senderChatId,
+                senderName: senderName || undefined,
+                messageId: messageId || undefined,
             });
 
             logger.info({ msg: "Group message enqueued", groupId: chatId, sender: senderChatId, bodyLength: body.length });
@@ -726,6 +746,8 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             wahaUrl,
             wahaSession,
             mode,
+            messageId: messageId || undefined,
+            senderName: senderName || undefined,
         };
 
         await claudeclawQueue.add(`claude-${Date.now()}`, jobData);

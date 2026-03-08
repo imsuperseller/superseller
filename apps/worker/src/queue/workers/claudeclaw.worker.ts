@@ -29,7 +29,7 @@ import {
 export const claudeclawWorker = new Worker<ClaudeClawJobData>(
     "claudeclaw",
     async (job: Job<ClaudeClawJobData>) => {
-        const { chatId, messageBody, hasMedia, mediaUrl, mediaType, wahaUrl, wahaSession, mode, isGroup, senderChatId } = job.data;
+        const { chatId, messageBody, hasMedia, mediaUrl, mediaType, wahaUrl, wahaSession, mode, isGroup, senderChatId, senderName, messageId } = job.data;
         const target: WahaTarget | undefined = wahaUrl ? { url: wahaUrl, session: wahaSession } : undefined;
 
         logger.info({
@@ -52,6 +52,39 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             } = await import("../../services/group-memory");
 
             const senderPhone = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
+
+            // ─── Media Ingestion (Elite Pro asset pipeline) ───
+            // If media was sent, download → R2 → DB → ✅ react.
+            // This runs regardless of whether the message text addresses the agent.
+            // That way, every photo/video Saar's team shares is captured even if
+            // they don't @superseller.
+            let ingestedAsset: { id: string; r2Url: string; assetType: string } | null = null;
+            if (hasMedia && messageId) {
+                try {
+                    const { ingestGroupMedia } = await import("../../services/ep-asset-ingestion");
+                    const groupCfg = getGroupConfig(chatId);
+                    if (groupCfg) {
+                        ingestedAsset = await ingestGroupMedia({
+                            tenantId: groupCfg.tenantId,
+                            waMessageId: messageId,
+                            waChatId: chatId,
+                            waSenderId: senderChatId || undefined,
+                            waSenderName: senderName || undefined,
+                            waCaption: messageBody || "",
+                            mediaType: mediaType || "image",
+                            target,
+                        });
+                    }
+                } catch (err: any) {
+                    logger.warn({ msg: "EP media ingestion failed (non-critical)", error: err.message });
+                }
+            }
+
+            // If this was a media-only message (no @mention, no slash command), stop here.
+            // The ✅ reaction from ingestGroupMedia is confirmation enough for the sender.
+            if (hasMedia && !messageBody?.trim() && ingestedAsset) {
+                return { handled: "group-media-ingested", assetType: ingestedAsset.assetType, isGroup: true };
+            }
 
             // Try quick handlers first (slash commands, feedback, approvals)
             const result = await handleGroupMessage(chatId, senderChatId || "", messageBody, target);
@@ -95,8 +128,6 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                     prompt: messageBody,
                     options: {
                         cwd: config.claudeclaw.projectDir,
-                        permissionMode: "bypassPermissions",
-                        allowDangerouslySkipPermissions: true,
                         systemPrompt: groupSystemPrompt,
                     },
                 });

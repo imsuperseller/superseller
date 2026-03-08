@@ -304,6 +304,50 @@ export const competitorAds = pgTable("competitor_ads", {
     likedIdx: index("idx_competitor_ads_liked").on(table.tenantId, table.liked),
 }));
 
+// --- Elite Pro: Incoming WhatsApp Assets ---
+// Raw media sent by Saar/Mor in the WhatsApp group → downloaded → stored to R2.
+// These are the source materials that eventually get referenced by content_entries.
+export const epIncomingAssets = pgTable("ep_incoming_assets", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(), // "elite-pro-remodeling"
+    // WhatsApp origin
+    waMessageId: text("wa_message_id").notNull().unique(), // WAHA message ID
+    waChatId: text("wa_chat_id").notNull(),               // group JID
+    waSenderId: text("wa_sender_id"),                     // who sent it
+    waSenderName: text("wa_sender_name"),
+    waCaption: text("wa_caption"),                        // caption they wrote with the media
+    // Asset classification
+    assetType: text("asset_type").notNull(), // before_photo | after_photo | reference | sora_char | brand | video | other
+    mimeType: text("mime_type"),             // image/jpeg | video/mp4 etc.
+    // Storage
+    r2Key: text("r2_key"),                  // null until downloaded + uploaded
+    r2Url: text("r2_url"),
+    fileSizeBytes: integer("file_size_bytes"),
+    // Processing state
+    status: text("status").notNull().default("pending"), // pending | downloading | stored | used | rejected
+    processingError: text("processing_error"),
+    // Links to other tables
+    actorId: uuid("actor_id").references(() => contentActors.id), // if this is a Sora char asset
+    usedInContentIds: jsonb("used_in_content_ids").default([]),   // content_entries.id array
+    // Agent reaction tracking (did we ✅ react in WhatsApp?)
+    acknowledgedAt: timestamp("acknowledged_at", { withTimezone: true }),
+    meta: jsonb("meta").default({}),
+    receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantIdx: index("idx_ep_assets_tenant").on(table.tenantId),
+    statusIdx: index("idx_ep_assets_status").on(table.tenantId, table.status),
+    typeIdx: index("idx_ep_assets_type").on(table.tenantId, table.assetType),
+    receivedIdx: index("idx_ep_assets_received").on(table.receivedAt),
+}));
+
+export const epIncomingAssetsRelations = relations(epIncomingAssets, ({ one }) => ({
+    actor: one(contentActors, {
+        fields: [epIncomingAssets.actorId],
+        references: [contentActors.id],
+    }),
+}));
+
 export const systemSettings = pgTable("system_settings", {
     key: text("key").primaryKey(),
     value: jsonb("value").notNull().default(true),

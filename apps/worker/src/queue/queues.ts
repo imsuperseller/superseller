@@ -56,6 +56,8 @@ export interface ClaudeClawJobData {
     mode?: "personal" | "business";  // Channel mode for personality
     isGroup?: boolean;           // True if message came from a group chat
     senderChatId?: string;       // Original sender in group (participant@c.us)
+    senderName?: string;         // Display name of sender (from WAHA notifyName)
+    messageId?: string;          // WAHA message ID (for reactions + reply quoting)
 }
 
 export async function initQueues() {
