@@ -71,6 +71,7 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                             waSenderId: senderChatId || undefined,
                             waSenderName: senderName || undefined,
                             waCaption: messageBody || "",
+                            mediaUrl: mediaUrl || undefined,
                             mediaType: mediaType || "image",
                             target,
                         });

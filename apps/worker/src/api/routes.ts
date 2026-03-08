@@ -627,7 +627,11 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
         const mediaUrl = payload?.mediaUrl || payload?.media?.url || null;
         const mediaType = payload?.type || "chat"; // chat, image, video, audio, document
         // Message ID for reactions/replies + sender display name
-        const messageId = payload?.id?._serialized || payload?.id?.id || payload?.messageId || null;
+        // WAHA webhook: payload.id is a plain string e.g. "true_120363...@g.us_3EB0..."
+        const messageId: string | null =
+            typeof payload?.id === "string"
+                ? payload.id
+                : payload?.id?._serialized || payload?.id?.id || payload?.messageId || null;
         const senderName = payload?.notifyName || payload?.pushName || null;
 
         // Ignore our own messages

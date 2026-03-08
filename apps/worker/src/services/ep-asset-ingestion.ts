@@ -10,7 +10,8 @@
 
 import { query } from "../db/client";
 import { uploadBufferToR2 } from "./r2";
-import { downloadMedia, reactToMessage, WahaTarget } from "./waha-client";
+import { reactToMessage, WahaTarget } from "./waha-client";
+import { config } from "../config";
 import { logger } from "../utils/logger";
 
 /** Asset types we auto-classify from caption keywords and mime type */
@@ -70,6 +71,9 @@ export interface IngestedAsset {
  * Ingest a media message sent in the Elite Pro group.
  * Called from claudeclaw.worker.ts when hasMedia=true and chatId is the Elite Pro group.
  *
+ * WAHA media URL pattern: http://localhost:3000/api/files/{session}/{messageId}.{ext}
+ * This URL is accessible directly from the worker (same server), with the X-Api-Key header.
+ *
  * @returns IngestedAsset record on success, null if media couldn't be downloaded/uploaded.
  */
 export async function ingestGroupMedia(params: {
@@ -79,20 +83,47 @@ export async function ingestGroupMedia(params: {
     waSenderId?: string;   // participant@c.us
     waSenderName?: string; // display name
     waCaption?: string;    // caption they sent with the media
-    mediaUrl?: string;     // WAHA's own media URL (may or may not be downloadable)
+    mediaUrl?: string;     // WAHA media URL from webhook (http://localhost:3000/api/files/...)
     mediaType?: string;    // image, video, audio, document
     target?: WahaTarget;
 }): Promise<IngestedAsset | null> {
     const {
         tenantId, waMessageId, waChatId, waSenderId, waSenderName,
-        waCaption = "", mediaType = "image", target,
+        waCaption = "", mediaType = "image", mediaUrl, target,
     } = params;
 
-    // --- Download ---
+    if (!mediaUrl) {
+        logger.warn({ msg: "EP asset: no mediaUrl in job data — cannot ingest", waMessageId });
+        return null;
+    }
+
+    // --- Download via WAHA media URL ---
+    // WAHA stores media locally and serves it at mediaUrl (same server, requires API key)
     logger.info({ msg: "EP asset ingestion: downloading", waMessageId, sender: waSenderName });
-    const buffer = await downloadMedia(waMessageId, waChatId, target);
-    if (!buffer || buffer.length < 100) {
-        logger.warn({ msg: "EP asset: download failed or empty", waMessageId });
+    let buffer: Buffer;
+    try {
+        const wahaBase = config.waha.url; // e.g. http://172.245.56.50:3000
+        // If mediaUrl starts with localhost, rewrite to actual WAHA host
+        const fetchUrl = mediaUrl.startsWith("http://localhost")
+            ? mediaUrl.replace("http://localhost:3000", wahaBase)
+            : mediaUrl;
+
+        const res = await fetch(fetchUrl, {
+            headers: { "X-Api-Key": config.waha.apiKey },
+        });
+        if (!res.ok) {
+            logger.warn({ msg: "EP asset: WAHA media fetch failed", status: res.status, waMessageId });
+            return null;
+        }
+        const ab = await res.arrayBuffer();
+        buffer = Buffer.from(ab);
+    } catch (err: any) {
+        logger.warn({ msg: "EP asset: download error", error: err.message, waMessageId });
+        return null;
+    }
+
+    if (buffer.length < 100) {
+        logger.warn({ msg: "EP asset: download too small, likely error response", waMessageId });
         return null;
     }
 
