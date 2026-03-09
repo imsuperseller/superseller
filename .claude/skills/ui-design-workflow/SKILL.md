@@ -2,7 +2,8 @@
 name: ui-design-workflow
 description: >-
   Operational bridge between external UI generation tools (v0, Stitch, screenshot-to-code)
-  and SuperSeller AI's branded React/Next.js codebase. Use when converting external UI designs
+  and SuperSeller AI's branded React/Next.js codebase.
+  MANDATORY: Read docs/DESIGN_STANDARDS.md before any UI work — enforceable quality gate. Use when converting external UI designs
   into SuperSeller AI-branded components, extracting UI from screenshots/URLs, or generating
   new pages from prompts via v0/Stitch. Complements ui-ux-pro-max (design intelligence)
   with execution workflows. Not for backend logic, video pipeline, or database work.

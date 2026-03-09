@@ -10,9 +10,11 @@ description: >-
 # UI/UX Pro Max - Design Intelligence
 
 ## Critical
+- **MANDATORY**: Read `docs/DESIGN_STANDARDS.md` before ANY UI work — it is the enforceable quality gate
 - Always run `--design-system` FIRST before any UI work — it generates a complete design system
 - Never use emojis as UI icons — use SVG icons (Heroicons, Lucide, Simple Icons)
-- Light mode contrast minimum: 4.5:1 for text, use slate-900 not slate-400
+- **SuperSeller pages**: Dark mode ONLY, use CSS variables (`var(--superseller-*)`) not hardcoded hex
+- **Quality gate**: Every page must score 7+/10 before deploy. No generic designs.
 - Default stack is `html-tailwind` when user doesn't specify
 
 Comprehensive design guide for web and mobile applications. Contains 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types across 9 technology stacks. Searchable database with priority-based recommendations.

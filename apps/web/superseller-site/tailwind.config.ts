@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['var(--font-outfit)', 'system-ui', '-apple-system', 'sans-serif'],
+  			outfit: ['var(--font-outfit)', 'system-ui', '-apple-system', 'sans-serif'],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			text: '#E5E7EB',
