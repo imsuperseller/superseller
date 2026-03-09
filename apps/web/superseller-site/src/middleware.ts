@@ -105,7 +105,8 @@ export function middleware(request: NextRequest) {
         path.startsWith('/portal/') ||
         path.startsWith('/video/') ||
         path.startsWith('/app/') ||
-        path.startsWith('/lp/')
+        path.startsWith('/lp/') ||
+        path.startsWith('/compete/')
     ) {
         const res = NextResponse.next();
         res.headers.set('x-pathname', path);
