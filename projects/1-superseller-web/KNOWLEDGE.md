@@ -11,7 +11,7 @@ SuperSeller Web is a Next.js 14+ application deployed on Vercel. It serves as th
 
 ## Tech Stack
 - **Framework**: Next.js 14+ (App Router)
-- **Auth**: NextAuth.js with magic-link authentication
+- **Auth**: Magic-link via Resend (NOT NextAuth — removed Feb 2026)
 - **ORM**: Prisma (PostgreSQL + pgvector)
 - **Payments**: PayPal (migrated from Stripe Feb 2026; DB columns keep `stripe*` names but store PayPal IDs)
 - **i18n**: next-intl (7 locales: en, he, fa, cs, hu, hi, ko)
@@ -33,14 +33,16 @@ SuperSeller Web is a Next.js 14+ application deployed on Vercel. It serves as th
 - Config: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/i18n/navigation.ts`
 
 ### Credit System
-- Three tiers: Starter ($79/mo, 30 credits), Growth ($149/mo, 75 credits), Agency ($299/mo, 200 credits)
+- Three tiers: Starter ($79/mo, 500cr), Pro ($149/mo, 1500cr), Team ($299/mo, 4000cr)
+- Credits per video: 50cr (TourReel), 50cr (Winner Studio), 10cr/scene regen
 - Credit ledger in PostgreSQL with debit/credit transactions
 - PayPal webhook triggers provisioning on subscription activation
 - `src/lib/credits.ts` for web-side credit operations
+- PayPal plan IDs in `.env`: PAYPAL_STARTER_PLAN_ID, PAYPAL_PRO_PLAN_ID, PAYPAL_TEAM_PLAN_ID (all LIVE mode)
 
 ### API Expense Tracking
 - Every API generation MUST call `trackExpense()` in `src/lib/monitoring/expense-tracker.ts`
-- Rates: Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.09, Gemini $0.001
+- Rates: Kling Pro $0.10, Std $0.03, Suno $0.06, Nano Banana $0.02, Gemini $0.001, Recraft $0.0025
 - Stored in `api_expenses` table with anomaly detection
 
 ### Admin Portal (8 tabs)

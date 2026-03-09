@@ -238,7 +238,7 @@ Age 40-55, married with active mortgage, NIS 10K-15K/month income, Hebrew-speaki
 - Full multi-page Next.js 15 website in `yoram-friedman-insurance/web/`
 - Lead form connected to n8n webhook
 
-**Retired**: Landing page at `rensto.com/lp/yoram` (51 views, 0 submissions — retired Feb 24, 2026).
+**Retired**: Old landing page (51 views, 0 submissions — retired Feb 24, 2026). Previously incorrectly hosted under a domain that has NO relation to Yoram or SuperSeller — purged completely.
 
 **Vercel**: Project `yoram-leads` (prj_9buQsVSywfFvIBfUjEOn3D4D6str)
 

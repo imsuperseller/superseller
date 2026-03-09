@@ -1,7 +1,0 @@
-{
-  "name": "superseller-ops",
-  "description": "SuperSeller AI operations — deployment, monitoring, cost tracking, and infrastructure management",
-  "version": "1.0.0",
-  "author": { "name": "SuperSeller AI" },
-  "homepage": "https://superseller.agency"
-}

@@ -143,8 +143,6 @@ export async function runAgent(
             options: {
                 cwd: config.claudeclaw.projectDir,
                 ...(existingSession ? { resume: existingSession } : {}),
-                permissionMode: "bypassPermissions",
-                allowDangerouslySkipPermissions: true,
                 systemPrompt,
             },
         });

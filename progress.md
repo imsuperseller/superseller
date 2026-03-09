@@ -6,6 +6,48 @@
 
 ---
 
+## 2026-03-08: Full Audit + Documentation Overhaul
+
+### Phase 1: Infrastructure Smoke Test + Fixes
+- Fixed Vercel 503: wrong Postgres password in env vars — corrected and redeployed
+- Identified admin 404: middleware skipping i18n for /admin paths — fix prepared, pending deploy
+- Documented worker status: 29 PM2 restarts = manual deploys, not crashes
+- Discovered port 3456: `video-merge` systemd service — added to docs
+
+### Phase 2: Stale Item Cleanup
+- Deleted `plugins/` directory (43 duplicate markdown files)
+- Deleted `.cursor/MCP_CONFIGURATION_STATUS.md` (replaced by inline config in INFRA_SSOT.md)
+- Deactivated `AI-MEDICAL-001` n8n workflow (dead demo)
+- Moved `landing-elite-pro-.html` to proper location
+- Cleaned up `assets/excalidraw/` stale directory
+
+### Phase 3: Documentation Overhaul (10 files)
+- `PRODUCT_STATUS.md` — Landing Pages → "Ready for sale (design upgrade needed)", added smoke test results + Poe roadmap
+- `CLAUDE.md` — Removed MCP_CONFIGURATION_STATUS ref, fixed WAHA auth, added video-merge port, QuickBooks deprecation, updated plugins section
+- `docs/INFRA_SSOT.md` — Inline MCP config, video-merge service, WAHA X-Api-Key fix
+- `findings.md` — Mar 8 audit entry (10 findings)
+- `progress.md` — This session entry
+- `README.md` — Rewritten as concise 50-line landing doc
+- `DECISIONS.md` — QuickBooks cancellation, landing page service tiers, Poe roadmap
+- `docs/NOTEBOOKLM_INDEX.md` — 2 uncataloged notebook placeholders
+- `docs/BUSINESS_COVERAGE_INDEX.md` — Landing Page service, QuickBooks cancelled, Poe roadmap
+- `.claude/skills/lead-pages/SKILL.md` — ui-ux-pro-max cross-ref, quality note, pricing tiers
+
+### Phase 4: Business Model Updates
+- QuickBooks cancellation decision ($600/yr savings)
+- Landing page service pricing: Starter $500, Pro $1,000, Enterprise $2,000+
+- Poe bot as future lead-gen channel (roadmap, not urgent)
+
+### Phase 5: Commit + Validate
+- All changes committed and verified
+
+### Cost table (this session)
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| (No API calls this session) | — | — | **$0.00** |
+
+---
+
 ## 2026-03-06: Codebase Cleanup — Tasks 3 & 4 Complete ✅
 
 ### Task 3: Rename stripe-credits → billing-credits (COMPLETE)

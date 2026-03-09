@@ -76,6 +76,18 @@ All products must align with one of these tactical pillars:
 *   **Status**: Infrastructure COMPLETE. Customer implementations in separate repos.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §4, `.claude/skills/lead-pages/SKILL.md`.
 
+### 🌐 Landing Page Creation (Service Offering)
+*   **Target**: Any small business needing a professional landing page (not just SuperSeller customers).
+*   **Pricing Tiers**:
+    | Tier | Price | Includes |
+    | :--- | :--- | :--- |
+    | **Starter** | $500/mo | Basic 1-section landing page, custom colors/logo, WhatsApp lead capture, 1 revision |
+    | **Professional** | $1,000/mo | 3-5 sections, testimonials, video embed, RTL/LTR support, email capture, 2 revisions |
+    | **Enterprise** | $2,000+/mo | Unlimited sections, custom design, A/B testing, analytics dashboard |
+*   **Margin**: ~85-90% (near-zero COGS — programmatic generation).
+*   **Status**: READY FOR SALE — infrastructure complete, **design upgrade needed before launch** (current visual quality 5.2/10).
+*   **Blocker**: Design quality must reach 7+/10 before actively selling to customers.
+
 ### 📞 FrontDesk Voice AI (Telnyx)
 *   **Target**: Businesses needing AI receptionist / phone answering.
 *   **Logic**: `apps/worker/src/services/telnyx.ts`, `apps/worker/src/queue/workers/frontdesk-poller.worker.ts`
@@ -142,6 +154,7 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 | **Ready Solutions** | $890-$2,990+ | PayPal LIVE |
 | **Subscriptions** | $79-$299/mo | PayPal LIVE |
 | **Custom Solutions** | $3,500-$8,000+ | PayPal LIVE |
+| **Landing Page Creation** | $500-$2,000+/mo | READY (design upgrade needed) |
 | **SocialHub/Buzz** | $49-$199/mo (future) | Phase 1 LIVE (FB publish) |
 
 ### Customer Journey (4 Stages)
@@ -152,3 +165,17 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 
 ### Admin Portal
 admin.superseller.agency. Next.js, Tailwind, shadcn/ui. Auth: magic-link for ADMIN_EMAILS (shai@superseller.agency, shai@superseller.agency). 14 tabs including dashboard, CRM, treasury, analytics, AI agents, support queue, launch control.
+
+---
+
+## 7. Financial Tools
+
+- **QuickBooks**: CANCELLED (saves $600/yr). Not needed at current scale.
+- **Primary**: PayPal reports + built-in `expense-tracker.ts` for cost tracking.
+- **Backup**: Wave (free accounting software) if more reporting needed.
+
+---
+
+## 8. Distribution Roadmap
+
+- **Poe (poe.com)**: Potential demo/lead-gen channel for SuperSeller AI agents. Roadmap item — not urgent. Could expose TourReel or AgentForge as Poe bots for discovery.

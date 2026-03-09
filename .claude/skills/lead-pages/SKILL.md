@@ -151,11 +151,31 @@ When creating a new landing page:
 | Lead not created | Validation failure (missing name/phone/email) | All 3 fields are mandatory — check form validation |
 | Testimonials showing fabricated content | Content invented instead of extracted | DELETE fabricated data, extract only from customer docs |
 
+## Design Quality Note
+
+**Current visual quality: 5.2/10.** The technical infrastructure is complete but the design needs a significant upgrade before selling as a service. Planned improvements:
+- Dark theme + glassmorphism design language
+- Modern component styling (glass cards, gradient borders, subtle animations)
+- Mobile-first responsive overhaul
+
+**IMPORTANT**: For ALL design decisions (colors, typography, layout, component styling), use the **ui-ux-pro-max** skill FIRST. That skill owns the design system and brand tokens.
+
+## Service Pricing (pending design upgrade)
+
+| Tier | Price | Includes |
+|------|-------|----------|
+| Starter | $500 | Single page, standard template, lead capture |
+| Pro | $1,000 | Custom branding, multi-section, analytics |
+| Enterprise | $2,000+ | Full custom design, multi-page, integrations |
+
+See `DECISIONS.md` §21 for the pricing decision.
+
 ## References
 
 - NotebookLM 719854ee — SuperSeller AI website content
 - Content extraction rule: `CLAUDE.md` §Content Extraction Rule
-- PRODUCT_STATUS.md §4 — Landing page product status
+- PRODUCT_STATUS.md §8 — Landing page product status
 - findings.md — Content Invention Pattern (root cause, safeguards)
+- `.claude/skills/ui-ux-pro-max/` — Design system, brand tokens, visual standards
 
 **Reference**: The `/lp/[slug]` system has been used in production for a Hebrew RTL insurance landing page (external client project, not part of SuperSeller AI).

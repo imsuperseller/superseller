@@ -42,7 +42,7 @@ Every API call MUST log cost via `trackExpense()`:
 | Kling Pro | $0.10/clip |
 | Kling Std | $0.03/clip |
 | Suno | $0.06/generation |
-| Nano Banana | $0.04-$0.09/upscale |
+| Nano Banana | $0.02/image (4 credits) |
 | Gemini | $0.001/call |
 | Recraft | $0.0025/image |
 

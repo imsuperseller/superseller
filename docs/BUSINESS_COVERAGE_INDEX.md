@@ -1,191 +1,212 @@
-# 🧠 SuperSeller AI: Business Coverage Master Index
-> **Last Updated**: March 2026 | **Authority**: Tier 3 (see `brain.md`) | **Owned by**: Admin Operations
+# SuperSeller AI — Business Coverage Navigation Map
 
-This document defines the **Source of Truth** for every tracked business and technical element in the SuperSeller AI ecosystem.
-
-For the full interactive version with automation details, see the [Antigravity Artifact](https://antigravity.internal/brain/ef8e3f5c-ae37-4b45-9025-9dc042dcb02a/master_index.md).
-
----
-
-## Source of Truth (SoT) Legend
-
-| Symbol | Store | Managed By |
-|:---:|:---|:---|
-| 🐘 | **PostgreSQL** | Auto-logged; PayPal webhooks; n8n/Antigravity outputs |
-| 📋 | **Aitable.ai** | Human-editable; AI-summary syncs; business tracking |
-| 📚 | **NotebookLM** | Deep-context specs, methodology, creative briefs |
-| 💻 | **Codebase** | Config, schemas, CI/CD, agent skills |
----
-
-## I. Infrastructure & Deployments
-
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Deployments (Vercel, RackNerd) | 💻 | System Monitor |
-| Server inventory (each thing on server) | 💻🐘 | Vault & Infra |
-| MCP Servers (status, versions) | 💻🐘 | Vault & Infra |
-| Logs (deployment, error, access) | 🐘 | System Monitor |
-| Routes (API endpoints, webhooks) | 💻 | Vault & Infra |
-| Scripts (automation, utility) | 💻 | Vault & Infra |
-| Credentials & Secrets (paths only) | 💻 | Vault & Infra |
-| Structure (repo map, folder layout) | 💻 | Brain Docs |
-| Stack (tech decisions, versions) | 💻📚 | Brain Docs |
-| Ports, health endpoints | 💻🐘 | System Monitor |
-| Error budgets / SLOs | 💻 | System Monitor |
+> **Purpose**: Concrete file-location map. "Where do I find X?" → look here first.
+> **Last Updated**: March 8, 2026
+> **Rule**: Every product, customer, and system has ONE primary doc + supplementary files listed below.
 
 ---
 
-## II. Design & Brand
+## HOW TO USE THIS
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Colors, fonts, style tokens | 💻 | Landing Content |
-| Effects, animations, micro-interactions | 💻📚 | Landing Content |
-| Tone & language (copy) | 📚 | Brain Docs |
-| Wireframes, blueprints | 📚 | Brain Docs |
-| Sitemaps | 💻 | Landing Content |
-| Tags, SEO indexes | 💻 | Landing Content |
-| Layout (page grids, spacing) | 💻📚 | Landing Content |
-| Component library | 💻 | Ecosystem Map |
-| Brand assets (logo, PDFs) | 💻📚 | Vault & Infra |
+1. Find the product/customer/topic below
+2. Go to **Primary doc** first — it has the full context
+3. Use **Supplementary** for code, credentials, or spec details
+4. If something is missing here, add it — this is a living map
 
 ---
 
-## III. AI, Agents & Pipelines
+## PRODUCTS
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Prompts (system, user, CoT) | 💻📚 | AI Agents |
-| LLM models in use (versions, configs) | 💻📋 | AI Agents |
-| Internal agents (Terry, SEO, Pipeline) | 💻📚 | AI Agents |
-| Pipelines (video, lead, content) | 💻📚🐘 | Workflows |
-| Skills (agent capabilities) | 💻 | AI Agents |
-| MCP tools (available functions) | 💻📚 | AI Agents |
-| AI usage logs (tokens, cost, latency) | 🐘💻 | Treasury |
-| RAG / embeddings (pgvector) | 🐘💻 | AI Agents |
-| Model cost tracking | 🐘📋💻 | Treasury |
+### TourReel — AI Property Videos
+- **Primary doc**: `PRODUCT_STATUS.md` §4
+- **Pipeline spec**: `docs/REMOTION_BIBLE.md` (Remotion path), NotebookLM `0baf5f36` (Kling path)
+- **Code (worker)**: `apps/worker/src/workers/video-pipeline.worker.ts`
+- **Code (web)**: `apps/web/superseller-site/src/app/api/jobs/`
+- **Cost tracking**: `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts`
+- **Live URL**: https://superseller.agency/video/create
+- **Worker health**: http://172.245.56.50:3002/api/health
+- **Status**: LIVE, quality fixes applied but NOT end-to-end validated (need 1 test job + full infra audit)
 
----
+### FB Marketplace Bot — Miss Party + UAD
+- **Primary doc**: `PRODUCT_STATUS.md` §1 (feature matrix, scores, configs)
+- **Platform bible**: `platforms/marketplace/PLATFORM_BIBLE.md`
+- **Bot config** (local): `fb-marketplace-lister/deploy-package/bot-config.json`
+- **Bot config** (server): `/opt/fb-marketplace-bot/bot-config.json`
+- **Server code**: `/opt/fb-marketplace-bot/` (PM2: webhook-server, fb-scheduler, image-pool, cookie-monitor)
+- **n8n workflows (DO NOT TOUCH)**: UAD `U6EZ2iLQ4zCGg31H`, MissParty `9gfvZo9sB4b3pMWQ` (Telnyx voice pipelines)
+- **Status**: Verified posting Mar 8. UAD 5/5, Miss Party 3/3, all exit 0.
 
-## IV. Financials & Business
+### ClaudeClaw — WhatsApp AI Bridge
+- **Primary doc**: `PRODUCT_STATUS.md` §6, `MEMORY.md` §ClaudeClaw
+- **Service files** (all in `apps/worker/src/services/`):
+  - `group-agent.ts` — orchestrator, group registry, system prompt builder
+  - `group-memory.ts` — 3-tier memory (buffer + pgvector + profiles)
+  - `guardrails.ts` — 4-layer output/input filters
+  - `approval-service.ts` — token-based WhatsApp approval flow
+  - `rag-ingestor.ts` — health context + full ingestion jobs
+  - `claudeclaw-router.ts` — RAG enrichment + mode-specific prompts
+- **Wired into**: `apps/worker/src/workers/claudeclaw.worker.ts`
+- **DB tables**: `group_messages`, `tenant_profiles`, `group_agent_config`, `approval_requests`
+- **Elite Pro group**: chatId `120363408376076110@g.us`, tenant `elite-pro-remodeling`
+- **Status**: ✅ FULLY OPERATIONAL as of Mar 8, 2026
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Expenses | 📋🐘💻 | Treasury |
-| Profits / Revenue | 🐘📋 | Treasury |
-| Invoices | 🐘📋 | Treasury |
-| Summaries (monthly, quarterly) | 📋💻 | Treasury |
-| Parameters (pricing tiers, limits) | 💻🐘 | Product Factory |
-| Reports (financial, performance) | 📋💻 | Analytics |
-| LTV / Customer value predictions | 🐘💻 | Analytics |
-| PayPal product/plan catalog | 🐘💻 | Product Factory |
+### SocialHub / Buzz
+- **Primary doc**: `PRODUCT_STATUS.md` §5
+- **Code**: `apps/web/superseller-site/src/app/api/social/`
+- **Status**: Phase 1 LIVE (text+image → WhatsApp approval → FB publish)
 
----
+### Winner Studio — Avatar Videos
+- **Primary doc**: `PRODUCT_STATUS.md` §7
+- **Code**: `apps/studio/`
+- **Live URL**: https://studio.superseller.agency
+- **Customer**: Yossi (Mivnim) — PAUSED until Pesach April 2026
 
-## V. Customers & Prospects
+### FrontDesk Voice AI
+- **Primary doc**: `PRODUCT_STATUS.md` §9
+- **Telnyx**: Phone +14699299314, Assistant `assistant-f2838322-edfa-4c22-9997-ca53b151175f`
+- **Status**: Partial — voice works, webhook migration n8n → worker PENDING
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Prospects (leads, qualification) | 🐘📋 | Client CRM |
-| Customers (active users) | 🐘 | Client CRM |
-| Messages (WhatsApp, email, chat) | 🐘 | Client CRM |
-| Customer assets (videos, leads) | 🐘 | Client CRM |
-| Onboarding requests | 🐘 | Client CRM |
-| Insights (behavior, churn risk) | 🐘📋💻 | Analytics |
-| Support / Issues | 🐘 | Support Queue |
-| Consultations | 🐘 | Client CRM |
-| Voice call logs | 🐘 | Client CRM |
+### Lead Landing Pages (Landing Page Creation Service)
+- **Primary doc**: `PRODUCT_STATUS.md` §8
+- **Skill**: `.claude/skills/lead-pages/SKILL.md`
+- **Code**: `apps/web/superseller-site/src/app/lp/[slug]/`, `LandingPageClient.tsx`
+- **Product spec**: `docs/PRODUCT_BIBLE.md` §Landing Pages
+- **Yoram live**: https://yoramfriedman.co.il
+- **Status**: READY FOR SALE — infrastructure complete, design upgrade needed (5.2/10 visual quality)
+- **Service tiers**: Starter $500, Pro $1,000, Enterprise $2,000+ (see `DECISIONS.md` §21)
 
----
-
-## VI. Products & Platforms
-
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Templates (marketplace) | 🐘💻 | Product Factory |
-| Solutions catalog | 🐘 | Product Factory |
-| Service manifests (n8n blueprints) | 🐘💻 | Product Factory |
-| Components (UI building blocks) | 💻 | Ecosystem Map |
-| Self-service apps (per-product) | 💻🐘 | Ecosystem Map |
-| Admin dashboard modules | 💻 | Dashboard |
-| User dashboards | 💻🐘 | Ecosystem Map |
-| SuperSeller AI-related assets | 💻📚🐘 | Vault & Infra |
-| Platforms (Vercel, RackNerd, etc.) | 💻🐘 | Vault & Infra |
-
----
-
-## VII. Governance & Legal
-
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Legal (ToS, Privacy, contracts) | 📚📋💻 | Vault & Infra |
-| Rules & instructions (agent rules) | 💻📚 | Brain Docs |
-| Security policies | 💻 | Vault & Infra |
-| Credential rotation schedule | 📋💻 | Vault & Infra |
-| Compliance checklist | 💻📋 | Vault & Infra |
+### AgentForge
+- **Primary doc**: `docs/PRODUCT_BIBLE.md` §AgentForge
+- **Status**: Spec only — code NOT started
 
 ---
 
-## VIII. Operations & Monitoring
+## CUSTOMERS
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| Statuses (workflow, service, customer) | 🐘 | System Monitor |
-| Alerts (workflow errors, SLA breach) | 🐘📋💻 | System Monitor |
-| Notifications (customer-facing) | 🐘💻 | Support Queue |
-| Updates (changelog, release notes) | 📋💻 | Launch Control |
-| Projects | 📋🐘 | Projects |
-| Tasks | 📋🐘 | Projects |
-| Research (market, technical) | 📚📋 | Brain Docs |
-| Insights (business, product) | 📋💻 | Analytics |
+### Elite Pro Remodeling ($2,000/mo — SIGNED, not started)
+- **Primary doc**: `docs/customer-projects/elite-pro-remodeling.md`
+- **Customer profile**: `projects/6-customer-projects/CUSTOMERS.md` §1
+- **Demo video**: R2 `elite-pro-demo/elite-pro-v12-final.mp4` (25.7s, 1080x1920)
+- **Landing page**: https://elite-pro-landing.vercel.app
+- **eSignatures template**: ID `99de20b5-2bb9-4439-9532-e00902fe6824` — NOT YET SENT
+- **Contacts**: Saar Bitton (owner), Mor Dayan (PM) | (800) 476-7608
+- **Voice IDs**: Mor `1prnFNmpCkb2bx39pQSi`, Saar `jlOXsp2JeEQ29fkljTTO` (ElevenLabs)
+- **WhatsApp group**: `120363408376076110@g.us`
+- **Blockers**: Meta App ID/Secret from Saar, Saar/Mor phone numbers, contract not sent
 
----
+### UAD (David Szender — Garage Doors)
+- **Primary doc**: `PRODUCT_STATUS.md` §1
+- **Config**: `bot-config.json` — 4 Telnyx phones, 5 posts/15min, 30 DFW cities
+- **Revenue**: Split on leads that convert (no fixed fee)
+- **Status**: Verified posting Mar 8
 
-## IX. Knowledge & Documentation
+### Miss Party (Michal Kacher Szender — Bouncy Castles)
+- **Primary doc**: `PRODUCT_STATUS.md` §1
+- **Config**: `bot-config.json` — 1 phone, 3 posts/30min
+- **Revenue**: FREE (proving value)
+- **Status**: Verified posting Mar 8
 
-| Item | SoT | Admin Tab |
-|:---|:---:|:---|
-| MD files (brain, decisions, findings) | 💻 | Brain Docs |
-| NotebookLM notebooks | 📚 | Brain Docs |
-| Artifacts (plans, walkthroughs) | 💻 | Brain Docs |
-| Data tables / schemas | 💻🐘 | Vault & Infra |
-| Blueprints (product SSOT) | 📚💻 | Brain Docs |
+### Kedem Developments (Daniel Arbel — Luxury Real Estate)
+- **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §2
+- **Status**: TourReel pilot delivered (6847 Lakeshore Drive video)
 
----
+### AC&C HVAC (Neitha Parkey)
+- **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §3
+- **Website**: `dist-chi-three-91.vercel.app` (behind password `AcC-Site$2026`)
+- **Dashboard**: `dist-dashboard-eight.vercel.app` (login: admin / `AcC-Lead$2026`)
+- **Status**: Delivered, behind password gate — needs go-live activation
 
-## X. Admin Dashboard Tab Assignments
+### Yoram Friedman Insurance (Shai's father)
+- **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §6
+- **Live site**: https://yoramfriedman.co.il
+- **GitHub** (account `yoramnfridman1`): `yoram-landing` (live), `yoram-friedman-insurance` (full site)
+- **Credentials**: `CREDENTIAL_REFERENCE.md` §Yoram Friedman
+- **Apify**: EMPTY — 0 actors, 0 tasks (Israeli insurance scraping not set up)
+- **Revenue**: Pay per lead
 
-| Tab | Purpose | Primary Data Sources |
-|:---|:---|:---|
-| **Dashboard** | Cortex AI Feed, KPI cards | Postgres + Aitable AI summaries |
-| **Ecosystem Map** | Products, agents, pipelines (live status) | `ServiceInstance` + `SolutionInstance` |
-| **Client CRM** | Full customer timeline, messages, assets | All `userId`-linked tables |
-| **Projects** | Kanban synced from Aitable + GitHub | Aitable API + GitHub API |
-| **Landing Content** | Design tokens, SEO, sitemap preview | `globals.css` + `sitemap.ts` + NotebookLM Stitch |
-| **Product Factory** | Wizard, manifest editor, PayPal sync | `Template` + `ServiceManifest` + PayPal |
-| **System Monitor** | Health pings, logs, error rates, MCP | Postgres logs + RackNerd API |
-| **Vault & Infra** | Credential map, scripts, server inventory | `CREDENTIAL_REFERENCE.md` + Postgres |
-| **Treasury** | Revenue, expenses, AI costs, profits | `Payment` table + Aitable expense table |
-| **Analytics** | LTV, churn risk, pipeline conversion | Derived Postgres + AI scoring |
-| **Workflows** | n8n / Antigravity state, history | n8n API + Antigravity MCP |
-| **AI Agents** | Registry, skill map, token usage | `.claude/skills/` + `UsageEvent` |
-| **Support Queue** | Cases, SLA timer, auto-triage | `SupportCase` table |
-| **Launch Control** | Release pipeline, feature flags | GitHub + Vercel API |
-| **Notebooks Hub** | Query NotebookLM from the dashboard | `notebooklm-mcp` |
-| **Governance** | Legal tracker, compliance, credentials | Aitable + `security/` |
+### Wonder.care (Ortal Flanary — Israeli Healthtech)
+- **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §5
+- **Delivered**: Google Sheets → Monday.com pipeline, n8n VPS (192.227.249.73)
+- **Outstanding proposal**: $900-$6,450 across 4 tasks (sent Dec 18, 2025)
 
----
+### Ortal Pilates (Saar Bitton's wife)
+- **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §4
+- **Site**: https://imsuperseller.github.io/ortal-pilates/ (placeholder data, not operational)
 
-## XI. NotebookLM Index (Direct Links)
-
-| # | Notebook | Purpose |
-|---|---|---|
-| 1-15 | **Core Stack** | [See `brain.md` Knowledge Hierarchy] |
-| 16 | [**Market Intelligence**](https://notebooklm.google.com/notebook/8df32896-d93b-4a32-961f-40c6fa3ccf7a) | Competitors, ICP, Benchmarks |
-| 17 | [**Legal & Compliance**](https://notebooklm.google.com/notebook/7630d154-341b-40a7-9a10-6f9e1f3ddc7d) | ToS, Privacy, Contract History |
-| 18 | [**Product Changelog**](https://notebooklm.google.com/notebook/12724368-e4af-488c-a8a3-ce04da043d60) | Release Notes, KM Deployment |
-| 19 | [**AI Cost & Performance**](https://notebooklm.google.com/notebook/02c3946b-c69b-423b-b188-9b79ecdd1629) | Benchmarks, Budget Optimization |
+### Rensto Online Directory (Internal — Separate Business)
+- **Primary doc**: `MEMORY.md` §Rensto Online Directory
+- **Codebase**: `~/rensto - online directory/` (NOT inside superseller repo)
+- **GitHub**: `imsuperseller/rensto-app`
+- **Live**: rensto.com → RackNerd port 3001 (systemd `rensto`)
 
 ---
 
-*Linked from: `brain.md` → `docs/NOTEBOOKLM_INDEX.md` → this file.*
+## INFRASTRUCTURE
+
+### Credentials & Keys
+- **Master**: `CREDENTIAL_REFERENCE.md` — ALL keys, paths, API tokens
+- **Vercel projects**: `VERCEL_PROJECT_MAP.md`
+- **Ports**: `PORT_REFERENCE.md`
+- **Environment**: `apps/worker/.env` + `apps/web/superseller-site/.env.local`
+
+### Servers & Services
+- **Full infra spec**: `docs/INFRA_SSOT.md`
+- **RackNerd IP**: 172.245.56.50
+- **WAHA**: port 3000, API key `4fc7e008d7d24fc995475029effc8fa8`
+- **PostgreSQL**: `postgres_db` Docker, port 5432, user admin, db `app_db`
+- **Redis**: `redis_cache` Docker, port 6379
+- **Ollama**: systemd, port 11434
+- **PM2 processes**: tourreel-worker, webhook-server, fb-scheduler, image-pool, cookie-monitor
+
+### Database Schemas
+- **Prisma** (web): `apps/web/superseller-site/prisma/schema.prisma`
+- **Drizzle** (worker): `apps/worker-packages/db/src/schema.ts`
+- **Drift detector**: `npx tsx tools/schema-sentinel.ts`
+
+### Deployment
+- **Worker deploy**: `./apps/worker/deploy-to-racknerd.sh`
+- **Web deploy**: `cd apps/web/superseller-site && vercel --prod`
+- **Health checks**: `CLAUDE.md` §6
+
+---
+
+## KEY DOCS (Read When Lost)
+
+| Question | File |
+|----------|------|
+| What's the current priority order? | `PRODUCT_STATUS.md` top section |
+| What are the current blockers? | `PRODUCT_STATUS.md` §Critical Technical Blockers |
+| Where is credential X? | `CREDENTIAL_REFERENCE.md` |
+| What did we decide about Y? | `DECISIONS.md` |
+| What broke and how did we fix it? | `findings.md` |
+| Which Vercel project = which domain? | `VERCEL_PROJECT_MAP.md` |
+| Which port = which service? | `PORT_REFERENCE.md` |
+| Full product spec (billing, credits, agents) | `docs/PRODUCT_BIBLE.md` |
+| Full infra (DB, storage, n8n, MCP) | `docs/INFRA_SSOT.md` |
+| Agent behavior rules | `.claude/rules/agent-behavior.md` |
+| AI model selection + pricing | `docs/AI_MODEL_REGISTRY.md` (file must exist — was missing) |
+
+---
+
+---
+
+## CANCELLED / DEPRECATED
+
+### QuickBooks
+- **Status**: CANCELLED (Mar 8, 2026) — saves $600/yr
+- **Decision**: `DECISIONS.md` §20
+- **Rationale**: Solo LLC, ~5 customers. PayPal reports + expense-tracker sufficient. Wave (free) as backup.
+
+---
+
+## ROADMAP
+
+### Poe Bot (Lead-Gen Channel)
+- **Status**: ROADMAP — not urgent
+- **Decision**: `DECISIONS.md` §22
+- **Purpose**: Demo/lead-gen channel to expose SuperSeller AI capabilities
+- **Tracker**: `PRODUCT_STATUS.md` §Roadmap Items
+
+---
+
+*This replaces the abstract SoT table that existed before March 8, 2026. If you need the admin dashboard tab assignments, those are in `PRODUCT_BIBLE.md`.*

@@ -1,140 +1,115 @@
-# SuperSeller AI — Multi-Project Index
+# SuperSeller AI — Project Map
 
-> **Purpose**: Enable parallel Claude Cowork sessions with zero file conflicts.
-> **Rule**: No source code is moved. No imports change. This is an organizational layer only.
-
----
-
-## The 7 Projects
-
-| # | Project | Directory | Primary Scope |
-|---|---------|-----------|---------------|
-| 1 | **SuperSeller Web** | `projects/1-superseller-web/` | Next.js SaaS platform, admin, billing, i18n |
-| 2 | **Video Engine** | `projects/2-video-engine/` | TourReel pipeline, Remotion, Kling AI, FFmpeg |
-| 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, posting |
-| 4 | **Infrastructure** | `projects/4-infrastructure/` | DevOps, RackNerd, PM2, Docker, MCP, CI/CD |
-| 5 | **Social & Content** | `projects/5-social-content/` | SocialHub, WhatsApp WAHA, Telnyx voice |
-| 6 | **Customer Projects** | `projects/6-customer-projects/` | Client sites (AC&C, Elite Pro, etc.) |
-| 7 | **Strategy & Docs** | `projects/7-strategy-docs/` | Root docs, NotebookLM, business intelligence |
+> **Purpose**: Every project has a folder. Every folder has a CLAUDE.md + KNOWLEDGE.md.
+> Open the folder in Claude Cowork → Claude knows exactly what it can/cannot touch and what the current status is.
+> **Rule**: No source code is moved. Projects are organizational + context layers only.
+> **Last updated**: March 8, 2026
 
 ---
 
-## File Ownership Map
+## How This Works
 
-Every file/directory belongs to exactly ONE project. No overlaps.
-
-### Project 1 — SuperSeller Web
-```
-apps/web/superseller-site/**
-apps/studio/**
-```
-
-### Project 2 — Video Engine
-```
-apps/worker/**
-apps/worker-packages/**
-```
-
-### Project 3 — Marketplace Bot
-```
-fb marketplace lister/**
-platforms/marketplace/**
-```
-
-### Project 4 — Infrastructure
-```
-infra/**
-scripts/**
-tools/**
-ops/**
-.github/**
-plugins/**
-.env*
-.mcp.json
-.gitignore
-.cursorrules
-.cursor/**
-root package.json
-root tsconfig*.json
-agentforge/**
-assets/**
-Celebrity Selfie Generator/**
-claude-ollama-bridge/**
-design-system/**
-library/**
-notebooklm-mcp-local/**
-ollama-mcp-local/**
-security/**
-superseller-orbita/**
-```
-
-### Project 5 — Social & Content
-```
-shai friedman social/**
-social app/**
-```
-
-### Project 6 — Customer Projects
-```
-elite pro remodeling/**
-rensto - online directory/**
-ac-&-c-llc-hvac/**
-kedem developments/**
-ortal pilates/**
-wonder.care/**
-yoram-friedman-insurance/**
-(any other customer-specific directories, excluding tax4us)
-```
-
-### Project 7 — Strategy & Docs
-```
-docs/**  (except docs/cross-project-requests/)
-brain.md
-CLAUDE.md
-ARCHITECTURE.md
-METHODOLOGY.md
-DECISIONS.md
-findings.md
-progress.md
-PRODUCT_STATUS.md
-REPO_MAP.md
-VERCEL_PROJECT_MAP.md
-CREDENTIAL_REFERENCE.md
-PORT_REFERENCE.md
-README.md
-PROJECTS.md (this file)
-```
-
-### Shared (read by all, written by none directly)
-```
-docs/cross-project-requests/   — coordination directory
-```
+1. Each folder below = one Cowork context
+2. Open the folder in Claude Cowork (or `cd projects/X && claude`)
+3. The CLAUDE.md tells Claude what files it owns and what it cannot touch
+4. The KNOWLEDGE.md gives Claude full project context without needing to read the whole codebase
+5. For codebase changes (SSH, deploys, DB migrations): report back to the main Claude Code session here
 
 ---
 
-## Conflict Prevention Rules
+## System / Product Projects
 
-### 1. File Ownership
-Each file belongs to exactly ONE project. If you need to modify a file outside your project, create a request in `docs/cross-project-requests/`.
+| # | Project | Folder | What It Covers |
+|---|---------|--------|----------------|
+| 1 | **SuperSeller Web** | `projects/1-superseller-web/` | Next.js SaaS platform, admin portal, billing, PayPal, i18n, Prisma, auth |
+| 2 | **Video Engine** | `projects/2-video-engine/` | TourReel pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector |
+| 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, Firestore |
+| 4 | **Infrastructure** | `projects/4-infrastructure/` | RackNerd VPS, PM2, Docker, MCP servers, CI/CD, env vars |
+| 5 | **Social & Content** | `projects/5-social-content/` | SocialHub/Buzz (Phase 1 live), WAHA sessions, Telnyx FrontDesk Voice |
+| 8 | **ClaudeClaw** | `projects/8-claudeclaw/` | WhatsApp AI bridge, group agent, 3-tier memory, guardrails, RAG, approvals |
+| 7 | **Strategy & Docs** | `projects/7-strategy-docs/` | Root docs, brain.md, PRODUCT_BIBLE, NotebookLM, business intelligence |
 
-### 2. Schema Changes
-- **Prisma schema** (`apps/web/superseller-site/prisma/schema.prisma`): Only Project 1 (Web) modifies.
-- **Drizzle schema** (`apps/worker-packages/db/src/schema.ts`): Only Project 2 (Video Engine) modifies.
-- Cross-schema requests: Create `docs/cross-project-requests/schema-request-{date}-{description}.md`.
+---
 
-### 3. Root Docs
-Only Project 7 (Strategy & Docs) edits root-level `.md` files. Other projects create update requests in `docs/cross-project-requests/doc-update-{date}-{description}.md`.
+## Customer Projects (Active + Delivered)
 
-### 4. Env Files
-Only Project 4 (Infrastructure) modifies `.env*`, `.mcp.json`, root configs.
+| Customer | Folder | Revenue | Status |
+|----------|--------|---------|--------|
+| **Elite Pro Remodeling** | `projects/customers/elite-pro-remodeling/` | $2,000/mo (signed) | IG pipeline BLOCKED on Saar's creds. Group agent LIVE in Hebrew. |
+| **UAD Garage Doors** | `projects/customers/uad-garage-doors/` | Revenue split | ✅ FB Bot posting daily |
+| **Miss Party** | `projects/customers/miss-party/` | Free | ✅ FB Bot posting daily |
+| **Kedem Developments** | `projects/customers/kedem-developments/` | Per-video | Pilot delivered, dormant |
+| **AC&C HVAC** | `projects/customers/ac-c-hvac/` | TBD | Site built, behind password, not live |
+| **Yoram Friedman** | `projects/customers/yoram-friedman/` | Pay per lead | ✅ Site live, Apify not set up |
+| **Wonder.care** | `projects/customers/wonder-care/` | Project-based | Pipeline delivered, proposal pending 3mo |
+| **Ortal Pilates** | `projects/customers/ortal-pilates/` | TBD | Placeholder only, strategic asset |
+| **Yossi / Mivnim** | (in PRODUCT_STATUS.md §7) | TBD | Winner Studio — PAUSED till Pesach April 2026 |
 
-### 5. Skills
-Each of the 26 global skills (in `.claude/skills/`) is assigned to exactly one project. 6 additional app-local skills exist in project-specific directories. See individual project CLAUDE.md files for assignments.
+## Prospects / Hot Leads (Israeli Parliament Group)
 
-### 6. Cross-Project Communication
-- **Runtime**: HTTP APIs + shared PostgreSQL database
-- **Development**: Request files in `docs/cross-project-requests/`
-- **Never**: Shared code imports across project boundaries
+Full pipeline strategy: `projects/leads-pipeline/CLAUDE.md`
+
+| Lead | Folder | Business | Priority |
+|------|--------|----------|----------|
+| **Yehuda Alali** | `projects/customers/yehuda-alali-meat-point/` | Meat Point + Pizza Ella (kosher restaurants) | 🔴 #1 — posts daily, gets deleted |
+| **Yaron Yashar** | `projects/customers/yaron-air-duct/` | Air duct / chimney / dryer vent | 🔴 Tier 1 |
+| **Avi** | `projects/customers/avi-tokyo-bar/` | Tokyo Bar (kosher restaurant) | 🔴 Tier 1 |
+| **Avi Construction** | `projects/customers/avi-construction/` | Roofing / general contractor | 🔴 Tier 1 |
+| **Tomer** | `projects/customers/tomer-tesla-heroes/` | Tesla Heroes (Tesla repair) | 🟡 Tier 2 |
+| **Maydan (Midan Arazi)** | `projects/customers/maydan-insurance/` | UnitedHealthcare insurance | 🟡 Tier 2 |
+| Other Parliament members | `projects/leads-pipeline/` | Various | See pipeline doc |
+
+> **Note**: Other Parliament members (Eliran, Dror, DialWise.ai/Etai) tracked in `leads-pipeline/CLAUDE.md`. Yaron Yashar's last name — not confirmed in docs, verify with Shai.
+
+---
+
+## Rensto (Separate Business)
+
+| Folder | What It Covers |
+|--------|----------------|
+| `projects/rensto/` | Rensto Online Directory — live at rensto.com (separate codebase at `~/rensto - online directory/`) |
+
+---
+
+## Backlog / Pending Work
+
+Items that need to happen but aren't assigned to an active sprint:
+
+| Item | Folder | Decision Needed |
+|------|--------|-----------------|
+| TourReel end-to-end audit + test | `projects/backlog/tourreel-audit/` | Approve ~$2 API spend |
+| Billing system fix (7 issues) | `projects/backlog/billing-system-fix/` | Prioritize which of 7 issues to start |
+| Iron Dome OS pipeline rebuild | `projects/backlog/iron-dome-rebuild/` | Pick rebuild option (A/B/C) |
+| Elite Pro go-live (once Saar sends creds) | `projects/backlog/elite-pro-go-live/` | Waiting on Saar |
+
+---
+
+## File Ownership Map (No Overlaps)
+
+```
+apps/web/superseller-site/**           → Project 1 (Web)
+apps/studio/**                         → Project 1 (Web)
+apps/worker/**                         → Project 2 (Video Engine)
+apps/worker-packages/**                → Project 2 (Video Engine)
+  └── ClaudeClaw service files         → Project 8 (ClaudeClaw) [by convention, not folder]
+fb-marketplace-lister/**               → Project 3 (Marketplace Bot)
+platforms/marketplace/**               → Project 3 (Marketplace Bot)
+infra/**                               → Project 4 (Infrastructure)
+scripts/**                             → Project 4 (Infrastructure)
+tools/**                               → Project 4 (Infrastructure)
+ops/**                                 → Project 4 (Infrastructure)
+.env*, .mcp.json, root configs         → Project 4 (Infrastructure)
+shai friedman social/**                → Project 5 (Social & Content)
+docs/**                                → Project 7 (Strategy & Docs)
+brain.md, CLAUDE.md, *.md (root)       → Project 7 (Strategy & Docs)
+elite-pro-remodeling/**                → Customer: Elite Pro
+kedem developments/**                  → Customer: Kedem
+ac-&-c-llc-hvac/**                     → Customer: AC&C
+yoram-friedman-insurance/**            → Customer: Yoram
+wonder.care/**                         → Customer: Wonder.care
+ortal pilates/**                       → Customer: Ortal
+~/rensto - online directory/           → Rensto (outside this repo)
+```
 
 ---
 
@@ -144,15 +119,14 @@ Each of the 26 global skills (in `.claude/skills/`) is assigned to exactly one p
 |-------|---------|
 | admin-portal | 1 — Web |
 | customer-journey | 1 — Web |
-| stripe-credits | 1 — Web |
 | lead-pages | 1 — Web |
 | ui-ux-pro-max | 1 — Web |
 | ui-design-workflow | 1 — Web |
-| rag-pgvector | 1 — Web |
 | tourreel-pipeline | 2 — Video Engine |
 | model-observatory | 2 — Video Engine |
 | cost-tracker | 2 — Video Engine |
 | winner-studio | 2 — Video Engine |
+| remotion-best-practices | 2 — Video Engine (app-local) |
 | marketplace-saas | 3 — Marketplace Bot |
 | deploy-ops | 4 — Infrastructure |
 | monitoring-alerts | 4 — Infrastructure |
@@ -163,42 +137,45 @@ Each of the 26 global skills (in `.claude/skills/`) is assigned to exactly one p
 | credential-guardian | 4 — Infrastructure |
 | resilience-patterns | 4 — Infrastructure |
 | socialhub | 5 — Social & Content |
-| whatsapp-waha | 5 — Social & Content |
+| whatsapp-waha | 5 — Social & Content + 8 — ClaudeClaw |
 | frontdesk-voice | 5 — Social & Content |
-| agentforge | 6 — Customer Projects |
+| rag-pgvector | 8 — ClaudeClaw |
 | notebooklm-hub | 7 — Strategy & Docs |
 | api-contracts | 7 — Strategy & Docs |
 
-**App-local skills** (not in `.claude/skills/`, owned by their respective projects):
-- `remotion-best-practices` → Project 2 (`apps/worker/.agents/skills/`)
-- `gologin-profile-management`, `facebook-bot-server-management`, `facebook-marketplace-posting`, `fixing-database-schema`, `managing-marketplace-listings` → Project 3 (`fb marketplace lister/.agent/skills/`)
+---
+
+## Cross-Project Communication
+
+- **Runtime**: HTTP APIs + shared PostgreSQL database
+- **Development**: Request files in `docs/cross-project-requests/`
+- **Never**: Shared code imports across project boundaries
+- **Codebase changes from Cowork**: Report to main Claude Code session
 
 ---
 
-## How to Use
+## Workflow: Cowork + Claude Code
 
-### Claude Cowork (claude.ai)
-1. Create a Claude Project per project above
-2. Upload the project's `CLAUDE.md` as custom instructions
-3. Upload the project's `KNOWLEDGE.md` as a knowledge file
-4. Optionally upload relevant skill SKILL.md files
-5. Open Cowork tasks — Claude knows what it can/cannot edit
-
-### Claude Code CLI
-- Navigate to `projects/{N}-{name}/` — CLAUDE.md is picked up automatically
-- Work happens in actual source directories but scoped by ownership rules
-
----
-
-## Cross-Project Request Format
-
-```markdown
-# Request: {title}
-- **From**: Project {N} ({name})
-- **To**: Project {N} ({name})
-- **Type**: schema-change | doc-update | env-change | config-change
-- **Priority**: P0 | P1 | P2
-- **Description**: What needs to change and why
-- **Files affected**: List of files
-- **Status**: pending | approved | completed
+```
+┌─────────────────────────────────────────────────┐
+│  Claude Cowork (claude.ai)                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────┐ │
+│  │ Elite Pro   │  │ ClaudeClaw  │  │ Billing │ │
+│  │ project     │  │ project     │  │ backlog │ │
+│  └─────────────┘  └─────────────┘  └─────────┘ │
+│         │                │               │       │
+│         └────────────────┴───────────────┘       │
+│                          │                        │
+│              "Deploy this / run that"             │
+└──────────────────────────┼────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────┐
+│  Claude Code CLI (this session)                  │
+│  - SSH to RackNerd                               │
+│  - DB migrations                                 │
+│  - Code changes + rsync deploy                   │
+│  - Health checks                                 │
+│  - Antigravity orchestration                     │
+└─────────────────────────────────────────────────┘
 ```

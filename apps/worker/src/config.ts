@@ -128,6 +128,8 @@ export const config = {
         projectDir: optional("CLAUDECLAW_PROJECT_DIR", "/opt/claudeclaw"),
         maxResponseLength: parseInt(optional("CLAUDECLAW_MAX_RESPONSE_LENGTH", "4000")),
         sessionTtlDays: parseInt(optional("CLAUDECLAW_SESSION_TTL_DAYS", "7")),
+        // Bot's own WhatsApp JID for group mention detection (e.g. "14695885133")
+        botJid: optional("CLAUDECLAW_BOT_JID", "14695885133"),
     },
 
     wahaSessions: {

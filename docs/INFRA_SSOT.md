@@ -39,7 +39,7 @@
     *   `ANTHROPIC_API_KEY` (Dummy for local proxy; Real for n8n)
 *   **WhatsApp (WAHA)**:
     *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (superseller-site) / `config.shared.wahaUrl` (FB Bot) — same server: `http://172.245.56.50:3000`
-    *   `WAHA_API_KEY` — Bearer token for WAHA Pro
+    *   `WAHA_API_KEY` — passed via `X-Api-Key` header (NOT Bearer token)
     *   `WAHA_SESSION` — Session name (default: superseller-whatsapp)
     *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `superseller-whatsapp` (future website chatbot with knowledge base)
     *   **Dashboard**: `http://172.245.56.50:3000/dashboard`
@@ -174,6 +174,7 @@ npm audit --audit-level=high
 *   **Video Worker**: Manual/Scripted deployment to RackNerd. (Path: `/opt/tourreel-worker`)
 *   **FB Marketplace Bot**: PM2 managed at `/opt/fb-marketplace-bot/`. 4 processes: `webhook-server` (port 8082), `fb-scheduler`, `image-pool`, `cookie-monitor`.
 *   **n8n**: Docker-compose managed on RackNerd (Port 5678).
+*   **Video Merge**: systemd `video-merge` service on RackNerd (Port 3456). Used for FFmpeg-based video merging operations.
 
 ---
 
@@ -211,7 +212,11 @@ Legacy reference. Old base IDs archived: Operations app6saCaH88uK3kCO, Core app4
 - Cost: $0 (lifetime plan)
 
 ### MCP Servers
-See `.cursor/MCP_CONFIGURATION_STATUS.md` for current list and status. Key active servers: n8n MCP, NotebookLM, Airtable, Notion, Make, Shadcn, Apify, Ollama, GitHub, Postgres, Redis, Docker. QuickBooks disabled. Stripe MCP deprecated (PayPal uses REST API directly).
+2 active MCP servers configured in `~/.cursor/mcp.json`:
+- **universal-aggregator** — n8n, Stripe (dormant), Firebase, Vercel integrations
+- **notebooklm** — NotebookLM notebook access via Stitch MCP
+
+QuickBooks MCP: CANCELLED (Mar 8, 2026 — subscription cancelled, saves $600/yr). Stripe MCP deprecated (PayPal uses REST API directly).
 
 ### Quick Reference URLs
 | Service | URL |

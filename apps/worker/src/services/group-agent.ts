@@ -23,6 +23,7 @@ export interface GroupConfig {
     agentRole: string;
     systemPromptAdditions?: string;
     allowedPhones: string[]; // empty = allow all group members
+    language?: string; // e.g. "he" = always respond in Hebrew, "en" = English, undefined = match user's language
     registeredAt: Date;
 }
 
@@ -48,6 +49,7 @@ export async function initGroupAgentTables(): Promise<void> {
             agent_role TEXT NOT NULL DEFAULT 'Business assistant for this group',
             system_prompt_additions TEXT,
             allowed_phones TEXT[] NOT NULL DEFAULT '{}',
+            language TEXT,
             registered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
@@ -62,7 +64,7 @@ export async function initGroupAgentTables(): Promise<void> {
 
 export async function reloadGroupRegistry(): Promise<void> {
     const rows = await query<any>(
-        `SELECT group_id, tenant_id, agent_name, agent_role, system_prompt_additions, allowed_phones, registered_at
+        `SELECT group_id, tenant_id, agent_name, agent_role, system_prompt_additions, allowed_phones, language, registered_at
          FROM group_agent_config ORDER BY registered_at ASC`,
     );
 
@@ -75,6 +77,7 @@ export async function reloadGroupRegistry(): Promise<void> {
             agentRole: row.agent_role,
             systemPromptAdditions: row.system_prompt_additions || undefined,
             allowedPhones: row.allowed_phones || [],
+            language: row.language || undefined,
             registeredAt: row.registered_at,
         });
     }
@@ -92,8 +95,8 @@ export function getGroupConfig(groupId: string): GroupConfig | null {
 
 export async function registerGroup(config: Omit<GroupConfig, "registeredAt">): Promise<void> {
     await query(
-        `INSERT INTO group_agent_config (group_id, tenant_id, agent_name, agent_role, system_prompt_additions, allowed_phones)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO group_agent_config (group_id, tenant_id, agent_name, agent_role, system_prompt_additions, allowed_phones, language)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          ON CONFLICT (group_id)
          DO UPDATE SET
              tenant_id = EXCLUDED.tenant_id,
@@ -101,9 +104,10 @@ export async function registerGroup(config: Omit<GroupConfig, "registeredAt">): 
              agent_role = EXCLUDED.agent_role,
              system_prompt_additions = EXCLUDED.system_prompt_additions,
              allowed_phones = EXCLUDED.allowed_phones,
+             language = EXCLUDED.language,
              updated_at = NOW()`,
         [config.groupId, config.tenantId, config.agentName, config.agentRole,
-         config.systemPromptAdditions || null, config.allowedPhones],
+         config.systemPromptAdditions || null, config.allowedPhones, config.language || null],
     );
     await reloadGroupRegistry();
     logger.info({ msg: "Group registered", groupId: config.groupId, tenantId: config.tenantId });
@@ -147,7 +151,14 @@ export function buildGroupSystemPrompt(groupConfig: GroupConfig, memoryContext: 
         sections.push("", "## Memory & Context", memoryContext);
     }
 
-    sections.push("", "Respond naturally in the same language the user is writing in (Hebrew, English, etc.).");
+    // Language instruction — per-group config overrides default adaptive behavior
+    if (groupConfig.language === "he") {
+        sections.push("", "## Language", "תמיד תענה בעברית, גם אם השאלה נשאלת באנגלית או בשפה אחרת. עברית בלבד.");
+    } else if (groupConfig.language === "en") {
+        sections.push("", "## Language", "Always respond in English only, regardless of the language used to ask the question.");
+    } else {
+        sections.push("", "## Language", "Respond in the same language the user writes in. If Hebrew → respond in Hebrew. If English → respond in English.");
+    }
 
     return sections.join("\n");
 }

@@ -1,5 +1,53 @@
 ---
 
+## 2026-03-08: Full Infrastructure Smoke Test + Audit
+
+### Web 503 Root Cause (FIXED)
+- **Root cause**: Wrong Postgres password in Vercel environment variables. The site was returning 503 because Prisma could not connect to PostgreSQL.
+- **Fix**: Corrected `DATABASE_URL` in Vercel env vars and redeployed.
+- **Never repeat**: After any Postgres password change, update ALL consumers: Vercel env, worker .env, any CI/CD secrets.
+
+### Admin 404 Root Cause (FIX PENDING DEPLOY)
+- **Root cause**: Next.js i18n middleware skips `/admin` paths — the admin route matcher doesn't handle the locale prefix correctly, returning 404 for admin.superseller.agency.
+- **Fix**: Middleware update prepared to handle admin subdomain routing. Pending Vercel deploy.
+
+### Worker 29 Restarts — NOT Crashes
+- **Finding**: PM2 showed 29 restarts on `tourreel-worker`. Investigation confirmed these are manual deploy restarts (rsync + `pm2 restart`), NOT crash loops. Uptime is stable between deploys.
+- **Rule**: Don't alarm on PM2 restart count alone — check restart timestamps vs deploy times.
+
+### Port 3456 — video-merge Service (Legitimate)
+- **Finding**: Port 3456 is the `video-merge` systemd service on RackNerd, used for FFmpeg-based video merging. Previously undocumented.
+- **Fix**: Added to INFRA_SSOT.md and CLAUDE.md.
+
+### WAHA Auth — X-Api-Key NOT Bearer
+- **Root cause**: MEMORY.md and docs referenced WAHA auth as "Bearer token". The correct WAHA Pro authentication header is `X-Api-Key`, not `Authorization: Bearer`.
+- **Fix**: Updated INFRA_SSOT.md. All WAHA API calls should use `X-Api-Key` header.
+
+### Landing Page Visual Quality — 5.2/10
+- **Finding**: Landing page infrastructure (`/lp/[slug]`) is technically complete but visual quality is 5.2/10. Needs dark theme + glassmorphism design upgrade before selling as a service.
+- **Impact**: Can't sell landing page service at planned tiers (Starter $500, Pro $1,000, Enterprise $2,000+) until design is upgraded.
+
+### Skill Completeness Audit
+- **TourReel**: 9/10 — pipeline mature, quality fixes applied, needs 1 validation job
+- **Lead Pages**: 2/10 on design — infrastructure complete but visual quality too low to sell
+
+### QuickBooks — Cancel, Save $600/yr
+- **Finding**: Solo LLC with ~5 customers. PayPal reports + built-in expense-tracker covers accounting needs. QuickBooks at $50/mo is unnecessary overhead.
+- **Decision**: Cancel subscription. Wave (free) as backup if complexity grows.
+
+### AI-MEDICAL-001 n8n Workflow — Deactivated
+- **Finding**: Dead demo workflow `AI-MEDICAL-001` was still active in n8n. Never used in production, no customer dependency.
+- **Fix**: Deactivated.
+
+### Stale Items Deleted (Mar 8)
+- `plugins/` directory (43 files) — all content duplicated in PRODUCT_BIBLE.md + .claude/skills/
+- `.cursor/MCP_CONFIGURATION_STATUS.md` — replaced by inline MCP config in INFRA_SSOT.md
+- `assets/excalidraw/` — empty/stale
+- `landing-elite-pro-.html` — moved to proper location
+- AI-MEDICAL-001 n8n workflow — deactivated
+
+---
+
 ## 2026-03-04: TourReel — 7 Recurring Quality Issues Deep Audit
 
 ### Issue #3 (CRITICAL): stitchClipsConcat NEVER CALLED

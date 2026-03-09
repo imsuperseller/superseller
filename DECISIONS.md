@@ -275,6 +275,40 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 
 ---
 
-## 20. DEFERRED
+## 20. CANCEL QUICKBOOKS ($50/MO) (Mar 8, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Cancel QuickBooks** | YES — cancel subscription immediately |
+| **Rationale** | Solo LLC with ~5 customers. PayPal transaction reports + built-in expense-tracker in `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` covers all accounting needs. |
+| **Savings** | $600/year |
+| **Backup** | Wave (free accounting software) if complexity grows beyond current needs |
+| **MCP impact** | QuickBooks MCP server removed from config. `infra/mcp-servers/quickbooks-mcp-server` and `quickbooks-online-mcp-server` directories can be deleted. |
+
+---
+
+## 21. LANDING PAGE SERVICE TIERS (Mar 8, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Launch condition** | After dark theme + glassmorphism design upgrade (current visual quality 5.2/10) |
+| **Starter tier** | $500 — single page, standard template, lead capture |
+| **Pro tier** | $1,000 — custom branding, multi-section, analytics |
+| **Enterprise tier** | $2,000+ — full custom design, multi-page, integrations |
+| **Infrastructure** | `/lp/[slug]` system is technically complete and production-ready |
+
+---
+
+## 22. POE BOT — ROADMAP ITEM (Mar 8, 2026)
+
+| Decision | Answer |
+|----------|--------|
+| **Priority** | LOW — roadmap item, not urgent |
+| **Purpose** | Demo/lead-gen channel — expose SuperSeller AI capabilities via Poe platform |
+| **Action** | Evaluate when primary products are stable and generating revenue |
+
+---
+
+## 23. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.

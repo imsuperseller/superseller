@@ -53,12 +53,31 @@ export function middleware(request: NextRequest) {
         if (path === '/login') {
             return NextResponse.next();
         }
-        if (!path.startsWith('/admin') && !path.startsWith('/_next') && !path.startsWith('/api')) {
-            return NextResponse.rewrite(new URL(`/admin${path === '/' ? '' : path}`, request.url));
+        // Skip static assets and API routes
+        if (path.startsWith('/_next') || path.startsWith('/api')) {
+            const res = NextResponse.next();
+            res.headers.set('x-pathname', path);
+            return res;
         }
-        const res = NextResponse.next();
-        res.headers.set('x-pathname', path);
-        return res;
+        // Rewrite: admin.superseller.agency/ -> /en/admin (include locale for i18n routing)
+        // admin.superseller.agency/fulfillment -> /en/admin/fulfillment
+        const localeMatch = path.match(/^\/(en|he|fa|cs|hu|hi|ko)(\/|$)/);
+        if (localeMatch) {
+            // Already has locale prefix (e.g. /en/admin) — ensure /admin prefix
+            const rest = path.slice(localeMatch[0].length - (localeMatch[2] === '/' ? 1 : 0));
+            if (!rest.startsWith('/admin')) {
+                return NextResponse.rewrite(new URL(`/${localeMatch[1]}/admin${rest || ''}`, request.url));
+            }
+            const res = NextResponse.next();
+            res.headers.set('x-pathname', path);
+            return res;
+        }
+        // No locale prefix — add /en/ and /admin
+        if (!path.startsWith('/admin')) {
+            return NextResponse.rewrite(new URL(`/en/admin${path === '/' ? '' : path}`, request.url));
+        }
+        // Path starts with /admin but no locale — add default locale
+        return NextResponse.rewrite(new URL(`/en${path}`, request.url));
     }
 
     // --- Tenant subdomain routing ---
@@ -83,7 +102,6 @@ export function middleware(request: NextRequest) {
     // --- Skip locale handling for non-page routes ---
     if (
         path.startsWith('/api/') ||
-        path.startsWith('/admin') ||
         path.startsWith('/portal/') ||
         path.startsWith('/video/') ||
         path.startsWith('/app/') ||

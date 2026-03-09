@@ -25,6 +25,9 @@
 | 19 | f39b9a6b-5225-4287-a591-7a99b601dae3 | higgsfield.ai | 18 | Higgsfield.ai video AI | **DEPRECATED** |
 | 20 | 8ace0529-3819-4325-8013-d7127f3053bc | tiktok | 0 | TikTok platform (empty) | **EMPTY** |
 
+| 21 | 6c7568fa-6223-444e-924c-9e81b54ed915 | UNCATALOGED | — | Title pending from user | **UNKNOWN** |
+| 22 | f67b6668-edbf-4173-88fd-9a4535f7433e | UNCATALOGED | — | Title pending from user | **UNKNOWN** |
+
 **URL Format**: `https://notebooklm.google.com/notebook/{ID}`
 
 **MCP Integration**: NotebookLM and Stitch MCP servers are connected to Antigravity. Use `source_get_content` to extract key modules as Markdown to save tokens.

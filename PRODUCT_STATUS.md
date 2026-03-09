@@ -27,9 +27,9 @@
 
 1. 🔴 **Elite Pro Remodeling** — $2,000/mo waiting. Blocked on IG credentials from Saar.
 2. 🔴 **Shai Personal Brand** — Instagram/Facebook automation system to build.
-3. 🟡 **Miss Party + UAD** — Verify still posting (last confirmed Feb 20). Fix video variation gap.
-4. 🟡 **TourReel** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
-5. 🟡 **ClaudeClaw** — 3 missing service files (group-agent.ts, approval-service.ts, rag-ingestor.ts) breaking group agent.
+3. 🟡 **TourReel** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
+4. ✅ **Miss Party + UAD** — Verified posting Mar 8. UAD 5/5, Miss Party 3/3. Fix video variation gap when time allows.
+5. ✅ **ClaudeClaw** — Group agent rebuilt and deployed Mar 8. All 6 service files live. Test with Elite Pro group next.
 6. ⚪ **Yoram** — Landing page when ready.
 7. ⏸ **Yossi (Mivnim)** — Revisit for Pesach campaign (April 2026). No action now.
 8. ⏸ **Rensto.com** — Design audit + business model + traffic strategy. Separate session.
@@ -40,18 +40,24 @@
 
 | # | Blocker | Impact | Fix |
 |---|---------|--------|-----|
-| 1 | `group-agent.ts` MISSING — imported in 3 places but file doesn't exist | ClaudeClaw group messages crash at runtime | Rebuild from MEMORY.md spec |
-| 2 | `approval-service.ts` MISSING — imported in 4 places | Scheduler approval expiry job fails | Rebuild |
-| 3 | `rag-ingestor.ts` MISSING — imported in scheduler | Daily RAG ingestion fails | Rebuild |
-| 4 | Worker untracked files not committed | Changes lost on server restart | `git add + commit + push` |
-| 5 | TourReel quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) |
-| 6 | `docs/AI_MODEL_REGISTRY.md` referenced but doesn't exist | Doc conflict, model tracking broken | Create file |
+| 1 | TourReel quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) — deep audit first |
+| ~~2~~ | ~~`docs/AI_MODEL_REGISTRY.md` referenced but doesn't exist~~ | RESOLVED | File exists (created Mar 8) |
+| 3 | `docs/BUSINESS_COVERAGE_INDEX.md` is abstract, not a real navigation map | Every session loses context | Rewrite to concrete file-location map |
+| 4 | Iron Dome OS data pipeline broken — Aitable tables deleted | Shai personal brand dashboard shows zeros | Rebuild n8n → PostgreSQL pipeline |
+| 5 | Elite Pro eSignatures contract never sent to Saar | $2,000/mo not activated | Send `SuperSeller AI Services Agreement` once he agrees to pay |
+
+**RESOLVED THIS SESSION (Mar 8)**:
+- ✅ group-agent.ts, group-memory.ts, guardrails.ts, approval-service.ts, rag-ingestor.ts, claudeclaw-router.ts — all rebuilt + deployed
+- ✅ Worker Redis password fixed (was literal `${REDIS_PASSWORD}` in .env)
+- ✅ group_agent_config DB schema updated (added agent_name, agent_role, allowed_phones, registered_at)
+- ✅ Rensto contamination fixed in: CUSTOMERS.md, yoram-landing GitHub, yoram-friedman-insurance GitHub, eSignatures templates
+- ✅ Miss Party + UAD verified posting (Mar 8: UAD 5/5, Miss Party 3/3, all exit 0)
 
 ---
 
 ## 1. FB Marketplace Bot — Miss Party + UAD
 
-**Status**: Both posting as of Feb 20. Needs live verification (last check was 16+ days ago).
+**Status**: Both posting as of Mar 8 (verified live). UAD 5/5 posts, Miss Party 3/3 posts. All exit code 0. Cycle 8 complete, sleeping until 6am CST.
 
 **Revenue model clarified (Mar 8)**:
 - Miss Party: $49.99 = RENTAL PRICE in listings. She doesn't pay Shai. Free service.
@@ -106,11 +112,22 @@ pm2 logs webhook-server --lines 100
 
 ---
 
-## 3. Shai Personal Brand — Instagram/Facebook Automation
+## 3. Shai Personal Brand — Iron Dome OS
 
-**Status**: NOT BUILT — planning phase
+**Status**: DASHBOARD BUILT, DATA PIPELINE BROKEN
 
-**Background**: Started Jan 12, 2026 (Iran war). "Inside Iran" / David Starr persona. 15-sec reels, viral content, thousands of likes/shares/followers. Growth has leveled but spikes still happen.
+**Repo**: https://github.com/imsuperseller/iron-dome-os | **Live**: https://iron-dome-os.vercel.app
+**Audience**: 10K+ Instagram followers, 17.8K+ Facebook followers (Persian-Jewish / Iran freedom content)
+
+**What's built**: Next.js analytics dashboard — content calendar, virality chart, stats, workflow controls, ideation terminal. All UI exists.
+
+**What's broken**: 3 Aitable tables deleted in Mar 5 cleanup (`shai_fb_posts`, `shai_fb_insights`, `shai_fb_sync_states`). Dashboard shows zeros/mock. Personal n8n at port 5679 — status unknown.
+
+**Plan doc inside repo**: `PLAN-connect-and-build.md` — 6 phases to reconnect real data.
+
+**Next**: Rebuild pipeline — Phase 1: reconnect n8n → replace Aitable with PostgreSQL → real stats.
+
+**Rule**: NEVER mix with SuperSeller brand. Share automation patterns only, never accounts/data.
 
 **What needs to be automated**:
 - Prompt writing → content generation (reels, carousels, stories)
@@ -159,13 +176,15 @@ pm2 logs webhook-server --lines 100
 
 ## 6. ClaudeClaw — WhatsApp AI Bridge
 
-**Status**: Deployed but GROUP AGENT BROKEN (3 missing service files)
+**Status**: ✅ FULLY OPERATIONAL as of Mar 8, 2026
 
-**What works**: Personal mode (WhatsApp → Claude), RAG context, health monitoring, approval system, Elite Pro group registered.
+**What works**: Personal mode, group agent (3-tier memory + 4-layer guardrails), RAG context, health monitoring, approval system, hourly + daily scheduler.
 
-**BROKEN**: `group-agent.ts`, `approval-service.ts`, `rag-ingestor.ts` — imported in code but files missing. Group messages will crash.
+**6 service files rebuilt Mar 8**: group-agent.ts, group-memory.ts, guardrails.ts, approval-service.ts, rag-ingestor.ts, claudeclaw-router.ts
 
 **Elite Pro group**: `120363408376076110@g.us`, tenant `elite-pro-remodeling`, 63 competitor ads loaded.
+
+**Next**: Test group agent in Elite Pro group using Shai's personal number before adding Saar/Mor.
 
 ---
 
@@ -181,13 +200,21 @@ pm2 logs webhook-server --lines 100
 
 ---
 
-## 8. Lead Landing Pages
+## 8. Lead Landing Pages + Yoram
 
-**Status**: Infrastructure 100% complete. No active customer pages.
+**Status**: READY FOR SALE (design upgrade needed).
 
-**What exists**: `/lp/[slug]` dynamic routing, per-customer branding (colors, logo, font, RTL/LTR), lead capture → WhatsApp + email notifications, analytics tracking.
+**What exists**: `/lp/[slug]` dynamic routing, per-customer branding, lead capture → WhatsApp + email. Technical infrastructure is 100% complete. Visual quality is 5.2/10 — needs dark theme + glassmorphism upgrade before selling to customers.
 
-**Yoram**: Family referral. Build landing page when he's ready.
+**Service Tiers** (pending design upgrade): Starter $500, Pro $1,000, Enterprise $2,000+.
+
+**Yoram Friedman (Insurance)**: Site is LIVE. Two GitHub repos under `yoramnfridman1`:
+- `yoram-landing` — modern Hebrew site, deployed: https://yoram-landing-q1pkkjsff-yoramnfridman1s-projects.vercel.app (= yoramfriedman.co.il)
+- `yoram-friedman-insurance` — older full site with docs, strategy, admin
+
+Yoram's Apify account: empty (0 actors/tasks — nothing set up yet)
+Credentials: GitHub PAT + Vercel token + Apify key → in CREDENTIAL_REFERENCE.md §Yoram
+Next: Set up Apify lead/competitor scraping for Israeli insurance market. Discuss with Shai.
 
 ---
 
@@ -244,6 +271,24 @@ pm2 logs webhook-server --lines 100
 - shai-friedman-social: STILL IN `~/superseller/archives/shai-friedman-social/` — needs own directory
 - 10 customer projects deleted from filesystem — most on GitHub, some may be gone
 - rensto.com was redirecting to superseller.agency — FIXED Mar 8
+
+---
+
+---
+
+## Smoke Test Results (Mar 8, 2026)
+
+| Service | Result | Notes |
+|---------|--------|-------|
+| **Web (superseller.agency)** | FIXED | Was 503 — wrong Postgres password in Vercel env vars. Fixed and redeployed. |
+| **Admin (admin.superseller.agency)** | 404 | Middleware skipping i18n for /admin paths — fix prepared, pending deploy |
+| **Worker (172.245.56.50:3002)** | HEALTHY | 29 restarts = manual deploys, NOT crashes. Uptime stable. |
+| **FB Bot (172.245.56.50:8082)** | PASS | Webhook-server + fb-scheduler healthy |
+| **WAHA (172.245.56.50:3000)** | PASS | Both sessions authenticated |
+
+## Roadmap Items
+
+- **Poe bot**: Potential demo/lead-gen channel. Not urgent — roadmap item for future exploration.
 
 ---
 

@@ -22,7 +22,7 @@ Social & Content covers three interconnected products:
 
 ## WhatsApp WAHA
 - **Docker container** on RackNerd
-- **Session**: `superseller-whatsapp`
+- **Sessions**: `personal` (14695885133) handles ClaudeClaw + Elite Pro group. `superseller-whatsapp` (12144362102) handles business-mode ClaudeClaw. Both on port 3000.
 - **API**: REST endpoints (sendText, sendVideo, sendFile)
 - **Consumers**: SocialHub (approval), Winner Studio (delivery), Lead Pages (notifications), FB Bot (alerts)
 

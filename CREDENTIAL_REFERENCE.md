@@ -185,13 +185,33 @@ Workiz's API has undocumented auth requirements for POST/write operations:
 
 ---
 
+---
+
+## CUSTOMER-SPECIFIC CREDENTIALS (Separate accounts — NEVER mix with SuperSeller AI)
+
+### Yoram Friedman (Insurance — `yoramnfridman1`)
+| Service | Key/Token | Notes |
+|---------|-----------|-------|
+| **GitHub PAT** | `github_pat_11BFKCUVI0vd1VwC7qu2O2_...` (provided in chat) | Account: `yoramnfridman1`. Repos: `yoram-landing`, `yoram-friedman-insurance` |
+| **Vercel** | See `.env` or chat history (not stored in git) | Project: `yoram-landing` (`prj_5qSPLWMnNWoSEYnc7VXcOz89E6CA`). Live: yoramfriedman.co.il |
+| **Apify** | See `.env` or chat history (not stored in git) | Account is empty — 0 actors, 0 tasks. Set up insurance lead/competitor scraping |
+
+### eSignatures.com (SuperSeller AI — for customer contracts)
+| Key | Value | Templates |
+|-----|-------|-----------|
+| `ESIGNATURES_API_KEY` | `08995283-ce2f-4dc4-9a15-7a05b6a72b7d` | **Elite Pro**: "SuperSeller AI Services Agreement" (`99de20b5-2bb9-4439-9532-e00902fe6824`) — created Mar 6, not yet sent. Others: SuperSeller Standard Agreement, SuperSeller Standard Agreement (Full), AI Automation Services Agreement |
+| API base | `https://esignatures.com/api/` | Auth: `?token=KEY` param |
+
+---
+
 ## Rules
 
 1. **When user gives access: USE it.** Check this map, find the file, read the key. Don't ask.
 2. **Never store full secrets in this file.** Only paths and key prefixes for identification.
 3. **NEVER mix SuperSeller AI and UAD/MissParty credentials.** They are separate accounts/organizations.
-4. **`social app/.env` is a SuperSeller AI credential dump** — most keys there are NOT used by active products. Check `apps/worker/.env` and `apps/web/superseller-site/.env.local` first.
-5. **Vercel Dashboard** has production env vars that may differ from local `.env.local`. For prod debugging, check Vercel first.
+4. **NEVER use Yoram's GitHub/Vercel/Apify for anything SuperSeller-related.** Completely isolated.
+5. **`social app/.env` is a SuperSeller AI credential dump** — most keys there are NOT used by active products. Check `apps/worker/.env` and `apps/web/superseller-site/.env.local` first.
+6. **Vercel Dashboard** has production env vars that may differ from local `.env.local`. For prod debugging, check Vercel first.
 6. **`social app/.env.master` is committed to git** — this is a security risk. Should be deleted from git history.
 
 ---

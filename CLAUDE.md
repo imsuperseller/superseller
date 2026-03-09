@@ -33,6 +33,7 @@
 > - **Airtable.com** retired. **Aitable.ai** for dashboards only. **PostgreSQL** is the only transactional DB truth.
 > - **Stripe** migrated to **PayPal** (Feb 2026) for SuperSeller. DB columns keep `stripe*` names but store PayPal IDs. Stripe keys preserved dormant for potential rensto.com use. See `findings.md`.
 > - **Webflow/BMAD** are retired. The system is 100% programmatic.
+> - **QuickBooks** cancelled (Mar 8, 2026). Solo LLC with ~5 customers — PayPal reports + built-in expense-tracker sufficient. Saves $600/yr. Wave (free) as backup if needed.
 
 > [!CAUTION]
 > **Content Extraction Rule (NEVER invent content)**:
@@ -122,6 +123,7 @@
 | **SLOs & Error Budgets** | `docs/SLO_ERROR_BUDGETS.md` — SLO targets, error budgets, latency thresholds |
 | **AI Model Registry** | `docs/AI_MODEL_REGISTRY.md` — 50+ models, categories, pipeline mappings |
 | **Financial Reporting** | `docs/FINANCIAL_REPORTING.md` — Revenue, costs, credits, profitability, reporting procedures |
+| **Video Merge** | systemd `video-merge` service on RackNerd, port 3456 |
 
 ### Credentials
 API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
@@ -138,9 +140,9 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 | **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting daily, webhook-server + fb-scheduler on PM2 |
 | **SocialHub/Buzz** | ✅ Live | Text+image→WhatsApp approval→FB publish pipeline working |
 | **Winner Studio** | ⚠️ Built, not active | Code verified end-to-end, Yossi not actively using |
-| **Lead Landing Pages** | ⚠️ Infrastructure only | `/lp/[slug]` code ready, no active customer pages |
+| **Lead Landing Pages** | ⚠️ Ready for sale (design upgrade needed) | `/lp/[slug]` infrastructure complete, visual quality 5.2/10 — needs dark theme + glassmorphism |
 | **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant works, webhook migration pending, eSignatures not started |
-| **ClaudeClaw** | ✅ Deployed | WhatsApp→Claude bridge + Group Agent with 3-tier memory + guardrails |
+| **ClaudeClaw** | ✅ Fully Operational | WhatsApp→Claude bridge + Group Agent with 3-tier memory + guardrails (rebuilt Mar 8) |
 | **RAG/pgvector** | ✅ Connected | Ollama + pgvector powering ClaudeClaw context + Group Agent memory |
 | **AgentForge** | ❌ Spec only | Internal tool decision made, code not started |
 
@@ -197,10 +199,8 @@ curl -s http://172.245.56.50:8082/health       # FB Marketplace Bot
 ## 7. Deprecated & Cleanup
 
 ### plugins/ Directory (Cowork Layer)
-- **Status**: DEPRECATED — Marked for removal (March 6, 2026)
-- **Contents**: 43 markdown files for Claude Desktop/Web plugins (superseller-sales, superseller-ops, superseller-marketing, superseller-finance, superseller-product, superseller-support)
-- **Issue**: Content duplicates PRODUCT_BIBLE.md and individual .claude/skills/ SKILL.md files. No unique content to merge.
-- **Action**: Scheduled for deletion. Bash required for physical removal (`rm -rf plugins/`). Until then, directory remains as reference for Cowork layer configuration.
+- **Status**: DELETED (March 8, 2026)
+- 43 markdown files for Claude Desktop/Web plugins — all content duplicated PRODUCT_BIBLE.md and .claude/skills/. Removed during Mar 8 cleanup.
 
 ---
 
