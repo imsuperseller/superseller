@@ -348,8 +348,99 @@ export const epIncomingAssetsRelations = relations(epIncomingAssets, ({ one }) =
     }),
 }));
 
+// --- Prompt Configuration (DB-driven, update without deploys) ---
+export const promptConfigs = pgTable("prompt_configs", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    service: text("service").notNull(), // "videoforge", "marketplace", "claudeclaw", "socialhub"
+    promptKey: text("prompt_key").notNull(),
+    template: text("template").notNull(), // The prompt template with {{variable}} placeholders
+    version: integer("version").notNull().default(1),
+    isActive: boolean("is_active").notNull().default(true),
+    metadata: jsonb("metadata"), // model preferences, temperature, etc.
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    serviceKeyVersion: uniqueIndex("prompt_config_service_key_version").on(table.service, table.promptKey, table.version),
+    lookupIdx: index("idx_prompt_config_lookup").on(table.service, table.promptKey),
+}));
+
 export const systemSettings = pgTable("system_settings", {
     key: text("key").primaryKey(),
     value: jsonb("value").notNull().default(true),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Instagram Content Rules & Configuration (per tenant, per content type) ---
+// Stores platform rules, recommended settings, hashtag sets, caption templates,
+// and compliance guardrails. Queried by the content generation pipeline to ensure
+// every piece of content is compliant and optimized before publishing.
+export const igContentRules = pgTable("ig_content_rules", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(),
+    contentType: text("content_type").notNull(), // reel | story | carousel | post | all
+    ruleCategory: text("rule_category").notNull(), // platform_limits | best_practices | hashtags | caption | scheduling | compliance | music | dimensions
+    ruleKey: text("rule_key").notNull(), // e.g. "max_hashtags", "optimal_length_seconds", "caption_hook_chars"
+    value: jsonb("value").notNull(), // flexible — number, string, array, object depending on ruleKey
+    description: text("description"), // human-readable explanation
+    source: text("source"), // where this rule comes from (e.g. "Instagram @creators Dec 2025", "internal strategy")
+    priority: integer("priority").default(0), // higher = more important (for conflict resolution)
+    isActive: boolean("is_active").notNull().default(true),
+    meta: jsonb("meta").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantTypeCategory: uniqueIndex("uq_ig_rules_tenant_type_cat_key").on(table.tenantId, table.contentType, table.ruleCategory, table.ruleKey),
+    lookupIdx: index("idx_ig_rules_lookup").on(table.tenantId, table.contentType, table.ruleCategory),
+}));
+
+// --- Hashtag Sets (per tenant, per content category) ---
+// Pre-built hashtag combinations following the 5-hashtag strategy.
+// Each set is optimized for a specific content scenario and includes
+// rotation scheduling to avoid spam detection.
+export const hashtagSets = pgTable("hashtag_sets", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(),
+    setName: text("set_name").notNull(), // e.g. "kitchen_before_after", "outdoor_living", "team_culture"
+    contentCategory: text("content_category").notNull(), // before_after | progress | inspiration | testimonial | team | tips | material_specific
+    hashtags: jsonb("hashtags").notNull(), // array of 5 hashtags
+    reasoning: text("reasoning"), // why this combination was chosen
+    rotationGroup: integer("rotation_group").default(0), // for weekly rotation scheduling
+    usageCount: integer("usage_count").default(0),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    avgReach: doublePrecision("avg_reach"), // populated from IG Insights after use
+    avgEngagement: doublePrecision("avg_engagement"),
+    isActive: boolean("is_active").notNull().default(true),
+    meta: jsonb("meta").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantSetName: uniqueIndex("uq_hashtag_sets_tenant_name").on(table.tenantId, table.setName),
+    categoryIdx: index("idx_hashtag_sets_category").on(table.tenantId, table.contentCategory),
+}));
+
+// --- Caption Templates (per tenant, per content type + scenario) ---
+// Structured caption formulas with hook, body, CTA, and hashtag placement.
+// Used by content generation to ensure captions hit the 125-char visible threshold
+// and comply with the 2,200-char max.
+export const captionTemplates = pgTable("caption_templates", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: text("tenant_id").notNull(),
+    contentType: text("content_type").notNull(), // reel | story | carousel | post
+    scenario: text("scenario").notNull(), // before_after | progress | inspiration | testimonial | team | tips | offer
+    hookTemplate: text("hook_template").notNull(), // first 125 chars (feed) or 55 chars (reel) — the visible part
+    bodyTemplate: text("body_template"), // main caption body (after "more")
+    ctaTemplate: text("cta_template"), // call-to-action line
+    language: text("language").notNull().default("en"), // en | he
+    captionLength: text("caption_length").notNull().default("medium"), // short (<300) | medium (300-800) | long (800-2200)
+    exampleCaption: text("example_caption"), // fully rendered example for reference
+    hashtagSetId: uuid("hashtag_set_id").references(() => hashtagSets.id), // default hashtag set for this template
+    usageCount: integer("usage_count").default(0),
+    avgEngagement: doublePrecision("avg_engagement"),
+    isActive: boolean("is_active").notNull().default(true),
+    meta: jsonb("meta").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+    tenantTypeScenario: uniqueIndex("uq_caption_tmpl_tenant_type_scenario_lang").on(table.tenantId, table.contentType, table.scenario, table.language),
+    lookupIdx: index("idx_caption_tmpl_lookup").on(table.tenantId, table.contentType),
+}));
