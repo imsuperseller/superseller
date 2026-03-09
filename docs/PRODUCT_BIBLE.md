@@ -37,13 +37,13 @@ All products must align with one of these tactical pillars:
 1.  **Lead Machine**: Sourcing and analyzing purchase intent (e.g., Lead Machine, FB Autoposter).
 2.  **Voice AI**: Autonomous consultations and sales routing (e.g., Telnyx secretarial agents).
 3.  **Knowledge Engine**: Deep RAG and intelligence retrieval (e.g., YouTube/Document Cloner).
-4.  **Content Engine**: High-engagement video/social production (e.g., TourReel, Celebrity Selfie).
+4.  **Content Engine**: High-engagement video/social production (e.g., VideoForge, Celebrity Selfie).
 
 ---
 
 ## 2. Core SaaS Products (Verified Specs)
 
-### 🎥 TourReel (Property Video Walkthrough)
+### 🎥 VideoForge (Property Video Walkthrough)
 *   **Target**: Real Estate agents / Zillow listings.
 *   **Logic**: `apps/worker/src/queue/workers/video-pipeline.worker.ts`
 *   **Architecture (dual-path)**:
@@ -65,7 +65,7 @@ All products must align with one of these tactical pillars:
 *   **Target**: Local businesses (first customer: Mivnim/Yossi — construction).
 *   **Logic**: `apps/studio/` (standalone Next.js app)
 *   **Architecture**: Audio upload → Gemini Brain (5-in-1: script, prompt, model router, music, quality) → Kie.ai (`avatar-pro` primary, `kling-3.0/video` fallback) → R2 storage → WhatsApp delivery via WAHA.
-*   **Credit Cost**: 50 credits/video (same as TourReel).
+*   **Credit Cost**: 50 credits/video (same as VideoForge).
 *   **Status**: BUILT, NOT ACTIVELY USED — pipeline verified Feb 19, 2026. Yossi (Mivnim) not actively using. `studio.superseller.agency`.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §1, `.claude/skills/winner-studio/SKILL.md`.
 
@@ -106,6 +106,7 @@ All products must align with one of these tactical pillars:
 *   **Logic**: `apps/web/superseller-site/src/app/api/social/` (generate, publish, webhook/approval routes)
 *   **Architecture**: AI content creation (Claude text + Kie.ai images) → WhatsApp approval (WAHA) → Facebook + Instagram publishing (Graph API) → Aitable analytics sync.
 *   **Status**: LIVE — Phase 1 operational (text+image generation, WhatsApp approval, FB publish). Instagram code written but not active. Phase 2 (LinkedIn, X, TikTok, YouTube, competitive intelligence, smart scheduling) not started.
+*   **Instagram Content Rules System (Mar 2026)**: 3 new PostgreSQL tables — `ig_content_rules` (44 rules), `hashtag_sets` (10 sets), `caption_templates` (8 templates). Enforces 5-hashtag hard limit, business account music restrictions, caption visible limits. Seed script: `tools/seed-ig-content-rules.ts`. Research: `docs/INSTAGRAM_RULES_2025_2026.md`.
 *   **Source of Truth**: `PRODUCT_STATUS.md` §7, `.claude/skills/socialhub/SKILL.md`.
 
 ---
@@ -123,8 +124,8 @@ Products operate on a **Credit-Based Subscription** system. Credits are the univ
 ### Per-Product Credit Costs
 | Product | Credits per Unit |
 | :--- | :--- |
-| **TourReel** (video) | 50 credits/video |
-| **TourReel** (regen clip) | 10 credits/scene |
+| **VideoForge** (video) | 50 credits/video |
+| **VideoForge** (regen clip) | 10 credits/scene |
 | **FB Autoposter** | Credits per listing activation |
 
 *Self-serving top-ups allow users to buy additional Credits. PayPal checkout handles subscriptions via `/api/video/subscribe` (migrated from Stripe Feb 2026).*
@@ -178,4 +179,4 @@ admin.superseller.agency. Next.js, Tailwind, shadcn/ui. Auth: magic-link for ADM
 
 ## 8. Distribution Roadmap
 
-- **Poe (poe.com)**: Potential demo/lead-gen channel for SuperSeller AI agents. Roadmap item — not urgent. Could expose TourReel or AgentForge as Poe bots for discovery.
+- **Poe (poe.com)**: Potential demo/lead-gen channel for SuperSeller AI agents. Roadmap item — not urgent. Could expose VideoForge or AgentForge as Poe bots for discovery.

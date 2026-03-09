@@ -149,6 +149,18 @@
 | Vault Item | `VaultItem` | Encrypted secrets (replaces Firestore) |
 | Analytics | `Analytics` | Generic analytics events |
 
+### Group 11: Instagram Content Rules
+
+| Entity | Postgres Table | Prisma Model | Drizzle Table | Notes |
+|--------|---------------|-------------|--------------|-------|
+| Content Rule | `ig_content_rules` | -- | -- | 44 rules across 8 categories (algorithm, hashtags, music, reels, stories, carousel, caption, api). Columns: `id`, `category`, `rule_key`, `rule_value`, `severity` (must/should/info), `source_url`, `effective_date`, `notes`, `created_at`. |
+| Hashtag Set | `hashtag_sets` | -- | -- | 10 niche-specific sets. Columns: `id`, `niche`, `set_name`, `hashtags` (text[] — max 5 per platform limit), `use_case`, `notes`, `created_at`. |
+| Caption Template | `caption_templates` | -- | -- | 8 format-specific templates. Columns: `id`, `format` (feed/reel/carousel/story), `template_name`, `template_body`, `visible_char_limit` (125 feed, 55 Reels), `notes`, `created_at`. |
+
+**Relationships**: `ig_content_rules` → referenced by SocialHub content generation to enforce platform compliance. `hashtag_sets` → selected per tenant niche during publishing. `caption_templates` → applied per post format. All three are global (not tenant-scoped) — they encode platform rules, not customer data.
+
+**Seed script**: `tools/seed-ig-content-rules.ts` | **Research doc**: `docs/INSTAGRAM_RULES_2025_2026.md`
+
 ### Video Pipeline (Worker-only)
 
 | Entity | Drizzle Table | Prisma Model | R2 | Notes |

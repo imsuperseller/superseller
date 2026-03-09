@@ -25,6 +25,8 @@
     "test:e2e:headed": "playwright test e2e/video-create-flash.spec.ts --headed"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1004.0",
+    "@aws-sdk/s3-request-presigner": "^3.1004.0",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.15",

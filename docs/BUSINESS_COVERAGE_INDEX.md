@@ -17,7 +17,7 @@
 
 ## PRODUCTS
 
-### TourReel — AI Property Videos
+### VideoForge — AI Property Videos
 - **Primary doc**: `PRODUCT_STATUS.md` §4
 - **Pipeline spec**: `docs/REMOTION_BIBLE.md` (Remotion path), NotebookLM `0baf5f36` (Kling path)
 - **Code (worker)**: `apps/worker/src/workers/video-pipeline.worker.ts`
@@ -53,6 +53,8 @@
 ### SocialHub / Buzz
 - **Primary doc**: `PRODUCT_STATUS.md` §5
 - **Code**: `apps/web/superseller-site/src/app/api/social/`
+- **Instagram rules**: `docs/INSTAGRAM_RULES_2025_2026.md` (research), `tools/seed-ig-content-rules.ts` (seed script)
+- **Instagram DB tables**: `ig_content_rules` (44 rules), `hashtag_sets` (10 sets), `caption_templates` (8 templates)
 - **Status**: Phase 1 LIVE (text+image → WhatsApp approval → FB publish)
 
 ### Winner Studio — Avatar Videos
@@ -108,7 +110,7 @@
 
 ### Kedem Developments (Daniel Arbel — Luxury Real Estate)
 - **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §2
-- **Status**: TourReel pilot delivered (6847 Lakeshore Drive video)
+- **Status**: VideoForge pilot delivered (6847 Lakeshore Drive video)
 
 ### AC&C HVAC (Neitha Parkey)
 - **Primary doc**: `projects/6-customer-projects/CUSTOMERS.md` §3

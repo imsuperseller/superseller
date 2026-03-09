@@ -35,6 +35,14 @@ This project has the strictest content rules in the system:
 4. **Cite sources**: Track which doc and section content came from
 5. **Violation history**: Past violations include fabricated testimonials despite docs explicitly stating content didn't exist
 
+### Elite Pro — Instagram Readiness (Mar 2026)
+- **44 Instagram content rules** seeded in `ig_content_rules` table (algorithm, hashtags, music, Reels, Stories, carousel, caption, API constraints)
+- **10 hashtag sets** in `hashtag_sets` table (home services, remodeling, kitchen, bathroom, outdoor, general contractor, luxury, before-after, seasonal, local DFW)
+- **8 caption templates** in `caption_templates` table (feed, Reels, carousel, Story formats)
+- **105 competitor ads** already in `competitor_ads` table (tenant `elite-pro-remodeling`)
+- **Blocker**: IG access token expired — need Meta App ID/Secret from Saar to reconnect
+- **Seed script**: `tools/seed-ig-content-rules.ts` | **Research**: `docs/INSTAGRAM_RULES_2025_2026.md`
+
 ### Deployment
 - Customer sites typically deploy to Vercel
 - Each has its own Vercel project (not part of the main superseller project)
@@ -46,8 +54,8 @@ This project has the strictest content rules in the system:
 
 | Customer | Location | Industry | Stack | Status |
 |----------|----------|----------|-------|--------|
-| Elite Pro Remodeling | Dallas TX | Remodeling | Python agents (RackNerd) | 90% built, IG token expired |
-| Kedem Developments | Dallas TX | Luxury real estate | TourReel (Kling AI) | Pilot delivered |
+| Elite Pro Remodeling | Dallas TX | Remodeling | Python agents (RackNerd) | 90% built, IG token expired, IG content rules seeded |
+| Kedem Developments | Dallas TX | Luxury real estate | VideoForge (Kling AI) | Pilot delivered |
 | AC&C HVAC | Dallas TX | HVAC + chimney | Vite+React (Vercel) | Website delivered, behind password |
 | Ortal Pilates | Dallas TX | Fitness / Pilates | Static HTML (GitHub Pages) | Website delivered, not operational |
 | Wonder.care | Israel | Healthtech | n8n automation (own VPS) | Delivered + $6.4K proposal pending |

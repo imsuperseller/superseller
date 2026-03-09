@@ -182,6 +182,17 @@ For each high-scoring competitor ad concept, generate creative variations:
 
 ---
 
+## Cross-Reference: Instagram Content Rules
+
+Competitor research feeds directly into Instagram content strategy via 3 PostgreSQL tables:
+- **`ig_content_rules`** (44 rules) — platform constraints that replication briefs must respect (5 hashtag limit, no copyrighted music for business accounts, caption visible limits)
+- **`hashtag_sets`** (10 sets) — niche-specific hashtag sets; select based on competitor ad industry/vertical
+- **`caption_templates`** (8 templates) — format-specific templates (carousel, Reel, Story, feed) aligned with 3-3-3 framework outputs
+
+When generating replication briefs (Pass 2), reference `ig_content_rules` to ensure briefs comply with current platform rules. Research doc: `docs/INSTAGRAM_RULES_2025_2026.md`. Seed script: `tools/seed-ig-content-rules.ts`.
+
+---
+
 ## Costs
 
 | Component | Unit Cost | Typical Volume | Cost |

@@ -10,7 +10,7 @@
 | App | Path | Framework | Entry Point | Deploy |
 |-----|------|-----------|-------------|--------|
 | **Web** (superseller.agency, admin, API) | `apps/web/superseller-site/` | Next.js 14+ (Vercel) | `src/app/layout.tsx` | `git push` or `vercel --prod` |
-| **Worker** (TourReel, FrontDesk) | `apps/worker/` | Express + BullMQ (RackNerd) | `src/index.ts` (48 lines) | `./apps/worker/deploy-to-racknerd.sh` |
+| **Worker** (VideoForge, FrontDesk) | `apps/worker/` | Express + BullMQ (RackNerd) | `src/index.ts` (48 lines) | `./apps/worker/deploy-to-racknerd.sh` |
 
 ---
 
@@ -84,7 +84,7 @@
 
 | File | Lines | Export | Purpose |
 |------|-------|--------|---------|
-| `video-pipeline.worker.ts` | 783 | `videoPipelineWorker`, `initWorkers()` | TourReel 12-stage pipeline |
+| `video-pipeline.worker.ts` | 783 | `videoPipelineWorker`, `initWorkers()` | VideoForge 12-stage pipeline |
 | `crew-video.worker.ts` | — | `crewVideoWorker` | Crew showcase video generation |
 | `remotion.worker.ts` | — | `remotionWorker` | Remotion photo composition rendering |
 | `marketplace-replenisher.worker.ts` | — | `marketplaceReplenisher` | FB Marketplace listing replenishment |
@@ -153,7 +153,7 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 
 | Skill | Trigger Domain | Level 2 References |
 |-------|---------------|-------------------|
-| tourreel-pipeline | video, Kling, FFmpeg, clips | 5 reference files (api-deep-reference, kling-api-patterns, prompting-rules, scene-management, troubleshooting) |
+| videoforge-pipeline | video, Kling, FFmpeg, clips | 5 reference files (api-deep-reference, kling-api-patterns, prompting-rules, scene-management, troubleshooting) |
 | frontdesk-voice | Telnyx, voice AI, call transfer | 1 reference file (telnyx-api-reference) |
 | agentforge | research pipeline, proposals | 2 reference files (implementation-patterns, business-decisions) |
 | ui-ux-pro-max | design, palettes, typography | scripts/ (BM25 search), brand-token-map |
@@ -177,6 +177,15 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 | File | Usage | Purpose |
 |------|-------|---------|
 | `tools/schema-sentinel.ts` | `npx tsx tools/schema-sentinel.ts [--strict]` | Prisma vs Drizzle drift detection |
+| `tools/seed-ig-content-rules.ts` | `npx tsx tools/seed-ig-content-rules.ts` | Seed ig_content_rules (44), hashtag_sets (10), caption_templates (8) |
+
+---
+
+## Docs
+
+| File | Purpose |
+|------|---------|
+| `docs/INSTAGRAM_RULES_2025_2026.md` | Instagram platform rules research (2025-2026) — feeds ig_content_rules seed |
 
 ---
 

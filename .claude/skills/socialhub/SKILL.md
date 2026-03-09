@@ -22,7 +22,7 @@ negativeTrigger:
   - "FB Marketplace"
   - "marketplace bot"
   - "video pipeline"
-  - "TourReel"
+  - "VideoForge"
   - "Winner Studio"
   - "landing page"
   - "admin portal"
@@ -33,18 +33,18 @@ negativeTrigger:
 ## Critical
 - **Phase 1 LIVE**: Text+image AI content creation → WhatsApp approval workflow → Facebook publishing pipeline working.
 - **Phase 2 spec exists, code NOT started** — 7 spec docs, 23 DB tables defined, 45+ API endpoints planned.
-- **Phase 2 priority** — Build AFTER existing products (Winner Studio, TourReel, FB Bot) are validated.
+- **Phase 2 priority** — Build AFTER existing products (Winner Studio, VideoForge, FB Bot) are validated.
 - **Architecture**: A.N.T. 3-layer (SOPs → Navigation → Tools). Planned as self-contained app at `apps/socialhub/` (not yet created).
 - **Auth**: Reuse existing (WhatsApp OTP + magic-link), NOT Clerk. Decision made.
 - **Database**: New tables in existing PostgreSQL (not a separate DB).
 - **Worker**: BullMQ on RackNerd (alongside tourreel-worker).
-- **Content distribution layer for ALL products**: Winner Studio videos, TourReel videos, Lead Pages traffic.
+- **Content distribution layer for ALL products**: Winner Studio videos, VideoForge videos, Lead Pages traffic.
 
 ## Strategic Role
 
 ```
 Winner Studio → finished video → SocialHub → distribute to FB/IG/LinkedIn/YouTube
-TourReel     → property video  → SocialHub → realtor's social channels
+VideoForge     → property video  → SocialHub → realtor's social channels
 Lead Pages   → landing page    → SocialHub → organic social drives traffic
 FB Bot       → Marketplace     ← separate (SocialHub = organic social)
 ```
@@ -176,6 +176,32 @@ apps/socialhub/           (Next.js app, like apps/studio/)
 | `social app/architecture/` | SOP definitions |
 | `social app/tools/` | Tool scripts |
 
+## Instagram Content Rules System (Mar 2026)
+
+Three PostgreSQL tables power Instagram content strategy. Seed script: `tools/seed-ig-content-rules.ts`. Research doc: `docs/INSTAGRAM_RULES_2025_2026.md`.
+
+### Tables
+
+| Table | Records | Purpose |
+|-------|---------|---------|
+| `ig_content_rules` | 44 rules | Platform rules by category (algorithm, hashtags, music, Reels, Stories, carousel, caption, API) |
+| `hashtag_sets` | 10 sets | Pre-built hashtag sets per niche (home services, remodeling, etc.) — **5 hashtags HARD LIMIT** (Dec 2025) |
+| `caption_templates` | 8 templates | Format-specific caption templates (feed, Reels, carousel, Story) |
+
+### Critical Rules (Enforced)
+
+- **5 hashtags max** — hard platform limit since Dec 2025, not a suggestion
+- **Business accounts CANNOT use copyrighted music** — Meta Sound Collection only
+- **Carousels = highest engagement** (10.15%) — prioritize over single image
+- **Reels first 3 seconds** — algorithm weights hook heavily, front-load value
+- **Caption visible limits**: 125 chars (feed), 55 chars (Reels) — hook must fit
+- **Graph API**: Can publish feed, carousel, Reels, Stories (but Stories cannot include stickers via API)
+- **Best times for home services**: Weekday evenings 7-9PM, Saturday 9-11AM
+
+### Integration with Competitor Research
+
+Liked competitor ads from `competitor_ads` table (via competitor-research skill) inform hashtag set selection and caption template choice. The 3-3-3 framework maps to Instagram formats: carousel (static), Reel (short video), Story (ephemeral).
+
 ## References
 
 - NotebookLM cb99e6aa — Social Media, Lead Gen & Marketing (50 sources)
@@ -183,3 +209,5 @@ apps/socialhub/           (Next.js app, like apps/studio/)
 - NotebookLM 8ace0529 — TikTok
 - NotebookLM f540f799 — Sora 2 (media generation)
 - `PRODUCT_STATUS.md` lines 308-345 — Phase 2 status
+- `docs/INSTAGRAM_RULES_2025_2026.md` — Full Instagram rules research (2025-2026)
+- `tools/seed-ig-content-rules.ts` — Seed script for ig_content_rules, hashtag_sets, caption_templates
