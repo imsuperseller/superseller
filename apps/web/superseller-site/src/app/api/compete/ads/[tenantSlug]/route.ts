@@ -175,7 +175,7 @@ export async function PATCH(
     >(
       `UPDATE competitor_ads
        SET liked = $1, feedback_note = $2, feedback_by = $3, feedback_at = NOW()
-       WHERE id = $4 AND tenant_id = $5
+       WHERE id = $4::uuid AND tenant_id = $5
        RETURNING id, ad_text, ad_title, image_url, video_url, liked, feedback_note, feedback_by, feedback_at`,
       liked ?? null,
       note,
