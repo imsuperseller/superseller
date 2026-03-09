@@ -6,10 +6,10 @@
 
 | Task | Skill(s) |
 |------|----------|
-| TourReel / video pipeline / Kling / Remotion | `tourreel-pipeline` + `cost-tracker` |
+| VideoForge / video pipeline / Kling / Remotion | `videoforge-pipeline` + `cost-tracker` |
 | Avatar video / Winner Studio / lip-sync | `winner-studio` + `cost-tracker` |
 | FB Marketplace bot / GoLogin / listings | `marketplace-saas` |
-| WhatsApp group agent / The Method / guardrails | `whatsapp-group-agent` |
+| WhatsApp group agent / The Method / guardrails | `whatsapp-waha` (covers WAHA + ClaudeClaw group agent) |
 | WhatsApp messaging / WAHA / OTP | `whatsapp-waha` |
 | Voice AI / Telnyx / FrontDesk | `frontdesk-voice` |
 | SocialHub / social media / content calendar | `socialhub` |
@@ -45,11 +45,11 @@
 | **Cost**: customer billing vs operational | `billing-credits` (customer $) vs `cost-tracker` (our API spend) |
 | **UI**: design vs execution | `ui-ux-pro-max` (what) + `ui-design-workflow` (how) |
 | **Monitoring vs Resilience** | `monitoring-alerts` (detect) vs `resilience-patterns` (self-heal) |
-| **WhatsApp**: messaging vs group agent | `whatsapp-waha` (send/receive) vs `whatsapp-group-agent` (The Method) |
+| **WhatsApp**: messaging vs group agent | `whatsapp-waha` (send/receive + ClaudeClaw group agent / The Method) |
 
 ## Multi-Skill Combos
 
-- **Video job**: tourreel-pipeline + cost-tracker + model-observatory
+- **Video job**: videoforge-pipeline + cost-tracker + model-observatory
 - **New API endpoint**: api-contracts + database-management + credential-guardian
 - **Schema migration**: database-management + migration-validator + data-integrity
 - **New customer onboarding**: customer-journey + billing-credits + lead-pages + whatsapp-waha

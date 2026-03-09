@@ -18,7 +18,7 @@
 > 1. **Master Index**: [`docs/BUSINESS_COVERAGE_INDEX.md`](docs/BUSINESS_COVERAGE_INDEX.md) — Unified mapping of all business matters to SoTs.
 > 2. **Infrastructure**: [`docs/INFRA_SSOT.md`](docs/INFRA_SSOT.md) — Server, DB, Storage, R2, Environment, n8n, MCP.
 > 3. **Products**: [`docs/PRODUCT_BIBLE.md`](docs/PRODUCT_BIBLE.md) — SaaS billing, Credit logic, Agent specs, Service offerings.
-> 4. **Notebook Hub**: Brain 1dc7ce26 (BLAST), 0baf5f36 (TourReel), 12724368 (Changelog).
+> 4. **Notebook Hub**: Brain 1dc7ce26 (BLAST), 0baf5f36 (VideoForge), 12724368 (Changelog).
 
 > [!NOTE]
 > **Database Stack**: 
@@ -103,14 +103,14 @@
 | **Credentials** | `CREDENTIAL_REFERENCE.md` — where to look (paths only) |
 | **Vercel deploy** | `VERCEL_PROJECT_MAP.md` — domain → project, auto-deploy vs manual |
 | **Ports** | `PORT_REFERENCE.md` — site 3002, worker 3001 (local both) or 3002 (RackNerd) |
-| TourReel Spec | NotebookLM 0baf5f36 |
+| VideoForge Spec | NotebookLM 0baf5f36 |
 | Prisma Schema | `apps/web/superseller-site/prisma/schema.prisma` |
 | Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |
 | **Data Dictionary** | `docs/DATA_DICTIONARY.md` — where every entity lives, sync rules, mismatches |
 | **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
 | Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
 | **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
-| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.02, Gemini $0.001 — see tourreel-pipeline SKILL.md |
+| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.02, Gemini $0.001 — see videoforge-pipeline SKILL.md |
 | FB Bot Config | `fb-marketplace-lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
 | FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
 | **API Documentation** | `docs/API_DOCUMENTATION.md` — All 94 API endpoints, auth patterns, response formats |
@@ -136,7 +136,7 @@ API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
 
 | Product | Status | Notes |
 |---------|--------|-------|
-| **TourReel** | ✅ Live | 25+ AI videos + Remotion photo composition, dual-path pipeline |
+| **VideoForge** | ✅ Live | 25+ AI videos + Remotion photo composition, dual-path pipeline |
 | **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting daily, webhook-server + fb-scheduler on PM2 |
 | **SocialHub/Buzz** | ✅ Live | Text+image→WhatsApp approval→FB publish pipeline working |
 | **Winner Studio** | ⚠️ Built, not active | Code verified end-to-end, Yossi not actively using |
@@ -181,9 +181,8 @@ Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.24
 ### Code Quality Tools
 ```bash
 npx tsx tools/schema-sentinel.ts          # Prisma <-> Drizzle drift check
-npx tsx tools/consistency-checker.ts      # Brand/stale ref/contradiction scanner
-npx tsx tools/consistency-checker.ts --strict  # CI mode (exit 1 on CRITICAL/HIGH)
-npx tsx tools/consistency-checker.ts --json    # Machine-readable output
+npx tsx tools/schema-sentinel.ts          # Prisma <-> Drizzle schema drift
+# consistency-checker.ts not present; use schema-sentinel + grep for brand/cross-contamination
 ```
 
 ### Health Checks

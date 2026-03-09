@@ -10,7 +10,7 @@
 | Path | Purpose |
 |------|---------|
 | **apps/web/superseller-site/** | Main Next.js app (superseller.agency, admin.superseller.agency, api.superseller.agency) |
-| **apps/worker/** | Video pipeline worker (TourReel: Remotion composition + Kling AI clips, R2) |
+| **apps/worker/** | Video pipeline worker (VideoForge: Remotion composition + Kling AI clips, R2) |
 | **apps/web/superseller-site/src/app/** | Pages and API routes |
 | **apps/web/superseller-site/src/app/(main)/admin/** | Admin dashboard (served via admin.superseller.agency) |
 | **apps/web/superseller-site/src/app/api/** | API endpoints |
@@ -20,10 +20,10 @@
 | **infra/archive/** | Archived infra (old workflows, legacy) |
 | **library/** | Legacy data, client workflows, reference configs |
 | **platforms/marketplace/** | Marketplace platform config and engine |
-| **docs/** | Documentation: **docs/frameworks/**, **docs/templates/tourreel/**, **docs/n8n/N8N_WORKFLOWS_CATALOG.md**, **docs/NOTEBOOKLM_INDEX.md** |
+| **docs/** | Documentation: **docs/frameworks/**, **docs/templates/videoforge/**, **docs/n8n/N8N_WORKFLOWS_CATALOG.md**, **docs/NOTEBOOKLM_INDEX.md** |
 | **security/** | Security policies, credential rotation |
 | **.cursor/** | Agent rules, context, MCP status |
-| **.claude/skills/** | Agent skills (antigravity, database, rag-pgvector, stripe-credits, tourreel-pipeline, ui-design-workflow, ui-ux-pro-max) |
+| **.claude/skills/** | Agent skills (antigravity, database, rag-pgvector, billing-credits, videoforge-pipeline, ui-design-workflow, ui-ux-pro-max) |
 
 ---
 

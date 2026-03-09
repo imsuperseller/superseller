@@ -7,6 +7,6 @@ export const logger = pino({
         config.nodeEnv === "development"
             ? { target: "pino-pretty", options: { colorize: true } }
             : undefined,
-    base: { service: "tourreel-worker" },
+    base: { service: "videoforge-worker" },
     timestamp: pino.stdTimeFunctions.isoTime,
 });

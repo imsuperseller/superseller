@@ -50,22 +50,22 @@ export function middleware(request: NextRequest) {
     const isAdminDomain = hostname === 'admin.superseller.agency' || hostname.startsWith('admin.localhost');
 
     if (isAdminDomain) {
-        if (path === '/login') {
-            return NextResponse.next();
-        }
         // Skip static assets and API routes
         if (path.startsWith('/_next') || path.startsWith('/api')) {
             const res = NextResponse.next();
             res.headers.set('x-pathname', path);
             return res;
         }
-        // Rewrite: admin.superseller.agency/ -> /en/admin (include locale for i18n routing)
-        // admin.superseller.agency/fulfillment -> /en/admin/fulfillment
+
+        // Login page — redirect to locale-prefixed URL so it bypasses stale CDN cache
+        if (path === '/login') {
+            return NextResponse.redirect(new URL(`/en/login${url.search}`, request.url));
+        }
+
         const localeMatch = path.match(/^\/(en|he|fa|cs|hu|hi|ko)(\/|$)/);
         if (localeMatch) {
-            // Already has locale prefix (e.g. /en/admin) — ensure /admin prefix
             const rest = path.slice(localeMatch[0].length - (localeMatch[2] === '/' ? 1 : 0));
-            if (!rest.startsWith('/admin')) {
+            if (!rest.startsWith('/admin') && !rest.startsWith('/login')) {
                 return NextResponse.rewrite(new URL(`/${localeMatch[1]}/admin${rest || ''}`, request.url));
             }
             const res = NextResponse.next();

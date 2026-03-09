@@ -23,7 +23,6 @@ infra/**                          → Project 4 (Infrastructure)
 scripts/**                        → Project 4 (Infrastructure)
 tools/**                          → Project 4 (Infrastructure)
 .github/**                        → Project 4 (Infrastructure)
-plugins/**                        → Project 4 (Infrastructure)
 .env*                             → Project 4 (Infrastructure)
 .mcp.json                         → Project 4 (Infrastructure)
 shai friedman social/**           → Project 5 (Social & Content)
@@ -44,7 +43,7 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 ## Assigned Skills
 - admin-portal
 - customer-journey
-- stripe-credits
+- billing-credits
 - lead-pages
 - ui-ux-pro-max
 - ui-design-workflow

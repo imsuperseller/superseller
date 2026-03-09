@@ -157,7 +157,7 @@ Worker routes in `apps/worker/src/api/routes.ts`: `/api/jobs/*`, `/api/rag/*`, `
 | frontdesk-voice | Telnyx, voice AI, call transfer | 1 reference file (telnyx-api-reference) |
 | agentforge | research pipeline, proposals | 2 reference files (implementation-patterns, business-decisions) |
 | ui-ux-pro-max | design, palettes, typography | scripts/ (BM25 search), brand-token-map |
-| stripe-credits | billing, credits, payments | — |
+| billing-credits | billing, credits, payments (PayPal) | — |
 | database-management | schema, migration, ORM | — |
 | credential-guardian | API keys, auth, 401 | rotation-playbook |
 | api-contracts | routes, endpoints, auth | route-inventory, response-shapes |

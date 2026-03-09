@@ -1,5 +1,48 @@
 ---
 
+## 2026-03-09: Methodical Project Audit — Conflicts, Contradictions, Incomplete
+
+### 1. Broken or missing references
+
+| Item | Where referenced | Issue |
+|------|------------------|--------|
+| **consistency-checker.ts** | brain.md, CLAUDE.md (Code Quality Tools) | File does not exist in `tools/`. Script was never created or was removed. |
+| **whatsapp-group-agent** skill | SKILL_ROUTER.md (Quick Lookup + Disambiguation) | No folder `.claude/skills/whatsapp-group-agent` — only `whatsapp-waha` exists. Router points to non-existent skill. |
+| **NOTEBOOKLM_SCOPE.md** | DECISIONS.md §4 (Action) | "Create NOTEBOOKLM_SCOPE.md" — file never created. |
+| **plugins/** directory | projects/1-superseller-web/CLAUDE.md, projects/4-infrastructure/KNOWLEDGE.md, projects/4-infrastructure/CLAUDE.md, projects/7-strategy-docs/CLAUDE.md | Directory deleted Mar 8; docs still reference it. |
+
+### 2. Schema / data sync (Schema Sentinel)
+
+- **User.id**: Prisma type `String` (DB: `gen_random_uuid()::text`) vs Drizzle `uuid`. One type mismatch on shared table.
+- **User.role**: Sentinel reports "Drizzle has column role but no matching Prisma field" — Prisma User model does have `role UserRole`; likely sentinel comparison quirk. Verify both apps read/write role correctly.
+
+### 3. Naming / terminology drift
+
+- **tourreel vs VideoForge**: Worker PM2 name, paths (`/opt/tourreel-worker`), logger service name, ecosystem.config.js still use "tourreel". Skill and product are "videoforge-pipeline" / VideoForge. ecosystem.config.js has TODO: "rename to videoforge-worker on server". Intentional deferral but causes confusion.
+- **stripe-credits vs billing-credits**: Rename to billing-credits completed in SKILL_ROUTER and skills README; ARCHITECTURE.md, REPO_MAP.md, brain.md still say "stripe-credits" in examples/lists.
+
+### 4. Contradictions / outdated decisions
+
+- **DECISIONS.md §5 (QuickBooks)**: Says "User gave access; agent to research and plan." Superseded by §20 (Mar 8): Cancel QuickBooks. §5 should be marked superseded by §20.
+- **.env.example**: Still includes QUICKBOOKS_* and AIRTABLE_PAT without note. QuickBooks cancelled Mar 8; Airtable.com retired per CLAUDE.md.
+
+### 5. Incomplete or deferred
+
+- **Admin 404 (CODE FIXED, CDN CACHE PENDING)**: Middleware now properly handles admin.superseller.agency /login → /en/login redirect. Deployed to Vercel (4 deploys). Root `/` works (MISS, fresh response). But `/login` has a stale CDN cache (age 5.6h, `stale-while-revalidate=31536000`) from the old deployment that still serves 404. Will self-resolve as CDN revalidates. If urgent, manually purge Vercel edge cache via Vercel dashboard → Settings → Data Cache → Purge.
+- **VideoForge quality**: Fixes implemented (Mar 4) but "NEVER validated end-to-end" — PRODUCT_STATUS blocker: run 1 test job.
+- **DECISIONS §14 action items**: "Update all model references (2.5-flash → 3-flash)", "Check Aitable.ai for outdated VideoForge process data", "Remove contradictions between sources" — unchecked.
+
+### 6. Permissions (read-only checks)
+
+- `docs/DATA_DICTIONARY.md` and `docs/INFRA_SSOT.md` returned "Permission denied" on read in this audit. If repo is shared, confirm these are not gitignored or permission-restricted in a way that blocks tooling.
+
+### 7. Summary
+
+- **Fix first**: Remove or fix references to missing consistency-checker; fix SKILL_ROUTER whatsapp-group-agent (point to whatsapp-waha or add skill); update docs that reference deleted `plugins/`; mark DECISIONS §5 superseded; align ARCHITECTURE/REPO_MAP/brain to "billing-credits"; add .env.example notes for QuickBooks/Airtable.
+- **Track**: Schema User.id/role alignment; admin 404 deploy; VideoForge one validation job; NOTEBOOKLM_SCOPE creation or decision to drop.
+
+---
+
 ## 2026-03-08: Full Infrastructure Smoke Test + Audit
 
 ### Web 503 Root Cause (FIXED)
@@ -28,7 +71,7 @@
 - **Impact**: Can't sell landing page service at planned tiers (Starter $500, Pro $1,000, Enterprise $2,000+) until design is upgraded.
 
 ### Skill Completeness Audit
-- **TourReel**: 9/10 — pipeline mature, quality fixes applied, needs 1 validation job
+- **VideoForge**: 9/10 — pipeline mature, quality fixes applied, needs 1 validation job
 - **Lead Pages**: 2/10 on design — infrastructure complete but visual quality too low to sell
 
 ### QuickBooks — Cancel, Save $600/yr
@@ -48,7 +91,7 @@
 
 ---
 
-## 2026-03-04: TourReel — 7 Recurring Quality Issues Deep Audit
+## 2026-03-04: VideoForge — 7 Recurring Quality Issues Deep Audit
 
 ### Issue #3 (CRITICAL): stitchClipsConcat NEVER CALLED
 **Root cause**: `stitchClipsConcat` (seamless boundary-frame concat, no re-encoding) is imported at line 10 of `video-pipeline.worker.ts` but NEVER used. Line 893 always calls `stitchClips(clipFiles, masterSilentPath, "dissolve", 0.3)` — every clip boundary gets a jarring dissolve transition that also re-encodes all video, losing quality.
@@ -139,7 +182,7 @@ Job 56163c67 (320 N Maple Dr, Beverly Hills) confirmed these fixes WORKING:
 **Fix**: Remove `/api` from base URL and configure valid Gemini keys.
 **Rule**: External API base URLs must be verified against the provider's exact proxy structure (Kie.ai uses different prefixes for Kling vs Gemini).
 
-### TourReel Quality Regressions
+### VideoForge Quality Regressions
 **Root Cause**: Video resolution normalization was defaulting to input resolution instead of forcing 1920x1080, leading to near-square outputs. Text overlay timing drifted because it relied on requested duration rather than actual measured file duration from the Kie.ai output.
 **Fix**: Use `ffprobe` to measure actual clip duration before calculating overlay timestamps.
 **Rule**: Never trust requested AI duration; always measure the physical file before assembly.
@@ -266,7 +309,7 @@ Job 56163c67 (320 N Maple Dr, Beverly Hills) confirmed these fixes WORKING:
 | 2 | Vercel deploy contradiction | DECISIONS §2 was aspirational but docs stated it as current | Clarified "aspirational" in DECISIONS, current reality in VERCEL_PROJECT_MAP |
 | 3 | n8n "backup only" everywhere | FB Bot lead pipeline runs production n8n workflows | Updated 6 files: CLAUDE.md, brain.md, DECISIONS.md, INFRA_SSOT.md, antigravity-automation SKILL |
 | 4 | Telnyx "DORMANT" in INFRA_SSOT | FB Bot lead pipeline uses Telnyx actively | Fixed to "active" |
-| 5 | PRODUCT_BIBLE missing 5 products | Only had TourReel + FB Bot | Added Winner Studio, Lead Pages, FrontDesk, AgentForge, SocialHub |
+| 5 | PRODUCT_BIBLE missing 5 products | Only had VideoForge + FB Bot | Added Winner Studio, Lead Pages, FrontDesk, AgentForge, SocialHub |
 | 6 | WAHA env var naming undocumented | `WAHA_URL` (Studio) vs `WAHA_BASE_URL` (superseller-site) vs `config.shared.wahaUrl` (FB Bot) | Documented per-app naming in whatsapp-waha SKILL + INFRA_SSOT |
 | 7 | `LIGHTRAG_BASE_URL` undocumented | Used in health-check route but not in any docs | Added to INFRA_SSOT §1 + §2 |
 | 8 | Monitoring claims "16 services" | Only 11 actually defined in service registry | Corrected to 11 in monitoring-alerts SKILL + INFRA_SSOT |
@@ -361,7 +404,7 @@ After fallback implementation: ✅ Pipeline resilient to Gemini outages (degrade
 
 ---
 
-### TourReel — Music Reuse Instead of Suno Generation (NEVER REPEAT)
+### VideoForge — Music Reuse Instead of Suno Generation (NEVER REPEAT)
 
 **Root cause**: Video pipeline logic prioritized database track reuse over Suno generation. Lines 587-592 in `video-pipeline.worker.ts` queried `music_tracks` table for ANY existing track and used it BEFORE trying Suno. This caused all videos to reuse the same track instead of generating fresh music.
 
@@ -382,7 +425,7 @@ After fallback implementation: ✅ Pipeline resilient to Gemini outages (degrade
 
 ---
 
-### TourReel — FFmpeg drawtext Filter Missing (NEVER REPEAT)
+### VideoForge — FFmpeg drawtext Filter Missing (NEVER REPEAT)
 
 **Root cause**: FFmpeg static build from johnvansickle.com (version 7.0.2) was missing the `drawtext` filter despite claiming `--enable-libfreetype` in configuration. The daily auto-update cron (`tools/update-ffmpeg.sh`) installed this broken build on Feb 24 at midnight, causing text overlay failures.
 
@@ -405,7 +448,7 @@ mv /usr/local/bin/ffprobe /usr/local/bin/ffprobe.static.bak
 
 ---
 
-### TourReel — Timestamp Bug in Text Overlays (NEVER REPEAT)
+### VideoForge — Timestamp Bug in Text Overlays (NEVER REPEAT)
 
 **Root cause**: PostgreSQL `numeric` type fields (`duration_seconds`) are returned as **strings** by node-postgres, not numbers. When the pipeline accumulated timestamps with `cumSec += dur` (line 634), if `dur` was a string, JavaScript performed string concatenation instead of arithmetic addition.
 
@@ -559,7 +602,7 @@ cumSec += dur;  // Now arithmetic addition
 
 **Rule**: Every API generation logs cost. In automated pipeline via `trackExpense()`. In manual sessions via cost table in `progress.md`.
 
-**Infrastructure ready**: `api_expenses` table + `expense-tracker.ts` with `trackExpense()`, `getDailyExpenses()`, `getExpenseTrend()`, `detectAnomalies()`. See tourreel-pipeline SKILL.md for full rate table.
+**Infrastructure ready**: `api_expenses` table + `expense-tracker.ts` with `trackExpense()`, `getDailyExpenses()`, `getExpenseTrend()`, `detectAnomalies()`. See videoforge-pipeline SKILL.md for full rate table.
 
 **Purim Video Cumulative Costs (Feb 22-23, 2026)**:
 
@@ -757,7 +800,7 @@ cumSec += dur;  // Now arithmetic addition
 Emails observed across systems:
 - **shai@superseller.agency** — n8n Outlook recipient for UAD lead analysis emails
 - **shai@superseller.agency** — in ADMIN_EMAILS array (`auth.ts:14`)
-- **uad.garage.doors@gmail.com** — UAD Facebook account (`bot-config.json:18`)
+- **1shaifriedman@gmail.com** — UAD Facebook account (Shai's personal FB, `bot-config.json` fbEmail for UAD)
 - **michalkacher2006@gmail.com** — MissParty Facebook account (`bot-config.json:96`)
 - **SuperSeller AI Microsoft Outlook OAuth2** — n8n credential `EA2Fl9QT5h2HZoo9` used to send emails
 
@@ -872,7 +915,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - The error appears in `[role="alert"]` elements but is NOT visually obvious
 - **Valid category names confirmed**: "Inflatable Bouncers" (Outdoor Toys), "Miscellaneous" (catch-all), "Toys", "Home", "Garden", "Furniture", "Tools", "Baby"
 - **To find valid categories**: type search terms in the Category input and check `ul[role="listbox"] li` for dropdown results
-- **MissParty uses**: "Inflatable Bouncers" | **UAD uses**: "Miscellaneous"
+- **MissParty uses**: "Miscellaneous" | **UAD uses**: "Miscellaneous"
 
 **CRITICAL: Per-profile cookie files:**
 - Each GoLogin profile needs its OWN cookie file: `cookies_{product.id}.json`
@@ -1256,11 +1299,12 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 - Second attempt: "Check your text messages" (SMS code to phone ending in 50).
 - The checkpoint page has a gear icon for alternative methods.
 - Solution: noVNC at `http://172.245.56.50:6080/vnc.html` — user can see and interact with the browser remotely.
-- **Never repeat**: Always have noVNC ready for interactive 2FA. Use `interactive_login.js` which waits 10 min for approval.
+- **Never repeat**: Always have noVNC ready for interactive 2FA. Use `session-login.js` (replaces older `interactive_login.js`) which waits 10 min for approval.
 
-**UAD Facebook account email:**
-- Config had `uad.garage.doors@gmail.com` — Facebook says "email not connected to any account".
-- Changed to `shai@superseller.agency` for testing. David's actual Facebook email needs to be confirmed.
+**UAD Facebook account email (RESOLVED Mar 2026):**
+- Config originally had `uad.garage.doors@gmail.com` — Facebook said "email not connected to any account".
+- Temporarily changed to `shai@superseller.agency` for testing.
+- **FINAL CORRECT VALUE**: `1shaifriedman@gmail.com` (Shai's personal Facebook). This is now the canonical UAD Facebook email in `bot-config.json`.
 - **Never repeat**: Check proxy connectivity (`curl -x http://proxy:port ...`) before assuming browser issues.
 
 **GoLogin API — Token and Update Errors (Feb 2026):**
@@ -1304,7 +1348,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 - **Ghost reference files in skills**: All 6 skills had `references/*.md` links to files that never existed (15 total). Root cause: skill-template includes placeholder reference tables. Fix: point to actual source files (findings.md, INFRA_SSOT.md, actual source code paths) or inline the content.
 - **Skills activation rate was ~20-30%**: 5/13 skills had broken frontmatter (no YAML `---` delimiters), 0/13 had negative triggers, 0/13 had usage examples. After cleanup: 8 active skills, all with proper frontmatter, negative triggers, and examples.
-- **n8n skills dominated context**: 12/13 skills were n8n-related while system migrated away. All n8n project skills deleted, global skills archived. Active skills now: antigravity, database-management, rag-pgvector, stripe-credits, tourreel-pipeline, ui-design-workflow, ui-ux-pro-max, skill-template.
+- **n8n skills dominated context**: 12/13 skills were n8n-related while system migrated away. All n8n project skills deleted, global skills archived. Active skills now: antigravity, database-management, rag-pgvector, stripe-credits, videoforge-pipeline, ui-design-workflow, ui-ux-pro-max, skill-template.
 
 ### Post-Change Audit Findings (NEVER REPEAT)
 
@@ -1353,7 +1397,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 ### Full-Stack Conflict & Completeness Audit (Session 4)
 
 - **PRODUCT_BIBLE.md had stale design tokens**: Colors were #0B1318/#2F6A92/#FF6536 but actual globals.css uses #110d28/#fe3d51/#bf5700/#1eaef7/#5ffbfd (Spotlight Dark Mode). NotebookLM 719854ee + 286f3e4a agreed with globals.css. Fix: Updated PRODUCT_BIBLE.md to match reality.
-- **PRODUCT_BIBLE.md had stale pricing model**: Referenced Starter/Growth/Scale with agent-limits. Actual model is $299/$699/$1,499 credit-based (500/1500/4000). Fix: Updated to current credit model. Added TourReel 50 credits/video.
+- **PRODUCT_BIBLE.md had stale pricing model**: Referenced Starter/Growth/Scale with agent-limits. Actual model is $299/$699/$1,499 credit-based (500/1500/4000). Fix: Updated to current credit model. Added VideoForge 50 credits/video.
 - **brain.md listed Veo as active**: Lines 37 + 139 referenced Veo. All notebooks and INFRA_SSOT say Veo is deprecated. Fix: Removed Veo, updated to "Kling 3.0, Suno, Nano Banana".
 - **Veo code still in kie.ts**: KieVeoRequest interface and createVeoTask function exported. Fix: Removed Veo interface, function, and type references. Changed getTaskStatus/waitForTask defaults from "veo" to "kling".
 - **ADMIN_EMAILS duplicated in 4 files**: auth.ts, send/route.ts, verify/route.ts all had identical `(process.env.ADMIN_EMAILS || 'shai@superseller.agency,shai@superseller.agency')`. Fix: Exported ADMIN_EMAILS from auth.ts, imported in route files.
@@ -1488,7 +1532,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
   - **fal.ai deprecated but referenced**: 1dc7ce26 said "Kling via fal.ai". Override added. NOTEBOOKLM_INDEX updated to mark fal.ai notebook deprecated.
   - **Clerk/Supabase never implemented**: 1dc7ce26 listed Clerk auth and Supabase DB. Override added — actual stack is magic-link + direct PostgreSQL.
   - **learning.log retired**: 1dc7ce26 and 12c80d7d referenced learning.log. Override sources added → use findings.md.
-  - **f0747c8b (prd template) is different product**: Voice-note-to-video for "Mivnim", not TourReel. Override source added marking it LEGACY. Added to NOTEBOOKLM_INDEX.
+  - **f0747c8b (prd template) is different product**: Voice-note-to-video for "Mivnim", not VideoForge. Override source added marking it LEGACY. Added to NOTEBOOKLM_INDEX.
   - **CLAUDE.md fixes**: Firestore changed from "fallback reads only" to "deprecated Feb 2026". Worker stack specified "Kie.ai Kling 3.0".
   - **brain.md**: Added missing notebooks (719854ee, b906e69f, f0747c8b).
   - **Admin API routes P0**: All `/api/admin/*` routes lacked auth. Adding verifySession() + admin role check.
@@ -1507,10 +1551,10 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
   - **Checkout platform label fixed**: `api/checkout/route.ts` metadata changed from `superseller-firebase` to `superseller-web`.
   - **Design system verified**: globals.css colors match notebook 286f3e4a exactly (#fe3d51, #bf5700, #1eaef7, #5ffbfd, #110d28).
 
-- **Remaining technical debt** (not launch-blocking for TourReel self-serve):
+- **Remaining technical debt** (not launch-blocking for VideoForge self-serve):
   - ~~20+ server-side routes still import `getFirestoreAdmin`~~ — RESOLVED: `getFirestoreAdmin()` throws; 17 dead scripts deleted.
   - ~~6 client-side pages import `firebase/firestore`~~ — RESOLVED: All 7 pages migrated to Postgres API routes.
-  - `custom-solutions/intake` has demo mode hardcoded IDs — old flow, not TourReel.
+  - `custom-solutions/intake` has demo mode hardcoded IDs — old flow, not VideoForge.
   - Rate limiting missing on public POST routes — security best practice, not a crash.
   - Stripe price IDs (`STRIPE_STARTER_PRICE_ID` etc.) need real values from Stripe dashboard before pricing page works end-to-end.
 
@@ -1566,7 +1610,7 @@ When cookies are stale (>2 weeks old), Facebook shows a password-only modal (no 
 
 - **Git history / VPS credentials**: Old password `${VPS_PASSWORD}` may appear in git history (deleted deploy-to-racknerd.js, execute script). Rotate on VPS; never hardcode. Use `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD` env vars.
 - **library/solution-data/uad.csv**: URLs point to 172.245.56.50:8080. Update if server changes.
-- **docs/templates/tourreel vs apps/worker/legacy_archive**: Verify which is canonical for TourReel templates when updating.
+- **docs/templates/tourreel vs apps/worker/legacy_archive**: Verify which is canonical for VideoForge templates when updating.
 - **Realtor placement research**: Industry standard is PiP/overlay; in-scene (Nano+Kling) has limits. Full research → NotebookLM 0baf5f36 when MCP available.
 
 ---
@@ -1621,13 +1665,13 @@ Historical findings: `infra/archive/findings.md`
 - **Daily auto-updater built** (`tools/model-observatory/daily-sync.ts`) — scrapes Kie.ai/fal.ai HTML, 3-strategy parsing (NEXT_DATA, inline JSON, regex), 50% coverage threshold for removal detection, dry-run mode
 - **Admin dashboard tab MISSING** — schema exists, seed data exists, daily sync exists, but no `/api/admin/models` route or UI component yet
 
-### Celebrity Selfie Generator Techniques (Cross-Pollination to TourReel)
+### Celebrity Selfie Generator Techniques (Cross-Pollination to VideoForge)
 - **Reference-based constancy**: `image_input: [user_photo_url]` + prompt "looks exactly like the reference image" — applicable for realtor consistency across rooms
-- **Two-frame morphing**: Kling `image_url` + `tail_image_url` with `cfg_scale: 0.5` for seamless transitions between rooms (currently TourReel uses hard cuts)
+- **Two-frame morphing**: Kling `image_url` + `tail_image_url` with `cfg_scale: 0.5` for seamless transitions between rooms (currently VideoForge uses hard cuts)
 - **wsrv.nl upscaling proxy**: `https://wsrv.nl/?url={url}&w=720&h=720&fit=outside&output=png` — free image upscaling before video generation
 - **Negative prompts**: "static, frozen, zoom effect, slideshow, morphing face, distorted features" — prevents common AI video artifacts
 - **Style modifiers**: Ultra-realistic, Cinematic film look, Vintage retro, Modern Instagram — pluggable per property style
-- **Key finding**: Celebrity Selfie uses PiAPI for Kling ($0.50+/clip) while TourReel uses Kie.ai (~$0.10/clip) — 5x cheaper
+- **Key finding**: Celebrity Selfie uses PiAPI for Kling ($0.50+/clip) while VideoForge uses Kie.ai (~$0.10/clip) — 5x cheaper
 
 ### Skill Audit Results (26 skills audited)
 - **2 CRITICAL issues FIXED**: lead-pages had wrong WhatsApp env vars (WHATSAPP_TOKEN → WAHA_BASE_URL); agentforge file refs appeared to exist but don't
@@ -1644,7 +1688,7 @@ Historical findings: `infra/archive/findings.md`
 
 ### Pending
 - Admin dashboard "Model Observatory" tab (API route + React component)
-- NotebookLM notebook updates (TourReel spec, Model Observatory)
+- NotebookLM notebook updates (VideoForge spec, Model Observatory)
 - Cron job setup on RackNerd for daily-sync
 - Prisma schema sync (raw SQL was used, Prisma doesn't know about new tables)
 - Kie.ai credits need topping up before video regeneration

@@ -44,10 +44,8 @@ SuperSeller AI runs on two platforms:
 - Postgres: `@modelcontextprotocol/server-postgres` → RackNerd `app_db`
 - Redis: `@anthropic-ai/claude-mcp-server-redis` → RackNerd Redis
 
-### Cowork Plugins (6)
-In `plugins/` directory:
-- superseller-sales, superseller-marketing, superseller-ops
-- superseller-product, superseller-support, superseller-finance
+### Cowork Plugins
+`plugins/` directory was deleted Mar 8, 2026; content lives in `docs/PRODUCT_BIBLE.md` and `.claude/skills/`.
 
 ### Schema Drift Detection
 `tools/schema-sentinel.ts` — compares Prisma vs Drizzle schemas, reports drift.

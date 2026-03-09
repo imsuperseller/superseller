@@ -35,7 +35,6 @@ infra/**                          → Project 4 (Infrastructure)
 scripts/**                        → Project 4 (Infrastructure)
 tools/**                          → Project 4 (Infrastructure)
 .env*                             → Project 4 (Infrastructure)
-plugins/**                        → Project 4 (Infrastructure)
 shai friedman social/**           → Project 5 (Social & Content)
 elite pro remodeling/**           → Project 6 (Customer Projects)
 ```
@@ -88,7 +87,7 @@ elite pro remodeling/**           → Project 6 (Customer Projects)
 | Notebook | ID | Purpose |
 |----------|----|---------|
 | BLAST | 5811a372 (needs recreation) | Agent behavior, methodology |
-| TourReel | 0baf5f36 | Video pipeline spec |
+| VideoForge | 0baf5f36 | Video pipeline spec |
 | Mivnim/Yossi | e109bcb2 | Winner Studio |
 | Social Media & Lead Gen | cb99e6aa | FB Bot, SocialHub |
 | Automation & Core Infra | fc048ba8 | Infrastructure |

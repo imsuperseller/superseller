@@ -14,7 +14,6 @@ scripts/**
 tools/**
 ops/**
 .github/**
-plugins/**
 .env*
 .mcp.json
 .gitignore
@@ -73,7 +72,7 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 | Deploy Scripts | `scripts/maintenance/deployment/` |
 | Tools | `tools/` (schema-sentinel, model-observatory, etc.) |
 | GitHub Actions | `.github/workflows/` |
-| Cowork Plugins | `plugins/` (6 plugins) |
+| Cowork Plugins | (plugins/ deleted Mar 8 — see PRODUCT_BIBLE + .claude/skills) |
 | Root Package | `package.json` |
 | Root TSConfig | `tsconfig*.json` |
 | Cursor Config | `.cursor/` |
@@ -112,7 +111,7 @@ ssh root@172.245.56.50 "docker ps"
 2. **Root config authority**: Only this project modifies root `package.json`, `tsconfig*.json`, `.gitignore`, `.cursorrules`.
 3. **Deployment**: This project handles RackNerd deployments. Project 2 can use `deploy-to-racknerd.sh` (which lives in their owned directory) but infra changes go through this project.
 4. **MCP servers**: All MCP server configurations managed here.
-5. **Plugins**: All 6 Cowork plugins managed here.
+5. **Plugins**: plugins/ directory removed Mar 8; product/skill content in PRODUCT_BIBLE + .claude/skills.
 6. **Monitoring**: Health checks and alerts configured here, consumed by all projects.
 
 ---

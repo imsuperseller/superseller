@@ -97,7 +97,7 @@ export default async function AdminDashboardPage() {
   const session = await verifySession();
 
   if (!session.isValid || !session.email) {
-    redirect('/login?redirect=/admin');
+    redirect('/en/login?redirect=/admin');
   }
 
   // Admin Check

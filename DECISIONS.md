@@ -68,17 +68,17 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 - Process descriptions (how to deliver workflows to customers)
 - Design system reference (beyond minimal tokens in code)
 
-**Action**: Create NOTEBOOKLM_SCOPE.md listing what goes where. Verify infra folder usage; move descriptions to notebooks; archive unused code.
+**Action (DROPPED Mar 9, 2026)**: NOTEBOOKLM_SCOPE.md not created — scope distinction is already covered in CLAUDE.md §4 (Codebase = paths, env, routers, deploy; NotebookLM = specs, methodology, research). No separate file needed.
 
 ---
 
-## 5. QUICKBOOKS MCP
+## 5. QUICKBOOKS MCP (SUPERSEDED by §20 — Mar 8, 2026)
 
 | Decision | Answer |
 |----------|--------|
 | **QuickBooks** | User gave access; agent to research and plan. |
 
-**Action**: Audit quickbooks-online-mcp-server, quickbooks-mcp-server refs, MCP config. Create plan. See EXECUTION_PLAN Phase 5.
+**Superseded**: See **§20. CANCEL QUICKBOOKS** — subscription cancelled Mar 8, 2026. MCP servers can be removed.
 
 ---
 
@@ -145,7 +145,7 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 
 ---
 
-## 12. TOURREEL QUALITY-FIRST PIVOT (Feb 23, 2026)
+## 12. VIDEOFORGE QUALITY-FIRST PIVOT (Feb 23, 2026)
 
 | Decision | Answer |
 |----------|--------|
@@ -197,10 +197,10 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 | **Authority** | DECISIONS.md > Deployed code > Codebase docs > NotebookLM > Aitable.ai |
 
 **Action Items:**
-- [x] Audit TourReel notebook (0baf5f36) for furniture-from-sky references → update to quality-first approach (Feb 24: production quality overhaul source added)
-- [ ] Update all model references (2.5-flash → 3-flash)
-- [ ] Check Aitable.ai for outdated TourReel process data
-- [x] Sync TOURREEL_GAP_ANALYSIS findings to NotebookLM (Feb 24: production overhaul source covers all gap fixes)
+- [x] Audit VideoForge notebook (0baf5f36) for furniture-from-sky references → update to quality-first approach (Feb 24: production quality overhaul source added)
+- [x] Update all model references (2.5-flash → 3-flash) — Done Mar 9: content-generator.js, seed-prompt-configs.ts, README.md examples
+- [ ] Check Aitable.ai for outdated VideoForge process data
+- [x] Sync VIDEOFORGE_GAP_ANALYSIS findings to NotebookLM (Feb 24: production overhaul source covers all gap fixes)
 - [ ] Remove contradictions between sources
 
 ---

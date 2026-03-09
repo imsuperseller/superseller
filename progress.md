@@ -6,6 +6,53 @@
 
 ---
 
+## 2026-03-09: Methodical Project Audit — Conflicts, Outdated, Incomplete
+
+### Audit scope
+- Consistency checker, schema sentinel, grep for TODO/deprecated/stale, findings/progress, DECISIONS, docs refs, skill router, env.example, project CLAUDE files.
+
+### Findings (see findings.md § 2026-03-09)
+- **Missing**: `tools/consistency-checker.ts` (referenced in brain + CLAUDE); `NOTEBOOKLM_SCOPE.md` (DECISIONS §4 action); skill `whatsapp-group-agent` (router pointed to non-existent skill).
+- **Schema**: User.id Prisma String vs Drizzle uuid; User.role present in both (sentinel warning clarified).
+- **Naming**: tourreel vs VideoForge (intentional deferral); stripe-credits → billing-credits still in ARCHITECTURE, REPO_MAP, brain, project 1 skills.
+- **Contradictions**: DECISIONS §5 (QuickBooks) superseded by §20; .env.example had no QuickBooks/Airtable deprecation note.
+- **Stale refs**: plugins/ still in projects 1, 4, 7 CLAUDE/KNOWLEDGE after Mar 8 deletion.
+
+### Fixes applied
+- findings.md: Added full 2026-03-09 audit section.
+- brain.md: billing-credits in skills list; consistency-checker ref replaced with schema-sentinel + grep note.
+- CLAUDE.md: Code Quality Tools now schema-sentinel only; note that consistency-checker is not present.
+- DECISIONS.md: §5 marked SUPERSEDED by §20 (Cancel QuickBooks).
+- ARCHITECTURE.md, REPO_MAP.md: stripe-credits → billing-credits.
+- SKILL_ROUTER.md: whatsapp-group-agent → whatsapp-waha (group agent covered there); disambiguation updated.
+- projects/1-superseller-web/CLAUDE.md: Removed plugins/**; Assigned Skills stripe-credits → billing-credits.
+- projects/4-infrastructure/CLAUDE.md + KNOWLEDGE.md: plugins/ removed or noted deleted; Key Files Cowork Plugins updated.
+- projects/7-strategy-docs/CLAUDE.md: plugins/** removed from CANNOT edit.
+- .env.example: QuickBooks section commented with cancellation note; AIRTABLE_PAT commented with retirement note.
+
+### Execution phase (Mar 9 continued)
+- **Admin 404**: Middleware fix deployed — admin root works (MISS). `/login` still has stale CDN cache (SWR=1yr); will self-resolve. Code: `/login` → redirect to `/en/login` on admin domain.
+- **NOTEBOOKLM_SCOPE.md**: Marked DROPPED in DECISIONS §4 — scope already covered by CLAUDE.md §4.
+- **Gemini model refs**: Updated `fb-marketplace-lister/deploy-package/content-generator.js` (2.5-flash → 3-flash), `tools/seed-prompt-configs.ts` (8 occurrences), `tools/model-observatory/README.md` examples. Worker `gemini.ts` already on 3-flash. Telnyx ref left (external API).
+- **PORT_REFERENCE.md**: Fixed video-merge port 3001 → 3456 (contradicted Rensto port 3001 and findings.md).
+- **Tourreel naming**: Logger service name `tourreel-worker` → `videoforge-worker`, tmp path `/tmp/tourreel-jobs` → `/tmp/videoforge-jobs`. Server PM2/path rename deferred (requires server-side PM2 rename).
+- **nav.blog i18n**: Added missing `blog` translation key to all 7 locale files (en, he, fa, cs, hu, hi, ko). Fixed build warnings.
+- **Docs permissions**: Fixed 644 on `docs/DATA_DICTIONARY.md` and `docs/INFRA_SSOT.md`.
+- **Vercel deploys**: 4 production deploys to superseller-site (middleware + i18n + admin redirect fixes).
+
+### Still tracked
+- VideoForge one validation job (PRODUCT_STATUS blocker — needs API credits).
+- Server PM2 rename tourreel-worker → videoforge-worker (deferred).
+- Admin login CDN cache will self-clear (monitor).
+- DECISIONS §14 remaining items: Aitable.ai VideoForge data check, cross-source contradictions.
+
+### Cost table (this session)
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| (No API calls) | — | — | **$0.00** |
+
+---
+
 ## 2026-03-08: Full Audit + Documentation Overhaul
 
 ### Phase 1: Infrastructure Smoke Test + Fixes
@@ -81,7 +128,7 @@
 - 43 markdown files across 6 plugin subdirectories (superseller-sales, superseller-ops, superseller-marketing, superseller-finance, superseller-product, superseller-support)
 - **Content assessment**: All 43 files contain information already documented in canonical sources:
   - Product catalog → `docs/PRODUCT_BIBLE.md`
-  - Video pipeline → `docs/PRODUCT_BIBLE.md` + `.claude/skills/tourreel-pipeline/`
+  - Video pipeline → `docs/PRODUCT_BIBLE.md` + `.claude/skills/videoforge-pipeline/`
   - Revenue model → `docs/PRODUCT_BIBLE.md`
   - All other content → Individual SKILL.md files
 - **Unique content to merge**: ZERO. No new information not already in PRODUCT_BIBLE.md or skills.
@@ -134,7 +181,7 @@
 - **Source**: easy-peasy.ai / media.io movie set selfie technique
 - **How**: Nano Banana composites person into BOTH first and last frames, Kling morphs between them, last frame of clip N = first frame of clip N+1
 - **Result**: Seamless continuous shot illusion when concatenated (no transitions needed)
-- **Product fit**: TourReel — can offer "continuous walkthrough" as premium video style
+- **Product fit**: VideoForge — can offer "continuous walkthrough" as premium video style
 
 ---
 
@@ -169,7 +216,7 @@
 
 ---
 
-## 2026-03-04: TourReel Quality Fix — ALL 6 PHASES IMPLEMENTED ✅
+## 2026-03-04: VideoForge Quality Fix — ALL 6 PHASES IMPLEMENTED ✅
 
 ### Audit & Plan
 - **Full code audit**: Read all 7 pipeline files against 7 user-reported quality issues.
@@ -274,7 +321,7 @@
 - `2b36572` fix: video pipeline improvements (photo classifier, room mapper, gemini)
 - `ba0fd99` chore: skills, schema, tools (model observatory, skill router, Prisma)
 - `2266b96` chore: organize repo (docs/, n8n workflows, gitignore)
-- `169375b` feat: TourReel self-serve billing (success banner, manage subscription, lifecycle webhooks)
+- `169375b` feat: VideoForge self-serve billing (success banner, manage subscription, lifecycle webhooks)
 - `7e2ce75` feat: FB Bot admin tab (MarketplaceManagement component, admin API, 7-col grid)
 - `1fad8de` fix: resolve 5 doc contradictions (Telnyx, Vercel deploy, R2, Nano Banana, n8n workflows)
 - `5270bf9` fix: worker hardening (bull-board security, health checks, config centralization, dead code)
@@ -300,7 +347,7 @@
 
 ---
 
-## 2026-02-24 (cont.): TourReel Production Quality Overhaul
+## 2026-02-24 (cont.): VideoForge Production Quality Overhaul
 
 ### What was done
 
@@ -320,12 +367,12 @@
 **Yaron V3 regenerated** from scratch with all fixes — 14/14 clips complete, master video live at R2.
 
 **Documentation sweep** — updated 8 docs to reflect production changes:
-- `.claude/skills/tourreel-pipeline/SKILL.md` (critical rules, pipeline stages, line counts)
-- `.claude/skills/tourreel-pipeline/references/troubleshooting.md` (new error types: floorplan in video, text overlay timing, music no URL)
-- `.claude/skills/tourreel-pipeline/references/api-deep-reference.md` (production transition strategy)
+- `.claude/skills/videoforge-pipeline/SKILL.md` (critical rules, pipeline stages, line counts)
+- `.claude/skills/videoforge-pipeline/references/troubleshooting.md` (new error types: floorplan in video, text overlay timing, music no URL)
+- `.claude/skills/videoforge-pipeline/references/api-deep-reference.md` (production transition strategy)
 - `apps/worker/PIPELINE_STEP_BY_STEP.md` (Phase 5 & 6 rewritten for end-frame + concat)
 - `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md` (config table: outputWidth/Height, xfade deprecated)
-- `docs/PRODUCT_BIBLE.md` (TourReel architecture updated)
+- `docs/PRODUCT_BIBLE.md` (VideoForge architecture updated)
 - `VIDEO_REVIEW_CHECKLIST.md` (new quality checks)
 - `findings.md` (6 root causes in NEVER REPEAT section)
 
@@ -340,7 +387,7 @@
 
 ### Pending
 - Yaron V3 regen complete — needs user review of quality
-- NotebookLM notebooks (TourReel 0baf5f36, Changelog 12724368) need source updates
+- NotebookLM notebooks (VideoForge 0baf5f36, Changelog 12724368) need source updates
 - Suno music URL bug — upstream Kie.ai issue, monitor
 
 ---
@@ -490,7 +537,7 @@ Note: Kling clips failed before generation started (402), so actual cost may be 
 
 ---
 
-## 2026-02-23 (Late PM): TourReel Quality-First Pivot + NotebookLM Documentation Audit
+## 2026-02-23 (Late PM): VideoForge Quality-First Pivot + NotebookLM Documentation Audit
 
 ### Context
 Yaron V2 video delivered with critical quality issues. User strategic decision: "we cannot lose quality. we cannot risk it to generate things" — Quality and consistency over creative effects. Zero tolerance for hallucination. Documentation audit mandate: "go over where we store (notebookslm, aitable.ai etc.) things so all updated and no conflicts and no contradictions."
@@ -633,7 +680,7 @@ Yaron V2 video delivered with critical quality issues. User strategic decision: 
 
 ### NotebookLM Documentation Audit — COMPLETE
 
-**Task**: Audit TourReel notebook (0baf5f36) for conflicts with quality-first approach
+**Task**: Audit VideoForge notebook (0baf5f36) for conflicts with quality-first approach
 
 **Audit Executed** (Feb 23):
 - Queried NotebookLM "Zillow-to-Video" notebook (23 sources)
@@ -675,7 +722,7 @@ Yaron V2 video delivered with critical quality issues. User strategic decision: 
 ### DECISIONS.md Updates (Canonical Truth)
 
 **Added Sections**:
-1. ✅ §12 — TourReel Quality-First Pivot (Feb 23, 2026):
+1. ✅ §12 — VideoForge Quality-First Pivot (Feb 23, 2026):
    - Strategic priority: Quality and consistency over creative effects
    - Trade-off: Drop Nano Banana to focus on realtor consistency + room accuracy
    - Tolerance for hallucination: ZERO
@@ -689,7 +736,7 @@ Yaron V2 video delivered with critical quality issues. User strategic decision: 
 3. ✅ §14 — Documentation Consolidation Audit (Feb 23, 2026):
    - Mandate: "go over where we store (notebookslm, aitable.ai etc.) things so all updated and no conflicts"
    - Authority: DECISIONS.md > Deployed Code > Codebase Docs > NotebookLM > Aitable.ai
-   - Action items: Audit TourReel notebook, update all model references, remove contradictions
+   - Action items: Audit VideoForge notebook, update all model references, remove contradictions
 
 ### Yaron V3 Status
 
@@ -816,7 +863,7 @@ User raised critical question: **"When do we test each agent to ensure it's full
 
 **Critical findings**:
 1. **Only Forge has credit integration**: Pre-check ✅, Deduction ✅, Refund ✅, Notifications ❌, Quality tracking ❌
-2. **Spoke doesn't exist**: Not a standalone agent, only realtor composite in TourReel
+2. **Spoke doesn't exist**: Not a standalone agent, only realtor composite in VideoForge
 3. **Market is standalone**: Bot works (96% UAD, 94% MissParty) but NO credit system integration
 4. **Zero notification system**: No email/WhatsApp to customers when jobs complete/fail (only logs)
 5. **Zero quality benchmarking**: No rating system, no competitor comparison, no SLA tracking
@@ -1156,7 +1203,7 @@ Debugged and fixed the Telnyx AI Assistant ("SuperSeller AI FrontDesk") from non
 - Tools: transfer only (no hangup)
 - Instructions: 2543 chars with real SuperSeller AI products, pricing, global scope
 
-**Verified working**: 16-message conversation with real user — AI greeted, answered product questions about TourReel/Winner Studio/FrontDesk AI, discussed pricing, handled follow-up.
+**Verified working**: 16-message conversation with real user — AI greeted, answered product questions about VideoForge/Winner Studio/FrontDesk AI, discussed pricing, handled follow-up.
 
 **Next steps**:
 - Add webhook tool for web research (caller asked "check my website")
@@ -1754,7 +1801,7 @@ Audited Kling 3.0 API capabilities vs our usage. Closed 5 gaps:
 
 ---
 
-## 2026-02-20 — FFmpeg Text Overlays Implemented (TourReel Marketing Layer)
+## 2026-02-20 — FFmpeg Text Overlays Implemented (VideoForge Marketing Layer)
 
 Replaced the text overlay stub with full drawtext implementation across both pipeline entry points.
 
@@ -1763,13 +1810,13 @@ Replaced the text overlay stub with full drawtext implementation across both pip
 - `addTextOverlays` in `ffmpeg.ts`: system font detection (DejaVu Sans Bold on Ubuntu), resolution-scaled font sizes (`h/30` to `h/12`), smooth alpha fade in/out via FFmpeg expression, semi-transparent box backgrounds
 - `video-pipeline.worker.ts` overlay builder: Opening clip shows property address (bottom, large) + price (top, xlarge); middle clips show room labels (bottom, medium, 2.5s); closing clip shows "Schedule Your Tour Today" CTA (center, xlarge) + room label
 - `regen-clips.ts` overlay builder: mirrored the same logic (was still on the old stub)
-- Updated `.claude/skills/tourreel-pipeline/SKILL.md` — removed "(stub)" from pipeline step 7-9
+- Updated `.claude/skills/videoforge-pipeline/SKILL.md` — removed "(stub)" from pipeline step 7-9
 
 **Files modified:**
 - `apps/worker/src/services/ffmpeg.ts` — TextOverlaySpec + addTextOverlays rewrite
 - `apps/worker/src/queue/workers/video-pipeline.worker.ts` — overlay spec builder (lines 611-694)
 - `apps/worker/src/services/regen-clips.ts` — overlay spec builder (lines 165-240)
-- `.claude/skills/tourreel-pipeline/SKILL.md` — pipeline step table
+- `.claude/skills/videoforge-pipeline/SKILL.md` — pipeline step table
 
 **Build:** `tsc` passes clean. No test suites exist for worker (build is the only validation).
 
@@ -2009,14 +2056,14 @@ Full audit of all products, skills, MCP servers, n8n workflows, infrastructure. 
 - Login fill: React-compatible `HTMLInputElement.prototype.value.set` + `dispatchEvent` (React ignores direct DOM changes)
 - Cookie injection: Now checks for c_user+xs before injecting; skips injection if API missing session cookies
 - S3 upload guard: `uploadCookiesToServer=false` enforced in ALL failure paths (prevents broken profiles overwriting good ones)
-- UAD config email: `uad.garage.doors@gmail.com` → `shai@superseller.agency` (original email not connected to any FB account)
+- UAD config email: `uad.garage.doors@gmail.com` → `shai@superseller.agency` → FINAL: `1shaifriedman@gmail.com` (Shai's personal Facebook — the correct and current value)
 - noVNC: Set up at `http://172.245.56.50:6080/vnc.html` for remote browser interaction during 2FA
-- Interactive login script: `node interactive_login.js [0|1]` — fills creds, waits 10min for noVNC-assisted 2FA
+- Session login script: `node session-login.js [0|1]` (replaces older `interactive_login.js`) — fills creds, waits 10min for noVNC-assisted 2FA
+- Facebook has passkey 2FA — cannot be automated. Must approve on Shai's phone (UAD) or Michal's phone (MissParty).
 
-**BLOCKED — Facebook 2FA:**
-- Miss Party: Login succeeds, hits "Check your notifications" / "Check your text messages" checkpoint
-- Needs Michal to approve the notification from her phone, OR user to approve via noVNC
-- UAD (shai@superseller.agency): Not yet tested — needs valid FB account credentials
+**RESOLVED — Facebook 2FA (sessions now established):**
+- Both UAD and MissParty sessions established and posting successfully (verified Mar 8, 2026)
+- Cookie lifetime: ~365 days (`c_user`, `xs`). `cookie-monitor.js` checks health every 6h.
 - **Root cause of previous failures**: Repeated test scripts with `GL.stop()` uploaded broken profiles to S3, destroying valid Mac-login cookies. Now fixed with upload guards.
 
 **Next steps when ready:**
@@ -2050,7 +2097,7 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 - Codebase organization: Added monitoring, agent skills, tools to "What Belongs in Codebase" table
 
 **Skill ghost references fixed (15 broken → 0):**
-- `tourreel-pipeline`: Replaced `references/prompting-rules.md`, `troubleshooting.md`, `kling-api-patterns.md`, `scene-management.md` with actual file paths
+- `videoforge-pipeline`: Replaced `references/prompting-rules.md`, `troubleshooting.md`, `kling-api-patterns.md`, `scene-management.md` with actual file paths
 - `database-management`: Replaced `references/schema-sync.md`, `migration-patterns.md` with inline content + real file paths
 - `stripe-credits`: Replaced `references/webhook-patterns.md`, `credit-calculation.md` with inline content + real file paths
 - `antigravity-automation`: Replaced `references/migration-from-n8n.md` with inline content + real file paths
@@ -2172,7 +2219,7 @@ Ran 2 parallel audit agents across all 11 canonical docs + codebase. **8 issues 
 24+ dimension audit: codebase vs notebooks, design, UI/UX, blueprints, frameworks, pricing, content, product structure, credentials, instructions, database, routing, security, skills, legal, tooling synergy.
 
 ### Fixes Applied (8/10 complete)
-1. **PRODUCT_BIBLE.md**: Design tokens updated (#110d28 palette), pricing updated ($299/$699/$1,499 credits), TourReel 50 credits/video, admin demo password removed
+1. **PRODUCT_BIBLE.md**: Design tokens updated (#110d28 palette), pricing updated ($299/$699/$1,499 credits), VideoForge 50 credits/video, admin demo password removed
 2. **brain.md**: Veo removed from Core Stack + Technical Stack
 3. **Agent-behavior files**: Verified in sync (diff = frontmatter only)
 4. **kie.ts**: Veo interface, function, type references removed. Defaults changed to "kling"
@@ -2231,7 +2278,7 @@ Awaiting approval before implementation.
 
 ---
 
-## 2026-02-16 — TourReel Video App Full Rebuild
+## 2026-02-16 — VideoForge Video App Full Rebuild
 
 ### Phase 1: Pipeline Fix (DONE)
 - **Worker was DOWN** — crashed 100x due to dotenv + bullmq + ioredis + pg + pino + zod all in devDependencies. Moved to dependencies.
@@ -2250,7 +2297,7 @@ Awaiting approval before implementation.
 - **Auth redirect**: All /video/* routes redirect to /login if not authenticated.
 
 ### Phase 3: UI Rebuild (DONE)
-- **New VideoNav component** — top nav with TourReel logo, My Videos, Create, Pricing, Account, credit balance badge, mobile responsive.
+- **New VideoNav component** — top nav with VideoForge logo, My Videos, Create, Pricing, Account, credit balance badge, mobile responsive.
 - **Video layout** — server-side auth check, redirects to /login if not authenticated.
 - **My Videos dashboard** — card grid with thumbnails, status badges, progress bars, time ago, empty state onboarding.
 - **Create Video page** — credit balance display, Zillow URL validation, image previews, cost display, insufficient credits CTA.
@@ -2286,7 +2333,7 @@ Awaiting approval before implementation.
 
 - **Doc hygiene cleanup**: Merged 6 residue .md files (NOTEBOOKLM_CONFLICTS, NOTEBOOKLM_AUDIT, INFRASTRUCTURE_AND_CODEBASE_ANALYSIS, LOCAL_TO_NOTEBOOKLM_MIGRATION, QUESTIONS_FOR_USER, AUDIT_STRAY_AND_LEARNING) into findings, DECISIONS, progress. Renamed CONFLICT_AUDIT_2026-02-15 → CONFLICT_AUDIT.md. Updated all refs to main docs. Added doc hygiene rule to findings + agent-behavior.mdc.
 
-- **NotebookLM conflict fix**: Audited 1dc7ce26, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 1dc7ce26; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in TourReel stack) — keep for now.
+- **NotebookLM conflict fix**: Audited 1dc7ce26, 719854ee, 0baf5f36. Conflicts: learning.log/AGENT_BEHAVIOR/architecture in 1dc7ce26; Veo "still in use" in 719854ee; no VIDEO_WORKER_URL note in 0baf5f36. Added override sources to each. Potentially redundant: tiktok (empty), fal.ai, higgsfield (not in VideoForge stack) — keep for now.
 
 - **User decisions applied**: Created DECISIONS.md from QUESTIONS_FOR_USER answers. Removed video production gate — video create works in prod (VIDEO_WORKER_URL required). REALTOR_PLACEMENT added to 0baf5f36, archived. CREDENTIAL_REFERENCE, NOTEBOOKLM_SCOPE, EXECUTION_PLAN created. QuickBooks: quickbooks-online-mcp-server canonical; docs updated. Credential rotation: no (per user). Infra→NotebookLM: NOTEBOOKLM_SCOPE clarifies what goes where.
 
@@ -2440,7 +2487,7 @@ Continuing Week 1 Agent Production Readiness Audit. Forge credit billing bug fix
 
 **Root Cause**: **Zero resilience to third-party API outages**
 
-When Kie.ai Vision API went into maintenance mode (returned 500 errors), the ENTIRE TourReel/Forge system failed:
+When Kie.ai Vision API went into maintenance mode (returned 500 errors), the ENTIRE VideoForge/Forge system failed:
 - 100% of jobs failed (0% success rate)
 - No retry logic
 - No exponential backoff

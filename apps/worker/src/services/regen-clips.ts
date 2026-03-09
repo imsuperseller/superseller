@@ -35,7 +35,7 @@ export async function runRegenClips(
     jobId: string,
     clipNumbersToRegen: number[]
 ): Promise<{ masterUrl: string; duration: number }> {
-    const workDir = join(config.temp?.dir ?? "/tmp/tourreel-jobs", `regen-${jobId}`);
+    const workDir = join(config.temp?.dir ?? "/tmp/videoforge-jobs", `regen-${jobId}`);
     if (!existsSync(workDir)) mkdirSync(workDir, { recursive: true });
 
     const job = await queryOne<any>("SELECT * FROM video_jobs WHERE id = $1", [jobId]);

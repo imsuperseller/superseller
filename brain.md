@@ -36,7 +36,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 - **Rensto**: Separate premium contractor directory business (rensto.com). Fully separate brand, codebase (`~/rensto - online directory/`), domain, nginx config, and systemd service (`rensto` on port 3001 RackNerd). NEVER touch rensto's nginx, DNS, or server config from SuperSeller sessions.
 - **Brand Separation**: Two legally separate businesses under Rensto LLC DBA SuperSeller Agency. All code, docs, and infra must treat them as entirely independent.
 - **Cross-Business Relationship** (intentional, not contamination): Contractors who list on Rensto are ideal SuperSeller AI prospects — they need AI video, leads, and automation. SuperSeller sales outreach can use Rensto's contractor DB as a warm lead source. This is a *business strategy*, not a technical dependency. No shared code, DB tables, or domains.
-- Run `npx tsx tools/consistency-checker.ts` to detect any cross-contamination in code.
+- For conflict/cross-contamination checks: run schema-sentinel (`npx tsx tools/schema-sentinel.ts`), grep for Rensto/superseller brand in code, and review DECISIONS.md §1b. (A dedicated consistency-checker script is not present in tools/.)
 
 **Core Stack**:
 - **Antigravity** (RackNerd): Primary automation. Executes workflows, builds apps.
@@ -60,7 +60,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 | # | Notebook | Purpose |
 |---|----------|---------|
 | 1 | [1dc7ce26](https://notebooklm.google.com/notebook/1dc7ce26-492c-4902-8541-6aff766257de) | **B.L.A.S.T. canonical** — Methodology, Agent Behavior, Antigravity Protocol (3 sources). Recreated Mar 2, 2026. |
-| 2 | [0baf5f36](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video** — TourReel pipeline spec (30 sources). Canonical for pipeline. |
+| 2 | [0baf5f36](https://notebooklm.google.com/notebook/0baf5f36-7ff0-4550-a878-923dbf59de5c) | **Zillow-to-Video** — VideoForge pipeline spec (30 sources). Canonical for pipeline. |
 | 3 | [3e820274](https://notebooklm.google.com/notebook/3e820274-6839-4921-aa83-ad003dd2fb93) | **KIE.AI** — API docs, models, Kling 3.0 prompt engineering (47 sources). Merged from Kling 3.0 notebook. |
 | 4 | [fc048ba8](https://notebooklm.google.com/notebook/fc048ba8-12b7-432a-b8d9-65baae62d529) | **Master: Automation & Core Infra** — Antigravity, n8n, infra ledger (45 sources). Merged from stack notebook. |
 | 5 | [cb99e6aa](https://notebooklm.google.com/notebook/cb99e6aa-967f-40d4-9580-c02b3250bc78) | **Master: Social Media, Lead Gen & Marketing** — FB Bot, SocialHub, Instagram API (50 sources) **AT MAX**. Merged from Instagram notebook. |
@@ -160,7 +160,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 │
 ├── docs/
 │   ├── frameworks/          ← B.L.A.S.T., Antigravity, Brand Identity, etc.
-│   ├── templates/tourreel/  ← Blueprint, Implementation Spec, Prompt Playbook
+│   ├── templates/videoforge/  ← Blueprint, Implementation Spec, Prompt Playbook
 │   ├── n8n/                 ← N8N_WORKFLOWS_CATALOG.md
 │   └── NOTEBOOKLM_INDEX.md  ← Notebook IDs mapped to purpose
 │
@@ -173,7 +173,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 ├── security/                ← Policies, credential rotation
 │
 ├── .cursor/                 ← Agent rules, context, MCP status
-└── .claude/skills/          ← Agent skills (rag-pgvector, tourreel-pipeline, stripe-credits, ui-ux-pro-max, etc.)
+└── .claude/skills/          ← Agent skills (rag-pgvector, videoforge-pipeline, billing-credits, ui-ux-pro-max, etc.)
 ```
 
 **Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/superseller-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
@@ -198,10 +198,10 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 
 ## 📦 MARKETPLACE APPS (Credit-Based SaaS)
 
-**TourReel** is the first credit-based SaaS app and the **template** for future apps.
+**VideoForge** is the first credit-based SaaS app and the **template** for future apps.
 
 For every new marketplace app:
-1. Start from `docs/templates/tourreel/` (Blueprint, Implementation Spec, Prompt Playbook).
+1. Start from `docs/templates/videoforge/` (Blueprint, Implementation Spec, Prompt Playbook).
 2. Adapt for purpose and needs — flexibility over rigid copy.
 3. Use PostgreSQL for app data (never Aitable.ai for production SaaS).
 4. Follow SuperSeller AI design system (query NotebookLM 286f3e4a or 719854ee).
@@ -240,7 +240,7 @@ For routine tasks (fix, deploy, verify), skip Protocol 0 and use Agent Behavior 
 | B.L.A.S.T. + Design + Error handling | docs/frameworks/blast-framework.md |
 | Antigravity skill engineering | docs/frameworks/antigravity-skill-engineering.md |
 | Brand identity structure | docs/frameworks/agentic-brand-identity-framework.md |
-| TourReel app template | docs/templates/tourreel/ |
+| VideoForge app template | docs/templates/videoforge/ |
 | NotebookLM index | docs/NOTEBOOKLM_INDEX.md |
 | n8n workflow catalog | docs/n8n/N8N_WORKFLOWS_CATALOG.md |
 | Business coverage index (all tracked elements, SoT map, dashboard mapping) | docs/BUSINESS_COVERAGE_INDEX.md |

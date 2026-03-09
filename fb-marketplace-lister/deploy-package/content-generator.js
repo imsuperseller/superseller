@@ -1,17 +1,17 @@
 /**
  * Dynamic content generator for Facebook Marketplace listings.
- * Uses Gemini 2.5 Flash via Kie.ai API (OpenAI-compatible) to generate city-specific listing copy.
+ * Uses Gemini 3 Flash via Kie.ai API (OpenAI-compatible) to generate city-specific listing copy.
  *
  * UAD: Door-config-specific prompts (collection, size, design, color, construction)
  * MissParty: Scenario-specific prompts with "$1/mile delivery" pricing
  *
  * API docs: NotebookLM 3e820274 (KIE.AI)
- * Endpoint: https://api.kie.ai/gemini-2.5-flash/v1/chat/completions
+ * Endpoint: https://api.kie.ai/gemini-3-flash/v1/chat/completions
  * Auth: Bearer KIE_API_KEY
  */
 
 const KIE_API_KEY = process.env.KIE_API_KEY || '';
-const GEMINI_URL = 'https://api.kie.ai/gemini-2.5-flash/v1/chat/completions';
+const GEMINI_URL = 'https://api.kie.ai/gemini-3-flash/v1/chat/completions';
 
 // Per-product prompt templates
 const PRODUCT_PROMPTS = {

@@ -9,8 +9,8 @@
 | Service | Local (both run) | Local (worker only) | RackNerd (prod) |
 |---------|------------------|---------------------|-----------------|
 | **superseller-site** (Next.js) | 3002 | — | Vercel (superseller.agency) |
-| **Worker** (TourReel API) | 3001 | 3002 | 172.245.56.50:3002 |
-| **video-merge** (RackNerd) | — | — | 3001 |
+| **Worker** (VideoForge API) | 3001 | 3002 | 172.245.56.50:3002 |
+| **video-merge** (RackNerd) | — | — | 3456 |
 
 **Local conflict**: Worker and superseller-site both default to 3002. When running both, worker MUST use `PORT=3001`.
 
